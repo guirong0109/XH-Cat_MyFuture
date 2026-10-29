@@ -13,5 +13,5 @@ export async function api(method, url, body) {
   const data = await response.json().catch(() => null)
   if (response.ok) return { ok: true, data }
   const error = data?.error
-  return error?.code ? { ok: false, code: error.code, retryable: Boolean(error.retryable) } : { ok: false, code: 'server_error', retryable: true }
+  return error?.code ? { ok: false, code: error.code, retryable: Boolean(error.retryable), ...(data.reason ? { reason: data.reason } : {}) } : { ok: false, code: 'server_error', retryable: true }
 }

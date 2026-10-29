@@ -3,7 +3,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice } from '/shared/guestStore.js'
 import { DECLINED, EMPTY, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, confirmProfile, isUntouched, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { addRecord, applyAccepted, confirmProfile, diffProfiles, isUntouched, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -21,6 +21,7 @@ import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
 import { accountLink } from './components/accountBox.js'
+import { visibleRows } from './components/compareView.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -41,11 +42,13 @@ let resumeTo = null
 let saved = false
 // The chosen CV file stays in memory only (for Retry); it is never saved in the browser.
 let cvFile = null
+// The CV draft as it came from the server: the compare view locks what the user changed since. Memory only.
+let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 function go(screen) {
@@ -199,6 +202,9 @@ const actions = {
     }
     // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
     state.profile = mergeDraft(state.profile, out.data.profile)
+    cvDraft = out.data.profile
+    state.cvSession = true
+    state.ai = null
     state.extractionId = out.data.extractionId
     state.cv = { phase: 'ready', language: out.data.language, langAnswered: false }
     persist()
@@ -208,6 +214,28 @@ const actions = {
   cvReset: () => { cvFile = null; state.cv = null; render() },
   cvKeepLang: () => { state.cv.langAnswered = true; persist(); render() },
   cvSwitchLang: (lang) => { state.cv.langAnswered = true; actions.lang(lang) },
+  aiOpen: () => { state.ai = { phase: 'consent' }; render() },
+  aiClose: () => { state.ai = null; render() },
+  aiRun: async () => {
+    if (!document.getElementById('aiConsent')?.checked) return
+    state.ai = { phase: 'busy' }
+    render()
+    const out = await api('POST', '/api/cv/reextract', { extractionId: state.extractionId, consent: true, interfaceLanguage: state.lang })
+    if (!out.ok) {
+      state.ai = { phase: 'error', reason: out.reason ?? out.code }
+      return render()
+    }
+    // What the user changed since the CV draft is locked: the AI never overwrites it.
+    const rows = diffProfiles(state.profile, out.data.suggested, userEditedPaths(cvDraft, state.profile))
+    state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
+    render()
+  },
+  aiAccept: () => {
+    const rows = visibleRows(state.ai)
+    const ticked = new Set([...document.querySelectorAll('[data-ai-row]:checked')].map((box) => rows[Number(box.dataset.aiRow)].path))
+    state.ai = null
+    update(applyAccepted(state.profile, rows, ticked))
+  },
   confirm: async () => {
     // Case C: the server normalises skills against O*NET and checks every field; nothing is saved here.
     const out = await api('POST', '/api/profiles/validate', { profile: state.profile })

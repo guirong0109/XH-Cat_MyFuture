@@ -107,4 +107,28 @@ describe('CV draft and AI compare', () => {
     expect(out.rawText).toBeUndefined()
     expect(p.skills[0].extraction.evidence).toBe('Built SQL reports at Acme')
   })
+
+  it("accepting every row still keeps the user's own edits", () => {
+    const draft = emptyProfile({ inputMethod: 'cv' })
+    draft.education.records = [{ qualification: 'Diploma', fieldOfStudy: 'IT', institution: 'Poli', year: '2021', userConfirmed: false }]
+    draft.skills = [cvSkill('Python')]
+    // the user fixed the institution, set a level on Python and typed a career goal
+    let current = setField(draft, 'education.records.0.institution', 'Politeknik Ungku Omar')
+    current = { ...current, skills: [{ ...current.skills[0], userConfirmed: true, proficiency: 'good', proficiencyStatus: 'self_reported' }] }
+    current = setField(current, 'preferences.careerGoal', val('change'))
+    // the AI suggests different values for both, plus one new certificate
+    const suggested = emptyProfile({ inputMethod: 'cv' })
+    suggested.education.records = [{ qualification: 'Diploma', fieldOfStudy: 'IT', institution: 'Ungku Omar Polytechnic', year: '', userConfirmed: false }]
+    suggested.skills = [{ ...makeSkill({ name: 'Python', originalText: 'python3', canonicalId: 'onet:tech:python', source: 'cv_ai' }) }]
+    suggested.certifications = [{ name: 'Google Data Analytics', issuer: '', year: '', userConfirmed: false }]
+    suggested.preferences.careerGoal = val('first_job')
+
+    const rows = diffProfiles(current, suggested, userEditedPaths(draft, current))
+    const out = applyAccepted(current, rows, new Set(rows.map((row) => row.path)))
+    expect(out.education.records[0].institution).toBe('Politeknik Ungku Omar')
+    expect(out.skills[0]).toMatchObject({ proficiency: 'good', proficiencyStatus: 'self_reported', originalText: 'Python' })
+    expect(out.preferences.careerGoal).toEqual(val('change'))
+    expect(out.certifications.map((c) => c.name)).toEqual(['Google Data Analytics'])
+    expect(rows.filter((row) => row.locked).map((row) => row.path).sort()).toEqual(['education.records#diploma|it', 'preferences.careerGoal', 'skills#onet:tech:python'])
+  })
 })

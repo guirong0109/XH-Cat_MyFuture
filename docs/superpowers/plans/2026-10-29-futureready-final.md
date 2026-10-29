@@ -1,3 +1,5 @@
+> **SUPERSEDED (29 Oct 2026):** replaced by `docs/superpowers/specs/2026-10-29-cv-profile-module-design.md`. Contains the previous project's scoring or paths; do not build from it.
+
 # FutureReady MY (Final build) Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

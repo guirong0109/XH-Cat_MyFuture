@@ -1,3 +1,5 @@
+> **SUPERSEDED (29 Oct 2026):** replaced by `docs/superpowers/specs/2026-10-29-cv-profile-module-design.md`. Contains the previous project's scoring or paths; do not build from it.
+
 # FutureReady MY (Final build) — Design
 
 Date: 2026-10-29 · Status: approved in brainstorming (3 sections), waiting for written-spec review

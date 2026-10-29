@@ -1,1 +1,2 @@
 data/onet/*.tsv text eol=lf
+data/isced/*.tsv text eol=lf

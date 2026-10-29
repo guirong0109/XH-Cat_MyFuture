@@ -1,0 +1,28 @@
+{
+  "source": "ISCED-F 2013 fields of education and training, with a CIP bridge to O*NET",
+  "version": "ISCED-F 2013",
+  "sources": [
+    {
+      "what": "ISCED-F 2013 to CIP Canada 2016 concordance",
+      "by": "Statistics Canada",
+      "url": "https://www.statcan.gc.ca/sites/default/files/documents/isced-f-2013-cip2016-eng.csv",
+      "licence": "Statistics Canada Open Licence"
+    },
+    {
+      "what": "2020 CIP to O*NET-SOC 2019 crosswalk",
+      "by": "O*NET Resource Center (USDOL/ETA)",
+      "url": "https://www.onetcenter.org/crosswalks/cip/Education_CIP_to_ONET_SOC.xlsx",
+      "licence": "CC BY 4.0"
+    }
+  ],
+  "downloadedAt": "2026-10-30",
+  "files": {
+    "fields.tsv": "ce30e44bce80a45bc82ada846a9d5271b2c503a621e6d0d5bb194416a4a14dbc",
+    "isced_cip.tsv": "0f879f21c81e89916ed86732c73dcb7397221c79f83129e0c5049d8bd9b0a07e",
+    "cip_onet.tsv": "978483404a52f14524eb375f75e550c76fc6f44a99118c65a15a8fe586a3e7e4"
+  },
+  "bridge": {
+    "fields": 124,
+    "fieldsLinkedToOnet": 118
+  }
+}

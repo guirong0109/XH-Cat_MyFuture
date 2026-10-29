@@ -1,0 +1,1810 @@
+isced_code	isced_title	cip_code	cip_title	partial	note
+0000	Generic programmes and qualifications not further defined	24.0101	Liberal arts and sciences/liberal studies	N	
+0000	Generic programmes and qualifications not further defined	24.0102	General studies	Y	General studies (except general arts)
+0011	Basic programmes and qualifications	53.0101	Regular/general high school/secondary diploma programs	N	
+0011	Basic programmes and qualifications	53.0102	College/university preparatory programs	N	
+0011	Basic programmes and qualifications	53.0103	Vocational high school and secondary business/vocational-industrial/occupational diploma programs	N	
+0011	Basic programmes and qualifications	53.0104	Honours/regents high school/secondary diploma programs	N	
+0011	Basic programmes and qualifications	53.0105	Adult high school/secondary diploma programs	N	
+0011	Basic programmes and qualifications	53.0199	High school/secondary diploma programs, other	N	
+0011	Basic programmes and qualifications	53.0201	High school equivalence certificate programs	N	
+0011	Basic programmes and qualifications	53.0202	High school certificate of competence programs	N	
+0011	Basic programmes and qualifications	53.0203	Certificate of IEP completion programs	N	
+0011	Basic programmes and qualifications	53.0299	High school/secondary certificate programs, other	N	
+0021	Literacy and numeracy	32.0101	Basic skills, general (not for credit)	Y	Literacy and numeracy
+0021	Literacy and numeracy	32.0104	Numeracy and computational skills (not for credit)	N	
+0021	Literacy and numeracy	32.0108	Literacy and communication skills (not for credit)	N	
+0031	Personal skills	32.0101	Basic skills, general (not for credit)	Y	Life skills, basic skills
+0031	Personal skills	32.0105	Job-seeking/changing skills (not for credit)	N	
+0031	Personal skills	32.0107	Career exploration/awareness skills (not for credit)	N	
+0031	Personal skills	32.0199	Basic skills, other (not for credit)	N	
+0031	Personal skills	34.0102	Birthing and parenting knowledge and skills (not for credit)	Y	Parenting knowledge and skills
+0031	Personal skills	35.0101	Interpersonal and social skills, general (not for credit)	N	
+0031	Personal skills	35.0102	Interpersonal relationships skills (not for credit)	N	
+0031	Personal skills	35.0103	Business and social skills (not for credit)	N	
+0031	Personal skills	35.0199	Interpersonal and social skills, other (not for credit)	N	
+0031	Personal skills	37.0101	Self-awareness and personal assessment (not for credit)	N	
+0031	Personal skills	37.0103	Personal decision-making skills (not for credit)	N	
+0031	Personal skills	37.0104	Self-esteem and values clarification (not for credit)	N	
+0031	Personal skills	37.0199	Personal awareness and self-improvement, other (not for credit)	N	
+0099	Generic programmes and qualifications not elsewhere classified	24.0199	Liberal arts and sciences, general studies and humanities, other	N	
+0110	Education not further defined	13.0101	Education, general	Y	Education, school teacher, teacher training
+0111	Education science	13.0101	Education, general	Y	Pedagogy, educational theory
+0111	Education science	13.0301	Curriculum and instruction	N	
+0111	Education science	13.0601	Educational evaluation and research	N	
+0111	Education science	13.0603	Educational statistics and research methods	N	
+0111	Education science	13.0604	Educational assessment, testing and measurement	N	
+0111	Education science	13.0607	Learning sciences	N	
+0111	Education science	13.0699	Educational assessment, evaluation and research, other	N	
+0111	Education science	13.0701	International and comparative education	N	
+0111	Education science	13.0901	Social and philosophical foundations of education	N	
+0112	Training for pre-school teachers	13.1209	Kindergarten/preschool education and teaching	N	
+0112	Training for pre-school teachers	13.1210	Early childhood education and teaching	N	
+0113	Teacher training without subject specialisation	13.0203	Aboriginal education	N	
+0113	Teacher training without subject specialisation	13.1001	Special education and teaching, general	N	
+0113	Teacher training without subject specialisation	13.1003	Education/teaching of individuals with hearing impairments including deafness	N	
+0113	Teacher training without subject specialisation	13.1004	Education/teaching of the gifted and talented	N	
+0113	Teacher training without subject specialisation	13.1005	Education/teaching of individuals with emotional disturbances	N	
+0113	Teacher training without subject specialisation	13.1006	Education/teaching of intellectually-impaired individuals	N	
+0113	Teacher training without subject specialisation	13.1007	Education/teaching of individuals with multiple disabilities	N	
+0113	Teacher training without subject specialisation	13.1008	Education/teaching of individuals with orthopedic and other physical health impairments	N	
+0113	Teacher training without subject specialisation	13.1009	Education/teaching of individuals with vision impairments including blindness	N	
+0113	Teacher training without subject specialisation	13.1011	Education/teaching of individuals with specific learning disabilities	N	
+0113	Teacher training without subject specialisation	13.1012	Education/teaching of individuals with speech or language impairments	N	
+0113	Teacher training without subject specialisation	13.1013	Education/teaching of individuals with autism	N	
+0113	Teacher training without subject specialisation	13.1014	Education/teaching of individuals who are developmentally delayed	N	
+0113	Teacher training without subject specialisation	13.1015	Education/teaching of individuals in early childhood special education programs	N	
+0113	Teacher training without subject specialisation	13.1016	Education/teaching of individuals with traumatic brain injuries	N	
+0113	Teacher training without subject specialisation	13.1017	Education/teaching of individuals in elementary special education programs	N	
+0113	Teacher training without subject specialisation	13.1018	Education/teaching of individuals in junior high/middle school special education programs	N	
+0113	Teacher training without subject specialisation	13.1019	Education/teaching of individuals in secondary special education programs	N	
+0113	Teacher training without subject specialisation	13.1099	Special education and teaching, other	N	
+0113	Teacher training without subject specialisation	13.1201	Adult and continuing education and teaching	Y	Adult basic education, adult remedial education
+0113	Teacher training without subject specialisation	13.1202	Elementary education and teaching	N	
+0113	Teacher training without subject specialisation	13.1203	Junior high/intermediate/middle school education and teaching	N	
+0113	Teacher training without subject specialisation	13.1206	Teacher education, multiple levels	Y	Primary and intermediate education
+0113	Teacher training without subject specialisation	13.1207	Montessori teacher education	N	
+0113	Teacher training without subject specialisation	13.1208	Waldorf/Steiner teacher education	N	
+0113	Teacher training without subject specialisation	13.1501	Teaching assistants/aides, general	N	
+0113	Teacher training without subject specialisation	13.1502	Adult literacy tutor/instructor	N	
+0113	Teacher training without subject specialisation	13.1599	Teaching assistants/aides, other	N	
+0114	Teacher training with subject specialisation	12.0413	Cosmetology, barber/styling and nail instructor	N	
+0114	Teacher training with subject specialisation	13.1201	Adult and continuing education and teaching	Y	Adult continuing education, adult extension education, adult workplace education
+0114	Teacher training with subject specialisation	13.1205	Secondary education and teaching	N	
+0114	Teacher training with subject specialisation	13.1299	Teacher education and professional development, specific levels and methods, other	Y	Postsecondary instructor education
+0114	Teacher training with subject specialisation	13.1301	Agricultural teacher education	N	
+0114	Teacher training with subject specialisation	13.1302	Art teacher education	N	
+0114	Teacher training with subject specialisation	13.1303	Business teacher education	N	
+0114	Teacher training with subject specialisation	13.1304	Driver and safety teacher education	N	
+0114	Teacher training with subject specialisation	13.1305	English/English language arts teacher education	N	
+0114	Teacher training with subject specialisation	13.1306	Aboriginal and foreign language teacher education	N	
+0114	Teacher training with subject specialisation	13.1307	Health teacher education	N	
+0114	Teacher training with subject specialisation	13.1308	Family and consumer sciences/home economics teacher education	N	
+0114	Teacher training with subject specialisation	13.1309	Technology teacher education/industrial arts teacher education	N	
+0114	Teacher training with subject specialisation	13.1310	Sales and marketing operations/marketing and distribution teacher education	N	
+0114	Teacher training with subject specialisation	13.1311	Mathematics teacher education	N	
+0114	Teacher training with subject specialisation	13.1312	Music teacher education	N	
+0114	Teacher training with subject specialisation	13.1314	Physical education teaching and coaching	N	
+0114	Teacher training with subject specialisation	13.1315	Reading teacher education	N	
+0114	Teacher training with subject specialisation	13.1316	Science teacher education/general science teacher education	N	
+0114	Teacher training with subject specialisation	13.1317	Social science teacher education	N	
+0114	Teacher training with subject specialisation	13.1318	Social studies teacher education	N	
+0114	Teacher training with subject specialisation	13.1319	Technical teacher education	N	
+0114	Teacher training with subject specialisation	13.1320	Trade and industrial teacher education	N	
+0114	Teacher training with subject specialisation	13.1321	Computer teacher education	N	
+0114	Teacher training with subject specialisation	13.1322	Biology teacher education	N	
+0114	Teacher training with subject specialisation	13.1323	Chemistry teacher education	N	
+0114	Teacher training with subject specialisation	13.1324	Drama and dance teacher education	N	
+0114	Teacher training with subject specialisation	13.1325	French language/French language arts teacher education	N	
+0114	Teacher training with subject specialisation	13.1326	German language teacher education	N	
+0114	Teacher training with subject specialisation	13.1327	Health occupations teacher education	N	
+0114	Teacher training with subject specialisation	13.1328	History teacher education	N	
+0114	Teacher training with subject specialisation	13.1329	Physics teacher education	N	
+0114	Teacher training with subject specialisation	13.1330	Spanish language teacher education	N	
+0114	Teacher training with subject specialisation	13.1331	Speech teacher education	N	
+0114	Teacher training with subject specialisation	13.1332	Geography teacher education	N	
+0114	Teacher training with subject specialisation	13.1333	Latin teacher education	N	
+0114	Teacher training with subject specialisation	13.1335	Psychology teacher education	N	
+0114	Teacher training with subject specialisation	13.1337	Earth science teacher education	N	
+0114	Teacher training with subject specialisation	13.1338	Environmental teacher education	N	
+0114	Teacher training with subject specialisation	13.1399	Teacher education and professional development, specific subject areas, other	N	
+0114	Teacher training with subject specialisation	13.1401	Teaching English as a second or foreign language/ESL language instructor	N	
+0114	Teacher training with subject specialisation	13.1402	Teaching French as a second or foreign language	N	
+0114	Teacher training with subject specialisation	13.1499	Teaching English or French as a second or foreign language, other	N	
+0114	Teacher training with subject specialisation	13.9999	Education, other	Y	Adult and vocational education
+0114	Teacher training with subject specialisation	49.0108	Flight instructor	N	
+0114	Teacher training with subject specialisation	49.0205	Truck and bus driver/commercial vehicle operator and instructor	Y	Truck, bus and commercial vehicle driving instructor
+0114	Teacher training with subject specialisation	49.0304	Diver, professional and instructor	Y	Diving instructor
+0114	Teacher training with subject specialisation	50.0912	Music pedagogy	N	
+0114	Teacher training with subject specialisation	51.3817	Nursing education	N	
+0119	Education not elsewhere classified	13.0201	Bilingual and multilingual education	N	
+0119	Education not elsewhere classified	13.0202	Multicultural education	N	
+0119	Education not elsewhere classified	13.0299	Bilingual, multilingual and multicultural education, other	N	
+0119	Education not elsewhere classified	13.0501	Educational/instructional technology	N	
+0119	Education not elsewhere classified	13.1206	Teacher education, multiple levels	Y	Intermediate and secondary education, kindergarten and elementary education, preschool and primary teaching
+0119	Education not elsewhere classified	13.1299	Teacher education and professional development, specific levels and methods, other	Y	Distance learning teacher, online teaching
+0119	Education not elsewhere classified	13.9999	Education, other	Y	Adult, community and higher education
+0188	Inter-disciplinary programmes and qualifications involving education	13.9999	Education, other	Y	Administration and evaluation in education
+0200	Arts and humanities not further defined	24.0102	General studies	Y	General arts
+0200	Arts and humanities not further defined	24.0103	Humanities/humanistic studies	Y	Arts and humanities
+0210	Arts not further defined	50.0701	Art/art studies, general	N	
+0211	Audio-visual techniques and media production	09.0701	Radio and television	N	
+0211	Audio-visual techniques and media production	09.0702	Digital communication and media/multimedia	N	
+0211	Audio-visual techniques and media production	09.0799	Radio, television and digital communication, other	N	
+0211	Audio-visual techniques and media production	09.1001	Publishing	N	
+0211	Audio-visual techniques and media production	10.0105	Communications technology/technician	N	
+0211	Audio-visual techniques and media production	10.0201	Photographic and film/video technology/technician and assistant	N	
+0211	Audio-visual techniques and media production	10.0202	Radio and television broadcasting technology/technician	N	
+0211	Audio-visual techniques and media production	10.0203	Recording arts technology/technician	N	
+0211	Audio-visual techniques and media production	10.0299	Audiovisual communications technologies/technicians, other	N	
+0211	Audio-visual techniques and media production	10.0301	Graphic communications, general	N	
+0211	Audio-visual techniques and media production	10.0302	Printing management	N	
+0211	Audio-visual techniques and media production	10.0303	Prepress/desktop publishing and digital imaging design	N	
+0211	Audio-visual techniques and media production	10.0304	Animation, interactive technology, video graphics and special effects	N	
+0211	Audio-visual techniques and media production	10.0305	Graphic and printing equipment operator, general production	N	
+0211	Audio-visual techniques and media production	10.0306	Platemaker/imager	N	
+0211	Audio-visual techniques and media production	10.0307	Printing press operator	N	
+0211	Audio-visual techniques and media production	10.0308	Computer typography and composition equipment operator	N	
+0211	Audio-visual techniques and media production	10.0399	Graphic communications, other	N	
+0211	Audio-visual techniques and media production	10.9999	Communications technologies/technicians and support services, other	N	
+0211	Audio-visual techniques and media production	11.0803	Computer graphics	N	
+0211	Audio-visual techniques and media production	50.0102	Digital arts, general	N	
+0211	Audio-visual techniques and media production	50.0401	Design and visual communications, general	Y	General visual communications, general applied arts
+0211	Audio-visual techniques and media production	50.0402	Commercial and advertising art	N	
+0211	Audio-visual techniques and media production	50.0406	Commercial photography	N	
+0211	Audio-visual techniques and media production	50.0409	Graphic design	N	
+0211	Audio-visual techniques and media production	50.0410	Illustration	N	
+0211	Audio-visual techniques and media production	50.0411	Game and interactive media design	Y	Computer game development, game development, computer game design, game design
+0211	Audio-visual techniques and media production	50.0499	Design and applied arts, other	Y	Applied arts, other
+0211	Audio-visual techniques and media production	50.0601	Film/cinema/video studies	Y	Film studies, film theory
+0211	Audio-visual techniques and media production	50.0602	Cinematography and film/video production	N	
+0211	Audio-visual techniques and media production	50.0605	Photography	N	
+0211	Audio-visual techniques and media production	50.0607	Documentary production	N	
+0211	Audio-visual techniques and media production	50.0699	Film/video and photographic arts, other	N	
+0211	Audio-visual techniques and media production	51.2703	Medical illustration/medical illustrator	N	
+0212	Fashion, interior and industrial design	19.0601	Housing and human environments, general	N	
+0212	Fashion, interior and industrial design	19.0605	Home furnishings and equipment installers	N	
+0212	Fashion, interior and industrial design	19.0699	Housing and human environments, other	N	
+0212	Fashion, interior and industrial design	50.0401	Design and visual communications, general	Y	General design
+0212	Fashion, interior and industrial design	50.0404	Industrial and product design	N	
+0212	Fashion, interior and industrial design	50.0407	Fashion/apparel design	N	
+0212	Fashion, interior and industrial design	50.0408	Interior design	N	
+0212	Fashion, interior and industrial design	50.0499	Design and applied arts, other	Y	Design, other
+0212	Fashion, interior and industrial design	50.0502	Technical theatre/theatre design and technology	Y	Set design/scenography, theatre design
+0212	Fashion, interior and industrial design	50.0510	Costume design	N	
+0213	Fine arts	36.0110	Art (not for credit)	N	
+0213	Fine arts	50.0702	Fine/studio arts, general	N	
+0213	Fine arts	50.0703	Art history, criticism and conservation	Y	Art conservation, art history, art history and criticism
+0213	Fine arts	50.0705	Drawing	N	
+0213	Fine arts	50.0706	Intermedia/multimedia	N	
+0213	Fine arts	50.0708	Painting	N	
+0213	Fine arts	50.0709	Sculpture	N	
+0213	Fine arts	50.0710	Printmaking	N	
+0213	Fine arts	50.0799	Fine arts and art studies, other	Y	Other fine arts
+0214	Handicrafts	01.0508	Taxidermy/taxidermist	N	
+0214	Handicrafts	01.0608	Floriculture/floristry operations and management	Y	Floral arrangement, floral design
+0214	Handicrafts	36.0102	Handicrafts and model-making (not for credit)	N	
+0214	Handicrafts	47.0404	Musical instrument fabrication and repair	N	
+0214	Handicrafts	47.0408	Watchmaking and jewellery making	Y	Jewellery making and repair
+0214	Handicrafts	47.0499	Precision systems maintenance and repair technologies, other	Y	Fabrication, maintenance and repair of precision systems in various materials
+0214	Handicrafts	48.9999	Precision production, other	Y	Diamond cutting and polishing
+0214	Handicrafts	50.0201	Crafts/craft design, folk art and artisanry	N	
+0214	Handicrafts	50.0711	Ceramic arts and ceramics	N	
+0214	Handicrafts	50.0712	Fibre, textile and weaving arts	N	
+0214	Handicrafts	50.0713	Metal and jewellery arts	N	
+0214	Handicrafts	50.0799	Fine arts and art studies, other	Y	Other handicrafts
+0215	Music and performing arts	36.0114	Dancing (not for credit)	N	
+0215	Music and performing arts	36.0115	Music (not for credit)	N	
+0215	Music and performing arts	36.0117	Theatre (not for credit)	N	
+0215	Music and performing arts	39.0501	Religious/sacred music	N	
+0215	Music and performing arts	50.0101	Visual and performing arts, general	Y	Performing arts
+0215	Music and performing arts	50.0301	Dance, general	N	
+0215	Music and performing arts	50.0302	Ballet	N	
+0215	Music and performing arts	50.0399	Dance, other	N	
+0215	Music and performing arts	50.0501	Drama and dramatics/theatre arts, general	N	
+0215	Music and performing arts	50.0502	Technical theatre/theatre design and technology	Y	Technical theatre, props person, scene painting, theatre technician (lighting, sound effects, acoustics)
+0215	Music and performing arts	50.0504	Playwriting and screenwriting	N	
+0215	Music and performing arts	50.0505	Theatre literature, history and criticism	N	
+0215	Music and performing arts	50.0506	Acting	N	
+0215	Music and performing arts	50.0507	Directing and theatrical production	N	
+0215	Music and performing arts	50.0509	Musical theatre	N	
+0215	Music and performing arts	50.0599	Drama/theatre arts and stagecraft, other	N	
+0215	Music and performing arts	50.0601	Film/cinema/video studies	Y	Film history
+0215	Music and performing arts	50.0901	Music, general	N	
+0215	Music and performing arts	50.0902	Music history, literature and theory	N	
+0215	Music and performing arts	50.0903	Music performance, general	N	
+0215	Music and performing arts	50.0904	Music theory and composition	N	
+0215	Music and performing arts	50.0905	Musicology and ethnomusicology	N	
+0215	Music and performing arts	50.0906	Conducting	N	
+0215	Music and performing arts	50.0907	Keyboard instruments	N	
+0215	Music and performing arts	50.0908	Voice and opera	N	
+0215	Music and performing arts	50.0910	Jazz/jazz studies	N	
+0215	Music and performing arts	50.0911	Stringed instruments	N	
+0215	Music and performing arts	50.0913	Music technology	N	
+0215	Music and performing arts	50.0914	Brass instruments	N	
+0215	Music and performing arts	50.0915	Woodwind instruments	N	
+0215	Music and performing arts	50.0916	Percussion instruments	N	
+0215	Music and performing arts	50.0999	Music, other	N	
+0215	Music and performing arts	50.9999	Visual and performing arts, other	Y	Circus arts
+0215	Music and performing arts	52.1903	Fashion modelling	N	
+0219	Arts not elsewhere classified	50.0101	Visual and performing arts, general	Y	Visual arts, visual and creative arts, visual and performing arts
+0219	Arts not elsewhere classified	50.9999	Visual and performing arts, other	Y	Other visual and performing arts (except circus arts)
+0220	Humanities (except languages) not further defined	24.0103	Humanities/humanistic studies	Y	Humanities
+0221	Religion and theology	38.0201	Religion/religious studies, general	N	
+0221	Religion and theology	38.0202	Buddhist studies	N	
+0221	Religion and theology	38.0203	Christian studies	N	
+0221	Religion and theology	38.0204	Hindu studies	N	
+0221	Religion and theology	38.0205	Islamic studies	N	
+0221	Religion and theology	38.0206	Jewish/Judaic studies	N	
+0221	Religion and theology	38.0299	Religion/religious studies, other	N	
+0221	Religion and theology	39.0201	Bible/Biblical studies	N	
+0221	Religion and theology	39.0301	Missions/missionary studies and missiology	N	
+0221	Religion and theology	39.0401	Religious education	N	
+0221	Religion and theology	39.0601	Theology/theological studies	N	
+0221	Religion and theology	39.0602	Divinity/ministry (BDiv, MDiv)	N	
+0221	Religion and theology	39.0604	Pre-theology/pre-ministerial studies	N	
+0221	Religion and theology	39.0605	Rabbinical studies (MHL/Rav)	N	
+0221	Religion and theology	39.0606	Talmudic studies	N	
+0221	Religion and theology	39.0699	Theological and ministerial studies, other	N	
+0221	Religion and theology	39.0701	Pastoral studies/counselling	N	
+0221	Religion and theology	39.0702	Youth ministry	N	
+0221	Religion and theology	39.0703	Urban ministry	N	
+0221	Religion and theology	39.0704	Women's ministry	N	
+0221	Religion and theology	39.0705	Lay ministry	N	
+0221	Religion and theology	39.0799	Pastoral counselling and specialized ministries, other	N	
+0221	Religion and theology	39.9999	Theology and religious vocations, other	N	
+0222	History and archaeology	05.0209	Folklore studies	N	
+0222	History and archaeology	30.1201	Historic preservation and conservation, general	N	
+0222	History and archaeology	36.0199	Leisure and recreational activities, other (not for credit)	Y	Genealogy (not for credit)
+0222	History and archaeology	45.0301	Archaeology	N	
+0222	History and archaeology	50.0703	Art history, criticism and conservation	Y	Art restoration
+0222	History and archaeology	54.0101	History, general	N	
+0222	History and archaeology	54.0102	American history (United States)	N	
+0222	History and archaeology	54.0103	European history	N	
+0222	History and archaeology	54.0104	History and philosophy of science and technology	N	
+0222	History and archaeology	54.0105	Public/applied history	N	
+0222	History and archaeology	54.0106	Asian history	N	
+0222	History and archaeology	54.0107	Canadian history	N	
+0222	History and archaeology	54.0108	Military history	N	
+0222	History and archaeology	54.0199	History, other	Y	History, other (except political history)
+0223	Philosophy and ethics	38.0101	Philosophy	N	
+0223	Philosophy and ethics	38.0102	Logic	N	
+0223	Philosophy and ethics	38.0103	Ethics	N	
+0223	Philosophy and ethics	38.0104	Applied and professional ethics	N	
+0223	Philosophy and ethics	38.0199	Philosophy, logic and ethics, other	N	
+0229	Humanities (except languages) not elsewhere classified	38.0001	Philosophy and religious studies, general	N	
+0229	Humanities (except languages) not elsewhere classified	38.9999	Philosophy and religious studies, other	N	
+0230	Languages not further defined	16.0101	Aboriginal and foreign languages and literatures, general	Y	Languages, language studies
+0231	Language acquisition	16.0101	Aboriginal and foreign languages and literatures, general	Y	Foreign languages
+0231	Language acquisition	16.0103	Language interpretation and translation	N	
+0231	Language acquisition	16.0199	Linguistic, comparative and related language studies and services, other	N	
+0231	Language acquisition	16.0201	African languages, literatures and linguistics	N	
+0231	Language acquisition	16.0300	East Asian languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0301	Chinese language and literature	N	
+0231	Language acquisition	16.0302	Japanese language and literature	N	
+0231	Language acquisition	16.0303	Korean language and literature	N	
+0231	Language acquisition	16.0304	Tibetan language and literature	N	
+0231	Language acquisition	16.0399	East Asian languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.0400	Slavic languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0401	Baltic languages, literatures and linguistics	N	
+0231	Language acquisition	16.0402	Russian language and literature	N	
+0231	Language acquisition	16.0404	Albanian language and literature	N	
+0231	Language acquisition	16.0405	Bulgarian language and literature	N	
+0231	Language acquisition	16.0406	Czech language and literature	N	
+0231	Language acquisition	16.0407	Polish language and literature	N	
+0231	Language acquisition	16.0408	Bosnian, Serbian, and Croatian languages and literatures	N	
+0231	Language acquisition	16.0409	Slovak language and literature	N	
+0231	Language acquisition	16.0410	Ukrainian language and literature	N	
+0231	Language acquisition	16.0499	Slavic, Baltic and Albanian languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.0500	Germanic languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0501	German language and literature	N	
+0231	Language acquisition	16.0502	Scandinavian languages, literatures and linguistics	N	
+0231	Language acquisition	16.0503	Danish language and literature	N	
+0231	Language acquisition	16.0504	Dutch/Flemish language and literature	N	
+0231	Language acquisition	16.0505	Norwegian language and literature	N	
+0231	Language acquisition	16.0506	Swedish language and literature	N	
+0231	Language acquisition	16.0599	Germanic languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.0601	Modern Greek language and literature	N	
+0231	Language acquisition	16.0700	South Asian languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0701	Hindi language and literature	N	
+0231	Language acquisition	16.0702	Sanskrit and classical Indian languages, literatures and linguistics	N	
+0231	Language acquisition	16.0704	Bengali language and literature	N	
+0231	Language acquisition	16.0705	Punjabi language and literature	N	
+0231	Language acquisition	16.0706	Tamil language and literature	N	
+0231	Language acquisition	16.0707	Urdu language and literature	N	
+0231	Language acquisition	16.0799	South Asian languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.0801	Iranian languages, literatures and linguistics	N	
+0231	Language acquisition	16.0900	Romance languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0902	Italian language and literature	N	
+0231	Language acquisition	16.0904	Portuguese language and literature	N	
+0231	Language acquisition	16.0905	Spanish language and literature	N	
+0231	Language acquisition	16.0906	Romanian language and literature	N	
+0231	Language acquisition	16.0907	Catalan language and literature	N	
+0231	Language acquisition	16.0908	Hispanic and Latin American languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.0999	Romance languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.1100	Middle/Near Eastern and Semitic languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.1101	Arabic language and literature	N	
+0231	Language acquisition	16.1102	Hebrew language and literature	N	
+0231	Language acquisition	16.1103	Ancient Near Eastern and Biblical languages, literatures and linguistics	N	
+0231	Language acquisition	16.1199	Middle/Near Eastern and Semitic languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.1200	Classics and classical languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.1202	Ancient/classical Greek language and literature	N	
+0231	Language acquisition	16.1203	Latin language and literature	N	
+0231	Language acquisition	16.1299	Classics and classical languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.1301	Celtic languages, literatures and linguistics	N	
+0231	Language acquisition	16.1400	Southeast Asian languages, literatures and linguistics, general	N	
+0231	Language acquisition	16.1401	Australian/Oceanic/Pacific languages, literatures and linguistics	N	
+0231	Language acquisition	16.1402	Indonesian/Malay languages and literatures	N	
+0231	Language acquisition	16.1403	Burmese language and literature	N	
+0231	Language acquisition	16.1404	Philippine/Tagalog language and literature	N	
+0231	Language acquisition	16.1405	Khmer/Cambodian language and literature	N	
+0231	Language acquisition	16.1406	Lao language and literature	N	
+0231	Language acquisition	16.1407	Thai language and literature	N	
+0231	Language acquisition	16.1408	Vietnamese language and literature	N	
+0231	Language acquisition	16.1499	Southeast Asian and Australasian/Pacific languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.1501	Turkish language and literature	N	
+0231	Language acquisition	16.1502	Uralic languages, literatures and linguistics	N	
+0231	Language acquisition	16.1503	Hungarian/Magyar language and literature	N	
+0231	Language acquisition	16.1504	Mongolian language and literature	N	
+0231	Language acquisition	16.1599	Turkic, Uralic-Altaic, Caucasian and Central Asian languages, literatures and linguistics, other	N	
+0231	Language acquisition	16.1601	American Sign Language (ASL)/Langue des signes qu‚b‚coise (LSQ)	N	
+0231	Language acquisition	16.1602	Linguistics of sign language	N	
+0231	Language acquisition	16.1603	Sign language interpretation and translation	N	
+0231	Language acquisition	16.1699	Sign language, other	N	
+0231	Language acquisition	16.1701	English as a second languageCAN	N	
+0231	Language acquisition	16.1702	French as a second languageCAN	N	
+0231	Language acquisition	16.1799	Second language learning, otherCAN	N	
+0231	Language acquisition	16.9999	Aboriginal and foreign languages, literatures and linguistics, other	N	
+0231	Language acquisition	32.0109	Second language learning (not for credit)	N	
+0232	Literature and linguistics	09.0101	Speech communication and rhetoric	N	
+0232	Literature and linguistics	16.0102	Linguistics	N	
+0232	Literature and linguistics	16.0104	Comparative literature	N	
+0232	Literature and linguistics	16.0105	Applied linguistics	N	
+0232	Literature and linguistics	16.1001	Aboriginal languages, literatures and linguistics	N	
+0232	Literature and linguistics	23.0101	English language and literature, general	N	
+0232	Literature and linguistics	23.1301	English writing, general	N	
+0232	Literature and linguistics	23.1302	English creative writing	N	
+0232	Literature and linguistics	23.1303	English professional, technical, business, and scientific writing	N	
+0232	Literature and linguistics	23.1304	English rhetoric and composition	N	
+0232	Literature and linguistics	23.1399	English rhetoric and composition/writing studies, other	N	
+0232	Literature and linguistics	23.1401	English literature, general	N	
+0232	Literature and linguistics	23.1402	American literature	N	
+0232	Literature and linguistics	23.1403	Canadian literature, English	N	
+0232	Literature and linguistics	23.1404	British and Commonwealth literature, English	N	
+0232	Literature and linguistics	23.1405	Children?s and adolescent literature, English	N	
+0232	Literature and linguistics	23.1499	English literature, other	N	
+0232	Literature and linguistics	23.9999	English language and literature/letters, other	N	
+0232	Literature and linguistics	36.0116	Reading (not for credit)	N	
+0232	Literature and linguistics	36.0118	Writing (not for credit)	N	
+0232	Literature and linguistics	55.0101	French language and literature, generalCAN	N	
+0232	Literature and linguistics	55.1301	French writing, generalCAN	N	
+0232	Literature and linguistics	55.1302	French creative writingCAN	N	
+0232	Literature and linguistics	55.1303	French professional, technical, business, and scientific writingCAN	N	
+0232	Literature and linguistics	55.1304	French rhetoric and compositionCAN	N	
+0232	Literature and linguistics	55.1399	French rhetoric and composition/writing studies, otherCAN	N	
+0232	Literature and linguistics	55.1401	French literature, generalCAN	N	
+0232	Literature and linguistics	55.1403	Canadian literature, FrenchCAN	N	
+0232	Literature and linguistics	55.1404	Literature of France and the French community, FrenchCAN	N	
+0232	Literature and linguistics	55.1405	Children's and adolescent literature, FrenchCAN	N	
+0232	Literature and linguistics	55.1499	French literature, otherCAN	N	
+0232	Literature and linguistics	55.9999	French language and literature/letters, otherCAN	N	
+0239	Languages not elsewhere classified	16.0101	Aboriginal and foreign languages and literatures, general	Y	Languages and literature
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.1202	Cultural resource management and policy analysis	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.1299	Historic preservation and conservation, other	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.1301	Medieval and renaissance studies	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.2101	Holocaust and related studies	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.2201	Ancient studies/civilization	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.2202	Classical, ancient Mediterranean and Near Eastern studies and archaeology	N	
+0288	Inter-disciplinary programmes and qualifications involving arts and humanities	30.2901	Maritime studies	N	
+0310	Social and behavioural sciences not further defined	30.1701	Behavioural sciences	N	
+0310	Social and behavioural sciences not further defined	45.0101	Social sciences, general	N	
+0311	Economics	03.0204	Natural resource economics	N	
+0311	Economics	45.0601	Economics, general	N	
+0311	Economics	45.0602	Applied economics	N	
+0311	Economics	45.0603	Econometrics and quantitative economics	N	
+0311	Economics	45.0604	Development economics and international development	N	
+0311	Economics	45.0605	International economics	N	
+0311	Economics	45.0699	Economics, other	N	
+0311	Economics	45.1004	Political economy	N	
+0311	Economics	51.2007	Pharmacoeconomics/pharmaceutical economics (MS, MSc, PhD)	N	
+0312	Political sciences and civics	30.0501	Peace studies and conflict resolution	N	
+0312	Political sciences and civics	33.0101	Citizenship activities, general (not for credit)	N	
+0312	Political sciences and civics	33.0102	American citizenship education (not for credit)	N	
+0312	Political sciences and civics	33.0103	Community awareness (not for credit)	N	
+0312	Political sciences and civics	33.0104	Community involvement (not for credit)	N	
+0312	Political sciences and civics	33.0105	Canadian citizenship education (not for credit)	N	
+0312	Political sciences and civics	33.0199	Citizenship activities, other (not for credit)	N	
+0312	Political sciences and civics	44.0501	Public policy analysis, general	N	
+0312	Political sciences and civics	44.0502	Education policy analysis	N	
+0312	Political sciences and civics	44.0503	Health policy analysis	N	
+0312	Political sciences and civics	44.0504	International public policy analysis	N	
+0312	Political sciences and civics	44.0599	Public policy analysis, other	N	
+0312	Political sciences and civics	45.0901	International relations and affairs	N	
+0312	Political sciences and civics	45.0999	International relations and national security studies, other	N	
+0312	Political sciences and civics	45.1001	Political science and government, general	N	
+0312	Political sciences and civics	45.1002	American government and politics (United States)	N	
+0312	Political sciences and civics	45.1003	Canadian government and politics	N	
+0312	Political sciences and civics	45.1099	Political science and government, other	N	
+0312	Political sciences and civics	45.9999	Social sciences, other	Y	Human rights studies
+0312	Political sciences and civics	52.1004	Labour studies	N	
+0312	Political sciences and civics	54.0199	History, other	Y	Political history
+0313	Psychology	30.2501	Cognitive science	N	
+0313	Psychology	42.0101	Psychology, general	N	
+0313	Psychology	42.2701	Cognitive psychology and psycholinguistics	N	
+0313	Psychology	42.2702	Comparative psychology	N	
+0313	Psychology	42.2703	Developmental and child psychology	N	
+0313	Psychology	42.2704	Experimental psychology	N	
+0313	Psychology	42.2705	Personality psychology	N	
+0313	Psychology	42.2706	Physiological psychology/psychobiology	N	
+0313	Psychology	42.2707	Social psychology	N	
+0313	Psychology	42.2708	Psychometrics and quantitative psychology	N	
+0313	Psychology	42.2709	Psychopharmacology	N	
+0313	Psychology	42.2799	Research and experimental psychology, other	N	
+0313	Psychology	42.2801	Clinical psychology	N	
+0313	Psychology	42.2802	Community psychology	N	
+0313	Psychology	42.2803	Counselling psychology	N	
+0313	Psychology	42.2804	Industrial and organizational psychology	N	
+0313	Psychology	42.2805	School psychology	N	
+0313	Psychology	42.2806	Educational psychology	N	
+0313	Psychology	42.2807	Clinical child psychology	N	
+0313	Psychology	42.2808	Environmental psychology	N	
+0313	Psychology	42.2809	Geropsychology	N	
+0313	Psychology	42.2810	Health/medical psychology	N	
+0313	Psychology	42.2811	Family psychology	N	
+0313	Psychology	42.2812	Forensic psychology	N	
+0313	Psychology	42.2813	Applied psychology	N	
+0313	Psychology	42.2814	Applied behaviour analysis	N	
+0313	Psychology	42.2899	Clinical, counselling and applied psychology, other	N	
+0313	Psychology	42.9999	Psychology, other	N	
+0313	Psychology	51.1507	Psychoanalysis and psychotherapy	N	
+0314	Sociology and cultural studies	05.0101	African studies	N	
+0314	Sociology and cultural studies	05.0102	American/United States studies/civilization	N	
+0314	Sociology and cultural studies	05.0103	Asian studies/civilization	N	
+0314	Sociology and cultural studies	05.0104	East Asian studies	N	
+0314	Sociology and cultural studies	05.0105	Russian, Central European, East European and Eurasian studies	N	
+0314	Sociology and cultural studies	05.0106	European studies/civilization	N	
+0314	Sociology and cultural studies	05.0107	Latin American studies	N	
+0314	Sociology and cultural studies	05.0108	Near and Middle Eastern studies	N	
+0314	Sociology and cultural studies	05.0109	Pacific Area/Pacific Rim studies	N	
+0314	Sociology and cultural studies	05.0110	Russian studies	N	
+0314	Sociology and cultural studies	05.0111	Scandinavian studies	N	
+0314	Sociology and cultural studies	05.0112	South Asian studies	N	
+0314	Sociology and cultural studies	05.0113	Southeast Asian studies	N	
+0314	Sociology and cultural studies	05.0114	Western European studies	N	
+0314	Sociology and cultural studies	05.0115	Canadian studies	N	
+0314	Sociology and cultural studies	05.0116	Balkan studies	N	
+0314	Sociology and cultural studies	05.0117	Baltic studies	N	
+0314	Sociology and cultural studies	05.0118	Slavic studies	N	
+0314	Sociology and cultural studies	05.0119	Caribbean studies	N	
+0314	Sociology and cultural studies	05.0120	Ural-Altaic and Central Asian studies	N	
+0314	Sociology and cultural studies	05.0121	Commonwealth studies	N	
+0314	Sociology and cultural studies	05.0122	Regional studies (U.S., Canadian, foreign)	N	
+0314	Sociology and cultural studies	05.0123	Chinese studies	N	
+0314	Sociology and cultural studies	05.0124	French studies	N	
+0314	Sociology and cultural studies	05.0125	German studies	N	
+0314	Sociology and cultural studies	05.0126	Italian studies	N	
+0314	Sociology and cultural studies	05.0127	Japanese studies	N	
+0314	Sociology and cultural studies	05.0128	Korean studies	N	
+0314	Sociology and cultural studies	05.0129	Polish studies	N	
+0314	Sociology and cultural studies	05.0130	Spanish and Iberian studies	N	
+0314	Sociology and cultural studies	05.0131	Tibetan studies	N	
+0314	Sociology and cultural studies	05.0132	Ukraine studies	N	
+0314	Sociology and cultural studies	05.0133	Irish studies	N	
+0314	Sociology and cultural studies	05.0134	Latin American and Caribbean studies	N	
+0314	Sociology and cultural studies	05.0199	Area studies, other	N	
+0314	Sociology and cultural studies	05.0200	Ethnic studies	N	
+0314	Sociology and cultural studies	05.0201	African American/Black studies	N	
+0314	Sociology and cultural studies	05.0202	Aboriginal studies	N	
+0314	Sociology and cultural studies	05.0203	Hispanic American, Puerto Rican and Mexican American/Chicano studies	N	
+0314	Sociology and cultural studies	05.0206	Asian American studies	N	
+0314	Sociology and cultural studies	05.0207	Women's studies	N	
+0314	Sociology and cultural studies	05.0208	Gay/lesbian studies	N	
+0314	Sociology and cultural studies	05.0210	Disability studies	N	
+0314	Sociology and cultural studies	05.0211	Deaf studies	N	
+0314	Sociology and cultural studies	05.0299	Ethnic, cultural minority, gender, and group studies, other	N	
+0314	Sociology and cultural studies	05.9999	Area, ethnic, cultural, gender, and group studies, other	N	
+0314	Sociology and cultural studies	30.2601	Cultural studies/critical theory and analysis	N	
+0314	Sociology and cultural studies	45.0201	Anthropology, general	N	
+0314	Sociology and cultural studies	45.0202	Physical and biological anthropology	N	
+0314	Sociology and cultural studies	45.0203	Medical anthropology	N	
+0314	Sociology and cultural studies	45.0204	Cultural anthropology	N	
+0314	Sociology and cultural studies	45.0299	Anthropology, other	N	
+0314	Sociology and cultural studies	45.0401	Criminology	N	
+0314	Sociology and cultural studies	45.0501	Demography and population studies	N	
+0314	Sociology and cultural studies	45.0701	Geography	Y	Cultural geography, human geography, social geography
+0314	Sociology and cultural studies	45.0799	Geography and cartography, other	N	
+0314	Sociology and cultural studies	45.1101	Sociology	N	
+0314	Sociology and cultural studies	45.1301	Sociology and anthropology	N	
+0314	Sociology and cultural studies	45.1401	Rural sociology	N	
+0319	Social and behavioural sciences not elsewhere classified	19.0701	Human development and family studies, general	Y	Human development and family studies, general (except child and youth care)
+0319	Social and behavioural sciences not elsewhere classified	19.0704	Family systems	N	
+0319	Social and behavioural sciences not elsewhere classified	19.0799	Human development, family studies and related services, other	Y	Other human development and  family studies (except related services)
+0319	Social and behavioural sciences not elsewhere classified	30.1501	Science, technology and society	N	
+0319	Social and behavioural sciences not elsewhere classified	31.0508	Sports studies	N	
+0319	Social and behavioural sciences not elsewhere classified	45.0102	Research methodology and quantitative methods	N	
+0319	Social and behavioural sciences not elsewhere classified	45.9999	Social sciences, other	Y	Social sciences, other (except human rights studies)
+0321	Journalism and reporting	01.0802	Agricultural communication/journalism	N	
+0321	Journalism and reporting	09.0100	Communication, general	N	
+0321	Journalism and reporting	09.0102	Mass communication/media studies	N	
+0321	Journalism and reporting	09.0199	Communication and media studies, other	N	
+0321	Journalism and reporting	09.0401	Journalism, general	N	
+0321	Journalism and reporting	09.0402	Broadcast journalism	N	
+0321	Journalism and reporting	09.0404	Photojournalism	N	
+0321	Journalism and reporting	09.0499	Journalism, other	N	
+0321	Journalism and reporting	09.0900	Public relations, advertising and applied communication, general	Y	Applied communication, public communications
+0321	Journalism and reporting	09.0901	Organizational communication, general	N	
+0321	Journalism and reporting	09.0904	Political communication	N	
+0321	Journalism and reporting	09.0905	Health communication	N	
+0321	Journalism and reporting	09.0906	Sports communication	N	
+0321	Journalism and reporting	09.0907	International and intercultural communication	N	
+0321	Journalism and reporting	09.0908	Technical and scientific communication	N	
+0321	Journalism and reporting	09.0999	Public relations, advertising and applied communication, other	N	
+0321	Journalism and reporting	09.9999	Communication, journalism and related programs, other	N	
+0321	Journalism and reporting	19.0202	Family and consumer sciences/human sciences communication	N	
+0321	Journalism and reporting	52.0501	Business/corporate communications	N	
+0322	Library, information and archival studies	11.0401	Information science/studies	N	
+0322	Library, information and archival studies	13.1334	School librarian/school library media specialist	N	
+0322	Library, information and archival studies	25.0101	Library and information science	N	
+0322	Library, information and archival studies	25.0102	Children and youth library services	N	
+0322	Library, information and archival studies	25.0103	Archives/archival administration	N	
+0322	Library, information and archival studies	25.0199	Library science and administration, other	N	
+0322	Library, information and archival studies	25.0301	Library and archives assisting	N	
+0322	Library, information and archival studies	25.9999	Library science, other	N	
+0322	Library, information and archival studies	30.1401	Museology/museum studies	N	
+0322	Library, information and archival studies	51.0706	Health information/medical records administration/administrator	N	
+0322	Library, information and archival studies	51.0707	Health information/medical records technology/technician	N	
+0388	Inter-disciplinary programmes and qualifications involving social sciences, journalism and information	30.2001	International/global studies	N	
+0388	Inter-disciplinary programmes and qualifications involving social sciences, journalism and information	30.2301	Intercultural/multicultural and diversity studies	N	
+0388	Inter-disciplinary programmes and qualifications involving social sciences, journalism and information	30.3101	Human computer interaction	N	
+0388	Inter-disciplinary programmes and qualifications involving social sciences, journalism and information	30.3301	Sustainability studies	N	
+0410	Business and administration not further defined	52.0101	Business/commerce, general	N	
+0411	Accounting and taxation	51.0714	Medical insurance specialist/medical biller	N	
+0411	Accounting and taxation	52.0301	Accounting	N	
+0411	Accounting and taxation	52.0302	Accounting technology/technician and bookkeeping	N	
+0411	Accounting and taxation	52.0303	Auditing	N	
+0411	Accounting and taxation	52.1601	Taxation	N	
+0412	Finance, banking and insurance	51.0715	Health/medical claims examiner	N	
+0412	Finance, banking and insurance	52.0801	Finance, general	N	
+0412	Finance, banking and insurance	52.0803	Banking and financial support services	N	
+0412	Finance, banking and insurance	52.0804	Financial planning and services	N	
+0412	Finance, banking and insurance	52.0806	International finance	N	
+0412	Finance, banking and insurance	52.0807	Investments and securities	N	
+0412	Finance, banking and insurance	52.0808	Public finance	N	
+0412	Finance, banking and insurance	52.0809	Credit management	N	
+0412	Finance, banking and insurance	52.0899	Finance and financial management services, other	N	
+0412	Finance, banking and insurance	52.1099	Human resources management and services, other	Y	Payroll clerk, payroll management
+0412	Finance, banking and insurance	52.1701	Insurance	N	
+0413	Management and administration	12.0412	Salon/beauty salon management/manager	N	
+0413	Management and administration	13.0401	Educational leadership and administration, general	N	
+0413	Management and administration	13.0402	Administration of special education	N	
+0413	Management and administration	13.0403	Adult and continuing education administration	N	
+0413	Management and administration	13.0404	Educational, instructional and curriculum supervision	N	
+0413	Management and administration	13.0406	Higher education/higher education administration	N	
+0413	Management and administration	13.0407	Community college and general and vocational college (CEGEP) administration	N	
+0413	Management and administration	13.0408	Elementary and middle school administration/principalship	N	
+0413	Management and administration	13.0409	Secondary school administration/principalship	N	
+0413	Management and administration	13.0410	Urban education and leadership	N	
+0413	Management and administration	13.0411	Superintendency and educational system administration	N	
+0413	Management and administration	13.0499	Educational administration and supervision, other	N	
+0413	Management and administration	19.0505	Foodservice systems administration/management	N	
+0413	Management and administration	44.0401	Public administration	N	
+0413	Management and administration	50.1001	Arts, entertainment, and media management, general	N	
+0413	Management and administration	50.1002	Fine and studio arts management	N	
+0413	Management and administration	50.1003	Music management	Y	Music management (except music merchandising)
+0413	Management and administration	50.1004	Theatre/theatre arts management	N	
+0413	Management and administration	50.1099	Arts, entertainment, and media management, other	N	
+0413	Management and administration	51.0701	Health/health care administration/management	N	
+0413	Management and administration	51.0702	Hospital and health care facilities administration/management	N	
+0413	Management and administration	51.0704	Health unit manager/ward supervisor	N	
+0413	Management and administration	51.0705	Medical office management/administration	N	
+0413	Management and administration	51.0711	Medical/health management and clinical assistant/specialist	N	
+0413	Management and administration	51.0717	Medical staff services technology/technician	N	
+0413	Management and administration	51.0718	Long term care administration/management	N	
+0413	Management and administration	51.0719	Clinical research coordinator	N	
+0413	Management and administration	51.2002	Pharmacy administration and pharmacy policy and regulatory affairs (MS, MSc, PhD)	N	
+0413	Management and administration	51.2009	Industrial and physical pharmacy and cosmetic sciences (MS, MSc, PhD)	N	
+0413	Management and administration	51.2211	Health services administration	N	
+0413	Management and administration	51.3802	Nursing administration (MSN, MS, MScN, MSc, PhD)	N	
+0413	Management and administration	52.0201	Business administration and management, general	N	
+0413	Management and administration	52.0203	Logistics, materials, and supply chain management	N	
+0413	Management and administration	52.0204	Office management and supervision	N	
+0413	Management and administration	52.0205	Operations management and supervision	N	
+0413	Management and administration	52.0206	Non-profit/public/organizational management	Y	Non-profit/public/organizational management (except fundraising, fundraising management)
+0413	Management and administration	52.0207	Customer service management	N	
+0413	Management and administration	52.0208	E-commerce/electronic commerce	Y	E-commerce management
+0413	Management and administration	52.0210	Research and development management	N	
+0413	Management and administration	52.0211	Project management	N	
+0413	Management and administration	52.0212	Retail management	N	
+0413	Management and administration	52.0213	Organizational leadership	N	
+0413	Management and administration	52.0299	Business administration, management and operations, other	N	
+0413	Management and administration	52.0701	Entrepreneurship/entrepreneurial studies	N	
+0413	Management and administration	52.0702	Franchising and franchise operations	N	
+0413	Management and administration	52.0703	Small business administration/management	N	
+0413	Management and administration	52.0799	Entrepreneurial and small business operations, other	N	
+0413	Management and administration	52.1001	Human resources management/personnel administration, general	N	
+0413	Management and administration	52.1002	Labour and industrial relations	N	
+0413	Management and administration	52.1003	Organizational behaviour studies	N	
+0413	Management and administration	52.1005	Human resources development	N	
+0413	Management and administration	52.1099	Human resources management and services, other	Y	Human resources management and services, other (except payroll clerk, payroll management)
+0413	Management and administration	52.1101	International business/trade/commerce	N	
+0414	Marketing and advertising	09.0900	Public relations, advertising and applied communication, general	Y	Public relations and advertising
+0414	Marketing and advertising	09.0902	Public relations/image management	N	
+0414	Marketing and advertising	09.0903	Advertising	N	
+0414	Marketing and advertising	19.0201	Business, family and consumer sciences/human sciences	Y	Consumer behaviour, consumer studies, consumer science
+0414	Marketing and advertising	19.0203	Consumer merchandising/retailing management	N	
+0414	Marketing and advertising	19.0905	Apparel and textile marketing management	N	
+0414	Marketing and advertising	50.1003	Music management	Y	Music merchandising
+0414	Marketing and advertising	51.2011	Pharmaceutical marketing and management	N	
+0414	Marketing and advertising	52.1401	Marketing/marketing management, general	N	
+0414	Marketing and advertising	52.1402	Marketing research	N	
+0414	Marketing and advertising	52.1403	International marketing	N	
+0414	Marketing and advertising	52.1499	Marketing, other	N	
+0414	Marketing and advertising	52.1801	Sales, distribution and marketing operations, general	Y	Retail marketing
+0414	Marketing and advertising	52.1802	Merchandising and buying operations	Y	Merchandising, retail merchandising
+0414	Marketing and advertising	52.1902	Fashion merchandising	N	
+0414	Marketing and advertising	52.1904	Apparel and accessories marketing operations	Y	Apparel and accessories marketing
+0414	Marketing and advertising	52.1907	Vehicle and vehicle parts and accessories marketing operations	Y	Vehicle and vehicle parts and accessories marketing
+0414	Marketing and advertising	52.1908	Business and personal/financial services marketing operations	N	
+0414	Marketing and advertising	52.1909	Special products marketing operations	N	
+0414	Marketing and advertising	52.1910	Hospitality and recreation marketing operations	N	
+0414	Marketing and advertising	52.1999	Specialized sales, merchandising and marketing operations, other	N	
+0415	Secretarial and office work	01.0106	Agricultural business technology	N	
+0415	Secretarial and office work	11.0601	Data entry/microcomputer applications, general	Y	Data entry, keypunch
+0415	Secretarial and office work	22.0301	Legal administrative assistant/secretary	N	
+0415	Secretarial and office work	22.0303	Court reporting/court reporter	N	
+0415	Secretarial and office work	51.0703	Health unit coordinator/ward clerk	N	
+0415	Secretarial and office work	51.0708	Medical transcription/transcriptionist	N	
+0415	Secretarial and office work	51.0710	Medical office assistant/specialist	N	
+0415	Secretarial and office work	51.0712	Medical reception/receptionist	N	
+0415	Secretarial and office work	51.0713	Medical insurance coding specialist/coder	N	
+0415	Secretarial and office work	51.0716	Medical administrative/executive assistant and medical secretary	N	
+0415	Secretarial and office work	52.0401	Administrative assistant and secretarial science, general	N	
+0415	Secretarial and office work	52.0402	Executive assistant/executive secretary	N	
+0415	Secretarial and office work	52.0406	Receptionist	N	
+0415	Secretarial and office work	52.0407	Business/office automation/technology/data entry	N	
+0415	Secretarial and office work	52.0408	General office occupations and clerical services	N	
+0415	Secretarial and office work	52.0499	Business operations support and assistant services, other	Y	Other administrative support services
+0416	Wholesale and retail sales	01.0105	Agricultural/farm supplies retailing and wholesaling	N	
+0416	Wholesale and retail sales	01.0608	Floriculture/floristry operations and management	Y	Floristry operations and management, retail floristry
+0416	Wholesale and retail sales	19.0403	Consumer services and advocacy	Y	Consumer services
+0416	Wholesale and retail sales	19.0906	Fashion and fabric consultant	N	
+0416	Wholesale and retail sales	47.0409	Parts and warehousing operations and maintenance technology/technician	N	
+0416	Wholesale and retail sales	52.0202	Purchasing, procurement/acquisitions and contracts management	N	
+0416	Wholesale and retail sales	52.0208	E-commerce/electronic commerce	Y	E-commerce (except e-commerce management)
+0416	Wholesale and retail sales	52.0409	Parts, warehousing and inventory management operations	N	
+0416	Wholesale and retail sales	52.0411	Customer service support/call centre/teleservice operation	Y	Customer service by telephone, call centre service representative
+0416	Wholesale and retail sales	52.0499	Business operations support and assistant services, other	Y	Other customer support services
+0416	Wholesale and retail sales	52.1501	Real estate	N	
+0416	Wholesale and retail sales	52.1802	Merchandising and buying operations	Y	Buyer, retail buyer
+0416	Wholesale and retail sales	52.1803	Retailing and retail operations	N	
+0416	Wholesale and retail sales	52.1804	Selling skills and sales operations	N	
+0416	Wholesale and retail sales	52.1901	Auctioneering	N	
+0416	Wholesale and retail sales	52.1904	Apparel and accessories marketing operations	Y	Fashion retail, fashion sales representative
+0416	Wholesale and retail sales	52.1907	Vehicle and vehicle parts and accessories marketing operations	Y	Vehicle and vehicle parts and accessories sales
+0417	Work skills	32.0111	Workforce development and training (not for credit)	N	
+0417	Work skills	52.0411	Customer service support/call centre/teleservice operation	Y	Customer service, customer service representative
+0419	Business and administration not elsewhere classified	19.0299	Family and consumer sciences/human sciences business services, other	N	
+0419	Business and administration not elsewhere classified	19.0403	Consumer services and advocacy	Y	Consumer advocacy, consumer protection
+0419	Business and administration not elsewhere classified	19.0604	Facilities planning and management	N	
+0419	Business and administration not elsewhere classified	51.0799	Health and medical administrative services, other	N	
+0419	Business and administration not elsewhere classified	52.0206	Non-profit/public/organizational management	Y	Fundraising, fundraising management
+0419	Business and administration not elsewhere classified	52.0304	Accounting and finance	N	
+0419	Business and administration not elsewhere classified	52.0305	Accounting and business/management	N	
+0419	Business and administration not elsewhere classified	52.0399	Accounting and related services, other	N	
+0419	Business and administration not elsewhere classified	52.1801	Sales, distribution and marketing operations, general	Y	Combined sales and marketing, combined sales, distribution and marketing
+0419	Business and administration not elsewhere classified	52.1802	Merchandising and buying operations	Y	Combined merchandising and buying operations
+0419	Business and administration not elsewhere classified	52.1899	General sales, merchandising and related marketing operations, other	N	
+0419	Business and administration not elsewhere classified	52.9999	Business, management, marketing and related support services, other	N	
+0421	Law	22.0000	Legal studies, general	N	
+0421	Law	22.0001	Pre-law studies	N	
+0421	Law	22.0101	Law (LLB, JD, BCL)	N	
+0421	Law	22.0201	Advanced legal research/studies, general (LLM, MCL, MLI, MSL, LLD, JSD/SJD)	N	
+0421	Law	22.0202	Programs for foreign lawyers (LLM, MCL)	N	
+0421	Law	22.0203	American/US law/legal studies/jurisprudence (LLM, MCJ, LLD, JSD/SJD)	N	
+0421	Law	22.0204	Canadian law/legal studies/jurisprudence (LLM, MCJ, LLD, JSD/SJD)	N	
+0421	Law	22.0205	Banking, corporate, finance and securities law (LLM, LLD, JSD/SJD)	N	
+0421	Law	22.0206	Comparative law (LLM, MCJ, LLD, JSD/SJD)	N	
+0421	Law	22.0207	Energy, environment and natural resources law (LLM, MS, MSc, LLD, JSD/SJD)	N	
+0421	Law	22.0208	Health law (LLM, MJ, LLD, JSD/SJD)	N	
+0421	Law	22.0209	International law and legal studies (LLM, LLD, JSD/SJD)	N	
+0421	Law	22.0210	International business, trade and tax law (LLM, LLD, JSD/SJD)	N	
+0421	Law	22.0211	Tax law/taxation (LLM, LLD, JSD/SJD)	N	
+0421	Law	22.0212	Intellectual property law (LLM, LLD, JSD/SJD)	N	
+0421	Law	22.0299	Legal research and advanced professional studies (post-LLB/JD), other	N	
+0421	Law	22.0302	Legal assistant/paralegal	N	
+0421	Law	22.0399	Legal support services, other	Y	Legal support services, other (except bailiff, sheriff)
+0421	Law	22.9999	Legal professions and studies, other	N	
+0421	Law	30.2801	Dispute resolution	N	
+0421	Law	43.0104	Criminal justice/safety studies	N	
+0488	Inter-disciplinary programmes and qualifications involving business, administration and law	52.0601	Business/managerial economics	N	
+0500	Natural sciences, mathematics and statistics not further defined	30.0101	Biological and physical sciences	Y	General science
+0500	Natural sciences, mathematics and statistics not further defined	41.0000	Science technologies/technicians, general	N	
+0511	Biology	26.0101	Biology/biological sciences, general	N	
+0511	Biology	26.0204	Molecular biology	N	
+0511	Biology	26.0207	Structural biology	N	
+0511	Biology	26.0208	Photobiology	N	
+0511	Biology	26.0209	Radiation biology/radiobiology	N	
+0511	Biology	26.0301	Botany/plant biology, general	N	
+0511	Biology	26.0305	Plant pathology/phytopathology	N	
+0511	Biology	26.0307	Plant physiology	N	
+0511	Biology	26.0308	Plant molecular biology	N	
+0511	Biology	26.0399	Botany/plant biology, other	N	
+0511	Biology	26.0401	Cell/cellular biology and histology	Y	Cell biology, cellular biology
+0511	Biology	26.0404	Developmental biology and embryology	N	
+0511	Biology	26.0406	Cell/cellular and molecular biology	N	
+0511	Biology	26.0499	Cell/cellular biology and anatomical sciences, other	N	
+0511	Biology	26.0502	Microbiology, general	N	
+0511	Biology	26.0505	Parasitology	N	
+0511	Biology	26.0506	Mycology	N	
+0511	Biology	26.0599	Microbiological sciences and immunology, other	N	
+0511	Biology	26.0701	Zoology/animal biology, general	N	
+0511	Biology	26.0702	Entomology	N	
+0511	Biology	26.0707	Animal physiology	N	
+0511	Biology	26.0708	Animal behaviour and ethology	N	
+0511	Biology	26.0709	Wildlife biology	N	
+0511	Biology	26.0799	Zoology/animal biology, other	N	
+0511	Biology	26.0801	Genetics, general	N	
+0511	Biology	26.0802	Molecular genetics	N	
+0511	Biology	26.0803	Microbial and eukaryotic genetics	N	
+0511	Biology	26.0804	Animal genetics	N	
+0511	Biology	26.0805	Plant genetics	N	
+0511	Biology	26.0806	Human/medical genetics	N	
+0511	Biology	26.0807	Genome sciences/genomics	N	
+0511	Biology	26.0899	Genetics, other	N	
+0511	Biology	26.0902	Molecular physiology	N	
+0511	Biology	26.0903	Cell physiology	N	
+0511	Biology	26.0904	Endocrinology	N	
+0511	Biology	26.0905	Reproductive biology	N	
+0511	Biology	26.0907	Cardiovascular science	N	
+0511	Biology	26.1101	Biometry/biometrics	N	
+0511	Biology	26.1303	Evolutionary biology	N	
+0511	Biology	26.1304	Aquatic biology/limnology	Y	Limnology
+0511	Biology	26.1308	Systematic biology/biological systematics	N	
+0511	Biology	41.0101	Biology technician/biotechnology laboratory technician	Y	Biology technician, biology laboratory technician, biology laboratory technology
+0512	Biochemistry	14.0501	Bioengineering and biomedical engineering	Y	Genetic engineering, neural engineering, cell and tissue engineering
+0512	Biochemistry	26.0202	Biochemistry	N	
+0512	Biochemistry	26.0205	Molecular biochemistry	N	
+0512	Biochemistry	26.0210	Biochemistry and molecular biology	N	
+0512	Biochemistry	26.0504	Virology	N	
+0512	Biochemistry	26.1001	Pharmacology	N	
+0512	Biochemistry	26.1002	Molecular pharmacology	N	
+0512	Biochemistry	26.1003	Neuropharmacology	N	
+0512	Biochemistry	26.1004	Toxicology	N	
+0512	Biochemistry	26.1005	Molecular toxicology	N	
+0512	Biochemistry	26.1007	Pharmacology and toxicology, integrated	N	
+0512	Biochemistry	26.1099	Pharmacology and toxicology, other	N	
+0512	Biochemistry	26.1201	Biotechnology	N	
+0512	Biochemistry	41.0101	Biology technician/biotechnology laboratory technician	Y	Biotechnology technician, biotechnology laboratory technician, biotechnology technologist
+0512	Biochemistry	43.0106	Forensic science and technology	N	
+0512	Biochemistry	51.2003	Pharmaceutics and drug design (MS, MSc, PhD)	N	
+0512	Biochemistry	51.2004	Medicinal and pharmaceutical chemistry (MS, MSc, PhD)	N	
+0512	Biochemistry	51.2005	Natural products chemistry and pharmacognosy (MS, MSc, PhD)	N	
+0512	Biochemistry	51.2006	Clinical and industrial drug development (MS, MSc, PhD)	N	
+0512	Biochemistry	51.2010	Pharmaceutical sciences	N	
+0512	Biochemistry	51.2099	Pharmacy, pharmaceutical sciences and administration, other	Y	Other pharmaceutical sciences
+0519	Biological and related sciences not elsewhere classified	26.0102	Biomedical sciences, general	N	
+0519	Biological and related sciences not elsewhere classified	26.0299	Biochemistry/biophysics and molecular biology, other	N	
+0519	Biological and related sciences not elsewhere classified	26.1102	Biostatistics	N	
+0519	Biological and related sciences not elsewhere classified	26.1103	Bioinformatics	N	
+0519	Biological and related sciences not elsewhere classified	26.1104	Computational biology	N	
+0519	Biological and related sciences not elsewhere classified	26.1199	Biomathematics, bioinformatics, and computational biology, other	N	
+0519	Biological and related sciences not elsewhere classified	26.1401	Molecular medicine	N	
+0519	Biological and related sciences not elsewhere classified	26.1502	Neuroanatomy	N	
+0519	Biological and related sciences not elsewhere classified	26.1503	Neurobiology and anatomy	N	
+0519	Biological and related sciences not elsewhere classified	26.1599	Neurobiology and neurosciences, other	Y	Other neurobiology and neurosciences (except interdisciplinary)
+0519	Biological and related sciences not elsewhere classified	26.9999	Biological and biomedical sciences, other	N	
+0519	Biological and related sciences not elsewhere classified	30.1901	Nutrition sciences	N	
+0520	Environment not further defined	03.0103	Environmental studies	N	
+0521	Environmental sciences	03.0104	Environmental science	N	
+0521	Environmental sciences	15.0507	Environmental engineering technology/environmental technology	Y	Environmental science technology
+0521	Environmental sciences	26.1006	Environmental toxicology	N	
+0521	Environmental sciences	26.1301	Ecology	N	
+0521	Environmental sciences	26.1302	Marine biology and biological oceanography	N	
+0521	Environmental sciences	26.1304	Aquatic biology/limnology	Y	Aquatic biology
+0521	Environmental sciences	26.1305	Environmental biology	N	
+0521	Environmental sciences	26.1306	Population biology	N	
+0521	Environmental sciences	26.1307	Conservation biology	N	
+0521	Environmental sciences	26.1310	Ecology and evolutionary biology	N	
+0521	Environmental sciences	26.1399	Ecology, evolution, systematics and population biology, other	N	
+0522	Natural environments and wildlife	01.1299	Soil sciences, other	Y	soil conservation
+0522	Natural environments and wildlife	03.0101	Natural resources/conservation, general	N	
+0522	Natural environments and wildlife	03.0199	Natural resources conservation and research, other	N	
+0522	Natural environments and wildlife	03.0201	Natural resources management and policy, general	N	
+0522	Natural environments and wildlife	03.0205	Water, wetlands and marine resources management	N	
+0522	Natural environments and wildlife	03.0206	Land use planning and management/development	N	
+0522	Natural environments and wildlife	03.0208	Natural resources law enforcement and protective services	Y	Natural resources law enforcement and protective services (except forest ranger, forestry law enforcement)
+0522	Natural environments and wildlife	03.0299	Natural resources management and policy, other	N	
+0522	Natural environments and wildlife	03.0601	Wildlife, fish and wildlands science and management	N	
+0522	Natural environments and wildlife	03.9999	Natural resources and conservation, other	Y	Natural resources and conservation, other (except hunting, trapping)
+0522	Natural environments and wildlife	36.0106	Nature appreciation (not for credit)	N	
+0530	Physical sciences not further defined	40.0101	Physical sciences, general	N	
+0530	Physical sciences not further defined	41.0399	Physical science technologies/technicians, other	Y	Physical science technician
+0531	Chemistry	40.0501	Chemistry, general	N	
+0531	Chemistry	40.0502	Analytical chemistry	N	
+0531	Chemistry	40.0503	Inorganic chemistry	N	
+0531	Chemistry	40.0504	Organic chemistry	N	
+0531	Chemistry	40.0506	Physical chemistry	N	
+0531	Chemistry	40.0507	Polymer chemistry	N	
+0531	Chemistry	40.0509	Environmental chemistry	N	
+0531	Chemistry	40.0510	Forensic chemistry	N	
+0531	Chemistry	40.0511	Theoretical chemistry	N	
+0531	Chemistry	40.0599	Chemistry, other	N	
+0531	Chemistry	40.0606	Geochemistry and petrology	Y	Petrology
+0531	Chemistry	40.1001	Materials science	N	
+0531	Chemistry	40.1002	Materials chemistry	N	
+0531	Chemistry	40.1099	Materials sciences, other	N	
+0531	Chemistry	41.0301	Chemical technology/technician	N	
+0532	Earth sciences	30.3201	Marine sciences	N	
+0532	Earth sciences	40.0401	Atmospheric sciences and meteorology, general	N	
+0532	Earth sciences	40.0402	Atmospheric chemistry and climatology	N	
+0532	Earth sciences	40.0403	Atmospheric physics and dynamics	N	
+0532	Earth sciences	40.0404	Meteorology	N	
+0532	Earth sciences	40.0499	Atmospheric sciences and meteorology, other	N	
+0532	Earth sciences	40.0601	Geology/Earth science, general	N	
+0532	Earth sciences	40.0602	Geochemistry	N	
+0532	Earth sciences	40.0603	Geophysics and seismology	N	
+0532	Earth sciences	40.0604	Paleontology	N	
+0532	Earth sciences	40.0605	Hydrology and water resources science	N	
+0532	Earth sciences	40.0606	Geochemistry and petrology	Y	Geochemistry
+0532	Earth sciences	40.0607	Oceanography, chemical and physical	N	
+0532	Earth sciences	40.0699	Geological and Earth sciences/geosciences, other	N	
+0532	Earth sciences	41.0399	Physical science technologies/technicians, other	Y	Meteorological technician, weather observation
+0532	Earth sciences	45.0701	Geography	Y	Physical geography, environmental geography
+0532	Earth sciences	45.0702	Geographic information science and cartography	Y	Geographic information systems, geomatics, remote sensing, photogrammetry
+0533	Physics	26.0203	Biophysics	N	
+0533	Physics	26.0206	Molecular biophysics	N	
+0533	Physics	40.0201	Astronomy	N	
+0533	Physics	40.0202	Astrophysics	N	
+0533	Physics	40.0203	Planetary astronomy and science	N	
+0533	Physics	40.0299	Astronomy and astrophysics, other	N	
+0533	Physics	40.0508	Chemical physics	N	
+0533	Physics	40.0801	Physics, general	N	
+0533	Physics	40.0802	Atomic/molecular physics	N	
+0533	Physics	40.0804	Elementary particle physics	N	
+0533	Physics	40.0805	Plasma and high-temperature physics	N	
+0533	Physics	40.0806	Nuclear physics	N	
+0533	Physics	40.0807	Optics/optical sciences	N	
+0533	Physics	40.0808	Condensed matter and materials physics	N	
+0533	Physics	40.0809	Acoustics	N	
+0533	Physics	40.0810	Theoretical and mathematical physics	N	
+0533	Physics	40.0899	Physics, other	N	
+0533	Physics	41.0204	Industrial radiologic technology/technician	N	
+0533	Physics	41.0205	Nuclear/nuclear power technology/technician	Y	Nuclear technician, nuclear technology
+0533	Physics	41.0299	Nuclear and industrial radiologic technologies/technicians, other	N	
+0533	Physics	41.0399	Physical science technologies/technicians, other	Y	Physics technology
+0533	Physics	51.2205	Health/medical physics	N	
+0539	Physical sciences not elsewhere classified	40.9999	Physical sciences, other	N	
+0539	Physical sciences not elsewhere classified	41.0399	Physical science technologies/technicians, other	Y	Other physical science technologies/technicians
+0540	Mathematics and statistics not further defined	27.0503	Mathematics and statistics	N	
+0540	Mathematics and statistics not further defined	27.9999	Mathematics and statistics, other	N	
+0541	Mathematics	14.3701	Operations research	N	
+0541	Mathematics	27.0101	Mathematics, general	N	
+0541	Mathematics	27.0102	Algebra and number theory	N	
+0541	Mathematics	27.0103	Analysis and functional analysis	N	
+0541	Mathematics	27.0104	Geometry/geometric analysis	N	
+0541	Mathematics	27.0105	Topology and foundations	N	
+0541	Mathematics	27.0199	Mathematics, other	N	
+0541	Mathematics	27.0301	Applied mathematics, general	N	
+0541	Mathematics	27.0303	Computational mathematics	N	
+0541	Mathematics	27.0304	Computational and applied mathematics	N	
+0541	Mathematics	27.0305	Financial mathematics	N	
+0541	Mathematics	27.0306	Mathematical biology	N	
+0541	Mathematics	27.0399	Applied mathematics, other	N	
+0542	statistics	27.0501	Statistics, general	N	
+0542	statistics	27.0502	Mathematical statistics and probability	N	
+0542	statistics	27.0599	Statistics, other	N	
+0542	Statistics	52.1301	Management science	N	
+0542	Statistics	52.1302	Business statistics	N	
+0542	Statistics	52.1304	Actuarial science	N	
+0542	Statistics	52.1399	Management sciences and quantitative methods, other	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	26.0401	Cell/cellular biology and histology	Y	Cell biology and histology
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	26.0407	Cell biology and anatomy	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	26.1501	Neuroscience	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	26.1504	Neurobiology and behaviour	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	26.1599	Neurobiology and neurosciences, other	Y	Other interdisciplinary neurobiology and neurosciences
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	30.0601	Systems science and theory	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	30.0801	Mathematics and computer science	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	30.1001	Biopsychology	N	
+0588	Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics	30.2701	Human biology	N	
+0599	Natural sciences, mathematics and statistics not elsewhere classified	30.0101	Biological and physical sciences	Y	Combined biological and physical sciences (except general science)
+0599	Natural sciences, mathematics and statistics not elsewhere classified	30.1801	Natural sciences	N	
+0599	Natural sciences, mathematics and statistics not elsewhere classified	41.9999	Science technologies/technicians, other	N	
+0610	Information and Communication Technologies (ICTs) not further defined	11.0101	Computer and information sciences, general	N	
+0610	Information and Communication Technologies (ICTs) not further defined	11.0103	Information technology	N	
+0610	Information and Communication Technologies (ICTs) not further defined	11.0199	Computer and information sciences and support services, general, other	N	
+0611	Computer use	11.0301	Data processing and data processing technology/technician	Y	Data processing, electronic data processing
+0611	Computer use	11.0601	Data entry/microcomputer applications, general	Y	Microcomputer applications
+0611	Computer use	11.0602	Word processing	N	
+0611	Computer use	11.0699	Data entry/microcomputer applications, other	N	
+0611	Computer use	32.0110	Basic computer skills (not for credit)	N	
+0612	Database and network design and administration	11.0801	Web page, digital/multimedia and information resources design	N	
+0612	Database and network design and administration	11.0802	Data modelling/warehousing and database administration	N	
+0612	Database and network design and administration	11.0899	Computer software and media applications, other	N	
+0612	Database and network design and administration	11.1001	Network and system administration/administrator	N	
+0612	Database and network design and administration	11.1002	System, networking and LAN/WAN management/manager	N	
+0612	Database and network design and administration	11.1003	Computer and information systems security/information assurance	N	
+0612	Database and network design and administration	11.1004	Web/multimedia management and webmaster	N	
+0612	Database and network design and administration	11.1006	Computer support specialist	N	
+0612	Database and network design and administration	51.0709	Medical office computer specialist/assistant	N	
+0613	Software and applications development and analysis	11.0104	Informatics	N	
+0613	Software and applications development and analysis	11.0201	Computer programming/programmer, general	N	
+0613	Software and applications development and analysis	11.0202	Computer programming, specific applications	N	
+0613	Software and applications development and analysis	11.0203	Computer programming, vendor/product certification	N	
+0613	Software and applications development and analysis	11.0299	Computer programming, other	N	
+0613	Software and applications development and analysis	11.0501	Computer systems analysis/analyst	N	
+0613	Software and applications development and analysis	11.0701	Computer science	N	
+0613	Software and applications development and analysis	14.0901	Computer engineering, general	Y	Computer systems engineering
+0613	Software and applications development and analysis	14.0903	Computer software engineering	N	
+0613	Software and applications development and analysis	15.1204	Computer software technology/technician	N	
+0613	Software and applications development and analysis	50.0411	Game and interactive media design	Y	Computer game programming, game programming
+0613	Software and applications development and analysis	51.2706	Medical informatics	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.0102	Artificial intelligence	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.0804	Modeling, virtual environments and simulation	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.0901	Computer systems networking and telecommunications	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.1005	Information technology project management	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.1099	Computer/information technology administration and management, other	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	11.9999	Computer and information sciences and support services, other	N	
+0619	Information and Communication Technologies (ICTs) not elsewhere classified	36.0113	Computer games and programming skills (not for credit)	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies	30.1601	Accounting and computer science	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies (ICTs)	30.3001	Computational science	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies (ICTs)	52.1201	Management information systems, general	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies (ICTs)	52.1206	Information resources management	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies (ICTs)	52.1207	Knowledge management	N	
+0688	Inter-disciplinary programmes and qualifications involving Information and Communication Technologies (ICTs)	52.1299	Management information systems and services, other	N	
+0700	Engineering, manufacturing and construction not further defined	21.0101	Pre-technology education/pre-industrial arts programsCAN	N	
+0700	Engineering, manufacturing and construction not further defined	48.0000	Precision production trades, general	N	
+0710	Engineering and engineering trades not further defined	14.0101	Engineering, general	N	
+0710	Engineering and engineering trades not further defined	14.0102	Pre-engineering	N	
+0710	Engineering and engineering trades not further defined	15.0000	Engineering technology, general	N	
+0711	Chemical engineering and processes	14.0301	Agricultural engineering	Y	Bioprocess engineering
+0711	Chemical engineering and processes	14.0501	Bioengineering and biomedical engineering	Y	Bioengineering
+0711	Chemical engineering and processes	14.0701	Chemical engineering	N	
+0711	Chemical engineering and processes	14.0702	Chemical and biomolecular engineering	N	
+0711	Chemical engineering and processes	14.0799	Chemical engineering, other	N	
+0711	Chemical engineering and processes	14.2501	Petroleum engineering	N	
+0711	Chemical engineering and processes	14.4301	Biochemical engineering	N	
+0711	Chemical engineering and processes	14.4401	Engineering chemistry	N	
+0711	Chemical engineering and processes	14.4501	Biological/biosystems engineering	N	
+0711	Chemical engineering and processes	15.0401	Biomedical technology/technician	Y	Bioengineering technology
+0711	Chemical engineering and processes	15.0615	Chemical engineering technology/technician	N	
+0711	Chemical engineering and processes	15.0903	Petroleum technology/technician	Y	Gas processing, oil refining
+0711	Chemical engineering and processes	15.9999	Engineering technologies and engineering-related fields, other	Y	Bio-resources engineering technician
+0711	Chemical engineering and processes	41.0303	Chemical process technology	N	
+0712	Environmental protection technology	14.0802	Geotechnical and geoenvironmental engineering	N	
+0712	Environmental protection technology	14.1401	Environmental/environmental health engineering	N	
+0712	Environmental protection technology	15.0507	Environmental engineering technology/environmental technology	Y	Environmental engineering technology/environmental technology (except environmental science technology)
+0712	Environmental protection technology	15.0508	Hazardous materials management and waste technology/technician	N	
+0712	Environmental protection technology	15.0599	Environmental control technologies/technicians, other	N	
+0713	Electricity and energy	14.1001	Electrical and electronics engineering	Y	Electrical engineering, electrical power engineering
+0713	Electricity and energy	14.2301	Nuclear engineering	N	
+0713	Electricity and energy	14.9999	Engineering, other	Y	Power engineering (university), power plant engineering (university), sustainable energy engineering, renewable energy engineering, HVAC engineering (university)
+0713	Electricity and energy	15.0303	Electrical, electronic and communications engineering technology/technician	Y	Electrical engineering technology
+0713	Electricity and energy	15.0399	Electrical and electronic engineering technologies/technicians, other	Y	Other electrical engineering technology
+0713	Electricity and energy	15.0501	Heating, ventilation, air conditioning and refrigeration engineering technology/technician	N	
+0713	Electricity and energy	15.0503	Energy management and systems technology/technician	N	
+0713	Electricity and energy	15.0505	Solar energy technology/technician	N	
+0713	Electricity and energy	15.1401	Nuclear engineering technology/technician	N	
+0713	Electricity and energy	41.0205	Nuclear/nuclear power technology/technician	Y	Nuclear power technology, nuclear energy technician
+0713	Electricity and energy	46.0301	Electrical and power transmission installation/installer, general	N	
+0713	Electricity and energy	46.0302	Electrician	N	
+0713	Electricity and energy	46.0303	Lineworker	Y	Power lineman/linewoman, power line technician
+0713	Electricity and energy	46.0399	Electrical and power transmission installers, other	N	
+0713	Electricity and energy	47.0101	Electrical/electronics equipment installation and repair, general	Y	Electrical equipment installation and repair, general
+0713	Electricity and energy	47.0106	Appliance installation and repair technology/technician	Y	Home appliance repair, appliance service technician, gas appliance technician
+0713	Electricity and energy	47.0199	Electrical/electronics maintenance and repair technology, other	Y	Electrical maintenance and repair technology, other
+0713	Electricity and energy	47.0201	Heating, air conditioning, ventilation and refrigeration maintenance technology/technician	N	
+0713	Electricity and energy	47.0501	Stationary energy sources installer and operatorCAN	N	
+0713	Electricity and energy	47.0605	Diesel mechanics technology/technician	Y	Stationary diesel mechanics
+0714	Electronics and automation	11.0301	Data processing and data processing technology/technician	Y	Data processing technology, data processing technician
+0714	Electronics and automation	14.0901	Computer engineering, general	Y	Computer engineering
+0714	Electronics and automation	14.0902	Computer hardware engineering	N	
+0714	Electronics and automation	14.0999	Computer engineering, other	N	
+0714	Electronics and automation	14.1001	Electrical and electronics engineering	Y	Electronics engineering
+0714	Electronics and automation	14.1004	Telecommunications engineering	N	
+0714	Electronics and automation	14.1099	Electrical, electronics and communications engineering, other	Y	Electronic and communications engineering
+0714	Electronics and automation	14.4101	Electromechanical engineering	N	
+0714	Electronics and automation	14.4201	Mechatronics, robotics, and automation engineering	N	
+0714	Electronics and automation	14.9999	Engineering, other	Y	Instrumentation engineering
+0714	Electronics and automation	15.0303	Electrical, electronic and communications engineering technology/technician	Y	Electronic engineering technology; electrical, electronic and communications engineering technology
+0714	Electronics and automation	15.0305	Telecommunications technology/technician	N	
+0714	Electronics and automation	15.0306	Integrated circuit design	Y	Integrated circuit design (except printed circuit drafting)
+0714	Electronics and automation	15.0399	Electrical and electronic engineering technologies/technicians, other	Y	Other electronic engineering technology
+0714	Electronics and automation	15.0401	Biomedical technology/technician	Y	Biomedical electronics
+0714	Electronics and automation	15.0403	Electromechanical technology/electromechanical engineering technology	N	
+0714	Electronics and automation	15.0404	Instrumentation technology/technician	N	
+0714	Electronics and automation	15.0405	Robotics technology/technician	N	
+0714	Electronics and automation	15.0406	Automation engineer technology/technician	N	
+0714	Electronics and automation	15.0499	Electromechanical and instrumentation and maintenance technologies/technicians, other	N	
+0714	Electronics and automation	15.1201	Computer engineering technology/technician, general	N	
+0714	Electronics and automation	15.1202	Computer technology/computer systems technology	N	
+0714	Electronics and automation	15.1203	Computer hardware technology/technician	N	
+0714	Electronics and automation	15.1299	Computer engineering technologies/technicians, other	N	
+0714	Electronics and automation	46.0303	Lineworker	Y	Telephone lineman/linewoman, fibre optics technician
+0714	Electronics and automation	47.0101	Electrical/electronics equipment installation and repair, general	Y	Electronics equipment installation and repair, general
+0714	Electronics and automation	47.0102	Business machine repair	N	
+0714	Electronics and automation	47.0103	Communications systems installation and repair technology	N	
+0714	Electronics and automation	47.0104	Computer installation and repair technology/technician	N	
+0714	Electronics and automation	47.0105	Industrial electronics technology/technician	N	
+0714	Electronics and automation	47.0106	Appliance installation and repair technology/technician	Y	Electronics technician (consumer products)
+0714	Electronics and automation	47.0110	Security system installation, repair and inspection technology/technician	N	
+0714	Electronics and automation	47.0199	Electrical/electronics maintenance and repair technology, other	Y	Electronics maintenance and repair technology, other
+0714	Electronics and automation	52.2101	Telecommunications management	N	
+0715	Mechanics and metal trades	14.1901	Mechanical engineering	N	
+0715	Mechanics and metal trades	14.2001	Metallurgical engineering	N	
+0715	Mechanics and metal trades	14.9999	Engineering, other	Y	Tool engineering, welding engineering (university)
+0715	Mechanics and metal trades	15.0611	Metallurgical technology/technician	N	
+0715	Mechanics and metal trades	15.0614	Welding engineering technology/technician	N	
+0715	Mechanics and metal trades	15.0805	Mechanical engineering/mechanical technology/technician	N	
+0715	Mechanics and metal trades	15.1103	Hydraulics and fluid power technology/technician	N	
+0715	Mechanics and metal trades	47.0000	Mechanics and repairers, general	N	
+0715	Mechanics and metal trades	47.0303	Industrial mechanics and maintenance technology	N	
+0715	Mechanics and metal trades	47.0399	Heavy/industrial equipment maintenance technologies, other	N	
+0715	Mechanics and metal trades	47.0402	Gunsmithing/gunsmith	N	
+0715	Mechanics and metal trades	47.0403	Locksmithing and safe repair	N	
+0715	Mechanics and metal trades	47.0408	Watchmaking and jewellery making	Y	Watch/clock making and repair
+0715	Mechanics and metal trades	47.0499	Precision systems maintenance and repair technologies, other	Y	Fabrication, maintenance and repair of precision systems in metal
+0715	Mechanics and metal trades	47.0610	Bicycle mechanics and repair technology/technician	N	
+0715	Mechanics and metal trades	48.0501	Machine tool technology/machinist	N	
+0715	Mechanics and metal trades	48.0503	Machine shop technology/assistant	N	
+0715	Mechanics and metal trades	48.0506	Sheet metal technology/sheetworking	N	
+0715	Mechanics and metal trades	48.0507	Tool and die technology/technician	N	
+0715	Mechanics and metal trades	48.0508	Welding technology/welder	N	
+0715	Mechanics and metal trades	48.0510	Computer numerically controlled (CNC) machinist technology/CNC machinist	N	
+0715	Mechanics and metal trades	48.0511	Metal fabricator	N	
+0715	Mechanics and metal trades	48.0599	Precision metal working, other	N	
+0715	Mechanics and metal trades	48.0801	Boilermaking/boilermaker	N	
+0716	Motor vehicles, ships and aircraft	01.0205	Agricultural mechanics and equipment/machine technology	N	
+0716	Motor vehicles, ships and aircraft	14.0201	Aerospace, aeronautical and astronautical/space engineering	N	
+0716	Motor vehicles, ships and aircraft	14.1001	Electrical and electronics engineering	Y	Total ship systems engineering
+0716	Motor vehicles, ships and aircraft	14.2201	Naval architecture and marine engineering	N	
+0716	Motor vehicles, ships and aircraft	14.9999	Engineering, other	Y	Automotive engineering
+0716	Motor vehicles, ships and aircraft	15.0801	Aeronautical/aerospace engineering technology/technician	N	
+0716	Motor vehicles, ships and aircraft	15.0803	Automotive engineering technology/technician	N	
+0716	Motor vehicles, ships and aircraft	15.0899	Mechanical engineering related technologies/technicians, other	N	
+0716	Motor vehicles, ships and aircraft	15.9999	Engineering technologies and engineering-related fields, other	Y	Naval architecture technology
+0716	Motor vehicles, ships and aircraft	46.0406	Glazier	Y	Auto glass technician, glazier - auto glass technician
+0716	Motor vehicles, ships and aircraft	47.0302	Heavy equipment maintenance technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0600	Vehicle maintenance and repair technologies, general	N	
+0716	Motor vehicles, ships and aircraft	47.0603	Autobody/collision and repair technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0604	Automobile/automotive mechanics technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0605	Diesel mechanics technology/technician	Y	Diesel mechanics technology/technician (except stationary diesel mechanics)
+0716	Motor vehicles, ships and aircraft	47.0606	Small engine mechanics and repair technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0607	Airframe mechanics and aircraft maintenance technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0608	Aircraft powerplant technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0609	Avionics maintenance technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0611	Motorcycle maintenance and repair technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0612	Vehicle emissions inspection and maintenance technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0613	Medium/heavy vehicle and truck technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0614	Alternative fuel vehicle technology/technician	N	
+0716	Motor vehicles, ships and aircraft	47.0615	Engine machinist	N	
+0716	Motor vehicles, ships and aircraft	47.0616	Marine maintenance/fitter and ship repair technology/technician	Y	Marine maintenance/fitter and ship repair technology/technician (except fiberglass and wooden boat repair)
+0716	Motor vehicles, ships and aircraft	47.0617	High performance and custom engine technician/mechanic	N	
+0716	Motor vehicles, ships and aircraft	47.0618	Recreation vehicle (RV) service technician	N	
+0716	Motor vehicles, ships and aircraft	47.0699	Vehicle maintenance and repair technologies, other	N	
+0719	Engineering and engineering trades not elsewhere classified	14.0301	Agricultural engineering	Y	Agricultural engineering (except programs related to bioprocess engineering)
+0719	Engineering and engineering trades not elsewhere classified	14.0501	Bioengineering and biomedical engineering	Y	Biomedical engineering, medical engineering, biomaterials engineering
+0719	Engineering and engineering trades not elsewhere classified	14.0601	Ceramic sciences and engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.1001	Electrical and electronics engineering	Y	Electrical and electronic engineering, electrodynamic engineering
+0719	Engineering and engineering trades not elsewhere classified	14.1003	Laser and optical engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.1099	Electrical, electronics and communications engineering, other	Y	Electrical, electronics and communications engineering, other (except electronic and communications engineering)
+0719	Engineering and engineering trades not elsewhere classified	14.1101	Engineering mechanics	N	
+0719	Engineering and engineering trades not elsewhere classified	14.1201	Engineering physics/applied physics	N	
+0719	Engineering and engineering trades not elsewhere classified	14.1301	Engineering science	N	
+0719	Engineering and engineering trades not elsewhere classified	14.1801	Materials engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.2401	Ocean engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.2701	Systems engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.2801	Textile sciences and engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3201	Polymer/plastics engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3401	Forest engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3501	Industrial engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3601	Manufacturing engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3801	Surveying engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.3901	Geological/geophysical engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.4001	Paper science and engineering	N	
+0719	Engineering and engineering trades not elsewhere classified	14.9999	Engineering, other	Y	Acoustic engineering, design engineering, fire safety engineering, mining and materials engineering
+0719	Engineering and engineering trades not elsewhere classified	15.0304	Laser and optical technology/technician	N	
+0719	Engineering and engineering trades not elsewhere classified	15.0399	Electrical and electronic engineering technologies/technicians, other	Y	Electrodynamics technology
+0719	Engineering and engineering trades not elsewhere classified	15.0401	Biomedical technology/technician	Y	Biomedical engineering technology, biomedical technician, biomedical technology
+0719	Engineering and engineering trades not elsewhere classified	15.0607	Plastics and polymer engineering technology/technician	Y	Plastics engineering technology, polymer engineering technology
+0719	Engineering and engineering trades not elsewhere classified	15.0612	Industrial technology/technician	N	
+0719	Engineering and engineering trades not elsewhere classified	15.0613	Manufacturing engineering technology/technician	N	
+0719	Engineering and engineering trades not elsewhere classified	15.0616	Semiconductor manufacturing technology	N	
+0719	Engineering and engineering trades not elsewhere classified	15.0699	Industrial production technologies/technicians, other	Y	Materials engineering technology, corrosion engineering technician
+0719	Engineering and engineering trades not elsewhere classified	15.0702	Quality control technology/technician	N	
+0719	Engineering and engineering trades not elsewhere classified	15.0799	Quality Control and Safety Technologies/Technicians, Other	Y	Other quality control technologies/technicians
+0719	Engineering and engineering trades not elsewhere classified	15.1199	Engineering-related technologies, other	N	
+0719	Engineering and engineering trades not elsewhere classified	15.1501	Engineering/industrial management	N	
+0719	Engineering and engineering trades not elsewhere classified	15.1502	Engineering design	N	
+0719	Engineering and engineering trades not elsewhere classified	15.1503	Packaging science	N	
+0719	Engineering and engineering trades not elsewhere classified	15.1599	Engineering-related fields, other	N	
+0719	Engineering and engineering trades not elsewhere classified	15.1601	Nanotechnology	N	
+0719	Engineering and engineering trades not elsewhere classified	15.9999	Engineering technologies and engineering-related fields, other	Y	Engineering technologies and engineering-related fields, other (except bio-resources engineering technician, naval architecture technology)
+0719	Engineering and engineering trades not elsewhere classified	47.9999	Mechanic and repair technologies/technicians, other	N	
+0721	Food processing	01.0306	Dairy husbandry and production	Y	Butter making, cheese making
+0721	Food processing	01.0309	Viticulture and enology	Y	Enology, wine technology
+0721	Food processing	01.0401	Agricultural and food products processing	N	
+0721	Food processing	01.0905	Dairy science	N	
+0721	Food processing	01.0906	Livestock management	N	
+0721	Food processing	01.0907	Poultry science	N	
+0721	Food processing	01.1001	Food science	N	
+0721	Food processing	01.1002	Food technology and processing	N	
+0721	Food processing	01.1099	Food science and technology, other	N	
+0721	Food processing	12.0501	Baking and pastry arts/baker/pastry chef	N	
+0721	Food processing	12.0506	Meat cutting/meat cutter	N	
+0721	Food processing	12.0509	Culinary science	N	
+0721	Food processing	12.0599	Culinary arts and related services, other	Y	Confectioner, foodsafe
+0722	Materials (glass, paper, plastic and wood)	03.0509	Wood science and wood products/pulp and paper technology	N	
+0722	Materials (glass, paper, plastic and wood)	15.0607	Plastics and polymer engineering technology/technician	Y	Plastics technology, plastics processing technology, polymer processing technology
+0722	Materials (glass, paper, plastic and wood)	15.0699	Industrial production technologies/technicians, other	Y	Fibreglass technician
+0722	Materials (glass, paper, plastic and wood)	47.0616	Marine maintenance/fitter and ship repair technology/technician	Y	Fibreglass and wooden boat repair
+0722	Materials (glass, paper, plastic and wood)	48.0701	Woodworking, general	N	
+0722	Materials (glass, paper, plastic and wood)	48.0702	Furniture design and manufacturing	N	
+0722	Materials (glass, paper, plastic and wood)	48.0703	Cabinetmaking and millwork	N	
+0722	Materials (glass, paper, plastic and wood)	48.0799	Woodworking, other	N	
+0723	Textiles (clothes, footwear and leather)	19.0901	Apparel and textiles, general	N	
+0723	Textiles (clothes, footwear and leather)	19.0902	Apparel and textile manufacture	N	
+0723	Textiles (clothes, footwear and leather)	19.0904	Textile science	N	
+0723	Textiles (clothes, footwear and leather)	19.0999	Apparel and textiles, other	Y	Apparel and textiles, other (except dry cleaning and clothing maintenance, sewing, cleaner and presser)
+0723	Textiles (clothes, footwear and leather)	48.0303	Upholstery/upholsterer	N	
+0723	Textiles (clothes, footwear and leather)	48.0304	Shoe, boot and leather repair	N	
+0723	Textiles (clothes, footwear and leather)	48.0399	Leatherworking and upholstery, other	N	
+0724	Mining and extraction	14.2101	Mining and mineral engineering	N	
+0724	Mining and extraction	15.0901	Mining technology/technician	N	
+0724	Mining and extraction	15.0903	Petroleum technology/technician	Y	Petroleum technology/technician (except gas processing, oil refining)
+0724	Mining and extraction	15.0999	Mining and petroleum technologies/technicians, other	N	
+0724	Mining and extraction	46.0504	Well drilling/driller	Y	Oil and gas drilling
+0729	Manufacturing and processing not elsewhere classified	46.0504	Well drilling/driller	Y	Water wells drilling
+0731	Architecture and town planning	04.0201	Architecture (BArch, BA, BS, BSc, MArch, MA, MS, MSc, PhD)	N	
+0731	Architecture and town planning	04.0301	City/urban, community and regional planning	N	
+0731	Architecture and town planning	04.0401	Environmental design/architecture	N	
+0731	Architecture and town planning	04.0501	Interior architecture	N	
+0731	Architecture and town planning	04.0601	Landscape architecture (BS, BSc, BSLA, BLA, MSLA, MLA, PhD)	N	
+0731	Architecture and town planning	04.0801	Architectural history and criticism	N	
+0731	Architecture and town planning	04.0901	Architectural technology/technician	N	
+0731	Architecture and town planning	04.0999	Architectural sciences and technology, other	N	
+0731	Architecture and town planning	04.1001	Real estate development	N	
+0731	Architecture and town planning	04.9999	Architecture and related services, other	N	
+0731	Architecture and town planning	15.1102	Surveying technology/surveying	N	
+0731	Architecture and town planning	45.0702	Geographic information science and cartography	Y	Cartography, map design
+0731	Architecture and town planning	45.1201	Urban studies/affairs	N	
+0732	Building and civil engineering	04.0902	Architectural and building sciences/technology (BArch, BA, BS, BSc, MArch, MA, MS, MSc, PhD)	N	
+0732	Building and civil engineering	14.0401	Architectural engineering	N	
+0732	Building and civil engineering	14.0801	Civil engineering, general	N	
+0732	Building and civil engineering	14.0803	Structural engineering	N	
+0732	Building and civil engineering	14.0804	Transportation and highway engineering	N	
+0732	Building and civil engineering	14.0805	Water resources engineering	N	
+0732	Building and civil engineering	14.0899	Civil engineering, other	N	
+0732	Building and civil engineering	14.3301	Construction engineering	N	
+0732	Building and civil engineering	14.9999	Engineering, other	Y	Sanitary engineering (university)
+0732	Building and civil engineering	15.0101	Architectural engineering technology/technician	N	
+0732	Building and civil engineering	15.0201	Civil engineering technology/technician	N	
+0732	Building and civil engineering	15.0306	Integrated circuit design	Y	Printed circuit drafting
+0732	Building and civil engineering	15.0506	Water quality and wastewater treatment management and recycling technology/technician	Y	Water systems maintenance, water resources engineering technology
+0732	Building and civil engineering	15.1001	Construction engineering technology/technician	N	
+0732	Building and civil engineering	15.1301	Drafting and design technology/technician, general	N	
+0732	Building and civil engineering	15.1302	CAD/CADD drafting and/or design technology/technician	N	
+0732	Building and civil engineering	15.1303	Architectural drafting and architectural CAD/CADD	N	
+0732	Building and civil engineering	15.1304	Civil drafting and civil engineering CAD/CADD	N	
+0732	Building and civil engineering	15.1305	Electrical/electronics drafting and electrical/electronics CAD/CADD	N	
+0732	Building and civil engineering	15.1306	Mechanical drafting and mechanical drafting CAD/CADD	N	
+0732	Building and civil engineering	15.1399	Drafting/design engineering technologies/technicians, other	N	
+0732	Building and civil engineering	36.0105	Home maintenance and improvement (not for credit)	N	
+0732	Building and civil engineering	46.0000	Construction trades, general	N	
+0732	Building and civil engineering	46.0101	Masonry/mason	N	
+0732	Building and civil engineering	46.0201	Carpentry/carpenter	N	
+0732	Building and civil engineering	46.0401	Building/property maintenance	N	
+0732	Building and civil engineering	46.0402	Concrete finishing/concrete finisher	N	
+0732	Building and civil engineering	46.0403	Building/home/construction inspection/inspector	N	
+0732	Building and civil engineering	46.0404	Drywall installation/drywaller	N	
+0732	Building and civil engineering	46.0406	Glazier	Y	Glazier, erector mechanic (glazier), architectural glass and metal mechanic
+0732	Building and civil engineering	46.0408	Painting/painter and wall coverer	N	
+0732	Building and civil engineering	46.0410	Roofer	N	
+0732	Building and civil engineering	46.0411	Metal building assembly/assembler	N	
+0732	Building and civil engineering	46.0412	Building/construction site management/manager	N	
+0732	Building and civil engineering	46.0413	Carpet, floor, and tile worker	N	
+0732	Building and civil engineering	46.0414	Insulator	N	
+0732	Building and civil engineering	46.0415	Building construction technology	N	
+0732	Building and civil engineering	46.0499	Building/construction finishing, management and inspection, other	N	
+0732	Building and civil engineering	46.0502	Pipefitting/pipefitter and sprinkler fitter	N	
+0732	Building and civil engineering	46.0503	Plumbing technology/plumber	N	
+0732	Building and civil engineering	46.0505	Blasting/blaster	N	
+0732	Building and civil engineering	46.0599	Plumbing and related water supply services, other	N	
+0732	Building and civil engineering	46.9999	Construction trades, other	N	
+0732	Building and civil engineering	48.0509	Ironworking/ironworker	N	
+0732	Building and civil engineering	49.0202	Construction/heavy equipment/earthmoving equipment operation	N	
+0732	Building and civil engineering	52.2001	Construction management	N	
+0788	Inter-disciplinary programmes and qualifications involving engineering, manufacturing and construction	47.0408	Watchmaking and jewellery making	Y	Combined watchmaking and jewellery making
+0799	Engineering, manufacturing and construction not elsewhere classified	47.0499	Precision systems maintenance and repair technologies, other	Y	Sports equipment fabrication and repair technician
+0799	Engineering, manufacturing and construction not elsewhere classified	48.9999	Precision production, other	Y	Other engineering, manufacturing and construction (except diamond cutting and polishing)
+0810	Agriculture not further defined	01.0000	Agriculture, general	N	
+0811	Crop and livestock production	01.0101	Agricultural business and management, general	N	
+0811	Crop and livestock production	01.0102	Agribusiness/agricultural business operations	N	
+0811	Crop and livestock production	01.0103	Agricultural economics	N	
+0811	Crop and livestock production	01.0104	Farm/farm and ranch management	N	
+0811	Crop and livestock production	01.0199	Agricultural business and management, other	N	
+0811	Crop and livestock production	01.0201	Agricultural mechanization, general	N	
+0811	Crop and livestock production	01.0204	Agricultural power machinery operation	N	
+0811	Crop and livestock production	01.0299	Agricultural mechanization, other	N	
+0811	Crop and livestock production	01.0301	Agricultural production operations, general	N	
+0811	Crop and livestock production	01.0302	Animal/livestock husbandry and production	N	
+0811	Crop and livestock production	01.0304	Crop production	N	
+0811	Crop and livestock production	01.0306	Dairy husbandry and production	Y	Dairy farming, dairy husbandry, milk grading, milk production
+0811	Crop and livestock production	01.0307	Horse husbandry/equine science and management	N	
+0811	Crop and livestock production	01.0308	Agroecology and sustainable agriculture	N	
+0811	Crop and livestock production	01.0309	Viticulture and enology	Y	Viticulture
+0811	Crop and livestock production	01.0399	Agricultural production operations, other	N	
+0811	Crop and livestock production	01.0504	Dog/pet/animal grooming	N	
+0811	Crop and livestock production	01.0505	Animal training	N	
+0811	Crop and livestock production	01.0507	Equestrian/equine studies	Y	Equine studies, horse training, equine care
+0811	Crop and livestock production	01.0599	Agricultural and domestic animal services, other	N	
+0811	Crop and livestock production	01.0701	International agriculture	N	
+0811	Crop and livestock production	01.0801	Agricultural and extension education services	N	
+0811	Crop and livestock production	01.0899	Agricultural public services, other	N	
+0811	Crop and livestock production	01.0901	Animal sciences, general	N	
+0811	Crop and livestock production	01.0902	Agricultural animal breeding	Y	Animal breeding
+0811	Crop and livestock production	01.0903	Animal health	N	
+0811	Crop and livestock production	01.0904	Animal nutrition	N	
+0811	Crop and livestock production	01.0999	Animal sciences, other	N	
+0811	Crop and livestock production	01.1101	Plant sciences, general	N	
+0811	Crop and livestock production	01.1102	Agronomy and crop science	N	
+0811	Crop and livestock production	01.1104	Agricultural and horticultural plant breeding	N	
+0811	Crop and livestock production	01.1105	Plant protection and integrated pest management	N	
+0811	Crop and livestock production	01.1106	Range science and management	N	
+0811	Crop and livestock production	01.1199	Plant sciences, other	Y	Plant science technology
+0811	Crop and livestock production	01.1201	Soil science and agronomy, general	N	
+0811	Crop and livestock production	01.1202	Soil chemistry and physics	N	
+0811	Crop and livestock production	01.1203	Soil microbiology	N	
+0811	Crop and livestock production	01.1299	Soil sciences, other	Y	environmental soil science, farm drainage, soil technology
+0811	Crop and livestock production	36.0107	Pet ownership and care (not for credit)	N	
+0812	Horticulture	01.0601	Applied horticulture/horticulture operations, general	N	
+0812	Horticulture	01.0603	Ornamental horticulture	N	
+0812	Horticulture	01.0604	Greenhouse operations and management	N	
+0812	Horticulture	01.0605	Landscaping and groundskeeping	N	
+0812	Horticulture	01.0606	Plant nursery operations and management	N	
+0812	Horticulture	01.0607	Turf and turfgrass management	N	
+0812	Horticulture	01.0608	Floriculture/floristry operations and management	Y	Floriculture
+0812	Horticulture	01.0699	Applied horticulture/horticultural business services, other	N	
+0812	Horticulture	01.1103	Horticultural science	N	
+0812	Horticulture	31.0302	Golf course operation and grounds management	Y	Golf course maintenance, greenskeeping
+0819	Agriculture not elsewhere classified	01.1199	Plant sciences, other	Y	Combined crop and horticultural science
+0819	Agriculture not elsewhere classified	01.9999	Agriculture, agriculture operations and related sciences, other	N	
+0821	Forestry	03.0208	Natural resources law enforcement and protective services	Y	Forest ranger, forestry law enforcement
+0821	Forestry	03.0501	Forestry, general	N	
+0821	Forestry	03.0502	Forest sciences and biology	N	
+0821	Forestry	03.0506	Forest management/forest resources management	N	
+0821	Forestry	03.0508	Urban forestry	N	
+0821	Forestry	03.0510	Forest resources production and management	N	
+0821	Forestry	03.0511	Forest technology/technician	N	
+0821	Forestry	03.0599	Forestry, other	N	
+0821	Forestry	03.9999	Natural resources and conservation, other	Y	Hunting, trapping
+0831	Fisheries	01.0303	Aquaculture	N	
+0831	Fisheries	03.0301	Fishing and fisheries sciences and management	N	
+0831	Fisheries	49.0303	Commercial fishing	N	
+0841	Veterinary	01.0902	Agricultural animal breeding	Y	Artificial insemination (of animals)
+0841	Veterinary	51.0808	Veterinary/animal health technology/technician and veterinary assistant	N	
+0841	Veterinary	51.1104	Pre-veterinary studies	N	
+0841	Veterinary	51.2401	Veterinary medicine (DVM)	N	
+0841	Veterinary	51.2501	Veterinary sciences/veterinary clinical sciences, general (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2502	Veterinary anatomy (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2503	Veterinary physiology (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2504	Veterinary microbiology and immunobiology (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2505	Veterinary pathology and pathobiology (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2506	Veterinary toxicology and pharmacology (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2507	Large animal/food animal and equine surgery and medicine (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2508	Small/companion animal surgery and medicine (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2509	Comparative and laboratory animal medicine (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2510	Veterinary preventive medicine, epidemiology and public health (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2511	Veterinary infectious diseases (Cert., MS, MSc, PhD)	N	
+0841	Veterinary	51.2599	Veterinary biomedical and clinical sciences (Cert., MS, MSc, PhD), other	N	
+0841	Veterinary	60.0301	Veterinary anesthesiology residency programs	N	
+0841	Veterinary	60.0302	Veterinary dentistry residency programs	N	
+0841	Veterinary	60.0303	Veterinary dermatology residency programs	N	
+0841	Veterinary	60.0304	Veterinary emergency and critical care medicine residency programs	N	
+0841	Veterinary	60.0305	Veterinary internal medicine residency programs	N	
+0841	Veterinary	60.0306	Laboratory animal medicine residency programs	N	
+0841	Veterinary	60.0307	Veterinary microbiology residency programs	N	
+0841	Veterinary	60.0308	Veterinary nutrition residency programs	N	
+0841	Veterinary	60.0309	Veterinary ophthalmology residency programs	N	
+0841	Veterinary	60.0310	Veterinary pathology residency programs	N	
+0841	Veterinary	60.0311	Veterinary practice residency programs	N	
+0841	Veterinary	60.0312	Veterinary preventive medicine residency programs	N	
+0841	Veterinary	60.0313	Veterinary radiology residency programs	N	
+0841	Veterinary	60.0314	Veterinary surgery residency programs	N	
+0841	Veterinary	60.0315	Theriogenology residency programs	N	
+0841	Veterinary	60.0316	Veterinary toxicology residency programs	N	
+0841	Veterinary	60.0317	Zoological medicine residency programs	N	
+0841	Veterinary	60.0318	Poultry veterinarian residency programs	N	
+0841	Veterinary	60.0319	Veterinary behaviourist residency programs	N	
+0841	Veterinary	60.0320	Veterinary clinical pharmacology residency programs	N	
+0841	Veterinary	60.0399	Veterinary residency programs, other	N	
+0910	Health not further defined	51.0000	Health services/allied health/health sciences, general	N	
+0910	Health not further defined	51.0001	Health and wellness, general	N	
+0911	Dental studies	51.0401	Dentistry (DDS, DMD)	N	
+0911	Dental studies	51.0501	Dental clinical sciences, general (MS, MSc, PhD)	N	
+0911	Dental studies	51.0502	Advanced general dentistry (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0503	Oral biology and oral and maxillofacial pathology (MS, MSc, PhD)	N	
+0911	Dental studies	51.0504	Dental public health and education (Cert., MS, MSc, MPH, PhD, DPH)	N	
+0911	Dental studies	51.0505	Dental materials (MS, MSc, PhD)	N	
+0911	Dental studies	51.0506	Endodontics/endodontology (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0507	Oral/maxillofacial surgery (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0508	Orthodontics/orthodontology (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0509	Pediatric dentistry/pedodontics (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0510	Periodontics/periodontology (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0511	Prosthodontics/prosthodontology (Cert., MS, MSc, PhD)	N	
+0911	Dental studies	51.0599	Advanced/graduate dentistry and oral sciences (Cert., MS, MSc, PhD), other	N	
+0911	Dental studies	51.0601	Dental assisting/assistant	N	
+0911	Dental studies	51.0602	Dental hygiene/hygienist	N	
+0911	Dental studies	51.0603	Dental laboratory technology/technician	N	
+0911	Dental studies	51.0699	Dental support services and allied professions, other	N	
+0911	Dental studies	51.1101	Pre-dentistry studies	N	
+0911	Dental studies	60.0101	Oral and maxillofacial surgery residency programs	N	
+0911	Dental studies	60.0102	Dental public health residency programs	N	
+0911	Dental studies	60.0103	Endodontics residency programs	N	
+0911	Dental studies	60.0104	Oral and maxillofacial pathology residency programs	N	
+0911	Dental studies	60.0105	Orthodontics residency programs	N	
+0911	Dental studies	60.0106	Pediatric dentistry residency programs	N	
+0911	Dental studies	60.0107	Periodontology residency programs	N	
+0911	Dental studies	60.0108	Prosthodontics residency programs	N	
+0911	Dental studies	60.0109	Oral and maxillofacial radiology residency programs	N	
+0911	Dental studies	60.0199	Dental residency programs, other	N	
+0912	Medicine	26.0401	Cell/cellular biology and histology	Y	Cytology, histology
+0912	Medicine	26.0403	Anatomy	N	
+0912	Medicine	26.0503	Medical microbiology and bacteriology	N	
+0912	Medicine	26.0507	Immunology	N	
+0912	Medicine	26.0508	Microbiology and immunology	N	
+0912	Medicine	26.0901	Physiology, general	N	
+0912	Medicine	26.0908	Exercise physiology	N	
+0912	Medicine	26.0909	Vision science/physiological optics	N	
+0912	Medicine	26.0910	Pathology/experimental pathology	N	
+0912	Medicine	26.0911	Oncology and cancer biology	N	
+0912	Medicine	26.0912	Aerospace physiology and medicine	N	
+0912	Medicine	26.0999	Physiology, pathology and related sciences, other	N	
+0912	Medicine	26.1309	Epidemiology	N	
+0912	Medicine	30.1101	Gerontology	N	
+0912	Medicine	51.0202	Audiology/audiologist	N	
+0912	Medicine	51.0299	Communication disorders sciences and services, other	Y	Other audiology
+0912	Medicine	51.0912	Physician assistant	N	
+0912	Medicine	51.1102	Pre-medicine/pre-medical studies	N	
+0912	Medicine	51.1201	Medicine (MD)	N	
+0912	Medicine	51.1401	Medical scientist (MS, MSc, PhD)	N	
+0912	Medicine	51.2101	Podiatric medicine/podiatry (DPM)	N	
+0912	Medicine	60.0401	Aerospace medicine residency programs	N	
+0912	Medicine	60.0402	Allergy and immunology residency programs	N	
+0912	Medicine	60.0403	Anesthesiology residency programs	N	
+0912	Medicine	60.0404	Child neurology residency programs	N	
+0912	Medicine	60.0405	Clinical biochemical genetics residency programs	N	
+0912	Medicine	60.0406	Clinical cytogenetics residency programs	N	
+0912	Medicine	60.0407	Clinical genetics residency programs	N	
+0912	Medicine	60.0408	Clinical molecular genetics residency programs	N	
+0912	Medicine	60.0409	Colon and rectal surgery residency programs	N	
+0912	Medicine	60.0410	Dermatology residency programs	N	
+0912	Medicine	60.0411	Diagnostic radiology residency programs	N	
+0912	Medicine	60.0412	Emergency medicine residency programs	N	
+0912	Medicine	60.0413	Family medicine residency programs	N	
+0912	Medicine	60.0414	General surgery residency programs	N	
+0912	Medicine	60.0415	Internal medicine residency programs	N	
+0912	Medicine	60.0416	Neurological surgery residency programs	N	
+0912	Medicine	60.0417	Neurology residency programs	N	
+0912	Medicine	60.0418	Nuclear medicine residency programs	N	
+0912	Medicine	60.0419	Obstetrics and gynecology residency programs	N	
+0912	Medicine	60.0420	Occupational medicine residency programs	N	
+0912	Medicine	60.0421	Ophthalmology residency programs	N	
+0912	Medicine	60.0422	Orthopedic surgery residency programs	N	
+0912	Medicine	60.0423	Otolaryngology residency programs	N	
+0912	Medicine	60.0424	Pathology residency programs	N	
+0912	Medicine	60.0425	Pediatrics residency programs	N	
+0912	Medicine	60.0426	Physical medicine and rehabilitation residency programs	N	
+0912	Medicine	60.0427	Plastic surgery residency programs	N	
+0912	Medicine	60.0428	Psychiatry residency programs	N	
+0912	Medicine	60.0429	Public health and general preventive medicine residency programs	N	
+0912	Medicine	60.0430	Radiation oncology residency programs	N	
+0912	Medicine	60.0431	Radiologic physics residency programs	N	
+0912	Medicine	60.0432	Thoracic surgery residency programs	N	
+0912	Medicine	60.0433	Urology residency programs	N	
+0912	Medicine	60.0434	Vascular surgery residency programs	N	
+0912	Medicine	60.0499	Medical residency programs - general certificates, other	N	
+0912	Medicine	60.0501	Addiction psychiatry residency programs	N	
+0912	Medicine	60.0502	Adolescent medicine residency programs	N	
+0912	Medicine	60.0503	Blood banking/transfusion medicine residency programs	N	
+0912	Medicine	60.0504	Cardiovascular disease residency programs	N	
+0912	Medicine	60.0505	Chemical pathology residency programs	N	
+0912	Medicine	60.0506	Child abuse pediatrics residency programs	N	
+0912	Medicine	60.0507	Child and adolescent psychiatry residency programs	N	
+0912	Medicine	60.0508	Clinical cardiac electrophysiology residency programs	N	
+0912	Medicine	60.0509	Clinical neurophysiology residency programs	N	
+0912	Medicine	60.0510	Congenital cardiac surgery residency programs	N	
+0912	Medicine	60.0511	Critical care medicine residency programs	N	
+0912	Medicine	60.0512	Cytopathology residency programs	N	
+0912	Medicine	60.0513	Dermatopathology residency programs	N	
+0912	Medicine	60.0514	Developmental-behavioural pediatrics residency programs	N	
+0912	Medicine	60.0515	Diagnostic radiologic physics residency programs	N	
+0912	Medicine	60.0516	Endocrinology, diabetes and metabolism residency programs	N	
+0912	Medicine	60.0517	Forensic pathology residency programs	N	
+0912	Medicine	60.0518	Forensic psychiatry residency programs	N	
+0912	Medicine	60.0519	Gastroenterology residency programs	N	
+0912	Medicine	60.0520	Geriatric medicine residency programs	N	
+0912	Medicine	60.0521	Geriatric psychiatry residency programs	N	
+0912	Medicine	60.0522	Gynecologic oncology residency programs	N	
+0912	Medicine	60.0523	Hematological pathology residency programs	N	
+0912	Medicine	60.0524	Hematology residency programs	N	
+0912	Medicine	60.0525	Hospice and palliative medicine residency programs	N	
+0912	Medicine	60.0526	Immunopathology residency programs	N	
+0912	Medicine	60.0527	Infectious disease residency programs	N	
+0912	Medicine	60.0528	Interventional cardiology residency programs	N	
+0912	Medicine	60.0529	Laboratory medicine residency programs	N	
+0912	Medicine	60.0530	Maternal and fetal medicine residency programs	N	
+0912	Medicine	60.0531	Medical biochemical genetics residency programs	N	
+0912	Medicine	60.0532	Medical microbiology residency programs	N	
+0912	Medicine	60.0533	Medical nuclear physics residency programs	N	
+0912	Medicine	60.0534	Medical oncology residency programs	N	
+0912	Medicine	60.0535	Medical toxicology residency programs	N	
+0912	Medicine	60.0536	Molecular genetic pathology residency programs	N	
+0912	Medicine	60.0537	Musculoskeletal oncology residency programs	N	
+0912	Medicine	60.0538	Neonatal-perinatal medicine residency programs	N	
+0912	Medicine	60.0539	Nephrology residency programs	N	
+0912	Medicine	60.0540	Neurodevelopmental disabilities residency programs	N	
+0912	Medicine	60.0541	Neuromuscular medicine residency programs	N	
+0912	Medicine	60.0542	Neuropathology residency programs	N	
+0912	Medicine	60.0543	Neuroradiology residency programs	N	
+0912	Medicine	60.0544	Neurotology residency programs	N	
+0912	Medicine	60.0545	Nuclear radiology residency programs	N	
+0912	Medicine	60.0546	Orthopaedic sports medicine residency programs	N	
+0912	Medicine	60.0547	Orthopedic surgery of the spine residency programs	N	
+0912	Medicine	60.0548	Pain medicine residency programs	N	
+0912	Medicine	60.0549	Pediatric cardiology residency programs	N	
+0912	Medicine	60.0550	Pediatric critical care medicine residency programs	N	
+0912	Medicine	60.0551	Pediatric dermatology residency programs	N	
+0912	Medicine	60.0552	Pediatric emergency medicine residency programs	N	
+0912	Medicine	60.0553	Pediatric endocrinology residency programs	N	
+0912	Medicine	60.0554	Pediatric gastroenterology residency programs	N	
+0912	Medicine	60.0555	Pediatric hematology-oncology residency programs	N	
+0912	Medicine	60.0556	Pediatric infectious diseases residency programs	N	
+0912	Medicine	60.0557	Pediatric nephrology residency programs	N	
+0912	Medicine	60.0558	Pediatric orthopedics residency programs	N	
+0912	Medicine	60.0559	Pediatric otolaryngology residency programs	N	
+0912	Medicine	60.0560	Pediatric pathology residency programs	N	
+0912	Medicine	60.0561	Pediatric pulmonology residency programs	N	
+0912	Medicine	60.0562	Pediatric radiology residency programs	N	
+0912	Medicine	60.0563	Pediatric rehabilitation medicine residency programs	N	
+0912	Medicine	60.0564	Pediatric rheumatology residency programs	N	
+0912	Medicine	60.0565	Pediatric surgery residency programs	N	
+0912	Medicine	60.0566	Pediatric transplant hepatology residency programs	N	
+0912	Medicine	60.0567	Pediatric urology residency programs	N	
+0912	Medicine	60.0568	Physical medicine and rehabilitation, psychiatric residency programs	N	
+0912	Medicine	60.0569	Plastic surgery within the head and neck residency programs	N	
+0912	Medicine	60.0570	Psychosomatic medicine residency programs	N	
+0912	Medicine	60.0571	Pulmonary disease residency programs	N	
+0912	Medicine	60.0572	Radioisotopic pathology residency programs	N	
+0912	Medicine	60.0573	Reproductive endocrinology/infertility residency programs	N	
+0912	Medicine	60.0574	Rheumatology residency programs	N	
+0912	Medicine	60.0575	Sleep medicine residency programs	N	
+0912	Medicine	60.0576	Spinal cord injury medicine residency programs	N	
+0912	Medicine	60.0577	Sports medicine residency programs	N	
+0912	Medicine	60.0578	Surgery of the hand residency programs	N	
+0912	Medicine	60.0579	Surgical critical care residency programs	N	
+0912	Medicine	60.0580	Therapeutic radiologic physics residency programs	N	
+0912	Medicine	60.0581	Transplant hepatology residency programs	N	
+0912	Medicine	60.0582	Undersea and hyperbaric medicine residency programs	N	
+0912	Medicine	60.0583	Vascular and interventional radiology residency programs	N	
+0912	Medicine	60.0584	Vascular neurology residency programs	N	
+0912	Medicine	60.0599	Medical residency programs - subspecialty certificates, other	N	
+0912	Medicine	60.0601	Podiatric medicine and surgery residency programs - 24	N	
+0912	Medicine	60.0602	Podiatric medicine and surgery residency programs - 36	N	
+0912	Medicine	60.0699	Podiatric medicine residency programs, other	N	
+0913	Nursing and midwifery	19.0702	Adult development and aging	Y	Gerontological services
+0913	Nursing and midwifery	51.0815	Lactation consultant	N	
+0913	Nursing and midwifery	51.1105	Pre-nursing studies	N	
+0913	Nursing and midwifery	51.2601	Health aide	N	
+0913	Nursing and midwifery	51.2602	Home health aide/home attendant	N	
+0913	Nursing and midwifery	51.2603	Medication aide	N	
+0913	Nursing and midwifery	51.2604	Rehabilitation aide	N	
+0913	Nursing and midwifery	51.2699	Health aides/attendants/orderlies, other	N	
+0913	Nursing and midwifery	51.3401	Direct entry midwifery (LM, CPM)	N	
+0913	Nursing and midwifery	51.3801	Registered nursing/registered nurse (RN, ASN, BSN, BScN, MSN, MScN)	N	
+0913	Nursing and midwifery	51.3803	Adult health nurse/nursing	N	
+0913	Nursing and midwifery	51.3804	Nurse anesthetist	N	
+0913	Nursing and midwifery	51.3805	Primary health care nurse/nursing and family practice nurse/nursing	N	
+0913	Nursing and midwifery	51.3806	Maternal/child health and neonatal nurse/nursing	N	
+0913	Nursing and midwifery	51.3807	Nurse midwife/nursing midwifery	N	
+0913	Nursing and midwifery	51.3808	Nursing science (MS, MSc, PhD)	N	
+0913	Nursing and midwifery	51.3809	Pediatric nurse/nursing	N	
+0913	Nursing and midwifery	51.3810	Psychiatric/mental health nurse/nursing	N	
+0913	Nursing and midwifery	51.3811	Public health/community nurse/nursing	N	
+0913	Nursing and midwifery	51.3812	Perioperative/operating room and surgical nurse/nursing	N	
+0913	Nursing and midwifery	51.3813	Clinical nurse specialist	N	
+0913	Nursing and midwifery	51.3814	Critical care nurse/nursing	N	
+0913	Nursing and midwifery	51.3815	Occupational and environmental health nurse/nursing	N	
+0913	Nursing and midwifery	51.3816	Emergency room/trauma nurse/nursing	N	
+0913	Nursing and midwifery	51.3818	Nursing practice	N	
+0913	Nursing and midwifery	51.3819	Palliative care nurse/nursing	N	
+0913	Nursing and midwifery	51.3820	Clinical nurse leader	N	
+0913	Nursing and midwifery	51.3821	Geriatric nurse/nursing	N	
+0913	Nursing and midwifery	51.3822	Women's health nurse/nursing	N	
+0913	Nursing and midwifery	51.3823	Registered psychiatric nurse/nursingCAN	N	
+0913	Nursing and midwifery	51.3899	Registered nursing, nursing administration, nursing research and clinical nursing, other	N	
+0913	Nursing and midwifery	51.3901	Licensed practical/vocational nurse training (LPN, LVN, RPN, Cert., Dipl., AAS)	N	
+0913	Nursing and midwifery	51.3902	Nursing assistant/aide and patient care assistant/aide	N	
+0913	Nursing and midwifery	51.3999	Practical nursing, vocational nursing and nursing assistants, other	N	
+0914	Medical diagnostic and treatment technology	51.0801	Medical/clinical assistant	N	
+0914	Medical diagnostic and treatment technology	51.0802	Clinical/medical laboratory assistant	N	
+0914	Medical diagnostic and treatment technology	51.0809	Anesthesiologist assistant	N	
+0914	Medical diagnostic and treatment technology	51.0810	Emergency care attendant (EMT ambulance)	N	
+0914	Medical diagnostic and treatment technology	51.0811	Pathology/pathologist assistant	N	
+0914	Medical diagnostic and treatment technology	51.0814	Radiologist assistant	N	
+0914	Medical diagnostic and treatment technology	51.0899	Allied health and medical assisting services, other	Y	Other allied health and medical assisting services in diagnostic and treatment technology
+0914	Medical diagnostic and treatment technology	51.0901	Cardiovascular technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.0902	Electrocardiograph technology/technician	N	
+0914	Medical diagnostic and treatment technology	51.0903	Electroneurodiagnostic/electroencephalographic technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.0904	Emergency medical technology/technician (EMT paramedic)	N	
+0914	Medical diagnostic and treatment technology	51.0905	Nuclear medical technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.0906	Perfusion technology/perfusionist	N	
+0914	Medical diagnostic and treatment technology	51.0907	Medical radiologic technology/science ? radiation therapist	N	
+0914	Medical diagnostic and treatment technology	51.0908	Respiratory care therapy/therapist	N	
+0914	Medical diagnostic and treatment technology	51.0909	Surgical technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.0910	Diagnostic medical sonography/sonographer and ultrasound technician	N	
+0914	Medical diagnostic and treatment technology	51.0911	Radiologic technology/science ? radiographer	N	
+0914	Medical diagnostic and treatment technology	51.0914	Gene/genetic therapy	N	
+0914	Medical diagnostic and treatment technology	51.0915	Cardiopulmonary technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.0916	Radiation protection/health physics technician	N	
+0914	Medical diagnostic and treatment technology	51.0917	Polysomnography	N	
+0914	Medical diagnostic and treatment technology	51.0918	Hearing instrument specialist	N	
+0914	Medical diagnostic and treatment technology	51.0919	Mammography technician/technology	N	
+0914	Medical diagnostic and treatment technology	51.0920	Magnetic resonance imaging (MRI) technology/technician	N	
+0914	Medical diagnostic and treatment technology	51.0921	Combined laboratory and X-ray technologyCAN	N	
+0914	Medical diagnostic and treatment technology	51.0999	Allied health diagnostic, intervention and treatment professions, other	N	
+0914	Medical diagnostic and treatment technology	51.1001	Blood bank technology specialist	N	
+0914	Medical diagnostic and treatment technology	51.1002	Cytotechnology/cytotechnologist	N	
+0914	Medical diagnostic and treatment technology	51.1003	Hematology technology/technician	N	
+0914	Medical diagnostic and treatment technology	51.1004	Clinical/medical laboratory technician	N	
+0914	Medical diagnostic and treatment technology	51.1005	Clinical laboratory science/medical technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.1006	Ophthalmic laboratory technology/technician	N	
+0914	Medical diagnostic and treatment technology	51.1007	Histologic technology/histotechnologist	N	
+0914	Medical diagnostic and treatment technology	51.1008	Histologic technician	N	
+0914	Medical diagnostic and treatment technology	51.1009	Phlebotomy technician/phlebotomist	N	
+0914	Medical diagnostic and treatment technology	51.1010	Cytogenetics/genetics/clinical genetics technology/technologist	N	
+0914	Medical diagnostic and treatment technology	51.1011	Renal/dialysis technologist/technician	N	
+0914	Medical diagnostic and treatment technology	51.1012	Sterile processing technology/technician	N	
+0914	Medical diagnostic and treatment technology	51.1099	Clinical/medical laboratory science and allied professions, other	N	
+0914	Medical diagnostic and treatment technology	51.1801	Opticianry/ophthalmic dispensing optician	N	
+0914	Medical diagnostic and treatment technology	51.1802	Optometric technician/assistant	N	
+0914	Medical diagnostic and treatment technology	51.1803	Ophthalmic technician/technologist	N	
+0914	Medical diagnostic and treatment technology	51.1899	Ophthalmic and optometric support services and allied professions, other	N	
+0914	Medical diagnostic and treatment technology	51.2307	Orthotist/prosthetist	N	
+0915	Therapy and rehabilitation	19.0501	Foods, nutrition and wellness studies, general	N	
+0915	Therapy and rehabilitation	19.0504	Human nutrition	N	
+0915	Therapy and rehabilitation	19.0599	Foods, nutrition and related services, other	N	
+0915	Therapy and rehabilitation	51.0101	Chiropractic (DC)	N	
+0915	Therapy and rehabilitation	51.0201	Communication sciences and disorders, general	N	
+0915	Therapy and rehabilitation	51.0203	Speech-language pathology/pathologist	N	
+0915	Therapy and rehabilitation	51.0299	Communication disorders sciences and services, other	Y	Other communication disorders sciences and services (except other audiology)
+0915	Therapy and rehabilitation	51.0803	Occupational therapist assistant	N	
+0915	Therapy and rehabilitation	51.0806	Physical therapy technician/assistant	N	
+0915	Therapy and rehabilitation	51.0812	Respiratory therapy technician/assistant	N	
+0915	Therapy and rehabilitation	51.0813	Chiropractic assistant/technician	N	
+0915	Therapy and rehabilitation	51.0816	Speech-language pathology assistant	N	
+0915	Therapy and rehabilitation	51.0817	Rehabilitation assistantCAN	N	
+0915	Therapy and rehabilitation	51.0899	Allied health and medical assisting services, other	Y	Other allied health and medical assisting services in therapy and rehabilitation
+0915	Therapy and rehabilitation	51.1106	Pre-chiropractic studies	N	
+0915	Therapy and rehabilitation	51.1107	Pre-occupational therapy studies	N	
+0915	Therapy and rehabilitation	51.1108	Pre-optometry studies	N	
+0915	Therapy and rehabilitation	51.1109	Pre-physical therapy studies	N	
+0915	Therapy and rehabilitation	51.1502	Psychiatric/mental health services technician	N	
+0915	Therapy and rehabilitation	51.1701	Optometry (OD)	N	
+0915	Therapy and rehabilitation	51.1804	Orthoptics/orthoptist	N	
+0915	Therapy and rehabilitation	51.1901	Osteopathic medicine/osteopathy (DO)	N	
+0915	Therapy and rehabilitation	51.2301	Art therapy/therapist	N	
+0915	Therapy and rehabilitation	51.2302	Dance therapy/therapist	N	
+0915	Therapy and rehabilitation	51.2305	Music therapy/therapist	N	
+0915	Therapy and rehabilitation	51.2306	Occupational therapy/therapist	N	
+0915	Therapy and rehabilitation	51.2308	Physical therapy/therapist	N	
+0915	Therapy and rehabilitation	51.2309	Therapeutic recreation/recreational therapy	N	
+0915	Therapy and rehabilitation	51.2310	Vocational rehabilitation counselling/counsellor	N	
+0915	Therapy and rehabilitation	51.2311	Kinesiotherapy/kinesiotherapist	N	
+0915	Therapy and rehabilitation	51.2312	Assistive/augmentative technology and rehabilitation engineering	N	
+0915	Therapy and rehabilitation	51.2313	Animal-assisted therapy	N	
+0915	Therapy and rehabilitation	51.2314	Rehabilitation science	N	
+0915	Therapy and rehabilitation	51.2399	Rehabilitation and therapeutic professions, other	N	
+0915	Therapy and rehabilitation	51.3101	Dietetics/dietitian (RD)	N	
+0915	Therapy and rehabilitation	51.3102	Clinical nutrition/nutritionist	N	
+0915	Therapy and rehabilitation	51.3103	Dietetic technician (DTR)	N	
+0915	Therapy and rehabilitation	51.3104	Dietitian assistant	N	
+0915	Therapy and rehabilitation	51.3199	Dietetics and clinical nutrition services, other	N	
+0915	Therapy and rehabilitation	51.3501	Massage therapy/therapeutic massage	N	
+0916	Pharmacy	51.0805	Pharmacy technician/assistant	N	
+0916	Pharmacy	51.1103	Pre-pharmacy studies	N	
+0916	Pharmacy	51.2001	Pharmacy (PharmD, BS, BSc, BPharm)	N	
+0916	Pharmacy	51.2008	Clinical, hospital and managed care pharmacy (MS, MSc, PhD)	N	
+0916	Pharmacy	51.2099	Pharmacy, pharmaceutical sciences and administration, other	Y	Other pharmacy
+0916	Pharmacy	60.9999	Dental, medical and veterinary residency programs, other	Y	Pharmacy - residency
+0917	Traditional and complementary medicine and therapy	51.3300	Alternative and complementary medicine and medical systems, general	N	
+0917	Traditional and complementary medicine and therapy	51.3301	Acupuncture and oriental medicine	N	
+0917	Traditional and complementary medicine and therapy	51.3302	Traditional Chinese medicine and Chinese herbology	N	
+0917	Traditional and complementary medicine and therapy	51.3303	Naturopathic medicine/naturopathy (ND)	N	
+0917	Traditional and complementary medicine and therapy	51.3304	Homeopathic medicine/homeopathy	N	
+0917	Traditional and complementary medicine and therapy	51.3305	Ayurvedic medicine/Ayurveda	N	
+0917	Traditional and complementary medicine and therapy	51.3306	Holistic health	N	
+0917	Traditional and complementary medicine and therapy	51.3399	Alternative and complementary medicine and medical systems, other	N	
+0917	Traditional and complementary medicine and therapy	51.3499	Alternative and complementary medical support services, other	N	
+0917	Traditional and complementary medicine and therapy	51.3502	Asian bodywork therapy	N	
+0917	Traditional and complementary medicine and therapy	51.3503	Somatic bodywork	N	
+0917	Traditional and complementary medicine and therapy	51.3599	Somatic bodywork and related therapeutic services, other	N	
+0917	Traditional and complementary medicine and therapy	51.3601	Movement therapy	N	
+0917	Traditional and complementary medicine and therapy	51.3602	Yoga teacher training/yoga therapy	N	
+0917	Traditional and complementary medicine and therapy	51.3603	Hypnotherapy/hypnotherapist	N	
+0917	Traditional and complementary medicine and therapy	51.3699	Movement and mind-body therapies, other	N	
+0917	Traditional and complementary medicine and therapy	51.3701	Aromatherapy	N	
+0917	Traditional and complementary medicine and therapy	51.3702	Herbalism/herbalist	N	
+0917	Traditional and complementary medicine and therapy	51.3703	Polarity therapy	N	
+0917	Traditional and complementary medicine and therapy	51.3704	Reiki	N	
+0917	Traditional and complementary medicine and therapy	51.3799	Energy-based and biologically-based therapies, other	N	
+0919	Health not elsewhere classified	34.0102	Birthing and parenting knowledge and skills (not for credit)	Y	Prenatal class, birthing knowledge and skills
+0919	Health not elsewhere classified	34.0103	Personal health improvement and maintenance (not for credit)	N	
+0919	Health not elsewhere classified	34.0199	Health-related knowledge and skills, other (not for credit)	N	
+0919	Health not elsewhere classified	51.0204	Audiology/audiologist and speech-language pathology/pathologist	N	
+0919	Health not elsewhere classified	51.1199	Health/medical preparatory programs, other	N	
+0919	Health not elsewhere classified	51.2201	Public health, general (MPH, DPH)	N	
+0919	Health not elsewhere classified	51.2202	Environmental health	N	
+0919	Health not elsewhere classified	51.2207	Public health education and promotion	N	
+0919	Health not elsewhere classified	51.2208	Community health and preventive medicine	N	
+0919	Health not elsewhere classified	51.2209	Maternal and child health	N	
+0919	Health not elsewhere classified	51.2210	International public health/international health	N	
+0919	Health not elsewhere classified	51.2212	Behavioural aspects of health	N	
+0919	Health not elsewhere classified	51.2299	Public health, other	N	
+0919	Health not elsewhere classified	51.2799	Medical illustration and informatics, other	N	
+0919	Health not elsewhere classified	51.3201	Bioethics/medical ethics	N	
+0919	Health not elsewhere classified	51.9999	Health professions and related clinical sciences, other	N	
+0919	Health not elsewhere classified	60.9999	Dental, medical and veterinary residency programs, other	Y	Other dental, medical and veterinary residency programs (except Pharmacy - residency)
+0920	Welfare not further defined	44.0000	Human services, general	N	
+0921	Care of the elderly and of disabled adults	19.0702	Adult development and aging	Y	Adult development and aging
+0922	Child care and youth services	19.0701	Human development and family studies, general	Y	Child and youth care
+0922	Child care and youth services	19.0706	Child development	N	
+0922	Child care and youth services	19.0708	Child care and support services management	N	
+0922	Child care and youth services	19.0709	Child care provider/assistant	N	
+0922	Child care and youth services	44.0702	Youth services/administration	Y	Youth services/administration (except youth counsellor)
+0923	Social work and counselling	13.1101	Counsellor education/school counselling and guidance services	N	
+0923	Social work and counselling	13.1102	College student counselling and personnel services	N	
+0923	Social work and counselling	13.1199	Student counselling and personnel services, other	N	
+0923	Social work and counselling	19.0707	Family and community services	N	
+0923	Social work and counselling	34.0104	Addiction prevention and treatment (not for credit)	N	
+0923	Social work and counselling	44.0201	Community organization and advocacy	N	
+0923	Social work and counselling	44.0701	Social work, general	N	
+0923	Social work and counselling	44.0702	Youth services/administration	Y	Youth counsellor
+0923	Social work and counselling	44.0799	Social work, other	N	
+0923	Social work and counselling	51.1501	Substance abuse/addiction counselling	N	
+0923	Social work and counselling	51.1503	Clinical/medical social work	N	
+0923	Social work and counselling	51.1504	Community health services/liaison/counselling	N	
+0923	Social work and counselling	51.1505	Marriage and family therapy/counselling	N	
+0923	Social work and counselling	51.1506	Clinical pastoral counselling/patient counselling	N	
+0923	Social work and counselling	51.1508	Mental health counselling/counsellor	N	
+0923	Social work and counselling	51.1509	Genetic counselling/counsellor	N	
+0923	Social work and counselling	51.1599	Mental and social health services and allied professions, other	N	
+0929	Welfare not elsewhere classified	19.0710	Developmental services worker	N	
+0929	Welfare not elsewhere classified	19.0799	Human development, family studies and related services, other	Y	Other services related to human development and family studies
+0929	Welfare not elsewhere classified	44.9999	Public administration and social service professions, other	N	
+1011	Domestic services	12.0301	Funeral service and mortuary science, general	N	
+1011	Domestic services	12.0302	Funeral direction/service	N	
+1011	Domestic services	12.0303	Mortuary science and embalming/embalmer	N	
+1011	Domestic services	12.0399	Funeral service and mortuary science, other	N	
+1011	Domestic services	19.0000	Work and family studies	N	
+1011	Domestic services	19.0101	Family and consumer sciences/human sciences, general	N	
+1011	Domestic services	19.0201	Business, family and consumer sciences/human sciences	Y	Family and consumer studies, combined business and human sciences
+1011	Domestic services	19.0401	Family resource management studies, general	N	
+1011	Domestic services	19.0402	Consumer economics	N	
+1011	Domestic services	19.0499	Family and consumer economics and related services, other	N	
+1011	Domestic services	19.0999	Apparel and textiles, other	Y	Dry cleaning and clothing maintenance, sewing, cleaner and presser
+1011	Domestic services	19.9999	Family and consumer sciences/human sciences, other	N	
+1011	Domestic services	36.0112	Cooking and other domestic skills (not for credit)	N	
+1012	Hair and beauty services	12.0401	Cosmetology/cosmetologist, general	N	
+1012	Hair and beauty services	12.0402	Barbering/barber	N	
+1012	Hair and beauty services	12.0404	Electrolysis/electrology and electrolysis technician	N	
+1012	Hair and beauty services	12.0406	Makeup artist/specialist	N	
+1012	Hair and beauty services	12.0407	Hair styling/stylist and hair design	N	
+1012	Hair and beauty services	12.0408	Facial treatment specialist/facialist	N	
+1012	Hair and beauty services	12.0409	Aesthetician/esthetician and skin care specialist	N	
+1012	Hair and beauty services	12.0410	Nail technician/specialist and manicurist	N	
+1012	Hair and beauty services	12.0411	Permanent cosmetics/makeup and tattooing	N	
+1012	Hair and beauty services	12.0414	Master aesthetician/esthetician	N	
+1012	Hair and beauty services	12.0499	Cosmetology and related personal grooming services, other	N	
+1012	Hair and beauty services	31.0507	Physical fitness technician	N	
+1013	Hotel, restaurants and catering	12.0500	Cooking and related culinary arts, general	N	
+1013	Hotel, restaurants and catering	12.0502	Bartending/bartender	N	
+1013	Hotel, restaurants and catering	12.0503	Culinary arts/chef training	N	
+1013	Hotel, restaurants and catering	12.0504	Restaurant, culinary and catering management/manager	N	
+1013	Hotel, restaurants and catering	12.0505	Food preparation/professional cooking/kitchen assistant	N	
+1013	Hotel, restaurants and catering	12.0507	Food service, waiter/waitress and dining room management/manager	N	
+1013	Hotel, restaurants and catering	12.0508	Institutional food workers	N	
+1013	Hotel, restaurants and catering	12.0510	Wine steward/sommelier	N	
+1013	Hotel, restaurants and catering	12.0599	Culinary arts and related services, other	Y	Culinary arts and related services, other (except programs related to food processing)
+1013	Hotel, restaurants and catering	31.9999	Parks, recreation, leisure and fitness studies, other	Y	Casino dealer, croupier, gaming attendant
+1013	Hotel, restaurants and catering	52.0901	Hospitality administration/management, general	N	
+1013	Hotel, restaurants and catering	52.0904	Hotel/motel administration/management	N	
+1013	Hotel, restaurants and catering	52.0905	Restaurant/food services management	N	
+1013	Hotel, restaurants and catering	52.0909	Hotel, motel, and restaurant management	N	
+1014	Sports	01.0507	Equestrian/equine studies	Y	Equestrian coaching, equestrian sports, equestrian training, riding instruction, horse dressage
+1014	Sports	31.0501	Health and physical education/fitness, general	N	
+1014	Sports	31.0504	Sport and fitness administration/management	Y	Sport and fitness administration/management (except recreation and leisure administration/management)
+1014	Sports	31.0505	Kinesiology and exercise science	N	
+1014	Sports	31.0599	Health and physical education/fitness, other	N	
+1014	Sports	36.0108	Sports and exercise (not for credit)	N	
+1014	Sports	51.0913	Athletic training/trainer	N	
+1015	Travel, tourism and leisure	03.0207	Natural resource recreation and tourism	N	
+1015	Travel, tourism and leisure	31.0101	Parks, recreation and leisure studies	N	
+1015	Travel, tourism and leisure	31.0301	Parks, recreation and leisure facilities management, general	N	
+1015	Travel, tourism and leisure	31.0302	Golf course operation and grounds management	Y	Golf club management, golf club management and operations
+1015	Travel, tourism and leisure	31.0399	Parks, recreation and leisure facilities management, other	N	
+1015	Travel, tourism and leisure	31.0504	Sport and fitness administration/management	Y	Recreation and leisure administration/management
+1015	Travel, tourism and leisure	31.0601	Outdoor education	N	
+1015	Travel, tourism and leisure	31.9999	Parks, recreation, leisure and fitness studies, other	Y	Parks, recreation, leisure and fitness studies, other (except casino related programs)
+1015	Travel, tourism and leisure	36.0101	Leisure and recreational activities, general (not for credit)	N	
+1015	Travel, tourism and leisure	36.0103	Board, card and role-playing games (not for credit)	N	
+1015	Travel, tourism and leisure	36.0109	Travel and exploration (not for credit)	N	
+1015	Travel, tourism and leisure	36.0111	Collecting (not for credit)	N	
+1015	Travel, tourism and leisure	36.0199	Leisure and recreational activities, other (not for credit)	Y	Leisure and recreational activities, other (not for credit)(except for  genealogy)
+1015	Travel, tourism and leisure	49.0199	Air transportation, other	Y	Airline ticket agent
+1015	Travel, tourism and leisure	52.0903	Tourism and travel services management	N	
+1015	Travel, tourism and leisure	52.1905	Tourism and travel services marketing operations	N	
+1015	Travel, tourism and leisure	52.1906	Tourism promotion operations	N	
+1019	Personal services not elsewhere classified	12.9999	Personal and culinary services, other	N	
+1019	Personal services not elsewhere classified	52.0906	Resort management	N	
+1019	Personal services not elsewhere classified	52.0907	Meeting and event planning	N	
+1019	Personal services not elsewhere classified	52.0908	Casino management	N	
+1019	Personal services not elsewhere classified	52.0999	Hospitality administration/management, other	N	
+1021	Community sanitation	15.0506	Water quality and wastewater treatment management and recycling technology/technician	Y	Water and waste water treatment
+1022	Occupational health and safety	15.0701	Occupational safety and health technology/technician	N	
+1022	Occupational health and safety	15.0703	Industrial safety technology/technician	N	
+1022	Occupational health and safety	15.0704	Hazardous materials information systems technology/technician	N	
+1022	Occupational health and safety	15.0799	Quality Control and Safety Technologies/Technicians, Other	Y	Other safety technologies/technicians
+1022	Occupational health and safety	37.0102	Stress management and coping skills (not for credit)	N	
+1022	Occupational health and safety	51.2206	Occupational health and industrial hygiene	N	
+1031	Military and defence	28.0801	Military science, leadership and operational artCAN	N	
+1031	Military and defence	29.0501	Military technologies and applied sciencesCAN	N	
+1031	Military and defence	45.0902	National security policy studies	N	
+1032	Protection of persons and property	22.0399	Legal support services, other	Y	Bailiff, sheriff
+1032	Protection of persons and property	43.0102	Corrections	N	
+1032	Protection of persons and property	43.0103	Criminal justice/law enforcement administration	N	
+1032	Protection of persons and property	43.0107	Criminal justice/police science	N	
+1032	Protection of persons and property	43.0109	Security and loss prevention services	N	
+1032	Protection of persons and property	43.0110	Juvenile corrections	N	
+1032	Protection of persons and property	43.0111	Criminalistics and criminal science	N	
+1032	Protection of persons and property	43.0112	Securities services administration/management	N	
+1032	Protection of persons and property	43.0113	Corrections administration	N	
+1032	Protection of persons and property	43.0114	Law enforcement investigation and interviewing	N	
+1032	Protection of persons and property	43.0115	Law enforcement record keeping and evidence management	N	
+1032	Protection of persons and property	43.0116	Cyber/computer forensics and counterterrorism	N	
+1032	Protection of persons and property	43.0117	Financial forensics and fraud investigation	N	
+1032	Protection of persons and property	43.0118	Law enforcement intelligence analysis	N	
+1032	Protection of persons and property	43.0119	Critical incident response/special police operations	N	
+1032	Protection of persons and property	43.0120	Protective services operations	N	
+1032	Protection of persons and property	43.0121	Suspension and debarment investigation	N	
+1032	Protection of persons and property	43.0122	Maritime law enforcement	N	
+1032	Protection of persons and property	43.0123	Cultural/archaeological resources protection	N	
+1032	Protection of persons and property	43.0199	Criminal justice and corrections, other	N	
+1032	Protection of persons and property	43.0201	Fire prevention and safety technology/technician	N	
+1032	Protection of persons and property	43.0202	Fire services administration	N	
+1032	Protection of persons and property	43.0203	Fire science/firefighting	N	
+1032	Protection of persons and property	43.0204	Fire systems technology	N	
+1032	Protection of persons and property	43.0205	Fire/arson investigation and prevention	N	
+1032	Protection of persons and property	43.0206	Wildland/forest firefighting and investigation	N	
+1032	Protection of persons and property	43.0299	Fire protection, other	N	
+1032	Protection of persons and property	43.0302	Crisis/emergency/disaster management	N	
+1032	Protection of persons and property	43.0399	Security and protective services, specialized programs, other	N	
+1032	Protection of persons and property	43.9999	Security and protective services, other	N	
+1032	Protection of persons and property	49.0304	Diver, professional and instructor	Y	Professional diver
+1041	Transport services	36.0119	Aircraft pilot (private) (not for credit)	N	
+1041	Transport services	49.0101	Aeronautics/aviation/aerospace science and technology, general	N	
+1041	Transport services	49.0102	Airline/commercial/professional pilot and flight crew	N	
+1041	Transport services	49.0104	Aviation/airway management and operations	N	
+1041	Transport services	49.0105	Air traffic controller	N	
+1041	Transport services	49.0106	Airline flight attendant	N	
+1041	Transport services	49.0199	Air transportation, other	Y	Air transportation, other (except airline ticket agent)
+1041	Transport services	49.0205	Truck and bus driver/commercial vehicle operator and instructor	Y	Truck, bus and commercial vehicle driver/operator
+1041	Transport services	49.0206	Mobile crane operation/operator	N	
+1041	Transport services	49.0207	Flagging and traffic control	N	
+1041	Transport services	49.0208	Railroad and railway transportation	N	
+1041	Transport services	49.0299	Ground transportation, other	N	
+1041	Transport services	49.0309	Nautical science/merchant marine officer	N	
+1041	Transport services	49.0399	Marine transportation, other	N	
+1041	Transport services	49.9999	Transportation and materials moving, other	N	
+1041	Transport services	52.0209	Transportation/mobility management	N	
+1041	Transport services	52.0410	Traffic, customs and transportation clerk/technician	N	
+9999	Field unknown	30.9999	Multidisciplinary/interdisciplinary studies, other	N	

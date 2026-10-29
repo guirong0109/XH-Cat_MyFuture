@@ -1,6 +1,6 @@
 # CV Extraction and Structured Profile Module — Design
 
-Date: 2026-10-29 · Status: approved in brainstorming (3 sections), waiting for written-spec review
+Date: 2026-10-29 · Status: approved; aligned box by box with `architecture-cv-profile.html` on 29 Oct (the diagram wins wherever this text differed)
 Folder: `C:\Users\guiro\XH_Cat_Final` · Starting point: `docs/mockup-journey.html`
 Requirements: "FutureReady MY — CV Extraction and User Profile Technical Specification" (Cases A/B/C, §1–§14), referred to here as **the CV spec**. Structure reference: `XH-Cat_Domain1/docs/architecture-cv-profile.html` (diagram only; nothing else from that folder).
 
@@ -18,11 +18,11 @@ Build the CV/profile module inside the mockup: a user with or without a CV ends 
 | Scoring | **No scoring from the previous project.** The mockup's old formula is removed. After Confirm a "Your profile" summary is shown; Radar, Matching, Role, Roadmap, SDG and Futures say "Next module — matching engine not built yet" |
 | Code layout | Approach A: `public/` (mockup split into browser ES modules, no build step), `shared/` (pure modules used by browser, server and tests), `server/` (Express) |
 | Server | Node ≥ 22.12 + Express; packages only `express`, `pdfjs-dist`; dev `vitest` (user OK before install) |
-| Skill ids | O\*NET 31.0 skills (Software Skills examples + Essential/Transferable skill elements) + a reviewed alias table |
-| Occupations | Dated O\*NET 31.0 snapshot (CC BY 4.0, no API key) + eMASCO alongside and as fallback |
+| Skill ids | O\*NET 31.0 skills (Software Skills examples + Essential/Transferable skill elements) |
+| Occupations | Diagram "live-first with verified fallback": 1 O\*NET live (timeout, retry, rate limit; ok → update cache) → 2 cached snapshot (O\*NET 31.0, marked "cached") → 3 eMASCO reference (marked "alternative source") → 4 unavailable (structured error, never invented) |
 | AI re-extraction | RunPod serverless open model first, Claude API (`claude-opus-5-5`) backup, consent first |
 | Accounts | Cloudflare D1 (HTTP API); R2 keeps the uploaded CV ≤ 1 day for the AI re-read |
-| Embedding model (L3) | None. L3 = alias table; the optional AI re-read is the second safety net |
+| L3 semantic match | An embedding model hosted on **RunPod Inference** (diagram box "RunPod Inference — hosts the model (L3)"); its similarity cutoff is set by **Model Eval** (precision · recall · latency) on synthetic CVs |
 | Languages | EN / BM / 中文; the interface language changes only by the user |
 
 ## 3. Layout
@@ -38,13 +38,15 @@ shared/strings/en.js ms.js zh.js
 server/index.js app.js errors.js
 server/cv/                   validateFile, zip, readText, detectLanguage, patterns, extract, reextract, reextractPrompt
 server/skills/               onetSkills (catalogue), normalize
+server/cv/semantic.js        L3 client for the RunPod-hosted embedding model
+server/occupations/onetLive.js  O*NET live client (timeout, retry, rate limit) + cache update
+scripts/model-eval.mjs       Model Eval: precision, recall, latency of L3 on synthetic CVs
 server/occupations/          onet, lookup
 server/store/                d1, r2, migrations.sql
 server/auth.js  server/routes/{cv,skills,occupations,profiles,auth}.js
 pipeline/fetch_onet.py       downloads O*NET 31.0 and writes data/onet/
 data/onet/                   occupations, job titles, skills, software skills + manifest (version, URL, date, hashes)
 data/emasco/occupations.json code, title, URL of eMASCO occupations (copied data, dated)
-data/skills/aliases.json     reviewed aliases → O*NET skill id (team draft)
 data/SOURCES.md              source, URL, date, licence of every data file
 tests/                       Vitest; tests/helpers (SQLite stand-in for D1, synthetic PDF/DOCX builders)
 ```
@@ -81,18 +83,24 @@ The CV spec §7.1 shape, with these rules:
 3. **detectLanguage:** `en` / `ms` / `zh` / `mixed` / `uncertain` (Han characters vs English and Malay common-word lists).
 4. **L1** sections by heading words in EN/BM/中文 (Education/Pendidikan/教育, Experience/Pengalaman/工作经验, Skills/Kemahiran/技能, Certifications/Sijil/证书, Projects/Projek/项目, Training/Latihan/培训, Objective/Objektif/求职目标).
 5. **L2** rules: qualifications (SPM, STPM, Certificate (education section only), Diploma, Degree/Bachelor/Ijazah/Sarjana Muda/学士, Master/Sarjana/硕士, PhD/博士) with field of study, institution, year; jobs from date ranges (English and Malay months, Present/Kini/至今) with years of experience as `inferred`; skills from the skills section and catalogue names anywhere (whole words); certificates, projects, training from their sections; lines about age, gender, religion, race or IC number skipped.
-6. **L3** alias table (`data/skills/aliases.json`) maps synonyms (JS → JavaScript, ML → Machine Learning, Malay/Chinese names) to O\*NET ids.
-7. **L4** merge duplicates, validate, list uncertain items (`unknown_skill`, `ambiguous_alias`).
+6. **L3** semantic match: CV lines and terms the rules missed are compared by the RunPod-hosted embedding model with O\*NET skill and occupation names (e.g. JS = JavaScript). Only matches at or above the documented cutoff from Model Eval are kept, marked `inferred`, `method:'embedding'`, with the similarity as match confidence. A high similarity is not proof of equivalence: these stay Unverified for the user. If the endpoint is not configured or fails, L3 is skipped and `warnings` says so.
+7. **L4** merge duplicates, validate, list uncertain items (`unknown_skill`, `low_similarity`). Explicit vs inferred kept apart.
 
 Response: `{status:'ok', extractionId, language, profile (draft), uncertain[], extractor:{version:'cv-1.0', layers}, warnings[]}`. Errors: `unsupported_type` 415, `too_large` 413, `encrypted` / `corrupted` / `no_text` / `scanned_no_ocr` 422, `timeout` 504 (20 s). The file goes to R2 as `cv-temp/<extractionId>` when R2 is configured. CV text is never logged.
 
 ## 7. Skills (`POST /api/skills/normalize`)
 
-Catalogue from the O\*NET 31.0 snapshot: Software Skills examples → id `onet:tech:<lower-case example>` with category = O\*NET element name (e.g. "Development environment software"); Essential and Transferable skill elements → id `onet:el:<element id>` (e.g. `onet:el:2.A.1.a` Reading Comprehension). Match order: exact catalogue name (case-insensitive, trailing version removed) → alias table → whole-word catalogue name inside a short phrase (≤ 5 words). Never a substring of a longer word; the original wording is kept; unknown → `canonicalId:null`. Duplicates merge (one per id, all original wordings kept).
+Catalogue from the O\*NET 31.0 snapshot: Software Skills examples → id `onet:tech:<lower-case example>` with category = O\*NET element name (e.g. "Development environment software"); Essential and Transferable skill elements → id `onet:el:<element id>` (e.g. `onet:el:2.A.1.a` Reading Comprehension). Match order: exact catalogue name (case-insensitive, trailing version removed) → whole-word catalogue name inside a short phrase (≤ 5 words) → L3 semantic match (§6) at or above the cutoff. Never a substring of a longer word; the original wording is kept; unknown → `canonicalId:null`. Duplicates merge (one per id, all original wordings kept).
 
 ## 8. Occupations (`GET /api/occupations/search?q=`)
 
-O\*NET 31.0 snapshot checked against its manifest hashes; search = exact title → job titles (all codes sharing a title) → word search with all words → looser word search (≤ 5, labelled "similar words"); eMASCO candidates by title alongside. States: `ok_snapshot` (O\*NET answered), `ok_alternative` (snapshot missing or damaged, eMASCO answered, warning given), `no_match` (sources worked, nothing matched), `unavailable` (no source; no candidates). Every candidate: source, code, title, how matched, URL; the response: source, version, fetched date, warning. Similar wording never makes two occupations "the same": the user picks. The CV spec's "live O\*NET request" step is represented by the snapshot refresh script (`pipeline/fetch_onet.py`); the screen says "snapshot, downloaded <date>".
+Live-first with verified fallback, exactly as the diagram:
+1. **O\*NET live** — O\*NET Web Services keyword search (credentials in env, `ONET_API_KEY`; auth per the O\*NET Web Services documentation), 8 s timeout, at most 2 retries with backoff, at most 5 requests per second; a success updates the cache (`data/cache/onet/<query>.json` with source, URL, code, version, fetched time, `validated:true`).
+2. **Cached snapshot** — when the live call fails or no key is set: a cached result for the query, else the dated O\*NET 31.0 snapshot (`data/onet/`, checked against its manifest hashes), marked "cached".
+3. **eMASCO reference** — when no O\*NET result can be produced: eMASCO occupations by title, marked "alternative source".
+4. **Unavailable** — structured error, no candidates, nothing invented.
+
+Response states (diagram): `live` · `cached` · `alternative` · `no_match` (valid zero results) · `failed` (no fallback). An outage is never reported as `no_match`. eMASCO candidates by title are listed with O\*NET results for Malaysian context (CV spec §6.1 step 5). Every candidate: source, code, title, how matched, URL; every response: state, source, version, fetched time, cache status, warning. Many candidates are allowed; similar wording never makes two occupations "the same": the user picks.
 
 ## 9. AI re-extraction (`POST /api/cv/reextract {extractionId, consent}`)
 
@@ -103,7 +111,7 @@ Consent box names the services. Providers: RunPod serverless OpenAI-compatible e
 - **Guest:** minimized profile (no raw CV, no CV quotes) in `localStorage`; resume prompt (continue / start new / delete); works without storage.
 - **D1** tables `users`, `sessions`, `profiles(id, user_id, version, status, json, updated_at)`; scrypt passwords; cookie `fr_session` HttpOnly Secure SameSite=Lax, 7 days; sign-in limit 10 / 15 min; routes `/api/auth/{signup,login,logout,me}` and `DELETE /api/auth/me` (delete my data incl. any temporary CV).
 - **Profiles:** `POST /api/profiles/validate` (check + normalise, saves nothing), `POST /api/profiles` (confirmed only), `GET /api/profiles` and `/:id`, `PATCH /api/profiles/:id {version, changes}` (named fields only; old version → 409), `GET /api/profiles/:id/mappings`. Another user's profile → 404.
-- **R2:** `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule (user sets it up).
+- **R2:** `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule (user sets it up). Raw file and text are deleted after use; extraction sessions expire; **CVs never become training data**.
 - Without D1/R2 settings: accounts say "not available on this server", the AI re-read says "not configured"; guests work fully.
 
 ## 11. Errors, privacy, testing
@@ -117,12 +125,12 @@ Consent box names the services. Providers: RunPod serverless OpenAI-compatible e
 
 1. Split the mockup into `public/` + `shared/`, remove the old formula, add the "Next module" screens; Express serves it.
 2. Profile schema, form state, manual form (Case B) and review/confirm (Case C) with the summary.
-3. O\*NET snapshot + skill catalogue + aliases + normaliser; occupation lookup and picker.
-4. Case A: file checks, reading, language, extraction, upload screen.
+3. O\*NET snapshot + skill catalogue + normaliser; O\*NET live client + cache + eMASCO fallback; occupation picker.
+4. Case A: file checks, reading, language, extraction (L1, L2, L4), upload screen; then L3 semantic match on RunPod Inference + Model Eval (cutoff, precision, recall, latency).
 5. Accounts (D1), saved profiles, R2 temporary CV, delete my data.
 6. AI re-extraction and the compare view.
 7. Evaluation script, acceptance run, `README.md`, `data/SOURCES.md`, Technical & Tools Declaration.
 
 ## 13. Risks
 
-Under 3 days for all seven steps; step 6 is the most likely to be thin. O\*NET skill names are US-centred (aliases help; the team should review `aliases.json`). D1/R2/RunPod need the user's accounts and keys; until then those parts report "not available". The mockup's look changes at the final stage, so screens keep logic out of markup.
+Under 3 days for all seven steps; step 6 is the most likely to be thin. O\*NET skill names are US-centred; L3 semantic match covers other wordings only above the evaluated cutoff. D1/R2/RunPod/O\*NET Web Services need the user's accounts and keys; until then those parts report "not available" (lookup answers `cached`, L3 is skipped). The mockup's look changes at the final stage, so screens keep logic out of markup.

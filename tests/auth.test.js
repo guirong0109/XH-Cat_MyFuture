@@ -107,18 +107,6 @@ describe('account routes', () => {
     }
   })
 
-  it('the 11th sign-up within 15 minutes from one address → 429', async () => {
-    const app = await start()
-    try {
-      for (let i = 0; i < 10; i++) expect((await app.call('POST', '/api/auth/signup', { email: `s${i}@example.com`, password: 'password 123' })).status).toBe(201)
-      const blocked = await app.call('POST', '/api/auth/signup', { email: 's10@example.com', password: 'password 123' })
-      expect(blocked.status).toBe(429)
-      expect((await blocked.json()).error.code).toBe('too_many_attempts')
-    } finally {
-      await app.close()
-    }
-  })
-
   it('behind a trusted proxy each visitor has their own sign-in limit', async () => {
     const app = await start({ trustProxy: 1 })
     try {

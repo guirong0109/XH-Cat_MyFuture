@@ -22,7 +22,7 @@ const MESSAGES = {
 }
 const fail = (response, code) => sendError(response, MESSAGES[code][0], code, MESSAGES[code][1])
 
-export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, tempStore = null, reextractor = null, limiter = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
+export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, tempStore = null, reextractor = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
   const router = express.Router()
   const rawBody = (request, response, next) =>
     express.raw({ type: () => true, limit: maxBytes })(request, response, (error) => {
@@ -30,8 +30,7 @@ export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutof
       return error.type === 'entity.too.large' ? fail(response, 'too_large') : sendError(response, 400, 'bad_body', 'The upload could not be read.', true)
     })
 
-  router.post('/api/cv/extract', (request, response, next) =>
-    (limiter && !limiter.hit(request.ip) ? sendError(response, 429, 'rate_limited', 'Too many uploads. Please wait a minute.', true) : next()), rawBody, async (request, response) => {
+  router.post('/api/cv/extract', rawBody, async (request, response) => {
     const buffer = Buffer.isBuffer(request.body) ? request.body : Buffer.alloc(0)
     const checked = validateFile(buffer, { maxBytes })
     if (!checked.ok) return fail(response, checked.code)

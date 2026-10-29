@@ -16,7 +16,6 @@ import { createAuth } from './auth.js'
 import { authRoutes } from './routes/auth.js'
 import { createD1FromEnv } from './store/d1.js'
 import { createR2FromEnv } from './store/r2.js'
-import { createWindowLimiter } from './rateLimit.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -35,16 +34,13 @@ export function createApp({
   semantic = createSemanticFromEnv(),
   llmProviders = providersFromEnv(),
   onetLive = createOnetLiveFromEnv(),
-  // Per-address limits on the costly public routes (overridable in tests).
-  rateLimits = {},
-  // Behind a reverse proxy set TRUST_PROXY (e.g. 1 = one proxy hop) so limits apply per visitor, not per proxy.
+  // Behind a reverse proxy set TRUST_PROXY (e.g. 1 = one proxy hop) so the sign-in and AI limits count each visitor.
   trustProxy = process.env.TRUST_PROXY ? (Number.isFinite(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : process.env.TRUST_PROXY) : false,
   extraRoutes = null,
 } = {}) {
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', trustProxy)
-  const limits = { extract: { limit: 30, windowMs: 60000 }, search: { limit: 60, windowMs: 60000 }, ...rateLimits }
   app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive }
 
   // Which optional services this server has, so the screens can say what is kept where.
@@ -85,7 +81,7 @@ export function createApp({
       return reextractor.run(args)
     },
   }
-  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, limiter: createWindowLimiter({ ...limits.extract, now }), now }))
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,
@@ -94,7 +90,7 @@ export function createApp({
     emascoLoader: async () => JSON.parse(await readFile(path.join(dataDir, 'emasco', 'occupations.json'), 'utf8')),
     now,
   })
-  app.use(occupationRoutes({ lookup, limiter: createWindowLimiter({ ...limits.search, now }) }))
+  app.use(occupationRoutes({ lookup }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

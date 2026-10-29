@@ -41,11 +41,10 @@ const publicUser = (row) => ({ id: row.id, email: row.email, language: row.langu
 const DUMMY = hashPassword('dummy password', '00000000000000000000000000000000')
 
 export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
-  // Sign-ins and sign-ups per address (each scrypt hash costs real CPU time).
+  // Sign-in limit per address (spec §10: 10 per 15 minutes).
   const signIns = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
-  const signUps = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
-  const countAttempt = (limiter, address) => {
-    if (!limiter.hit(address)) throw new AuthError(429, 'too_many_attempts', true)
+  const countAttempt = (address) => {
+    if (!signIns.hit(address)) throw new AuthError(429, 'too_many_attempts', true)
   }
 
   async function newSession(userId) {
@@ -55,8 +54,7 @@ export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
     return token
   }
 
-  async function signup({ email, password, language, address: from = 'unknown' }) {
-    countAttempt(signUps, from)
+  async function signup({ email, password, language }) {
     const address = String(email ?? '').trim().toLowerCase()
     if (!EMAIL.test(address) || address.length > 254) throw new AuthError(400, 'bad_email')
     if (typeof password !== 'string' || password.length < MIN_PASSWORD || password.length > MAX_PASSWORD) throw new AuthError(400, 'weak_password')
@@ -70,7 +68,7 @@ export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
   }
 
   async function login({ email, password, address }) {
-    countAttempt(signIns, address)
+    countAttempt(address)
     const { rows } = await d1.query('SELECT * FROM users WHERE email = ?', [String(email ?? '').trim().toLowerCase()])
     const row = rows[0]
     const ok = row

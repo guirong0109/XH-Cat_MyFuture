@@ -4,7 +4,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -42,6 +42,7 @@ const NEW_RECORD = {
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
 const SKILLS_SECTION = 2
+const PREFERENCES_SECTION = 4
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
@@ -56,13 +57,23 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
 function showSection() {
   if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
   if (state.screen === 'form' && state.section === SKILLS_SECTION) loadSuggestions()
+  if (state.screen === 'form' && state.section === PREFERENCES_SECTION) loadInterests()
+}
+
+// The O*NET interest areas for "Career interests and fields", fetched once (again after a failure).
+async function loadInterests() {
+  if (state.interests && !state.interests.failed) return
+  state.interests = { loading: true }
+  const out = await api('GET', '/api/interests')
+  state.interests = out.ok ? out.data : { failed: true }
+  if (state.screen === 'form' && state.section === PREFERENCES_SECTION) render()
 }
 
 // Skills suggested from each linked field of study, fetched once per field while the Skills section is open.
@@ -114,7 +125,7 @@ const actions = {
   loadSaved: async () => {
     const out = await accountApi.loadProfile(state.profile.profileId)
     if (!out.ok) return render()
-    state.profile = out.data.profile
+    state.profile = mergeCareerFields(out.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
     go('summary')
@@ -215,6 +226,7 @@ const actions = {
     const skill = { ...makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' }), suggestedFrom: from }
     update({ ...state.profile, skills: [...state.profile.skills, skill] })
   },
+  interestRemove: (i) => update(setField(state.profile, 'preferences.careerInterests', state.profile.preferences.careerInterests.filter((_, j) => j !== Number(i)))),
   suggestMore: (code) => { state.suggestMore = { ...state.suggestMore, [code]: true }; render() },
   pickSkill: (arg) => {
     const [i, id] = arg.split('|')
@@ -354,7 +366,7 @@ async function accountCall(kind) {
   if (local?.profileId && local.profileId !== latest.data?.id) state.profile = { ...local, profileId: null, profileVersion: 0 }
   const olderCopy = local?.profileId && local.profileId === latest.data?.id && local.profileVersion < latest.data.version
   if (latest.ok && latest.data && (!state.profile || isUntouched(state.profile) || olderCopy)) {
-    state.profile = latest.data.profile
+    state.profile = mergeCareerFields(latest.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
     return go('summary')
@@ -388,6 +400,13 @@ function onChange(target) {
     if (raw !== '') value = d.kind === 'number' ? (Number.isFinite(Number(raw)) && Number(raw) >= 0 ? val(Number(raw)) : DECLINED) : val(raw)
     if (value === DECLINED) state.answering = { ...state.answering, [d.field]: false }
     return update(setField(state.profile, d.field, value))
+  }
+  // An interest area chosen in the dropdown joins the list (several allowed).
+  if (d.interest !== undefined) {
+    const area = state.interests?.areas?.find((a) => a.id === target.value)
+    if (!area) return undefined
+    const chosen = { source: 'onet', id: area.id, name: area.name, version: state.interests.version }
+    return update(setField(state.profile, 'preferences.careerInterests', [...state.profile.preferences.careerInterests, chosen]))
   }
   // "Prefer not to say" or "I'll answer" on a typed field: answering opens the box; nothing is saved until typed.
   if (d.choice) {
@@ -497,6 +516,7 @@ window.addEventListener('popstate', () => { state.screen = location.hash.slice(1
 const previous = store.load()
 if (previous) {
   state = { ...fresh(), ...previous }
+  if (state.profile) state.profile = mergeCareerFields(state.profile)
   saved = true
 }
 if (state.section >= SECTIONS.length) state.section = 0

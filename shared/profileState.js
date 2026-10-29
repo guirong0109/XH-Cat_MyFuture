@@ -15,7 +15,7 @@ const LIST_KEYS = {
   projects: (r) => String(r.title ?? '').toLowerCase(),
   training: (r) => String(r.name ?? '').toLowerCase(),
 }
-const OTHER_LISTS = ['employment.industries', 'preferences.careerInterests', 'preferences.preferredCareerFields']
+const OTHER_LISTS = ['employment.industries', 'preferences.careerInterests']
 const EMPTY_STATE = { state: 'empty' }
 
 const clone = (value) => (value === undefined ? undefined : structuredClone(value))
@@ -127,6 +127,17 @@ export function userEditedPaths(draft, current) {
     }
   }
   return edited
+}
+
+// "Career interests" and "preferred career fields" became one list (owner, 30 Oct). A profile saved before keeps
+// what was typed in either box, each text once.
+export function mergeCareerFields(profile) {
+  if (!profile?.preferences || !('preferredCareerFields' in profile.preferences)) return profile
+  const { preferredCareerFields, ...preferences } = profile.preferences
+  const interests = [...(preferences.careerInterests ?? [])]
+  const seen = new Set(interests.map((item) => String(item?.name ?? item).toLowerCase()))
+  for (const text of preferredCareerFields ?? []) if (!seen.has(String(text).toLowerCase())) interests.push(text)
+  return { ...profile, preferences: { ...preferences, careerInterests: interests } }
 }
 
 // What a guest keeps in the browser: no CV quotes and no raw text.

@@ -59,6 +59,7 @@ that failed first. The branch was merged into `main` via PR #1
 | Shared (browser + server + tests) | `shared/profileSchema.js`, `shared/profileState.js`, `shared/flow.js`, `shared/guestStore.js` (localStorage key `futureready-profile-v1`), `shared/i18n.js`, `shared/strings/{en,ms,zh}.js` (same keys, enforced by a test) |
 | Browser (ES modules, no build) | `public/index.html`, `public/styles.css`, `public/js/app.js` (state, router, all actions), `public/js/{api,cvApi,accountApi,ui}.js`, `public/js/screens/*.js`, `public/js/components/*.js` |
 | Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/isced/*.tsv` + `manifest.json` (ISCED-F 2013, 124 fields, CIP bridge to O\*NET), `data/SOURCES.md` |
+| Career interests and fields (30 Oct, owner request) | `data/onet/interest_areas.tsv` (from `pipeline/fetch_onet.py`), `server/interests/interestAreas.js`, `GET /api/interests`, `interestField` in `public/js/screens/form.js`, `mergeCareerFields` in `shared/profileState.js` |
 | Skills from field of study (30 Oct, owner request) | `server/fields/fieldSkills.js`, route `GET /api/fields/:code/skills` in `server/routes/fields.js`, `public/js/components/fieldSuggestions.js` (Skills section) |
 | Search pickers (30 Oct, owner request) | `public/js/components/searchPicker.js`; APIs `GET /api/skills/search` (`searchSkills` in `server/skills/onetSkills.js`) and `GET /api/fields/search` (`server/fields/isced.js`, `server/routes/fields.js`); roles reuse `/api/occupations/search`, now matching word starts |
 | Pipeline | `pipeline/fetch_onet.py`, `pipeline/fetch_isced.py`, `pipeline/tests/test_fetch_onet.py`, `pipeline/tests/test_fetch_isced.py` |
@@ -122,7 +123,7 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **29 files, 217 tests passed** on this branch (30 Oct); `main` still has 179 |
+| `npm test` (= `vitest run`) | **31 files, 229 tests passed** on this branch (30 Oct); `main` still has 179 |
 | `python -m unittest discover pipeline/tests` | **8 tests OK** |
 | `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
@@ -159,8 +160,12 @@ Each item below says what you will see and what to do.
   weak ones can appear, e.g. Accounting → Programming 1.76 against 1.60. Changing the rule is the owner's call.
 - **Suggestions are click-to-add chips (owner, 30 Oct).** The owner found a ticked list with reasons too long. The
   reason is the chip's hover text; 8 show first.
-- **Test in the browser on `127.0.0.1:3200`** when the owner is using `localhost:3200`. Each address has its own
-  saved progress, so your clicks don't change theirs.
+- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`). The owner may click in any Browser
+  pane tab, including `localhost`, `127.0.0.1` and `[::1]`. Each address has its own saved progress. Never edit
+  localStorage in a tab the owner has touched. On 30 Oct a test script did that in the `[::1]` tab: it set career
+  interests to "Data" and "Finance" and told the owner.
+- **Sources on screen are a must (owner: "highly important").** Any new list or suggestion must say where its data
+  comes from.
 - **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding
   that something failed.
 
@@ -225,7 +230,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 217 passed
+  npm test                                # expect 229 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

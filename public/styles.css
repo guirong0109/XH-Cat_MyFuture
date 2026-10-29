@@ -119,3 +119,5 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
 .chip:hover,.chip:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);cursor:default}
+.chip-x{border:0;background:none;color:inherit;cursor:pointer;padding:0 0 0 4px;font-size:14px}

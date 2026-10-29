@@ -182,6 +182,16 @@
           "title": "T23 Shorter suggestions",
           "sub": "click a chip to add · 8 first",
           "status": "done"
+        },
+        {
+          "title": "T24 Sources on screen",
+          "sub": "every list and suggestion names its source",
+          "status": "done"
+        },
+        {
+          "title": "T25 Career interests and fields",
+          "sub": "one dropdown · O*NET interest areas (41)",
+          "status": "done"
         }
       ]
     }
@@ -215,7 +225,9 @@
     "Task 20: search APIs while typing: GET /api/fields/search (field names + programme names) and GET /api/skills/search (O*NET catalogue) (11 new tests, commit c4fff07)",
     "Task 21: search pickers for skills, roles of interest and field of study; every optional field starts on 'Prefer not to say' (no checkbox); skill level starts on 'Not assessed yet'; role titles match word starts (Tests 204 passed, commit d2245d2)",
     "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)",
-    "Task 23: your feedback — suggestions are now short chips in two groups (Skills, Tools and software), 8 at first; one click adds a skill; the caption says 'Click a skill to add it'; the reason is shown on hover"
+    "Task 23: your feedback — suggestions are now short chips in two groups (Skills, Tools and software), 8 at first; one click adds a skill; the caption says 'Click a skill to add it'; the reason is shown on hover",
+    "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
+    "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -254,7 +266,9 @@
     "T21: role titles now match word starts in O*NET and eMASCO, so typing 'data anal' works — cost: a few more candidates for very short words",
     "T22: no minimum gap above the all-jobs average (your rule B is 'more typical than overall'), so a weak skill can appear, e.g. Accounting → Programming 1.76 vs 1.60 — cost: a few weak suggestions, each shows its numbers",
     "T22: at most 5 O*NET skills and 15 tools per field; the screen shows 10 first — cost: none",
-    "T23: the reason for each suggestion moved to the hover text to keep the list short; on a phone it is not visible — cost: the numbers stay in the API answer and the spec"
+    "T23: the reason for each suggestion moved to the hover text to keep the list short; on a phone it is not visible — cost: the numbers stay in the API answer and the spec",
+    "T25: interest areas come from the same O*NET 31.0 zip (Specific Interest Areas.txt, occupational-interest scale); the other O*NET files are unchanged byte for byte — cost: none",
+    "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list"
   ],
   "log": [
     {
@@ -726,6 +740,21 @@
       "time": "30 Oct",
       "step": "Your feedback",
       "detail": "list too long, make it click-and-add with a caption: done as chips, 8 first"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "show where suggestions come from (highly important); combine career interests and preferred career fields into one dropdown"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "O*NET interest areas (41); several can be chosen"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Tasks 24–25",
+      "detail": "sources on every list; one 'Career interests and fields' dropdown; npm test 229 passed; checked in the browser on 127.0.0.2:3200"
     }
   ]
 }

@@ -37,6 +37,23 @@ function fieldOfStudy(ctx, record, i) {
   return `<div>${picker(ctx, 'field', `field|${i}`, t('fieldOfStudy'), t('fieldFind'), record.fieldOfStudy ?? '')}${link}</div>`
 }
 
+// Career interests and fields: O*NET interest areas, several allowed (chips with ×); none chosen = prefer not to say.
+function interestField({ t, profile, state }) {
+  const chosen = profile.preferences.careerInterests ?? []
+  const chips = chosen.length
+    ? `<div class="chips">${chosen.map((item, i) => `<span class="chip on">${esc(item?.name ?? item)} <button class="chip-x" data-act="interestRemove" data-arg="${i}" aria-label="${esc(t('remove'))}">×</button></span>`).join('')}</div>`
+    : `<div class="tiny muted">${esc(t('preferNot'))}</div>`
+  const list = state.interests
+  let control = `<p class="tiny muted">${esc(t('occSearching'))}</p>`
+  if (list?.failed) control = `<p class="tiny">${esc(t('pickFailed'))}</p>`
+  else if (list?.areas) {
+    const taken = new Set(chosen.map((item) => item?.id).filter(Boolean))
+    control = `<select id="f-interest" data-interest><option value="">${esc(t('interestAdd'))}</option>${list.areas.filter((a) => !taken.has(a.id)).map((a) => `<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('')}</select>
+      <div class="tiny muted">${esc(t('interestSource', { version: list.version }))}</div>`
+  }
+  return `<div class="field"><label for="f-interest">${esc(t('fInterests'))}</label>${chips}${control}</div>`
+}
+
 const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
 
 function study(ctx) {
@@ -71,7 +88,7 @@ function skills(ctx) {
       : ''
     const unknown = skill.canonicalId ? `<div class="tiny muted">O*NET · ${esc(skill.canonicalId)}${skill.category ? ` · ${esc(skill.category)}` : ''}</div>` : `<div class="tiny muted">${esc(t('skillUnknown'))}</div>${pick}`
     const original = skill.originalText && skill.originalText !== skill.name ? `<span class="tiny muted"> “${esc(skill.originalText)}”</span>` : ''
-    const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title }))}</div>` : ''
+    const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title, source: `O*NET ${skill.suggestedFrom.onetVersion ?? ''}`.trim() }))}</div>` : ''
     return `<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between">
       <div><b>${esc(skill.name)}</b>${original}${from}${suggested}${unknown}</div>
       <div class="row"><label class="tiny muted" for="lv-${i}">${esc(t('level'))}</label>
@@ -99,10 +116,9 @@ function prefs(ctx) {
   const { t, profile } = ctx
   const interests = profile.occupationMappings.map((m, i) => (m.kind === 'interest' ? linkedLine(t, m.chosen, `interest|${i}`) : '')).join('')
   return [
-    listField({ ...ctx, path: 'preferences.careerInterests', label: t('fInterests') }),
+    interestField(ctx),
     `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
     field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: [['first_job', 'optFirstJob'], ['improve', 'optImprove'], ['change', 'optChange'], ['explore_ai', 'optAI']] }),
-    listField({ ...ctx, path: 'preferences.preferredCareerFields', label: t('fFields') }),
     field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
     field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
   ].join('')

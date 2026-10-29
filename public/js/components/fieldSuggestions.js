@@ -43,7 +43,8 @@ function oneField(t, profile, state, { code, title }) {
   const more = shown.length < open.length ? `<button class="btn sm ghost" data-act="suggestMore" data-arg="${esc(code)}">${esc(t('suggestMore', { n: open.length - shown.length }))}</button>` : ''
   return box(`<p class="tiny muted">${esc(t('suggestClick'))}</p>
     ${group(t, code, 'suggestGroupSkills', shown.filter((s) => s.kind === 'skill'))}
-    ${group(t, code, 'suggestGroupTools', shown.filter((s) => s.kind !== 'skill'))}${more}`)
+    ${group(t, code, 'suggestGroupTools', shown.filter((s) => s.kind !== 'skill'))}${more}
+    <p class="tiny muted">${esc(t('suggestSource', { onet: data.onet, isced: data.isced }))}</p>`)
 }
 
 export function fieldSuggestions({ t, profile, state }) {

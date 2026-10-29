@@ -28,9 +28,11 @@ export function pickerList({ t, kind, key, term, result, busy = false }) {
   if (kind === 'skill') {
     items = candidates.map((c, i) => item(key, i, c.name, `O*NET ${result.version ?? ''} · ${c.category ?? ''}`)).join('')
     items += typed(t, key, 'skillKeepTyped', term)
+    note = `<p class="tiny muted">${esc(t('skillSource', { version: result.version ?? '' }))}</p>`
   } else if (kind === 'field') {
     items = candidates.map((c, i) => item(key, i, c.title, `ISCED-F ${c.code} · ${c.broadTitle}${c.via === 'programme' ? ` · ${t('fieldViaProgramme', { name: c.programme })}` : ''}`)).join('')
     items += typed(t, key, 'fieldKeepTyped', term)
+    note = `<p class="tiny muted">${esc(t('fieldSource'))}</p>`
   } else {
     // roles: the lookup state says where the answer came from (live, cached snapshot, eMASCO, failed)
     if (!result.failed) note = `<p class="tiny muted">${esc(t(`occ_${result.state}`, { source: result.source ?? '', version: result.version ?? '', date: String(result.fetchedAt ?? '').slice(0, 10) }))}</p>`
@@ -38,5 +40,6 @@ export function pickerList({ t, kind, key, term, result, busy = false }) {
     if (candidates.some((c) => c.source === 'onet')) items += `<p class="tiny muted">${esc(t('occAttribution'))}</p>`
   }
   const empty = result.failed ? `<p class="tiny">${esc(t('pickFailed'))}</p>` : !candidates.length ? `<p class="tiny muted">${esc(t('pickNone'))}</p>` : ''
-  return note + empty + items
+  // roles: where the answer came from goes first; skills and fields: the source line goes last
+  return kind === 'interest' ? note + empty + items : empty + items + note
 }

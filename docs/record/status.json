@@ -1,0 +1,68 @@
+{
+  "updated": "29 Oct 2026",
+  "groups": [
+    {"id": "S0", "name": "Setup", "tasks": [
+      {"title": "Work branch", "sub": "claude/cv-profile-module from main", "status": "done"},
+      {"title": "Ledger + pre-flight", "sub": ".superpowers/sdd/…/progress.md", "status": "done"},
+      {"title": "Packages (your OK)", "sub": "express 5.3 · pdfjs-dist 6.4 · vitest 5.0", "status": "done"}
+    ]},
+    {"id": "Step 1", "name": "Mockup into modules", "tasks": [
+      {"title": "T1 Server + split mockup", "sub": "old scoring removed · Next-module tabs", "status": "doing"},
+      {"title": "T2 Strings + guest store", "sub": "EN / BM / 中文 · browser save", "status": "todo"}
+    ]},
+    {"id": "Step 2", "name": "Profile · Case B + C", "tasks": [
+      {"title": "T3 Profile schema", "sub": "3 field states · skill objects", "status": "todo"},
+      {"title": "T4 Profile state helpers", "sub": "confirm · merge · diff", "status": "todo"},
+      {"title": "T5 Form, review, summary", "sub": "5 sections · Confirm · JSON", "status": "todo"}
+    ]},
+    {"id": "Step 3", "name": "Skills + occupations", "tasks": [
+      {"title": "T6 O*NET 31.0 snapshot", "sub": "+ eMASCO reference data", "status": "todo"},
+      {"title": "T7 Skill normaliser", "sub": "O*NET skill ids · validate API", "status": "todo"},
+      {"title": "T8 Occupation lookup", "sub": "live → cached → eMASCO → failed", "status": "todo"}
+    ]},
+    {"id": "Step 4", "name": "Case A · CV upload", "tasks": [
+      {"title": "T9 File validation", "sub": "type by content · size · encrypted", "status": "todo"},
+      {"title": "T10 Text + language", "sub": "pdfjs / DOCX · EN BM 中文 mixed", "status": "todo"},
+      {"title": "T11 Extraction L1 L2 L4", "sub": "route + upload screen", "status": "todo"},
+      {"title": "T12 L3 on RunPod + Eval", "sub": "price needs your OK", "status": "todo"}
+    ]},
+    {"id": "Step 5", "name": "Accounts", "tasks": [
+      {"title": "T13 D1 + R2 clients", "sub": "SQLite stand-in for tests", "status": "todo"},
+      {"title": "T14 Accounts", "sub": "sign up / in / delete my data", "status": "todo"},
+      {"title": "T15 Saved profiles", "sub": "versioned · mappings API", "status": "todo"}
+    ]},
+    {"id": "Step 6", "name": "AI re-extraction", "tasks": [
+      {"title": "T16 Re-extraction", "sub": "RunPod → Claude · consent", "status": "todo"},
+      {"title": "T17 Compare view", "sub": "user edits locked", "status": "todo"}
+    ]},
+    {"id": "Step 7", "name": "Eval + acceptance", "tasks": [
+      {"title": "T18 Eval, acceptance, docs", "sub": "§12 table · Tests 1–7 · README", "status": "todo"}
+    ]}
+  ],
+  "doneSummary": [
+    "Spec aligned with your diagram (commit db073fb) and plan written (7fe1ff1)",
+    "Branch claude/cv-profile-module created; main untouched",
+    "Packages installed after your OK: express, pdfjs-dist, vitest (0 vulnerabilities)",
+    "Task 1: five failing tests written for the server skeleton (watched them fail)"
+  ],
+  "waiting": [
+    "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
+    "Task 12: your OK on the RunPod price for the L3 embedding endpoint",
+    "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
+    "Task 16: your OK on the RunPod price for the AI re-extraction model"
+  ],
+  "rulings": [
+    "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
+    "Test-only hook createApp({ extraRoutes }) to prove the 500 error shape — cost if wrong: none"
+  ],
+  "log": [
+    {"time": "29 Oct", "step": "Compare spec vs diagram", "detail": "Found 3 gaps (L3 on RunPod + Model Eval, O*NET live-first, 5 response states); spec changed to follow the diagram exactly; alias table removed"},
+    {"time": "29 Oct", "step": "Write plan", "detail": "18 test-first tasks in 7 spec steps; committed 7fe1ff1"},
+    {"time": "29 Oct", "step": "You chose Native", "detail": "I build every task here; one reviewer checks the whole branch at the end"},
+    {"time": "29 Oct", "step": "Setup", "detail": "Branch claude/cv-profile-module; workspace .superpowers/sdd/2026-10-29-cv-profile-module with ledger; pre-flight interface check (6 rows, 1 ruling)"},
+    {"time": "29 Oct", "step": "Packages", "detail": "Asked you; approved; npm install express pdfjs-dist + -D vitest; package.json type module, Node >= 22.12, scripts start/test; .gitignore"},
+    {"time": "29 Oct", "step": "T1 · tests written", "detail": "tests/app.test.js: health, index.html, /shared/ module, 404 error shape, 500 without stack"},
+    {"time": "29 Oct", "step": "T1 · RED", "detail": "Run: npx vitest run tests/app.test.js → fails: server/app.js missing (as expected)"},
+    {"time": "29 Oct", "step": "Record started", "detail": "This build record created (docs/build-record.html), regenerated after each step"}
+  ]
+}

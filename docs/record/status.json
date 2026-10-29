@@ -50,12 +50,12 @@
         {
           "title": "T4 Profile state helpers",
           "sub": "confirm · merge · diff",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T5 Form, review, summary",
           "sub": "5 sections · Confirm · JSON",
-          "status": "todo"
+          "status": "doing"
         }
       ]
     },
@@ -161,7 +161,8 @@
     "Packages installed after your OK: express, pdfjs-dist, vitest (0 vulnerabilities)",
     "Task 1: Express server + mockup split into public/ modules; old scoring removed; later tabs say 'Next module' (5/5 tests, commit e41a693)",
     "Task 2: EN / BM / 中文 strings, t() with placeholders, guest store with resume prompt (Tests  12 passed (12), commit 648cbab)",
-    "Task 3: profile schema — 3 field states, skill objects, forbidden fields, usable-skill rule (10/10, commit 8451d64)"
+    "Task 3: profile schema — 3 field states, skill objects, forbidden fields, usable-skill rule (10/10, commit 8451d64)",
+    "Task 4: profile helpers — records, mark for review, confirm, CV draft merge, AI diff with locked user edits, guest minimizing (9/9, commit 0920b99)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
@@ -272,6 +273,16 @@
       "time": "29 Oct",
       "step": "T3 · GREEN + commit",
       "detail": "shared/profileSchema.js → 10/10; 8451d64 feat: structured profile schema"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T4 · tests + RED",
+      "detail": "tests/profileState.test.js: 9 tests (immutability, untouched, mark for review, confirm, merge draft, diff kinds, locked rows, user-edited paths, minimize) → fail: module missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T4 · GREEN + commit",
+      "detail": "shared/profileState.js → 9/9; 0920b99 feat: profile state helpers"
     }
   ]
 }

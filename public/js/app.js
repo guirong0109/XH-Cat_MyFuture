@@ -56,7 +56,7 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, suggestTicked: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -204,17 +204,16 @@ const actions = {
     update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
   },
   fieldUnlink: (i) => update(setField(state.profile, `education.records.${i}.field`, null)),
-  // The ticked suggestions of one field of study join the skills; the level stays "not assessed".
-  addSuggested: (code) => {
+  // One click on a suggested skill ("<field code>|<skill id>") adds it; the level stays "not assessed".
+  addSuggestion: (arg) => {
+    const [code, ...rest] = arg.split('|')
+    const id = rest.join('|')
     const data = state.suggest?.[code]
-    const ticked = new Set([...(state.suggestTicked ?? [])].filter((v) => v.startsWith(`${code}|`)).map((v) => v.slice(code.length + 1)))
-    if (!data?.suggestions || !ticked.size) return
-    state.suggestTicked = new Set([...state.suggestTicked].filter((v) => !v.startsWith(`${code}|`)))
-    const have = new Set(state.profile.skills.map((s) => s.canonicalId).filter(Boolean))
+    const chosen = data?.suggestions?.find((s) => s.id === id)
+    if (!chosen || state.profile.skills.some((s) => s.canonicalId === id)) return
     const from = { source: 'isced', code, title: data.field.title, version: data.isced, onetVersion: data.onet }
-    const added = data.suggestions.filter((s) => ticked.has(s.id) && !have.has(s.id))
-      .map((s) => ({ ...makeSkill({ name: s.name, canonicalId: s.id, category: s.category, source: 'user_input' }), suggestedFrom: from }))
-    update({ ...state.profile, skills: [...state.profile.skills, ...added] })
+    const skill = { ...makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' }), suggestedFrom: from }
+    update({ ...state.profile, skills: [...state.profile.skills, skill] })
   },
   suggestMore: (code) => { state.suggestMore = { ...state.suggestMore, [code]: true }; render() },
   pickSkill: (arg) => {
@@ -391,14 +390,6 @@ function onChange(target) {
     return update(setField(state.profile, d.field, value))
   }
   // "Prefer not to say" or "I'll answer" on a typed field: answering opens the box; nothing is saved until typed.
-  // A ticked or unticked suggestion: remembered only (no redraw), added with "Add ticked skills".
-  if (d.sugg) {
-    const ticked = new Set(state.suggestTicked ?? [])
-    if (target.checked) ticked.add(d.sugg)
-    else ticked.delete(d.sugg)
-    state.suggestTicked = ticked
-    return undefined
-  }
   if (d.choice) {
     state.answering = { ...state.answering, [d.choice]: target.value === 'answer' }
     if (target.value !== 'answer') return update(setField(state.profile, d.choice, DECLINED))

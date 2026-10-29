@@ -157,7 +157,8 @@ Each item below says what you will see and what to do.
   `isUntouched` ignores declined fields on purpose, so a CV draft or an account profile can still fill them.
 - **Skill suggestions use the owner's rule B ("typical of the field").** There is no minimum gap above the average, so
   weak ones can appear, e.g. Accounting → Programming 1.76 against 1.60. Changing the rule is the owner's call.
-- **Ticks on suggestions live in `state.suggestTicked`.** Reading ticks from the page lost them on "Show more".
+- **Suggestions are click-to-add chips (owner, 30 Oct).** The owner found a ticked list with reasons too long. The
+  reason is the chip's hover text; 8 show first.
 - **Test in the browser on `127.0.0.1:3200`** when the owner is using `localhost:3200`. Each address has its own
   saved progress, so your clicks don't change theirs.
 - **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding

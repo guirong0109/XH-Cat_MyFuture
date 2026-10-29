@@ -112,9 +112,10 @@ details summary{cursor:pointer;font-weight:600;font-size:13.5px}
 .picker-list .choice span{display:block}
 .picker-list .typed{border-style:dashed;font-size:13px}
 select[data-level]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:5px 8px}
-/* skills suggested from the field of study */
-.sugg{margin-bottom:12px;background:var(--surface2)}
-.sugg-list{display:grid;gap:6px}
-.sugg-item{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
-.sugg-item input{margin-top:3px}
-.sugg-item span .tiny{display:block}
+/* skills suggested from the field of study: click a chip to add it */
+.sugg{margin-bottom:12px;background:var(--surface2);display:grid;gap:8px}
+.sugg p{margin:0}
+.sugg-group{display:grid;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.chip:hover,.chip:focus-visible{border-color:var(--accent);background:var(--accent-soft)}

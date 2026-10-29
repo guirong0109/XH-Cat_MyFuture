@@ -177,6 +177,11 @@
           "title": "T22 Skills from field of study",
           "sub": "typical of the field · tick and add",
           "status": "done"
+        },
+        {
+          "title": "T23 Shorter suggestions",
+          "sub": "click a chip to add · 8 first",
+          "status": "done"
         }
       ]
     }
@@ -209,7 +214,8 @@
     "Task 19: field of study list from UNESCO ISCED-F 2013 (124 fields) with an official bridge to O*NET: Statistics Canada ISCED-F→CIP + O*NET CIP→occupation crosswalk; 118 of 124 fields reach O*NET (pipeline/fetch_isced.py, 4 new pipeline tests, commit 9be8d47)",
     "Task 20: search APIs while typing: GET /api/fields/search (field names + programme names) and GET /api/skills/search (O*NET catalogue) (11 new tests, commit c4fff07)",
     "Task 21: search pickers for skills, roles of interest and field of study; every optional field starts on 'Prefer not to say' (no checkbox); skill level starts on 'Not assessed yet'; role titles match word starts (Tests 204 passed, commit d2245d2)",
-    "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)"
+    "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)",
+    "Task 23: your feedback — suggestions are now short chips in two groups (Skills, Tools and software), 8 at first; one click adds a skill; the caption says 'Click a skill to add it'; the reason is shown on hover"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -248,7 +254,7 @@
     "T21: role titles now match word starts in O*NET and eMASCO, so typing 'data anal' works — cost: a few more candidates for very short words",
     "T22: no minimum gap above the all-jobs average (your rule B is 'more typical than overall'), so a weak skill can appear, e.g. Accounting → Programming 1.76 vs 1.60 — cost: a few weak suggestions, each shows its numbers",
     "T22: at most 5 O*NET skills and 15 tools per field; the screen shows 10 first — cost: none",
-    "T22: ticks are kept in screen state, so 'Show more' does not clear them (found in the browser check) — cost: none"
+    "T23: the reason for each suggestion moved to the hover text to keep the list short; on a phone it is not visible — cost: the numbers stay in the API answer and the spec"
   ],
   "log": [
     {
@@ -715,6 +721,11 @@
       "time": "30 Oct",
       "step": "Task 22",
       "detail": "GET /api/fields/:code/skills + suggestion list in Skills; npm test 217 passed; checked in the browser (Nursing → Service Orientation, MEDITECH added as not assessed)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your feedback",
+      "detail": "list too long, make it click-and-add with a caption: done as chips, 8 first"
     }
   ]
 }

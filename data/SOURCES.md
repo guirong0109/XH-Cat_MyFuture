@@ -9,6 +9,9 @@ Only synthetic CVs are used; no personal data is stored here.
 | `onet/job_titles.tsv` | Job titles and reported titles per O\*NET occupation | same | 2026-10-29 | CC BY 4.0 |
 | `onet/skills.tsv` | Essential and Transferable Skills, importance scale (IM) | same | 2026-10-29 | CC BY 4.0 |
 | `onet/software.tsv` | Software Skills examples (e.g. Python, Microsoft Excel) with their O\*NET category | same | 2026-10-29 | CC BY 4.0 |
+| `onet/work_styles.tsv` | Work Styles (21, e.g. Leadership Orientation, Empathy) with each occupation's impact value (WI scale, −3 to 3); for the skill search | same (`Work Styles.txt`) | 2026-10-29 | CC BY 4.0 |
+| `onet/knowledge.tsv` | Knowledge areas (33, e.g. Customer and Personal Service) with each occupation's importance (IM scale); for the skill search | same (`Knowledge.txt`) | 2026-10-29 | CC BY 4.0 |
+| `onet/work_activities.tsv` | Detailed work activities (2,085, e.g. "Care for animals.") per occupation: ids from `Tasks to DWAs.txt`, names from `GWAs to IWAs to DWAs.txt`; for the skill search | same | 2026-10-29 | CC BY 4.0 |
 | `onet/interest_areas.tsv` | Specific Interest Areas (41, e.g. Information Technology, Health Care Service) with each occupation's interest value (OI scale); the list for "Career interests and fields" | same (`Specific Interest Areas.txt`) | 2026-10-29 | CC BY 4.0 |
 | `onet/manifest.json` | Version, URL, download date and SHA-256 of each file | written by `pipeline/fetch_onet.py` | 2026-10-29 | — |
 | `emasco/occupations.json` | eMASCO occupations: code, title, page URL (1,766) | eMASCO (MASCO 2020), https://emasco.mohr.gov.my, English pages; copied from the team's earlier crawl as data only | fetched 2026-10-23 | Public government reference; only code, title and URL are kept |

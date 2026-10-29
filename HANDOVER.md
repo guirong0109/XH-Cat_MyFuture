@@ -12,7 +12,8 @@ scenario comparison.
 | Module | Branch (detailed docs there) | Merged | State |
 |---|---|---|---|
 | CV extraction and structured profile | `claude/cv-profile-module` | PR #1, `301c10e`, 2026-10-29 | Done; 179 tests pass; final review fixed |
-| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; 229 tests pass; checked in the browser |
+| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; checked in the browser |
+| Fix: skill search finds everyday skills | `claude/cv-profile-module` | merged 2026-10-30 | Done; 232 tests pass; CV eval unchanged |
 | Matching and the rest of the journey | not started | — | Next |
 
 ## Profile form since 2026-10-30 (owner requests)
@@ -26,6 +27,9 @@ scenario comparison.
   They are click-to-add chips, never added automatically. This is not matching and gives no score.
 - **"Career interests and fields"** is one list: the 41 O\*NET interest areas, several allowed.
   `preferredCareerFields` is gone; old profiles are converted.
+- **Skill search covers more than software.** It also searches O\*NET work styles (e.g. Leadership Orientation),
+  knowledge areas and work activities, with general skills before software products. These lists are for search
+  only, so CV reading is unchanged. O\*NET's wording is needed: "Cooperation", not "teamwork".
 - **Every list shows its source on screen.** The owner calls this highly important; keep it for anything new.
 - **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
   and not used yet.
@@ -59,7 +63,7 @@ and `data/onet/interest_areas.tsv` (area → jobs, 1–7).
 ## Commands
 ```bash
 npm install
-npm test          # expect 229 passed
+npm test          # expect 232 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 8 OK
 python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas)

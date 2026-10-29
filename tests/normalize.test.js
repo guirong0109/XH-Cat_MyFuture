@@ -22,9 +22,14 @@ describe('skill catalogue', () => {
     expect(catalogue.version).toBe('31.0')
     expect(catalogue.entries.map((e) => e.id).sort()).toEqual([
       'onet:el:2.A.1.a', 'onet:tech:javascript', 'onet:tech:microsoft excel', 'onet:tech:microsoft sql server', 'onet:tech:oracle java',
-      'onet:tech:python', 'onet:tech:structured query language sql',
+      'onet:tech:petra geology', 'onet:tech:python', 'onet:tech:structured query language sql', 'onet:tech:treasury communications system',
     ])
     expect(catalogue.entries.find((e) => e.id === 'onet:tech:python').category).toBe('Development environment software')
+  })
+
+  it('keeps work styles, knowledge and work activities apart, so CV matching is unchanged', () => {
+    expect(catalogue.more.map((e) => e.id).sort()).toEqual(['onet:dwa:4.A.1.b.2.i.1', 'onet:dwa:4.A.4.a.2.i.1', 'onet:kn:2.C.9.b', 'onet:ws:1.D.1.a'])
+    expect(catalogue.byName.has('leadership orientation')).toBe(false)
   })
 })
 

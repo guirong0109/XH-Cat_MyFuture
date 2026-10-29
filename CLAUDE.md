@@ -26,14 +26,15 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 179 passed
-python -m unittest discover pipeline/tests        # expect 4 OK
+npm test                                          # Vitest, expect 204 passed
+python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
 node scripts/eval-cv.mjs                          # writes docs/eval-results.md
 node scripts/model-eval.mjs                       # needs SEMANTIC_* (L3 is off)
 python docs/record/build_record.py                # docs/record/status.json -> docs/build-record.html
 python pipeline/fetch_onet.py 31.0                # refresh O*NET data + manifest
+python pipeline/fetch_isced.py                    # refresh ISCED-F fields + CIP bridge to O*NET
 ```
 Browser pane launch configs (`.claude/launch.json`):
 - Use `cvmodule` (3200), `cvaccounts` (3201) and `record` (8766).
@@ -56,6 +57,10 @@ Browser pane launch configs (`.claude/launch.json`):
   - Skills use `makeSkill()`. `source` is one of `cv_rules|cv_semantic|cv_ai|user_input`. `proficiency` stays null
     until the user sets it, and an extraction never sets it.
   - Forbidden fields are never stored: age, gender, ethnicity, religion, maritalStatus, photo, address, icNumber.
+  - The form shows "Prefer not to say" as every optional field's default (a dropdown, never a checkbox). Opening a
+    section saves its unanswered fields as `declined` (`declineUnanswered`); `isUntouched` counts only answers.
+  - Skills, roles of interest and field of study are picked with `searchPicker` (search as you type). Nothing is
+    linked silently: typed or CV wording stays unlinked until the user picks.
 - **Strings:** every UI text goes through `t(lang, key)`. Add each key to `shared/strings/en.js`, `ms.js` **and**
   `zh.js`; `tests/i18n.test.js` fails otherwise. Every interpolated text in HTML goes through `esc()`.
 - **Privacy:** never log CV text, AI replies or personal fields. Only error names and codes are logged.

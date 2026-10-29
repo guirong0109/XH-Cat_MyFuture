@@ -58,8 +58,9 @@ that failed first. The branch was merged into `main` via PR #1
 | AI re-read (no provider) | `server/cv/reextract.js` + `reextractPrompt.js`, route `POST /api/cv/reextract` (consent, 3 per upload, 20 per hour) |
 | Shared (browser + server + tests) | `shared/profileSchema.js`, `shared/profileState.js`, `shared/flow.js`, `shared/guestStore.js` (localStorage key `futureready-profile-v1`), `shared/i18n.js`, `shared/strings/{en,ms,zh}.js` (same keys, enforced by a test) |
 | Browser (ES modules, no build) | `public/index.html`, `public/styles.css`, `public/js/app.js` (state, router, all actions), `public/js/{api,cvApi,accountApi,ui}.js`, `public/js/screens/*.js`, `public/js/components/*.js` |
-| Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/SOURCES.md` |
-| Pipeline | `pipeline/fetch_onet.py`, `pipeline/tests/test_fetch_onet.py` |
+| Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/isced/*.tsv` + `manifest.json` (ISCED-F 2013, 124 fields, CIP bridge to O\*NET), `data/SOURCES.md` |
+| Search pickers (30 Oct, owner request) | `public/js/components/searchPicker.js`; APIs `GET /api/skills/search` (`searchSkills` in `server/skills/onetSkills.js`) and `GET /api/fields/search` (`server/fields/isced.js`, `server/routes/fields.js`); roles reuse `/api/occupations/search`, now matching word starts |
+| Pipeline | `pipeline/fetch_onet.py`, `pipeline/fetch_isced.py`, `pipeline/tests/test_fetch_onet.py`, `pipeline/tests/test_fetch_isced.py` |
 | Evaluation | `scripts/eval-cv.mjs`, `testing/eval-cvs.json` (11 synthetic CVs), `docs/eval-results.md` |
 | Docs | `README.md` (run, settings, owner setup), `docs/acceptance.md`, `docs/tools-declaration.md`, `docs/build-record.html` (step-by-step build record, generated), `docs/architecture-cv-branch.html` (diagram of this branch: every file by layer, git history, service status) |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
@@ -120,8 +121,9 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **25 files, 179 tests passed** (on `main` after merge and on this branch) |
-| `python -m unittest discover pipeline/tests` | **4 tests OK** |
+| `npm test` (= `vitest run`) | **27 files, 204 tests passed** on this branch (30 Oct); `main` still has 179 |
+| `python -m unittest discover pipeline/tests` | **8 tests OK** |
+| `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
 | `node scripts/model-eval.mjs` | **Not run.** It needs `SEMANTIC_*`, which the owner skipped |
 | `python docs/record/build_record.py` | writes `docs/build-record.html` (20/21 done; T12 skipped) |
@@ -141,6 +143,19 @@ Each item below says what you will see and what to do.
   spec's limits exist: sign-in 10 per 15 min; AI re-read 3 per upload and 20 per hour.
 - **Anything paid needs the owner's OK on the price first,** including RunPod endpoints.
 - **Integration (merge, push, PR) is the owner's decision.** Force-push only with an explicit OK.
+
+**Search pickers and "Prefer not to say" (30 Oct):**
+- **The owner chose the field-of-study list:** ISCED-F 2013 + O\*NET via the CIP files. O\*NET 31.0 itself has no
+  field-of-study data: element 2.D.2 "Instructional Program Required" has no rows. Don't look for it again.
+- **The bridge is stored only.** `isced_cip.tsv` and `cip_onet.tsv` are for the matching module. CIP Canada 2016 and
+  CIP 2020 are joined on equal codes only, so 6 fields have no O\*NET link.
+- **Field names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search in English.
+- **The picker redraws only its list (`#pick-<key>`), not the page,** so the input keeps focus. A full `render()`
+  while typing would lose the cursor.
+- **"Prefer not to say" default:** `showSection()` in `app.js` runs `declineUnanswered` for the open section.
+  `isUntouched` ignores declined fields on purpose, so a CV draft or an account profile can still fill them.
+- **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding
+  that something failed.
 
 **Technical traps that already bit:**
 - **Bash heredocs break on apostrophes in this environment.** Write scripts with the Write tool into the scratchpad
@@ -203,7 +218,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 179 passed
+  npm test                                # expect 204 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

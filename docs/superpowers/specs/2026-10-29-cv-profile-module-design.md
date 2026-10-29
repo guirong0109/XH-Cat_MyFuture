@@ -24,6 +24,9 @@ Build the CV/profile module inside the mockup: a user with or without a CV ends 
 | Accounts | Cloudflare D1 (HTTP API); R2 keeps the uploaded CV ≤ 1 day for the AI re-read |
 | L3 semantic match | An embedding model hosted on **RunPod Inference** (diagram box "RunPod Inference — hosts the model (L3)"); its similarity cutoff is set by **Model Eval** (precision · recall · latency) on synthetic CVs |
 | Languages | EN / BM / 中文; the interface language changes only by the user |
+| Search pickers (owner, 30 Oct) | Skills, roles of interest and field of study are chosen from search-as-you-type lists over the stored data (O\*NET skills; O\*NET + eMASCO occupations; ISCED-F 2013 fields). The user can still keep their own wording |
+| Prefer not to say (owner, 30 Oct) | Every optional single field is a dropdown whose first choice and default is "Prefer not to say" (no checkbox). A field left on the default in a section the user opened is saved as `declined`; `empty` means the user never saw it. Typed fields (location, years, hours) offer "Prefer not to say" / "I'll answer". The skill level defaults to "Not assessed yet" (`not_assessed`) |
+| Field of study (owner, 30 Oct) | UNESCO **ISCED-F 2013** (124 fields; Malaysia's NEC 2020 is built on it), bridged to O\*NET through two official tables: Statistics Canada ISCED-F 2013 → CIP Canada 2016, and the O\*NET Resource Center CIP 2020 → O\*NET-SOC 2019 crosswalk. 118 of 124 fields reach O\*NET occupations. The bridge is stored only, for the matching module |
 
 ## 3. Layout
 
@@ -92,6 +95,12 @@ Response: `{status:'ok', extractionId, language, profile (draft), uncertain[], e
 
 Catalogue from the O\*NET 31.0 snapshot: Software Skills examples → id `onet:tech:<lower-case example>` with category = O\*NET element name (e.g. "Development environment software"); Essential and Transferable skill elements → id `onet:el:<element id>` (e.g. `onet:el:2.A.1.a` Reading Comprehension). Match order: exact catalogue name (case-insensitive, trailing version removed) → whole-word catalogue name inside a short phrase (≤ 5 words) → L3 semantic match (§6) at or above the cutoff. Never a substring of a longer word; the original wording is kept; unknown → `canonicalId:null`. Duplicates merge (one per id, all original wordings kept).
 
+**Skill picker (`GET /api/skills/search?q=`):** the same catalogue searched while typing; every query word must start a word of the name ("pyth" → Python); exact name first, then the skills listed by the most O\*NET occupations; at most 10. "Add as I wrote it" keeps the user's wording and goes through the normaliser above.
+
+## 7a. Field of study (`GET /api/fields/search?q=`)
+
+List: ISCED-F 2013 detailed fields (`data/isced/fields.tsv`, built by `pipeline/fetch_isced.py`, checked against `data/isced/manifest.json`). The search matches field names and the CIP programme names linked to them in the Statistics Canada concordance ("computer science" → 0613 Software and applications development and analysis, "includes Computer science"); field-name matches first, then the shortest programme names; at most 10. The education record keeps `fieldOfStudy` (text) and, once the user picks, `field = {source:'isced', code, title, version, via, programme, term}`. A CV or typed field of study is never linked silently: it shows "Not linked to the standard list yet" until the user picks. Names are in English only (no official BM/中文 list was found). The bridge files `isced_cip.tsv` and `cip_onet.tsv` are not used by this module.
+
 ## 8. Occupations (`GET /api/occupations/search?q=`)
 
 Live-first with verified fallback, exactly as the diagram:
@@ -100,7 +109,7 @@ Live-first with verified fallback, exactly as the diagram:
 3. **eMASCO reference** — when no O\*NET result can be produced: eMASCO occupations by title, marked "alternative source".
 4. **Unavailable** — structured error, no candidates, nothing invented.
 
-Response states (diagram): `live` · `cached` · `alternative` · `no_match` (valid zero results) · `failed` (no fallback). An outage is never reported as `no_match`. eMASCO candidates by title are listed with O\*NET results for Malaysian context (CV spec §6.1 step 5). Every candidate: source, code, title, how matched, URL; every response: state, source, version, fetched time, cache status, warning. Many candidates are allowed; similar wording never makes two occupations "the same": the user picks.
+Response states (diagram): `live` · `cached` · `alternative` · `no_match` (valid zero results) · `failed` (no fallback). An outage is never reported as `no_match`. eMASCO candidates by title are listed with O\*NET results for Malaysian context (CV spec §6.1 step 5). Every candidate: source, code, title, how matched, URL; every response: state, source, version, fetched time, cache status, warning. Many candidates are allowed; similar wording never makes two occupations "the same": the user picks. Roles of interest use a search-as-you-type picker on this endpoint; title words match by word start ("data anal" finds Data Analyst).
 
 ## 9. AI re-extraction (`POST /api/cv/reextract {extractionId, consent}`)
 

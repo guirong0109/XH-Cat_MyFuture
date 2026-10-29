@@ -87,12 +87,12 @@
         {
           "title": "T9 File validation",
           "sub": "type by content · size · encrypted",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T10 Text + language",
           "sub": "pdfjs / DOCX · EN BM 中文 mixed",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T11 Extraction L1 L2 L4",
@@ -166,7 +166,8 @@
     "Task 5: Case B form (5 sections), Case C review with labels, Confirm, 'Your profile' summary + JSON (Tests  34 passed (34), commit 93233cb)",
     "Task 6: O*NET 31.0 downloaded fresh (1,016 occupations, job titles, skills, software; manifest with hashes) + eMASCO 1,766 occupations; data/SOURCES.md (commit c2bb927)",
     "Task 7: O*NET skill ids (exact, whole words, 'pick standard term' choices ordered by use), /api/skills/normalize, /api/profiles/validate, wired into the form (Tests  49 passed (49), commit 0f5fc4e)",
-    "Task 8: occupation lookup live → cached → eMASCO → failed with 5 states; picker on jobs and interests; links shown with source/code/version/date (Tests  65 passed (65), commit f72f892)"
+    "Task 8: occupation lookup live → cached → eMASCO → failed with 5 states; picker on jobs and interests; links shown with source/code/version/date (Tests  65 passed (65), commit f72f892)",
+    "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -185,7 +186,8 @@
     "T5: editing after Confirm makes the profile a draft again — cost: one extra click",
     "T7: several O*NET names contain a short skill → up to 5 choices to pick (diagram 'pick standard term') — cost: one click",
     "T8: 'cached' = cached live answer or the dated snapshot (diagram box 2) — cost: none",
-    "T8: occupation picker also for career interests (spec §5) — cost: none"
+    "T8: occupation picker also for career interests (spec §5) — cost: none",
+    "T9: password-protected DOCX reports 'unsupported type' (needs an OLE parser to tell apart) — cost: wording"
   ],
   "log": [
     {
@@ -382,6 +384,16 @@
       "time": "29 Oct",
       "step": "T8 · commit",
       "detail": "f72f892 feat: live-first occupation lookup with cache and eMASCO fallback"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T9 · tests + RED",
+      "detail": "tests/helpers/cvFixtures.js builds synthetic PDF/DOCX/zip; tests/validateFile.test.js 11 cases → fail: module missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T9 · GREEN + commit",
+      "detail": "server/cv/zip.js + validateFile.js → 11/11; 0b855c1 feat: CV file checks by content"
     }
   ]
 }

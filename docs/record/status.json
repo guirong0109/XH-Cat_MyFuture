@@ -71,12 +71,12 @@
         {
           "title": "T7 Skill normaliser",
           "sub": "O*NET skill ids · validate API",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T8 Occupation lookup",
           "sub": "live → cached → eMASCO → failed",
-          "status": "todo"
+          "status": "doing"
         }
       ]
     },
@@ -164,7 +164,8 @@
     "Task 3: profile schema — 3 field states, skill objects, forbidden fields, usable-skill rule (10/10, commit 8451d64)",
     "Task 4: profile helpers — records, mark for review, confirm, CV draft merge, AI diff with locked user edits, guest minimizing (9/9, commit 0920b99)",
     "Task 5: Case B form (5 sections), Case C review with labels, Confirm, 'Your profile' summary + JSON (Tests  34 passed (34), commit 93233cb)",
-    "Task 6: O*NET 31.0 downloaded fresh (1,016 occupations, job titles, skills, software; manifest with hashes) + eMASCO 1,766 occupations; data/SOURCES.md (commit c2bb927)"
+    "Task 6: O*NET 31.0 downloaded fresh (1,016 occupations, job titles, skills, software; manifest with hashes) + eMASCO 1,766 occupations; data/SOURCES.md (commit c2bb927)",
+    "Task 7: O*NET skill ids (exact, whole words, 'pick standard term' choices ordered by use), /api/skills/normalize, /api/profiles/validate, wired into the form (Tests  49 passed (49), commit 0f5fc4e)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
@@ -180,7 +181,8 @@
     "T1: data-go/data-act click handling (ES modules have no globals) — cost: none",
     "T2: resume prompt only for sessions past welcome/access — cost: one list",
     "T5: category A/B pre-fills the 'who are you' field — cost: none",
-    "T5: editing after Confirm makes the profile a draft again — cost: one extra click"
+    "T5: editing after Confirm makes the profile a draft again — cost: one extra click",
+    "T7: several O*NET names contain a short skill → up to 5 choices to pick (diagram 'pick standard term') — cost: one click"
   ],
   "log": [
     {
@@ -327,6 +329,31 @@
       "time": "29 Oct",
       "step": "T6 · commit",
       "detail": "c2bb927 data: O*NET 31.0 snapshot and eMASCO reference"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T7 · tests + RED",
+      "detail": "tests/normalize.test.js (catalogue, exact, phrase, contained-in-one, candidates, longer word, unknown, semantic cutoff, merge) + tests/profileRoutes.test.js → fail: modules missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T7 · GREEN",
+      "detail": "server/skills/onetSkills.js, server/skills/normalize.js, routes skills.js + profiles.js → 14/14 (one test-setup bug fixed: normaliser built before the catalogue loaded)"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T7 · real catalogue check",
+      "detail": "Excel/SQL/Power BI gave poor choice order; added 'most-used first' (test RED→GREEN): Excel → Microsoft Excel (859 occupations), SQL → Structured query language SQL (151)"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T7 · browser",
+      "detail": "skills Python (id), Excel (picked Microsoft Excel, typed word kept), Underwater welding (kept, unknown) → Confirm → 'Ready for the next module'. Fixed: direct #form crash; checkbox layout"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T7 · commit",
+      "detail": "0f5fc4e feat: O*NET skill catalogue and normaliser"
     }
   ]
 }

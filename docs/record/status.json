@@ -177,13 +177,13 @@
     "Task 16: consent-gated AI re-extraction — RunPod (OpenAI-compatible) then Claude (raw fetch, anthropic-version 2026-10-21, output_config json_schema, no temperature, fallbacks default); CV in <cv> tags as data; items without a word-for-word quote dropped; levels, ids and codes stripped; skill names through the O*NET normaliser; 3 runs per upload, 20 per hour; POST /api/cv/reextract (400 / 429 / 503 + reason). No provider set: you chose to build without one, so it answers 'not configured' (160/160 tests, commit e6659c4)",
     "Task 17: 'Improve extraction with AI' on the review after an upload; consent box naming RunPod and Claude; compare view with New / Changed / Different from yours, every row 'Needs confirmation', your own edits locked, 'Add the ones I ticked', count of unquoted suggestions left out; any failure leaves the form unchanged (161/161 tests, commit 80b4dc9)",
     "Task 18: extraction evaluation on 11 synthetic CVs (skills P 0.917 / R 0.971, qualifications and jobs 1.0, certificates 1.0, 0 failures, median 3 ms; docs/eval-results.md); found and fixed: two-character Chinese headings (技能, 证书) were dropped; browser acceptance of the CV spec §12 table and §13 Tests 1–7 in EN / BM / 中文, desktop and 360 px (docs/acceptance.md); README, tools declaration, data sources (165/165 tests, commit c0f707e)",
-    "Final review by a fresh reviewer: 0 Critical, 7 Important, 11 Minor. All 7 Important fixed, each with a test that failed first (or a browser check): long paragraphs no longer cut the CV; a skill inside one longer O*NET name is offered to pick, not linked; a stale save offers 'Load the saved version'; sign-out clears the browser; blocked site data no longer gives a blank page; AI quotes must contain the item; .env is loaded (169/169 tests, commit f8d4ae3). 11 minor items deferred."
+    "Final review by a fresh reviewer: 0 Critical, 7 Important, 11 Minor. All 7 Important fixed, each with a test that failed first (or a browser check): long paragraphs no longer cut the CV; a skill inside one longer O*NET name is offered to pick, not linked; a stale save offers 'Load the saved version'; sign-out clears the browser; blocked site data no longer gives a blank page; AI quotes must contain the item; .env is loaded (169/169 tests, commit f8d4ae3). 11 minor items deferred.",
+    "Final review minors, all 11 fixed with a failing test first: bad PATCH paths and URLs answer 422/400; database failures answer 503; one-word software names no longer taken from a sentence's first word; a live outage is never reported as 'no match'; L3 embeds the catalogue at start-up; one bounded rate limiter for sign-in, sign-up, uploads, searches and AI runs; TRUST_PROXY setting; review screen safe with an empty occupation link; privacy note mentions the server copy when R2 is on; honest 'not saved' message and re-save after a deleted profile (181/181 tests, commit 2942eb1)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
-    "Deferred minors from the final review (11) — listed in the final message; none blocks the demo"
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -208,7 +208,9 @@
     "T15: after sign-in the latest saved profile is loaded only when this browser holds no work of its own — cost: a user with local work sees that work, not the saved one",
     "T17: the compare test passed at once (Task 4 helpers already lock edits); a deliberate break of the lock made it fail, so it guards the rule — cost: none",
     "T18: eval differences left as measured (Google from a certificate line, Oracle Database, QuickBooks Online not in O*NET, MS Excel as a second skill) — not tuned to the eval set — cost: those few wrong or missed skills remain for the user to fix in review",
-    "Final: sign-in also loads the saved profile when the local copy is an older version of it (fixes a permanent 409) — cost: unsaved edits to an older copy are replaced, with a message"
+    "Final: sign-in also loads the saved profile when the local copy is an older version of it (fixes a permanent 409) — cost: unsaved edits to an older copy are replaced, with a message",
+    "Minors: new per-address limits on uploads (30/min) and occupation searches (60/min) and sign-ups (10/15 min) — not in the spec, added to fix the reviewer's minor 7 — cost: a very busy single address must wait a minute",
+    "Minors: sign-up still says 'email already exists' (spec §10 routes; hiding it needs email verification) — cost: an email's account can be probed, now rate-limited"
   ],
   "log": [
     {
@@ -610,6 +612,21 @@
       "time": "29 Oct",
       "step": "Fix pass",
       "detail": "7 Important fixed RED→GREEN; eval re-run unchanged; browser: stale save → load → v3, sign-out clears storage; f8d4ae3"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Minors · tests + fixes",
+      "detail": "11 minor findings fixed, each RED→GREEN; suite 181/181; eval unchanged"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Minors · browser",
+      "detail": "privacy note shows the server-copy sentence only with R2; /api/health features; broken URL → 400"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Minors · commit",
+      "detail": "2942eb1"
     }
   ]
 }

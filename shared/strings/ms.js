@@ -131,4 +131,6 @@ export default {
   fixErrors: "Sila betulkan ruangan yang ditanda.",
   records: "Rekod",
   none: "Tiada",
+  pickTerm: "Pilih istilah standard:",
+  skillChecking: "Menyemak…",
 }

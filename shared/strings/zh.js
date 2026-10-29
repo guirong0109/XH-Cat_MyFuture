@@ -131,4 +131,6 @@ export default {
   fixErrors: "请修正标记的栏位。",
   records: "条目",
   none: "无",
+  pickTerm: "请选择标准名称：",
+  skillChecking: "检查中…",
 }

@@ -4,6 +4,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import express from 'express'
 import { sendError } from './errors.js'
+import { loadSkillCatalogue } from './skills/onetSkills.js'
+import { createNormalizer } from './skills/normalize.js'
+import { skillRoutes } from './routes/skills.js'
+import { profileRoutes } from './routes/profiles.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -24,6 +28,20 @@ export function createApp({
   app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive }
 
   app.get('/api/health', (request, response) => response.json({ ok: true }))
+
+  // Skill catalogue from the O*NET snapshot, loaded once on first use (a failed load is retried next time).
+  let normalizerPromise = null
+  const loadNormalizer = () => {
+    normalizerPromise ??= loadSkillCatalogue(path.join(dataDir, 'onet'))
+      .then((catalogue) => createNormalizer({ catalogue, semantic, cutoff: Number(process.env.SEMANTIC_CUTOFF) || null }))
+      .catch((error) => {
+        normalizerPromise = null
+        throw error
+      })
+    return normalizerPromise
+  }
+  app.use(skillRoutes({ loadNormalizer }))
+  app.use(profileRoutes({ loadNormalizer }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

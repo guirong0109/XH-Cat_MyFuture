@@ -17,6 +17,7 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { esc } from './ui.js'
+import { api } from './api.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -93,16 +94,34 @@ const actions = {
     const [path, on] = arg.split('|')
     update(markForReview(state.profile, path, on === 'on'))
   },
-  addSkill: () => {
+  addSkill: async () => {
     const input = document.getElementById('skillInput')
-    const name = input?.value.trim()
-    if (!name) return
-    const key = name.toLowerCase()
-    if (state.profile.skills.some((s) => s.name.toLowerCase() === key)) return render()
-    update({ ...state.profile, skills: [...state.profile.skills, makeSkill({ name, source: 'user_input' })] })
+    const text = input?.value.trim()
+    if (!text) return
+    input.disabled = true
+    const out = await api('POST', '/api/skills/normalize', { texts: [text] })
+    // Without the server the skill is kept as typed (unknown), never guessed.
+    const found = out.ok ? out.data.skills[0] : { name: text, canonicalId: null, category: null, originalText: text, candidates: [] }
+    const key = (found.canonicalId ?? found.name).toLowerCase()
+    if (state.profile.skills.some((s) => (s.canonicalId ?? s.name).toLowerCase() === key)) return render()
+    const skill = { ...makeSkill({ ...found, source: 'user_input' }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
+    update({ ...state.profile, skills: [...state.profile.skills, skill] })
+  },
+  pickSkill: (arg) => {
+    const [i, id] = arg.split('|')
+    const skills = state.profile.skills.map((skill, j) => {
+      if (j !== Number(i)) return skill
+      const chosen = skill.candidates.find((c) => c.id === id)
+      const { candidates, ...rest } = skill
+      return { ...rest, name: chosen.name, canonicalId: chosen.id, category: chosen.category }
+    })
+    update({ ...state.profile, skills })
   },
   editSkills: () => { state.section = 2; go('form') },
-  confirm: () => {
+  confirm: async () => {
+    // Case C: the server normalises skills against O*NET and checks every field; nothing is saved here.
+    const out = await api('POST', '/api/profiles/validate', { profile: state.profile })
+    if (out.ok) state.profile = out.data.profile
     const check = validateProfile(state.profile)
     if (!check.ok) {
       state.message = t('fixErrors')
@@ -140,6 +159,8 @@ function onChange(target) {
 }
 
 function render() {
+  // A profile screen opened directly (link, reload) still gets a profile to work on.
+  if (NEEDS_PROFILE.includes(state.screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   document.documentElement.lang = state.lang
   document.getElementById('langSel').value = state.lang
   const screen = state.screen

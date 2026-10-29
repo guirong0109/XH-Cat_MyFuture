@@ -131,4 +131,6 @@ export default {
   fixErrors: "Please fix the marked fields.",
   records: "Entries",
   none: "None",
+  pickTerm: "Pick the standard term:",
+  skillChecking: "Checking…",
 }

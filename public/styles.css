@@ -97,3 +97,5 @@ details summary{cursor:pointer;font-weight:600;font-size:13.5px}
   .hide-m{display:none}
 }
 .next{border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--muted);background:var(--surface)}
+.field input[type=checkbox]{width:auto;padding:0}
+.field label.tiny{display:flex;gap:6px;align-items:center;font-weight:400}

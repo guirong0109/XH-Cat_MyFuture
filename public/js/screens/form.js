@@ -31,7 +31,10 @@ function skills({ t, profile }) {
   const rows = profile.skills.map((skill, i) => {
     const levelTag = skill.proficiencyStatus === 'not_assessed' ? '' : tag(skill.proficiencyStatus === 'assessed' ? 'calc' : 'self', t(skill.proficiencyStatus === 'assessed' ? 'tagAssessed' : 'tagSelf'))
     const from = skill.extraction ? `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${skill.extraction.evidence ? `: “${esc(skill.extraction.evidence)}”` : ''}</div>` : ''
-    const unknown = skill.canonicalId ? '' : `<div class="tiny muted">${esc(t('skillUnknown'))}</div>`
+    const pick = skill.candidates?.length
+      ? `<div class="tiny" style="margin-top:4px">${esc(t('pickTerm'))} ${skill.candidates.map((c) => `<button class="btn sm" data-act="pickSkill" data-arg="${i}|${esc(c.id)}">${esc(c.name)}</button>`).join(' ')}</div>`
+      : ''
+    const unknown = skill.canonicalId ? `<div class="tiny muted">O*NET · ${esc(skill.canonicalId)}${skill.category ? ` · ${esc(skill.category)}` : ''}</div>` : `<div class="tiny muted">${esc(t('skillUnknown'))}</div>${pick}`
     const original = skill.originalText && skill.originalText !== skill.name ? `<span class="tiny muted"> “${esc(skill.originalText)}”</span>` : ''
     return `<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between">
       <div><b>${esc(skill.name)}</b>${original}${from}${unknown}</div>

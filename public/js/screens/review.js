@@ -56,6 +56,7 @@ export function profileTable(t, profile) {
     ${row(t('fFields'), list(profile.preferences.preferredCareerFields))}
     ${field('preferences.preferredWorkLocation', 'fLocation')}
     ${field('preferences.preferredLearningHoursPerWeek', 'fHours')}
+    ${row(t('occLinked'), profile.occupationMappings.length ? profile.occupationMappings.map((m) => `<div>${esc(m.term)} → <b>${esc(m.chosen.title)}</b> <span class="tiny muted">${m.chosen.source === 'onet' ? 'O*NET' : 'eMASCO'} ${esc(m.chosen.code)} · ${esc(m.chosen.version ?? '')} · ${esc(String(m.chosen.fetchedAt ?? '').slice(0, 10))} · ${esc(m.chosen.lookupState ?? '')}</span></div>`).join('') : tag('unv', t('none')))}
   </table>`
 }
 

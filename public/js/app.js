@@ -39,7 +39,8 @@ let saved = false
 const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
-  saved = store.save({ ...state, message: null })
+  // occupation search results are only shown, never saved
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null })
 }
 
 function go(screen) {
@@ -118,6 +119,46 @@ const actions = {
     update({ ...state.profile, skills })
   },
   editSkills: () => { state.section = 2; go('form') },
+  occFind: async (key) => {
+    const term = key === 'interest' ? document.getElementById('occInterest')?.value.trim() ?? '' : state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
+    if (key === 'interest') state.occInterest = term
+    if (term.length < 2) return
+    state.occBusy = key
+    render()
+    const out = await api('GET', `/api/occupations/search?q=${encodeURIComponent(term)}`)
+    state.occBusy = null
+    state.occ = { ...(state.occ ?? {}), [key]: out.ok ? { ...out.data, term } : { state: 'failed', candidates: [], term } }
+    render()
+  },
+  occPick: (arg) => {
+    const parts = arg.split('|')
+    const [kind, index, source, code] = parts[0] === 'interest' ? ['interest', null, parts[1], parts[2]] : parts
+    const key = kind === 'job' ? `job|${index}` : 'interest'
+    const result = state.occ[key]
+    const c = result.candidates.find((x) => x.source === source && x.code === code)
+    const chosen = { source: c.source, code: c.code, title: c.title, via: c.via, url: c.url, version: result.version, fetchedAt: result.fetchedAt, lookupState: result.state }
+    const mapping = { term: result.term, kind: kind === 'job' ? 'job' : 'interest', chosen, candidatesShown: result.candidates.length }
+    let profile = state.profile
+    let mappings = profile.occupationMappings
+    if (kind === 'job') {
+      profile = setField(profile, `employment.records.${index}.occupation`, chosen)
+      mappings = mappings.filter((m) => !(m.kind === 'job' && m.term === result.term))
+    }
+    state.occ = { ...state.occ, [key]: null }
+    update({ ...profile, occupationMappings: [...mappings, mapping] })
+  },
+  occUnlink: (arg) => {
+    const [kind, index] = arg.split('|')
+    let profile = state.profile
+    if (kind === 'job') {
+      const term = profile.employment.records[Number(index)]?.jobTitle
+      profile = setField(profile, `employment.records.${index}.occupation`, null)
+      profile = { ...profile, occupationMappings: profile.occupationMappings.filter((m) => !(m.kind === 'job' && m.term === term)) }
+    } else {
+      profile = { ...profile, occupationMappings: profile.occupationMappings.filter((_, i) => i !== Number(index)) }
+    }
+    update(profile)
+  },
   confirm: async () => {
     // Case C: the server normalises skills against O*NET and checks every field; nothing is saved here.
     const out = await api('POST', '/api/profiles/validate', { profile: state.profile })

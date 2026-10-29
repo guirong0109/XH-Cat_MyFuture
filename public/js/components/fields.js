@@ -40,12 +40,13 @@ export function reviewToggle(t, path, record) {
 }
 
 // Repeatable records (education, jobs, certificates, training, projects).
-export function recordsField({ t, profile, listPath, fields, addLabel }) {
+export function recordsField({ t, profile, listPath, fields, addLabel, extra = null }) {
   const items = get(profile, listPath) ?? []
   const rows = items.map((record, i) => `
     <div class="card" style="margin-bottom:10px">
       ${cvNote(t, record)}
       <div class="grid g2">${fields.map(([key, labelKey]) => `<div class="field"><label>${esc(t(labelKey))}</label><input data-rec="${listPath}|${i}|${key}" value="${esc(record[key] ?? '')}"></div>`).join('')}</div>
+      ${extra ? extra(record, i) : ''}
       <div class="row">${reviewToggle(t, `${listPath}.${i}`, record)}<span class="sp" style="flex:1"></span><button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="${listPath}|${i}">${esc(t('remove'))}</button></div>
     </div>`).join('')
   return `${rows}<button class="btn sm" data-act="addRec" data-arg="${listPath}">${esc(addLabel)}</button>`

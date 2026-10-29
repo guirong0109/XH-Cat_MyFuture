@@ -8,6 +8,12 @@ import { loadSkillCatalogue } from './skills/onetSkills.js'
 import { createNormalizer } from './skills/normalize.js'
 import { skillRoutes } from './routes/skills.js'
 import { profileRoutes } from './routes/profiles.js'
+import { occupationRoutes } from './routes/occupations.js'
+import { createOnetLiveFromEnv } from './occupations/onetLive.js'
+import { createCache } from './occupations/cache.js'
+import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
+import { createOccupationLookup } from './occupations/lookup.js'
+import { readFile } from 'node:fs/promises'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -20,7 +26,7 @@ export function createApp({
   tempStore = null,
   semantic = null,
   llmProviders = [],
-  onetLive = null,
+  onetLive = createOnetLiveFromEnv(),
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -42,6 +48,15 @@ export function createApp({
   }
   app.use(skillRoutes({ loadNormalizer }))
   app.use(profileRoutes({ loadNormalizer }))
+
+  const lookup = createOccupationLookup({
+    live: onetLive,
+    cache: createCache(path.join(dataDir, 'cache', 'onet')),
+    snapshotLoader: () => loadOnetSnapshot(path.join(dataDir, 'onet')),
+    emascoLoader: async () => JSON.parse(await readFile(path.join(dataDir, 'emasco', 'occupations.json'), 'utf8')),
+    now,
+  })
+  app.use(occupationRoutes({ lookup }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

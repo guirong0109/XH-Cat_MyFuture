@@ -4,7 +4,8 @@ import path from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../server/app.js'
 import { emptyProfile, makeSkill, val } from '../shared/profileSchema.js'
-import { writeCatalogue } from './helpers/onetFixture.js'
+import { EMASCO, writeCatalogue } from './helpers/onetFixture.js'
+import { writeFile } from 'node:fs/promises'
 
 let dir
 let server
@@ -14,7 +15,9 @@ beforeAll(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'routes-'))
   await mkdir(path.join(dir, 'onet'))
   await writeCatalogue(path.join(dir, 'onet'))
-  server = createApp({ dataDir: dir }).listen(0)
+  await mkdir(path.join(dir, 'emasco'))
+  await writeFile(path.join(dir, 'emasco', 'occupations.json'), JSON.stringify(EMASCO))
+  server = createApp({ dataDir: dir, onetLive: null }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
 })
@@ -50,6 +53,17 @@ describe('skill and profile routes', () => {
     expect(body.ok).toBe(false)
     expect(body.errors).toContainEqual({ path: 'employment.yearsOfExperience', code: 'bad_type' })
     expect(body.profile.skills[0]).toMatchObject({ name: 'Python', canonicalId: 'onet:tech:python', originalText: 'python' })
+  })
+
+  it('occupation search rejects a 1-character query with 400 bad_query', async () => {
+    const response = await fetch(`${base}/api/occupations/search?q=a`)
+    expect(response.status).toBe(400)
+    expect((await response.json()).error.code).toBe('bad_query')
+  })
+
+  it('occupation search without an O*NET key answers cached from the snapshot', async () => {
+    const response = await fetch(`${base}/api/occupations/search?q=data%20analyst`)
+    expect(await response.json()).toMatchObject({ state: 'cached', warning: 'no_api_key', version: '31.0' })
   })
 
   it('validate without a profile is 400 with the error shape', async () => {

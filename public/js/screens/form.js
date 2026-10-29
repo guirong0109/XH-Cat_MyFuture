@@ -2,6 +2,7 @@
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
 import { listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
+import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 
@@ -18,12 +19,14 @@ function study(ctx) {
 }
 
 function work(ctx) {
-  const { t } = ctx
+  const { t, state } = ctx
+  const extra = (record, i) => linkedLine(t, record.occupation, `job|${i}`)
+    + (record.jobTitle ? occupationPicker({ t, key: `job|${i}`, term: record.jobTitle, result: state.occ?.[`job|${i}`], busy: state.occBusy === `job|${i}` }) : '')
   return [
     stateField({ ...ctx, path: 'employment.status', label: t('fEmpStatus'), options: [['employed', 'optEmployed'], ['unemployed', 'optUnemployed'], ['self_employed', 'optSelf'], ['student', 'optStudent']] }),
     stateField({ ...ctx, path: 'employment.yearsOfExperience', label: t('fYears'), kind: 'number' }),
     listField({ ...ctx, path: 'employment.industries', label: t('fIndustries') }),
-    recordsField({ ...ctx, listPath: 'employment.records', fields: [['jobTitle', 'jobTitle'], ['employer', 'employer'], ['period', 'period']], addLabel: t('addJob') }),
+    recordsField({ ...ctx, listPath: 'employment.records', fields: [['jobTitle', 'jobTitle'], ['employer', 'employer'], ['period', 'period']], addLabel: t('addJob'), extra }),
   ].join('')
 }
 
@@ -60,9 +63,12 @@ function certs(ctx) {
 }
 
 function prefs(ctx) {
-  const { t } = ctx
+  const { t, state, profile } = ctx
+  const interests = profile.occupationMappings.map((m, i) => (m.kind === 'interest' ? linkedLine(t, m.chosen, `interest|${i}`) : '')).join('')
   return [
     listField({ ...ctx, path: 'preferences.careerInterests', label: t('fInterests') }),
+    `<div class="field"><label for="occInterest">${esc(t('occInterests'))}</label><input id="occInterest" placeholder="${esc(t('occInterestFind'))}" value="${esc(state.occInterest ?? '')}">${interests}
+      ${occupationPicker({ t, key: 'interest', term: state.occInterest ?? '', result: state.occ?.interest, busy: state.occBusy === 'interest' })}</div>`,
     stateField({ ...ctx, path: 'preferences.careerGoal', label: t('fGoal'), options: [['first_job', 'optFirstJob'], ['improve', 'optImprove'], ['change', 'optChange'], ['explore_ai', 'optAI']] }),
     listField({ ...ctx, path: 'preferences.preferredCareerFields', label: t('fFields') }),
     stateField({ ...ctx, path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
@@ -78,7 +84,7 @@ export default ({ t, state }) => {
   const nav = `<div class="tabs">${SECTIONS.map((key, i) => `<button class="${i === section ? 'on' : ''}" data-act="section" data-arg="${i}"><span class="n">${i + 1}</span>${esc(t(key))}</button>`).join('')}</div>`
   const message = state.message ? `<div class="banner b-warn"><div>${esc(state.message)}</div></div>` : ''
   return `<h1>${esc(t('form'))}</h1>${nav}${message}
-  <div class="card">${BODIES[section]({ t, profile })}</div>
+  <div class="card">${BODIES[section]({ t, profile, state })}</div>
   <div class="row" style="margin-top:14px">
     ${section > 0 ? `<button class="btn" data-act="section" data-arg="${section - 1}">${esc(t('back'))}</button>` : ''}
     ${section < SECTIONS.length - 1 ? `<button class="btn" data-act="section" data-arg="${section + 1}">${esc(t('next'))}</button>` : ''}

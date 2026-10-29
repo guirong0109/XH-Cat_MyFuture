@@ -66,12 +66,12 @@
         {
           "title": "T6 O*NET 31.0 snapshot",
           "sub": "+ eMASCO reference data",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T7 Skill normaliser",
           "sub": "O*NET skill ids · validate API",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T8 Occupation lookup",
@@ -163,7 +163,8 @@
     "Task 2: EN / BM / 中文 strings, t() with placeholders, guest store with resume prompt (Tests  12 passed (12), commit 648cbab)",
     "Task 3: profile schema — 3 field states, skill objects, forbidden fields, usable-skill rule (10/10, commit 8451d64)",
     "Task 4: profile helpers — records, mark for review, confirm, CV draft merge, AI diff with locked user edits, guest minimizing (9/9, commit 0920b99)",
-    "Task 5: Case B form (5 sections), Case C review with labels, Confirm, 'Your profile' summary + JSON (Tests  34 passed (34), commit 93233cb)"
+    "Task 5: Case B form (5 sections), Case C review with labels, Confirm, 'Your profile' summary + JSON (Tests  34 passed (34), commit 93233cb)",
+    "Task 6: O*NET 31.0 downloaded fresh (1,016 occupations, job titles, skills, software; manifest with hashes) + eMASCO 1,766 occupations; data/SOURCES.md (commit c2bb927)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
@@ -306,6 +307,26 @@
       "time": "29 Oct",
       "step": "T5 · commit",
       "detail": "93233cb feat: manual profile, review, confirm and summary"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T6 · tests + RED",
+      "detail": "pipeline/tests/test_fetch_onet.py: 31.0 layout columns, older layout, manifest with version + hashes, missing file → fail: module missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T6 · GREEN",
+      "detail": "pipeline/fetch_onet.py → 4/4 OK"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T6 · real data",
+      "detail": "Downloaded db_31_0_text.zip from onetcenter.org → data/onet (5.6 MB); eMASCO occupations copied as data (code, title, URL only); data/SOURCES.md written"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T6 · commit",
+      "detail": "c2bb927 data: O*NET 31.0 snapshot and eMASCO reference"
     }
   ]
 }

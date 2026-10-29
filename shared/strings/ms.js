@@ -232,4 +232,7 @@ export default {
   aiAccept: "Tambah yang saya tandakan",
   aiDropped: "{n} cadangan tiada petikan dalam CV anda dan tidak dimasukkan.",
   aiNothing: "AI tidak menemui apa-apa yang baharu dalam CV anda.",
+  occNoneStored: "Carian O*NET secara langsung tidak tersedia sekarang, dan senarai yang disimpan tiada padanan. Perkataan anda dikekalkan; anda boleh cuba lagi nanti.",
+  cvPrivacyServer: "Untuk bacaan semula AI pilihan, salinan fail disimpan di pelayan kami paling lama satu hari, dan dipadam sebaik sahaja anda menyimpan profil atau memadam data anda.",
+  savedNowhere: "Tidak disimpan: akaun anda tidak dapat dihubungi dan pelayar ini tidak membenarkan penyimpanan. Biarkan halaman ini terbuka, atau hidupkan storan laman.",
 }

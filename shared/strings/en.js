@@ -232,4 +232,7 @@ export default {
   aiAccept: "Add the ones I ticked",
   aiDropped: "{n} suggestions had no quote in your CV and were left out.",
   aiNothing: "The AI found nothing new in your CV.",
+  occNoneStored: "The live O*NET search is not available right now, and the stored list has no match. Your wording is kept; you can try again later.",
+  cvPrivacyServer: "For the optional AI re-read, a copy of the file is kept on our server for at most one day, and deleted as soon as you save your profile or delete your data.",
+  savedNowhere: "Not saved: your account could not be reached and this browser does not allow saving. Keep this page open, or turn on site storage.",
 }

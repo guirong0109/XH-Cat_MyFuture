@@ -23,16 +23,16 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 
 | CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |
 |---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 9 |
+| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 6 |
 | ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 4 |
 | zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 5 |
-| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 5 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 4 |
+| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
 | no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
 | project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 4 |
-| injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 4 |
+| injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
+| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
+| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 9 |
 | scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | 1 |
 
 ## What was found where it differs from the labels

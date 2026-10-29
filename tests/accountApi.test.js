@@ -54,6 +54,17 @@ describe('accountApi (browser)', () => {
     expect(await loadLatestProfile()).toEqual({ ok: true, data: null })
   })
 
+  it('saveProfile: a saved profile that no longer exists (404) is saved again as new', async () => {
+    const calls = []
+    vi.stubGlobal('fetch', async (url, init) => {
+      calls.push(init.method)
+      return init.method === 'PATCH' ? Response.json({ error: { code: 'not_found', message: 'x', retryable: false } }, { status: 404 }) : Response.json({ id: 'p9', version: 1 }, { status: 201 })
+    })
+    const out = await saveProfile({ profileId: 'gone', profileVersion: 2, profileStatus: 'confirmed', skills: [] }, { guestStore: { save() {} } })
+    expect(calls).toEqual(['PATCH', 'POST'])
+    expect(out).toEqual({ ok: true, data: { id: 'p9', version: 1 }, where: 'account' })
+  })
+
   it('loadProfile fetches one saved profile by id', async () => {
     const urls = []
     vi.stubGlobal('fetch', async (url) => { urls.push(url); return Response.json({ id: 'p 1', version: 4, profile: {} }) })

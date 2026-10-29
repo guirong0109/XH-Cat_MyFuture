@@ -39,7 +39,9 @@ export function createOccupationLookup({ live = null, cache, snapshotLoader, ema
     const q = String(query ?? '').trim()
     const alongside = await emasco(q)
     const withEmasco = (candidates) => [...candidates, ...(alongside?.found ?? []).map(emascoCandidate)]
-    const answer = (state, fields, candidates) => ({ state: candidates.length ? state : 'no_match', ...fields, candidates })
+    // Zero results are a real 'no_match' only when nothing failed: during a live outage the answer keeps the source it
+    // came from (spec: an outage is never reported as no_match).
+    const answer = (state, fields, candidates) => ({ state: candidates.length || fields.warning?.startsWith('live_failed') ? state : 'no_match', ...fields, candidates })
 
     // 1. live
     let warning = live ? null : 'no_api_key'

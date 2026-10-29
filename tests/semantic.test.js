@@ -97,3 +97,26 @@ describe('L3 in extractProfile', () => {
     expect(profile.skills.map((s) => s.canonicalId)).toContain('onet:tech:python')
   })
 })
+
+describe('L3 warm-up', () => {
+  it('with an endpoint and a cutoff, the catalogue is embedded when the server starts, not on the first upload', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'warm-'))
+    await import('node:fs/promises').then((fs) => fs.mkdir(path.join(dir, 'onet')))
+    await writeCatalogue(path.join(dir, 'onet'))
+    const seen = []
+    const semantic = { match: async (texts, targets) => { seen.push(targets.length); return [] } }
+    const before = process.env.SEMANTIC_CUTOFF
+    process.env.SEMANTIC_CUTOFF = '0.8'
+    try {
+      const { createApp } = await import('../server/app.js')
+      createApp({ dataDir: dir, onetLive: null, semantic, d1: null, tempStore: null, llmProviders: [] })
+      await new Promise((resolve) => setTimeout(resolve, 200))
+      expect(seen.length).toBe(1)
+      expect(seen[0]).toBeGreaterThan(0)
+    } finally {
+      if (before === undefined) delete process.env.SEMANTIC_CUTOFF
+      else process.env.SEMANTIC_CUTOFF = before
+      await rm(dir, { recursive: true, force: true })
+    }
+  })
+})

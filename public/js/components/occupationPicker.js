@@ -10,7 +10,9 @@ export function occupationPicker({ t, key, term, result, busy }) {
   const list = result.candidates.map((c) => `<button class="choice" style="padding:8px 12px;margin-top:6px" data-act="occPick" data-arg="${esc(key)}|${esc(c.source)}|${esc(c.code)}">
       <b>${esc(c.title)}</b><span class="tiny muted">${c.source === 'onet' ? 'O*NET' : 'eMASCO'} ${esc(c.code)} · ${esc(t(`via_${c.via}`))}</span></button>`).join('')
   const attribution = result.candidates.some((c) => c.source === 'onet') ? `<p class="tiny muted" style="margin-top:6px">${esc(t('occAttribution'))}</p>` : ''
-  return `<div style="margin-top:6px">${button}<p class="tiny muted" style="margin-top:6px">${esc(stateLine)} ${esc(term)}</p>${list}${attribution}</div>`
+  // Live search down and nothing in the stored list: say so, rather than "no occupation matched".
+  const noneStored = !result.candidates.length && ['cached', 'alternative'].includes(result.state) ? `<p class="tiny">${esc(t('occNoneStored'))}</p>` : ''
+  return `<div style="margin-top:6px">${button}<p class="tiny muted" style="margin-top:6px">${esc(stateLine)} ${esc(term)}</p>${noneStored}${list}${attribution}</div>`
 }
 
 export function linkedLine(t, occupation, unlinkArg) {

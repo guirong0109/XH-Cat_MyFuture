@@ -16,6 +16,7 @@ import { createAuth } from './auth.js'
 import { authRoutes } from './routes/auth.js'
 import { createD1FromEnv } from './store/d1.js'
 import { createR2FromEnv } from './store/r2.js'
+import { createWindowLimiter } from './rateLimit.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -34,13 +35,20 @@ export function createApp({
   semantic = createSemanticFromEnv(),
   llmProviders = providersFromEnv(),
   onetLive = createOnetLiveFromEnv(),
+  // Per-address limits on the costly public routes (overridable in tests).
+  rateLimits = {},
+  // Behind a reverse proxy set TRUST_PROXY (e.g. 1 = one proxy hop) so limits apply per visitor, not per proxy.
+  trustProxy = process.env.TRUST_PROXY ? (Number.isFinite(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : process.env.TRUST_PROXY) : false,
   extraRoutes = null,
 } = {}) {
   const app = express()
   app.disable('x-powered-by')
+  app.set('trust proxy', trustProxy)
+  const limits = { extract: { limit: 30, windowMs: 60000 }, search: { limit: 60, windowMs: 60000 }, ...rateLimits }
   app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive }
 
-  app.get('/api/health', (request, response) => response.json({ ok: true }))
+  // Which optional services this server has, so the screens can say what is kept where.
+  app.get('/api/health', (request, response) => response.json({ ok: true, features: { accounts: Boolean(d1), tempCopy: Boolean(tempStore), ai: llmProviders.length > 0 } }))
 
   // Accounts only with D1; guests work fully without it.
   const auth = d1 ? createAuth({ d1, tempStore, now }) : null
@@ -63,6 +71,10 @@ export function createApp({
     normalizer ??= createNormalizer({ catalogue: await loadCatalogue(), semantic, cutoff })
     return normalizer
   }
+  // With L3 on, embed the catalogue now: on the first upload it would not fit in the 20 s limit.
+  if (semantic && cutoff) {
+    loadCatalogue().then((catalogue) => semantic.match(['warm-up'], catalogue.entries)).catch((error) => console.error('[semantic] warm-up failed:', error?.kind ?? error?.name ?? 'Error'))
+  }
   app.use(skillRoutes({ loadNormalizer }))
   app.use(profileRoutes({ loadNormalizer, auth, d1, tempStore, now }))
   // AI re-extraction: needs a provider (RunPod or Claude) and the temporary CV copy (R2).
@@ -73,7 +85,7 @@ export function createApp({
       return reextractor.run(args)
     },
   }
-  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, now }))
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, limiter: createWindowLimiter({ ...limits.extract, now }), now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,
@@ -82,7 +94,7 @@ export function createApp({
     emascoLoader: async () => JSON.parse(await readFile(path.join(dataDir, 'emasco', 'occupations.json'), 'utf8')),
     now,
   })
-  app.use(occupationRoutes({ lookup }))
+  app.use(occupationRoutes({ lookup, limiter: createWindowLimiter({ ...limits.search, now }) }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))
@@ -91,8 +103,11 @@ export function createApp({
 
   // Last resort: no stack trace and no file path in the answer.
   app.use((error, request, response, next) => {
-    console.error('[server] request failed:', error?.name ?? 'Error')
     if (response.headersSent) return next(error)
+    // A request the server cannot read (e.g. a broken %-escape in the URL) is the caller's error, not ours.
+    if (error?.status >= 400 && error.status < 500) return sendError(response, error.status, 'bad_request', 'The request could not be read.')
+    if (error?.name === 'StoreError') return sendError(response, 503, 'store_unavailable', 'Saved data is not reachable right now.', true)
+    console.error('[server] request failed:', error?.name ?? 'Error')
     return sendError(response, 500, 'request_failed', 'Something went wrong on our side.', true)
   })
   return app

@@ -78,6 +78,13 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(profile.skills.map((s) => s.name).sort()).toEqual(['Microsoft Excel', 'Python', 'SQL'])
   })
 
+  it('a one-word software name as the first word of a sentence is not a skill (like "Chef at Hilton")', async () => {
+    const names = async (lines) => (await extractProfile({ lines, language: 'en', interfaceLanguage: 'en', catalogue, normalizer, now: NOW })).profile.skills.map((s) => s.name)
+    expect(await names(['EXPERIENCE', 'Python was what the whole team used'])).toEqual([])
+    expect(await names(['EXPERIENCE', 'Built the tools in Python for the staff'])).toEqual(['Python'])
+    expect(await names(['PROJECTS', 'Python, JavaScript'])).toEqual(['Python', 'JavaScript'])
+  })
+
   it('reads certificates and projects as unconfirmed records', async () => {
     const { profile } = await run()
     expect(profile.certifications.map((c) => c.name)).toEqual(['Google Data Analytics Certificate, 2023'])

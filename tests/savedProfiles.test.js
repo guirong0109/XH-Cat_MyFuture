@@ -7,6 +7,7 @@ import { emptyProfile, makeSkill, val } from '../shared/profileSchema.js'
 import { confirmProfile } from '../shared/profileState.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
 import { createFakeD1, createFakeTempStore } from './helpers/fakeStores.js'
+import { StoreError } from '../server/store/d1.js'
 
 let dir
 let server
@@ -119,5 +120,36 @@ describe('saved profiles', () => {
     const { body } = await call('POST', '/api/profiles', { profile: confirmed() }, cookie)
     const out = await call('GET', `/api/profiles/${body.id}/mappings`, null, cookie)
     expect(out.body).toEqual({ occupationMappings: [MAPPING], skills: [{ name: 'Python', canonicalId: 'onet:tech:python', category: 'Development environment software' }] })
+  })
+
+  it('an unknown nested path → 422 bad_change; a broken URL → 400, never 500', async () => {
+    const cookie = await newUser()
+    const { body } = await call('POST', '/api/profiles', { profile: confirmed() }, cookie)
+    const nested = await call('PATCH', `/api/profiles/${body.id}`, { version: 1, changes: { 'foo.bar': 1 } }, cookie)
+    expect(nested.status).toBe(422)
+    expect(nested.body.error.code).toBe('bad_change')
+    const broken = await call('GET', '/api/profiles/%E0', null, cookie)
+    expect(broken.status).toBe(400)
+    expect(broken.body.error).toMatchObject({ code: 'bad_request', retryable: false })
+  })
+
+  it('a database failure on profile routes → 503 store_unavailable', async () => {
+    const d1 = createFakeD1()
+    await d1.migrate()
+    let down = false
+    const flaky = { ...d1, query: (sql, params) => (down && sql.includes('profiles') ? Promise.reject(new StoreError('store_unavailable')) : d1.query(sql, params)) }
+    const app = createApp({ dataDir: dir, onetLive: null, d1: flaky, tempStore }).listen(0)
+    await new Promise((resolve) => app.once('listening', resolve))
+    try {
+      const at = `http://127.0.0.1:${app.address().port}`
+      const signup = await fetch(`${at}/api/auth/signup`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'flaky@example.com', password: 'password 123' }) })
+      const cookie = signup.headers.get('set-cookie').split(';')[0]
+      down = true
+      const out = await fetch(`${at}/api/profiles`, { headers: { Cookie: cookie } })
+      expect(out.status).toBe(503)
+      expect((await out.json()).error).toMatchObject({ code: 'store_unavailable', retryable: true })
+    } finally {
+      await new Promise((resolve) => app.close(resolve))
+    }
   })
 })

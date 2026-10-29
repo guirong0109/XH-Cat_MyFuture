@@ -104,6 +104,22 @@ describe('POST /api/cv/extract', () => {
     expect(await off.json()).toEqual({ error: { code: 'ai_unavailable', message: expect.any(String), retryable: false }, reason: 'not_configured' })
   })
 
+  it('too many uploads or occupation searches from one address → 429 rate_limited', async () => {
+    const app = createApp({ dataDir: dir, onetLive: null, llmProviders: [], rateLimits: { extract: { limit: 1, windowMs: 60000 }, search: { limit: 1, windowMs: 60000 } } }).listen(0)
+    await new Promise((resolve) => app.once('listening', resolve))
+    try {
+      const at = `http://127.0.0.1:${app.address().port}`
+      expect((await upload(makePdf(SAMPLE_LINES), PDF, 'en', at)).status).toBe(200)
+      const second = await upload(makePdf(SAMPLE_LINES), PDF, 'en', at)
+      expect(second.status).toBe(429)
+      expect((await second.json()).error).toMatchObject({ code: 'rate_limited', retryable: true })
+      expect((await fetch(`${at}/api/occupations/search?q=data`)).status).not.toBe(429)
+      expect((await fetch(`${at}/api/occupations/search?q=data`)).status).toBe(429)
+    } finally {
+      await new Promise((resolve) => app.close(resolve))
+    }
+  })
+
   it('an extraction slower than the time limit → 504 timeout, retryable', async () => {
     const app = express()
     app.use(cvRoutes({ loadNormalizer: () => new Promise(() => {}), loadCatalogue: () => new Promise(() => {}), timeoutMs: 50 }))

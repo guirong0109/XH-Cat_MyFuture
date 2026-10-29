@@ -90,16 +90,19 @@ async function skillsFromRules(rows, catalogue, normalizer, extraction) {
       skills.push(found.candidates?.length ? { ...skill, candidates: found.candidates } : skill)
     }
   }
-  for (const { line, heading } of rows) {
+  for (const { line, section, heading } of rows) {
     if (heading) continue
     const words = wordsOf(line)
     const original = line.split(/\s+/)
+    const listLike = section === 'skills' || LIST_SEPARATOR.test(line)
     for (let size = MAX_NGRAM; size >= 1; size--) {
       for (let start = 0; start + size <= words.length; start++) {
         const entry = catalogue.byName.get(words.slice(start, start + size).join(' '))
         if (!entry || !entry.id.startsWith('onet:tech:')) continue
-        // A one-word software name counts only when written as a name (capitalised), e.g. "Python", not "python".
-        if (size === 1 && !original.some((w) => nameKey(w.replace(/[^\p{L}\p{N}+#.]/gu, '')) === words[start] && /\p{Lu}/u.test(w))) continue
+        // A one-word software name counts only when written as a name (capitalised), e.g. "Python", not "python",
+        // and, in a sentence, not as its first word ("Chef at Hilton…", "Go to person for…").
+        const asName = (w, i) => nameKey(w.replace(/[^\p{L}\p{N}+#.]/gu, '')) === words[start] && /\p{Lu}/u.test(w) && (listLike || i > 0)
+        if (size === 1 && !original.some(asName)) continue
         skills.push(makeSkill({ name: entry.name, originalText: entry.name, canonicalId: entry.id, category: entry.category, source: 'cv_rules', extraction: extraction('dictionary', line, 1) }))
       }
     }

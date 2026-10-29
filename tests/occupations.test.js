@@ -108,6 +108,12 @@ describe('occupation lookup (live-first with verified fallback)', () => {
     expect(out).toMatchObject({ state: 'no_match', candidates: [] })
   })
 
+  it('during a live outage zero snapshot hits are not reported as no_match', async () => {
+    const down = createOnetLive({ apiKey: 'k', sleep: noSleep, fetchImpl: liveReply(500, {}) })
+    const out = await (await lookupWith({ live: down })).search('underwater basket weaving')
+    expect(out).toMatchObject({ state: 'cached', cacheStatus: 'snapshot', candidates: [], warning: expect.stringMatching(/^live_failed:/) })
+  })
+
   it('everything down is failed with no candidates', async () => {
     const out = await (await lookupWith({ damage: 'occupations.tsv', emasco: async () => { throw new Error('gone') } })).search('data analyst')
     expect(out).toMatchObject({ state: 'failed', candidates: [] })

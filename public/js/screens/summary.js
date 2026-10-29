@@ -8,7 +8,7 @@ export default ({ t, state }) => {
   if (!profile || profile.profileStatus !== 'confirmed') {
     return `<h1>${esc(t('summary'))}</h1><div class="next">${esc(t('noProfile'))}</div>`
   }
-  const where = { account: ['b-ok', t('savedAccount', { version: profile.profileVersion })], device: ['b-info', t('savedDevice')], stale: ['b-warn', t('savedStale')] }[state.savedWhere]
+  const where = { account: ['b-ok', t('savedAccount', { version: profile.profileVersion })], device: ['b-info', t('savedDevice')], stale: ['b-warn', t('savedStale')], nowhere: ['b-warn', t('savedNowhere')] }[state.savedWhere]
   const loadButton = state.savedWhere === 'stale' ? `<button class="btn sm" data-act="loadSaved">${esc(t('loadSaved'))}</button>` : ''
   const savedNote = where ? `<div class="banner ${where[0]}"><div>${esc(where[1])}</div>${loadButton}</div>` : ''
   const banner = state.usable

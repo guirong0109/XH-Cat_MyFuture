@@ -14,12 +14,15 @@ const SERVER_FIELDS = ['profileId', 'profileVersion', 'profileStatus']
 // it was loaded or last saved at. → api() result plus where: 'account' | 'device'.
 export async function saveProfile(profile, { guestStore, extractionId = null }) {
   guestStore.save(profile)
-  const out = profile.profileId
+  const create = () => api('POST', '/api/profiles', extractionId ? { profile, extractionId } : { profile })
+  let out = profile.profileId
     ? await api('PATCH', `/api/profiles/${encodeURIComponent(profile.profileId)}`, {
         version: profile.profileVersion,
         changes: Object.fromEntries(Object.entries(profile).filter(([key]) => !SERVER_FIELDS.includes(key))),
       })
-    : await api('POST', '/api/profiles', extractionId ? { profile, extractionId } : { profile })
+    : await create()
+  // The saved copy was deleted elsewhere: save this one as a new profile instead of failing.
+  if (!out.ok && out.code === 'not_found' && profile.profileId) out = await create()
   return { ...out, where: out.ok ? 'account' : 'device' }
 }
 

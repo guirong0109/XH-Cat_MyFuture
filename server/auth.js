@@ -2,6 +2,7 @@
 // sign-in limit 10 per 15 minutes per address, and "delete my data" including any temporary CV.
 import { createHash, randomBytes, randomUUID, scrypt, timingSafeEqual } from 'node:crypto'
 import { promisify } from 'node:util'
+import { createWindowLimiter } from './rateLimit.js'
 
 const scryptAsync = promisify(scrypt)
 const SCRYPT = { N: 16384, r: 8, p: 1 }
@@ -40,16 +41,11 @@ const publicUser = (row) => ({ id: row.id, email: row.email, language: row.langu
 const DUMMY = hashPassword('dummy password', '00000000000000000000000000000000')
 
 export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
-  const attempts = new Map()
-
-  function countAttempt(address) {
-    const time = now().getTime()
-    const recent = (attempts.get(address) ?? []).filter((t) => time - t < WINDOW_MS)
-    if (recent.length >= LIMIT) {
-      attempts.set(address, recent)
-      throw new AuthError(429, 'too_many_attempts', true)
-    }
-    attempts.set(address, [...recent, time])
+  // Sign-ins and sign-ups per address (each scrypt hash costs real CPU time).
+  const signIns = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
+  const signUps = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
+  const countAttempt = (limiter, address) => {
+    if (!limiter.hit(address)) throw new AuthError(429, 'too_many_attempts', true)
   }
 
   async function newSession(userId) {
@@ -59,7 +55,8 @@ export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
     return token
   }
 
-  async function signup({ email, password, language }) {
+  async function signup({ email, password, language, address: from = 'unknown' }) {
+    countAttempt(signUps, from)
     const address = String(email ?? '').trim().toLowerCase()
     if (!EMAIL.test(address) || address.length > 254) throw new AuthError(400, 'bad_email')
     if (typeof password !== 'string' || password.length < MIN_PASSWORD || password.length > MAX_PASSWORD) throw new AuthError(400, 'weak_password')
@@ -73,7 +70,7 @@ export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
   }
 
   async function login({ email, password, address }) {
-    countAttempt(address)
+    countAttempt(signIns, address)
     const { rows } = await d1.query('SELECT * FROM users WHERE email = ?', [String(email ?? '').trim().toLowerCase()])
     const row = rows[0]
     const ok = row

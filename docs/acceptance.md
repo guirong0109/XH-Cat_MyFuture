@@ -2,7 +2,7 @@
 
 Run on **29 Oct 2026** on branch `claude/cv-profile-module`. Evidence comes from three sources:
 - **Browser:** the app at `http://localhost:3200`, plus `scripts/serve-local-accounts.mjs` for accounts.
-- **Tests:** `npm test`, 165 passing, and `python -m unittest discover pipeline/tests`, 4 passing.
+- **Tests:** `npm test`, 181 passing, and `python -m unittest discover pipeline/tests`, 4 passing.
 - **Evaluation:** `node scripts/eval-cv.mjs`, results in [`eval-results.md`](eval-results.md).
 
 All CVs are synthetic. No real personal data was used.

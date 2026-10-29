@@ -45,6 +45,7 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
 | `CV_LLM_URL`, `CV_LLM_KEY`, `CV_LLM_MODEL` | AI re-read, first provider (RunPod chat endpoint) |
 | `CV_LLM_BACKUP_KEY`, `CV_LLM_BACKUP_MODEL` | AI re-read, backup provider (Claude API, default model `claude-opus-5-5`) |
 | `CV_MAX_MB` | Upload limit (default 10) |
+| `TRUST_PROXY` | Behind a reverse proxy: number of proxy hops, so sign-in and upload limits count each visitor, not the proxy |
 
 ## Setting up the outside services (owner)
 

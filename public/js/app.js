@@ -48,7 +48,7 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 function go(screen) {
@@ -296,7 +296,7 @@ async function accountCall(kind) {
 // After Confirm: always on this device; also in the account when signed in.
 async function saveConfirmed() {
   if (state.account?.status !== 'in') {
-    state.savedWhere = saved ? 'device' : null
+    state.savedWhere = saved ? 'device' : 'nowhere'
     return
   }
   const out = await accountApi.saveProfile(state.profile, { guestStore: { save: persist }, extractionId: state.extractionId })
@@ -305,7 +305,7 @@ async function saveConfirmed() {
     state.extractionId = null
     state.savedWhere = 'account'
   } else {
-    state.savedWhere = out.code === 'stale_version' ? 'stale' : 'device'
+    state.savedWhere = out.code === 'stale_version' ? 'stale' : saved ? 'device' : 'nowhere'
   }
 }
 
@@ -391,6 +391,11 @@ if (resumeChoice(previous) === 'ask') {
 }
 render()
 // Who is signed in (the session cookie is HttpOnly, so ask the server).
+// Which optional services the server has (e.g. whether a temporary CV copy is kept).
+api('GET', '/api/health').then((out) => {
+  state.features = out.ok ? out.data.features ?? null : null
+  render()
+})
 accountApi.me().then((out) => {
   if (out.ok) state.account = { status: 'in', user: out.data.user }
   else state.account = { status: out.code === 'not_signed_in' ? 'none' : 'off', user: null }

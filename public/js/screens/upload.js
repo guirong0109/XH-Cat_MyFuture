@@ -66,5 +66,5 @@ export default ({ t, state }) => {
       <div class="row" style="margin-top:12px">${btn(t('cvManual'), { go: 'form' })}</div>`
   }
   return `<h1>${esc(t('upload'))}</h1><p class="lead">${esc(t('cvLead'))}</p>
-  <div class="banner b-info"><div>${esc(t('cvPrivacy'))}</div></div>${body}`
+  <div class="banner b-info"><div>${esc(t('cvPrivacy'))}${state.features?.tempCopy ? ` ${esc(t('cvPrivacyServer'))}` : ''}</div></div>${body}`
 }

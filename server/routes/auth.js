@@ -50,7 +50,7 @@ export function authRoutes({ auth }) {
 
   router.post('/api/auth/signup', available, jsonBody('10kb'), async (request, response) => {
     try {
-      const { user, token } = await auth.signup(request.body ?? {})
+      const { user, token } = await auth.signup({ ...(request.body ?? {}), address: request.ip })
       return setSession(response, token).status(201).json({ user })
     } catch (error) {
       return fail(response, error)

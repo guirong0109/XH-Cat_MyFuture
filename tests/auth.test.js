@@ -16,17 +16,17 @@ beforeAll(async () => {
 afterAll(() => rm(dir, { recursive: true, force: true }))
 
 // A fresh server per test: its own database, temp store, clock and sign-in counter.
-async function start({ withD1 = true, at = '2026-10-29T10:00:00Z' } = {}) {
+async function start({ withD1 = true, at = '2026-10-29T10:00:00Z', trustProxy = false } = {}) {
   const d1 = withD1 ? createFakeD1() : null
   if (d1) await d1.migrate()
   const tempStore = createFakeTempStore()
   const clock = { now: new Date(at) }
-  const server = createApp({ dataDir: dir, onetLive: null, d1, tempStore, now: () => clock.now }).listen(0)
+  const server = createApp({ dataDir: dir, onetLive: null, d1, tempStore, now: () => clock.now, trustProxy }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   const base = `http://127.0.0.1:${server.address().port}`
-  const call = (method, url, body, cookie) => fetch(base + url, {
+  const call = (method, url, body, cookie, from = null) => fetch(base + url, {
     method,
-    headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(cookie ? { Cookie: cookie } : {}) },
+    headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(cookie ? { Cookie: cookie } : {}), ...(from ? { 'X-Forwarded-For': from } : {}) },
     body: body ? JSON.stringify(body) : undefined,
   })
   return { d1, tempStore, clock, call, close: () => new Promise((resolve) => server.close(resolve)) }
@@ -102,6 +102,29 @@ describe('account routes', () => {
       expect((await blocked.json()).error).toMatchObject({ code: 'too_many_attempts', retryable: true })
       app.clock.now = new Date('2026-10-29T10:15:01Z')
       expect((await app.call('POST', '/api/auth/login', { email: 'x@example.com', password: 'whatever 1' })).status).toBe(401)
+    } finally {
+      await app.close()
+    }
+  })
+
+  it('the 11th sign-up within 15 minutes from one address → 429', async () => {
+    const app = await start()
+    try {
+      for (let i = 0; i < 10; i++) expect((await app.call('POST', '/api/auth/signup', { email: `s${i}@example.com`, password: 'password 123' })).status).toBe(201)
+      const blocked = await app.call('POST', '/api/auth/signup', { email: 's10@example.com', password: 'password 123' })
+      expect(blocked.status).toBe(429)
+      expect((await blocked.json()).error.code).toBe('too_many_attempts')
+    } finally {
+      await app.close()
+    }
+  })
+
+  it('behind a trusted proxy each visitor has their own sign-in limit', async () => {
+    const app = await start({ trustProxy: 1 })
+    try {
+      for (let i = 0; i < 10; i++) await app.call('POST', '/api/auth/login', { email: 'x@example.com', password: 'whatever 1' }, null, '203.0.113.7')
+      expect((await app.call('POST', '/api/auth/login', { email: 'x@example.com', password: 'whatever 1' }, null, '203.0.113.7')).status).toBe(429)
+      expect((await app.call('POST', '/api/auth/login', { email: 'x@example.com', password: 'whatever 1' }, null, '198.51.100.9')).status).toBe(401)
     } finally {
       await app.close()
     }

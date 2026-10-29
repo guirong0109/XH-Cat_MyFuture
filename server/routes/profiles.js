@@ -77,6 +77,11 @@ export function profileRoutes({ loadNormalizer, auth = null, d1 = null, tempStor
     if (!row) return undefined
     if (version !== row.version) return sendError(response, 409, 'stale_version', 'This profile changed elsewhere. Reload it first.', true)
     let profile = JSON.parse(row.json)
+    // Only existing parts of the profile can be changed: the parent of every path must already be an object or list.
+    const parentOf = (p) => p.split('.').slice(0, -1).reduce((node, key) => (node && typeof node === 'object' ? node[key] : undefined), profile)
+    if (paths.some((p) => { const parent = parentOf(p); return !parent || typeof parent !== 'object' })) {
+      return sendError(response, 422, 'bad_change', 'These fields cannot be changed this way.')
+    }
     for (const p of paths) profile = setField(profile, p, changes[p])
     profile = { ...profile, profileVersion: row.version + 1 }
     const check = validateProfile(profile)

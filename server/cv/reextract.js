@@ -5,10 +5,12 @@ import { emptyProfile, makeSkill } from '../../shared/profileSchema.js'
 import { readText } from './readText.js'
 import { validateFile } from './validateFile.js'
 import { CV_SCHEMA, SYSTEM_PROMPT, userMessage } from './reextractPrompt.js'
+import { createWindowLimiter } from '../rateLimit.js'
 
 const RUNS_PER_UPLOAD = 3
 const RUNS_PER_HOUR = 20
 const HOUR_MS = 3600 * 1000
+const UPLOAD_LIFETIME_MS = 24 * HOUR_MS
 const MAX_BYTES = 10 * 1024 * 1024
 const CLAUDE_URL = 'https://api.anthropic.com/v1/messages'
 const FIELDS = Object.fromEntries(Object.entries(CV_SCHEMA.properties).map(([list, { items }]) => [list, Object.keys(items.properties)]))
@@ -113,17 +115,10 @@ const CALLS = {
 }
 
 export function createReextractor({ tempStore, providers, fetchImpl = fetch, normalizer, now = () => new Date(), timeoutMs = 30000 }) {
-  const perUpload = new Map()
-  const perAddress = new Map()
-
-  function allowed(extractionId, ip) {
-    const time = now().getTime()
-    const recent = (perAddress.get(ip) ?? []).filter((t) => time - t < HOUR_MS)
-    if ((perUpload.get(extractionId) ?? 0) >= RUNS_PER_UPLOAD || recent.length >= RUNS_PER_HOUR) return false
-    perUpload.set(extractionId, (perUpload.get(extractionId) ?? 0) + 1)
-    perAddress.set(ip, [...recent, time])
-    return true
-  }
+  // 3 runs per upload (an upload is kept at most a day) and 20 per hour per address.
+  const perUpload = createWindowLimiter({ limit: RUNS_PER_UPLOAD, windowMs: UPLOAD_LIFETIME_MS, now })
+  const perAddress = createWindowLimiter({ limit: RUNS_PER_HOUR, windowMs: HOUR_MS, now })
+  const allowed = (extractionId, ip) => perAddress.hit(ip) && perUpload.hit(String(extractionId))
 
   async function suggestedProfile(fields, provider, interfaceLanguage) {
     const at = now().toISOString()

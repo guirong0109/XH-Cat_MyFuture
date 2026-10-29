@@ -20,7 +20,12 @@ const FILES = {
     '0912\tMedicine\t51.3801\tRegistered nursing/registered nurse\tY\tOnly the clinical part',
     '1013\tHotel, restaurants and catering\t12.0504\tRestaurant, culinary and catering management/manager\tN\t',
   ].join('\n') + '\n',
-  'cip_onet.tsv': 'cip_code\tcip_title\tcode\ttitle\n11.0701\tComputer Science\t15-1252.00\tSoftware Developers\n',
+  'cip_onet.tsv': [
+    'cip_code\tcip_title\tcode\ttitle',
+    '11.0701\tComputer Science\t15-1252.00\tSoftware Developers',
+    '11.0701\tComputer Science\t15-2051.00\tData Scientists',
+    '51.3801\tRegistered Nursing/Registered Nurse\t43-9021.00\tData Entry Keyers',
+  ].join('\n') + '\n',
 }
 
 export async function writeIsced(directory, { damage = null } = {}) {

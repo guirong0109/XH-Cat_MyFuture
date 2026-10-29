@@ -11,6 +11,7 @@ import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
 import { fieldRoutes } from './routes/fields.js'
 import { loadIsced } from './fields/isced.js'
+import { loadFieldSkills } from './fields/fieldSkills.js'
 import { cvRoutes } from './routes/cv.js'
 import { createSemanticFromEnv } from './cv/semantic.js'
 import { createReextractor, providersFromEnv } from './cv/reextract.js'
@@ -102,7 +103,15 @@ export function createApp({
     })
     return iscedPromise
   }
-  app.use(fieldRoutes({ loadIsced: loadFields }))
+  let fieldSkillsPromise = null
+  const loadSkillsOfFields = () => {
+    fieldSkillsPromise ??= loadFieldSkills({ iscedDir: path.join(dataDir, 'isced'), onetDir: path.join(dataDir, 'onet') }).catch((error) => {
+      fieldSkillsPromise = null
+      throw error
+    })
+    return fieldSkillsPromise
+  }
+  app.use(fieldRoutes({ loadIsced: loadFields, loadFieldSkills: loadSkillsOfFields }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

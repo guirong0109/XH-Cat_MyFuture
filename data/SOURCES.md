@@ -13,3 +13,12 @@ Only synthetic CVs are used; no personal data is stored here.
 | `emasco/occupations.json` | eMASCO occupations: code, title, page URL (1,766) | eMASCO (MASCO 2020), https://emasco.mohr.gov.my, English pages; copied from the team's earlier crawl as data only | fetched 2026-10-23 | Public government reference; only code, title and URL are kept |
 
 Refresh O\*NET: `python pipeline/fetch_onet.py <version>` (see the script's header).
+
+## Test and evaluation sets (synthetic)
+
+| File | What it is |
+|---|---|
+| `../testing/eval-cvs.json` | 11 synthetic CVs (EN, BM, 中文, mixed, two degrees, no job, project only, injection attempt, DOCX, duplicates, scanned) with expected skills, qualifications, jobs and certificates, for `scripts/eval-cv.mjs` |
+| `../testing/model-eval-set.json` | 61 labelled wordings → O\*NET 31.0 ids (incl. BM, 中文 and 7 with no match), for `scripts/model-eval.mjs` |
+
+All names, employers and details in these files are invented.

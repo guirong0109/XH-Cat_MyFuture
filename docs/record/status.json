@@ -209,8 +209,7 @@
     "T17: the compare test passed at once (Task 4 helpers already lock edits); a deliberate break of the lock made it fail, so it guards the rule — cost: none",
     "T18: eval differences left as measured (Google from a certificate line, Oracle Database, QuickBooks Online not in O*NET, MS Excel as a second skill) — not tuned to the eval set — cost: those few wrong or missed skills remain for the user to fix in review",
     "Final: sign-in also loads the saved profile when the local copy is an older version of it (fixes a permanent 409) — cost: unsaved edits to an older copy are replaced, with a message",
-    "Minors: new per-address limits on uploads (30/min) and occupation searches (60/min) and sign-ups (10/15 min) — not in the spec, added to fix the reviewer's minor 7 — cost: a very busy single address must wait a minute",
-    "Minors: sign-up still says 'email already exists' (spec §10 routes; hiding it needs email verification) — cost: an email's account can be probed, now rate-limited"
+    "Owner: no limits beyond the spec — sign-up, upload and occupation-search limits removed; only the spec's sign-in (10 per 15 min) and AI re-read (3 per upload, 20 per hour) limits remain"
   ],
   "log": [
     {
@@ -627,6 +626,16 @@
       "time": "29 Oct",
       "step": "Minors · commit",
       "detail": "2942eb1"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Your decision",
+      "detail": "'This dont limit': the sign-up, upload and search limits (not in the spec) removed with their tests; suite 179/179"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Commit",
+      "detail": "372adad fix: remove limits not in the spec"
     }
   ]
 }

@@ -7,6 +7,7 @@ import { sendError } from '../errors.js'
 import { detectLanguage } from '../cv/detectLanguage.js'
 import { EXTRACTOR_VERSION, extractProfile } from '../cv/extract.js'
 import { readText } from '../cv/readText.js'
+import { createSemanticStep } from '../cv/semantic.js'
 import { validateFile } from '../cv/validateFile.js'
 
 const MB = 1024 * 1024
@@ -21,7 +22,7 @@ const MESSAGES = {
 }
 const fail = (response, code) => sendError(response, MESSAGES[code][0], code, MESSAGES[code][1])
 
-export function cvRoutes({ loadCatalogue, loadNormalizer, semanticStep = null, tempStore = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
+export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, tempStore = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
   const router = express.Router()
   const rawBody = (request, response, next) =>
     express.raw({ type: () => true, limit: maxBytes })(request, response, (error) => {
@@ -42,6 +43,7 @@ export function cvRoutes({ loadCatalogue, loadNormalizer, semanticStep = null, t
       if (!read.ok) return read
       const { language } = detectLanguage(read.lines)
       const [catalogue, normalizer] = await Promise.all([loadCatalogue(), loadNormalizer()])
+      const semanticStep = createSemanticStep({ semantic, catalogue, cutoff })
       const result = await extractProfile({ lines: read.lines, language, interfaceLanguage, catalogue, normalizer, semanticStep, now: now() })
       return { ok: true, language, ...result }
     })()

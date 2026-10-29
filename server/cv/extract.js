@@ -147,7 +147,7 @@ export async function extractProfile({ lines, language, interfaceLanguage, catal
   const uncertain = []
   profile.skills.forEach((skill, i) => {
     if (!skill.canonicalId) uncertain.push({ path: `skills.${i}`, reason: 'unknown_skill' })
-    else if (skill.source === 'cv_semantic' && skill.lowSimilarity) uncertain.push({ path: `skills.${i}`, reason: 'low_similarity' })
+    else if (skill.source === 'cv_semantic' && skill.extraction?.lowSimilarity) uncertain.push({ path: `skills.${i}`, reason: 'low_similarity' })
   })
   if (!validateProfile(profile).ok) warnings.push('schema_problem')
   return { profile, uncertain, layers, warnings }

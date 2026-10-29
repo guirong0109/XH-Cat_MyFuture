@@ -21,7 +21,7 @@ describe('skill catalogue', () => {
   it('has one entry per software example and per skill element', () => {
     expect(catalogue.version).toBe('31.0')
     expect(catalogue.entries.map((e) => e.id).sort()).toEqual([
-      'onet:el:2.A.1.a', 'onet:tech:microsoft excel', 'onet:tech:microsoft sql server', 'onet:tech:oracle java',
+      'onet:el:2.A.1.a', 'onet:tech:javascript', 'onet:tech:microsoft excel', 'onet:tech:microsoft sql server', 'onet:tech:oracle java',
       'onet:tech:python', 'onet:tech:structured query language sql',
     ])
     expect(catalogue.entries.find((e) => e.id === 'onet:tech:python').category).toBe('Development environment software')

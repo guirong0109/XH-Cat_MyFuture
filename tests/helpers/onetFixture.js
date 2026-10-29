@@ -14,6 +14,7 @@ const FILES = {
     'Microsoft SQL Server\t2.E.5.a\tDatabase software\t15-2051.00',
     'Oracle Java\t2.E.5.c\tDevelopment environment software\t15-1252.00',
     'Python\t2.E.5.c\tDevelopment environment software\t15-1252.00',
+    'JavaScript\t2.E.5.c\tDevelopment environment software\t15-1252.00',
   ].join('\n') + '\n',
   'occupations.tsv': 'code\ttitle\tdescription\n15-2051.00\tData Scientists\tDevelop methods.\n15-2051.01\tBusiness Intelligence Analysts\tProduce reports.\n43-9021.00\tData Entry Keyers\tEnter data.\n',
   'job_titles.tsv': 'code\ttitle\n15-2051.00\tData Analyst\n43-9021.00\tData Analyst\n43-9021.00\tData Entry Clerk\n',

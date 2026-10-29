@@ -10,6 +10,7 @@ import { skillRoutes } from './routes/skills.js'
 import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
 import { cvRoutes } from './routes/cv.js'
+import { createSemanticFromEnv } from './cv/semantic.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -25,7 +26,7 @@ export function createApp({
   now = () => new Date(),
   d1 = null,
   tempStore = null,
-  semantic = null,
+  semantic = createSemanticFromEnv(),
   llmProviders = [],
   onetLive = createOnetLiveFromEnv(),
   extraRoutes = null,
@@ -45,14 +46,16 @@ export function createApp({
     })
     return cataloguePromise
   }
+  // L3 runs only with a RunPod endpoint and the cutoff measured by Model Eval (docs/model-eval.md).
+  const cutoff = Number(process.env.SEMANTIC_CUTOFF) || null
   let normalizer = null
   const loadNormalizer = async () => {
-    normalizer ??= createNormalizer({ catalogue: await loadCatalogue(), semantic, cutoff: Number(process.env.SEMANTIC_CUTOFF) || null })
+    normalizer ??= createNormalizer({ catalogue: await loadCatalogue(), semantic, cutoff })
     return normalizer
   }
   app.use(skillRoutes({ loadNormalizer }))
   app.use(profileRoutes({ loadNormalizer }))
-  app.use(cvRoutes({ loadCatalogue, loadNormalizer, tempStore, now }))
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,

@@ -26,7 +26,7 @@ const FIELDS = {
 }
 const LISTS = [
   'education.records', 'employment.records', 'employment.industries', 'skills', 'certifications', 'projects', 'training',
-  'preferences.careerInterests', 'preferences.preferredCareerFields', 'occupationMappings',
+  'preferences.careerInterests', 'occupationMappings',
 ]
 
 export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' } = {}) {
@@ -47,7 +47,6 @@ export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' 
     preferences: {
       careerInterests: [],
       careerGoal: EMPTY,
-      preferredCareerFields: [],
       preferredWorkLocation: EMPTY,
       preferredLearningHoursPerWeek: EMPTY,
     },

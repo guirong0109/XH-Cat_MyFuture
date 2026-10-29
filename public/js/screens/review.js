@@ -43,7 +43,7 @@ export function profileTable(t, profile) {
     ${field('userCategory', 'fCategory')}
     ${field('education.educationStatus', 'fEduStatus')}
     ${field('education.highestQualification', 'fHighest')}
-    ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
+    ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${field('employment.status', 'fEmpStatus')}
     ${field('employment.yearsOfExperience', 'fYears')}
     ${row(t('fIndustries'), list(profile.employment.industries))}
@@ -52,9 +52,8 @@ export function profileTable(t, profile) {
     ${row(t('certName'), records(profile.certifications, (r) => [r.name, r.issuer, r.year].filter(Boolean).join(' · ')))}
     ${row(t('trainingName'), records(profile.training, (r) => [r.name, r.year].filter(Boolean).join(' · ')))}
     ${row(t('projTitle'), records(profile.projects, (r) => [r.title, r.description].filter(Boolean).join(' — ')))}
-    ${row(t('fInterests'), list(profile.preferences.careerInterests))}
+    ${row(t('fInterests'), list((profile.preferences.careerInterests ?? []).map((item) => item?.name ?? item)))}
     ${field('preferences.careerGoal', 'fGoal')}
-    ${row(t('fFields'), list(profile.preferences.preferredCareerFields))}
     ${field('preferences.preferredWorkLocation', 'fLocation')}
     ${field('preferences.preferredLearningHoursPerWeek', 'fHours')}
     ${row(t('occLinked'), profile.occupationMappings.length ? profile.occupationMappings.map((m) => (!m.chosen ? `<div>${esc(m.term)} → ${tag('unv', t('none'))}</div>` : `<div>${esc(m.term)} → <b>${esc(m.chosen.title)}</b> <span class="tiny muted">${m.chosen.source === 'onet' ? 'O*NET' : 'eMASCO'} ${esc(m.chosen.code)} · ${esc(m.chosen.version ?? '')} · ${esc(String(m.chosen.fetchedAt ?? '').slice(0, 10))} · ${esc(m.chosen.lookupState ?? '')}</span></div>`)).join('') : tag('unv', t('none')))}

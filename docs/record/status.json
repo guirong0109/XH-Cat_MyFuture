@@ -1,5 +1,5 @@
 {
-  "updated": "29 Oct 2026",
+  "updated": "30 Oct 2026",
   "groups": [
     {
       "id": "S0",
@@ -153,6 +153,47 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 8",
+      "name": "Search pickers (your request)",
+      "tasks": [
+        {
+          "title": "T19 Field of study data",
+          "sub": "ISCED-F 2013 · CIP bridge to O*NET (118/124)",
+          "status": "done"
+        },
+        {
+          "title": "T20 Search APIs",
+          "sub": "/api/fields/search · /api/skills/search",
+          "status": "done"
+        },
+        {
+          "title": "T21 Pickers + defaults",
+          "sub": "search dropdowns · Prefer not to say · Not assessed yet",
+          "status": "done"
+        },
+        {
+          "title": "T22 Skills from field of study",
+          "sub": "typical of the field · tick and add",
+          "status": "done"
+        },
+        {
+          "title": "T23 Shorter suggestions",
+          "sub": "click a chip to add · 8 first",
+          "status": "done"
+        },
+        {
+          "title": "T24 Sources on screen",
+          "sub": "every list and suggestion names its source",
+          "status": "done"
+        },
+        {
+          "title": "T25 Career interests and fields",
+          "sub": "one dropdown · O*NET interest areas (41)",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -179,7 +220,14 @@
     "Task 18: extraction evaluation on 11 synthetic CVs (skills P 0.917 / R 0.971, qualifications and jobs 1.0, certificates 1.0, 0 failures, median 3 ms; docs/eval-results.md); found and fixed: two-character Chinese headings (技能, 证书) were dropped; browser acceptance of the CV spec §12 table and §13 Tests 1–7 in EN / BM / 中文, desktop and 360 px (docs/acceptance.md); README, tools declaration, data sources (165/165 tests, commit c0f707e)",
     "Final review by a fresh reviewer: 0 Critical, 7 Important, 11 Minor. All 7 Important fixed, each with a test that failed first (or a browser check): long paragraphs no longer cut the CV; a skill inside one longer O*NET name is offered to pick, not linked; a stale save offers 'Load the saved version'; sign-out clears the browser; blocked site data no longer gives a blank page; AI quotes must contain the item; .env is loaded (169/169 tests, commit f8d4ae3). 11 minor items deferred.",
     "Final review minors, all 11 fixed with a failing test first: bad PATCH paths and URLs answer 422/400; database failures answer 503; one-word software names no longer taken from a sentence's first word; a live outage is never reported as 'no match'; L3 embeds the catalogue at start-up; one bounded rate limiter for sign-in, sign-up, uploads, searches and AI runs; TRUST_PROXY setting; review screen safe with an empty occupation link; privacy note mentions the server copy when R2 is on; honest 'not saved' message and re-save after a deleted profile (181/181 tests, commit 2942eb1)",
-    "Branch claude/cv-profile-module merged into main (fast-forward, 44 commits); tests on main: 179/179 and pipeline 4/4; branch deleted"
+    "Branch claude/cv-profile-module merged into main (fast-forward, 44 commits); tests on main: 179/179 and pipeline 4/4; branch deleted",
+    "Task 19: field of study list from UNESCO ISCED-F 2013 (124 fields) with an official bridge to O*NET: Statistics Canada ISCED-F→CIP + O*NET CIP→occupation crosswalk; 118 of 124 fields reach O*NET (pipeline/fetch_isced.py, 4 new pipeline tests, commit 9be8d47)",
+    "Task 20: search APIs while typing: GET /api/fields/search (field names + programme names) and GET /api/skills/search (O*NET catalogue) (11 new tests, commit c4fff07)",
+    "Task 21: search pickers for skills, roles of interest and field of study; every optional field starts on 'Prefer not to say' (no checkbox); skill level starts on 'Not assessed yet'; role titles match word starts (Tests 204 passed, commit d2245d2)",
+    "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)",
+    "Task 23: your feedback — suggestions are now short chips in two groups (Skills, Tools and software), 8 at first; one click adds a skill; the caption says 'Click a skill to add it'; the reason is shown on hover",
+    "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
+    "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -210,7 +258,17 @@
     "T17: the compare test passed at once (Task 4 helpers already lock edits); a deliberate break of the lock made it fail, so it guards the rule — cost: none",
     "T18: eval differences left as measured (Google from a certificate line, Oracle Database, QuickBooks Online not in O*NET, MS Excel as a second skill) — not tuned to the eval set — cost: those few wrong or missed skills remain for the user to fix in review",
     "Final: sign-in also loads the saved profile when the local copy is an older version of it (fixes a permanent 409) — cost: unsaved edits to an older copy are replaced, with a message",
-    "Owner: no limits beyond the spec — sign-up, upload and occupation-search limits removed; only the spec's sign-in (10 per 15 min) and AI re-read (3 per upload, 20 per hour) limits remain"
+    "Owner: no limits beyond the spec — sign-up, upload and occupation-search limits removed; only the spec's sign-in (10 per 15 min) and AI re-read (3 per upload, 20 per hour) limits remain",
+    "T19: broad-field names (11) typed in from UNESCO ISCED-F 2013; the 124 detailed names come from the Statistics Canada file — cost: one list to check",
+    "T19: CIP Canada 2016 and CIP 2020 are matched only on the same code; 6 fields have no O*NET link and say nothing false — cost: none",
+    "T21: a profile with only 'Prefer not to say' defaults counts as untouched (a CV draft or a saved account profile may still fill it) — cost: none",
+    "T21: field of study names are English only in all three languages (no official BM/中文 list found); the BM and 中文 hint says to search in English — cost: one hint",
+    "T21: role titles now match word starts in O*NET and eMASCO, so typing 'data anal' works — cost: a few more candidates for very short words",
+    "T22: no minimum gap above the all-jobs average (your rule B is 'more typical than overall'), so a weak skill can appear, e.g. Accounting → Programming 1.76 vs 1.60 — cost: a few weak suggestions, each shows its numbers",
+    "T22: at most 5 O*NET skills and 15 tools per field; the screen shows 10 first — cost: none",
+    "T23: the reason for each suggestion moved to the hover text to keep the list short; on a phone it is not visible — cost: the numbers stay in the API answer and the spec",
+    "T25: interest areas come from the same O*NET 31.0 zip (Specific Interest Areas.txt, occupational-interest scale); the other O*NET files are unchanged byte for byte — cost: none",
+    "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list"
   ],
   "log": [
     {
@@ -642,6 +700,61 @@
       "time": "29 Oct",
       "step": "Merge",
       "detail": "your choice: merge to main locally (no remote); fast-forward to 55f25cd; tests green on main; branch deleted"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Branch diagram",
+      "detail": "docs/architecture-cv-branch.html: git history of main and claude/cv-profile-module, every folder and file of the CV branch by layer (browser, shared, server, data, outside services, tooling, docs) with on/off status of each service"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "skills, roles of interest and field of study chosen by searching; 'Prefer not to say' as the default answer instead of a checkbox"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Field of study source",
+      "detail": "your choice: ISCED-F 2013 + O*NET via the CIP files (after checking that O*NET 31.0 has no field-of-study data)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Tasks 19–21",
+      "detail": "data, search APIs, pickers; npm test 204 passed; pipeline tests 8 OK; CV eval unchanged (11 CVs, 0 failures); checked in the browser"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "suggest skills that match the chosen field of study"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "rule B (typical of the field, not just most common); the user ticks, then adds"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 22",
+      "detail": "GET /api/fields/:code/skills + suggestion list in Skills; npm test 217 passed; checked in the browser (Nursing → Service Orientation, MEDITECH added as not assessed)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your feedback",
+      "detail": "list too long, make it click-and-add with a caption: done as chips, 8 first"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "show where suggestions come from (highly important); combine career interests and preferred career fields into one dropdown"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "O*NET interest areas (41); several can be chosen"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Tasks 24–25",
+      "detail": "sources on every list; one 'Career interests and fields' dropdown; npm test 229 passed; checked in the browser on 127.0.0.2:3200"
     }
   ]
 }

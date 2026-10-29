@@ -9,6 +9,11 @@ import { createNormalizer } from './skills/normalize.js'
 import { skillRoutes } from './routes/skills.js'
 import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
+import { fieldRoutes } from './routes/fields.js'
+import { loadIsced } from './fields/isced.js'
+import { loadFieldSkills } from './fields/fieldSkills.js'
+import { loadInterestAreas } from './interests/interestAreas.js'
+import { interestRoutes } from './routes/interests.js'
 import { cvRoutes } from './routes/cv.js'
 import { createSemanticFromEnv } from './cv/semantic.js'
 import { createReextractor, providersFromEnv } from './cv/reextract.js'
@@ -71,7 +76,7 @@ export function createApp({
   if (semantic && cutoff) {
     loadCatalogue().then((catalogue) => semantic.match(['warm-up'], catalogue.entries)).catch((error) => console.error('[semantic] warm-up failed:', error?.kind ?? error?.name ?? 'Error'))
   }
-  app.use(skillRoutes({ loadNormalizer }))
+  app.use(skillRoutes({ loadNormalizer, loadCatalogue }))
   app.use(profileRoutes({ loadNormalizer, auth, d1, tempStore, now }))
   // AI re-extraction: needs a provider (RunPod or Claude) and the temporary CV copy (R2).
   let reextractor = null
@@ -91,6 +96,33 @@ export function createApp({
     now,
   })
   app.use(occupationRoutes({ lookup }))
+  // Field of study list (ISCED-F 2013), loaded once on first use (a failed load is retried next time).
+  let iscedPromise = null
+  const loadFields = () => {
+    iscedPromise ??= loadIsced(path.join(dataDir, 'isced')).catch((error) => {
+      iscedPromise = null
+      throw error
+    })
+    return iscedPromise
+  }
+  let fieldSkillsPromise = null
+  const loadSkillsOfFields = () => {
+    fieldSkillsPromise ??= loadFieldSkills({ iscedDir: path.join(dataDir, 'isced'), onetDir: path.join(dataDir, 'onet') }).catch((error) => {
+      fieldSkillsPromise = null
+      throw error
+    })
+    return fieldSkillsPromise
+  }
+  app.use(fieldRoutes({ loadIsced: loadFields, loadFieldSkills: loadSkillsOfFields }))
+  let areasPromise = null
+  const loadAreas = () => {
+    areasPromise ??= loadInterestAreas(path.join(dataDir, 'onet')).catch((error) => {
+      areasPromise = null
+      throw error
+    })
+    return areasPromise
+  }
+  app.use(interestRoutes({ loadAreas }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

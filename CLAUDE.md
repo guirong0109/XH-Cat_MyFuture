@@ -14,10 +14,13 @@ are detailed.
 - **Test first** (Vitest). Run `npm test` before every commit. Commit messages use the form `feat:`, `fix:` or
   `docs:`, with no attribution lines.
 - **Record every step** in the build record (`docs/record/status.json` → `python docs/record/build_record.py`).
+- **Show the source of every list and suggestion on screen** (owner: "highly important").
+- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`); the owner clicks in the same
+  Browser pane, and each address keeps its own saved progress.
 - **Use plain words** with the owner.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 179 passed
+npm install && npm test     # expect 229 passed
 npm start                   # http://localhost:3200
 ```

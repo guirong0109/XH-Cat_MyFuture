@@ -3,7 +3,7 @@
 //   3 eMASCO reference ("alternative source")  4 unavailable (structured, nothing invented)
 // States: live · cached · alternative · no_match (valid zero results) · failed (no fallback).
 // An outage is never reported as no_match. eMASCO title matches are listed beside O*NET for Malaysian context.
-import { wordsOf } from '../skills/onetSkills.js'
+import { startsWords, wordsOf } from '../skills/onetSkills.js'
 
 const EMASCO_LIMIT = 5
 const onetUrl = (code) => `https://www.onetonline.org/link/summary/${code}`
@@ -12,7 +12,7 @@ function emascoSearch(roles, query) {
   const q = query.toLowerCase().replace(/\s+/g, ' ').trim()
   const words = wordsOf(q)
   const exact = roles.filter((r) => r.title.toLowerCase() === q)
-  const all = roles.filter((r) => !exact.includes(r) && words.length && words.every((w) => wordsOf(r.title).includes(w)))
+  const all = roles.filter((r) => !exact.includes(r) && words.length && startsWords(wordsOf(r.title), words))
   return [...exact, ...all].slice(0, EMASCO_LIMIT)
 }
 

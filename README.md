@@ -70,6 +70,7 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
 
 ```bash
 python pipeline/fetch_onet.py 31.0     # or a newer release number
+python pipeline/fetch_isced.py         # field-of-study list (ISCED-F 2013) and its CIP bridge to O*NET
 python -m unittest discover pipeline/tests
 ```
 

@@ -36,6 +36,10 @@ def zip_31():
         archive.writestr("db_31_0_text/Software Skills.txt", table(
             ("O*NET-SOC Code", "Workplace Example", "Element ID", "Element Name", "Hot Technology", "In Demand"),
             ("15-2051.00", "Python", "2.E.5.c", "Development environment software", "Y", "Y")))
+        archive.writestr("db_31_0_text/Specific Interest Areas.txt", table(
+            ("O*NET-SOC Code", "Title", "Element ID", "Element Name", "Scale ID", "Scale Name", "Data Value", "Date", "Domain Source"),
+            ("15-2051.00", "Data Scientists", "1.B.3.q", "Information Technology", "DS", "Summary Display Rank", "1.00", "05/2026", "AI/Expert"),
+            ("15-2051.00", "Data Scientists", "1.B.3.q", "Information Technology", "OI", "Occupational Interests", "6.10", "05/2026", "AI/Expert")))
     return buffer.getvalue()
 
 
@@ -72,12 +76,16 @@ class FetchOnetTests(unittest.TestCase):
             "2.B.1.a\tSocial Perceptiveness\t15-2051.00\t3.10",
         ])
         self.assertEqual(lines(self.dir, "software.tsv"), ["example\telement_id\telement\tcode", "Python\t2.E.5.c\tDevelopment environment software\t15-2051.00"])
+        # Interest areas (career interests and fields): the occupational-interest scale only.
+        self.assertEqual(lines(self.dir, "interest_areas.tsv"), ["element_id\telement\tcode\tvalue", "1.B.3.q\tInformation Technology\t15-2051.00\t6.10"])
 
     def test_older_layout_still_works(self):
         out = tempfile.mkdtemp()
         write_snapshot(zip_30(), out, version="30.0", source_url="u", now="2026-10-29")
         self.assertEqual(lines(out, "job_titles.tsv"), ["code\ttitle", "15-2051.00\tData Miner"])
         self.assertEqual(lines(out, "software.tsv"), ["example\telement_id\telement\tcode", "SQL\t\tDatabase software\t15-2051.00"])
+        # Releases before 31.0 have no interest areas: the file is simply not written.
+        self.assertFalse(os.path.exists(os.path.join(out, "interest_areas.tsv")))
 
     def test_manifest_has_version_and_hashes(self):
         with open(os.path.join(self.dir, "manifest.json"), encoding="utf-8") as handle:
@@ -86,7 +94,7 @@ class FetchOnetTests(unittest.TestCase):
         self.assertEqual(manifest["licence"], "CC BY 4.0")
         self.assertEqual(manifest["downloadedAt"], "2026-10-29")
         self.assertIn("CC BY 4.0", manifest["attribution"])
-        self.assertEqual(sorted(manifest["files"]), ["job_titles.tsv", "occupations.tsv", "skills.tsv", "software.tsv"])
+        self.assertEqual(sorted(manifest["files"]), ["interest_areas.tsv", "job_titles.tsv", "occupations.tsv", "skills.tsv", "software.tsv"])
         self.assertTrue(all(len(value) == 64 for value in manifest["files"].values()))
 
     def test_missing_file_in_zip_raises(self):

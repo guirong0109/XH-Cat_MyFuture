@@ -19,9 +19,11 @@ describe('form helpers', () => {
     expect(b.education.records).toEqual([])
   })
 
-  it('isUntouched is true for a blank profile only', () => {
+  it('isUntouched is true for a profile without answers', () => {
     expect(isUntouched(emptyProfile())).toBe(true)
-    expect(isUntouched(setField(emptyProfile(), 'employment.status', DECLINED))).toBe(false)
+    // "Prefer not to say" is the form's default, so it is not an answer.
+    expect(isUntouched(setField(emptyProfile(), 'employment.status', DECLINED))).toBe(true)
+    expect(isUntouched(setField(emptyProfile(), 'employment.status', val('employed')))).toBe(false)
     expect(isUntouched({ ...emptyProfile(), skills: [cvSkill('SQL')] })).toBe(false)
   })
 

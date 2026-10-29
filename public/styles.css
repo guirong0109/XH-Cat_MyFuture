@@ -103,3 +103,21 @@ details summary{cursor:pointer;font-weight:600;font-size:13.5px}
 /* CV upload progress */
 .steps{list-style:none;margin:0 0 8px;padding:0}.steps li{padding:6px 0;display:flex;gap:10px;align-items:center}
 .steps .mark{width:20px;text-align:center}.steps .done{color:var(--ok)}.steps .todo{color:var(--muted)}.steps .now{font-weight:600}
+/* search pickers (skills, roles of interest, field of study) */
+.picker-list:empty{display:none}
+.field{align-content:start}
+.picker{position:relative}
+.picker-list{position:absolute;top:100%;left:0;right:0;z-index:20;display:grid;gap:6px;max-height:320px;overflow-y:auto;margin-top:4px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.picker-list .choice{padding:8px 12px}
+.picker-list .choice span{display:block}
+.picker-list .typed{border-style:dashed;font-size:13px}
+select[data-level]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:5px 8px}
+/* skills suggested from the field of study: click a chip to add it */
+.sugg{margin-bottom:12px;background:var(--surface2);display:grid;gap:8px}
+.sugg p{margin:0}
+.sugg-group{display:grid;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+.chip:hover,.chip:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);cursor:default}
+.chip-x{border:0;background:none;color:inherit;cursor:pointer;padding:0 0 0 4px;font-size:14px}

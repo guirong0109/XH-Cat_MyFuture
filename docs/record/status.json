@@ -55,7 +55,7 @@
         {
           "title": "T5 Form, review, summary",
           "sub": "5 sections · Confirm · JSON",
-          "status": "doing"
+          "status": "done"
         }
       ]
     },
@@ -66,7 +66,7 @@
         {
           "title": "T6 O*NET 31.0 snapshot",
           "sub": "+ eMASCO reference data",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T7 Skill normaliser",
@@ -162,7 +162,8 @@
     "Task 1: Express server + mockup split into public/ modules; old scoring removed; later tabs say 'Next module' (5/5 tests, commit e41a693)",
     "Task 2: EN / BM / 中文 strings, t() with placeholders, guest store with resume prompt (Tests  12 passed (12), commit 648cbab)",
     "Task 3: profile schema — 3 field states, skill objects, forbidden fields, usable-skill rule (10/10, commit 8451d64)",
-    "Task 4: profile helpers — records, mark for review, confirm, CV draft merge, AI diff with locked user edits, guest minimizing (9/9, commit 0920b99)"
+    "Task 4: profile helpers — records, mark for review, confirm, CV draft merge, AI diff with locked user edits, guest minimizing (9/9, commit 0920b99)",
+    "Task 5: Case B form (5 sections), Case C review with labels, Confirm, 'Your profile' summary + JSON (Tests  34 passed (34), commit 93233cb)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
@@ -176,7 +177,9 @@
     "T1: CV/form/review/summary show 'being built' until their tasks; mockup fake data (Aina, simulated upload) dropped — cost: none",
     "T1: welcome subtitle now about the profile step — cost: one string",
     "T1: data-go/data-act click handling (ES modules have no globals) — cost: none",
-    "T2: resume prompt only for sessions past welcome/access — cost: one list"
+    "T2: resume prompt only for sessions past welcome/access — cost: one list",
+    "T5: category A/B pre-fills the 'who are you' field — cost: none",
+    "T5: editing after Confirm makes the profile a draft again — cost: one extra click"
   ],
   "log": [
     {
@@ -283,6 +286,26 @@
       "time": "29 Oct",
       "step": "T4 · GREEN + commit",
       "detail": "shared/profileState.js → 9/9; 0920b99 feat: profile state helpers"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T5 · test + RED + GREEN",
+      "detail": "tests/flow.test.js (afterConfirm: summary with usable true/false, draft stays on review) → fail → shared/flow.js → 3/3"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T5 · screens",
+      "detail": "strings for form/review/summary in EN/BM/中文; components/fields.js (3-state fields, comma lists, repeatable records, mark for review); screens form.js (5 sections), review.js, summary.js; app.js wiring + guest store saves the minimized profile"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T5 · browser",
+      "detail": "graduate with Diploma IT + Bachelor Business, employment 'prefer not to say', skills Python + SQL (self-rated Good), one project → review → Confirm → summary says 'add at least one recognised skill' (ids come in Task 7) → JSON shows declined state; 360 px ok"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T5 · commit",
+      "detail": "93233cb feat: manual profile, review, confirm and summary"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "source": "O*NET Database",
+  "version": "31.0",
+  "sourceUrl": "https://www.onetcenter.org/dl_files/database/db_31_0_text.zip",
+  "licence": "CC BY 4.0",
+  "attribution": "O*NET 31.0 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under the CC BY 4.0 license.",
+  "downloadedAt": "2026-10-29",
+  "files": {
+    "occupations.tsv": "b5db6abcbe7435da855acf3c1eb7b3da5a05998cdf2771353f43f6f88e59770c",
+    "job_titles.tsv": "561f74073077ed02cb2f44cf8b61151237fdbe673dede44ff5dc5194f3cf96c0",
+    "skills.tsv": "05a2dcb00ece1bac18b4d48cfc514da0e7b386a981288a98d35f42d0617a7887",
+    "software.tsv": "9ba31335a5b95d132645daec37883e00b5ad158798146563ece41f01131536c1"
+  }
+}

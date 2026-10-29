@@ -1,0 +1,26 @@
+{
+  "name": "futureready-my",
+  "version": "1.0.0",
+  "description": "FutureReady MY - CV extraction and structured profile module",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "pdfjs-dist": "^6.4.299"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}

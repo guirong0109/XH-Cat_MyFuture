@@ -17,6 +17,12 @@ const FILES = {
     'JavaScript\t2.E.5.c\tDevelopment environment software\t15-1252.00',
   ].join('\n') + '\n',
   'occupations.tsv': 'code\ttitle\tdescription\n15-2051.00\tData Scientists\tDevelop methods.\n15-2051.01\tBusiness Intelligence Analysts\tProduce reports.\n43-9021.00\tData Entry Keyers\tEnter data.\n15-1252.00\tSoftware Developers\tBuild software.\n',
+  'interest_areas.tsv': [
+    'element_id\telement\tcode\tvalue',
+    '1.B.3.q\tInformation Technology\t15-2051.00\t6.10',
+    '1.B.3.q\tInformation Technology\t15-1252.00\t6.50',
+    '1.B.3.aa\tHealth Care Service\t43-9021.00\t1.20',
+  ].join('\n') + '\n',
   'job_titles.tsv': 'code\ttitle\n15-2051.00\tData Analyst\n43-9021.00\tData Analyst\n43-9021.00\tData Entry Clerk\n',
 }
 

@@ -44,6 +44,11 @@ FILES = {
         ("Software Skills.txt", ["Workplace Example", "Element ID", "Element Name", CODE]),
         ("Technology Skills.txt", ["Example", None, "Commodity Title", CODE]),
     ]},
+    # Interest areas (31.0 and later): the list for "Career interests and fields", with each job's interest value.
+    "interest_areas.tsv": {"header": ["element_id", "element", "code", "value"], "optional": True,
+                           "keep": lambda row: row.get("Scale ID") == "OI", "sources": [
+        ("Specific Interest Areas.txt", ["Element ID", "Element Name", CODE, "Data Value"]),
+    ]},
 }
 
 
@@ -65,6 +70,8 @@ def write_snapshot(zip_bytes, out_dir, version, source_url, now=None):
     tables = {}
     for out_name, spec in FILES.items():
         present = [(name, columns) for name, columns in spec["sources"] if find(archive, name)]
+        if not present and spec.get("optional"):
+            continue
         if not present:
             raise ValueError(f"none of {[name for name, _ in spec['sources']]} is in the O*NET zip")
         keep = spec.get("keep")

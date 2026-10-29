@@ -9,6 +9,7 @@ Only synthetic CVs are used; no personal data is stored here.
 | `onet/job_titles.tsv` | Job titles and reported titles per O\*NET occupation | same | 2026-10-29 | CC BY 4.0 |
 | `onet/skills.tsv` | Essential and Transferable Skills, importance scale (IM) | same | 2026-10-29 | CC BY 4.0 |
 | `onet/software.tsv` | Software Skills examples (e.g. Python, Microsoft Excel) with their O\*NET category | same | 2026-10-29 | CC BY 4.0 |
+| `onet/interest_areas.tsv` | Specific Interest Areas (41, e.g. Information Technology, Health Care Service) with each occupation's interest value (OI scale); the list for "Career interests and fields" | same (`Specific Interest Areas.txt`) | 2026-10-29 | CC BY 4.0 |
 | `onet/manifest.json` | Version, URL, download date and SHA-256 of each file | written by `pipeline/fetch_onet.py` | 2026-10-29 | — |
 | `emasco/occupations.json` | eMASCO occupations: code, title, page URL (1,766) | eMASCO (MASCO 2020), https://emasco.mohr.gov.my, English pages; copied from the team's earlier crawl as data only | fetched 2026-10-23 | Public government reference; only code, title and URL are kept |
 | `isced/fields.tsv` | ISCED-F 2013 fields of study: 4-digit code, title, broad field (124) | UNESCO ISCED-F 2013, titles as given in the Statistics Canada concordance below; broad-field names from UNESCO UIS (2014) | 2026-10-30 | The list users pick their field of study from |

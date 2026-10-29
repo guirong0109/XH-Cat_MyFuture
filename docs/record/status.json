@@ -139,7 +139,7 @@
         {
           "title": "T17 Compare view",
           "sub": "user edits locked",
-          "status": "doing"
+          "status": "done"
         }
       ]
     },
@@ -150,7 +150,7 @@
         {
           "title": "T18 Eval, acceptance, docs",
           "sub": "§12 table · Tests 1–7 · README",
-          "status": "todo"
+          "status": "doing"
         }
       ]
     }
@@ -174,7 +174,8 @@
     "Task 13: D1 REST client (parameterised SQL only), migrations.sql (users, sessions, profiles with ON DELETE CASCADE), R2 client with AWS Signature V4 (matches the AWS get-vanilla test case), node:sqlite + in-memory stand-ins, dev-only local accounts server (128/128 tests, commit fcc9e58)",
     "Task 14: accounts in D1 — scrypt passwords, fr_session cookie (HttpOnly, Secure, SameSite=Lax, 7 days, stored only as a hash), sign-in limit 10 per 15 min, same answer for unknown email and wrong password, delete my data (account, sessions, profiles, temporary CV); account box on Access and in the top bar; 'not available on this server' without D1 (138/138 tests, commit 87af0c1)",
     "Task 15: saved profiles — POST (confirmed only, temporary CV deleted), list, get, PATCH with version (old version → 409, named fields only, status/id/version and protected fields refused), mappings; another user's profile → 404; signed-in Confirm saves to the account, sign-in loads the latest saved profile; summary says where it is saved (148/148 tests, commit ca9a2c9)",
-    "Task 16: consent-gated AI re-extraction — RunPod (OpenAI-compatible) then Claude (raw fetch, anthropic-version 2026-10-21, output_config json_schema, no temperature, fallbacks default); CV in <cv> tags as data; items without a word-for-word quote dropped; levels, ids and codes stripped; skill names through the O*NET normaliser; 3 runs per upload, 20 per hour; POST /api/cv/reextract (400 / 429 / 503 + reason). No provider set: you chose to build without one, so it answers 'not configured' (160/160 tests, commit e6659c4)"
+    "Task 16: consent-gated AI re-extraction — RunPod (OpenAI-compatible) then Claude (raw fetch, anthropic-version 2026-10-21, output_config json_schema, no temperature, fallbacks default); CV in <cv> tags as data; items without a word-for-word quote dropped; levels, ids and codes stripped; skill names through the O*NET normaliser; 3 runs per upload, 20 per hour; POST /api/cv/reextract (400 / 429 / 503 + reason). No provider set: you chose to build without one, so it answers 'not configured' (160/160 tests, commit e6659c4)",
+    "Task 17: 'Improve extraction with AI' on the review after an upload; consent box naming RunPod and Claude; compare view with New / Changed / Different from yours, every row 'Needs confirmation', your own edits locked, 'Add the ones I ticked', count of unquoted suggestions left out; any failure leaves the form unchanged (161/161 tests, commit 80b4dc9)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -201,7 +202,8 @@
     "T12: L3 compares CV wordings with O*NET skill names only; job titles stay with the occupation lookup — cost: none",
     "T14: Delete my data also clears what this browser saved (the confirm text says so) — cost if wrong: the guest copy is gone too",
     "T15: the browser sends every editable top-level field in PATCH (the server still changes only the named ones) — cost: slightly larger requests",
-    "T15: after sign-in the latest saved profile is loaded only when this browser holds no work of its own — cost: a user with local work sees that work, not the saved one"
+    "T15: after sign-in the latest saved profile is loaded only when this browser holds no work of its own — cost: a user with local work sees that work, not the saved one",
+    "T17: the compare test passed at once (Task 4 helpers already lock edits); a deliberate break of the lock made it fail, so it guards the rule — cost: none"
   ],
   "log": [
     {
@@ -543,6 +545,26 @@
       "time": "29 Oct",
       "step": "T16 · GREEN + commit",
       "detail": "server/cv/reextractPrompt.js, reextract.js, route in server/routes/cv.js → 160/160; e6659c4 feat: consent-gated AI re-extraction"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T17 · test",
+      "detail": "'accepting every row still keeps the user's own edits' passed at once; removing the lock check made it fail (and one older test) → restored"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T17 · browser check (no provider)",
+      "detail": "upload → review → button → no consent sends nothing → consent → 'not available… No AI service is set up', form unchanged"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T17 · browser check (fake provider, throwaway)",
+      "detail": "edited diploma locked, 1 unquoted suggestion left out, ticked project added unconfirmed (method ai), unticked skill not added"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T17 · commit",
+      "detail": "80b4dc9 feat: AI suggestions compare view"
     }
   ]
 }

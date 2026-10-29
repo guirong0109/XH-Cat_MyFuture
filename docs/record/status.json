@@ -34,7 +34,7 @@
         {
           "title": "T2 Strings + guest store",
           "sub": "EN / BM / 中文 · browser save",
-          "status": "doing"
+          "status": "done"
         }
       ]
     },
@@ -45,7 +45,7 @@
         {
           "title": "T3 Profile schema",
           "sub": "3 field states · skill objects",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T4 Profile state helpers",
@@ -159,7 +159,8 @@
     "Spec aligned with your diagram (commit db073fb) and plan written (7fe1ff1)",
     "Branch claude/cv-profile-module created; main untouched",
     "Packages installed after your OK: express, pdfjs-dist, vitest (0 vulnerabilities)",
-    "Task 1: Express server + mockup split into public/ modules; old scoring removed; later tabs say 'Next module' (5/5 tests, commit e41a693)"
+    "Task 1: Express server + mockup split into public/ modules; old scoring removed; later tabs say 'Next module' (5/5 tests, commit e41a693)",
+    "Task 2: EN / BM / 中文 strings, t() with placeholders, guest store with resume prompt (Tests  12 passed (12), commit 648cbab)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key → lookup answers 'live' instead of 'cached'",
@@ -172,7 +173,8 @@
     "Test-only hook createApp({ extraRoutes }) to prove the 500 error shape — cost if wrong: none",
     "T1: CV/form/review/summary show 'being built' until their tasks; mockup fake data (Aina, simulated upload) dropped — cost: none",
     "T1: welcome subtitle now about the profile step — cost: one string",
-    "T1: data-go/data-act click handling (ES modules have no globals) — cost: none"
+    "T1: data-go/data-act click handling (ES modules have no globals) — cost: none",
+    "T2: resume prompt only for sessions past welcome/access — cost: one list"
   ],
   "log": [
     {
@@ -234,6 +236,31 @@
       "time": "29 Oct",
       "step": "T1 · commit",
       "detail": "e41a693 chore: split the mockup into modules and remove the old scoring"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T2 · tests written",
+      "detail": "tests/i18n.test.js (key parity, placeholders, fallback) and tests/guestStore.test.js (save/load, minimize, storage throws, bad JSON, resume rule)"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T2 · RED",
+      "detail": "modules missing → fail as expected"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T2 · GREEN",
+      "detail": "shared/strings/ms.js + zh.js (all keys), shared/i18n.js, shared/guestStore.js → 7/7; app.js saves on every change and shows 'Welcome back' on reload"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T2 · browser",
+      "detail": "Bahasa Melayu chosen → every screen in BM; reload → 'Selamat kembali!' → continue returns to the saved screen; found and fixed a wrong 'storage is off' pill after reload"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T2 · commit",
+      "detail": "648cbab feat: strings in three languages and guest store"
     }
   ]
 }

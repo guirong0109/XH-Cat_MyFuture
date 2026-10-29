@@ -23,6 +23,19 @@ describe('guest store', () => {
     expect(storage.data.get('futureready-profile-v1')).not.toContain('cv line')
   })
 
+  it('blocked site data (reading localStorage itself throws) still gives a working store', () => {
+    const before = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, get() { throw new Error('SecurityError') } })
+    try {
+      const store = createGuestStore()
+      expect(store.save({ screen: 'form' })).toBe(false)
+      expect(store.load()).toBe(null)
+    } finally {
+      if (before) Object.defineProperty(globalThis, 'localStorage', before)
+      else delete globalThis.localStorage
+    }
+  })
+
   it('guest store works when localStorage throws', () => {
     const broken = { getItem() { throw new Error('denied') }, setItem() { throw new Error('quota') }, removeItem() { throw new Error('denied') } }
     const store = createGuestStore(broken)

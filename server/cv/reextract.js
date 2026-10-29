@@ -30,7 +30,13 @@ function checkShape(reply) {
     && reply[list].every((entry) => entry && typeof entry === 'object' && fields.every((f) => typeof entry[f] === 'string')))
 }
 
-// Keeps only the schema's fields (so levels, ids and codes go) of items whose evidence occurs in the CV.
+// The value(s) of an item that its quote must contain (for education, any one of the three: a Malay CV says
+// "Ijazah Sarjana Muda" where the label is "Bachelor degree").
+const MAIN = { education: ['qualification', 'fieldOfStudy', 'institution'], jobs: ['jobTitle'], skills: ['name'], certifications: ['name'], projects: ['title'] }
+const MIN_EVIDENCE = 3
+
+// Keeps only the schema's fields (so levels, ids and codes go) of items whose evidence occurs in the CV word for word
+// and contains the item itself.
 export function keepQuoted(reply, cvText) {
   const cv = norm(cvText)
   let dropped = 0
@@ -39,7 +45,8 @@ export function keepQuoted(reply, cvText) {
     fields[list] = []
     for (const entry of reply[list] ?? []) {
       const evidence = norm(entry?.evidence ?? '')
-      if (!evidence || !cv.includes(evidence)) {
+      const itself = MAIN[list].map((key) => norm(entry?.[key] ?? '')).filter(Boolean)
+      if (evidence.length < MIN_EVIDENCE || !cv.includes(evidence) || !itself.some((value) => evidence.includes(value))) {
         dropped++
         continue
       }

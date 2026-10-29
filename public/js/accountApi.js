@@ -23,10 +23,13 @@ export async function saveProfile(profile, { guestStore, extractionId = null }) 
   return { ...out, where: out.ok ? 'account' : 'device' }
 }
 
+// One saved profile: { id, version, profile }.
+export const loadProfile = (id) => api('GET', `/api/profiles/${encodeURIComponent(id)}`)
+
 // The most recently saved profile of the signed-in user: { id, version, profile } or null.
 export async function loadLatestProfile() {
   const list = await api('GET', '/api/profiles')
   if (!list.ok) return list
   const latest = list.data.profiles[0]
-  return latest ? api('GET', `/api/profiles/${encodeURIComponent(latest.id)}`) : { ok: true, data: null }
+  return latest ? loadProfile(latest.id) : { ok: true, data: null }
 }

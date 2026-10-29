@@ -40,8 +40,9 @@ describe('normalizeSkill', () => {
     expect(await normalizeSkill('advanced Microsoft Excel')).toMatchObject({ canonicalId: 'onet:tech:microsoft excel', match: 'word' })
   })
 
-  it('one catalogue name containing the input gives that id', async () => {
-    expect(await normalizeSkill('Java')).toMatchObject({ name: 'Oracle Java', canonicalId: 'onet:tech:oracle java', match: 'word' })
+  it('one catalogue name containing the input is offered to pick, never linked silently', async () => {
+    // e.g. "Teamwork" must not become "Digital Crew Teamwork Project Manager" without the user choosing it
+    expect(await normalizeSkill('Java')).toMatchObject({ name: 'Java', canonicalId: null, candidates: [expect.objectContaining({ id: 'onet:tech:oracle java', name: 'Oracle Java' })] })
   })
 
   it('an input found in several names returns candidates to pick from, no id', async () => {

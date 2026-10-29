@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "start": "node server/index.js",
+    "start": "node --env-file-if-exists=.env server/index.js",
     "test": "vitest run"
   },
   "keywords": [],

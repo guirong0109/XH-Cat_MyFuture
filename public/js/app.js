@@ -1,7 +1,7 @@
 // App state, hash routing, guest saving and one event handler for every screen.
 // Buttons use data-go / data-act; form controls use data-field, data-decline, data-list, data-rec, data-level.
 import { t as translate } from '/shared/i18n.js'
-import { createGuestStore, resumeChoice } from '/shared/guestStore.js'
+import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
 import { DECLINED, EMPTY, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
 import { addRecord, applyAccepted, confirmProfile, diffProfiles, isUntouched, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
@@ -36,7 +36,7 @@ const NEW_RECORD = {
 }
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
-const store = createGuestStore(globalThis.localStorage, minimizeForGuest)
+const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
 let state = fresh()
 let resumeTo = null
 let saved = false
@@ -76,10 +76,21 @@ const actions = {
   acLogin: () => accountCall('login'),
   acLogout: async () => {
     await accountApi.logout()
-    state.account = { status: 'none', user: null }
-    if (state.access === 'account') state.access = 'guest'
-    persist()
-    render()
+    // A shared computer must not show the next person this account's profile.
+    store.clear()
+    state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
+    cvFile = null
+    cvDraft = null
+    go('welcome')
+  },
+  // After a version conflict: take the account's newer copy (it replaces the changes on this device).
+  loadSaved: async () => {
+    const out = await accountApi.loadProfile(state.profile.profileId)
+    if (!out.ok) return render()
+    state.profile = out.data.profile
+    state.usable = afterConfirm(state.profile).usable
+    state.savedWhere = 'account'
+    go('summary')
   },
   acDelete: async () => {
     if (!confirm(t('acDeleteConfirm'))) return
@@ -269,7 +280,11 @@ async function accountCall(kind) {
   state.access = 'account'
   // A signed-in user with a saved profile gets it back, unless this browser already holds their current work.
   const latest = await accountApi.loadLatestProfile()
-  if (latest.ok && latest.data && (!state.profile || isUntouched(state.profile))) {
+  const local = state.profile
+  // A local copy linked to another profile id (another account) is not this user's saved profile.
+  if (local?.profileId && local.profileId !== latest.data?.id) state.profile = { ...local, profileId: null, profileVersion: 0 }
+  const olderCopy = local?.profileId && local.profileId === latest.data?.id && local.profileVersion < latest.data.version
+  if (latest.ok && latest.data && (!state.profile || isUntouched(state.profile) || olderCopy)) {
     state.profile = latest.data.profile
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'

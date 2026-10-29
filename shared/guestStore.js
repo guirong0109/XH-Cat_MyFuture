@@ -4,7 +4,16 @@ const KEY = 'futureready-profile-v1'
 // Screens before any profile work: nothing worth resuming yet.
 const START = ['welcome', 'returning', 'access']
 
-export function createGuestStore(storage = globalThis.localStorage, minimize = (profile) => profile) {
+// With site data blocked, even reading window.localStorage throws: then there is no storage at all.
+export function safeLocalStorage() {
+  try {
+    return globalThis.localStorage ?? null
+  } catch {
+    return null
+  }
+}
+
+export function createGuestStore(storage = safeLocalStorage(), minimize = (profile) => profile) {
   return {
     load() {
       try {

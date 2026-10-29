@@ -17,22 +17,22 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 - Skills linked to an O*NET id: **28 of 36** found skills (the rest stay "not in our list yet" for the user).
 - Skill levels set by extraction: **0** (must be 0).
 - Failure rate (a CV not handled as expected): **0 of 11**. The scanned CV is expected to fail with `scanned_no_ocr`.
-- Latency per CV (build + read + extract, in-process): median **3 ms**, slowest 11 ms.
+- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 9 ms.
 
 ## Per CV
 
 | CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |
 |---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 10 |
-| ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 5 |
+| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 9 |
+| ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 4 |
 | zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 4 |
-| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 5 |
+| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 5 |
 | no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
-| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 3 |
+| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 4 |
 | injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
 | multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 11 |
+| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 4 |
 | scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | 1 |
 
 ## What was found where it differs from the labels

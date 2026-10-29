@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { deleteMyData, loadLatestProfile, login, logout, me, saveProfile, signup } from '../public/js/accountApi.js'
+import { deleteMyData, loadLatestProfile, loadProfile, login, logout, me, saveProfile, signup } from '../public/js/accountApi.js'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -52,6 +52,13 @@ describe('accountApi (browser)', () => {
     expect(await loadLatestProfile()).toEqual({ ok: true, data: { id: 'p2', version: 3, profile: { profileId: 'p2' } } })
     vi.stubGlobal('fetch', async () => Response.json({ profiles: [] }))
     expect(await loadLatestProfile()).toEqual({ ok: true, data: null })
+  })
+
+  it('loadProfile fetches one saved profile by id', async () => {
+    const urls = []
+    vi.stubGlobal('fetch', async (url) => { urls.push(url); return Response.json({ id: 'p 1', version: 4, profile: {} }) })
+    expect(await loadProfile('p 1')).toEqual({ ok: true, data: { id: 'p 1', version: 4, profile: {} } })
+    expect(urls).toEqual(['/api/profiles/p%201'])
   })
 
   it('errors come back as { ok:false, code, retryable }', async () => {

@@ -20,6 +20,14 @@ describe('readText', () => {
     expect(out.lines).toEqual(['陈美玲（虚构）', '技能', 'Python, Microsoft Excel, 沟通', '证书', 'Microsoft Office Specialist, 2021'])
   })
 
+  it('a very long paragraph is cut, and the lines after it are still read', async () => {
+    const long = `${'Responsible for many things in the office. '.repeat(600)}`
+    const out = await readText(makeDocx([long, 'Skills', 'Python, Microsoft Excel', 'Education', 'Diploma in Accounting, Politeknik Kuching, 2020']), 'docx')
+    expect(out.ok).toBe(true)
+    expect(out.lines[0].length).toBeLessThanOrEqual(500)
+    expect(out.lines.slice(1)).toEqual(['Skills', 'Python, Microsoft Excel', 'Education', 'Diploma in Accounting, Politeknik Kuching, 2020'])
+  })
+
   it('image-only pdf is scanned_no_ocr', async () => {
     expect(await readText(makePdf([]), 'pdf')).toEqual({ ok: false, code: 'scanned_no_ocr' })
   })

@@ -1,6 +1,6 @@
 // Maps the user's or the CV's wording to an O*NET skill id. Order (spec §7):
-//   exact catalogue name → whole-word catalogue name inside a short phrase → the one catalogue name that contains the
-//   input (several → candidates for the user to pick, "pick standard term") → L3 semantic match at or above the cutoff.
+//   exact catalogue name → whole-word catalogue name inside a short phrase → catalogue names that contain the input
+//   are offered as candidates for the user to pick ("pick standard term"), no id → L3 semantic match at or above the cutoff.
 // The original wording is always kept. Unknown → canonicalId null: an id is never invented.
 import { nameKey, wordsOf } from './onetSkills.js'
 
@@ -46,8 +46,8 @@ export function createNormalizer({ catalogue, semantic = null, cutoff = null }) 
       // catalogue names that contain the whole input as whole words
       const pool = catalogue.byWord.get(words[0]) ?? []
       const holders = pool.filter((entry) => containsWords(wordsOf(entry.name), words))
-      if (holders.length === 1) return result(originalText, holders[0], 'word')
-      if (holders.length > 1) {
+      // One or several longer names: the user picks ("pick standard term"); a longer name is never linked silently.
+      if (holders.length) {
         const candidates = holders.sort((a, b) => b.occupations - a.occupations || a.name.length - b.name.length).slice(0, MAX_CANDIDATES)
           .map(({ id, name, category, occupations }) => ({ id, name, category, occupations }))
         return result(originalText, null, null, { candidates })

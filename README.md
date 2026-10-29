@@ -22,7 +22,7 @@ Needs Node.js 22.12 or later.
 
 ```bash
 npm install
-npm start            # http://localhost:3200 (PORT to change)
+npm start            # http://localhost:3200; reads .env if present (copy .env.example)
 npm test             # Vitest
 ```
 
@@ -53,9 +53,9 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
    2. Make an API token with D1 edit rights and set the three `D1_*` settings.
    3. Create the tables once, by running the statements in `server/store/migrations.sql` in the D1 console. Or from Node:
       ```bash
-      node -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"
+      node --env-file-if-exists=.env -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"
       ```
-      The Node command needs the `D1_*` settings in your shell environment.
+      The Node command reads the `D1_*` settings from `.env`.
 2. **Cloudflare R2:**
    1. Create a bucket and an R2 API token (access key id and secret), then set the four `R2_*` settings.
    2. Add a lifecycle rule on the bucket that deletes objects under `cv-temp/` after 1 day.

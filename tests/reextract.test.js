@@ -65,6 +65,20 @@ describe('keepQuoted', () => {
     expect(fields.skills.map((s) => s.name)).toEqual(['Microsoft Excel'])
     expect(dropped).toBe(1)
   })
+  it('the quote must contain the item itself, and be more than a scrap', () => {
+    const reply = {
+      education: [{ qualification: 'PhD', fieldOfStudy: '', institution: '', evidence: 'and' }],
+      jobs: [],
+      skills: [{ name: 'Kubernetes', evidence: 'Microsoft Excel' }, { name: 'Microsoft Excel', evidence: 'reports in Microsoft Excel' }],
+      certifications: [],
+      projects: [],
+    }
+    const { fields, dropped } = keepQuoted(reply, LINES.join('\n'))
+    expect(fields.education).toEqual([])
+    expect(fields.skills.map((s) => s.name)).toEqual(['Microsoft Excel'])
+    expect(dropped).toBe(2)
+  })
+
   it('levels and codes are stripped', () => {
     const { fields } = keepQuoted(REPLY, LINES.join('\n'))
     expect(fields.skills[0]).toEqual({ name: 'Microsoft Excel', evidence: 'monthly reports in Microsoft Excel' })

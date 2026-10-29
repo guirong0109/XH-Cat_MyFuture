@@ -10,6 +10,7 @@ const FONTS = `${path.join(path.dirname(fileURLToPath(import.meta.resolve('pdfjs
 
 export const MAX_LINES = 300
 export const MAX_CHARS = 20000
+const MAX_LINE_CHARS = 500
 const MIN_LETTERS = 20
 
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }
@@ -82,9 +83,10 @@ export async function readText(buffer, type) {
   const headings = []
   let chars = 0
   for (const paragraph of paragraphs) {
-    const line = cleanLine(paragraph.text)
+    // A very long paragraph (a CV pasted as one block) is cut, so the sections after it are still read.
+    const line = cleanLine(paragraph.text)?.slice(0, Math.min(MAX_LINE_CHARS, MAX_CHARS - chars))
     if (!line) continue
-    if (lines.length >= MAX_LINES || chars + line.length > MAX_CHARS) break
+    if (lines.length >= MAX_LINES || chars >= MAX_CHARS) break
     if (paragraph.heading) headings.push(lines.length)
     lines.push(line)
     chars += line.length

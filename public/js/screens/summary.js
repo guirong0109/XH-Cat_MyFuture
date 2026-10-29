@@ -9,7 +9,8 @@ export default ({ t, state }) => {
     return `<h1>${esc(t('summary'))}</h1><div class="next">${esc(t('noProfile'))}</div>`
   }
   const where = { account: ['b-ok', t('savedAccount', { version: profile.profileVersion })], device: ['b-info', t('savedDevice')], stale: ['b-warn', t('savedStale')] }[state.savedWhere]
-  const savedNote = where ? `<div class="banner ${where[0]}"><div>${esc(where[1])}</div></div>` : ''
+  const loadButton = state.savedWhere === 'stale' ? `<button class="btn sm" data-act="loadSaved">${esc(t('loadSaved'))}</button>` : ''
+  const savedNote = where ? `<div class="banner ${where[0]}"><div>${esc(where[1])}</div>${loadButton}</div>` : ''
   const banner = state.usable
     ? `<div class="banner b-ok"><div>${esc(t('usable'))}</div></div>`
     : `<div class="banner b-warn"><div>${esc(t('notUsable'))}</div><button class="btn sm" data-act="editSkills">${esc(t('edit'))}</button></div>`

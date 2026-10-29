@@ -10,6 +10,23 @@ export const nameKey = (text) =>
 
 export const wordsOf = (text) => nameKey(text).split(/[^\p{L}\p{N}+#.]+/u).filter(Boolean)
 
+// Search while typing: every query word starts some word of the name ("pyth" finds "Python").
+export const startsWords = (nameWords, queryWords) => queryWords.every((q) => nameWords.some((word) => word.startsWith(q)))
+
+const SEARCH_LIMIT = 10
+
+// Catalogue skills for the skill picker: exact name first, then the most used in O*NET occupations.
+export function searchSkills(catalogue, query, limit = SEARCH_LIMIT) {
+  const key = nameKey(query)
+  const words = wordsOf(query)
+  if (!words.length) return []
+  return catalogue.entries
+    .filter((entry) => startsWords(wordsOf(entry.name), words))
+    .sort((a, b) => Number(nameKey(b.name) === key) - Number(nameKey(a.name) === key) || b.occupations - a.occupations || a.name.length - b.name.length)
+    .slice(0, limit)
+    .map(({ id, name, category }) => ({ id, name, category }))
+}
+
 function parseTsv(text) {
   const [header, ...rows] = text.replace(/\r\n/g, '\n').split('\n').filter(Boolean)
   const names = header.split('\t')

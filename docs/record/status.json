@@ -178,7 +178,8 @@
     "Task 17: 'Improve extraction with AI' on the review after an upload; consent box naming RunPod and Claude; compare view with New / Changed / Different from yours, every row 'Needs confirmation', your own edits locked, 'Add the ones I ticked', count of unquoted suggestions left out; any failure leaves the form unchanged (161/161 tests, commit 80b4dc9)",
     "Task 18: extraction evaluation on 11 synthetic CVs (skills P 0.917 / R 0.971, qualifications and jobs 1.0, certificates 1.0, 0 failures, median 3 ms; docs/eval-results.md); found and fixed: two-character Chinese headings (技能, 证书) were dropped; browser acceptance of the CV spec §12 table and §13 Tests 1–7 in EN / BM / 中文, desktop and 360 px (docs/acceptance.md); README, tools declaration, data sources (165/165 tests, commit c0f707e)",
     "Final review by a fresh reviewer: 0 Critical, 7 Important, 11 Minor. All 7 Important fixed, each with a test that failed first (or a browser check): long paragraphs no longer cut the CV; a skill inside one longer O*NET name is offered to pick, not linked; a stale save offers 'Load the saved version'; sign-out clears the browser; blocked site data no longer gives a blank page; AI quotes must contain the item; .env is loaded (169/169 tests, commit f8d4ae3). 11 minor items deferred.",
-    "Final review minors, all 11 fixed with a failing test first: bad PATCH paths and URLs answer 422/400; database failures answer 503; one-word software names no longer taken from a sentence's first word; a live outage is never reported as 'no match'; L3 embeds the catalogue at start-up; one bounded rate limiter for sign-in, sign-up, uploads, searches and AI runs; TRUST_PROXY setting; review screen safe with an empty occupation link; privacy note mentions the server copy when R2 is on; honest 'not saved' message and re-save after a deleted profile (181/181 tests, commit 2942eb1)"
+    "Final review minors, all 11 fixed with a failing test first: bad PATCH paths and URLs answer 422/400; database failures answer 503; one-word software names no longer taken from a sentence's first word; a live outage is never reported as 'no match'; L3 embeds the catalogue at start-up; one bounded rate limiter for sign-in, sign-up, uploads, searches and AI runs; TRUST_PROXY setting; review screen safe with an empty occupation link; privacy note mentions the server copy when R2 is on; honest 'not saved' message and re-save after a deleted profile (181/181 tests, commit 2942eb1)",
+    "Branch claude/cv-profile-module merged into main (fast-forward, 44 commits); tests on main: 179/179 and pipeline 4/4; branch deleted"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -636,6 +637,11 @@
       "time": "29 Oct",
       "step": "Commit",
       "detail": "372adad fix: remove limits not in the spec"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Merge",
+      "detail": "your choice: merge to main locally (no remote); fast-forward to 55f25cd; tests green on main; branch deleted"
     }
   ]
 }

@@ -41,4 +41,7 @@ export default {
   nextTitle: 'Next module — not built yet.',
   nextText: 'This part uses your confirmed profile and comes after the CV and profile module.',
   notSaved: 'Not saved yet', savedLocal: 'Saved on this device', storageOff: 'Not saved (browser storage is off)',
+  langPrompt: 'Your CV appears to be written in {cv}. Would you like to continue in {ui} or switch to {cv}?',
+  keepLang: 'Keep my current language', switchLang: 'Switch to {cv}',
+  langName_en: 'English', langName_ms: 'Bahasa Melayu', langName_zh: 'Chinese',
 }

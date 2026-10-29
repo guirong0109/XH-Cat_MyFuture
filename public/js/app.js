@@ -1,5 +1,6 @@
-// App state, hash routing and one click handler for every screen (buttons use data-go / data-act).
-import en from '/shared/strings/en.js'
+// App state, hash routing, guest saving and one click handler for every screen (buttons use data-go / data-act).
+import { t as translate } from '/shared/i18n.js'
+import { createGuestStore, resumeChoice } from '/shared/guestStore.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
 import access from './screens/access.js'
@@ -16,33 +17,47 @@ import { esc } from './ui.js'
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
 const TABS = ['summary', ...NEXT]
-const STRINGS = { en }
 
-const state = { screen: 'welcome', lang: 'en', access: null, category: null }
-const t = (key) => STRINGS[state.lang]?.[key] ?? en[key] ?? key
+const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null })
+const store = createGuestStore()
+let state = fresh()
+let resumeTo = null
+let saved = false
+const t = (key, vars) => translate(state.lang, key, vars)
+
+function persist() {
+  saved = store.save(state)
+}
 
 function go(screen) {
   state.screen = screen
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
+  persist()
   render()
   window.scrollTo(0, 0)
 }
 
 const actions = {
-  lang: (lang) => { state.lang = lang; document.documentElement.lang = lang; render() },
+  lang: (lang) => { state.lang = lang; persist(); render() },
   guest: () => { state.access = 'guest'; go('category') },
   accountSoon: () => {},
   category: (k) => { state.category = k; go(k === 'C' || k === 'D' ? 'org' : 'source') },
-  resume: () => go('form'),
-  startNew: () => { if (confirm(t('backNewConfirm'))) go('access') },
+  resume: () => go(resumeTo ?? 'source'),
+  startNew: () => {
+    if (!confirm(t('backNewConfirm'))) return
+    state = { ...fresh(), lang: state.lang }
+    go('access')
+  },
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
-    Object.assign(state, { access: null, category: null })
+    store.clear()
+    state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
 }
 
 function render() {
+  document.documentElement.lang = state.lang
   document.getElementById('langSel').value = state.lang
   const screen = state.screen
   const tabs = TABS.includes(screen)
@@ -51,8 +66,8 @@ function render() {
   const view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
   document.getElementById('main').innerHTML = tabs + view
   const pill = document.getElementById('savePill')
-  pill.className = 'pill'
-  pill.textContent = t('notSaved')
+  pill.className = saved ? 'pill ok' : 'pill'
+  pill.textContent = saved ? t('savedLocal') : state.access ? t('storageOff') : t('notSaved')
 }
 
 document.addEventListener('click', (event) => {
@@ -64,5 +79,16 @@ document.addEventListener('click', (event) => {
 document.getElementById('langSel').addEventListener('change', (event) => actions.lang(event.target.value))
 window.addEventListener('popstate', () => { state.screen = location.hash.slice(1) || 'welcome'; render() })
 
-state.screen = location.hash.slice(1) || 'welcome'
+// Boot: a saved guest session past the start screens gets the "Welcome back" choice.
+const previous = store.load()
+if (previous) {
+  state = { ...fresh(), ...previous }
+  saved = true
+}
+if (resumeChoice(previous) === 'ask') {
+  resumeTo = previous.screen
+  state.screen = 'returning'
+} else if (location.hash) {
+  state.screen = location.hash.slice(1)
+}
 render()

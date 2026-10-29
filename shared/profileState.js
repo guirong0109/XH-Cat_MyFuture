@@ -36,8 +36,17 @@ export const removeRecord = (profile, listPath, index) => setPath(profile, listP
 // "Mark for later review" on one record or skill, e.g. path 'certifications.0'.
 export const markForReview = (profile, path, on) => setPath(profile, path, { ...get(profile, path), needsReview: on })
 
+// The form shows "Prefer not to say" as every optional field's default: once a section is shown, what the user left
+// unanswered is saved as declined. Empty then means the user never saw the field.
+export function declineUnanswered(profile, paths) {
+  let out = profile
+  for (const path of paths) if ((get(out, path)?.state ?? 'empty') === 'empty') out = setPath(out, path, { state: 'declined' })
+  return out
+}
+
+// Only answers count: defaults ("prefer not to say" left as it was) do not make a profile the user's work.
 export function isUntouched(profile) {
-  if (SCALARS.some((path) => (get(profile, path)?.state ?? 'empty') !== 'empty')) return false
+  if (SCALARS.some((path) => get(profile, path)?.state === 'value')) return false
   return [...Object.keys(LIST_KEYS), ...OTHER_LISTS].every((path) => (get(profile, path) ?? []).length === 0)
 }
 

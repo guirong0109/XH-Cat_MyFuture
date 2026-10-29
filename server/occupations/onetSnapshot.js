@@ -1,9 +1,10 @@
 // The dated O*NET 31.0 snapshot (data/onet), checked against its manifest hashes. Search order: exact title →
-// job titles (every occupation sharing the title) → all query words → most query words (at most 5, "similar words").
+// job titles (every occupation sharing the title) → all query words, each as a word start → most query words (at most 5,
+// "similar words").
 import { createHash } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { wordsOf } from '../skills/onetSkills.js'
+import { startsWords, wordsOf } from '../skills/onetSkills.js'
 
 export class OnetUnavailable extends Error {}
 
@@ -51,7 +52,8 @@ export async function loadOnetSnapshot(dir) {
     for (const code of byJobTitle.get(q) ?? []) add(code, 'job_title')
     const words = wordsOf(q)
     const scored = texts.map((text) => ({ code: text.code, hits: words.filter((w) => text.words.includes(w)).length, length: text.words.length }))
-    const strict = scored.filter((s) => s.hits === words.length).sort((a, b) => a.length - b.length)
+    // every query word starts a word of the title ("data anal" finds "Data Analyst"), shortest titles first
+    const strict = texts.filter((text) => startsWords(text.words, words)).map((text) => ({ code: text.code, length: text.words.length })).sort((a, b) => a.length - b.length)
     for (const s of strict) add(s.code, 'words')
     if (!strict.length) {
       const loose = scored.filter((s) => s.hits > 0).sort((a, b) => b.hits - a.hits || a.length - b.length)

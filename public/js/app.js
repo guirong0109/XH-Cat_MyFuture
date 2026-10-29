@@ -1,9 +1,10 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-decline, data-list, data-rec, data-level.
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
+// search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
-import { DECLINED, EMPTY, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, applyAccepted, confirmProfile, diffProfiles, isUntouched, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
+import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -12,7 +13,7 @@ import category from './screens/category.js'
 import org from './screens/org.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTIONS } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -22,6 +23,7 @@ import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
+import { pickerList } from './components/searchPicker.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -34,6 +36,10 @@ const NEW_RECORD = {
   training: { name: '', year: '' },
   projects: { title: '', description: '' },
 }
+
+// Search picker endpoints by kind (skills: O*NET catalogue; roles: O*NET and eMASCO; field of study: ISCED-F 2013).
+const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
+const SEARCH_DELAY_MS = 250
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
@@ -48,12 +54,18 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+}
+
+// A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
+function showSection() {
+  if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
 }
 
 function go(screen) {
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
+  showSection()
   state.message = null
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
   persist()
@@ -123,7 +135,7 @@ const actions = {
     state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
-  section: (i) => { state.section = Number(i); persist(); render(); window.scrollTo(0, 0) },
+  section: (i) => { state.section = Number(i); showSection(); persist(); render(); window.scrollTo(0, 0) },
   addRec: (listPath) => update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] })),
   delRec: (arg) => {
     const [listPath, i] = arg.split('|')
@@ -133,11 +145,10 @@ const actions = {
     const [path, on] = arg.split('|')
     update(markForReview(state.profile, path, on === 'on'))
   },
-  addSkill: async () => {
-    const input = document.getElementById('skillInput')
-    const text = input?.value.trim()
+  // A skill in the user's own words: normalised by the server (O*NET id, candidates to pick, or unknown).
+  addSkill: async (typed) => {
+    const text = String(typed ?? '').trim()
     if (!text) return
-    input.disabled = true
     const out = await api('POST', '/api/skills/normalize', { texts: [text] })
     // Without the server the skill is kept as typed (unknown), never guessed.
     const found = out.ok ? out.data.skills[0] : { name: text, canonicalId: null, category: null, originalText: text, candidates: [] }
@@ -146,6 +157,38 @@ const actions = {
     const skill = { ...makeSkill({ ...found, source: 'user_input' }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
     update({ ...state.profile, skills: [...state.profile.skills, skill] })
   },
+  // A choice from a search picker ("<key>|<index>").
+  pick: (arg) => {
+    const parts = arg.split('|')
+    const index = Number(parts.pop())
+    const key = parts.join('|')
+    const pick = state.pick?.[key]
+    const chosen = pick?.result?.candidates?.[index]
+    if (!chosen) return
+    state.pick = { ...state.pick, [key]: null }
+    if (key === 'skill') {
+      if (state.profile.skills.some((s) => s.canonicalId === chosen.id)) return render()
+      return update({ ...state.profile, skills: [...state.profile.skills, makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' })] })
+    }
+    if (key === 'interest') {
+      state.occ = { ...(state.occ ?? {}), interest: { ...pick.result, term: pick.term } }
+      return actions.occPick(`interest|${chosen.source}|${chosen.code}`)
+    }
+    // Field of study: the standard field the user chose replaces their words; how it was found is kept.
+    const i = Number(key.split('|')[1])
+    const field = { source: 'isced', code: chosen.code, title: chosen.title, version: pick.result.version, via: chosen.via, programme: chosen.programme, term: pick.term }
+    update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, chosen.title), `education.records.${i}.field`, field))
+  },
+  // Keep what the user typed: a skill is still normalised; a field of study stays unlinked.
+  pickTyped: (key) => {
+    const term = state.pick?.[key]?.term?.trim()
+    state.pick = { ...state.pick, [key]: null }
+    if (!term) return render()
+    if (key === 'skill') return actions.addSkill(term)
+    const i = Number(key.split('|')[1])
+    update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
+  },
+  fieldUnlink: (i) => update(setField(state.profile, `education.records.${i}.field`, null)),
   pickSkill: (arg) => {
     const [i, id] = arg.split('|')
     const skills = state.profile.skills.map((skill, j) => {
@@ -158,8 +201,7 @@ const actions = {
   },
   editSkills: () => { state.section = 2; go('form') },
   occFind: async (key) => {
-    const term = key === 'interest' ? document.getElementById('occInterest')?.value.trim() ?? '' : state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
-    if (key === 'interest') state.occInterest = term
+    const term = state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
     if (term.length < 2) return
     state.occBusy = key
     render()
@@ -313,12 +355,20 @@ async function saveConfirmed() {
 function onChange(target) {
   const d = target.dataset
   if (d.field) {
-    const raw = target.value
-    let value = EMPTY
-    if (raw !== '') value = d.kind === 'number' ? (Number.isFinite(Number(raw)) && Number(raw) >= 0 ? val(Number(raw)) : EMPTY) : val(raw)
+    const raw = target.value.trim()
+    // Cleared, or the first choice ("Prefer not to say"): back to the default.
+    let value = DECLINED
+    if (raw !== '') value = d.kind === 'number' ? (Number.isFinite(Number(raw)) && Number(raw) >= 0 ? val(Number(raw)) : DECLINED) : val(raw)
+    if (value === DECLINED) state.answering = { ...state.answering, [d.field]: false }
     return update(setField(state.profile, d.field, value))
   }
-  if (d.decline) return update(setField(state.profile, d.decline, target.checked ? DECLINED : EMPTY))
+  // "Prefer not to say" or "I'll answer" on a typed field: answering opens the box; nothing is saved until typed.
+  if (d.choice) {
+    state.answering = { ...state.answering, [d.choice]: target.value === 'answer' }
+    if (target.value !== 'answer') return update(setField(state.profile, d.choice, DECLINED))
+    render()
+    return document.getElementById(`f-${d.choice.replace(/\./g, '-')}`)?.focus()
+  }
   if (d.list) return update(setField(state.profile, d.list, target.value.split(',').map((s) => s.trim()).filter(Boolean)))
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
@@ -351,6 +401,11 @@ function render() {
 }
 
 document.addEventListener('click', (event) => {
+  // A click outside a search picker closes its list (the words typed stay in the box).
+  if (!event.target.closest('.picker')) {
+    for (const list of document.querySelectorAll('.picker-list')) list.innerHTML = ''
+    state.pick = {}
+  }
   const target = event.target.closest('[data-go],[data-act]')
   if (!target) return
   if (target.dataset.go) return go(target.dataset.go)
@@ -361,8 +416,43 @@ document.addEventListener('change', (event) => {
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })
+// Search pickers: search while typing, after a short pause; only the list is redrawn, so typing goes on.
+const searchTimers = {}
+async function runSearch(kind, key, term) {
+  const box = document.getElementById(`pick-${key.replace(/\|/g, '-')}`)
+  const show = () => {
+    const pick = state.pick[key]
+    if (box) box.innerHTML = pick ? pickerList({ t, kind, key, term: pick.term, result: pick.result, busy: pick.busy }) : ''
+  }
+  if (term.trim().length < 2) {
+    state.pick = { ...state.pick, [key]: null }
+    return show()
+  }
+  state.pick = { ...state.pick, [key]: { term, busy: true } }
+  show()
+  const out = await api('GET', `${SEARCH_URL[kind]}?q=${encodeURIComponent(term.trim())}`)
+  // A newer search in the same box wins.
+  if (state.pick[key]?.term !== term) return
+  state.pick = { ...state.pick, [key]: { term, result: out.ok ? out.data : { failed: true, candidates: [] } } }
+  show()
+}
+document.addEventListener('input', (event) => {
+  const search = event.target.dataset?.search
+  if (!search) return
+  const [kind, ...rest] = search.split('|')
+  const key = rest.join('|')
+  state.pick ??= {}
+  clearTimeout(searchTimers[key])
+  searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
+})
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && event.target.id === 'skillInput') actions.addSkill()
+  const search = event.target.dataset?.search
+  if (event.key !== 'Enter' || !search) return
+  event.preventDefault()
+  const key = search.split('|').slice(1).join('|')
+  // Enter takes the first choice found; with none, the words as typed (skills and field of study).
+  if (state.pick?.[key]?.result?.candidates?.length) return actions.pick(`${key}|0`)
+  if (key !== 'interest' && state.pick?.[key]?.term) actions.pickTyped(key)
 })
 // Drag and drop on the upload area.
 document.addEventListener('dragover', (event) => {
@@ -383,6 +473,7 @@ if (previous) {
   saved = true
 }
 if (state.section >= SECTIONS.length) state.section = 0
+showSection()
 if (resumeChoice(previous) === 'ask') {
   resumeTo = previous.screen
   state.screen = 'returning'

@@ -60,6 +60,13 @@ describe('O*NET snapshot', () => {
     expect(codes.sort()).toEqual(['15-2051.00', '43-9021.00'])
   })
 
+  it('finds titles while the user is still typing (word starts), before similar words', async () => {
+    await writeCatalogue(dir)
+    const found = (await loadOnetSnapshot(dir)).search('data anal')
+    expect(found.slice(0, 2).map((r) => [r.code, r.via]).sort()).toEqual([['15-2051.00', 'words'], ['43-9021.00', 'words']])
+    expect(found.some((r) => r.via === 'similar_words')).toBe(false)
+  })
+
   it('a changed file makes the snapshot unavailable', async () => {
     await writeCatalogue(dir, { damage: 'occupations.tsv' })
     await expect(loadOnetSnapshot(dir)).rejects.toBeInstanceOf(OnetUnavailable)
@@ -122,6 +129,11 @@ describe('occupation lookup (live-first with verified fallback)', () => {
   it('eMASCO title matches are listed next to O*NET for Malaysian context', async () => {
     const out = await (await lookupWith()).search('data analyst')
     expect(out.candidates.some((c) => c.source === 'onet')).toBe(true)
+    expect(out.candidates).toContainEqual(expect.objectContaining({ source: 'emasco', code: '2524-02' }))
+  })
+
+  it('eMASCO titles are found while the user is still typing', async () => {
+    const out = await (await lookupWith()).search('data anal')
     expect(out.candidates).toContainEqual(expect.objectContaining({ source: 'emasco', code: '2524-02' }))
   })
 })

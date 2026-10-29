@@ -3,18 +3,47 @@
 import { esc, tag } from '../ui.js'
 import { listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
+import { pickerList, searchPicker } from '../components/searchPicker.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
+// The optional single fields of each section: shown with "Prefer not to say" as the default.
+export const SECTION_FIELDS = [
+  ['userCategory', 'education.educationStatus', 'education.highestQualification'],
+  ['employment.status', 'employment.yearsOfExperience'],
+  [],
+  [],
+  ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
+]
+
+// A search picker with its current list (the last search for that key, or nothing yet).
+function picker(ctx, kind, key, label, placeholder, value) {
+  const { t, state } = ctx
+  const pick = state.pick?.[key]
+  const term = pick?.term ?? value
+  return searchPicker({ t, kind, key, label, placeholder, value: term, list: pick ? pickerList({ t, kind, key, term, result: pick.result, busy: pick.busy }) : '' })
+}
+
+const field = (ctx, options) => stateField({ ...ctx, ...options, answering: Boolean(ctx.state?.answering?.[options.path]) })
+
+// Field of study: picked from ISCED-F 2013; what the user (or the CV) wrote is kept until they link it.
+function fieldOfStudy(ctx, record, i) {
+  const { t } = ctx
+  const link = record.field
+    ? `<div class="tiny" style="margin-top:-6px">${esc(t('fieldLinked'))}: <b>${esc(record.field.title)}</b> · ISCED-F ${esc(record.field.code)} · ${esc(record.field.version ?? '')}
+        <button class="btn sm ghost" data-act="fieldUnlink" data-arg="${i}">${esc(t('occUnlink'))}</button></div>`
+    : record.fieldOfStudy ? `<div class="tiny muted" style="margin-top:-6px">${esc(t('fieldNotLinked'))}</div>` : ''
+  return `<div>${picker(ctx, 'field', `field|${i}`, t('fieldOfStudy'), t('fieldFind'), record.fieldOfStudy ?? '')}${link}</div>`
+}
 
 const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
 
 function study(ctx) {
   const { t } = ctx
   return [
-    stateField({ ...ctx, path: 'userCategory', label: t('fCategory'), options: [['working_adult', 'optWorking'], ['graduate_switcher', 'optGraduate']] }),
-    stateField({ ...ctx, path: 'education.educationStatus', label: t('fEduStatus'), options: [['studying', 'optStudying'], ['graduated', 'optGraduated'], ['not_studying', 'optNotStudying']] }),
-    stateField({ ...ctx, path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
-    recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation') }),
+    field(ctx, { path: 'userCategory', label: t('fCategory'), options: [['working_adult', 'optWorking'], ['graduate_switcher', 'optGraduate']] }),
+    field(ctx, { path: 'education.educationStatus', label: t('fEduStatus'), options: [['studying', 'optStudying'], ['graduated', 'optGraduated'], ['not_studying', 'optNotStudying']] }),
+    field(ctx, { path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
+    recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation'), custom: { fieldOfStudy: (record, i) => fieldOfStudy(ctx, record, i) } }),
   ].join('')
 }
 
@@ -23,14 +52,15 @@ function work(ctx) {
   const extra = (record, i) => linkedLine(t, record.occupation, `job|${i}`)
     + (record.jobTitle ? occupationPicker({ t, key: `job|${i}`, term: record.jobTitle, result: state.occ?.[`job|${i}`], busy: state.occBusy === `job|${i}` }) : '')
   return [
-    stateField({ ...ctx, path: 'employment.status', label: t('fEmpStatus'), options: [['employed', 'optEmployed'], ['unemployed', 'optUnemployed'], ['self_employed', 'optSelf'], ['student', 'optStudent']] }),
-    stateField({ ...ctx, path: 'employment.yearsOfExperience', label: t('fYears'), kind: 'number' }),
+    field(ctx, { path: 'employment.status', label: t('fEmpStatus'), options: [['employed', 'optEmployed'], ['unemployed', 'optUnemployed'], ['self_employed', 'optSelf'], ['student', 'optStudent']] }),
+    field(ctx, { path: 'employment.yearsOfExperience', label: t('fYears'), kind: 'number' }),
     listField({ ...ctx, path: 'employment.industries', label: t('fIndustries') }),
     recordsField({ ...ctx, listPath: 'employment.records', fields: [['jobTitle', 'jobTitle'], ['employer', 'employer'], ['period', 'period']], addLabel: t('addJob'), extra }),
   ].join('')
 }
 
-function skills({ t, profile }) {
+function skills(ctx) {
+  const { t, profile } = ctx
   const rows = profile.skills.map((skill, i) => {
     const levelTag = skill.proficiencyStatus === 'not_assessed' ? '' : tag(skill.proficiencyStatus === 'assessed' ? 'calc' : 'self', t(skill.proficiencyStatus === 'assessed' ? 'tagAssessed' : 'tagSelf'))
     const from = skill.extraction ? `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${skill.extraction.evidence ? `: “${esc(skill.extraction.evidence)}”` : ''}</div>` : ''
@@ -47,7 +77,7 @@ function skills({ t, profile }) {
         <button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button></div>
     </div></div>`
   }).join('')
-  return `<div class="row" style="margin-bottom:12px"><input id="skillInput" class="btn" style="flex:1;min-width:200px;font-weight:400" placeholder="${esc(t('skillAdd'))}" aria-label="${esc(t('skillAdd'))}">${'<button class="btn pri" data-act="addSkill">' + esc(t('add')) + '</button>'}</div>${rows}`
+  return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${rows}`
 }
 
 function certs(ctx) {
@@ -63,16 +93,15 @@ function certs(ctx) {
 }
 
 function prefs(ctx) {
-  const { t, state, profile } = ctx
+  const { t, profile } = ctx
   const interests = profile.occupationMappings.map((m, i) => (m.kind === 'interest' ? linkedLine(t, m.chosen, `interest|${i}`) : '')).join('')
   return [
     listField({ ...ctx, path: 'preferences.careerInterests', label: t('fInterests') }),
-    `<div class="field"><label for="occInterest">${esc(t('occInterests'))}</label><input id="occInterest" placeholder="${esc(t('occInterestFind'))}" value="${esc(state.occInterest ?? '')}">${interests}
-      ${occupationPicker({ t, key: 'interest', term: state.occInterest ?? '', result: state.occ?.interest, busy: state.occBusy === 'interest' })}</div>`,
-    stateField({ ...ctx, path: 'preferences.careerGoal', label: t('fGoal'), options: [['first_job', 'optFirstJob'], ['improve', 'optImprove'], ['change', 'optChange'], ['explore_ai', 'optAI']] }),
+    `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
+    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: [['first_job', 'optFirstJob'], ['improve', 'optImprove'], ['change', 'optChange'], ['explore_ai', 'optAI']] }),
     listField({ ...ctx, path: 'preferences.preferredCareerFields', label: t('fFields') }),
-    stateField({ ...ctx, path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
-    stateField({ ...ctx, path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
+    field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
+    field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
   ].join('')
 }
 

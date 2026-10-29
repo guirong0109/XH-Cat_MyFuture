@@ -43,7 +43,7 @@ export function profileTable(t, profile) {
     ${field('userCategory', 'fCategory')}
     ${field('education.educationStatus', 'fEduStatus')}
     ${field('education.highestQualification', 'fHighest')}
-    ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
+    ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${field('employment.status', 'fEmpStatus')}
     ${field('employment.yearsOfExperience', 'fYears')}
     ${row(t('fIndustries'), list(profile.employment.industries))}

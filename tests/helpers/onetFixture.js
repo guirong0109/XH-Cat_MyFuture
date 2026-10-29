@@ -15,6 +15,8 @@ const FILES = {
     'Oracle Java\t2.E.5.c\tDevelopment environment software\t15-1252.00',
     'Python\t2.E.5.c\tDevelopment environment software\t15-1252.00',
     'JavaScript\t2.E.5.c\tDevelopment environment software\t15-1252.00',
+    'Treasury Communications System\t2.E.1.a\tCommunications software\t15-1252.00',
+    'Petra Geology\t2.E.3.a\tScientific software\t15-1252.00',
   ].join('\n') + '\n',
   'occupations.tsv': 'code\ttitle\tdescription\n15-2051.00\tData Scientists\tDevelop methods.\n15-2051.01\tBusiness Intelligence Analysts\tProduce reports.\n43-9021.00\tData Entry Keyers\tEnter data.\n15-1252.00\tSoftware Developers\tBuild software.\n',
   'interest_areas.tsv': [
@@ -22,6 +24,14 @@ const FILES = {
     '1.B.3.q\tInformation Technology\t15-2051.00\t6.10',
     '1.B.3.q\tInformation Technology\t15-1252.00\t6.50',
     '1.B.3.aa\tHealth Care Service\t43-9021.00\t1.20',
+  ].join('\n') + '\n',
+  'work_styles.tsv': 'element_id\telement\tcode\tvalue\n1.D.1.a\tLeadership Orientation\t15-2051.00\t1.25\n',
+  'knowledge.tsv': 'element_id\telement\tcode\timportance\n2.C.9.b\tCommunications and Media\t15-2051.00\t3.10\n',
+  'work_activities.tsv': [
+    'element_id\telement\tcode',
+    '4.A.4.a.2.i.1\tCommunicate with customers about orders.\t43-9021.00',
+    '4.A.4.a.2.i.1\tCommunicate with customers about orders.\t15-2051.00',
+    '4.A.1.b.2.i.1\tCare for animals.\t43-9021.00',
   ].join('\n') + '\n',
   'job_titles.tsv': 'code\ttitle\n15-2051.00\tData Analyst\n43-9021.00\tData Analyst\n43-9021.00\tData Entry Clerk\n',
 }

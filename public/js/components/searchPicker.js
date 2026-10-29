@@ -26,7 +26,9 @@ export function pickerList({ t, kind, key, term, result, busy = false }) {
   let items = ''
   let note = ''
   if (kind === 'skill') {
-    items = candidates.map((c, i) => item(key, i, c.name, `O*NET ${result.version ?? ''} · ${c.category ?? ''}`)).join('')
+    // which O*NET list it is from: "O*NET work style · 31.0", or "O*NET 31.0 · Spreadsheet software" for software
+    const from = (c) => (c.category?.startsWith('O*NET') ? `${c.category} · ${result.version ?? ''}` : `O*NET ${result.version ?? ''} · ${c.category ?? ''}`)
+    items = candidates.map((c, i) => item(key, i, c.name, from(c))).join('')
     items += typed(t, key, 'skillKeepTyped', term)
     note = `<p class="tiny muted">${esc(t('skillSource', { version: result.version ?? '' }))}</p>`
   } else if (kind === 'field') {

@@ -49,7 +49,35 @@ FILES = {
                            "keep": lambda row: row.get("Scale ID") == "OI", "sources": [
         ("Specific Interest Areas.txt", ["Element ID", "Element Name", CODE, "Data Value"]),
     ]},
+    # More lists for the skill search (owner, 30 Oct): work styles (impact scale WI, -3..3) and knowledge (importance).
+    "work_styles.tsv": {"header": ["element_id", "element", "code", "value"], "optional": True,
+                        "keep": lambda row: row.get("Scale ID") == "WI", "sources": [
+        ("Work Styles.txt", ["Element ID", "Element Name", CODE, "Data Value"]),
+    ]},
+    "knowledge.tsv": {"header": ["element_id", "element", "code", "importance"], "optional": True,
+                      "keep": lambda row: row.get("Scale ID") == "IM", "sources": [
+        ("Knowledge.txt", ["Element ID", "Element Name", CODE, "Data Value"]),
+    ]},
 }
+
+# Work activities (detailed work activities, DWA) per job: "Tasks to DWAs" gives job and activity id, "GWAs to IWAs to
+# DWAs" gives the activity name. Written once per job and activity.
+ACTIVITIES = ("work_activities.tsv", ["element_id", "element", "code"], "Tasks to DWAs.txt", "GWAs to IWAs to DWAs.txt")
+
+
+def work_activities(archive):
+    out_name, header, tasks, names = ACTIVITIES
+    if not find(archive, tasks) or not find(archive, names):
+        return None
+    name_of = {clean(row["DWA Element ID"]): clean(row["DWA Element Name"]) for row in read_table(archive, names)}
+    rows, seen = [], set()
+    for row in read_table(archive, tasks):
+        key = (clean(row["DWA Element ID"]), clean(row.get(CODE)))
+        if key in seen or key[0] not in name_of:
+            continue
+        seen.add(key)
+        rows.append((key[0], name_of[key[0]], key[1]))
+    return out_name, (header, rows)
 
 
 def find(archive, name):
@@ -85,6 +113,9 @@ def write_snapshot(zip_bytes, out_dir, version, source_url, now=None):
                     seen.add(out)
                     rows.append(out)
         tables[out_name] = (spec["header"], rows)
+    activities = work_activities(archive)
+    if activities:
+        tables[activities[0]] = activities[1]
     os.makedirs(out_dir, exist_ok=True)
     hashes = {}
     for out_name, (header, rows) in tables.items():

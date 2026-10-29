@@ -81,6 +81,23 @@ describe('skill search (O*NET catalogue)', () => {
     expect(searchSkills(catalogue, 'reading')[0]).toEqual({ id: 'onet:el:2.A.1.a', name: 'Reading Comprehension', category: 'O*NET skill' })
   })
 
+  it('also finds O*NET work styles, knowledge areas and work activities, and says which list', async () => {
+    const catalogue = await loadSkillCatalogue(path.join(dir, 'onet'))
+    expect(searchSkills(catalogue, 'leader')[0]).toEqual({ id: 'onet:ws:1.D.1.a', name: 'Leadership Orientation', category: 'O*NET work style' })
+    expect(searchSkills(catalogue, 'animals')[0]).toEqual({ id: 'onet:dwa:4.A.1.b.2.i.1', name: 'Care for animals.', category: 'O*NET work activity' })
+    expect(searchSkills(catalogue, 'media').map((s) => s.category)).toContain('O*NET knowledge')
+  })
+
+  it('puts general skills before software products, and whole words before half-typed ones', async () => {
+    const catalogue = await loadSkillCatalogue(path.join(dir, 'onet'))
+    // "communications" is a whole word in the knowledge area and the software name: the knowledge area comes first.
+    expect(searchSkills(catalogue, 'communications').map((s) => s.name)).toEqual(['Communications and Media', 'Treasury Communications System'])
+    // "pet" starts "Petra" (software) only: still found, but as a half-typed match.
+    expect(searchSkills(catalogue, 'pet').map((s) => s.name)).toEqual(['Petra Geology'])
+    // "communicate": the whole word in an activity beats the word start of "Communications".
+    expect(searchSkills(catalogue, 'communicate')[0].name).toBe('Communicate with customers about orders.')
+  })
+
   it('puts an exact name first', async () => {
     const catalogue = await loadSkillCatalogue(path.join(dir, 'onet'))
     expect(searchSkills(catalogue, 'javascript')[0].name).toBe('JavaScript')

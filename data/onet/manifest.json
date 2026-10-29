@@ -10,6 +10,9 @@
     "job_titles.tsv": "561f74073077ed02cb2f44cf8b61151237fdbe673dede44ff5dc5194f3cf96c0",
     "skills.tsv": "05a2dcb00ece1bac18b4d48cfc514da0e7b386a981288a98d35f42d0617a7887",
     "software.tsv": "9ba31335a5b95d132645daec37883e00b5ad158798146563ece41f01131536c1",
-    "interest_areas.tsv": "5dd3ff9c4e3ad762bd4b6ea9cd457167ef071075e8acddcaac6e90167c27e3ff"
+    "interest_areas.tsv": "5dd3ff9c4e3ad762bd4b6ea9cd457167ef071075e8acddcaac6e90167c27e3ff",
+    "work_styles.tsv": "871f138c82cc28fde9bdb721d8bfb684797984bff7ad566f1e9b3403d8edd523",
+    "knowledge.tsv": "1031e3bd74d192e05a6626413ab09a4f4034b9bfa0d716fe2bd42499f5046d5f",
+    "work_activities.tsv": "a7868b58abe70068571421e13ad863bb82deea0723bd9c9ec1defa76826809f6"
   }
 }

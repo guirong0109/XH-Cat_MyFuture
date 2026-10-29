@@ -192,6 +192,11 @@
           "title": "T25 Career interests and fields",
           "sub": "one dropdown · O*NET interest areas (41)",
           "status": "done"
+        },
+        {
+          "title": "T26 Better skill search",
+          "sub": "work styles · knowledge · work activities · general first",
+          "status": "done"
         }
       ]
     }
@@ -227,7 +232,8 @@
     "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)",
     "Task 23: your feedback — suggestions are now short chips in two groups (Skills, Tools and software), 8 at first; one click adds a skill; the caption says 'Click a skill to add it'; the reason is shown on hover",
     "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
-    "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)"
+    "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
+    "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -268,7 +274,9 @@
     "T22: at most 5 O*NET skills and 15 tools per field; the screen shows 10 first — cost: none",
     "T23: the reason for each suggestion moved to the hover text to keep the list short; on a phone it is not visible — cost: the numbers stay in the API answer and the spec",
     "T25: interest areas come from the same O*NET 31.0 zip (Specific Interest Areas.txt, occupational-interest scale); the other O*NET files are unchanged byte for byte — cost: none",
-    "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list"
+    "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list",
+    "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
+    "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')"
   ],
   "log": [
     {
@@ -755,6 +763,26 @@
       "time": "30 Oct",
       "step": "Tasks 24–25",
       "detail": "sources on every list; one 'Career interests and fields' dropdown; npm test 229 passed; checked in the browser on 127.0.0.2:3200"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your report",
+      "detail": "all the searches merged to main did not work"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Finding",
+      "detail": "field, role and interest searches work; skill search ran but gave mostly software product names for everyday words"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "add work styles, knowledge areas and work activities; general skills first"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 26",
+      "detail": "npm test 232 passed; CV eval unchanged; checked in the browser ('leadership' → Leadership Orientation)"
     }
   ]
 }

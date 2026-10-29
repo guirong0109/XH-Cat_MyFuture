@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 229 passed
+npm test                                          # Vitest, expect 232 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -66,6 +66,8 @@ Browser pane launch configs (`.claude/launch.json`):
   - `preferences.careerInterests` is one list (career interests and fields merged): O\*NET interest areas
     `{source:'onet', id:'onet:ia:…', name, version}`, or texts saved before. `preferredCareerFields` no longer exists.
   - Every list and suggestion shows its source on screen (owner: "highly important").
+  - The skill search also offers O\*NET work styles, knowledge areas and work activities (`catalogue.more`). They are
+    kept out of `byName`/`byWord`, so CV matching stays as measured. Don't merge them in without re-running the CV eval.
 - **Strings:** every UI text goes through `t(lang, key)`. Add each key to `shared/strings/en.js`, `ms.js` **and**
   `zh.js`; `tests/i18n.test.js` fails otherwise. Every interpolated text in HTML goes through `esc()`.
 - **Privacy:** never log CV text, AI replies or personal fields. Only error names and codes are logged.

@@ -123,7 +123,7 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **31 files, 229 tests passed** on this branch (30 Oct); `main` still has 179 |
+| `npm test` (= `vitest run`) | **31 files, 232 tests passed** on this branch (30 Oct) |
 | `python -m unittest discover pipeline/tests` | **8 tests OK** |
 | `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
@@ -164,6 +164,10 @@ Each item below says what you will see and what to do.
   pane tab, including `localhost`, `127.0.0.1` and `[::1]`. Each address has its own saved progress. Never edit
   localStorage in a tab the owner has touched. On 30 Oct a test script did that in the `[::1]` tab: it set career
   interests to "Data" and "Finance" and told the owner.
+- **The skill search used to look broken for everyday words** ("pet" → IHS Petra, "leadership" → nothing): the
+  catalogue was software products plus 36 basic skills. Work styles, knowledge areas and work activities are now
+  in the search (`catalogue.more`), ordered general-first. O\*NET's own wording is needed ("Cooperation", not
+  "teamwork").
 - **Sources on screen are a must (owner: "highly important").** Any new list or suggestion must say where its data
   comes from.
 - **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding
@@ -230,7 +234,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 229 passed
+  npm test                                # expect 232 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

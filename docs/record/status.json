@@ -642,6 +642,11 @@
       "time": "29 Oct",
       "step": "Merge",
       "detail": "your choice: merge to main locally (no remote); fast-forward to 55f25cd; tests green on main; branch deleted"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Branch diagram",
+      "detail": "docs/architecture-cv-branch.html: git history of main and claude/cv-profile-module, every folder and file of the CV branch by layer (browser, shared, server, data, outside services, tooling, docs) with on/off status of each service"
     }
   ]
 }

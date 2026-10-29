@@ -61,7 +61,7 @@ that failed first. The branch was merged into `main` via PR #1
 | Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/SOURCES.md` |
 | Pipeline | `pipeline/fetch_onet.py`, `pipeline/tests/test_fetch_onet.py` |
 | Evaluation | `scripts/eval-cv.mjs`, `testing/eval-cvs.json` (11 synthetic CVs), `docs/eval-results.md` |
-| Docs | `README.md` (run, settings, owner setup), `docs/acceptance.md`, `docs/tools-declaration.md`, `docs/build-record.html` (step-by-step build record, generated) |
+| Docs | `README.md` (run, settings, owner setup), `docs/acceptance.md`, `docs/tools-declaration.md`, `docs/build-record.html` (step-by-step build record, generated), `docs/architecture-cv-branch.html` (diagram of this branch: every file by layer, git history, service status) |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
 
 ---

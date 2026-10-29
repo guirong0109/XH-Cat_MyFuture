@@ -113,12 +113,12 @@
         {
           "title": "T13 D1 + R2 clients",
           "sub": "SQLite stand-in for tests",
-          "status": "todo"
+          "status": "done"
         },
         {
           "title": "T14 Accounts",
           "sub": "sign up / in / delete my data",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T15 Saved profiles",
@@ -170,7 +170,8 @@
     "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)",
     "Task 10: CV text from PDF (pdfjs) and DOCX (Node zip) with heading marks, 300-line cap, scan detection; language EN/BM/中文/mixed/uncertain (10/10, commit a22768f)",
     "Task 11: CV extraction L1 sections, L2 rules + O*NET names, L4 merge; POST /api/cv/extract (413/415/422/504, 20 s, CV text never logged); upload screen with privacy note, six steps, three error exits, keep/switch language prompt (109/109 tests, commit e7255dd)",
-    "Task 12: L3 client (server/cv/semantic.js), L3 step in extraction, Model Eval script + 61 labelled terms (118/118 tests, commit 0394085). RunPod endpoint not created: you chose to skip L3 for now, so extractions say 'semantic_unavailable'"
+    "Task 12: L3 client (server/cv/semantic.js), L3 step in extraction, Model Eval script + 61 labelled terms (118/118 tests, commit 0394085). RunPod endpoint not created: you chose to skip L3 for now, so extractions say 'semantic_unavailable'",
+    "Task 13: D1 REST client (parameterised SQL only), migrations.sql (users, sessions, profiles with ON DELETE CASCADE), R2 client with AWS Signature V4 (matches the AWS get-vanilla test case), node:sqlite + in-memory stand-ins, dev-only local accounts server (128/128 tests, commit fcc9e58)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -466,6 +467,16 @@
       "time": "29 Oct",
       "step": "T12 · your decision",
       "detail": "Skip L3 for now: no endpoint created; L3 stays off, docs/model-eval.md says not run"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T13 · RED",
+      "detail": "tests/d1.test.js + tests/r2.test.js: modules missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T13 · GREEN + commit",
+      "detail": "server/store/d1.js, r2.js, migrations.sql, tests/helpers/fakeStores.js, scripts/serve-local-accounts.mjs → 128/128; fcc9e58 feat: D1 and R2 clients"
     }
   ]
 }

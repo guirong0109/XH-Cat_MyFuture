@@ -97,12 +97,12 @@
         {
           "title": "T11 Extraction L1 L2 L4",
           "sub": "route + upload screen",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T12 L3 on RunPod + Eval",
           "sub": "price needs your OK",
-          "status": "todo"
+          "status": "stop"
         }
       ]
     },
@@ -168,7 +168,8 @@
     "Task 7: O*NET skill ids (exact, whole words, 'pick standard term' choices ordered by use), /api/skills/normalize, /api/profiles/validate, wired into the form (Tests  49 passed (49), commit 0f5fc4e)",
     "Task 8: occupation lookup live → cached → eMASCO → failed with 5 states; picker on jobs and interests; links shown with source/code/version/date (Tests  65 passed (65), commit f72f892)",
     "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)",
-    "Task 10: CV text from PDF (pdfjs) and DOCX (Node zip) with heading marks, 300-line cap, scan detection; language EN/BM/中文/mixed/uncertain (10/10, commit a22768f)"
+    "Task 10: CV text from PDF (pdfjs) and DOCX (Node zip) with heading marks, 300-line cap, scan detection; language EN/BM/中文/mixed/uncertain (10/10, commit a22768f)",
+    "Task 11: CV extraction L1 sections, L2 rules + O*NET names, L4 merge; POST /api/cv/extract (413/415/422/504, 20 s, CV text never logged); upload screen with privacy note, six steps, three error exits, keep/switch language prompt (109/109 tests, commit e7255dd)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -188,7 +189,11 @@
     "T7: several O*NET names contain a short skill → up to 5 choices to pick (diagram 'pick standard term') — cost: one click",
     "T8: 'cached' = cached live answer or the dated snapshot (diagram box 2) — cost: none",
     "T8: occupation picker also for career interests (spec §5) — cost: none",
-    "T9: password-protected DOCX reports 'unsupported type' (needs an OLE parser to tell apart) — cost: wording"
+    "T9: password-protected DOCX reports 'unsupported type' (needs an OLE parser to tell apart) — cost: wording",
+    "T11: extractProfile also takes the O*NET catalogue to find software names anywhere in the CV — cost: a few missed or extra skills, all Unverified",
+    "T11: the four server steps show together as in progress (one request, no invented timing) — cost: less granular progress",
+    "T11: a long sentence under Skills is not split into skills (found in browser) — cost: an odd phrase is missed",
+    "T11: 'Upload another file' also on the ready view (found in browser) — cost: none"
   ],
   "log": [
     {
@@ -410,6 +415,41 @@
       "time": "29 Oct",
       "step": "T10 · GREEN + commit",
       "detail": "server/cv/readText.js + detectLanguage.js → 10/10; a22768f feat: read CV text and detect its language"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · RED",
+      "detail": "tests/extract.test.js 8 tests fail: module missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · GREEN extraction",
+      "detail": "server/cv/patterns.js + extract.js → 8/8"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · route RED → GREEN",
+      "detail": "tests/cvRoute.test.js 12 tests (pdf, docx, interface language kept, cv-temp store, encrypted/scanned 422, image/doc/empty 415, >10 MB 413, CV text not in console, 504 timeout) → server/routes/cv.js"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · browser upload",
+      "detail": "public/js/cvApi.js (2 tests) + upload screen + EN/BM/中文 strings; suite 108/108"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · browser check",
+      "detail": "synthetic EN PDF with BM interface → draft + language prompt; prose under Skills became fake skills → test + fix (109/109); broken PDF → message + exits, draft kept"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T11 · commit",
+      "detail": "e7255dd feat: CV extraction and upload"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T12 · stop",
+      "detail": "waiting for your OK on the RunPod price for the L3 embedding endpoint"
     }
   ]
 }

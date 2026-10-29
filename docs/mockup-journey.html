@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FutureReady Journey Mockup</title>
+<style>
+:root{
+  --bg:#f5f6f2;--surface:#ffffff;--surface2:#eef1ec;--ink:#16201b;--muted:#5a6761;--line:#dce2db;
+  --accent:#0f766e;--accent-ink:#ffffff;--accent-soft:#dff3ef;
+  --src:#1d4ed8;--src-soft:#dbe7fe;--calc:#0f766e;--calc-soft:#dff3ef;--est:#6d28d9;--est-soft:#ece5fd;
+  --self:#a16207;--self-soft:#fdf1c7;--bad:#b91c1c;--bad-soft:#fde2e2;--ok:#15803d;--ok-soft:#dcf7e4;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--calc:#2dd4bf;--calc-soft:#123630;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--bad:#fca5a5;--bad-soft:#3b1717;--ok:#86efac;--ok-soft:#14321f;--shadow:none;}}
+:root[data-theme="dark"]{
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--calc:#2dd4bf;--calc-soft:#123630;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--bad:#fca5a5;--bad-soft:#3b1717;--ok:#86efac;--ok-soft:#14321f;--shadow:none;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink)}
+button,select,input,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;letter-spacing:-.01em}.brand span{color:var(--accent)}
+.mock{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--muted);border:1px dashed var(--line)}
+.top .sp{flex:1}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--self-soft);color:var(--self)}
+main{padding:28px clamp(16px,4vw,48px) 60px;max-width:1060px;width:100%;min-width:0;margin:0 auto}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:-8px 0 22px;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs .n{font-size:11px;width:18px;height:18px;border-radius:99px;display:grid;place-items:center;background:var(--surface2)}
+.tabs button.on .n{background:var(--accent);color:var(--accent-ink)}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:6px}
+h1{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;margin-bottom:8px}
+h2{font-size:18px;margin:22px 0 10px}
+h3{font-size:15px;margin-bottom:6px}
+p.lead{color:var(--muted);max-width:68ch;margin-bottom:18px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border-color:transparent;background:none;color:var(--accent)}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.choice{display:block;width:100%;text-align:left;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:16px}
+.choice:hover{border-color:var(--accent)}
+.choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+.choice.lock{opacity:.75}
+.choice b{display:block;margin-bottom:3px}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap;vertical-align:middle}
+.t-src{background:var(--src-soft);color:var(--src)}.t-calc{background:var(--calc-soft);color:var(--calc)}
+.t-est{background:var(--est-soft);color:var(--est)}.t-self{background:var(--self-soft);color:var(--self)}
+.t-prov{background:none;border:1px dashed var(--self);color:var(--self)}.t-unv{background:var(--surface2);color:var(--muted)}
+.t-bad{background:var(--bad-soft);color:var(--bad)}.t-ok{background:var(--ok-soft);color:var(--ok)}
+.banner{border-radius:12px;padding:12px 14px;margin:0 0 16px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;font-size:14px}
+.banner>div{flex:1;min-width:220px}
+.b-info{background:var(--src-soft)}.b-warn{background:var(--self-soft)}.b-est{background:var(--est-soft)}.b-bad{background:var(--bad-soft)}.b-ok{background:var(--ok-soft)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 6px 4px 12px;font-size:13px;background:var(--surface)}
+.chip button{border:0;background:var(--surface2);border-radius:99px;width:20px;height:20px;cursor:pointer;color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.bar.o i{background:var(--est)}
+.big{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.up{color:var(--ok)}.down{color:var(--bad)}
+.field{display:grid;gap:4px;margin-bottom:12px}
+.field label{font-size:13px;font-weight:600}
+.field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 10px;width:100%}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:34px;text-align:center;background:var(--surface)}
+.spin{width:18px;height:18px;border:3px solid var(--accent-soft);border-top-color:var(--accent);border-radius:50%;animation:s 1s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes s{to{transform:rotate(360deg)}}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.step .k{width:30px;height:30px;border-radius:99px;display:grid;place-items:center;font-weight:700;background:var(--surface2)}
+.step.done .k{background:var(--ok);color:#fff}
+.sdg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#fff;padding:3px 9px;border-radius:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 14px;cursor:pointer;font-weight:600;font-size:13.5px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.heat td{text-align:center;font-weight:600;font-size:12px}
+.foot{margin-top:30px;padding-top:14px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);border-left:3px solid var(--est);padding:4px 10px;margin:12px 0;background:var(--est-soft);border-radius:0 8px 8px 0}
+.hint b{color:var(--est)}
+details summary{cursor:pointer;font-weight:600;font-size:13.5px}
+@media (max-width:820px){
+  .mock{display:none}
+  .top{flex-wrap:wrap;padding:10px 16px}
+  main{padding:20px 16px 50px}
+  .hide-m{display:none}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">FutureReady <span>MY</span></div>
+  <span class="mock">Clickable mockup · synthetic data user</span>
+  <div class="sp"></div>
+  <span id="savePill" class="pill"></span>
+  <select id="langSel" aria-label="Language" class="btn sm" onchange="setLang(this.value)">
+    <option value="en">English</option><option value="ms">Bahasa Melayu</option><option value="zh">中文</option>
+  </select>
+  <button class="btn sm hide-m" onclick="resetAll()" title="Clear the saved mockup state">Reset</button>
+</header>
+<main id="main"></main>
+
+<script>
+/* ---------- Data (copied from the repo's data/*.json snapshots) ---------- */
+const SOURCES = {
+  dosm:{name:'OpenDOSM · wages_occupation', url:'https://api.data.gov.my/opendosm?id=wages_occupation', obs:'2020→2025', fetched:'2026-10-26'},
+  alex:{name:'OpenAlex (CC0) · AI-research mentions', url:'https://openalex.org', obs:'2024→2025', fetched:'2026-10-23'},
+  emasco:{name:'eMASCO (KESUMA)', url:'https://emasco.mohr.gov.my', fetched:'2026-10-21'},
+  elatih:{name:'HRD Corp e-LATiH', url:'https://elatih.hrdcorp.gov.my', fetched:'2026-10-24'}
+};
+const GROUPS = {professionals:{growth:12.8,demand:75.6},technicians:{growth:9.8,demand:69.6},clerical:{growth:15.3,demand:80.7},service_sales:{growth:14.8,demand:79.6},craft:{growth:9.2,demand:68.3},operators:{growth:4.1,demand:58.3},managers:{growth:-2.2,demand:45.7},agriculture:{growth:-31.7,demand:0}};
+const GROUP_NAME = {professionals:'Professionals',technicians:'Technicians & associate professionals',clerical:'Clerical support',service_sales:'Service & sales',craft:'Craft & related trades',operators:'Plant & machine operators',managers:'Managers',agriculture:'Skilled agricultural workers'};
+const SKILLS = {
+  'Python programming':{h:40,sdg:[4,9],ai:false,r:[640,595],c:['Python - Basics to Brilliance in HD','Free','2 h 41 min','https://elatih.hrdcorp.gov.my/courses-details/python-basics-to-brilliance-in-hd']},
+  'SQL and databases':{h:25,sdg:[4,9],ai:false,r:[32,55],c:['[Kursus MySQL, PHP dan HTML] Memanipulasi Pangkalan Data Atas Talian','RM60.00','1 h 15 min','https://elatih.hrdcorp.gov.my/courses-details/kursus-mysql-php-dan-html-memanipulasi-pangkalan-data-atas-talian']},
+  'Spreadsheets (Excel)':{h:12,sdg:[4,8],ai:false,r:[124,230],c:["The Beginner's Guide To Excel",'Free','45 min','https://elatih.hrdcorp.gov.my/courses-details/the-beginner-s-guide-to-excel']},
+  'Data visualisation':{h:12,sdg:[4,9],ai:false,r:[756,1058],c:['Navigating through Microsoft Power BI','Free','3 h 18 min','https://elatih.hrdcorp.gov.my/courses-details/navigating-through-microsoft-power-bi']},
+  'Statistics':{h:30,sdg:[4,9],ai:false,r:[2365,3720],c:['Basic Statistics For Practical Time Series Analysis','Free','1 h 19 min','https://elatih.hrdcorp.gov.my/courses-details/basic-statistics-for-practical-time-series-analysis']},
+  'Using AI tools':{h:15,sdg:[4,9],ai:true,r:[676,2996],c:['[ChatGPT Course] Improving Workplace Productivity with ChatGPT','Free','1 h 15 min','https://elatih.hrdcorp.gov.my/courses-details/chatgpt-course-improving-workplace-productivity-with-chatgpt']},
+  'Communication':{h:10,sdg:[4],ai:false,r:[300,612],c:['Communication at Workplace','Free','57 min','https://elatih.hrdcorp.gov.my/courses-details/communication-at-workplace']},
+  'Teamwork':{h:8,sdg:[4],ai:false,r:[360,644],c:['Building High Performing Teams','Free','40 min','https://elatih.hrdcorp.gov.my/courses-details/building-high-performing-teams']},
+  'Customer service':{h:8,sdg:[4,8],ai:false,r:[1363,1984],c:['Customer Service Basics','Free','1 h 15 min','https://elatih.hrdcorp.gov.my/courses-details/customer-service-basics']},
+  'Graphic design':{h:20,sdg:[4,8],ai:false,r:[111,200],c:['Create Beautiful Graphic Designs Like a Pro Using Free Online Graphic Design Apps','Free','1 h 15 min','https://elatih.hrdcorp.gov.my/courses-details/create-beautiful-graphic-designs-like-a-pro-using-free-online-graphic-design-apps']},
+  'Business process analysis':{h:25,sdg:[4,8],ai:false,r:[1137,1798],c:['Business Process Improvement Techniques','Free','1 h 15 min','https://elatih.hrdcorp.gov.my/courses-details/business-process-improvement-techniques']},
+  'Project coordination':{h:20,sdg:[4,8],ai:false,r:[647,1204],c:['Basics of Project Management','Free','2 h 12 min','https://elatih.hrdcorp.gov.my/courses-details/basics-of-project-management']},
+  'Problem solving':{h:10,sdg:[4],ai:false,r:[2341,4196],c:['Problem Solving - An Essential 21st Century Skill','Free','1 h 19 min','https://elatih.hrdcorp.gov.my/courses-details/problem-solving-an-essential-21st-century-skill']}
+};
+const SDG = {
+  3:{n:'Good Health',c:'#4C9F38',t:'3.8 quality health services for everyone'},
+  4:{n:'Quality Education',c:'#C5192D',t:'4.4 skills for decent jobs through lifelong learning'},
+  8:{n:'Decent Work',c:'#A21942',t:'8.2 productivity through technology and innovation'},
+  9:{n:'Industry & Innovation',c:'#FD6925',t:'9.5 stronger local technology capability'}
+};
+const ROLES = [
+  {id:'bi-analyst',code:'2543-07',title:'Business Intelligence Analyst',group:'professionals',auto:11,assist:56,sdg:[8,9],
+   desc:'Turns company data into dashboards and reports that guide business decisions.',
+   skills:['SQL and databases','Data visualisation','Statistics','Communication','Spreadsheets (Excel)'],
+   why:{8:'Better decisions from data raise business productivity (8.2).',9:'Builds local analytics capability inside Malaysian firms (9.5).'}},
+  {id:'data-analyst',code:'2524-02',title:'Data Analyst',group:'professionals',auto:38,assist:37,sdg:[8,9],
+   desc:'Collects, cleans and analyses data, then reports findings to decision-makers.',
+   skills:['SQL and databases','Python programming','Data visualisation','Statistics','Using AI tools','Communication'],
+   why:{8:'Evidence-based decisions improve productivity (8.2).',9:'Grows the data workforce behind digital industry (9.5).'}},
+  {id:'db-assistant',code:'3512-05',title:'Database Assistant',group:'technicians',auto:50,assist:50,sdg:[8],
+   desc:'Maintains database records, runs routine queries and supports users.',
+   skills:['SQL and databases','Spreadsheets (Excel)','Teamwork','Customer service'],
+   why:{8:'Keeps business systems running reliably (8.2).'}},
+  {id:'digital-learning',code:'2423-09',title:'Digital Learning Specialist',group:'professionals',auto:17,assist:50,sdg:[4],
+   desc:'Designs online training and helps organisations reskill their people.',
+   skills:['Communication','Using AI tools','Graphic design','Teamwork'],
+   why:{4:'Directly delivers lifelong learning for workers (4.4).'}},
+  {id:'digital-transformation',code:'2511-08',title:'Digital Transformation Executive',group:'professionals',auto:0,assist:63,sdg:[8,9],
+   desc:'Leads the move of business processes onto digital tools.',
+   skills:['Business process analysis','Project coordination','Data visualisation','Communication','Problem solving'],
+   why:{8:'Digitised processes raise productivity (8.2).',9:'Upgrades firms’ technology capability (9.5).'}}
+];
+const SCEN = {moderate:0.6, fast:1.0};       // SCENARIO_FACTOR in src/lib/scoring.js
+const CREDIT = {basic:.5, good:.75, strong:1, unknown:.5};
+const LEVELS = ['basic','good','strong'];
+const QUIZ = {
+  'SQL and databases':[['Which clause filters rows after GROUP BY?',['WHERE','HAVING','ORDER BY'],1],['A JOIN that keeps all rows from the left table is…',['INNER JOIN','LEFT JOIN','CROSS JOIN'],1]],
+  'Python programming':[['What does len([3, 5, 7]) return?',['3','15','7'],0],['Which type is immutable?',['list','dict','tuple'],2]],
+  'Spreadsheets (Excel)':[['Which feature summarises rows by category?',['Pivot table','Freeze panes','Conditional formatting'],0]],
+  'Communication':null
+};
+
+/* ---------- i18n (interface only; CV language never changes it) ---------- */
+const T = {
+en:{welcome:'Welcome',recovery:'Returning guest',access:'Guest or account',category:'Who are you?',org:'HR & TVET (preview)',source:'CV or manual',cv:'Upload CV',manual:'Manual entry',confirm:'Confirm profile',assess:'Proficiency check',radar:'Future Skills Radar',match:'Career matching',role:'Role detail',roadmap:'Learning roadmap',sdg:'SDG contribution',futures:'Compare futures',save:'Save progress',dash:'Personal dashboard',
+ g1:'Entry & access',g2:'Who you are today',g3:'Explore',g4:'Save & return',
+ hero:'Where could your skills take you in the AI era?',heroSub:'See which skills are rising, which roles fit you today, and a free or low-cost path to get there.',
+ start:'Get started',signin:'Sign in',cont:'Continue',back:'Back',guest:'Continue as guest',create:'Create an account',skip:'Skip for now',savep:'Save and finish later',finish:'Submit answers',recalc:'Recalculate',setTarget:'Set as my target career',
+ savedLocal:'Saved on this device',savedCloud:'Saved to cloud',syncing:'Saving…',chooseLang:'Choose your language'},
+ms:{welcome:'Selamat datang',recovery:'Tetamu kembali',access:'Tetamu atau akaun',category:'Siapakah anda?',org:'HR & TVET (pratonton)',source:'CV atau manual',cv:'Muat naik CV',manual:'Isi sendiri',confirm:'Sahkan profil',assess:'Semakan kemahiran',radar:'Radar Kemahiran Masa Depan',match:'Padanan kerjaya',role:'Butiran peranan',roadmap:'Pelan pembelajaran',sdg:'Sumbangan SDG',futures:'Bandingkan masa depan',save:'Simpan kemajuan',dash:'Papan pemuka peribadi',
+ g1:'Masuk & akses',g2:'Siapa anda hari ini',g3:'Teroka',g4:'Simpan & kembali',
+ hero:'Ke mana kemahiran anda boleh membawa anda dalam era AI?',heroSub:'Lihat kemahiran yang meningkat, peranan yang sesuai dengan anda hari ini, dan laluan percuma atau kos rendah untuk ke sana.',
+ start:'Mula',signin:'Log masuk',cont:'Teruskan',back:'Kembali',guest:'Teruskan sebagai tetamu',create:'Cipta akaun',skip:'Langkau dahulu',savep:'Simpan dan sambung kemudian',finish:'Hantar jawapan',recalc:'Kira semula',setTarget:'Jadikan kerjaya sasaran',
+ savedLocal:'Disimpan pada peranti ini',savedCloud:'Disimpan ke awan',syncing:'Menyimpan…',chooseLang:'Pilih bahasa anda'},
+zh:{welcome:'欢迎',recovery:'回访访客',access:'访客或账户',category:'你是哪一类用户？',org:'HR 与 TVET（预览）',source:'简历或手动填写',cv:'上传简历',manual:'手动填写',confirm:'确认资料',assess:'技能熟练度评估',radar:'未来技能雷达',match:'职业匹配',role:'职位详情',roadmap:'学习路线',sdg:'SDG 贡献',futures:'比较未来情景',save:'保存进度',dash:'个人主页',
+ g1:'进入与访问',g2:'今天的你',g3:'探索',g4:'保存与返回',
+ hero:'在AI时代，你的技能能带你走向哪里？',heroSub:'了解哪些技能正在上升、哪些职位适合今天的你，以及一条免费或低成本的学习路径。',
+ start:'开始',signin:'登录',cont:'继续',back:'返回',guest:'以访客身份继续',create:'创建账户',skip:'暂时跳过',savep:'保存，稍后继续',finish:'提交答案',recalc:'重新计算',setTarget:'设为目标职业',
+ savedLocal:'已保存在此设备',savedCloud:'已保存到云端',syncing:'保存中…',chooseLang:'选择语言'}
+};
+const t = k => (T[S.lang]||T.en)[k] || T.en[k] || k;
+
+/* ---------- State + guest store ---------- */
+const KEY = 'futureready-mockup-v1';
+const fresh = () => ({screen:'welcome',lang:'en',access:null,category:null,signedIn:false,
+  profile:{name:'Aina (synthetic)',status:'Employed',occupation:'IT support executive',sectors:['Information technology'],
+    edu:[{q:'Diploma',f:'Information Technology'}],goals:['Explore AI-related opportunities'],sdgPref:[4,9],
+    skills:{'Python programming':'good','SQL and databases':null,'Spreadsheets (Excel)':'good','Communication':null}},
+  levelSrc:{'Python programming':'self','Spreadsheets (Excel)':'self'}, cvState:'idle', cvLangAsk:false, confirmed:false,
+  assessed:false, assessSkipped:false, answers:{}, scenario:'moderate', demandOverride:null, trendFail:false, lastChange:null,
+  target:null, progress:{}, saveChoice:null, sync:'local'});
+let S;
+function load(){ try{ const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function resetAll(){ try{ localStorage.removeItem(KEY); }catch(e){} S = fresh(); go('welcome'); }
+
+/* ---------- Scoring (same maths as src/lib/scoring.js; unknown level = 0.5, not 'strong') ---------- */
+function demandOf(group){ return (group==='professionals' && S.demandOverride!=null) ? S.demandOverride : GROUPS[group].demand; }
+function score(role, scen = S.scenario){
+  const parts = role.skills.map(l => {
+    const has = Object.hasOwn(S.profile.skills, l);
+    const lv = has ? (S.profile.skills[l] || 'unknown') : null;
+    return {l, has, lv, credit: has ? CREDIT[lv] : 0};
+  });
+  const fit = parts.reduce((a,p)=>a+p.credit,0) / parts.length * 100;
+  const demand = demandOf(role.group);
+  const autoAdj = role.auto * SCEN[scen];
+  const outlook = 0.5*demand + 0.5*(100 - autoAdj);
+  const goals = role.sdg.filter(g => S.profile.sdgPref.includes(g));
+  const bonus = Math.min(10, 5*goals.length);
+  const rank = Math.min(100, 0.6*fit + 0.4*outlook + bonus);
+  const provisional = parts.some(p => p.lv==='unknown') || !S.assessed;
+  return {parts, fit, demand, autoAdj, outlook, goals, bonus, rank, provisional};
+}
+const ranked = (scen = S.scenario) => ROLES.map(r => ({r, s:score(r, scen)})).sort((a,b)=>b.s.rank-a.s.rank);
+const growth = l => { const [a,b] = SKILLS[l].r; return (b-a)/a*100; };
+function priority(l, scen = S.scenario){ // momentum, with AI-linked skills boosted by the scenario factor
+  const g = growth(l); return g * (SKILLS[l].ai ? (1 + SCEN[scen]) : 1);
+}
+const r0 = n => Math.round(n);
+
+/* ---------- Helpers ---------- */
+const tag = (k, txt) => `<span class="tag t-${k}">${txt}</span>`;
+const SRC = k => `<span class="tiny muted">${tag('src','Sourced')} <a href="${SOURCES[k].url}" target="_blank" rel="noopener">${SOURCES[k].name}</a> · fetched ${SOURCES[k].fetched}</span>`;
+const sdgB = g => `<span class="sdg" style="background:${SDG[g].c}">SDG ${g} · ${SDG[g].n}</span>`;
+const lvTag = l => { const v = S.profile.skills[l]; if(!v) return tag('prov','Level unknown'); return S.levelSrc[l]==='quiz' ? tag('calc','Assessed: '+v) : tag('self','Self-reported: '+v); };
+const hint = s => `<div class="hint"><b>Judge note</b> · ${s}</div>`;
+function provBanner(){
+  if (S.assessed) return '';
+  return `<div class="banner b-warn"><div><b>Provisional results.</b> Your recommendations are based on your reported skills. Complete the proficiency assessment to receive more personalised results. Unknown levels count as 50%, never as “strong”.</div><button class="btn sm" onclick="go('assess')">Go to assessment</button></div>`;
+}
+function changeBanner(){
+  if (!S.lastChange) return '';
+  return `<div class="banner b-info"><div><b>Trend data changed</b> · ${S.lastChange}. Matches, outlook and roadmap order were recalculated.</div><button class="btn sm" onclick="S.lastChange=null;render()">Dismiss</button></div>`;
+}
+
+/* ---------- Screens ---------- */
+const V = {};
+
+V.welcome = () => `
+<div class="grid g2" style="align-items:center">
+ <div>
+  <h1>${t('hero')}</h1><p class="lead">${t('heroSub')}</p>
+  <div class="card" style="margin-bottom:16px">
+   <h3>${t('chooseLang')}</h3>
+   <div class="row" style="margin-top:8px">
+    ${[['en','English'],['ms','Bahasa Melayu'],['zh','中文']].map(([k,n])=>`<button class="btn ${S.lang===k?'pri':''}" onclick="setLang('${k}')">${n}</button>`).join('')}
+   </div>
+   <p class="tiny muted" style="margin-top:8px">The interface stays in this language. It only changes when you choose another one.</p>
+  </div>
+  <div class="row"><button class="btn pri" onclick="go('access')">${t('start')} →</button><button class="btn" onclick="S.signedIn=true;S.access='account';S.sync='cloud';go('dash')">${t('signin')}</button></div>
+ </div>
+ <div class="card">
+  <div class="tiny muted" style="margin-bottom:6px">ATM storyline · placeholder copy, confirm with team</div>
+  <h3>When ATMs arrived, bank tellers didn’t vanish — their job changed.</h3>
+  <p class="small muted" style="margin:6px 0 12px">Machines took the cash counting. People moved to advice, sales and problem solving. AI is doing the same to many jobs today. The question is not “will my job disappear?” but “which of my skills carry over, and what should I learn next?”</p>
+  <div class="grid g3 small">
+   <div><b>1 · Who I am today</b><div class="muted tiny">CV or form → skills</div></div>
+   <div><b>2 · What’s changing</b><div class="muted tiny">sourced, dated trends</div></div>
+   <div><b>3 · Where I could be</b><div class="muted tiny">roles, path, SDGs</div></div>
+  </div>
+ </div>
+</div>
+${hint('Language picked here is applied everywhere (try the switcher top-right). It is saved in the guest session.')}`;
+
+V.recovery = () => `
+<h1>Welcome back!</h1>
+<p class="lead">We found your previous career exploration progress on this browser. Would you like to continue?</p>
+<div class="card" style="max-width:560px">
+ <div class="small"><b>${S.profile.name}</b> · ${S.profile.occupation}<br><span class="muted">Last step: ${t(S.screen==='recovery'?'confirm':S.screen)} · ${Object.keys(S.profile.skills).length} skills · ${S.assessed?'assessment done':'assessment not done'}</span></div>
+ <div class="row" style="margin-top:14px">
+  <button class="btn pri" onclick="go(S.resumeTo||'confirm')">Continue previous session</button>
+  <button class="btn" onclick="if(confirm('Start a new exploration? Your previous progress will be replaced when you save the new one.')){const l=S.lang;S=fresh();S.lang=l;go('access')}">Start a new exploration</button>
+  <button class="btn ghost" style="color:var(--bad)" onclick="if(confirm('Delete the saved guest profile from this browser?')) resetAll()">Delete and start again</button>
+ </div>
+</div>
+<p class="tiny muted" style="margin-top:12px">Guest progress lives only in this browser on this device. Clearing browser data or using private mode removes it.</p>
+${hint('Shown automatically when a saved guest profile is found on load. Starting new never silently deletes the old profile.')}`;
+
+V.access = () => `
+<h1>How would you like to continue?</h1><p class="lead">You can explore everything as a guest. An account adds cloud backup, several career plans and progress on any device.</p>
+<div class="grid g3">
+ <button class="choice ${S.access==='guest'?'sel':''}" onclick="S.access='guest';S.sync='local';go('category')"><b>${t('guest')}</b><span class="small muted">No sign-up. Saved in this browser only. Your raw CV file is never stored.</span></button>
+ <button class="choice" onclick="S.access='account';S.signedIn=true;S.sync='cloud';go('category')"><b>${t('create')}</b><span class="small muted">Cloud sync, multiple plans, progress tracking, notifications.</span></button>
+ <button class="choice" onclick="S.access='account';S.signedIn=true;S.sync='cloud';go('dash')"><b>${t('signin')}</b><span class="small muted">Loads your saved language and plans.</span></button>
+</div>
+<p class="tiny muted" style="margin-top:12px">Sign-up and login screens are designed separately. This mockup only shows where they connect.</p>`;
+
+V.category = () => {
+  const cats = [['A','Working adult','Employed, worried about AI changing my job, or want a more future-ready role.',false],
+    ['B','Fresh graduate or career switcher','Just finished studies, or thinking about a different direction.',false],
+    ['C','HR / Learning & Development manager','Plan reskilling for a team. Account required.',true],
+    ['D','TVET or university career centre','Guide students at institution level. Account required.',true]];
+  return `<h1>${t('category')}</h1><p class="lead">This changes the questions we ask, not the rules we use to match you.</p>
+  <div class="grid g2">${cats.map(([k,n,d,org])=>`<button class="choice ${S.category===k?'sel':''} ${org?'lock':''}" onclick="pickCat('${k}')"><b>${k} · ${n} ${org?tag('unv','Account · preview'):''}</b><span class="small muted">${d}</span></button>`).join('')}</div>
+  <div id="catMsg"></div>`;
+};
+function pickCat(k){
+  S.category = k;
+  if ((k==='C'||k==='D') && !S.signedIn){
+    render();
+    document.getElementById('catMsg').innerHTML = `<div class="banner b-info" style="margin-top:14px"><div><b>An account is required</b> for organisational tools.</div><button class="btn sm pri" onclick="S.signedIn=true;S.access='account';S.sync='cloud';go('org')">Sign up</button><button class="btn sm" onclick="S.signedIn=true;S.access='account';S.sync='cloud';go('org')">Sign in</button></div>`;
+    return;
+  }
+  go(k==='C'||k==='D' ? 'org' : 'source');
+}
+
+V.org = () => {
+  const team = [['Staff 01',[1,.75,0,0,.5]],['Staff 02',[.75,.5,.5,0,1]],['Staff 03',[.5,0,0,0,.75]],['Staff 04',[1,1,.75,.5,.75]]];
+  const cols = ['SQL','Data viz','Statistics','AI tools','Comms'];
+  const col = v => v>=.75?'var(--ok-soft)':v>=.5?'var(--self-soft)':'var(--bad-soft)';
+  return `<div class="banner b-warn"><div><b>Under development — not working yet.</b> This organisational view is a design preview. No data here is real or saved.</div></div>
+  <h1>${S.category==='D'?'Career centre':'Team'} skills-gap heatmap</h1><p class="lead">Planned: upload a team roster (synthetic), see gaps against a target role, and get one reskilling plan per team.</p>
+  <div class="card" style="overflow-x:auto"><table class="heat"><tr><th>Target: BI Analyst</th>${cols.map(c=>`<th style="text-align:center">${c}</th>`).join('')}</tr>
+  ${team.map(([n,v])=>`<tr><td style="text-align:left">${n}</td>${v.map(x=>`<td style="background:${col(x)}">${x*100}%</td>`).join('')}</tr>`).join('')}</table></div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="S.category='A';go('source')">Try the individual journey instead</button></div>`;
+};
+
+V.source = () => `<h1>Do you have a CV or resume?</h1><p class="lead">A CV is optional. Both paths lead to the same profile and the same matching.</p>
+<div class="grid g2">
+ <button class="choice" onclick="go('cv')"><b>Upload my CV</b><span class="small muted">PDF or DOCX, up to 5 MB. We read it once to suggest skills; the file itself is not kept.</span></button>
+ <button class="choice" onclick="go('manual')"><b>I don’t have a CV</b><span class="small muted">Answer a short form: work, studies, skills, goals.</span></button>
+</div>
+${hint('Stage 1 of 6 · “Tell us about yourself”. Uses a synthetic profile only, no real CVs.')}`;
+
+V.cv = () => {
+  let body;
+  if (S.cvState==='idle') body = `<div class="drop"><div class="big" style="font-size:36px">⇪</div><p style="margin:8px 0">Drag your CV here or</p>
+     <div class="row" style="justify-content:center"><button class="btn pri" onclick="runCv('ok')">Choose file (sample: aina_cv_en.pdf)</button><button class="btn sm" onclick="runCv('bad')">Simulate unreadable file</button></div>
+     <p class="tiny muted" style="margin-top:10px">PDF, DOCX · max 5 MB · synthetic sample CV</p></div>`;
+  else if (S.cvState==='busy') body = `<div class="card"><span class="spin"></span> Reading your CV… checking format, extracting education, jobs and skills.</div>`;
+  else if (S.cvState==='bad') body = `<div class="banner b-bad"><div><b>We couldn’t read this file.</b> It may be a scanned image or password-protected. Nothing you entered so far is lost.</div><button class="btn sm" onclick="S.cvState='idle';render()">Try another file</button><button class="btn sm" onclick="go('manual')">Enter manually</button></div>`;
+  else body = `${S.cvLangAsk && S.lang!=='en' ? `<div class="banner b-info"><div>Your resume appears to be written in <b>English</b>. Switch the interface to English, or keep your current language?</div><button class="btn sm" onclick="S.cvLangAsk=false;setLang('en')">Switch to English</button><button class="btn sm" onclick="S.cvLangAsk=false;render()">Keep my language</button></div>`:''}
+    <div class="card"><h3>✓ Extracted from aina_cv_en.pdf ${tag('unv','Unverified until you confirm')}</h3>
+    <table><tr><th>Field</th><th>Found</th></tr>
+    <tr><td>Education</td><td>Diploma in Information Technology</td></tr><tr><td>Job</td><td>IT support executive (2023–now)</td></tr>
+    <tr><td>Sector</td><td>Information technology</td></tr><tr><td>Skills</td><td>${Object.keys(S.profile.skills).join(', ')}</td></tr>
+    <tr><td>CV language</td><td>English (interface: ${({en:'English',ms:'Bahasa Melayu',zh:'中文'})[S.lang]})</td></tr></table>
+    <div class="row" style="margin-top:12px"><button class="btn pri" onclick="go('confirm')">Review and confirm →</button></div></div>`;
+  return `<h1>${t('cv')}</h1><p class="lead">We suggest skills from your CV. You decide what stays.</p>${body}
+  ${hint('Switch the interface to Bahasa Melayu first, then upload: a non-blocking language prompt appears. The UI never switches by itself.')}`;
+};
+function runCv(kind){ S.cvState='busy'; render(); setTimeout(()=>{ S.cvState = kind==='ok'?'done':'bad'; S.cvLangAsk = kind==='ok'; render(); }, 1100); }
+
+V.manual = () => `<h1>${t('manual')}</h1><p class="lead">A degree is not required. Add as many qualifications and fields as you have.</p>
+<div class="grid g2">
+ <div class="card">
+  <div class="field"><label>Employment status</label><select><option>Employed</option><option>Unemployed</option><option>Studying</option></select></div>
+  <div class="field"><label>Current or last job (optional)</label><input value="${S.profile.occupation}"></div>
+  <div class="field"><label>Sectors</label><input value="${S.profile.sectors.join(', ')}"></div>
+  <div class="field"><label>Qualifications</label>${S.profile.edu.map(e=>`<div class="row small"><span class="chip">${e.q} · ${e.f}</span></div>`).join('')}
+   <button class="btn sm ghost" onclick="S.profile.edu.push({q:'Certificate',f:'Business Management'});render()">+ Add another qualification</button></div>
+ </div>
+ <div class="card">
+  <div class="field"><label>Skills</label><div class="row">${Object.keys(S.profile.skills).map(l=>`<span class="chip">${l}</span>`).join('')}</div></div>
+  <div class="field"><label>Add a skill</label><input id="newSkill" placeholder="e.g. Statistics" onkeydown="if(event.key==='Enter')addSkill(this.value)"></div>
+  <div class="field"><label>Career goals (optional — guide the results, not counted as skills)</label>
+   <div class="row small">${['Change careers','Improve my current prospects','Explore AI-related opportunities','A particular industry'].map(g=>`<label class="chip" style="padding-right:12px"><input type="checkbox" ${S.profile.goals.includes(g)?'checked':''}> ${g}</label>`).join('')}</div></div>
+ </div>
+</div>
+<div class="row" style="margin-top:14px"><button class="btn pri" onclick="go('confirm')">${t('cont')} →</button></div>`;
+function addSkill(v){
+  v = v.trim(); if(!v) return;
+  const known = Object.keys(SKILLS).find(k => k.toLowerCase().startsWith(v.toLowerCase()));
+  if (known){ S.profile.skills[known] = null; render(); }
+  else { render(); document.getElementById('unknownMsg')?.remove();
+    document.querySelector('main').insertAdjacentHTML('afterbegin', `<div id="unknownMsg" class="banner b-warn"><div><b>“${v}” isn’t in our sourced skills list yet.</b> We kept it on your profile as text, but it can’t affect matching until it maps to a known skill. We won’t guess.</div></div>`); }
+}
+
+V.confirm = () => `<h1>${t('confirm')}</h1>
+<p class="lead">We identified your education, job and skills. Please review before continuing — nothing counts until you confirm it.</p>
+<div class="grid g2">
+ <div class="card"><h3>About you</h3><table>
+  <tr><td>Status</td><td>${S.profile.status}</td></tr><tr><td>Job</td><td>${S.profile.occupation}</td></tr>
+  <tr><td>Education</td><td>${S.profile.edu.map(e=>e.q+' · '+e.f).join('<br>')}</td></tr>
+  <tr><td>Priority field</td><td><select class="btn sm"><option>Information Technology</option><option>Business Management</option></select></td></tr>
+  <tr><td>Goals</td><td>${S.profile.goals.join(', ')} ${tag('unv','Goal, not evidence')}</td></tr></table></div>
+ <div class="card"><h3>Skills</h3>
+  ${Object.keys(S.profile.skills).map(l=>`<div class="row" style="justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)"><span>${l}</span><span class="row">${S.confirmed?lvTag(l):tag('unv','From CV · unverified')}<button class="btn sm ghost" onclick="delete S.profile.skills['${l}'];render()">Remove</button></span></div>`).join('')}
+  <div class="row" style="margin-top:10px"><input id="newSkill" class="btn sm" style="font-weight:400" placeholder="Add a skill, e.g. Statistics" onkeydown="if(event.key==='Enter')addSkill(this.value)"><button class="btn sm" onclick="addSkill(document.getElementById('newSkill').value)">Add</button></div>
+ </div>
+</div>
+<div class="row" style="margin-top:14px"><button class="btn pri" onclick="S.confirmed=true;go('assess')">Confirm profile →</button><button class="btn" onclick="go('manual')">Edit details</button></div>
+${hint('Remove “Communication” here, then open Career matching — every score changes. Proves the profile drives the results.')}`;
+
+V.assess = () => {
+  const ls = Object.keys(S.profile.skills);
+  return `<h1>${t('assess')}</h1>
+  <p class="lead">Short questions make your match more accurate. Skills without a quiz use your own rating, labelled as self-reported.</p>
+  ${S.assessed?`<div class="banner b-ok"><div><b>Assessment complete.</b> Full personalised roadmap unlocked. You can update answers any time.</div></div>`:''}
+  <div class="grid">${ls.map(l=>{
+    const q = QUIZ[l];
+    return `<div class="card"><div class="row" style="justify-content:space-between"><h3>${l}</h3>${lvTag(l)}</div>
+    ${q ? q.map((qq,i)=>`<p class="small" style="margin:8px 0 4px">${qq[0]}</p><div class="row">${qq[1].map((o,j)=>`<button class="btn sm ${S.answers[l+i]===j?'pri':''}" onclick="S.answers['${l}${i}']=${j};render()">${o}</button>`).join('')}</div>`).join('')
+      : `<p class="small muted" style="margin:8px 0 4px">No quiz yet for this skill. How would you rate yourself?</p>`}
+    <div class="row tiny muted" style="margin-top:8px">Self-rating: ${LEVELS.map(v=>`<button class="btn sm ${S.profile.skills[l]===v&&S.levelSrc[l]!=='quiz'?'pri':''}" onclick="S.profile.skills['${l}']='${v}';S.levelSrc['${l}']='self';render()">${v}</button>`).join('')}</div></div>`;
+  }).join('')}</div>
+  <div class="row" style="margin-top:16px"><button class="btn pri" onclick="submitQuiz()">${t('finish')}</button><button class="btn" onclick="persist();flash('Progress saved. You can come back to this later.')">${t('savep')}</button>
+  <button class="btn ghost" onclick="S.assessSkipped=true;go('radar')">${t('skip')} → results will be Provisional</button></div>`;
+};
+function submitQuiz(){
+  Object.keys(S.profile.skills).forEach(l => {
+    const q = QUIZ[l]; if(!q) return;
+    const right = q.filter((qq,i)=>S.answers[l+i]===qq[2]).length;
+    if (q.some((qq,i)=>S.answers[l+i]!==undefined)){ S.profile.skills[l] = right===q.length?'strong':right>0?'good':'basic'; S.levelSrc[l]='quiz'; }
+  });
+  S.assessed = Object.values(S.profile.skills).every(v=>v); S.assessSkipped = !S.assessed;
+  if(!S.assessed){ flash('Some skills still have no level. Rate them or answer the quiz to unlock the full roadmap.'); return; }
+  go('radar');
+}
+
+V.radar = () => {
+  const ls = Object.keys(SKILLS).sort((a,b)=>priority(b)-priority(a));
+  const mine = new Set(Object.keys(S.profile.skills));
+  const gs = Object.keys(GROUPS).map(g=>({g,...GROUPS[g]})).sort((a,b)=>b.growth-a.growth);
+  return `<h1>${t('radar')}</h1>
+  <p class="lead">What is changing, where the data comes from, and when it was fetched. Observed past data is kept separate from projections.</p>
+  ${S.trendFail?`<div class="banner b-bad"><div><b>Live refresh failed</b> (OpenDOSM did not respond). Showing the last good snapshot from 26 Oct 2026.</div></div>`:''}
+  ${changeBanner()}
+  <div class="card" style="margin-bottom:14px"><div class="row" style="justify-content:space-between"><div><b>Data controls</b> <span class="tiny muted">(for the live “change the data” test)</span></div>
+   <div class="row"><button class="btn sm" onclick="refreshTrends(true)">Refresh sources</button><button class="btn sm" onclick="refreshTrends(false)">Simulate source down</button></div></div>
+   <div class="row small" style="margin-top:10px">Professionals demand index <input type="range" min="20" max="100" value="${r0(demandOf('professionals'))}" oninput="this.nextElementSibling.textContent=this.value" onchange="setDemand(+this.value)"> <b>${r0(demandOf('professionals'))}</b> ${S.demandOverride!=null?tag('self','Edited by user — not sourced'):tag('src','OpenDOSM')}</div></div>
+  <div class="grid g2">
+   <div class="card"><h3>Skills · AI-research momentum ${tag('src','Observed')}</h3><p class="tiny muted">Change in AI-related papers mentioning the skill, 2024→2025. Your skills are marked ●.</p>
+    <table>${ls.map(l=>{const g=growth(l);return `<tr><td>${mine.has(l)?'● ':''}${l}${SKILLS[l].ai?' '+tag('est','AI-linked'):''}</td><td class="num ${g>=0?'up':'down'}">${g>=0?'▲':'▼'} ${Math.abs(r0(g))}%</td></tr>`}).join('')}</table>
+    <div style="margin-top:8px">${SRC('alex')}</div></div>
+   <div class="card"><h3>Occupation groups · wage growth ${tag('src','Observed')}</h3><p class="tiny muted">Median wage change 2020→2025, used as the demand signal.</p>
+    <table>${gs.map(x=>`<tr><td>${GROUP_NAME[x.g]}</td><td class="num ${x.growth>=0?'up':'down'}">${x.growth>=0?'▲':'▼'} ${Math.abs(x.growth)}%</td></tr>`).join('')}</table>
+    <div style="margin-top:8px">${SRC('dosm')}</div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Roles most exposed to AI ${tag('est','Estimate')}</h3><p class="small muted">Share of each role’s eMASCO tasks labelled automatable, scaled by the current scenario (${S.scenario}, factor ${SCEN[S.scenario]}).</p>
+   ${ROLES.slice().sort((a,b)=>b.auto-a.auto).map(r=>`<div class="row small" style="margin:6px 0"><span style="width:240px">${r.title}</span><div class="bar o" style="flex:1;min-width:120px"><i style="width:${r.auto*SCEN[S.scenario]}%"></i></div><span class="num" style="width:44px">${r0(r.auto*SCEN[S.scenario])}%</span></div>`).join('')}
+   <div style="margin-top:8px">${SRC('emasco')}</div></div>
+  <div class="row" style="margin-top:16px"><button class="btn pri" onclick="go('match')">See my matched roles →</button></div>
+  ${hint('Stage 2 of 6. Drag the demand slider (or Refresh): a banner appears and Career matching re-ranks. “Simulate source down” shows the last-good fallback.')}`;
+};
+function setDemand(v){
+  const before = ranked().map(x=>x.r.id).join();
+  S.demandOverride = v;
+  const after = ranked().map(x=>x.r.id).join();
+  S.lastChange = `Professionals demand ${GROUPS.professionals.demand} → ${v}${before!==after?' · role order changed':' · scores changed, order unchanged'}`;
+  render();
+}
+function refreshTrends(ok){
+  S.trendFail = false; render();
+  const m = document.querySelector('main'); m.insertAdjacentHTML('afterbegin','<div class="banner b-info" id="busy"><div><span class="spin"></span> Fetching OpenDOSM and OpenAlex…</div></div>');
+  setTimeout(()=>{ if(ok){ S.demandOverride=null; S.lastChange='Refreshed from sources on '+new Date().toISOString().slice(0,10)+' · no change since 26 Oct snapshot'; } else S.trendFail=true; render(); }, 1000);
+}
+
+V.match = () => {
+  const list = ranked();
+  return `<h1>${t('match')}</h1>
+  <p class="lead">Ranked using your confirmed skills and the current trend data. <b>Current Skill Match</b> is about you today; <b>Future Outlook</b> is about the role.</p>
+  ${provBanner()}${changeBanner()}
+  <div class="row small" style="margin-bottom:12px">Scenario: <b>${S.scenario==='fast'?'Fast AI adoption':'Moderate AI adoption'}</b> ${tag('est','Estimate')} <button class="btn sm ghost" onclick="go('futures')">Compare futures →</button></div>
+  <div class="grid">${list.map(({r,s},i)=>{
+    const have = s.parts.filter(p=>p.has), gap = s.parts.filter(p=>!p.has);
+    return `<div class="card"><div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div style="flex:1;min-width:220px"><div class="tiny muted">#${i+1} · eMASCO ${r.code}</div><h3 style="font-size:17px">${r.title}</h3><p class="small muted">${r.desc}</p></div>
+      <div style="min-width:220px">
+       <div class="row" style="justify-content:space-between"><span class="small">Current Skill Match ${s.provisional?tag('prov','Provisional'):tag('calc','Calculated')}</span><b>${r0(s.fit)}%</b></div><div class="bar"><i style="width:${s.fit}%"></i></div>
+       <div class="row" style="justify-content:space-between;margin-top:8px"><span class="small">Future Outlook ${tag('est','Estimate')}</span><b>${r0(s.outlook)}</b></div><div class="bar o"><i style="width:${s.outlook}%"></i></div>
+      </div></div>
+      <div class="small" style="margin-top:10px"><b>You have:</b> ${have.map(p=>p.l).join(', ')||'—'}<br><b>To learn:</b> ${gap.map(p=>`<span class="down">${p.l}</span>`).join(', ')||'nothing — full coverage'}</div>
+      <div class="small muted" style="margin-top:6px">Why: you cover ${have.length} of ${r.skills.length} required skills; ${GROUP_NAME[r.group].toLowerCase()} wages grew ${GROUPS[r.group].growth}% (2020→25)${s.goals.length?'; matches your interest in '+s.goals.map(g=>'SDG '+g).join(', '):''}.</div>
+      <div class="row" style="margin-top:10px">${r.sdg.map(sdgB).join('')}<span class="sp" style="flex:1"></span><button class="btn sm" onclick="S.viewRole='${r.id}';go('role')">Why this score?</button><button class="btn sm pri" onclick="setTarget('${r.id}')">${t('setTarget')}</button></div></div>`;
+  }).join('')}</div>
+  <div class="row" style="margin-top:14px"><button class="btn" onclick="go('confirm')">Edit my skills</button><button class="btn" onclick="go('assess')">Update proficiency</button></div>
+  ${hint('Stage 3 of 6. Every number has a breakdown on “Why this score?”. AI supports the choice; it never decides for the user.')}`;
+};
+function setTarget(id){ S.target=id; go('roadmap'); }
+
+V.role = () => {
+  const r = ROLES.find(x=>x.id===(S.viewRole||S.target||'bi-analyst')), s = score(r);
+  const best = s.parts.filter(p=>p.credit<1).map(p=>({p, gain:(1-p.credit)/s.parts.length*100})).sort((a,b)=>b.gain-a.gain);
+  return `<div class="crumb"><a href="#" onclick="go('match');return false">← ${t('match')}</a></div>
+  <h1>${r.title}</h1><p class="lead">${r.desc} ${SRC('emasco')}</p>
+  ${provBanner()}
+  <div class="grid g2">
+   <div class="card"><h3>Current Skill Match = ${r0(s.fit)}% ${s.provisional?tag('prov','Provisional'):tag('calc','Calculated')}</h3>
+    <p class="tiny muted">Average credit across the ${r.skills.length} required skills. Credit: strong 100% · good 75% · basic 50% · unknown 50% · missing 0%.</p>
+    <table><tr><th>Required skill</th><th>Your level</th><th class="num">Credit</th></tr>
+    ${s.parts.map(p=>`<tr><td>${p.l}</td><td>${p.has?(p.lv==='unknown'?tag('prov','unknown'):S.levelSrc[p.l]==='quiz'?tag('calc',p.lv):tag('self',p.lv)):tag('bad','missing')}</td><td class="num">${r0(p.credit*100)}%</td></tr>`).join('')}</table></div>
+   <div class="card"><h3>Future Outlook = ${r0(s.outlook)} ${tag('est','Estimate')}</h3>
+    <table><tr><td>Demand (${GROUP_NAME[r.group]})</td><td class="num">${r0(s.demand)}</td><td class="tiny">${S.demandOverride!=null&&r.group==='professionals'?tag('self','edited'):tag('src','OpenDOSM')}</td></tr>
+    <tr><td>Automatable tasks × scenario ${SCEN[S.scenario]}</td><td class="num">${r.auto}% → ${r0(s.autoAdj)}%</td><td class="tiny">${tag('src','eMASCO tasks')}</td></tr>
+    <tr><td colspan="3" class="tiny muted">Outlook = 0.5 × demand + 0.5 × (100 − automatable)</td></tr></table>
+    <h3 style="margin-top:14px">Rank score = ${r0(s.rank)}</h3><p class="tiny muted">0.6 × match (${r0(s.fit)}) + 0.4 × outlook (${r0(s.outlook)}) + SDG interest bonus (${s.bonus})</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>What would raise your match?</h3>
+   ${best.slice(0,3).map(b=>`<div class="row small" style="padding:6px 0;border-bottom:1px solid var(--line);justify-content:space-between"><span>${b.p.has?'Prove or improve':'Learn'} <b>${b.p.l}</b> (${SKILLS[b.p.l].h} h)</span><span class="up">+${r0(b.gain)} points → ${r0(s.fit+b.gain)}%</span></div>`).join('')}
+  </div>
+  <div class="card" style="margin-top:14px"><h3>SDG links for this role</h3>${r.sdg.map(g=>`<p class="small" style="margin:6px 0">${sdgB(g)} ${r.why[g]}</p>`).join('')}</div>
+  <div class="row" style="margin-top:14px"><button class="btn pri" onclick="setTarget('${r.id}')">${t('setTarget')}</button></div>`;
+};
+
+function roadmapSteps(r, scen = S.scenario){
+  const s = score(r, scen);
+  // missing skills first, then by trend momentum under this scenario
+  return s.parts.filter(p=>p.credit<1)
+    .sort((a,b)=> (a.has-b.has) || (priority(b.l,scen)-priority(a.l,scen))).map(p=>p.l);
+}
+V.roadmap = () => {
+  const r = ROLES.find(x=>x.id===(S.target||'bi-analyst'));
+  const steps = roadmapSteps(r);
+  const shown = S.assessed ? steps : steps.slice(0,2);
+  const hours = steps.reduce((a,l)=>a+SKILLS[l].h,0);
+  const free = steps.filter(l=>SKILLS[l].c[1]==='Free').length;
+  return `<h1>${t('roadmap')}: ${r.title}</h1>
+  <p class="lead">Ordered by gaps first, then by how fast each skill is rising under the <b>${S.scenario}</b> scenario. Every course below is a real listing with a link.</p>
+  ${!S.assessed?`<div class="banner b-warn"><div><b>Preview only.</b> The full personalised roadmap unlocks after the proficiency assessment, because the order depends on your actual levels.</div><button class="btn sm pri" onclick="go('assess')">Complete assessment</button></div>`:''}
+  <div class="grid g3" style="margin-bottom:10px">
+   <div class="card"><div class="tiny muted">Total time ${tag('calc','Calculated')}</div><div class="big">~${hours} h</div><div class="tiny muted">study estimate from skill table</div></div>
+   <div class="card"><div class="tiny muted">Free courses</div><div class="big">${free} / ${steps.length}</div><div class="tiny muted">${free===steps.length?'no fees on this path':'the rest are low-cost e-LATiH listings'}</div></div>
+   <div class="card"><div class="tiny muted">Match after plan ${tag('est','Estimate')}</div><div class="big">${r0(score(r).fit)}% → 100%</div><div class="tiny muted">if every step is completed</div></div>
+  </div>
+  <div class="card">${shown.map((l,i)=>{const c=SKILLS[l].c, st=S.progress[l]||'todo';
+   return `<div class="step ${st==='done'?'done':''}"><div class="k">${st==='done'?'✓':i+1}</div><div>
+    <div class="row" style="justify-content:space-between"><b>${l}</b><span class="row">${r.skills.includes(l)&&S.profile.skills[l]?tag('self','Improve'):tag('bad','New skill')}<span class="tiny muted">≈ ${SKILLS[l].h} h</span></span></div>
+    <p class="small muted">Why: required for ${r.title}; AI-research mentions ${growth(l)>=0?'up':'down'} ${Math.abs(r0(growth(l)))}% (2024→25)${SKILLS[l].ai&&S.scenario==='fast'?' · moved up under Fast AI':''}.</p>
+    <p class="small" style="margin-top:4px">📘 <a href="${c[3]}" target="_blank" rel="noopener">${c[0]}</a> · <b>${c[1]}</b> · ${c[2]} · e-LATiH (HRD Corp) <span class="tiny muted">checked 24 Oct 2026</span></p>
+    <div class="row tiny" style="margin-top:6px">${['todo','started','done'].map(v=>`<button class="btn sm ${st===v?'pri':''}" onclick="S.progress['${l}']='${v}';render()">${v==='todo'?'Not started':v==='started'?'In progress':'Completed (self-reported)'}</button>`).join('')}</div>
+   </div></div>`;}).join('')}
+   ${!S.assessed && steps.length>2?`<p class="small muted" style="padding-top:12px">🔒 ${steps.length-2} more steps hidden until the assessment is done.</p>`:''}
+  </div>
+  ${S.access!=='account'?`<p class="tiny muted" style="margin-top:10px">Progress is saved in this browser. <a href="#" onclick="go('save');return false">Create an account</a> to keep it across devices.</p>`:''}
+  <div class="row" style="margin-top:14px"><button class="btn pri" onclick="go('sdg')">See SDG contribution →</button></div>
+  ${hint('Stage 4 of 6. Judges can click any course link to check it is real. Courses come from data/skills.json, never from a language model.')}`;
+};
+
+V.sdg = () => {
+  const r = ROLES.find(x=>x.id===(S.target||'bi-analyst'));
+  const steps = roadmapSteps(r);
+  const tally = {};
+  r.sdg.forEach(g=>tally[g]=(tally[g]||0)+1);
+  steps.forEach(l=>SKILLS[l].sdg.forEach(g=>tally[g]=(tally[g]||0)+1));
+  const max = Math.max(...Object.values(tally));
+  const alt = ROLES.filter(x=>x.id!==r.id && x.sdg.some(g=>!r.sdg.includes(g)));
+  return `<h1>${t('sdg')}</h1>
+  <p class="lead">How your chosen career and learning steps connect to the UN Sustainable Development Goals. This is <b>potential contribution</b>, not measured impact.</p>
+  <div class="grid g2">
+   <div class="card"><h3>Your pathway: ${r.title}</h3><p class="tiny muted">Links counted from the role (1 each) and every roadmap skill.</p>
+    ${Object.entries(tally).sort((a,b)=>b[1]-a[1]).map(([g,n])=>`<div style="margin:10px 0"><div class="row" style="justify-content:space-between">${sdgB(g)}<span class="small">${n} link${n>1?'s':''}</span></div><div class="bar" style="margin-top:4px"><i style="width:${n/max*100}%;background:${SDG[g].c}"></i></div><div class="tiny muted">Target ${SDG[g].t}</div></div>`).join('')}
+   </div>
+   <div class="card"><h3>Why each link exists</h3>
+    ${r.sdg.map(g=>`<p class="small" style="margin:8px 0"><b>Role → SDG ${g}:</b> ${r.why[g]}</p>`).join('')}
+    ${steps.map(l=>`<p class="small" style="margin:8px 0"><b>${l} → ${SKILLS[l].sdg.map(g=>'SDG '+g).join(', ')}:</b> ${SKILLS[l].sdg.includes(9)?'a digital skill that strengthens local technology capability (9.5)':SKILLS[l].sdg.includes(8)?'raises workplace productivity (8.2)':'lifelong learning toward decent work (4.4)'}.</p>`).join('')}
+   </div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Does the SDG link change your choice?</h3>
+   <p class="small muted">You said you care about ${S.profile.sdgPref.map(g=>'SDG '+g).join(' and ')}. Roles that share your goals get up to +10 rank points (shown in each score breakdown).</p>
+   ${alt.length?`<p class="small" style="margin-top:6px">Want a different impact? ${alt.map(x=>`<b>${x.title}</b> (${x.sdg.map(g=>'SDG '+g).join(', ')}, match ${r0(score(x).fit)}%) <button class="btn sm ghost" onclick="S.viewRole='${x.id}';go('role')">view</button>`).join(' · ')}</p>`:''}
+   <div class="row small" style="margin-top:8px">My SDG interests: ${Object.keys(SDG).map(g=>`<label class="chip" style="padding-right:12px"><input type="checkbox" ${S.profile.sdgPref.includes(+g)?'checked':''} onchange="toggleSdg(${g})"> SDG ${g}</label>`).join('')}</div>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn pri" onclick="go('futures')">Compare futures →</button></div>
+  ${hint('Stage 5 of 6. SDG test: untick SDG 9 — BI and Data Analyst lose their bonus and Digital Learning (SDG 4) moves up in Career matching. Remove the tags and the user loses information.')}`;
+};
+function toggleSdg(g){ const p=S.profile.sdgPref; S.profile.sdgPref = p.includes(g)?p.filter(x=>x!==g):[...p,g]; render(); }
+
+V.futures = () => {
+  const a = ranked('moderate'), b = ranked('fast');
+  const r = ROLES.find(x=>x.id===(S.target||'bi-analyst'));
+  const sa = roadmapSteps(r,'moderate'), sb = roadmapSteps(r,'fast');
+  const note = sa.join()===sb.join() ? 'Same order in both futures: AI-linked skills get a bigger boost under Fast AI, but not enough to reorder this plan. The role outlook above is what moves.' : '';
+  return `<h1>${t('futures')}</h1>
+  <div class="banner b-est"><div><b>These are estimates, not predictions.</b> Each scenario applies one explicit parameter — how much of a role’s automatable work is actually automated — to the same sourced trend data. Nobody knows which future will happen.</div></div>
+  <div class="row" style="margin-bottom:14px"><div class="seg"><button class="${S.scenario==='moderate'?'on':''}" onclick="S.scenario='moderate';render()">Moderate AI adoption (×0.6)</button><button class="${S.scenario==='fast'?'on':''}" onclick="S.scenario='fast';render()">Fast AI adoption (×1.0)</button></div><span class="tiny muted">Active scenario is used on every screen.</span></div>
+  <div class="card" style="overflow-x:auto"><table>
+   <tr><th>Role</th><th class="num">Current Skill Match</th><th class="num">Outlook · Moderate</th><th class="num">Outlook · Fast</th><th class="num">Rank M → F</th></tr>
+   ${a.map(({r:x,s},i)=>{const j=b.findIndex(y=>y.r.id===x.id), so=score(x,'fast'); const d=so.outlook-s.outlook;
+     return `<tr><td>${x.title}</td><td class="num">${r0(s.fit)}% <span class="tiny muted">same</span></td><td class="num">${r0(s.outlook)}</td><td class="num">${r0(so.outlook)} <span class="${d<0?'down':'muted'} tiny">${d<0?'▼'+Math.abs(r0(d)):'='}</span></td><td class="num">#${i+1} → #${j+1}${j>i?' <span class="down">▼</span>':j<i?' <span class="up">▲</span>':''}</td></tr>`}).join('')}
+  </table><p class="tiny muted" style="margin-top:8px">Current Skill Match does not change: your skills and the role’s requirements are the same in both futures. Only the role outlook moves.</p></div>
+  <div class="grid g2" style="margin-top:14px">
+   <div class="card"><h3>What changed and why</h3><ul class="small" style="padding-left:18px">
+    ${a.filter(({r:x})=>x.auto>=30).map(({r:x})=>`<li><b>${x.title}</b>: ${x.auto}% of tasks are automatable, so its outlook falls by ${r0(0.5*x.auto*0.4)} points under Fast AI.</li>`).join('')}
+    <li>Roles with few automatable tasks (e.g. Digital Transformation, ${ROLES.find(x=>x.id==='digital-transformation').auto}%) hold steady.</li></ul></div>
+   <div class="card"><h3>Roadmap order (${r.title})</h3>${note?`<p class="tiny muted">${note}</p>`:''}<div class="grid g2 small">
+    <div><b>Moderate</b><ol style="padding-left:18px">${sa.map(l=>`<li>${l}</li>`).join('')}</ol></div>
+    <div><b>Fast</b><ol style="padding-left:18px">${sb.map(l=>`<li>${l}${SKILLS[l].ai?' '+tag('est','↑ AI-linked'):''}</li>`).join('')}</ol></div></div></div>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn pri" onclick="go(S.access==='account'?'dash':'save')">Save my career plan →</button></div>
+  ${hint('Stage 6 of 6. Scenarios are computed from SCENARIO_FACTOR, not hand-written alternatives.')}`;
+};
+
+V.save = () => {
+  const opts = [['A','Keep my existing account profile','Load the account profile. Your guest exploration stays on this device until you decide.'],
+    ['B','Replace my existing profile','The guest profile replaces the account one. Asks you to confirm first.'],
+    ['C','Save as another career plan','Keep both. This exploration becomes Plan 2 in the same account.'],
+    ['D','Merge selected information','Compare side by side and pick what to keep.']];
+  return `<h1>${t('save')}</h1><p class="lead">Keep your plan safe and use it on any device. You can also keep exploring as a guest.</p>
+  <div class="grid g2">
+   <div class="card"><h3>New account</h3><p class="small muted">After sign-up we’ll ask before moving your guest profile, assessment, plan and progress into the account.</p>
+    <button class="btn pri" style="margin-top:10px" onclick="if(confirm('Transfer this guest profile, assessment, plan and progress to your new account?')){S.access='account';S.signedIn=true;S.sync='cloud';go('dash')}">${t('create')} and transfer</button></div>
+   <div class="card"><h3>I already have an account</h3><p class="small muted">Your account already has a plan (“Data Analyst”, 3 of 6 steps done). We won’t overwrite anything without asking.</p>
+    <div class="grid" style="margin-top:10px">${opts.map(([k,n,d])=>`<button class="choice ${S.saveChoice===k?'sel':''}" style="padding:10px 12px" onclick="S.saveChoice='${k}';render()"><b>${k} · ${n}</b><span class="tiny muted">${d}</span></button>`).join('')}</div></div>
+  </div>
+  ${S.saveChoice==='D'?`<div class="card" style="margin-top:14px"><h3>Merge: choose what to keep</h3><table>
+   <tr><th>Item</th><th>This guest session</th><th>Your account</th></tr>
+   <tr><td>Job</td><td><label><input type="radio" name="m1" checked> IT support executive</label></td><td><label><input type="radio" name="m1"> IT support executive</label></td></tr>
+   <tr><td>SQL level</td><td><label><input type="radio" name="m2" checked> ${S.profile.skills['SQL and databases']||'unknown'} (${S.levelSrc['SQL and databases']==='quiz'?'assessed':'self'})</label></td><td><label><input type="radio" name="m2"> basic (self, Jun 2026)</label> ${tag('bad','Conflict')}</td></tr>
+   <tr><td>Learning progress</td><td colspan="2"><label><input type="checkbox" checked> Keep both — completed steps are never deleted</label></td></tr></table>
+   <button class="btn pri" style="margin-top:10px" onclick="S.access='account';S.signedIn=true;S.sync='cloud';go('dash')">Save merged profile</button></div>`:''}
+  ${S.saveChoice&&S.saveChoice!=='D'?`<div class="row" style="margin-top:14px"><button class="btn pri" onclick="if(${S.saveChoice==='B'}?confirm('Replace your existing account profile? Its saved plan will be archived, not deleted.'):true){S.access='account';S.signedIn=true;S.sync='cloud';go('dash')}">Confirm option ${S.saveChoice}</button></div>`:''}`;
+};
+
+V.dash = () => {
+  const r = ROLES.find(x=>x.id===(S.target||'bi-analyst')), steps = roadmapSteps(r);
+  const done = steps.filter(l=>S.progress[l]==='done').length;
+  return `<h1>${t('dash')}</h1><p class="lead">Welcome back. Language and plans loaded from your account.</p>
+  <div class="banner b-info"><div><b>Plan needs review.</b> Trend data was refreshed on 26 Oct 2026 (OpenDOSM). Your BI Analyst outlook may have changed. Your progress is kept.</div><button class="btn sm" onclick="go('match')">Review recommendations</button></div>
+  <div class="grid g3">
+   <div class="card"><div class="tiny muted">Plan 1 · target</div><h3>${r.title}</h3><div class="bar" style="margin:8px 0"><i style="width:${steps.length?done/steps.length*100:0}%"></i></div><div class="small muted">${done} of ${steps.length} steps completed</div><button class="btn sm" style="margin-top:8px" onclick="go('roadmap')">Open roadmap</button></div>
+   <div class="card"><div class="tiny muted">Plan 2 · saved earlier</div><h3>Data Analyst</h3><div class="bar" style="margin:8px 0"><i style="width:50%"></i></div><div class="small muted">3 of 6 steps completed</div></div>
+   <div class="card"><div class="tiny muted">Profile</div><h3>${S.profile.name}</h3><div class="small muted">${Object.keys(S.profile.skills).length} skills · ${S.assessed?'assessed':'assessment pending'}</div><button class="btn sm" style="margin-top:8px" onclick="go('confirm')">Update profile</button></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+   <div class="card"><h3>Notifications</h3><label class="small"><input type="checkbox" checked> Tell me when trend data changes my plan</label><br><label class="small"><input type="checkbox"> Monthly progress reminder</label></div>
+   <div class="card"><h3>My data</h3><p class="small muted">Stored: profile, plans, progress, language. Raw CV files are not stored. (PDPA)</p><div class="row" style="margin-top:8px"><button class="btn sm">Download my data</button><button class="btn sm" style="color:var(--bad)">Delete my account data</button></div></div>
+  </div>`;
+};
+
+/* ---------- Router ---------- */
+function go(id){
+  if (id!=='recovery') S.resumeTo = id;
+  S.screen = id; S.sync==='cloud' ? syncPulse() : null; persist(); render(); window.scrollTo(0,0);
+}
+function syncPulse(){ const p=document.getElementById('savePill'); p.className='pill warn'; p.textContent=t('syncing'); setTimeout(()=>savePill(),600); }
+function savePill(){ const p=document.getElementById('savePill'); if(!S.access){p.className='pill';p.textContent='Not saved yet';return;} p.className='pill ok'; p.textContent = S.sync==='cloud'?'☁ '+t('savedCloud'):'💾 '+t('savedLocal'); }
+function setLang(l){ S.lang=l; document.documentElement.lang = l==='zh'?'zh':l; persist(); render(); }
+function flash(msg){ document.querySelector('main').insertAdjacentHTML('afterbegin',`<div class="banner b-ok"><div>${msg}</div></div>`); window.scrollTo(0,0); }
+function render(){
+  document.getElementById('langSel').value = S.lang;
+  // once a profile exists the user moves freely between these sections
+  const tabIds = ['radar','match','roadmap','sdg','futures'];
+  const onTab = S.screen==='role' ? 'match' : S.screen;
+  const tabs = tabIds.includes(onTab) ? `<div class="tabs">${tabIds.map((id,i)=>`<button class="${onTab===id?'on':''}" onclick="go('${id}')"><span class="n">${i+2}</span>${t(id)}</button>`).join('')}<button onclick="go('confirm')">${t('confirm')}</button></div>` : '';
+  const legend = `<div class="foot row">Labels: ${tag('src','Sourced')} ${tag('calc','Calculated')} ${tag('est','Estimate')} ${tag('self','Self-reported')} ${tag('prov','Provisional')} ${tag('unv','Unverified')} <span>· Mockup with synthetic user “Aina”; data snapshots from the repo (Oct 2026). No language model is used in this mockup.</span></div>`;
+  document.getElementById('main').innerHTML = tabs + V[S.screen]() + legend;
+  savePill();
+}
+
+/* ---------- Boot: returning-guest detection ---------- */
+const saved = load();
+if (saved && saved.screen && saved.screen!=='welcome'){ S = Object.assign(fresh(), saved); S.resumeTo = saved.screen; S.screen='recovery'; }
+else S = saved ? Object.assign(fresh(), saved) : fresh();
+render();
+</script>
+</body>
+</html>

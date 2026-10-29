@@ -15,10 +15,12 @@ Only synthetic CVs are used; no personal data is stored here.
 | `isced/fields.tsv` | ISCED-F 2013 fields of study: 4-digit code, title, broad field (124) | UNESCO ISCED-F 2013, titles as given in the Statistics Canada concordance below; broad-field names from UNESCO UIS (2014) | 2026-10-30 | The list users pick their field of study from |
 | `isced/isced_cip.tsv` | ISCED-F 2013 field to CIP programme, with partial links (`*`) and notes (1,809) | Statistics Canada, ISCED-F 2013 to CIP Canada 2016 concordance, https://www.statcan.gc.ca/sites/default/files/documents/isced-f-2013-cip2016-eng.csv | downloaded 2026-10-30 | Statistics Canada Open Licence |
 | `isced/cip_onet.tsv` | CIP 2020 programme to O\*NET-SOC 2019 occupation (8,501) | O\*NET Resource Center crosswalk, https://www.onetcenter.org/crosswalks/cip/Education_CIP_to_ONET_SOC.xlsx | downloaded 2026-10-30 | CC BY 4.0, USDOL/ETA |
+| `isced/source/isced-f-2013-cip2016-eng.csv` | Original Statistics Canada concordance as downloaded (Windows-1252), kept unchanged so `isced/fields.tsv` and `isced/isced_cip.tsv` can be checked; SHA-256 `120ae5c1…37e1` | Statistics Canada (URL above) | downloaded 2026-10-30 | Statistics Canada Open Licence |
+| `isced/source/Education_CIP_to_ONET_SOC.xlsx` | Original O\*NET CIP crosswalk as downloaded, kept unchanged so `isced/cip_onet.tsv` can be checked; SHA-256 `4802101a…a6e8` | O\*NET Resource Center (URL above) | downloaded 2026-10-30 | CC BY 4.0, USDOL/ETA |
 | `isced/manifest.json` | Sources, download date, SHA-256 of each file, and how many fields reach O\*NET (118 of 124) | written by `pipeline/fetch_isced.py` | 2026-10-30 | — |
 
 Refresh O\*NET: `python pipeline/fetch_onet.py <version>` (see the script's header).
-Refresh ISCED-F and its CIP bridge: `python pipeline/fetch_isced.py`. The concordance uses CIP Canada 2016 and the O\*NET crosswalk CIP 2020; a CIP code is matched only when both tables use the same code, so 6 fields (e.g. 9999 Field unknown) have no O\*NET link.
+Refresh ISCED-F and its CIP bridge: `python pipeline/fetch_isced.py` (downloads again), or rebuild from the kept originals: `python pipeline/fetch_isced.py data/isced/source/isced-f-2013-cip2016-eng.csv data/isced/source/Education_CIP_to_ONET_SOC.xlsx`. The concordance uses CIP Canada 2016 and the O\*NET crosswalk CIP 2020; a CIP code is matched only when both tables use the same code, so 6 fields (e.g. 9999 Field unknown) have no O\*NET link.
 
 ## Test and evaluation sets (synthetic)
 

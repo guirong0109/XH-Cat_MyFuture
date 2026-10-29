@@ -1,6 +1,6 @@
 # Model Eval — L3 semantic match
 
-**Not run yet** (29 Oct 2026). The RunPod embedding endpoint is created only after the project owner approves its price.
+**Not run** (29 Oct 2026). The project owner chose to skip L3 for now, so no RunPod embedding endpoint was created.
 Until then L3 is skipped and every CV extraction answers with the warning `semantic_unavailable`.
 
 When the endpoint exists: set `SEMANTIC_URL`, `SEMANTIC_KEY` and `SEMANTIC_MODEL` (see `.env.example`), run

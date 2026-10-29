@@ -101,8 +101,8 @@
         },
         {
           "title": "T12 L3 on RunPod + Eval",
-          "sub": "price needs your OK",
-          "status": "stop"
+          "sub": "code + eval ready · endpoint skipped (your call)",
+          "status": "skipped"
         }
       ]
     },
@@ -169,11 +169,11 @@
     "Task 8: occupation lookup live → cached → eMASCO → failed with 5 states; picker on jobs and interests; links shown with source/code/version/date (Tests  65 passed (65), commit f72f892)",
     "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)",
     "Task 10: CV text from PDF (pdfjs) and DOCX (Node zip) with heading marks, 300-line cap, scan detection; language EN/BM/中文/mixed/uncertain (10/10, commit a22768f)",
-    "Task 11: CV extraction L1 sections, L2 rules + O*NET names, L4 merge; POST /api/cv/extract (413/415/422/504, 20 s, CV text never logged); upload screen with privacy note, six steps, three error exits, keep/switch language prompt (109/109 tests, commit e7255dd)"
+    "Task 11: CV extraction L1 sections, L2 rules + O*NET names, L4 merge; POST /api/cv/extract (413/415/422/504, 20 s, CV text never logged); upload screen with privacy note, six steps, three error exits, keep/switch language prompt (109/109 tests, commit e7255dd)",
+    "Task 12: L3 client (server/cv/semantic.js), L3 step in extraction, Model Eval script + 61 labelled terms (118/118 tests, commit 0394085). RunPod endpoint not created: you chose to skip L3 for now, so extractions say 'semantic_unavailable'"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
-    "Task 12: your OK on the RunPod price for the L3 embedding endpoint",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16: your OK on the RunPod price for the AI re-extraction model"
   ],
@@ -193,7 +193,8 @@
     "T11: extractProfile also takes the O*NET catalogue to find software names anywhere in the CV — cost: a few missed or extra skills, all Unverified",
     "T11: the four server steps show together as in progress (one request, no invented timing) — cost: less granular progress",
     "T11: a long sentence under Skills is not split into skills (found in browser) — cost: an odd phrase is missed",
-    "T11: 'Upload another file' also on the ready view (found in browser) — cost: none"
+    "T11: 'Upload another file' also on the ready view (found in browser) — cost: none",
+    "T12: L3 compares CV wordings with O*NET skill names only; job titles stay with the occupation lookup — cost: none"
   ],
   "log": [
     {
@@ -450,6 +451,21 @@
       "time": "29 Oct",
       "step": "T12 · stop",
       "detail": "waiting for your OK on the RunPod price for the L3 embedding endpoint"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T12 · tests + code",
+      "detail": "tests/semantic.test.js (6) + tests/modelEval.test.js (3) RED → semantic.js, model-eval.mjs, model-eval-set.json → 118/118; 0394085"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T12 · RunPod price read",
+      "detail": "list-gpu-types (serverless): 16 GB pool $0.58/h while running; list-endpoints: none"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T12 · your decision",
+      "detail": "Skip L3 for now: no endpoint created; L3 stays off, docs/model-eval.md says not run"
     }
   ]
 }

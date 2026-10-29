@@ -176,12 +176,14 @@
     "Task 15: saved profiles — POST (confirmed only, temporary CV deleted), list, get, PATCH with version (old version → 409, named fields only, status/id/version and protected fields refused), mappings; another user's profile → 404; signed-in Confirm saves to the account, sign-in loads the latest saved profile; summary says where it is saved (148/148 tests, commit ca9a2c9)",
     "Task 16: consent-gated AI re-extraction — RunPod (OpenAI-compatible) then Claude (raw fetch, anthropic-version 2026-10-21, output_config json_schema, no temperature, fallbacks default); CV in <cv> tags as data; items without a word-for-word quote dropped; levels, ids and codes stripped; skill names through the O*NET normaliser; 3 runs per upload, 20 per hour; POST /api/cv/reextract (400 / 429 / 503 + reason). No provider set: you chose to build without one, so it answers 'not configured' (160/160 tests, commit e6659c4)",
     "Task 17: 'Improve extraction with AI' on the review after an upload; consent box naming RunPod and Claude; compare view with New / Changed / Different from yours, every row 'Needs confirmation', your own edits locked, 'Add the ones I ticked', count of unquoted suggestions left out; any failure leaves the form unchanged (161/161 tests, commit 80b4dc9)",
-    "Task 18: extraction evaluation on 11 synthetic CVs (skills P 0.917 / R 0.971, qualifications and jobs 1.0, certificates 1.0, 0 failures, median 3 ms; docs/eval-results.md); found and fixed: two-character Chinese headings (技能, 证书) were dropped; browser acceptance of the CV spec §12 table and §13 Tests 1–7 in EN / BM / 中文, desktop and 360 px (docs/acceptance.md); README, tools declaration, data sources (165/165 tests, commit c0f707e)"
+    "Task 18: extraction evaluation on 11 synthetic CVs (skills P 0.917 / R 0.971, qualifications and jobs 1.0, certificates 1.0, 0 failures, median 3 ms; docs/eval-results.md); found and fixed: two-character Chinese headings (技能, 证书) were dropped; browser acceptance of the CV spec §12 table and §13 Tests 1–7 in EN / BM / 中文, desktop and 360 px (docs/acceptance.md); README, tools declaration, data sources (165/165 tests, commit c0f707e)",
+    "Final review by a fresh reviewer: 0 Critical, 7 Important, 11 Minor. All 7 Important fixed, each with a test that failed first (or a browser check): long paragraphs no longer cut the CV; a skill inside one longer O*NET name is offered to pick, not linked; a stale save offers 'Load the saved version'; sign-out clears the browser; blocked site data no longer gives a blank page; AI quotes must contain the item; .env is loaded (169/169 tests, commit f8d4ae3). 11 minor items deferred."
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
+    "Deferred minors from the final review (11) — listed in the final message; none blocks the demo"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -205,7 +207,8 @@
     "T15: the browser sends every editable top-level field in PATCH (the server still changes only the named ones) — cost: slightly larger requests",
     "T15: after sign-in the latest saved profile is loaded only when this browser holds no work of its own — cost: a user with local work sees that work, not the saved one",
     "T17: the compare test passed at once (Task 4 helpers already lock edits); a deliberate break of the lock made it fail, so it guards the rule — cost: none",
-    "T18: eval differences left as measured (Google from a certificate line, Oracle Database, QuickBooks Online not in O*NET, MS Excel as a second skill) — not tuned to the eval set — cost: those few wrong or missed skills remain for the user to fix in review"
+    "T18: eval differences left as measured (Google from a certificate line, Oracle Database, QuickBooks Online not in O*NET, MS Excel as a second skill) — not tuned to the eval set — cost: those few wrong or missed skills remain for the user to fix in review",
+    "Final: sign-in also loads the saved profile when the local copy is an older version of it (fixes a permanent 409) — cost: unsaved edits to an older copy are replaced, with a message"
   ],
   "log": [
     {
@@ -597,6 +600,16 @@
       "time": "29 Oct",
       "step": "Next",
       "detail": "final whole-branch review"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Final review",
+      "detail": "fresh reviewer agent (opus), whole branch: 0 Critical, 7 Important, 11 Minor, 'ready after fixes'"
+    },
+    {
+      "time": "29 Oct",
+      "step": "Fix pass",
+      "detail": "7 Important fixed RED→GREEN; eval re-run unchanged; browser: stale save → load → v3, sign-out clears storage; f8d4ae3"
     }
   ]
 }

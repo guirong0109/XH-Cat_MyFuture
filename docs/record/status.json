@@ -92,12 +92,12 @@
         {
           "title": "T10 Text + language",
           "sub": "pdfjs / DOCX · EN BM 中文 mixed",
-          "status": "doing"
+          "status": "done"
         },
         {
           "title": "T11 Extraction L1 L2 L4",
           "sub": "route + upload screen",
-          "status": "todo"
+          "status": "doing"
         },
         {
           "title": "T12 L3 on RunPod + Eval",
@@ -167,7 +167,8 @@
     "Task 6: O*NET 31.0 downloaded fresh (1,016 occupations, job titles, skills, software; manifest with hashes) + eMASCO 1,766 occupations; data/SOURCES.md (commit c2bb927)",
     "Task 7: O*NET skill ids (exact, whole words, 'pick standard term' choices ordered by use), /api/skills/normalize, /api/profiles/validate, wired into the form (Tests  49 passed (49), commit 0f5fc4e)",
     "Task 8: occupation lookup live → cached → eMASCO → failed with 5 states; picker on jobs and interests; links shown with source/code/version/date (Tests  65 passed (65), commit f72f892)",
-    "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)"
+    "Task 9: CV file checks by content — PDF/DOCX, size, encrypted, corrupted, legacy .doc refused (11/11, commit 0b855c1)",
+    "Task 10: CV text from PDF (pdfjs) and DOCX (Node zip) with heading marks, 300-line cap, scan detection; language EN/BM/中文/mixed/uncertain (10/10, commit a22768f)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -394,6 +395,21 @@
       "time": "29 Oct",
       "step": "T9 · GREEN + commit",
       "detail": "server/cv/zip.js + validateFile.js → 11/11; 0b855c1 feat: CV file checks by content"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T10 · tests + RED",
+      "detail": "tests/readText.test.js: PDF order, DOCX headings, scan, empty, 300 lines, 5 language cases → fail: modules missing"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T10 · debugging",
+      "detail": "PDF text came back 'corrupted': pdfjs 6 in Node needs its standard font folder (forward-slash path) and destroy() moved to the loading task — found by calling pdfjs directly, both fixed"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T10 · GREEN + commit",
+      "detail": "server/cv/readText.js + detectLanguage.js → 10/10; a22768f feat: read CV text and detect its language"
     }
   ]
 }

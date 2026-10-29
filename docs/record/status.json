@@ -123,7 +123,7 @@
         {
           "title": "T15 Saved profiles",
           "sub": "versioned · mappings API",
-          "status": "doing"
+          "status": "done"
         }
       ]
     },
@@ -134,7 +134,7 @@
         {
           "title": "T16 Re-extraction",
           "sub": "RunPod → Claude · consent",
-          "status": "todo"
+          "status": "stop"
         },
         {
           "title": "T17 Compare view",
@@ -172,7 +172,8 @@
     "Task 11: CV extraction L1 sections, L2 rules + O*NET names, L4 merge; POST /api/cv/extract (413/415/422/504, 20 s, CV text never logged); upload screen with privacy note, six steps, three error exits, keep/switch language prompt (109/109 tests, commit e7255dd)",
     "Task 12: L3 client (server/cv/semantic.js), L3 step in extraction, Model Eval script + 61 labelled terms (118/118 tests, commit 0394085). RunPod endpoint not created: you chose to skip L3 for now, so extractions say 'semantic_unavailable'",
     "Task 13: D1 REST client (parameterised SQL only), migrations.sql (users, sessions, profiles with ON DELETE CASCADE), R2 client with AWS Signature V4 (matches the AWS get-vanilla test case), node:sqlite + in-memory stand-ins, dev-only local accounts server (128/128 tests, commit fcc9e58)",
-    "Task 14: accounts in D1 — scrypt passwords, fr_session cookie (HttpOnly, Secure, SameSite=Lax, 7 days, stored only as a hash), sign-in limit 10 per 15 min, same answer for unknown email and wrong password, delete my data (account, sessions, profiles, temporary CV); account box on Access and in the top bar; 'not available on this server' without D1 (138/138 tests, commit 87af0c1)"
+    "Task 14: accounts in D1 — scrypt passwords, fr_session cookie (HttpOnly, Secure, SameSite=Lax, 7 days, stored only as a hash), sign-in limit 10 per 15 min, same answer for unknown email and wrong password, delete my data (account, sessions, profiles, temporary CV); account box on Access and in the top bar; 'not available on this server' without D1 (138/138 tests, commit 87af0c1)",
+    "Task 15: saved profiles — POST (confirmed only, temporary CV deleted), list, get, PATCH with version (old version → 409, named fields only, status/id/version and protected fields refused), mappings; another user's profile → 404; signed-in Confirm saves to the account, sign-in loads the latest saved profile; summary says where it is saved (148/148 tests, commit ca9a2c9)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -197,7 +198,9 @@
     "T11: a long sentence under Skills is not split into skills (found in browser) — cost: an odd phrase is missed",
     "T11: 'Upload another file' also on the ready view (found in browser) — cost: none",
     "T12: L3 compares CV wordings with O*NET skill names only; job titles stay with the occupation lookup — cost: none",
-    "T14: Delete my data also clears what this browser saved (the confirm text says so) — cost if wrong: the guest copy is gone too"
+    "T14: Delete my data also clears what this browser saved (the confirm text says so) — cost if wrong: the guest copy is gone too",
+    "T15: the browser sends every editable top-level field in PATCH (the server still changes only the named ones) — cost: slightly larger requests",
+    "T15: after sign-in the latest saved profile is loaded only when this browser holds no work of its own — cost: a user with local work sees that work, not the saved one"
   ],
   "log": [
     {
@@ -499,6 +502,31 @@
       "time": "29 Oct",
       "step": "T14 · commit",
       "detail": "87af0c1 feat: accounts in D1"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T15 · RED",
+      "detail": "tests/savedProfiles.test.js (7) + 3 new accountApi tests fail"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T15 · GREEN",
+      "detail": "server/routes/profiles.js + saveProfile/loadLatestProfile + Confirm saves + summary note → 148/148"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T15 · browser check",
+      "detail": "found: summary note was placed in the wrong branch (page stayed on Review) → fixed; sign up → confirm → version 1; fresh browser sign-in → profile loaded; edit career goal → version 3, one profile, mappings OK; delete my data → signed out, list 401"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T15 · commit",
+      "detail": "ca9a2c9 feat: saved profiles for accounts"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T16 · stop",
+      "detail": "AI re-extraction needs your OK on the RunPod price (or a Claude key)"
     }
   ]
 }

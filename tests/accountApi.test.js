@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { deleteMyData, login, logout, me, signup } from '../public/js/accountApi.js'
+import { deleteMyData, loadLatestProfile, login, logout, me, saveProfile, signup } from '../public/js/accountApi.js'
 
 afterEach(() => vi.unstubAllGlobals())
 
@@ -19,6 +19,39 @@ describe('accountApi (browser)', () => {
       ['POST', '/api/auth/logout', null],
       ['DELETE', '/api/auth/me', null],
     ])
+  })
+
+  it('saveProfile: guest store first; 401 keeps the profile on this device', async () => {
+    const order = []
+    vi.stubGlobal('fetch', async () => { order.push('server'); return Response.json({ error: { code: 'not_signed_in', message: 'x', retryable: false } }, { status: 401 }) })
+    const out = await saveProfile({ profileStatus: 'confirmed' }, { guestStore: { save: () => order.push('guest') } })
+    expect(order).toEqual(['guest', 'server'])
+    expect(out).toEqual({ ok: false, code: 'not_signed_in', retryable: false, where: 'device' })
+  })
+
+  it('saveProfile: POST when new (with the extraction id), PATCH with the version after', async () => {
+    const calls = []
+    vi.stubGlobal('fetch', async (url, init) => {
+      calls.push([init.method, url, JSON.parse(init.body)])
+      return Response.json(init.method === 'POST' ? { id: 'p1', version: 1 } : { id: 'p1', version: 2 }, { status: init.method === 'POST' ? 201 : 200 })
+    })
+    const profile = { profileId: null, profileVersion: 0, profileStatus: 'confirmed', skills: [], preferences: {} }
+    const first = await saveProfile(profile, { guestStore: { save() {} }, extractionId: 'e1' })
+    expect(first).toEqual({ ok: true, data: { id: 'p1', version: 1 }, where: 'account' })
+    const second = await saveProfile({ ...profile, profileId: 'p1', profileVersion: 1 }, { guestStore: { save() {} } })
+    expect(second.data.version).toBe(2)
+    expect(calls[0]).toEqual(['POST', '/api/profiles', { profile, extractionId: 'e1' }])
+    expect(calls[1][0]).toBe('PATCH')
+    expect(calls[1][1]).toBe('/api/profiles/p1')
+    expect(calls[1][2].version).toBe(1)
+    expect(Object.keys(calls[1][2].changes).sort()).toEqual(['preferences', 'skills'])
+  })
+
+  it('loadLatestProfile: newest saved profile, or null when there is none', async () => {
+    vi.stubGlobal('fetch', async (url) => Response.json(url === '/api/profiles' ? { profiles: [{ id: 'p2' }, { id: 'p1' }] } : { id: 'p2', version: 3, profile: { profileId: 'p2' } }))
+    expect(await loadLatestProfile()).toEqual({ ok: true, data: { id: 'p2', version: 3, profile: { profileId: 'p2' } } })
+    vi.stubGlobal('fetch', async () => Response.json({ profiles: [] }))
+    expect(await loadLatestProfile()).toEqual({ ok: true, data: null })
   })
 
   it('errors come back as { ok:false, code, retryable }', async () => {

@@ -63,7 +63,7 @@ export function createApp({
     return normalizer
   }
   app.use(skillRoutes({ loadNormalizer }))
-  app.use(profileRoutes({ loadNormalizer }))
+  app.use(profileRoutes({ loadNormalizer, auth, d1, tempStore, now }))
   app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, now }))
 
   const lookup = createOccupationLookup({

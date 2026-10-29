@@ -204,4 +204,7 @@ export default {
   acErr_bad_credentials: "The email or password is not right.",
   acErr_too_many_attempts: "Too many sign-in attempts. Please wait 15 minutes.",
   acErr_other: "Something went wrong. Please try again.",
+  savedAccount: "Saved to your account (version {version}).",
+  savedDevice: "Saved on this device only.",
+  savedStale: "Not saved to your account: it has a newer version of this profile. Sign out and sign in again to load it. Your changes are kept on this device.",
 }

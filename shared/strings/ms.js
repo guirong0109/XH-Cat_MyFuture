@@ -204,4 +204,7 @@ export default {
   acErr_bad_credentials: "E-mel atau kata laluan tidak betul.",
   acErr_too_many_attempts: "Terlalu banyak cubaan log masuk. Sila tunggu 15 minit.",
   acErr_other: "Berlaku masalah. Sila cuba lagi.",
+  savedAccount: "Disimpan ke akaun anda (versi {version}).",
+  savedDevice: "Disimpan pada peranti ini sahaja.",
+  savedStale: "Tidak disimpan ke akaun anda: akaun mempunyai versi profil yang lebih baharu. Log keluar dan log masuk semula untuk memuatkannya. Perubahan anda disimpan pada peranti ini.",
 }

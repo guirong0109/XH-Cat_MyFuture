@@ -204,4 +204,7 @@ export default {
   acErr_bad_credentials: "邮箱或密码不正确。",
   acErr_too_many_attempts: "登录尝试次数过多，请等待 15 分钟。",
   acErr_other: "出现问题，请重试。",
+  savedAccount: "已保存到您的账户（第 {version} 版）。",
+  savedDevice: "仅保存在此设备上。",
+  savedStale: "未保存到您的账户：账户中有此档案的较新版本。请退出并重新登录以加载它。您的修改已保存在此设备上。",
 }

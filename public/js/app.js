@@ -3,7 +3,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice } from '/shared/guestStore.js'
 import { DECLINED, EMPTY, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, confirmProfile, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { addRecord, confirmProfile, isUntouched, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -220,6 +220,7 @@ const actions = {
     state.profile = confirmProfile(state.profile)
     const next = afterConfirm(state.profile)
     state.usable = next.usable
+    await saveConfirmed()
     go(next.screen)
   },
 }
@@ -238,7 +239,31 @@ async function accountCall(kind) {
   }
   state.account = { status: 'in', user: out.data.user }
   state.access = 'account'
+  // A signed-in user with a saved profile gets it back, unless this browser already holds their current work.
+  const latest = await accountApi.loadLatestProfile()
+  if (latest.ok && latest.data && (!state.profile || isUntouched(state.profile))) {
+    state.profile = latest.data.profile
+    state.usable = afterConfirm(state.profile).usable
+    state.savedWhere = 'account'
+    return go('summary')
+  }
   go('category')
+}
+
+// After Confirm: always on this device; also in the account when signed in.
+async function saveConfirmed() {
+  if (state.account?.status !== 'in') {
+    state.savedWhere = saved ? 'device' : null
+    return
+  }
+  const out = await accountApi.saveProfile(state.profile, { guestStore: { save: persist }, extractionId: state.extractionId })
+  if (out.ok) {
+    state.profile = { ...state.profile, profileId: out.data.id, profileVersion: out.data.version }
+    state.extractionId = null
+    state.savedWhere = 'account'
+  } else {
+    state.savedWhere = out.code === 'stale_version' ? 'stale' : 'device'
+  }
 }
 
 // Form changes (fired on change, so typing is not interrupted by re-rendering).

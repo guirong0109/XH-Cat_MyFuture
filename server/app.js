@@ -11,6 +11,10 @@ import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
 import { cvRoutes } from './routes/cv.js'
 import { createSemanticFromEnv } from './cv/semantic.js'
+import { createAuth } from './auth.js'
+import { authRoutes } from './routes/auth.js'
+import { createD1FromEnv } from './store/d1.js'
+import { createR2FromEnv } from './store/r2.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -24,8 +28,8 @@ export function createApp({
   dataDir = path.join(ROOT, 'data'),
   fetchImpl = fetch,
   now = () => new Date(),
-  d1 = null,
-  tempStore = null,
+  d1 = createD1FromEnv(),
+  tempStore = createR2FromEnv(),
   semantic = createSemanticFromEnv(),
   llmProviders = [],
   onetLive = createOnetLiveFromEnv(),
@@ -36,6 +40,11 @@ export function createApp({
   app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive }
 
   app.get('/api/health', (request, response) => response.json({ ok: true }))
+
+  // Accounts only with D1; guests work fully without it.
+  const auth = d1 ? createAuth({ d1, tempStore, now }) : null
+  app.locals.auth = auth
+  app.use(authRoutes({ auth }))
 
   // Skill catalogue from the O*NET snapshot, loaded once on first use (a failed load is retried next time).
   let cataloguePromise = null

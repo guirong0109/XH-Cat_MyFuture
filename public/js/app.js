@@ -19,6 +19,8 @@ import nextModule from './screens/nextModule.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
+import * as accountApi from './accountApi.js'
+import { accountLink } from './components/accountBox.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -43,7 +45,7 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, account: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 function go(screen) {
@@ -67,7 +69,26 @@ function update(profile) {
 const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   guest: () => { state.access = 'guest'; go('category') },
-  accountSoon: () => {},
+  acSignup: () => accountCall('signup'),
+  acLogin: () => accountCall('login'),
+  acLogout: async () => {
+    await accountApi.logout()
+    state.account = { status: 'none', user: null }
+    if (state.access === 'account') state.access = 'guest'
+    persist()
+    render()
+  },
+  acDelete: async () => {
+    if (!confirm(t('acDeleteConfirm'))) return
+    const out = await accountApi.deleteMyData()
+    if (!out.ok) {
+      state.account = { ...state.account, message: { kind: 'bad', text: t('acErr_other') } }
+      return render()
+    }
+    store.clear()
+    state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
+    go('access')
+  },
   category: (k) => {
     state.category = k
     if (k === 'A' || k === 'B') {
@@ -203,6 +224,23 @@ const actions = {
   },
 }
 
+// Sign up or sign in with the email and password typed in the account box.
+async function accountCall(kind) {
+  const email = document.getElementById('acEmail')?.value.trim() ?? ''
+  const password = document.getElementById('acPass')?.value ?? ''
+  const out = kind === 'signup' ? await accountApi.signup(email, password, state.lang) : await accountApi.login(email, password)
+  if (!out.ok) {
+    const key = `acErr_${out.code}`
+    state.account = { status: out.code === 'accounts_unavailable' ? 'off' : 'none', user: null, message: { kind: 'bad', text: t(key) === key ? t('acErr_other') : t(key) } }
+    render()
+    if (document.getElementById('acEmail')) document.getElementById('acEmail').value = email
+    return
+  }
+  state.account = { status: 'in', user: out.data.user }
+  state.access = 'account'
+  go('category')
+}
+
 // Form changes (fired on change, so typing is not interrupted by re-rendering).
 function onChange(target) {
   const d = target.dataset
@@ -238,6 +276,7 @@ function render() {
     : ''
   const view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
   document.getElementById('main').innerHTML = tabs + view
+  document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
   pill.className = saved ? 'pill ok' : 'pill'
   pill.textContent = saved ? t('savedLocal') : state.access ? t('storageOff') : t('notSaved')
@@ -283,3 +322,9 @@ if (resumeChoice(previous) === 'ask') {
   state.screen = location.hash.slice(1)
 }
 render()
+// Who is signed in (the session cookie is HttpOnly, so ask the server).
+accountApi.me().then((out) => {
+  if (out.ok) state.account = { status: 'in', user: out.data.user }
+  else state.account = { status: out.code === 'not_signed_in' ? 'none' : 'off', user: null }
+  render()
+})

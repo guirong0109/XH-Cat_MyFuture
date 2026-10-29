@@ -3,7 +3,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice } from '/shared/guestStore.js'
 import { DECLINED, EMPTY, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, confirmProfile, markForReview, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { addRecord, confirmProfile, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -18,6 +18,7 @@ import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
+import { checkBeforeUpload, uploadCv } from './cvApi.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -36,11 +37,13 @@ const store = createGuestStore(globalThis.localStorage, minimizeForGuest)
 let state = fresh()
 let resumeTo = null
 let saved = false
+// The chosen CV file stays in memory only (for Retry); it is never saved in the browser.
+let cvFile = null
 const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
-  // occupation search results are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null })
+  // occupation search results and upload progress are only shown, never saved
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 function go(screen) {
@@ -159,6 +162,31 @@ const actions = {
     }
     update(profile)
   },
+  cvFile: async (file) => {
+    cvFile = file
+    const check = checkBeforeUpload(file)
+    if (!check.ok) {
+      state.cv = { phase: 'error', ...check }
+      return render()
+    }
+    state.cv = { phase: 'busy', step: 0 }
+    render()
+    const out = await uploadCv(file, { lang: state.lang, onUploaded: () => { state.cv = { phase: 'busy', step: 1 }; render() } })
+    if (!out.ok) {
+      state.cv = { phase: 'error', code: out.code, retryable: out.retryable }
+      return render()
+    }
+    // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
+    state.profile = mergeDraft(state.profile, out.data.profile)
+    state.extractionId = out.data.extractionId
+    state.cv = { phase: 'ready', language: out.data.language, langAnswered: false }
+    persist()
+    render()
+  },
+  cvRetry: () => (cvFile ? actions.cvFile(cvFile) : actions.cvReset()),
+  cvReset: () => { cvFile = null; state.cv = null; render() },
+  cvKeepLang: () => { state.cv.langAnswered = true; persist(); render() },
+  cvSwitchLang: (lang) => { state.cv.langAnswered = true; actions.lang(lang) },
   confirm: async () => {
     // Case C: the server normalises skills against O*NET and checks every field; nothing is saved here.
     const out = await api('POST', '/api/profiles/validate', { profile: state.profile })
@@ -223,10 +251,21 @@ document.addEventListener('click', (event) => {
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
+  if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && event.target.id === 'skillInput') actions.addSkill()
+})
+// Drag and drop on the upload area.
+document.addEventListener('dragover', (event) => {
+  if (event.target.closest?.('#cvDrop')) event.preventDefault()
+})
+document.addEventListener('drop', (event) => {
+  if (!event.target.closest?.('#cvDrop')) return
+  event.preventDefault()
+  const file = event.dataTransfer?.files?.[0]
+  if (file) actions.cvFile(file)
 })
 window.addEventListener('popstate', () => { state.screen = location.hash.slice(1) || 'welcome'; render() })
 

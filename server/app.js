@@ -9,6 +9,7 @@ import { createNormalizer } from './skills/normalize.js'
 import { skillRoutes } from './routes/skills.js'
 import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
+import { cvRoutes } from './routes/cv.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -36,18 +37,22 @@ export function createApp({
   app.get('/api/health', (request, response) => response.json({ ok: true }))
 
   // Skill catalogue from the O*NET snapshot, loaded once on first use (a failed load is retried next time).
-  let normalizerPromise = null
-  const loadNormalizer = () => {
-    normalizerPromise ??= loadSkillCatalogue(path.join(dataDir, 'onet'))
-      .then((catalogue) => createNormalizer({ catalogue, semantic, cutoff: Number(process.env.SEMANTIC_CUTOFF) || null }))
-      .catch((error) => {
-        normalizerPromise = null
-        throw error
-      })
-    return normalizerPromise
+  let cataloguePromise = null
+  const loadCatalogue = () => {
+    cataloguePromise ??= loadSkillCatalogue(path.join(dataDir, 'onet')).catch((error) => {
+      cataloguePromise = null
+      throw error
+    })
+    return cataloguePromise
+  }
+  let normalizer = null
+  const loadNormalizer = async () => {
+    normalizer ??= createNormalizer({ catalogue: await loadCatalogue(), semantic, cutoff: Number(process.env.SEMANTIC_CUTOFF) || null })
+    return normalizer
   }
   app.use(skillRoutes({ loadNormalizer }))
   app.use(profileRoutes({ loadNormalizer }))
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, tempStore, now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,

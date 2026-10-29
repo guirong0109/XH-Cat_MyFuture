@@ -24,6 +24,7 @@ import * as accountApi from './accountApi.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
+import { linkedFields } from './components/fieldSuggestions.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -40,6 +41,7 @@ const NEW_RECORD = {
 // Search picker endpoints by kind (skills: O*NET catalogue; roles: O*NET and eMASCO; field of study: ISCED-F 2013).
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
+const SKILLS_SECTION = 2
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
@@ -54,12 +56,25 @@ const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, suggestTicked: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
 function showSection() {
   if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
+  if (state.screen === 'form' && state.section === SKILLS_SECTION) loadSuggestions()
+}
+
+// Skills suggested from each linked field of study, fetched once per field while the Skills section is open.
+async function loadSuggestions() {
+  for (const { code } of linkedFields(state.profile ?? { education: {} })) {
+    if (state.suggest?.[code]) continue
+    state.suggest = { ...state.suggest, [code]: 'loading' }
+    api('GET', `/api/fields/${encodeURIComponent(code)}/skills`).then((out) => {
+      state.suggest = { ...state.suggest, [code]: out.ok ? out.data : { failed: true } }
+      if (state.screen === 'form' && state.section === SKILLS_SECTION) render()
+    })
+  }
 }
 
 function go(screen) {
@@ -189,6 +204,19 @@ const actions = {
     update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
   },
   fieldUnlink: (i) => update(setField(state.profile, `education.records.${i}.field`, null)),
+  // The ticked suggestions of one field of study join the skills; the level stays "not assessed".
+  addSuggested: (code) => {
+    const data = state.suggest?.[code]
+    const ticked = new Set([...(state.suggestTicked ?? [])].filter((v) => v.startsWith(`${code}|`)).map((v) => v.slice(code.length + 1)))
+    if (!data?.suggestions || !ticked.size) return
+    state.suggestTicked = new Set([...state.suggestTicked].filter((v) => !v.startsWith(`${code}|`)))
+    const have = new Set(state.profile.skills.map((s) => s.canonicalId).filter(Boolean))
+    const from = { source: 'isced', code, title: data.field.title, version: data.isced, onetVersion: data.onet }
+    const added = data.suggestions.filter((s) => ticked.has(s.id) && !have.has(s.id))
+      .map((s) => ({ ...makeSkill({ name: s.name, canonicalId: s.id, category: s.category, source: 'user_input' }), suggestedFrom: from }))
+    update({ ...state.profile, skills: [...state.profile.skills, ...added] })
+  },
+  suggestMore: (code) => { state.suggestMore = { ...state.suggestMore, [code]: true }; render() },
   pickSkill: (arg) => {
     const [i, id] = arg.split('|')
     const skills = state.profile.skills.map((skill, j) => {
@@ -363,6 +391,14 @@ function onChange(target) {
     return update(setField(state.profile, d.field, value))
   }
   // "Prefer not to say" or "I'll answer" on a typed field: answering opens the box; nothing is saved until typed.
+  // A ticked or unticked suggestion: remembered only (no redraw), added with "Add ticked skills".
+  if (d.sugg) {
+    const ticked = new Set(state.suggestTicked ?? [])
+    if (target.checked) ticked.add(d.sugg)
+    else ticked.delete(d.sugg)
+    state.suggestTicked = ticked
+    return undefined
+  }
   if (d.choice) {
     state.answering = { ...state.answering, [d.choice]: target.value === 'answer' }
     if (target.value !== 'answer') return update(setField(state.profile, d.choice, DECLINED))

@@ -59,6 +59,7 @@ that failed first. The branch was merged into `main` via PR #1
 | Shared (browser + server + tests) | `shared/profileSchema.js`, `shared/profileState.js`, `shared/flow.js`, `shared/guestStore.js` (localStorage key `futureready-profile-v1`), `shared/i18n.js`, `shared/strings/{en,ms,zh}.js` (same keys, enforced by a test) |
 | Browser (ES modules, no build) | `public/index.html`, `public/styles.css`, `public/js/app.js` (state, router, all actions), `public/js/{api,cvApi,accountApi,ui}.js`, `public/js/screens/*.js`, `public/js/components/*.js` |
 | Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/isced/*.tsv` + `manifest.json` (ISCED-F 2013, 124 fields, CIP bridge to O\*NET), `data/SOURCES.md` |
+| Skills from field of study (30 Oct, owner request) | `server/fields/fieldSkills.js`, route `GET /api/fields/:code/skills` in `server/routes/fields.js`, `public/js/components/fieldSuggestions.js` (Skills section) |
 | Search pickers (30 Oct, owner request) | `public/js/components/searchPicker.js`; APIs `GET /api/skills/search` (`searchSkills` in `server/skills/onetSkills.js`) and `GET /api/fields/search` (`server/fields/isced.js`, `server/routes/fields.js`); roles reuse `/api/occupations/search`, now matching word starts |
 | Pipeline | `pipeline/fetch_onet.py`, `pipeline/fetch_isced.py`, `pipeline/tests/test_fetch_onet.py`, `pipeline/tests/test_fetch_isced.py` |
 | Evaluation | `scripts/eval-cv.mjs`, `testing/eval-cvs.json` (11 synthetic CVs), `docs/eval-results.md` |
@@ -121,7 +122,7 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **27 files, 204 tests passed** on this branch (30 Oct); `main` still has 179 |
+| `npm test` (= `vitest run`) | **29 files, 217 tests passed** on this branch (30 Oct); `main` still has 179 |
 | `python -m unittest discover pipeline/tests` | **8 tests OK** |
 | `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
@@ -154,6 +155,11 @@ Each item below says what you will see and what to do.
   while typing would lose the cursor.
 - **"Prefer not to say" default:** `showSection()` in `app.js` runs `declineUnanswered` for the open section.
   `isUntouched` ignores declined fields on purpose, so a CV draft or an account profile can still fill them.
+- **Skill suggestions use the owner's rule B ("typical of the field").** There is no minimum gap above the average, so
+  weak ones can appear, e.g. Accounting → Programming 1.76 against 1.60. Changing the rule is the owner's call.
+- **Ticks on suggestions live in `state.suggestTicked`.** Reading ticks from the page lost them on "Show more".
+- **Test in the browser on `127.0.0.1:3200`** when the owner is using `localhost:3200`. Each address has its own
+  saved progress, so your clicks don't change theirs.
 - **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding
   that something failed.
 
@@ -218,7 +224,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 204 passed
+  npm test                                # expect 217 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

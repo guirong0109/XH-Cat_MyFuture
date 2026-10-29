@@ -172,6 +172,11 @@
           "title": "T21 Pickers + defaults",
           "sub": "search dropdowns · Prefer not to say · Not assessed yet",
           "status": "done"
+        },
+        {
+          "title": "T22 Skills from field of study",
+          "sub": "typical of the field · tick and add",
+          "status": "done"
         }
       ]
     }
@@ -203,7 +208,8 @@
     "Branch claude/cv-profile-module merged into main (fast-forward, 44 commits); tests on main: 179/179 and pipeline 4/4; branch deleted",
     "Task 19: field of study list from UNESCO ISCED-F 2013 (124 fields) with an official bridge to O*NET: Statistics Canada ISCED-F→CIP + O*NET CIP→occupation crosswalk; 118 of 124 fields reach O*NET (pipeline/fetch_isced.py, 4 new pipeline tests, commit 9be8d47)",
     "Task 20: search APIs while typing: GET /api/fields/search (field names + programme names) and GET /api/skills/search (O*NET catalogue) (11 new tests, commit c4fff07)",
-    "Task 21: search pickers for skills, roles of interest and field of study; every optional field starts on 'Prefer not to say' (no checkbox); skill level starts on 'Not assessed yet'; role titles match word starts (Tests 204 passed, commit d2245d2)"
+    "Task 21: search pickers for skills, roles of interest and field of study; every optional field starts on 'Prefer not to say' (no checkbox); skill level starts on 'Not assessed yet'; role titles match word starts (Tests 204 passed, commit d2245d2)",
+    "Task 22: when a field of study is linked, the Skills section suggests skills typical of that field (field → CIP → O*NET jobs; tools listed by a larger share of the field's jobs than of all jobs; O*NET skills with higher average importance), each with its numbers; the user ticks and adds; level stays not assessed (Tests 217 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -239,7 +245,10 @@
     "T19: CIP Canada 2016 and CIP 2020 are matched only on the same code; 6 fields have no O*NET link and say nothing false — cost: none",
     "T21: a profile with only 'Prefer not to say' defaults counts as untouched (a CV draft or a saved account profile may still fill it) — cost: none",
     "T21: field of study names are English only in all three languages (no official BM/中文 list found); the BM and 中文 hint says to search in English — cost: one hint",
-    "T21: role titles now match word starts in O*NET and eMASCO, so typing 'data anal' works — cost: a few more candidates for very short words"
+    "T21: role titles now match word starts in O*NET and eMASCO, so typing 'data anal' works — cost: a few more candidates for very short words",
+    "T22: no minimum gap above the all-jobs average (your rule B is 'more typical than overall'), so a weak skill can appear, e.g. Accounting → Programming 1.76 vs 1.60 — cost: a few weak suggestions, each shows its numbers",
+    "T22: at most 5 O*NET skills and 15 tools per field; the screen shows 10 first — cost: none",
+    "T22: ticks are kept in screen state, so 'Show more' does not clear them (found in the browser check) — cost: none"
   ],
   "log": [
     {
@@ -691,6 +700,21 @@
       "time": "30 Oct",
       "step": "Tasks 19–21",
       "detail": "data, search APIs, pickers; npm test 204 passed; pipeline tests 8 OK; CV eval unchanged (11 CVs, 0 failures); checked in the browser"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "suggest skills that match the chosen field of study"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "rule B (typical of the field, not just most common); the user ticks, then adds"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 22",
+      "detail": "GET /api/fields/:code/skills + suggestion list in Skills; npm test 217 passed; checked in the browser (Nursing → Service Orientation, MEDITECH added as not assessed)"
     }
   ]
 }

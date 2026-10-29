@@ -112,3 +112,9 @@ details summary{cursor:pointer;font-weight:600;font-size:13.5px}
 .picker-list .choice span{display:block}
 .picker-list .typed{border-style:dashed;font-size:13px}
 select[data-level]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:5px 8px}
+/* skills suggested from the field of study */
+.sugg{margin-bottom:12px;background:var(--surface2)}
+.sugg-list{display:grid;gap:6px}
+.sugg-item{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.sugg-item input{margin-top:3px}
+.sugg-item span .tiny{display:block}

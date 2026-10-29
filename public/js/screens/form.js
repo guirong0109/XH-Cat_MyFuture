@@ -4,6 +4,7 @@ import { esc, tag } from '../ui.js'
 import { listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
+import { fieldSuggestions } from '../components/fieldSuggestions.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
@@ -30,7 +31,8 @@ function fieldOfStudy(ctx, record, i) {
   const { t } = ctx
   const link = record.field
     ? `<div class="tiny" style="margin-top:-6px">${esc(t('fieldLinked'))}: <b>${esc(record.field.title)}</b> · ISCED-F ${esc(record.field.code)} · ${esc(record.field.version ?? '')}
-        <button class="btn sm ghost" data-act="fieldUnlink" data-arg="${i}">${esc(t('occUnlink'))}</button></div>`
+        <button class="btn sm ghost" data-act="fieldUnlink" data-arg="${i}">${esc(t('occUnlink'))}</button></div>
+        <div class="tiny muted">${esc(t('fieldSuggestHint'))}</div>`
     : record.fieldOfStudy ? `<div class="tiny muted" style="margin-top:-6px">${esc(t('fieldNotLinked'))}</div>` : ''
   return `<div>${picker(ctx, 'field', `field|${i}`, t('fieldOfStudy'), t('fieldFind'), record.fieldOfStudy ?? '')}${link}</div>`
 }
@@ -69,15 +71,16 @@ function skills(ctx) {
       : ''
     const unknown = skill.canonicalId ? `<div class="tiny muted">O*NET · ${esc(skill.canonicalId)}${skill.category ? ` · ${esc(skill.category)}` : ''}</div>` : `<div class="tiny muted">${esc(t('skillUnknown'))}</div>${pick}`
     const original = skill.originalText && skill.originalText !== skill.name ? `<span class="tiny muted"> “${esc(skill.originalText)}”</span>` : ''
+    const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title }))}</div>` : ''
     return `<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between">
-      <div><b>${esc(skill.name)}</b>${original}${from}${unknown}</div>
+      <div><b>${esc(skill.name)}</b>${original}${from}${suggested}${unknown}</div>
       <div class="row"><label class="tiny muted" for="lv-${i}">${esc(t('level'))}</label>
         <select id="lv-${i}" data-level="${i}">${[['', 'levelNone'], ['basic', 'basic'], ['good', 'good'], ['expert', 'expert']].map(([v, k]) => `<option value="${v}" ${(skill.proficiency ?? '') === v ? 'selected' : ''}>${esc(t(k))}</option>`).join('')}</select>
         ${levelTag} ${reviewToggle(t, `skills.${i}`, skill)}
         <button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button></div>
     </div></div>`
   }).join('')
-  return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${rows}`
+  return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${fieldSuggestions(ctx)}${rows}`
 }
 
 function certs(ctx) {

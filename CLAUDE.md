@@ -17,10 +17,19 @@ are detailed.
 - **Show the source of every list and suggestion on screen** (owner: "highly important").
 - **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`); the owner clicks in the same
   Browser pane, and each address keeps its own saved progress.
+- **New data needs a source:** record it in `data/SOURCES.md` (where from, date, licence), check it against a
+  manifest hash, and keep the downloaded original when it is small.
 - **Use plain words** with the owner.
+
+## Working here
+- `main` is checked out as a worktree at `C:\Users\guiro\XH_Cat_Final-main`. Merge to `main` there:
+  `git checkout main` fails in `C:\Users\guiro\XH_Cat_Final`. Chain git steps with `&&`, so that a failed step stops
+  the rest.
+- Bash heredocs break on apostrophes here. Write helper scripts with the Write tool and run them with python.
 
 ## Commands
 ```bash
 npm install && npm test     # expect 229 passed
 npm start                   # http://localhost:3200
+python -m unittest discover pipeline/tests   # expect 8 OK
 ```

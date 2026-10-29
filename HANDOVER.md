@@ -12,7 +12,7 @@ scenario comparison.
 | Module | Branch (detailed docs there) | Merged | State |
 |---|---|---|---|
 | CV extraction and structured profile | `claude/cv-profile-module` | PR #1, `301c10e`, 2026-10-29 | Done; 179 tests pass; final review fixed |
-| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | local merge, 2026-10-30 | Done; 229 tests pass; checked in the browser |
+| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; 229 tests pass; checked in the browser |
 | Matching and the rest of the journey | not started | — | Next |
 
 ## Profile form since 2026-10-30 (owner requests)
@@ -30,6 +30,24 @@ scenario comparison.
 - **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
   and not used yet.
 
+## Open points for the owner
+- **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
+  (1.76 against 1.60). Adding a minimum gap is the owner's call.
+- **Field-of-study names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search
+  in English.
+- **The reason for a suggested skill is hover text,** so phones don't show it. Revisit at the visual redesign.
+
+## Next module: matching (not started)
+It reads the confirmed profile JSON:
+- skills (`canonicalId`, `proficiency`) and `employment.records[].occupation.code`;
+- `occupationMappings` and `preferences` (`careerInterests` hold O\*NET interest-area ids `onet:ia:…`);
+- the field of study (`education.records[].field.code`, ISCED-F).
+
+The bridges are ready, stored only and not used yet: `data/isced/isced_cip.tsv` + `cip_onet.tsv` (field → jobs),
+and `data/onet/interest_areas.tsv` (area → jobs, 1–7).
+
+**No scoring method from the old project.**
+
 ## What is not switched on yet (needs the owner's keys or OK)
 - **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
   "cached".
@@ -43,7 +61,11 @@ scenario comparison.
 npm install
 npm test          # expect 229 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
+python -m unittest discover pipeline/tests   # expect 8 OK
+python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas)
+python pipeline/fetch_isced.py               # rebuild data/isced (fields of study + CIP bridge)
 ```
+Every data file, its source, date and licence: `data/SOURCES.md`.
 
 ## Rules that apply to every branch
 - **Branches:** one branch per feature. Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md`. On every merge

@@ -11,6 +11,7 @@ import { profileRoutes } from './routes/profiles.js'
 import { occupationRoutes } from './routes/occupations.js'
 import { cvRoutes } from './routes/cv.js'
 import { createSemanticFromEnv } from './cv/semantic.js'
+import { createReextractor, providersFromEnv } from './cv/reextract.js'
 import { createAuth } from './auth.js'
 import { authRoutes } from './routes/auth.js'
 import { createD1FromEnv } from './store/d1.js'
@@ -31,7 +32,7 @@ export function createApp({
   d1 = createD1FromEnv(),
   tempStore = createR2FromEnv(),
   semantic = createSemanticFromEnv(),
-  llmProviders = [],
+  llmProviders = providersFromEnv(),
   onetLive = createOnetLiveFromEnv(),
   extraRoutes = null,
 } = {}) {
@@ -64,7 +65,15 @@ export function createApp({
   }
   app.use(skillRoutes({ loadNormalizer }))
   app.use(profileRoutes({ loadNormalizer, auth, d1, tempStore, now }))
-  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, now }))
+  // AI re-extraction: needs a provider (RunPod or Claude) and the temporary CV copy (R2).
+  let reextractor = null
+  const reextract = {
+    run: async (args) => {
+      reextractor ??= createReextractor({ tempStore, providers: llmProviders, fetchImpl, normalizer: await loadNormalizer(), now })
+      return reextractor.run(args)
+    },
+  }
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,

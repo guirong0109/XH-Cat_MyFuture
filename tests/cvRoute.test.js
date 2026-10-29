@@ -19,7 +19,7 @@ beforeAll(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'cvroute-'))
   await mkdir(path.join(dir, 'onet'))
   await writeCatalogue(path.join(dir, 'onet'))
-  server = createApp({ dataDir: dir, onetLive: null, tempStore }).listen(0)
+  server = createApp({ dataDir: dir, onetLive: null, tempStore, llmProviders: [] }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
 })
@@ -92,6 +92,16 @@ describe('POST /api/cv/extract', () => {
     } finally {
       spies.forEach((spy) => spy.mockRestore())
     }
+  })
+
+  it('re-extraction: no consent → 400 consent_required; no provider → 503 ai_unavailable not_configured', async () => {
+    const post = (body) => fetch(`${base}/api/cv/reextract`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    const noConsent = await post({ extractionId: '0b1e9a3c-1111-4222-8333-944455556666', consent: false })
+    expect(noConsent.status).toBe(400)
+    expect((await noConsent.json()).error.code).toBe('consent_required')
+    const off = await post({ extractionId: '0b1e9a3c-1111-4222-8333-944455556666', consent: true })
+    expect(off.status).toBe(503)
+    expect(await off.json()).toEqual({ error: { code: 'ai_unavailable', message: expect.any(String), retryable: false }, reason: 'not_configured' })
   })
 
   it('an extraction slower than the time limit → 504 timeout, retryable', async () => {

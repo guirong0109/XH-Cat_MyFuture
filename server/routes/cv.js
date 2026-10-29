@@ -3,7 +3,7 @@
 import { randomUUID } from 'node:crypto'
 import express from 'express'
 import { LANGS } from '../../shared/i18n.js'
-import { sendError } from '../errors.js'
+import { jsonBody, sendError } from '../errors.js'
 import { detectLanguage } from '../cv/detectLanguage.js'
 import { EXTRACTOR_VERSION, extractProfile } from '../cv/extract.js'
 import { readText } from '../cv/readText.js'
@@ -22,7 +22,7 @@ const MESSAGES = {
 }
 const fail = (response, code) => sendError(response, MESSAGES[code][0], code, MESSAGES[code][1])
 
-export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, tempStore = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
+export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, tempStore = null, reextractor = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000 }) {
   const router = express.Router()
   const rawBody = (request, response, next) =>
     express.raw({ type: () => true, limit: maxBytes })(request, response, (error) => {
@@ -72,6 +72,23 @@ export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutof
     }
     const { language, profile, uncertain, layers, warnings } = outcome
     return response.json({ status: 'ok', extractionId, language, profile, uncertain, extractor: { version: EXTRACTOR_VERSION, layers }, warnings })
+  })
+
+  // POST /api/cv/reextract { extractionId, consent, interfaceLanguage } (spec §9). The form is never changed here:
+  // the answer is a suggestion for the compare view.
+  router.post('/api/cv/reextract', jsonBody('10kb'), async (request, response) => {
+    const { extractionId, consent, interfaceLanguage } = request.body ?? {}
+    if (consent !== true) return sendError(response, 400, 'consent_required', 'Please agree before the CV is sent to an AI service.')
+    const out = reextractor
+      ? await reextractor.run({ extractionId, consent, ip: request.ip, interfaceLanguage: LANGS.includes(interfaceLanguage) ? interfaceLanguage : 'en' })
+      : { status: 'unavailable', reason: 'not_configured' }
+    if (out.status === 'ok') return response.json(out)
+    if (out.code === 'rate_limited') return sendError(response, 429, 'rate_limited', 'You have used the AI re-read too often. Please try later.', true)
+    if (out.code === 'consent_required') return sendError(response, 400, 'consent_required', 'Please agree before the CV is sent to an AI service.')
+    return response.status(503).json({
+      error: { code: 'ai_unavailable', message: 'The AI re-read is not available right now. Your form is unchanged.', retryable: out.reason === 'providers_failed' },
+      reason: out.reason,
+    })
   })
   return router
 }

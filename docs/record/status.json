@@ -133,13 +133,13 @@
       "tasks": [
         {
           "title": "T16 Re-extraction",
-          "sub": "RunPod → Claude · consent",
-          "status": "stop"
+          "sub": "built and tested · no provider yet (your call)",
+          "status": "done"
         },
         {
           "title": "T17 Compare view",
           "sub": "user edits locked",
-          "status": "todo"
+          "status": "doing"
         }
       ]
     },
@@ -173,12 +173,13 @@
     "Task 12: L3 client (server/cv/semantic.js), L3 step in extraction, Model Eval script + 61 labelled terms (118/118 tests, commit 0394085). RunPod endpoint not created: you chose to skip L3 for now, so extractions say 'semantic_unavailable'",
     "Task 13: D1 REST client (parameterised SQL only), migrations.sql (users, sessions, profiles with ON DELETE CASCADE), R2 client with AWS Signature V4 (matches the AWS get-vanilla test case), node:sqlite + in-memory stand-ins, dev-only local accounts server (128/128 tests, commit fcc9e58)",
     "Task 14: accounts in D1 — scrypt passwords, fr_session cookie (HttpOnly, Secure, SameSite=Lax, 7 days, stored only as a hash), sign-in limit 10 per 15 min, same answer for unknown email and wrong password, delete my data (account, sessions, profiles, temporary CV); account box on Access and in the top bar; 'not available on this server' without D1 (138/138 tests, commit 87af0c1)",
-    "Task 15: saved profiles — POST (confirmed only, temporary CV deleted), list, get, PATCH with version (old version → 409, named fields only, status/id/version and protected fields refused), mappings; another user's profile → 404; signed-in Confirm saves to the account, sign-in loads the latest saved profile; summary says where it is saved (148/148 tests, commit ca9a2c9)"
+    "Task 15: saved profiles — POST (confirmed only, temporary CV deleted), list, get, PATCH with version (old version → 409, named fields only, status/id/version and protected fields refused), mappings; another user's profile → 404; signed-in Confirm saves to the account, sign-in loads the latest saved profile; summary says where it is saved (148/148 tests, commit ca9a2c9)",
+    "Task 16: consent-gated AI re-extraction — RunPod (OpenAI-compatible) then Claude (raw fetch, anthropic-version 2026-10-21, output_config json_schema, no temperature, fallbacks default); CV in <cv> tags as data; items without a word-for-word quote dropped; levels, ids and codes stripped; skill names through the O*NET normaliser; 3 runs per upload, 20 per hour; POST /api/cv/reextract (400 / 429 / 503 + reason). No provider set: you chose to build without one, so it answers 'not configured' (160/160 tests, commit e6659c4)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16: your OK on the RunPod price for the AI re-extraction model"
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -527,6 +528,21 @@
       "time": "29 Oct",
       "step": "T16 · stop",
       "detail": "AI re-extraction needs your OK on the RunPod price (or a Claude key)"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T16 · your decision",
+      "detail": "Build, no provider yet: nothing paid created"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T16 · RED",
+      "detail": "tests/reextract.test.js (11) + 1 route test fail"
+    },
+    {
+      "time": "29 Oct",
+      "step": "T16 · GREEN + commit",
+      "detail": "server/cv/reextractPrompt.js, reextract.js, route in server/routes/cv.js → 160/160; e6659c4 feat: consent-gated AI re-extraction"
     }
   ]
 }

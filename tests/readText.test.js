@@ -15,6 +15,11 @@ describe('readText', () => {
     expect(out).toEqual({ ok: true, lines: ['Education', 'Diploma in IT & Business', 'Skills: SQL'], headings: [0] })
   })
 
+  it('keeps two-character Chinese headings such as 技能 and 证书', async () => {
+    const out = await readText(makeDocx(['陈美玲（虚构）', '技能', 'Python, Microsoft Excel, 沟通', '证书', 'Microsoft Office Specialist, 2021', 'ab']), 'docx')
+    expect(out.lines).toEqual(['陈美玲（虚构）', '技能', 'Python, Microsoft Excel, 沟通', '证书', 'Microsoft Office Specialist, 2021'])
+  })
+
   it('image-only pdf is scanned_no_ocr', async () => {
     expect(await readText(makePdf([]), 'pdf')).toEqual({ ok: false, code: 'scanned_no_ocr' })
   })

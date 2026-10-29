@@ -18,10 +18,12 @@ const decode = (text) => text
   .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
   .replace(/&([a-z]+);/gi, (match, name) => ENTITIES[name.toLowerCase()] ?? match)
 
-// Strip bullets and numbering; drop lines with fewer than 3 letters.
+// Strip bullets and numbering; drop lines with fewer than 3 letters (2 Chinese characters are a word, e.g. 技能).
 function cleanLine(raw) {
   const line = String(raw).replace(/^[\s\-–—•*·●▪◦▶>]+/u, '').replace(/^\d+[.)]\s+/, '').replace(/\s+/g, ' ').trim()
-  return (line.match(/\p{L}/gu) ?? []).length >= 3 ? line : null
+  const letters = (line.match(/\p{L}/gu) ?? []).length
+  const han = (line.match(/\p{Script=Han}/gu) ?? []).length
+  return letters >= 3 || han >= 2 ? line : null
 }
 
 function docxParagraphs(buffer) {

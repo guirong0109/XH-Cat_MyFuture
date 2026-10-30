@@ -4,9 +4,11 @@
 // read at the start of the run (If-None-Match * when there was none). A run that stops part-way leaves only
 // unreferenced objects, which are listed as orphans.
 //
-// createIngestor({store, sources: {openalex, dosm}, references, loadReferences?, config, now, log})
+// createIngestor({store, sources: {openalex, dosm, onet-skills, onet-hottech}, references, loadReferences?, config, now, log})
 //   refresh(sourceId) → {outcome: 'published'|'no_change'|'rejected'|'held'|'failed', code?, manifestId?,
 //                        activeManifestId?, diff?: {observations: {new, revisions, removed}, dependencies?}}
+//   refreshOnetRelease(release) → same shape: one O*NET release ('31.1'), checked against RELEASE_PATTERN and required to
+//                        be newer than the active onet-skills release (else rejected / onet_release_not_newer)
 //   recalculate() → same shape as refresh: the active snapshots with the stored break reviews, as a new manifest
 //   status() → {lastChecks: {[sourceId]: {checkedAt, outcome, code, manifestId, lastOkAt}}, orphans: [key], log: [entry]}
 // Log entries hold only time, source, operation, outcome, code and ids: never keys, values or responses.
@@ -18,10 +20,10 @@ import { fieldTopicMappingVersion, runPipeline } from '../../shared/radar/pipeli
 import { CONTRACT, validateSignal } from '../../shared/radar/contract.js'
 import { dependencyReport } from '../../shared/radar/dependencies.js'
 import { SourceError } from './sourceError.js'
-import { KEYS, RADAR_SOURCES, contentHash, getJson, isSafeId, makeManifest, readActive, sha256, toBytes } from './manifest.js'
+import { RELEASE_PATTERN } from './sources/onetSkills.js'
+import { KEYS, RADAR_SOURCES, contentHash, getJson, isSafeId, makeManifest, originalContentType, readActive, sha256, toBytes } from './manifest.js'
 
 const JSON_TYPE = 'application/json'
-const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 const DOSM_EXPECTED = ['masco2020:total', ...['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((c) => `masco2020:${c}`)]
 const KEEP_LOG = 50
 const OK_OUTCOMES = new Set(['published', 'no_change'])
@@ -52,6 +54,31 @@ function lastQuarter(snapshot) {
 }
 
 const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
+const noSnapshots = () => Object.fromEntries(RADAR_SOURCES.map((src) => [src, null]))
+
+// O*NET release numbers compared as numbers: major, then minor ('31.1' > '31.0' > '30.3'). null when not a release.
+function releaseParts(release) {
+  if (typeof release !== 'string' || !RELEASE_PATTERN.test(release)) return null
+  return release.split('.').map(Number)
+}
+function newerRelease(release, activeRelease) {
+  const next = releaseParts(release)
+  const prev = releaseParts(activeRelease)
+  if (!prev) return true
+  return next[0] > prev[0] || (next[0] === prev[0] && next[1] > prev[1])
+}
+
+// Hot Technologies (spec 3.2): the page shows one counting window. A new window is added to the earlier ones kept in
+// the active snapshot; the same window replaces its own observations (so changed counts are revisions, and a vanished
+// technology is a removed observation that holds the run, as for every source except onet-skills).
+function withEarlierWindows(active, fetched) {
+  if (!active || !fetched || !Array.isArray(fetched.observations)) return fetched
+  const periods = new Set(fetched.observations.map((o) => o?.period))
+  const kept = (active.observations ?? []).filter((o) => !periods.has(o.period))
+  const originals = [...(active.originals ?? [])]
+  for (const o of fetched.originals ?? []) if (!originals.some((x) => x?.sha256 === o?.sha256)) originals.push(o)
+  return { ...fetched, originals, observations: [...kept, ...fetched.observations] }
+}
 
 // Break review records under prod/reviews/ (spec §8.4), oldest first so the newest wins in applyBreakReviews.
 async function loadBreakReviews(store) {
@@ -131,7 +158,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
   // 1. The active state, read once: its etag guards the activation at the end. {stop: result} when the run ends here.
   async function readState(run) {
     let active
-    const current = { openalex: null, dosm: null }
+    const current = noSnapshots()
     let before = null
     let reviews
     try {
@@ -162,6 +189,11 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
   async function run(sourceId, release) {
     const run = newRun(RADAR_SOURCES.includes(sourceId) ? sourceId : 'unknown')
     if (!RADAR_SOURCES.includes(sourceId) || !sources[sourceId]) return finish(run, 'failed', 'refresh', { code: 'not_configured' })
+    // onet-skills is fetched by release number only: none given is not configured, a malformed one is never fetched.
+    if (sourceId === 'onet-skills') {
+      if (release === undefined) return finish(run, 'failed', 'refresh', { code: 'not_configured' })
+      if (!releaseParts(release)) return finish(run, 'rejected', 'validate', { code: 'bad_request' })
+    }
     let references
     try {
       references = await referencesNow()
@@ -193,6 +225,23 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
       } catch (e) {
         return finish(run, 'failed', 'fetch', { code: e instanceof SourceError ? e.code : 'source_unavailable' })
       }
+    } else if (sourceId === 'onet-skills') {
+      const activeRelease = current['onet-skills']?.snapshot?.classification?.version ?? null
+      if (!newerRelease(release, activeRelease)) return finish(run, 'rejected', 'compare', { code: 'onet_release_not_newer' })
+      try {
+        // The URL is built by the adapter from the checked release number alone (releaseZipUrl).
+        fetched = await sources['onet-skills'].fetchRelease(release, current['onet-skills']?.snapshot ?? null)
+      } catch (e) {
+        return finish(run, 'failed', 'fetch', { code: e instanceof SourceError ? e.code : 'source_unavailable' })
+      }
+    } else if (sourceId === 'onet-hottech') {
+      try {
+        const got = await sources['onet-hottech'].fetchSnapshot()
+        fetched = withEarlierWindows(current['onet-hottech']?.snapshot ?? null, got?.snapshot)
+        original = got?.original ?? null
+      } catch (e) {
+        return finish(run, 'failed', 'fetch', { code: e instanceof SourceError ? e.code : 'source_unavailable' })
+      }
     } else {
       try {
         fetched = await sources.openalex.fetchSnapshot(references.topics ?? [])
@@ -212,7 +261,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     if (!snapshot || snapshot.sourceId !== sourceId || !run.ids.snapshotId) {
       return finish(run, 'rejected', 'validate', { code: 'validation_failed' })
     }
-    const expectedEntities = sourceId === 'openalex' ? (references.topics ?? []).map((t) => t.openalexId) : DOSM_EXPECTED
+    const expectedEntities = sourceId === 'openalex' ? (references.topics ?? []).map((t) => t.openalexId) : sourceId === 'dosm' ? DOSM_EXPECTED : []
     // Y is the last complete UTC year from the clock, never what the snapshot claims (spec 6.1).
     const lastYear = sourceId === 'openalex' ? sources.openalex.lastCompleteYear?.() ?? now().getUTCFullYear() - 1 : undefined
     if (sourceId === 'openalex' && snapshot.lastYear !== undefined && snapshot.lastYear !== lastYear) {
@@ -231,7 +280,9 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     const changes = diffSnapshots(current[sourceId]?.snapshot ?? null, snapshot)
     const observations = { new: changes.newObservations, revisions: changes.revisions, removed: changes.removed }
     if (changes.sameContent) return finish(run, 'no_change', 'compare')
-    if (changes.removed.length) return finish(run, 'held', 'compare', { code: 'periods_removed', diff: { observations } })
+    // D25: an onet-skills snapshot keeps the current and the previous differing flag set, so an older set rolls off by
+    // design. Every other source is held when observations vanish.
+    if (changes.removed.length && sourceId !== 'onet-skills') return finish(run, 'held', 'compare', { code: 'periods_removed', diff: { observations } })
     // R19: revisions travel with the snapshot so the pipeline lists them and lowers evidence quality.
     snapshot.meta = { ...(snapshot.meta ?? {}), revisions: changes.revisions }
 
@@ -247,7 +298,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     const signalsId = `signals-${run.stamp}-${run.nonce}`
     run.ids.manifestId = manifestId
     run.ids.signalsId = signalsId
-    const snapshots = { openalex: current.openalex?.snapshot, dosm: current.dosm?.snapshot }
+    const snapshots = Object.fromEntries(RADAR_SOURCES.map((src) => [src, current[src]?.snapshot ?? undefined]))
     if (snapshot) snapshots[sourceId] = snapshot
     let out
     try {
@@ -257,7 +308,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     }
     if (!out.signals.every((s) => validateSignal(s).ok)) return finish(run, 'rejected', 'calculate', { code: 'validation_failed' })
 
-    const manifestSnapshots = { openalex: current.openalex?.id ?? null, dosm: current.dosm?.id ?? null }
+    const manifestSnapshots = Object.fromEntries(RADAR_SOURCES.map((src) => [src, current[src]?.id ?? null]))
     if (snapshot) manifestSnapshots[sourceId] = snapshot.snapshotId
     const time = run.time
     const manifest = makeManifest({
@@ -288,7 +339,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     try {
       if (original) {
         operation = 'save_original'
-        await putOnce(KEYS.original(sourceId, original.sha256), original.bytes, XLSX_TYPE, written)
+        await putOnce(KEYS.original(sourceId, original.sha256), original.bytes, originalContentType(sourceId), written)
       }
       if (snapshot) {
         operation = 'save_snapshot'
@@ -357,6 +408,10 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
   // Trusted server code only - never call with request data. Same validation, pipeline and manifest as refresh.
   const importDosmRelease = (release) => run('dosm', release)
 
+  // An O*NET release chosen by the admin (or the bootstrap). Only a string matching RELEASE_PATTERN is used, and only to
+  // build the official zip URL; it must be newer than the active onet-skills release.
+  const refreshOnetRelease = (release) => run('onet-skills', release === undefined ? null : release)
+
   // Break reviews and field-topic decisions take effect here: the active snapshots are run through the same pipeline
   // with the stored break reviews and the decided references, and published as a new manifest (same writes, read-back
   // and conditional activation as a refresh). Nothing is fetched. Runs only when the break reviews version or the
@@ -388,5 +443,5 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     }
   }
 
-  return { refresh, importDosmRelease, recalculate, status }
+  return { refresh, refreshOnetRelease, importDosmRelease, recalculate, status }
 }

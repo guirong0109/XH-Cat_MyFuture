@@ -1,7 +1,7 @@
 // Future Skills Radar: production keys, content hashes and manifests (spec §6.5, §7). Keys are built only here, from
 // fixed prefixes and ids checked against a safe pattern; no request value is ever used as a key.
 //
-// Manifest = {manifestId, createdAt, snapshots: {openalex, dosm}, mappingVersion, configVersion, signalsId,
+// Manifest = {manifestId, createdAt, snapshots: {openalex, dosm, onet-skills, onet-hottech}, mappingVersion, configVersion, signalsId,
 //             breakReviewsVersion, previousManifestId}  (immutable, prod/manifests/<id>.json)
 // prod/active.json = {manifestId, activatedAt}: the only mutable object, always written conditionally.
 import { createHash } from 'node:crypto'
@@ -9,7 +9,14 @@ import { canonicalContent } from '../../shared/radar/snapshot.js'
 
 const SAFE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/
 export const isSafeId = (id) => typeof id === 'string' && SAFE_ID.test(id) && !id.includes('..')
-export const RADAR_SOURCES = Object.freeze(['openalex', 'dosm'])
+export const RADAR_SOURCES = Object.freeze(['openalex', 'dosm', 'onet-skills', 'onet-hottech'])
+
+// Each stored original keeps its own content type (the DOSM workbook, the Hot Technologies page).
+const ORIGINAL_TYPES = Object.freeze({
+  dosm: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'onet-hottech': 'text/html',
+})
+export const originalContentType = (sourceId) => ORIGINAL_TYPES[sourceId] ?? 'application/octet-stream'
 
 function safe(id) {
   if (!isSafeId(id)) throw new TypeError('unsafe radar id')
@@ -68,7 +75,7 @@ export function makeManifest({ manifestId, createdAt, snapshots, mappingVersion,
   return {
     manifestId,
     createdAt,
-    snapshots: { openalex: snapshots.openalex ?? null, dosm: snapshots.dosm ?? null },
+    snapshots: Object.fromEntries(RADAR_SOURCES.map((src) => [src, snapshots[src] ?? null])),
     mappingVersion: mappingVersion ?? null,
     configVersion,
     signalsId,

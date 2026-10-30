@@ -4,7 +4,8 @@
 // POST /api/radar/session               {role: 'admin'|'demo', key, label?} → fr_radar cookie + {csrf, expiresAt}
 // POST /api/radar/logout                end this session
 // GET  /api/admin/radar/status          last checks (stored ingest log), recent log, conflicts, orphans (scan of prod/)
-// POST /api/admin/radar/refresh/:source source = exactly 'openalex' or 'dosm'; once per 5 minutes per source
+// POST /api/admin/radar/refresh/:source source = exactly 'openalex', 'dosm', 'onet-skills' (body {release: '31.1'},
+//                                       checked here, other fields ignored) or 'onet-hottech'; once per 5 minutes per source
 // GET  /api/admin/radar/mappings        field-topic proposals with the newest stored decision, and the review history
 // POST /api/admin/radar/mappings        {mappingId, decision: approved|rejected|revise, note, evidence[]}
 // GET  /api/admin/radar/breaks          possible breaks of the active manifest (each with the DOSM listing titles of
@@ -27,6 +28,7 @@ import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
 import { fieldTopicMappingVersion } from '../../shared/radar/pipeline.js'
 import { dosmLink, releasePageUrl } from './sources/dosm.js'
+import { RELEASE_PATTERN } from './sources/onetSkills.js'
 import {
   BREAK_DECISIONS,
   MAPPING_DECISIONS,
@@ -102,6 +104,10 @@ const ERRORS = {
   dosm_layout_unexpected: [502, 'The DOSM workbook layout is not the expected one.', false],
   validation_failed: [422, 'The new data did not pass validation; nothing was published.', false],
   periods_removed: [409, 'The new data removes periods; it is held for review and was not published.', false],
+  onet_release_not_newer: [409, 'This O*NET release is not newer than the active one; nothing was fetched.', false],
+  onet_release_not_found: [404, 'O*NET has no database file for this release number.', false],
+  onet_columns: [502, 'The O*NET skills table does not have the expected columns.', false],
+  hottech_layout: [502, 'The O*NET Hot Technologies page layout is not the expected one.', false],
 }
 
 const fail = (response, code, extra = null) => {
@@ -407,12 +413,20 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     })
   }))
 
-  router.post('/api/admin/radar/refresh/:source', guard(async (request, response) => {
+  router.post('/api/admin/radar/refresh/:source', jsonBody('1kb'), guard(async (request, response) => {
     const source = request.params.source
-    if (source !== 'openalex' && source !== 'dosm') return fail(response, 'bad_request')
-    if (!writable() || typeof radar.ingestor?.refresh !== 'function') return fail(response, 'not_configured')
+    if (!RADAR_SOURCES.includes(source)) return fail(response, 'bad_request')
+    // onet-skills takes one field, {release}, checked here; every other body field is ignored. The zip URL is built
+    // from the checked release number only (sources/onetSkills.js releaseZipUrl).
+    let release = null
+    if (source === 'onet-skills') {
+      release = plainObject(request.body) ? request.body.release : undefined
+      if (typeof release !== 'string' || !RELEASE_PATTERN.test(release)) return fail(response, 'bad_request')
+    }
+    const refreshFn = source === 'onet-skills' ? radar.ingestor?.refreshOnetRelease : radar.ingestor?.refresh
+    if (!writable() || typeof refreshFn !== 'function') return fail(response, 'not_configured')
     if (!refreshes.hit(source)) return fail(response, 'too_many_attempts')
-    const result = await exclusive(() => radar.ingestor.refresh(source))
+    const result = await exclusive(() => (source === 'onet-skills' ? radar.ingestor.refreshOnetRelease(release) : radar.ingestor.refresh(source)))
     if (OK_OUTCOMES.has(result?.outcome)) return response.json({ result })
     const code = result?.code ?? 'store_unavailable'
     return fail(response, code, result?.outcome === 'held' ? { result } : null)

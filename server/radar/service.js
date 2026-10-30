@@ -5,7 +5,7 @@
 //    checks() → last checks per source (stored ingest log + this process), invalidateReviews()}
 //   references(): with a writable store, stored field-topic decisions (prod/reviews/) are merged over the bundled
 //   proposals (rulings R24, R26), so the public references and export serve the owner's decisions.
-//   view = {manifest, snapshots: {openalex, dosm}, signals}  (signals = the stored signals document)
+//   view = {manifest, snapshots: {openalex, dosm, onet-skills, onet-hottech}, signals}  (signals = the stored signals document)
 //
 // - No writable store: the bundled manifest (data/radar/bundle) is served read-only ('bundled_read_only').
 // - Writable store (R2, or memory via RADAR_STORE=memory locally) without prod/active.json: on first use every object
@@ -21,18 +21,19 @@ import path from 'node:path'
 import { RADAR_CONFIG } from '../../shared/radar/config.js'
 import { sourceStates } from '../../shared/radar/states.js'
 import { createR2FromEnv } from '../store/r2.js'
-import { KEYS, RADAR_SOURCES, contentHash, getJson, isSafeId, loadManifest, readActive, sha256, toBytes } from './manifest.js'
+import { KEYS, RADAR_SOURCES, contentHash, getJson, isSafeId, loadManifest, originalContentType, readActive, sha256, toBytes } from './manifest.js'
 import { createFileStore } from './store/file.js'
 import { createMemoryStore } from './store/memory.js'
 import { createR2RadarStore } from './store/r2.js'
 import { createIngestor } from './ingest.js'
 import { createOpenAlexSource } from './sources/openalex.js'
 import { createDosmSource } from './sources/dosm.js'
+import { createOnetSkillsSource } from './sources/onetSkills.js'
+import { createOnetHotTechSource } from './sources/onetHotTech.js'
 import { loadRadarReferences } from './references.js'
 import { createDecidedReferences } from './reviews.js'
 
 const JSON_TYPE = 'application/json'
-const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 const KEEP_VIEWS = 8
 const CHECKS_TTL_MS = 60000
 const OK_OUTCOMES = new Set(['published', 'no_change'])
@@ -102,7 +103,7 @@ export function createRadarService({
     try {
       const manifest = await loadManifest(from, id)
       if (!manifest || manifest.manifestId !== id) return null
-      const snapshots = { openalex: null, dosm: null }
+      const snapshots = Object.fromEntries(RADAR_SOURCES.map((src) => [src, null]))
       for (const sourceId of RADAR_SOURCES) {
         const snapshotId = manifest.snapshots?.[sourceId]
         if (!snapshotId) continue
@@ -169,7 +170,7 @@ export function createRadarService({
         for (const original of snapshot.value.originals ?? []) {
           const got = await bundleStore.get(KEYS.original(sourceId, original.sha256))
           if (!got || sha256(got.bytes) !== original.sha256) throw new RadarError('not_configured')
-          add(KEYS.original(sourceId, original.sha256), Buffer.from(got.bytes), null, XLSX_TYPE)
+          add(KEYS.original(sourceId, original.sha256), Buffer.from(got.bytes), null, originalContentType(sourceId))
         }
       }
       const signals = await getJson(bundleStore, KEYS.signals(manifest.value.signalsId))
@@ -269,6 +270,17 @@ export function createRadarService({
             checksCache = null
           }
         },
+        ...(typeof ingestor.refreshOnetRelease === 'function'
+          ? {
+              refreshOnetRelease: async (...args) => {
+                try {
+                  return await ingestor.refreshOnetRelease(...args)
+                } finally {
+                  checksCache = null
+                }
+              },
+            }
+          : {}),
         ...(typeof ingestor.recalculate === 'function'
           ? {
               recalculate: async () => {
@@ -390,6 +402,7 @@ function lazyIngestor({ store, sources, loadReferences, now, log }) {
   }
   return {
     refresh: async (sourceId) => (await get()).refresh(sourceId),
+    refreshOnetRelease: async (release) => (await get()).refreshOnetRelease(release),
     recalculate: async () => (await get()).recalculate(),
     importDosmRelease: async (release) => (await get()).importDosmRelease(release),
     status: () => (inner ? inner.status() : { lastChecks: {}, orphans: [], log: [] }),
@@ -413,6 +426,8 @@ export function createRadarServiceFromEnv({ dataDir, fetchImpl = fetch, now = ()
         sources: {
           openalex: createOpenAlexSource({ fetchImpl, apiKey: env.OPENALEX_API_KEY || undefined, now, requireKey: env.NODE_ENV === 'production' }),
           dosm: createDosmSource({ fetchImpl, now }),
+          'onet-skills': createOnetSkillsSource({ fetchImpl, now }),
+          'onet-hottech': createOnetHotTechSource({ fetchImpl, now }),
         },
         // Late-bound: the service merges the stored decisions over the bundled references.
         loadReferences: () => service.references(),

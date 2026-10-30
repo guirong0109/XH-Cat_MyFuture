@@ -1,7 +1,7 @@
 // Future Skills Radar: one deterministic run from snapshots to radar-signal/v1 signals (spec §5, §6.5). Pure, no I/O,
 // no clock, no hashing. Production refreshes and judge edits call the same function.
 //
-// runPipeline({snapshots: {openalex, dosm}, references, reviews, config, manifestId})
+// runPipeline({snapshots: {openalex, dosm, onet-skills?, onet-hottech?}, references, reviews, config, manifestId})
 //   snapshots.<source>.meta.revisions (optional): [{entityId, period, old, new}] from diffSnapshots against the
 //   previous active snapshot; they are listed on the signal and lower OpenAlex evidence quality (§5.5).
 //   reviews: break review records {reviewId, sourceId?, decision, appliesTo: {period, observationHash}}. The hash is
@@ -14,7 +14,7 @@ import { classifyOpenAlex } from './trend.js'
 import { topicMomentum, shareSeries } from './momentum.js'
 import { classifyDosmGroup, dosmContext } from './dosm.js'
 import { detectBreaks, applyBreakReviews } from './breaks.js'
-import { onetSkillSignals, flagChanges } from './onetSkills.js'
+import { onetSkillSignals, flagChanges, hotTechSignals } from './onetSkills.js'
 import { dosmTableFromSnapshot, openalexCounts } from './snapshot.js'
 
 export const OPENALEX_METRIC = 'works_primary_topic'
@@ -172,6 +172,7 @@ export function runPipeline({ snapshots = {}, references = {}, reviews = [], con
 
   const onetSnapshot = snapshots['onet-skills']
   if (onetSnapshot) signals.push(...onetSkillSignals(onetSnapshot, { manifestId, config }))
+  if (snapshots['onet-hottech']) signals.push(...hotTechSignals(snapshots['onet-hottech'], { manifestId, config }))
 
   signals.sort((a, b) => cmp(a.signalId, b.signalId))
   const orderedMomentum = Object.fromEntries(Object.keys(momentum).sort().map((k) => [k, momentum[k]]))

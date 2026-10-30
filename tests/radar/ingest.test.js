@@ -219,7 +219,7 @@ describe('createIngestor().refresh', () => {
     expect(result.outcome).toBe('published')
     expect(result.diff.observations.new.length).toBe(11) // total, unclassified and nine groups for 2026 Q2
     const { manifest } = await readActive(store)
-    expect(manifest.snapshots).toEqual({ openalex: openalexBase.snapshotId, dosm: 'dosm-jmi-2026q2-fetch' })
+    expect(manifest.snapshots).toEqual({ openalex: openalexBase.snapshotId, dosm: 'dosm-jmi-2026q2-fetch', 'onet-skills': null, 'onet-hottech': null })
     const original = await store.get(`prod/originals/dosm/${sha(workbook)}`)
     expect(Buffer.compare(original.bytes, workbook)).toBe(0)
   })

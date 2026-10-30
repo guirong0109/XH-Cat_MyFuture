@@ -73,7 +73,10 @@ const question = (t) => `
  <div>
   <blockquote class="lp-quote">${esc(t('atmTitle'))}</blockquote>
   <p class="lp-body">${esc(t('atmBody'))}</p>
-  <p class="lp-draft">${esc(t('atmNote'))}</p>
+  <div class="lp-row lp-question-foot">
+   <button class="lp-btn lp-btn-line lp-btn-sm" data-act="replayIntro">↺ ${esc(t('introReplay'))}</button>
+   <p class="lp-draft">${esc(t('atmNote'))}</p>
+  </div>
  </div>
 </section>`
 

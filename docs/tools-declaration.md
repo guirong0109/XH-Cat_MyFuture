@@ -35,6 +35,7 @@ Rules for every AI path:
 | Express 5.3 | HTTP server and API | In use |
 | pdfjs-dist 6.4 (legacy Node build) | Reading PDF text | In use |
 | Vitest 5.0 | Tests | In use (dev only) |
+| three.js 0.186.1 | The landing page's 3D ATM intro (WebGL), served by our server from `node_modules` (no CDN); skipped for "reduce motion" or without WebGL | In use (MIT) |
 | Google Fonts (Geist, Geist Mono, Instrument Serif) | Typefaces of the landing page, loaded from fonts.googleapis.com; system fonts are used when it cannot be reached | In use (SIL Open Font License) |
 | Python 3 (standard library) | `pipeline/fetch_onet.py` O\*NET refresh and its tests | In use |
 | Cloudflare D1 (REST query API) | Accounts, sessions, saved profiles | Code ready; needs the owner's D1 settings. Tested with `node:sqlite` and the real `migrations.sql` |

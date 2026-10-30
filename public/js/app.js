@@ -25,6 +25,7 @@ import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
+import { INTRO_LENGTH, shouldPlayIntro } from './intro/timeline.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -111,6 +112,7 @@ const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   // Landing page links scroll within the page (a #hash would be read as a screen).
   scrollTo: (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+  replayIntro: () => { window.scrollTo(0, 0); startIntro() },
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
@@ -431,6 +433,38 @@ function onChange(target) {
   }
 }
 
+// The ATM intro (three.js, loaded only here). Skipped for "reduce motion", without WebGL, or if loading fails.
+let introStarted = false
+function startIntro() {
+  introStarted = true
+  if (document.querySelector('.atm-intro')) return
+  let webgl = false
+  try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
+  if (!shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })) return
+  // The skip button and Esc work at once, even while three.js is still loading; a timer ends a stalled intro.
+  const host = document.createElement('div')
+  host.className = 'atm-intro'
+  host.innerHTML = `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
+  document.body.append(host)
+  document.body.classList.add('intro-playing')
+  let scene = null
+  const show = () => document.body.classList.remove('intro-playing')
+  const done = () => {
+    show()
+    host.remove()
+    window.removeEventListener('keydown', onKey)
+  }
+  const skip = () => (scene ? scene.skip() : done())
+  const onKey = (event) => { if (event.key === 'Escape') skip() }
+  host.querySelector('.atm-skip').addEventListener('click', skip)
+  window.addEventListener('keydown', onKey)
+  setTimeout(() => { if (host.isConnected) skip() }, (INTRO_LENGTH + 6) * 1000)
+  import('./intro/atmIntro.js')
+    .then((intro) => intro.playIntro({ t, host, onReveal: show, onDone: done }))
+    .then((controls) => { scene = controls })
+    .catch(done)
+}
+
 function render() {
   // A profile screen opened directly (link, reload) still gets a profile to work on.
   if (NEEDS_PROFILE.includes(state.screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
@@ -442,8 +476,9 @@ function render() {
     : ''
   const page = NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome
   const view = page ? page({ t, state }) : nextModule({ t, state, screen })
-  // The landing page brings its own navigation and full-width layout.
+  // The landing page brings its own navigation and full-width layout, and opens with the ATM intro once per visit.
   document.body.classList.toggle('landing', page === welcome)
+  if (page === welcome && !introStarted) startIntro()
   document.getElementById('main').innerHTML = tabs + view
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')

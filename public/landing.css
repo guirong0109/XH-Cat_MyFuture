@@ -100,6 +100,8 @@ body.landing main{max-width:none;padding:0}
 .lp-quote::before{content:"“";position:absolute;left:-.5em;top:-.08em;color:var(--lp-pink)}
 :lang(zh) .lp-quote{line-height:1.3;letter-spacing:0}
 .lp-body{font-size:18px;line-height:1.6;color:var(--lp-ink2);max-width:62ch;margin-top:26px}
+.lp-question-foot{margin-top:22px;gap:14px}
+.lp-question-foot .lp-draft{margin-top:0}
 .lp-draft{display:inline-block;margin-top:18px;font-family:var(--lp-mono);font-size:11px;color:var(--lp-muted);padding:4px 10px;border:1px dashed var(--lp-line);border-radius:99px}
 
 /* how it works: bento */
@@ -163,6 +165,31 @@ body.landing main{max-width:none;padding:0}
 .lp-footer{padding:36px 0 56px;border-top:1px solid var(--lp-line);font-size:13px;line-height:1.6;color:var(--lp-muted)}
 .lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
 .lp-footer p{max-width:92ch;margin-top:8px}
+
+/* the hero rises in; while the ATM intro plays it waits, then rises as the receipt fades */
+.lp-hero-copy>*{animation:lp-rise .8s cubic-bezier(.2,.7,.2,1) both}
+.lp-hero-copy>:nth-child(2){animation-delay:.08s}.lp-hero-copy>:nth-child(3){animation-delay:.16s}
+.lp-hero-copy>:nth-child(4){animation-delay:.24s}.lp-hero-copy>:nth-child(5){animation-delay:.32s}
+body.intro-playing{overflow:hidden}
+body.intro-playing .lp-hero-copy>*,body.intro-playing .lp-fact{animation-play-state:paused}
+
+/* ATM intro layer (three.js canvas, caption, skip) */
+.atm-intro{position:fixed;inset:0;z-index:50;background:var(--lp-cream);transition:opacity .7s ease}
+.atm-intro.out{opacity:0;pointer-events:none}
+.atm-intro canvas{display:block;width:100%;height:100%}
+.atm-caption{position:absolute;z-index:1;left:clamp(24px,6vw,96px);top:50%;transform:translateY(calc(-50% + 12px));width:min(36vw,560px);
+  font-family:var(--lp-serif);font-size:clamp(30px,3.8vw,58px);line-height:1.04;letter-spacing:-.015em;color:var(--lp-ink);opacity:0;
+  transition:opacity .6s ease,transform .6s ease;text-wrap:balance;pointer-events:none}
+.atm-caption.on{opacity:1;transform:translateY(-50%)}
+:lang(zh) .atm-caption{line-height:1.3;letter-spacing:0}
+@media (max-aspect-ratio:115/100){
+  .atm-caption{left:50%;top:auto;bottom:clamp(72px,12vh,120px);width:min(90vw,560px);text-align:center;font-size:clamp(24px,6vw,38px);transform:translate(-50%,12px)}
+  .atm-caption.on{transform:translate(-50%,0)}
+}
+.atm-skip{position:absolute;z-index:1;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);font-family:var(--lp-mono);font-size:12.5px;
+  padding:10px 16px;border-radius:99px;border:1px solid var(--lp-line);background:var(--lp-paper);color:var(--lp-ink);cursor:pointer}
+.atm-skip:hover{border-color:var(--lp-ink2)}
+.atm-skip:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
 
 @keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}

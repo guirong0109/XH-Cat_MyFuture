@@ -215,6 +215,11 @@
           "status": "stop"
         },
         {
+          "title": "T28b ATM intro (three.js)",
+          "sub": "receipt prints, tears, flies to the middle",
+          "status": "stop"
+        },
+        {
           "title": "T29 Restyle the app",
           "sub": "profile screens in the same look",
           "status": "todo"
@@ -255,13 +260,15 @@
     "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
-    "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))"
+    "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
+    "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
-    "T28: your review of the landing page, its wording and the BM / 中文 translations"
+    "T28: your review of the landing page, its wording and the BM / 中文 translations",
+    "T28b: your review of the ATM intro (look, timing, receipt wording)"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -302,7 +309,10 @@
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
     "T28: the three figures (56%, 26%, 600,000+) are quoted from the Finalist Guide with their original source named — cost: we did not check the Hays guide or the MOSTI statement ourselves",
     "T28: stages 2–6 say \"Next module · not built yet\" — cost: the page promises less than the final journey until those modules exist",
-    "T28: fonts (Geist, Instrument Serif) load from Google Fonts — cost: one outside request per visit; without it the page falls back to system fonts"
+    "T28: fonts (Geist, Instrument Serif) load from Google Fonts — cost: one outside request per visit; without it the page falls back to system fonts",
+    "T28b: the receipt prints only the ATM story already on the page (draft copy) and today's date — no new history or numbers",
+    "T28b: three.js is served from our own server, not a CDN, so the intro also works offline — cost: about 1.5 MB to download on the first visit (not compressed)",
+    "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip"
   ],
   "log": [
     {
@@ -819,6 +829,16 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "npm test 237 passed; screenshots at 1440 px and 390 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "ATM story first: ATM prints, paper goes to the middle, then the page; three.js; reference anthnyung.com/yc"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 242 passed; screenshots of each phase at 1440 px and 500 px"
     }
   ]
 }

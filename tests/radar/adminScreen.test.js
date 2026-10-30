@@ -266,8 +266,31 @@ describe('admin review (spec §8.2, §8.4)', () => {
     const out = adminView({ t, state: adminState(), data: moved })
     expect(out).toContain('https://www.dosm.gov.my/page-from-server')
     expect(out).toContain('https://www.dosm.gov.my/listing-from-server')
-    expect(out).not.toContain('release-content/big-data-analytics-job-market-insights-q32025')
+    // The release page link of the row is the one the server sent (the title links keep their own real pages).
+    expect(out).toMatch(new RegExp(`href="https://www\\.dosm\\.gov\\.my/page-from-server"[^>]*>${t('rdBrkEvRelease', { period: '2025 Q3' })}</a>`))
+    expect(out).not.toMatch(new RegExp(`q32025"[^>]*>${t('rdBrkEvRelease', { period: '2025 Q3' })}</a>`))
     expect(b.releaseLinks.page).toBe('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025')
+  })
+
+  it('each listing title links to its real DOSM release page (D3)', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data })
+    const q3 = (html.match(/<table class="rd-brk-titles[^"]*"[\s\S]*?<\/table>/g) ?? []).find((tb) => tb.includes('>2025 Q3<') && tb.includes('>2025 Q2<'))
+    expect(q3).toContain('<a href="https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-and-my-job-profile-second-quarter-of-"')
+    expect(q3).toContain('<a href="https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025"')
+    expect(q3).toMatch(/<a href="[^"]*second-quarter-of-"[^>]*>Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025<\/a>/)
+    // A title without a usable link stays plain escaped text.
+    const noLink = structuredClone(data)
+    const b = noLink.breaks.breaks.find((x) => x.period === '2025 Q3')
+    b.evidence.listing[0].pageUrl = 'javascript:alert(1)'
+    b.evidence.listing[0].title = '<script>x</script>'
+    b.evidence.listing[1].title = '<img src=x>"t'
+    const out = adminView({ t, state: adminState(), data: noLink })
+    expect(out).not.toContain('javascript:alert(1)')
+    expect(out).not.toContain('<script>x</script>')
+    expect(out).toContain('&lt;script&gt;x&lt;/script&gt;')
+    expect(out).not.toContain('<img src=x>')
+    expect(out).toContain('&lt;img src=x&gt;&quot;t</a>')
   })
 
   it('listing titles are escaped', async () => {

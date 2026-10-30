@@ -125,7 +125,8 @@ function listingTitles(t, b) {
   const entries = (b.evidence?.listing ?? []).filter((e) => e && typeof e.quarter === 'string')
   if (!entries.length) return ''
   const cell = (e) => (e.status === 'listed' && typeof e.title === 'string'
-    ? `${esc(e.title)}${e.publishedAt ? `<div class="tiny muted">${esc(t('rdBrkEvPublished', { date: e.publishedAt }))}</div>` : ''}`
+    // D3: the title links to its real release page (from the archive page, via the server); srcLink escapes both.
+    ? `${safeUrl(e.pageUrl) ? srcLink({ label: e.title, url: e.pageUrl }) : esc(e.title)}${e.publishedAt ? `<div class="tiny muted">${esc(t('rdBrkEvPublished', { date: e.publishedAt }))}</div>` : ''}`
     : `<span class="muted">${esc(t('rdBrkEvNotListed'))}</span>`)
   return `<li><b>${esc(t('rdBrkEvTitles'))}</b>
     <table class="rd-brk-titles small"><tr>${entries.map((e) => `<th scope="col">${esc(e.quarter)}</th>`).join('')}</tr>

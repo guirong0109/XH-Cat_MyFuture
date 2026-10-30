@@ -59,17 +59,8 @@ body.landing main{max-width:none;padding:0}
 .lp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .lp-note{margin-top:16px;font-size:13px;color:var(--lp-muted)}
 
-/* the three figures from the guide: the dopamine moment */
-.lp-fact{display:flex;flex-direction:column;background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:22px;padding:22px;
-  animation:lp-rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 110ms + 120ms)}
-.lp-fact-value{font-family:var(--lp-serif);font-size:clamp(58px,6vw,86px);line-height:.9;letter-spacing:-.03em;font-variant-numeric:lining-nums}
-.lp-fact-pink .lp-fact-value{color:var(--lp-pink)}
-.lp-fact-blue .lp-fact-value{color:var(--lp-blue)}
-.lp-fact-lime{background:var(--lp-lime);border-color:var(--lp-lime);color:var(--lp-on-lime)}
-.lp-fact-lime .lp-fact-value{font-size:clamp(46px,5.2vw,76px)}
-.lp-fact-label{font-size:15px;line-height:1.4;margin:12px 0 16px;color:inherit;opacity:.88}
+/* sources and the "calculated" tag on figures */
 .lp-src{display:block;margin-top:auto;font-family:var(--lp-mono);font-size:11px;line-height:1.5;color:var(--lp-muted)}
-.lp-fact-lime .lp-src{color:color-mix(in srgb,var(--lp-on-lime) 70%,transparent)}
 .lp-src b{font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;padding:1px 6px;border:1px solid currentColor;border-radius:99px}
 .lp-tag{font-family:var(--lp-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border:1px dashed currentColor;border-radius:99px;margin-right:4px}
 
@@ -167,9 +158,6 @@ body.landing main{max-width:none;padding:0}
 .odo.armed .odo-strip{transform:translateY(0)}
 .odo-sep{display:block;height:1.1em;line-height:1.1em;margin:0 -.02em}
 .odo-suffix{margin-left:.04em}
-.lp-fact-value,.lp-datum-n{line-height:1}
-.lp-fact-lime .odo-wheel{--win:color-mix(in srgb,var(--lp-on-lime) 5%,var(--lp-lime));--edge:color-mix(in srgb,var(--lp-on-lime) 11%,var(--lp-lime));
-  border-color:color-mix(in srgb,var(--lp-on-lime) 16%,transparent)}
 
 /* FIRST SECTION. The three.js ATM fills it; once the receipt is pinned (data-phase from app.js) the headline and
    buttons rise in beside it: left on wide screens (receipt on the right), below the receipt on narrow ones.
@@ -231,32 +219,30 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 .atm-stage button:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
 @keyframes atm-nudge{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--lp-ink) 12%,transparent)}}
 
-/* SECOND SECTION: the gap. Both shares on one 0–100% scale; the bars grow when the section comes into view (.in). */
-.lp-gapgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px}
-.lp-gapcard{display:flex;flex-direction:column;gap:22px;padding:clamp(22px,3vw,36px);background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:24px}
-.lp-shares{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,40px)}
-.lp-share p{font-size:15px;line-height:1.4;color:var(--lp-ink2);margin-top:12px;max-width:30ch}
-.lp-share-pink .lp-fact-value{color:var(--lp-pink)}
-.lp-share-blue .lp-fact-value{color:var(--lp-blue)}
-.lp-scale{position:relative;display:grid;gap:10px;padding-top:30px}
-.lp-bar{height:16px;border-radius:99px;background:color-mix(in srgb,var(--lp-ink) 6%,transparent);overflow:hidden}
-.lp-bar i{display:block;height:100%;width:var(--w);border-radius:99px;transition:width 1.3s cubic-bezier(.2,.7,.2,1) .2s}
-.lp-bar-pink i{background:var(--lp-pink)}
-.lp-bar-blue i{background:var(--lp-blue)}
-.lp-gapsec:not(.in) .lp-bar i{width:0}
-.lp-gapband{position:absolute;top:0;bottom:22px;left:var(--from);width:calc(var(--to) - var(--from));
-  border-left:1px dashed var(--lp-ink2);border-right:1px dashed var(--lp-ink2);
-  background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--lp-ink) 7%,transparent) 0 6px,transparent 6px 12px);
-  transition:opacity .6s ease 1.2s}
-.lp-gapsec:not(.in) .lp-gapband{opacity:0}
-.lp-gapband span{position:absolute;top:2px;left:50%;translate:-50% 0;font:500 12px var(--lp-mono);padding:2px 8px;border-radius:99px;
-  background:var(--lp-ink);color:var(--lp-cream)}
-.lp-scale-ticks{position:relative;height:14px;font:400 11px var(--lp-mono);color:var(--lp-muted)}
-.lp-scale-ticks span{position:absolute;left:var(--at);translate:-50% 0}
-.lp-scale-ticks span:first-child{translate:0 0}.lp-scale-ticks span:last-child{translate:-100% 0}
-.lp-gapnote{font-size:13px;color:var(--lp-muted)}
-.lp-gapgrid .lp-fact-lime{justify-content:space-between;border-radius:24px;padding:clamp(22px,3vw,36px)}
-.lp-gapgrid .lp-fact-lime .lp-fact-label{font-size:17px}
+/* SECOND SECTION: the gap, as one quiet ledger. A ruled row per figure, the numbers in ink on the roller counters,
+   and a single accent: the pink stretch the trained share falls short by. The bars grow when the section comes into
+   view (.in), then the pink stretch follows. It sits close under the stage strip, so it reads as the next step. */
+.lp-gapsec{padding-top:clamp(40px,5vw,64px)}
+.lp-gapsec .lp-head{margin-bottom:clamp(20px,3vw,32px)}
+.lp-ledger{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr);column-gap:clamp(20px,3vw,40px)}
+.lp-entry{display:grid;grid-column:1/-1;grid-template-columns:subgrid;align-items:center;padding:clamp(16px,2.2vw,24px) 0;
+  border-top:1px solid var(--lp-line)}
+.lp-entry-n{justify-self:end;font-family:var(--lp-serif);font-size:clamp(42px,4.4vw,64px);line-height:1;letter-spacing:-.02em;color:var(--lp-ink)}
+.lp-entry-label{font-size:16px;line-height:1.4;color:var(--lp-ink2);max-width:34ch}
+.lp-entry-count .lp-entry-label{grid-column:2/-1}
+.lp-entry-track{display:grid;gap:10px}
+.lp-track{position:relative;height:6px;border-radius:99px;background:color-mix(in srgb,var(--lp-ink) 8%,transparent)}
+.lp-track i,.lp-track b{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.lp-track i{width:var(--w);background:var(--lp-ink);transition:width 1.2s cubic-bezier(.2,.7,.2,1) .2s}
+.lp-track b{left:var(--w);width:calc(var(--to) - var(--w));background:var(--lp-pink);border-radius:0 99px 99px 0;
+  transform-origin:left;transition:scale .7s cubic-bezier(.2,.7,.2,1) 1.3s}
+.lp-gapsec:not(.in) .lp-track i{width:0}
+.lp-gapsec:not(.in) .lp-track b{scale:0 1}
+.lp-gapnote{font-size:13px;line-height:1.5;color:var(--lp-ink2)}
+.lp-gapnote .lp-tag{color:var(--lp-muted)}
+.lp-gapnote::before{content:"";display:inline-block;width:16px;height:6px;border-radius:99px;background:var(--lp-pink);
+  vertical-align:middle;margin-right:8px}
+.lp-ledger-src{grid-column:1/-1;display:grid;gap:6px;padding-top:16px;border-top:1px solid var(--lp-line)}
 
 @keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
@@ -264,7 +250,6 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 @media (prefers-reduced-motion:reduce){.lp *,.lp *::before{animation:none!important;transition:none!important}}
 
 @media (max-width:1000px){
-  .lp-gapgrid{grid-template-columns:1fr}
   .lp-stage-live{grid-column:span 6;grid-row:auto}
   .lp-stage{grid-column:span 3}
   .lp-data,.lp-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -276,7 +261,9 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-bento{grid-auto-rows:auto}
   .lp-data,.lp-principles{grid-template-columns:1fr}
   body.no-intro .lp-atm{grid-template-columns:1fr}
-  .lp-shares{grid-template-columns:1fr}
+  .lp-ledger{grid-template-columns:auto minmax(0,1fr)}
+  .lp-entry-track{grid-column:1/-1}
+  .lp-entry-count .lp-entry-label{grid-column:auto}
   .lp-list li{grid-template-columns:1fr;gap:10px}
   .lp-list .lp-pill{justify-self:start}
   .lp-close{border-radius:24px}
@@ -284,6 +271,6 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 }
 @media (max-width:480px){
   .lp-nav .lp-btn{display:none}
-  .lp-fact{padding:18px}
-  .lp-fact-value{font-size:52px}
+  .lp-ledger{grid-template-columns:1fr}
+  .lp-entry-n{justify-self:start}
 }

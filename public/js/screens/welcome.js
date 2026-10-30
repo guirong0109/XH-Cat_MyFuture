@@ -3,11 +3,11 @@
 import { esc } from '../ui.js'
 import { odometer } from '../components/odometer.js'
 
-// Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. One accent each.
+// Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown as one ledger in the second section.
 export const GUIDE_FACTS = [
-  { value: '56%', label: 'ldFact1', source: 'ldSrcHays', accent: 'pink' },
-  { value: '26%', label: 'ldFact2', source: 'ldSrcHays', accent: 'blue' },
-  { value: '600,000+', label: 'ldFact3', source: 'ldSrcMosti', accent: 'lime' },
+  { value: '56%', label: 'ldFact1', source: 'ldSrcHays' },
+  { value: '26%', label: 'ldFact2', source: 'ldSrcHays' },
+  { value: '600,000+', label: 'ldFact3', source: 'ldSrcMosti' },
 ]
 const GAP_POINTS = 56 - 26
 
@@ -70,38 +70,32 @@ function atm(t) {
   `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
 }
 
-// The second section: the guide's figures. The two shares sit on one 0–100% scale so the gap between them shows;
-// the bars grow when the section comes into view (app.js adds .in).
+// The second section: the guide's figures as one ledger, a ruled row each. The two shares get a bar on the same
+// 0–100% track; the stretch the trained share falls short by is the section's one accent. The bars grow when the
+// section comes into view (app.js adds .in).
 function gap(t) {
   const [use, trained, workers] = GUIDE_FACTS
-  const share = (fact, i) => `
-   <div class="lp-share lp-share-${fact.accent}">
-    <div class="lp-fact-value">${odometer(fact.value, `fact-${i}`)}</div>
-    <p>${esc(t(fact.label))}</p>
-   </div>`
+  const row = (fact, i, track = '') => `
+  <div class="lp-entry${track ? '' : ' lp-entry-count'}">
+   <div class="lp-entry-n">${odometer(fact.value, `fact-${i}`)}</div>
+   <p class="lp-entry-label">${esc(t(fact.label))}</p>
+   ${track}
+  </div>`
   return `
 <section class="lp-section lp-gapsec" id="gap">
  <header class="lp-head">
   <p class="lp-label">${esc(t('ldFactsTitle'))}</p>
   <h2 class="lp-h2">${esc(t('ldGapTitle'))}</h2>
  </header>
- <div class="lp-gapgrid">
-  <article class="lp-gapcard">
-   <div class="lp-shares">${share(use, 0)}${share(trained, 1)}</div>
-   <div class="lp-scale" role="img" aria-label="${esc(`${use.value} · ${trained.value} · ${t('ldGap', { n: GAP_POINTS })}`)}">
-    <div class="lp-bar lp-bar-pink" style="--w:${use.value}"><i></i></div>
-    <div class="lp-bar lp-bar-blue" style="--w:${trained.value}"><i></i></div>
-    <div class="lp-gapband" style="--from:${trained.value};--to:${use.value}"><span>${GAP_POINTS}</span></div>
-    <div class="lp-scale-ticks">${[0, 25, 50, 75, 100].map((n) => `<span style="--at:${n}%">${n}${n === 100 ? '%' : ''}</span>`).join('')}</div>
-   </div>
-   <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p>
-   ${sourced(t, `${t(use.source)}, ${t('ldFactVia')}`)}
-  </article>
-  <article class="lp-fact lp-fact-lime">
-   <div class="lp-fact-value">${odometer(workers.value, 'fact-2')}</div>
-   <p class="lp-fact-label">${esc(t(workers.label))}</p>
-   ${sourced(t, `${t(workers.source)}, ${t('ldFactVia')}`)}
-  </article>
+ <div class="lp-ledger">
+  ${row(use, 0, `<div class="lp-entry-track"><div class="lp-track" style="--w:${use.value}" aria-hidden="true"><i></i></div></div>`)}
+  ${row(trained, 1, `<div class="lp-entry-track"><div class="lp-track" style="--w:${trained.value};--to:${use.value}" aria-hidden="true"><i></i><b></b></div>
+   <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p></div>`)}
+  ${row(workers, 2)}
+  <div class="lp-ledger-src">
+   ${sourced(t, `${use.value} · ${trained.value} — ${t(use.source)}, ${t('ldFactVia')}`)}
+   ${sourced(t, `${workers.value} — ${t(workers.source)}, ${t('ldFactVia')}`)}
+  </div>
  </div>
 </section>`
 }

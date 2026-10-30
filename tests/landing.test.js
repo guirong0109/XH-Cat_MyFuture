@@ -61,19 +61,20 @@ describe('landing page', () => {
 
   it('every section of the page keeps its styles in landing.css', async () => {
     const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
-    for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-gapgrid{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
+    for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-ledger{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
       '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-footer{']) expect(css).toContain(rule)
     for (const [, name] of css.matchAll(/^\.(lp-[\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
   })
 
-  it('the second section puts the two shares on one 0–100% scale with the calculated gap', () => {
+  it('the second section is one quiet ledger: a row per figure, one accent only for the calculated gap', () => {
     const html = page()
     const gap = html.slice(html.indexOf('id="gap"'), html.indexOf('id="how"'))
     expect(gap).toContain(translate('en', 'ldFactsTitle'))
-    expect(gap).toContain('style="--w:56%"')
-    expect(gap).toContain('style="--w:26%"')
-    expect(gap).toContain('style="--from:26%;--to:56%"')
-    expect(gap).toContain(translate('en', 'ldGap', { n: 30 }))
+    expect(gap.match(/class="lp-entry[ "]/g)).toHaveLength(GUIDE_FACTS.length)
     expect(gap.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length)
+    expect(gap).toContain('style="--w:56%"')
+    expect(gap).toContain('style="--w:26%;--to:56%"')
+    expect(gap).toContain(translate('en', 'ldGap', { n: 30 }))
+    expect(gap).not.toMatch(/lp-(fact|share|bar)-(pink|blue|lime)/)
   })
 })

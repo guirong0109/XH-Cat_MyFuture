@@ -6,7 +6,7 @@
 // adminView({t, state, data}): data = {public (radarApi.load data), status, mappings, breaks, now?}
 // judgeView({t, state, data}):  data = {report (demo before/after report), now?}
 // UI state: state.radarAdmin = {session: {role, expiresAt}, msgs: {signin|map|brk|status|refresh|judge: msg}, notes,
-//                               scen: 'A'|'B', exported, devStore (from GET /api/radar/manifest on open)}
+//                               scen: 'A'|'B'|'C', exported, devStore (from GET /api/radar/manifest on open)}
 import { esc, tag } from '../ui.js'
 import { DASH, finite, fmt, fmtSigned } from '../components/charts/format.js'
 import { fmtDate, fmtInt, fmtPct, fmtSignedPct, ruleText, safeUrl, srcLink, statusTag } from '../components/evidencePanel.js'
@@ -328,11 +328,11 @@ export function judgeEdits(report, entries) {
 }
 
 function scenarioControls(t, state, report) {
-  const scen = ui(state).scen === 'B' ? 'B' : 'A'
+  const scen = ['B', 'C'].includes(ui(state).scen) ? ui(state).scen : 'A'
   const table = report.current?.dosm ?? {}
   const periods = (table.periods ?? []).slice(-GRID_QUARTERS)
   const offset = (table.periods ?? []).length - periods.length
-  const seg = `<span class="seg" role="group" aria-label="${esc(t('rdJudgeScenario'))}">${[['A', 'rdScenA'], ['B', 'rdScenB']].map(([id, key]) => `<button id="demoScen${id}" class="${scen === id ? 'on' : ''}" data-act="admScen" data-arg="${id}" aria-pressed="${scen === id}">${esc(t(key))}</button>`).join('')}</span>`
+  const seg = `<span class="seg" role="group" aria-label="${esc(t('rdJudgeScenario'))}">${[['A', 'rdScenA'], ['B', 'rdScenB'], ['C', 'rdScenC']].map(([id, key]) => `<button id="demoScen${id}" class="${scen === id ? 'on' : ''}" data-act="admScen" data-arg="${id}" aria-pressed="${scen === id}">${esc(t(key))}</button>`).join('')}</span>`
   let body
   if (scen === 'A') {
     const codes = Object.keys(table.groups ?? {}).sort()
@@ -347,6 +347,10 @@ function scenarioControls(t, state, report) {
     const total = `<tr><th scope="row" class="small">${esc(t('rdTotalAds'))}</th>${periods.map((_, j) => `<td class="num small">${esc(fmtInt(table.total?.[offset + j]))}</td>`).join('')}</tr>`
     body = `<p class="small muted">${esc(t('rdJudgeEditNote'))}</p>
       <div class="rd-scroll"><table class="rd-grid"><tr><th>${esc(t('rdGroupCol'))}</th>${periods.map((p) => `<th>${esc(p)}</th>`).join('')}</tr>${rows}${total}</table></div>`
+  } else if (scen === 'C') {
+    const c = report.scenarios?.C ?? {}
+    body = `<p class="small muted">${esc(t('rdJudgeCNote', { skill: c.example ?? DASH, job: c.code ?? DASH }))}</p>
+      <p class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}</p>`
   } else {
     const b = report.scenarios?.B ?? {}
     const factor = finite(b.defaultFactor) === null ? '' : String(b.defaultFactor)
@@ -390,19 +394,27 @@ function changeNames(t, changes) {
   }).join(', ')
 }
 
+// A skill signal states what its data is and links its source (US job ads, software only).
+function skillNote(t, e) {
+  if (e?.system !== 'O*NET Software Skills') return ''
+  const link = e.sourceUrl ? ` · <a href="${esc(e.sourceUrl)}" target="_blank" rel="noopener">${esc(e.sourceUrl)}</a>` : ''
+  return `<div class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}${link}</div>`
+}
+
 function reportCard(t, report) {
   const names = new Map((report.signals ?? []).map((s) => [s.signalId, s.entity]))
   const label = (signalId) => {
     const e = names.get(signalId)
+    if (String(signalId).startsWith('onet:indemand:') && e) return `${e.name} · ${String(signalId).split(':')[2]}`
     return e ? `${e.code} · ${e.name}` : String(signalId ?? DASH)
   }
   const nothing = !(report.observations ?? []).length && !(report.changedSignals ?? []).length
   const ids = `<table class="small"><tr><th></th><th>${esc(t('rdJudgeBefore'))}</th><th>${esc(t('rdJudgeAfter'))}</th></tr>
     <tr><th scope="row">${esc(t('rdJudgeManifest'))}</th><td><code>${esc(report.manifests?.before ?? DASH)}</code></td><td><code>${esc(report.manifests?.after ?? DASH)}</code></td></tr>
-    ${['dosm', 'openalex'].map((s) => `<tr><th scope="row">${esc(t('rdSnapshot'))} ${esc(SOURCE_NAMES[s])}</th><td><code>${esc(report.snapshots?.before?.[s] ?? DASH)}</code></td><td><code>${esc(report.snapshots?.after?.[s] ?? DASH)}</code></td></tr>`).join('')}</table>`
+    ${['dosm', 'openalex', 'onet-skills'].filter((s) => s !== 'onet-skills' || report.snapshots?.after?.[s]).map((s) => `<tr><th scope="row">${esc(t('rdSnapshot'))} ${esc(srcName(t, s))}</th><td><code>${esc(report.snapshots?.before?.[s] ?? DASH)}</code></td><td><code>${esc(report.snapshots?.after?.[s] ?? DASH)}</code></td></tr>`).join('')}</table>`
 
   const obs = (report.observations ?? []).map((o) => `<li>${esc(entityName(t, report, o.entityId))} · ${esc(o.period)}: <span class="rd-num">${esc(fmtInt(o.old))} → ${esc(fmtInt(o.new))}</span></li>`).join('')
-  const signals = (report.changedSignals ?? []).map((c) => `<tr><td><b>${esc(label(c.signalId))}</b><div class="tiny muted">${esc(changeNames(t, c.changes))}</div></td><td>${sideOf(t, c.details?.before)}</td><td>${sideOf(t, c.details?.after)}</td></tr>`).join('')
+  const signals = (report.changedSignals ?? []).map((c) => `<tr><td><b>${esc(label(c.signalId))}</b><div class="tiny muted">${esc(changeNames(t, c.changes))}</div>${skillNote(t, names.get(c.signalId))}</td><td>${sideOf(t, c.details?.before)}</td><td>${sideOf(t, c.details?.after)}</td></tr>`).join('')
   const momentum = Object.entries(report.momentum ?? {}).map(([axisId, m]) => `<li>${esc(t(`rdAxis_${axisId}`) === `rdAxis_${axisId}` ? axisId : t(`rdAxis_${axisId}`))}: ${esc(fmt(m?.before?.current?.value, 1))} → ${esc(fmt(m?.after?.current?.value, 1))}</li>`).join('')
   const added = (report.breaks?.added ?? []).map((b) => `<li>${tag('bad', t('rdJudgePossibleBreak'))} <b>${esc(b.period)}</b> · ${esc(t('rdColTotalQoq'))} ${esc(fmtSignedPct(b.totalChangePercent, 1))} · ${esc(t('rdColGroupsSame'))} ${esc(`${fmtInt(b.groupsSameWay)}/${fmtInt(b.eligibleGroups)}`)}</li>`).join('')
   const ice = (report.insufficientComparisons ?? []).map((c) => `<li><b>${esc(`${c.entity?.code ?? ''} · ${c.entity?.name ?? ''}`)}</b> ${tag('bad', t('rdIce'))}<div class="tiny">${esc(ruleText(c.after?.rule, t) || (c.breakPeriods ?? []).join(', '))}</div></li>`).join('')

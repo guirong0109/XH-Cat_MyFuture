@@ -186,7 +186,7 @@ describe('validation, reset and isolation', () => {
       expect(r.body.error.code).toBe('validation_failed')
       expect(r.body.errors.length).toBeGreaterThan(0)
     }
-    for (const body of [{ scenario: 'C' }, { scenario: 'B', factor: 0 }, { scenario: 'B', factor: -2 }, { scenario: 'A', edits: 'x' }, { scenario: 'A', edits: [] }]) {
+    for (const body of [{ scenario: 'D' }, { scenario: 'B', factor: 0 }, { scenario: 'B', factor: -2 }, { scenario: 'A', edits: 'x' }, { scenario: 'A', edits: [] }]) {
       const r = await call('POST', '/api/demo/radar/apply', { session, body })
       expect(r.status, JSON.stringify(body)).toBeGreaterThanOrEqual(400)
       expect(['bad_request', 'validation_failed']).toContain(r.body.error.code)
@@ -410,5 +410,53 @@ describe('report', () => {
     expect(r.body.careerRankings).toEqual({ key: 'rdNoRankings', text: 'Career rankings are not part of this module yet.' })
     const d = await call('GET', '/api/demo/radar/diff', { session })
     expect(d.body.careerRankings.text).toBe('Career rankings are not part of this module yet.')
+  })
+})
+
+describe('Scenario C', () => {
+  const C = BASE.scenarios.C
+  const id = `onet:indemand:${C.code}:${C.example}`
+
+  it('the base holds real 15-1252.00 rows and the C skill is flagged for it in neither set', () => {
+    const sets = BASE.onetSkills.flagSets
+    expect(sets.map((s) => s.id)).toEqual(['30.2', '30.3'])
+    for (const s of sets) {
+      expect(s.rows.filter((r) => r.code === C.code).length).toBeGreaterThan(50)
+      expect(s.rows.some((r) => r.code === C.code && r.example === C.example)).toBe(false)
+    }
+  })
+
+  it('C makes the skill newly in demand: a rising onet:indemand signal; prod untouched; reset removes it', async () => {
+    const { store } = await start()
+    const prod = await prodBytes(store)
+    const session = await login()
+    const before = await call('GET', '/api/demo/radar/diff', { session })
+    expect(before.body.signals.some((s) => s.signalId === id)).toBe(false)
+    expect(before.body.changedSignals).toEqual([])
+
+    const r = await call('POST', '/api/demo/radar/apply', { session, body: { scenario: 'C' } })
+    expect(r.status).toBe(200)
+    expect(r.body.scenario).toBe('C')
+    expect(r.body.changedSignals.map((s) => s.signalId)).toEqual([id])
+    expect(r.body.changedSignals[0].changes).toEqual(['added'])
+    expect(r.body.changedSignals[0].details.after).toMatchObject({ direction: 'rising', evidenceSufficiency: 'sufficient' })
+    const sig = r.body.signals.find((s) => s.signalId === id)
+    expect(sig).toMatchObject({ direction: 'rising', baseline: { period: '30.2', value: 0 }, recent: { period: '30.3', value: 1 } })
+    expect(r.body.scenarios.C.example).toBe(C.example)
+    expect(r.body.snapshots.after['onet-skills']).not.toBe(r.body.snapshots.before['onet-skills'])
+    expect(await prodBytes(store)).toEqual(prod)
+
+    const reset = await call('POST', '/api/demo/radar/reset', { session })
+    expect(reset.body.signals.some((s) => s.signalId === id)).toBe(false)
+    expect(reset.body.changedSignals).toEqual([])
+    expect(await prodBytes(store)).toEqual(prod)
+  })
+
+  it('A and B leave the skill snapshot unchanged', async () => {
+    await start()
+    const session = await login()
+    const r = await call('POST', '/api/demo/radar/apply', { session, body: { scenario: 'B' } })
+    expect(r.body.snapshots.after['onet-skills']).toBe(r.body.snapshots.before['onet-skills'])
+    expect(r.body.signals.some((s) => s.signalId === id)).toBe(false)
   })
 })

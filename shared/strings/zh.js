@@ -530,6 +530,7 @@ export default {
   rdJudgeKey: "评委密钥",
   rdScenA: "场景 A——正常变化",
   rdScenB: "场景 B——结构性断层",
+  rdScenC: "场景 C——技能成为 In Demand", // translation: owner review
   rdJudgeSeries: "合成数据序列",
   rdJudgeManifest: "合成清单",
   rdJudgeBaseline: "基准值",
@@ -668,6 +669,7 @@ export default {
   rdJudgeEditNote: "修改任意数量（整数，零或以上）。只发送您修改的单元格；先进行校验。", // translation: owner review
   rdJudgeNoEdit: "请先修改至少一个数值。未发送任何内容。", // translation: owner review
   rdJudgeBNote: "将 {period} 的总数及组别 {groups} 乘以此系数。", // translation: owner review
+  rdJudgeCNote: "在最新版本集中，将 {skill} 加为 {job} 的 In Demand。该技能在此职业的较早和最新真实版本中均未被标记，因此显示为新进入需求。", // translation: owner review
   rdJudgeKept: "更改被拒绝；保留上一个状态。", // translation: owner review
   rdJudgeResetDone: "已重置为合成基础数据。", // translation: owner review
   rdJudgeObs: "变化的观测值", // translation: owner review

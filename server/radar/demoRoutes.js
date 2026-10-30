@@ -1,7 +1,7 @@
 // Judge Trend Change Test routes (spec §8.3, §9, §13). Demo role only (an admin cookie gets 403); requests that change
 // something need the session's CSRF token and a same-host Origin; at most 30 changes per minute per session.
 //
-// POST /api/demo/radar/apply   {scenario: 'A'|'B', edits?: [{entityId, period, value}], factor?} → before/after report
+// POST /api/demo/radar/apply   {scenario: 'A'|'B'|'C', edits?: [{entityId, period, value}], factor?} → before/after report
 // GET  /api/demo/radar/diff    before/after report of the session's last change
 // POST /api/demo/radar/reset   restore the synthetic base → report
 //

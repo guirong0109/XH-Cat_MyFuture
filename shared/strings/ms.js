@@ -530,6 +530,7 @@ export default {
   rdJudgeKey: "Kunci hakim",
   rdScenA: "Senario A — perubahan biasa",
   rdScenB: "Senario B — perubahan struktur",
+  rdScenC: "Senario C — kemahiran menjadi In Demand", // translation: owner review
   rdJudgeSeries: "Siri sintetik",
   rdJudgeManifest: "Manifes sintetik",
   rdJudgeBaseline: "Nilai asas",
@@ -668,6 +669,7 @@ export default {
   rdJudgeEditNote: "Ubah mana-mana kiraan (nombor bulat, sifar atau lebih). Hanya sel yang anda ubah dihantar; pengesahan dijalankan dahulu.", // translation: owner review
   rdJudgeNoEdit: "Ubah sekurang-kurangnya satu nilai dahulu. Tiada apa-apa dihantar.", // translation: owner review
   rdJudgeBNote: "Mendarab jumlah dan kumpulan {groups} pada {period} dengan faktor ini.", // translation: owner review
+  rdJudgeCNote: "Menambah {skill} sebagai In Demand untuk {job} dalam set keluaran terkini. Kemahiran ini tidak ditanda untuk pekerjaan ini dalam keluaran sebenar terdahulu atau terkini, jadi ia muncul sebagai baru dalam permintaan.", // translation: owner review
   rdJudgeKept: "Perubahan ditolak; keadaan terakhir dikekalkan.", // translation: owner review
   rdJudgeResetDone: "Ditetapkan semula kepada asas sintetik.", // translation: owner review
   rdJudgeObs: "Pemerhatian yang berubah", // translation: owner review

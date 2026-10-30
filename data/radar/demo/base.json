@@ -281,6 +281,2552 @@
         "7",
         "8"
       ]
+    },
+    "C": {
+      "title": "Scenario C: a skill becomes In Demand",
+      "description": "Adds Microsoft Playwright (flagged In Demand for 15-1253.00 Software Quality Assurance Analysts and Testers in the real data, not for 15-1252.00) to the latest release set of Software Developers.",
+      "code": "15-1252.00",
+      "example": "Microsoft Playwright",
+      "elementId": "2.E.7.f",
+      "elementName": "Program testing software"
     }
+  },
+  "onetSkills": {
+    "note": "Real O*NET flag rows (Lightcast via O*NET, US job ads) for one job, 15-1252.00 Software Developers, plus a few Hot Technologies rows from other jobs. Taken from the bundled onet-skills snapshot; only Scenario C adds a fictional change.",
+    "job": {
+      "code": "15-1252.00",
+      "title": "Software Developers"
+    },
+    "flagSets": [
+      {
+        "id": "30.2",
+        "releases": [
+          "30.2"
+        ],
+        "month": "2026-02",
+        "zipUrl": "https://www.onetcenter.org/dl_files/database/db_30_2_text.zip",
+        "zipSha256": "b5479271931796b838f7173dc0f673a9ec961b7833ac87168fd11e92e7453741",
+        "fileSha256": "a6e7ea1fb368659a3a8ffe2895d8343cbe80b61efbb2db39cb3cb0f9bd56d3b4",
+        "rows": [
+          {
+            "code": "11-1011.00",
+            "example": "Microsoft Excel",
+            "elementId": "43232110",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "11-1011.00",
+            "example": "Microsoft Office software",
+            "elementId": "43231513",
+            "elementName": "Office suite software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "11-1011.00",
+            "example": "SAP software",
+            "elementId": "43231602",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "11-3031.03",
+            "example": "Microsoft Power BI",
+            "elementId": "43232314",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "13-1075.00",
+            "example": "ServiceNow",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "AJAX",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Acrobat",
+            "elementId": "43232202",
+            "elementName": "Document management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe After Effects",
+            "elementId": "43232103",
+            "elementName": "Video creation and editing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Creative Cloud software",
+            "elementId": "43232102",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Illustrator",
+            "elementId": "43232102",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe InDesign",
+            "elementId": "43232112",
+            "elementName": "Desktop publishing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Photoshop",
+            "elementId": "43232102",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Alteryx software",
+            "elementId": "43232314",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon DynamoDB",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Elastic Compute Cloud EC2",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Redshift",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Web Services AWS CloudFormation",
+            "elementId": "43232806",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Web Services AWS software",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Ansible software",
+            "elementId": "43231511",
+            "elementName": "Expert system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Airflow",
+            "elementId": "43231517",
+            "elementName": "Procedure management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Cassandra",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Hadoop",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Hive",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Kafka",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Maven",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Spark",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Subversion SVN",
+            "elementId": "43232203",
+            "elementName": "File versioning software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Tomcat",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apple iOS",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apple macOS",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian Bitbucket",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian Confluence",
+            "elementId": "43231507",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian JIRA",
+            "elementId": "43232201",
+            "elementName": "Content workflow software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Bash",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Bootstrap",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Border Gateway Protocol BGP",
+            "elementId": "43232908",
+            "elementName": "Switch or router software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C#",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C++",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Cascading style sheets CSS",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Chef",
+            "elementId": "43232401",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Cisco Webex",
+            "elementId": "43233502",
+            "elementName": "Video conferencing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Django",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Docker",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "ESRI ArcGIS software",
+            "elementId": "43233506",
+            "elementName": "Map creation software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Eclipse IDE",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Elasticsearch",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Extensible markup language XML",
+            "elementId": "43232403",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Figma",
+            "elementId": "43232404",
+            "elementName": "Graphical user interface development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Git",
+            "elementId": "43232203",
+            "elementName": "File versioning software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GitHub",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GitLab",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Go",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Analytics",
+            "elementId": "43232307",
+            "elementName": "Data mining software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Android",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Angular",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Docs",
+            "elementId": "43232104",
+            "elementName": "Word processing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Sheets",
+            "elementId": "43232110",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GraphQL",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Hibernate ORM",
+            "elementId": "43232311",
+            "elementName": "Object oriented data base management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Hypertext markup language HTML",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM DB2",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM SPSS Statistics",
+            "elementId": "43232605",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM Terraform",
+            "elementId": "43232401",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM WebSphere MQ",
+            "elementId": "43232806",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Informatica software",
+            "elementId": "43232310",
+            "elementName": "Metadata management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JUnit",
+            "elementId": "43232406",
+            "elementName": "Program testing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JavaScript",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JavaScript Object Notation JSON",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Jenkins CI",
+            "elementId": "43232403",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Kubernetes",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Linux",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Marketo Marketing Automation",
+            "elementId": "43231514",
+            "elementName": "Sales and marketing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft .NET Framework",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft ASP.NET",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Access",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Active Directory",
+            "elementId": "43232704",
+            "elementName": "Internet directory services software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Active Server Pages ASP",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Azure software",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Excel",
+            "elementId": "43232110",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Office software",
+            "elementId": "43231513",
+            "elementName": "Office suite software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Outlook",
+            "elementId": "43233501",
+            "elementName": "Electronic mail software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Power Automate",
+            "elementId": "43232403",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Power BI",
+            "elementId": "43232314",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft PowerPoint",
+            "elementId": "43232106",
+            "elementName": "Presentation software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft PowerShell",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Project",
+            "elementId": "43231507",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server Integration Services SSIS",
+            "elementId": "43232403",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server Reporting Services SSRS",
+            "elementId": "43232305",
+            "elementName": "Data base reporting software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SharePoint",
+            "elementId": "43232202",
+            "elementName": "Document management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Team Foundation Server",
+            "elementId": "43231507",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Teams",
+            "elementId": "43231507",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visio",
+            "elementId": "43231518",
+            "elementName": "Process mapping and design software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Basic",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Basic for Applications VBA",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Studio",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Windows",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Windows Server",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Word",
+            "elementId": "43232104",
+            "elementName": "Word processing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "MongoDB",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "MySQL",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "NoSQL",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Node.js",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Operating system software",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": false,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Cloud software",
+            "elementId": "43232806",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Database",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Java",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Java 2 Platform Enterprise Edition J2EE",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle PL/SQL",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle PeopleSoft",
+            "elementId": "43231602",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Primavera Enterprise Project Portfolio Management",
+            "elementId": "43231507",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle SQL Developer",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PHP",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Perl",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PostgreSQL",
+            "elementId": "43232311",
+            "elementName": "Object oriented data base management software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Puppet",
+            "elementId": "43232401",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PyTorch",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Python",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "R",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "RESTful API",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": false,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "React",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Red Hat Enterprise Linux",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Red Hat OpenShift",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Redis",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Ruby",
+            "elementId": "43232402",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAP ERP",
+            "elementId": "43231602",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAP software",
+            "elementId": "43231602",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAS",
+            "elementId": "43232605",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Salesforce software",
+            "elementId": "43232303",
+            "elementName": "Customer relationship management CRM software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Scala",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Selenium",
+            "elementId": "43232406",
+            "elementName": "Program testing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "ServiceNow",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Shell script",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Slack",
+            "elementId": "43233513",
+            "elementName": "Cloud-based data access and sharing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Snowflake",
+            "elementId": "43232307",
+            "elementName": "Data mining software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Splunk Enterprise",
+            "elementId": "43232806",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Spring Boot",
+            "elementId": "43232701",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Spring Framework",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Structured query language SQL",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Swift",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Tableau",
+            "elementId": "43232314",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "TensorFlow",
+            "elementId": "43232605",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Teradata Database",
+            "elementId": "43232304",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "The MathWorks MATLAB",
+            "elementId": "43232605",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Transact-SQL",
+            "elementId": "43232306",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Trimble SketchUp Pro",
+            "elementId": "43232102",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "TypeScript",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "UNIX",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "UNIX Shell",
+            "elementId": "43233004",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Vue.js",
+            "elementId": "43232408",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "WordPress",
+            "elementId": "43232107",
+            "elementName": "Web page creation and editing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Workday software",
+            "elementId": "43231602",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Zoom",
+            "elementId": "43233502",
+            "elementName": "Video conferencing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "jQuery",
+            "elementId": "43232405",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          }
+        ]
+      },
+      {
+        "id": "30.3",
+        "releases": [
+          "30.3",
+          "31.0"
+        ],
+        "month": "2026-05",
+        "zipUrl": "https://www.onetcenter.org/dl_files/database/db_30_3_text.zip",
+        "zipSha256": "7758ec966fd91895b3d290b83c9f1f1d46730d37fdda4faac67104d1c0d2a780",
+        "fileSha256": "3fd63fb00251af89bf55eb1d24986e654ff61d0e5214fc238fbb56da7b4c4f4c",
+        "rows": [
+          {
+            "code": "11-1011.00",
+            "example": "Microsoft Excel",
+            "elementId": "2.E.4.i",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "11-1011.00",
+            "example": "Microsoft Office software",
+            "elementId": "2.E.1.k",
+            "elementName": "Office suite software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "11-1011.00",
+            "example": "SAP software",
+            "elementId": "2.E.2.b",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "11-3031.03",
+            "example": "Microsoft Power BI",
+            "elementId": "2.E.6.m",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "13-1075.00",
+            "example": "ServiceNow",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "AJAX",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Acrobat",
+            "elementId": "2.E.5.b",
+            "elementName": "Document management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe After Effects",
+            "elementId": "2.E.4.c",
+            "elementName": "Video creation and editing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Creative Cloud software",
+            "elementId": "2.E.4.b",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Illustrator",
+            "elementId": "2.E.4.b",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe InDesign",
+            "elementId": "2.E.4.k",
+            "elementName": "Desktop publishing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Adobe Photoshop",
+            "elementId": "2.E.4.b",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Alteryx software",
+            "elementId": "2.E.6.m",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon DynamoDB",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Elastic Compute Cloud EC2",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Redshift",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Web Services AWS CloudFormation",
+            "elementId": "2.E.11.e",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Amazon Web Services AWS software",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Ansible software",
+            "elementId": "2.E.1.i",
+            "elementName": "Expert system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Airflow",
+            "elementId": "2.E.1.o",
+            "elementName": "Procedure management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Cassandra",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Hadoop",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Hive",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Kafka",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Maven",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Spark",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Subversion SVN",
+            "elementId": "2.E.5.c",
+            "elementName": "File versioning software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apache Tomcat",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apple iOS",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Apple macOS",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian Bitbucket",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian Confluence",
+            "elementId": "2.E.1.e",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Atlassian JIRA",
+            "elementId": "2.E.5.a",
+            "elementName": "Content workflow software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Bash",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Bootstrap",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Border Gateway Protocol BGP",
+            "elementId": "2.E.12.g",
+            "elementName": "Switch or router software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C#",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "C++",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Cascading style sheets CSS",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Chef",
+            "elementId": "2.E.7.a",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Cisco Webex",
+            "elementId": "2.E.16.b",
+            "elementName": "Video conferencing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Django",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Docker",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "ESRI ArcGIS software",
+            "elementId": "2.E.16.e",
+            "elementName": "Map creation software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Eclipse IDE",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Elasticsearch",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Extensible markup language XML",
+            "elementId": "2.E.7.c",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Figma",
+            "elementId": "2.E.7.d",
+            "elementName": "Graphical user interface development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Git",
+            "elementId": "2.E.5.c",
+            "elementName": "File versioning software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GitHub",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GitLab",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Go",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Analytics",
+            "elementId": "2.E.6.g",
+            "elementName": "Data mining software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Android",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Angular",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Docs",
+            "elementId": "2.E.4.d",
+            "elementName": "Word processing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Looker Analytics",
+            "elementId": "2.E.6.m",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Google Sheets",
+            "elementId": "2.E.4.i",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Grafana Labs Grafana Cloud",
+            "elementId": "2.E.7.d",
+            "elementName": "Graphical user interface development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "GraphQL",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Hibernate ORM",
+            "elementId": "2.E.6.j",
+            "elementName": "Object oriented data base management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Hypertext markup language HTML",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM DB2",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM SPSS Statistics",
+            "elementId": "2.E.9.d",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM Terraform",
+            "elementId": "2.E.7.a",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "IBM WebSphere MQ",
+            "elementId": "2.E.11.e",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Informatica software",
+            "elementId": "2.E.6.i",
+            "elementName": "Metadata management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JUnit",
+            "elementId": "2.E.7.f",
+            "elementName": "Program testing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JavaScript",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "JavaScript Object Notation JSON",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Jenkins CI",
+            "elementId": "2.E.7.c",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Kubernetes",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Linux",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Marketo Marketing Automation",
+            "elementId": "2.E.1.l",
+            "elementName": "Sales and marketing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft .NET Framework",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft ASP.NET",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Access",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Active Directory",
+            "elementId": "2.E.10.d",
+            "elementName": "Internet directory services software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Active Server Pages ASP",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Azure software",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Excel",
+            "elementId": "2.E.4.i",
+            "elementName": "Spreadsheet software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Office software",
+            "elementId": "2.E.1.k",
+            "elementName": "Office suite software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Outlook",
+            "elementId": "2.E.16.a",
+            "elementName": "Electronic mail software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Power Automate",
+            "elementId": "2.E.7.c",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Power BI",
+            "elementId": "2.E.6.m",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Power Platform software",
+            "elementId": "2.E.7.c",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft PowerPoint",
+            "elementId": "2.E.4.f",
+            "elementName": "Presentation software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft PowerShell",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Project",
+            "elementId": "2.E.1.e",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server Integration Services SSIS",
+            "elementId": "2.E.7.c",
+            "elementName": "Enterprise application integration software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SQL Server Reporting Services SSRS",
+            "elementId": "2.E.6.e",
+            "elementName": "Data base reporting software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft SharePoint",
+            "elementId": "2.E.5.b",
+            "elementName": "Document management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Team Foundation Server",
+            "elementId": "2.E.1.e",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Teams",
+            "elementId": "2.E.1.e",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visio",
+            "elementId": "2.E.1.p",
+            "elementName": "Process mapping and design software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Basic",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Basic for Applications VBA",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Visual Studio",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Windows",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Windows Server",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Microsoft Word",
+            "elementId": "2.E.4.d",
+            "elementName": "Word processing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "MongoDB",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "MySQL",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "NoSQL",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Node.js",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Cloud software",
+            "elementId": "2.E.11.e",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Database",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Java",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Java 2 Platform Enterprise Edition J2EE",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle PL/SQL",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle PeopleSoft",
+            "elementId": "2.E.2.b",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle Primavera Enterprise Project Portfolio Management",
+            "elementId": "2.E.1.e",
+            "elementName": "Project management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Oracle SQL Developer",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PHP",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Perl",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PostgreSQL",
+            "elementId": "2.E.6.j",
+            "elementName": "Object oriented data base management software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Prometheus",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Puppet",
+            "elementId": "2.E.7.a",
+            "elementName": "Configuration management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "PyTorch",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Python",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "R",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "RESTful API",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": false,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "React",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Red Hat Enterprise Linux",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Red Hat OpenShift",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Redis",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Ruby",
+            "elementId": "2.E.7.b",
+            "elementName": "Development environment software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAP ERP",
+            "elementId": "2.E.2.b",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAP software",
+            "elementId": "2.E.2.b",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "SAS",
+            "elementId": "2.E.9.d",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Salesforce software",
+            "elementId": "2.E.6.c",
+            "elementName": "Customer relationship management CRM software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Scala",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Selenium",
+            "elementId": "2.E.7.f",
+            "elementName": "Program testing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "ServiceNow",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Shell script",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Slack",
+            "elementId": "2.E.16.i",
+            "elementName": "Cloud-based data access and sharing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Snowflake",
+            "elementId": "2.E.6.g",
+            "elementName": "Data mining software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Splunk Enterprise",
+            "elementId": "2.E.11.e",
+            "elementName": "Cloud-based management software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Spring Boot",
+            "elementId": "2.E.10.a",
+            "elementName": "Application server software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Spring Framework",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Structured query language SQL",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Swift",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Tableau",
+            "elementId": "2.E.6.m",
+            "elementName": "Business intelligence and data analysis software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "TensorFlow",
+            "elementId": "2.E.9.d",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Teradata Database",
+            "elementId": "2.E.6.d",
+            "elementName": "Data base management system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "The MathWorks MATLAB",
+            "elementId": "2.E.9.d",
+            "elementName": "Analytical or scientific software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Transact-SQL",
+            "elementId": "2.E.6.f",
+            "elementName": "Data base user interface and query software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Trimble SketchUp Pro",
+            "elementId": "2.E.4.b",
+            "elementName": "Graphics or photo imaging software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "TypeScript",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": true
+          },
+          {
+            "code": "15-1252.00",
+            "example": "UNIX",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "UNIX Shell",
+            "elementId": "2.E.13.c",
+            "elementName": "Operating system software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Vue.js",
+            "elementId": "2.E.7.h",
+            "elementName": "Web platform development software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "WordPress",
+            "elementId": "2.E.4.g",
+            "elementName": "Web page creation and editing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Workday software",
+            "elementId": "2.E.2.b",
+            "elementName": "Enterprise resource planning ERP software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "Zoom",
+            "elementId": "2.E.16.b",
+            "elementName": "Video conferencing software",
+            "hot": true,
+            "inDemand": false
+          },
+          {
+            "code": "15-1252.00",
+            "example": "jQuery",
+            "elementId": "2.E.7.e",
+            "elementName": "Object or component oriented development software",
+            "hot": true,
+            "inDemand": false
+          }
+        ]
+      }
+    ]
   }
 }

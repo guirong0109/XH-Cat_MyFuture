@@ -275,11 +275,16 @@ const adminActions = {
     radarStale()
     reloadAdmin(adminMsg('status', { kind: 'ok', key: 'rdAdminCleaned', vars: { deleted: out.data.deleted.length, refused: out.data.refused.length } }), 'admMsg-status')
   },
-  admScen: (scen) => setAdmin({ scen: scen === 'B' ? 'B' : 'A' }, `demoScen${scen === 'B' ? 'B' : 'A'}`),
+  admScen: (scen) => {
+    const id = scen === 'B' || scen === 'C' ? scen : 'A'
+    setAdmin({ scen: id }, `demoScen${id}`)
+  },
   demoApply: async (scen) => {
     const report = adminUi().report
     let body
-    if (scen === 'B') {
+    if (scen === 'C') {
+      body = { scenario: 'C' }
+    } else if (scen === 'B') {
       body = { scenario: 'B', factor: Number(fieldValue('demoFactor')) }
     } else {
       const edits = judgeEdits(report, [...document.querySelectorAll('[data-demo-cell]')].map((input) => [input.dataset.demoCell, input.value]))

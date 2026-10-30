@@ -451,6 +451,21 @@ describe('judge Trend Change Test (spec §9)', () => {
     clean(html)
   })
 
+  it('Scenario C: a third button and a report that names the new In Demand skill with its US / software labels and source link', async () => {
+    const c = await judge.apply({ scenario: 'C' })
+    expect(c.ok).toBe(true)
+    const controls = judgeView({ t, state: judgeState({ scen: 'C' }), data: { report: initial.data, now: NOW.getTime() } })
+    expect(controls).toMatch(/<button id="demoScenC"[^>]*aria-pressed="true"/)
+    expect(controls).toContain(t('rdScenC'))
+    expect(text(controls)).toContain(t('rdJudgeCNote', { skill: 'Microsoft Playwright', job: '15-1252.00' }))
+    const html = judgeView({ t, state: judgeState(), data: { report: c.data, now: NOW.getTime() } })
+    expect(html).toContain('Microsoft Playwright · 15-1252.00')
+    expect(html).toContain(t('rdSkLabelUs'))
+    expect(html).toContain(t('rdSkLabelSoftware'))
+    expect(html).toContain('https://www.onetonline.org/link/summary/15-1252.00')
+    await judge.reset()
+  })
+
   it('Scenario A report: manifest ids, changed observation, classification with rule text (R16), affected entities, no rankings', () => {
     const r = afterA.data
     const html = judgeView({ t, state: judgeState(), data: { report: r, now: NOW.getTime() } })

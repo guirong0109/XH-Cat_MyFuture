@@ -4,7 +4,7 @@
 // scopedStore(store, 'demo/')). No production manifest, reference decision or other session is ever read.
 //
 // createDemoService({store, base, references, now, config, devStore}) →
-//   {start(sessionId), apply(sessionId, {scenario: 'A'|'B', edits?: [{entityId, period, value}], factor?}),
+//   {start(sessionId), apply(sessionId, {scenario: 'A'|'B'|'C', edits?: [{entityId, period, value}], factor?}),
 //    diff(sessionId) → report, reset(sessionId) → report, end(sessionId)}
 //   end: the judge signed out; that session's data under demo/<id>/ is deleted at once, freeing its slot.
 //   base, references: an object or a loader (called once; a failed load is retried next time).
@@ -21,11 +21,13 @@ import { diffSnapshots } from '../../shared/radar/diff.js'
 import { validateSnapshot } from '../../shared/radar/validate.js'
 import { dosmSnapshotObservations, dosmTableFromSnapshot, openalexCounts } from '../../shared/radar/snapshot.js'
 import { OPENALEX_METRIC, OPENALEX_REFERENCE_ID, OPENALEX_UNIT } from '../../shared/radar/pipeline.js'
+import { ONET_SKILLS_SOURCE_ID, ONET_SKILLS_SYSTEM, setObservations } from '../../shared/radar/onetSkills.js'
 import { t } from '../../shared/i18n.js'
 import { scopedStore } from './store/scoped.js'
 
 const SESSION_ID = /^[0-9a-f]{32}$/
 const SOURCES = ['dosm', 'openalex']
+const ALL_SOURCES = [...SOURCES, ONET_SKILLS_SOURCE_ID] // Scenario C changes the O*NET skills snapshot; A and B never do
 const BASE_MANIFEST = 'demo-manifest-0'
 const JSON_TYPE = 'application/json'
 const BREAK_LABEL = 'Possible structural break'
@@ -92,8 +94,32 @@ function baseSnapshots(base) {
       ...Object.keys(o.reference).sort().map((year) => ({ entityType: 'reference', entityId: OPENALEX_REFERENCE_ID, period: year, metric: OPENALEX_METRIC, unit: OPENALEX_UNIT, value: o.reference[year] })),
     ],
   }
-  return { dosm, openalex }
+  const snapshots = { dosm, openalex }
+  if (base.onetSkills?.flagSets?.length) snapshots[ONET_SKILLS_SOURCE_ID] = onetSkillsBase(base.onetSkills)
+  return snapshots
 }
+
+// Real O*NET flag rows of the demo job (and a few Hot rows), as the current and the earlier release set (spec §7).
+function onetSkillsBase(o) {
+  const flagSets = clone(o.flagSets)
+  const current = flagSets[flagSets.length - 1]
+  const latest = current.releases[current.releases.length - 1]
+  return {
+    sourceId: ONET_SKILLS_SOURCE_ID,
+    snapshotId: `demo-${ONET_SKILLS_SOURCE_ID}-0`,
+    synthetic: true,
+    fetchedAt: null,
+    classification: { system: ONET_SKILLS_SYSTEM, version: latest, readAt: null },
+    sourceUrls: flagSets.map((s) => ({ label: `O*NET ${s.id} database (zip)`, url: s.zipUrl })),
+    meta: { flagSets, revisions: [] },
+    observations: onetObservations(flagSets, latest),
+  }
+}
+
+const onetObservations = (flagSets, latest) => [
+  ...flagSets.flatMap(setObservations),
+  { entityType: 'release', entityId: 'latest', period: latest, metric: 'release_checked', unit: 'release', value: 1 },
+]
 
 // The bundled (version-controlled) reference data with the one synthetic topic in place of the real six.
 const demoReferences = (references, base) => ({ ...references, topics: [{ ...base.openalex.topic }] })
@@ -127,6 +153,24 @@ function applyJump(snapshots, scenario, factor) {
   }
   const bad = next.dosm.observations.some((o) => o.value !== null && !Number.isFinite(o.value))
   return { next, errors: bad ? [{ code: 'bad_value', path: 'factor' }] : [] }
+}
+
+// Scenario C: one In Demand row for the scenario's job and skill is added to the current flag set; rows and observations
+// are rebuilt together so they agree. A snapshot without flag sets (an older session) is refused.
+function applyInDemand(snapshots, scenario) {
+  const next = clone(snapshots)
+  const snap = next[ONET_SKILLS_SOURCE_ID]
+  const sets = snap?.meta?.flagSets
+  if (!sets?.length || !scenario?.code || !scenario?.example) return { next, errors: [{ code: 'not_configured', path: 'scenarios.C' }] }
+  const current = sets[sets.length - 1]
+  const row = current.rows.find((r) => r.code === scenario.code && r.example === scenario.example)
+  if (row) row.inDemand = true
+  else {
+    current.rows.push({ code: scenario.code, example: scenario.example, elementId: scenario.elementId, elementName: scenario.elementName, hot: false, inDemand: true })
+    current.rows.sort((a, b) => cmp(a.code, b.code) || cmp(a.example, b.example))
+  }
+  snap.observations = onetObservations(sets, current.releases[current.releases.length - 1])
+  return { next, errors: [] }
 }
 
 // ---- report -----------------------------------------------------------------------------------------------------
@@ -222,8 +266,8 @@ function buildReport({ session, stored, base, references, config, devStore }) {
     change: stored.previous ? after.change : null,
     manifests: { before: before.manifestId, after: after.manifestId },
     snapshots: {
-      before: Object.fromEntries(SOURCES.map((s) => [s, before.snapshots[s].snapshotId])),
-      after: Object.fromEntries(SOURCES.map((s) => [s, after.snapshots[s].snapshotId])),
+      before: Object.fromEntries(ALL_SOURCES.filter((s) => before.snapshots[s]).map((s) => [s, before.snapshots[s].snapshotId])),
+      after: Object.fromEntries(ALL_SOURCES.filter((s) => after.snapshots[s]).map((s) => [s, after.snapshots[s].snapshotId])),
     },
     observations: stored.previous ? observationChanges(before, after) : [],
     changedSignals,
@@ -335,7 +379,7 @@ export function createDemoService({ store, base, references, now = () => new Dat
     const { base: b, references: refs } = await inputs()
     const body = plainObject(request) ? request : {}
     const scenario = body.scenario
-    if (scenario !== 'A' && scenario !== 'B') throw new DemoError('bad_request')
+    if (scenario !== 'A' && scenario !== 'B' && scenario !== 'C') throw new DemoError('bad_request')
     const defs = b.scenarios ?? {}
     let result
     let change
@@ -344,6 +388,9 @@ export function createDemoService({ store, base, references, now = () => new Dat
       if (!Array.isArray(edits) || edits.length === 0) throw new DemoError('bad_request')
       result = applyEdits(stored.current.snapshots, edits)
       change = { edits: clone(edits) }
+    } else if (scenario === 'C') {
+      result = applyInDemand(stored.current.snapshots, defs.C)
+      change = { code: defs.C?.code, example: defs.C?.example }
     } else {
       const factor = body.factor === undefined ? defs.B?.defaultFactor : body.factor
       if (typeof factor !== 'number' || !Number.isFinite(factor) || factor <= 0) throw new DemoError('bad_request')
@@ -353,7 +400,7 @@ export function createDemoService({ store, base, references, now = () => new Dat
     // Validation first, as in production: a refused change keeps the last state.
     const errors = [...result.errors]
     if (!errors.length) {
-      for (const sourceId of SOURCES) {
+      for (const sourceId of ALL_SOURCES.filter((s) => result.next[s])) {
         const check = validateSnapshot(result.next[sourceId])
         errors.push(...check.errors.map((e) => ({ ...e, sourceId })))
       }
@@ -362,7 +409,7 @@ export function createDemoService({ store, base, references, now = () => new Dat
 
     const seq = stored.seq + 1
     const snapshots = {}
-    for (const sourceId of SOURCES) {
+    for (const sourceId of ALL_SOURCES.filter((s) => result.next[s])) {
       const previous = stored.current.snapshots[sourceId]
       const next = result.next[sourceId]
       const d = diffSnapshots(previous, next)

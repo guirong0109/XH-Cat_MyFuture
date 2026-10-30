@@ -17,10 +17,37 @@ const quarterNumber = (q) => {
   return m ? Number(m[1]) * 4 + Number(m[2]) : null
 }
 
-export const releasePageUrl = (quarter) => {
-  const m = QUARTER.exec(quarter)
-  return `${SITE}/portal-main/release-content/${SLUG}-q${m[2]}${m[1]}`
+// The DOSM URLs of one quarter ("2025 Q3"); null for anything else. The only place these patterns live: the admin
+// break review gets its links from the server (server/radar/adminRoutes.js), never from a pattern in the browser.
+const quarterUrl = (kind) => (quarter) => {
+  const m = QUARTER.exec(String(quarter ?? ''))
+  return m ? `${SITE}/portal-main/${kind}/${SLUG}-q${m[2]}${m[1]}` : null
 }
+export const releasePageUrl = quarterUrl('release-content')
+export const releaseArchiveUrl = quarterUrl('release-archive')
+
+// One archive line: <a href="...">DD.MM.YYYY - ... Job Market Insights...[,] <First|...> Quarter of YYYY</a>
+const LISTING_LINE = /(?:<a\b[^>]*\bhref="([^"]*)"[^>]*>\s*)?(\d{2})\.(\d{2})\.(\d{4}) - ([^<]*?Job Market Insights[^<]*?,?\s*(First|Second|Third|Fourth) Quarter of (\d{4}))\s*(?=<|$)/gi
+
+function scanListing(text) {
+  return [...String(text ?? '').matchAll(LISTING_LINE)].map((m) => ({
+    href: m[1] ?? null,
+    entry: { quarter: `${m[7]} Q${ORDINALS[m[6].toLowerCase()]}`, title: m[5].trim(), publishedAt: `${m[4]}-${m[3]}-${m[2]}` }
+  }))
+}
+
+// Listing entries as stored: {quarter, title, publishedAt} only, valid quarters only, sorted by quarter (then date).
+export function cleanListing(listing) {
+  if (!Array.isArray(listing)) return []
+  return listing
+    .filter((e) => e && QUARTER.test(e.quarter ?? '') && typeof e.title === 'string')
+    .map((e) => ({ quarter: e.quarter, title: e.title, publishedAt: typeof e.publishedAt === 'string' ? e.publishedAt : null }))
+    .sort((a, b) => quarterNumber(a.quarter) - quarterNumber(b.quarter) || String(a.publishedAt ?? '').localeCompare(String(b.publishedAt ?? '')))
+}
+
+// Every Job Market Insights entry of a release archive page (spec 6.2: listing evidence for the break review, such
+// as the title change at 2025 Q3, kept as evidence and never as a cause).
+export const parseDosmListing = (text) => cleanListing(scanListing(text).map((x) => x.entry))
 
 // File name from the URL path when it has one (a release-document-log link has none).
 const dataFileName = (url) => {
@@ -29,7 +56,8 @@ const dataFileName = (url) => {
 }
 
 // Snapshot + original from workbook bytes and the release metadata (shared by fetchSnapshot and the bootstrap).
-export function dosmSnapshotFromWorkbook(bytes, release, { pageUrl, dataUrl, fetchedAt }) {
+// listing: the archive entries read with this release (optional; defaults to release.listing), stored as meta.listing.
+export function dosmSnapshotFromWorkbook(bytes, release, { pageUrl, dataUrl, fetchedAt, listing = release.listing }) {
   let table
   try {
     table = parseDosmJmi(bytes)
@@ -61,7 +89,8 @@ export function dosmSnapshotFromWorkbook(bytes, release, { pageUrl, dataUrl, fet
       publishedAt: release.publishedAt ?? null,
       pageUrl,
       dataUrl,
-      listingTitle: release.listingTitle ?? release.title ?? null
+      listingTitle: release.listingTitle ?? release.title ?? null,
+      listing: cleanListing(listing)
     },
     observations: dosmSnapshotObservations(table)
   }
@@ -94,26 +123,25 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
     const active = QUARTER.exec(activeQuarter ?? '')
     if (!active) throw new TypeError('activeQuarter must look like "2026 Q2"')
     const activeOrdinal = quarterNumber(activeQuarter)
-    const text = await getText(`${SITE}/portal-main/release-archive/${SLUG}-q${active[2]}${active[1]}`)
-
-    // <a href="…">DD.MM.YYYY - … Job Market Insights…, <First|…> Quarter of YYYY</a>
-    const line = /(?:<a\b[^>]*\bhref="([^"]*)"[^>]*>\s*)?(\d{2})\.(\d{2})\.(\d{4}) - ([^<]*?Job Market Insights[^<]*?,\s*(First|Second|Third|Fourth) Quarter of (\d{4}))\s*(?=<|$)/gi
+    const text = await getText(releaseArchiveUrl(activeQuarter))
+    const lines = scanListing(text)
     let best = null
-    for (const m of text.matchAll(line)) {
-      const quarter = `${m[7]} Q${ORDINALS[m[6].toLowerCase()]}`
-      const ordinal = quarterNumber(quarter)
+    for (const { href, entry } of lines) {
+      const ordinal = quarterNumber(entry.quarter)
       if (ordinal <= activeOrdinal || (best && ordinal >= best.ordinal)) continue
-      let pageUrl = releasePageUrl(quarter)
-      if (m[1]) {
+      let pageUrl = releasePageUrl(entry.quarter)
+      if (href) {
         try {
-          const u = new URL(m[1], SITE)
+          const u = new URL(href, SITE)
           if (u.origin === SITE) pageUrl = u.href
         } catch {
           // keep the constructed URL
         }
       }
-      best = { ordinal, release: { quarter, title: m[5].trim(), publishedAt: `${m[4]}-${m[3]}-${m[2]}`, pageUrl } }
+      best = { ordinal, release: { ...entry, pageUrl } }
     }
+    // The whole listing travels with the release and is stored on the snapshot (meta.listing) as break evidence.
+    if (best) best.release.listing = cleanListing(lines.map((x) => x.entry))
     return best ? { status: 'new', release: best.release } : { status: 'none' }
   }
 

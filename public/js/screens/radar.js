@@ -198,7 +198,8 @@ function banners(t, state, data) {
   if (u.gone) out.push(`<div class="banner b-bad" role="alert"><div>${esc(t('rdErr_manifest_gone'))}</div>${reload}</div>`)
   const newer = u.newerManifestId || (data && data.activeManifestId && data.activeManifestId !== data.manifestId ? data.activeManifestId : null)
   if (!u.gone && newer) out.push(`<div class="banner b-info" role="status"><div>${esc(t('rdNewData'))}</div>${reload}</div>`)
-  if (data?.devStore) out.push(`<div class="banner b-warn"><div>${esc(t('rdDevStore'))}</div></div>`)
+  // Kept from the last answer (u.devStore) so it stays up while loading, after an error or manifest_gone (spec §7).
+  if (data?.devStore || u.devStore) out.push(`<div class="banner b-warn"><div>${esc(t('rdDevStore'))}</div></div>`)
   return out.join('')
 }
 

@@ -7,7 +7,8 @@
 // POST /api/admin/radar/refresh/:source source = exactly 'openalex' or 'dosm'; once per 5 minutes per source
 // GET  /api/admin/radar/mappings        field-topic proposals with the newest stored decision, and the review history
 // POST /api/admin/radar/mappings        {mappingId, decision: approved|rejected|revise, note, evidence[]}
-// GET  /api/admin/radar/breaks          possible breaks of the active manifest, and the review history
+// GET  /api/admin/radar/breaks          possible breaks of the active manifest (each with the DOSM listing titles of
+//                                       its quarter and the one before, and the release links), and the review history
 // POST /api/admin/radar/breaks          {period, observationHash, decision: confirmed|dismissed_counts|dismissed_shares|
 //                                       annotate, note, evidence[]} → review + recalculation into a new manifest
 // GET  /api/admin/radar/export          approved mappings and all review records, as JSON for committing
@@ -24,6 +25,7 @@ import { originOk, sendAccessError } from './access.js'
 import { demoErrorCode, sendDemoError } from './demoRoutes.js'
 import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
+import { releaseArchiveUrl, releasePageUrl } from './sources/dosm.js'
 import {
   BREAK_DECISIONS,
   MAPPING_DECISIONS,
@@ -43,6 +45,35 @@ const SCANNED = Object.freeze(['prod/manifests/', 'prod/snapshots/', 'prod/signa
 const MAX_PERIOD = 20
 const MAX_HASH = 4000
 const OK_OUTCOMES = new Set(['published', 'no_change'])
+const QUARTER = /^(\d{4}) Q([1-4])$/
+
+// "2025 Q3" -> "2025 Q2"; "2025 Q1" -> "2024 Q4"; null for anything else.
+function quarterBefore(period) {
+  const m = QUARTER.exec(String(period ?? ''))
+  if (!m) return null
+  const q = Number(m[2])
+  return q === 1 ? `${Number(m[1]) - 1} Q4` : `${m[1]} Q${q - 1}`
+}
+
+// Spec 6.2: the DOSM release listing (stored on the DOSM snapshot as meta.listing) is evidence for the break review,
+// never a cause. Each possible break gets the listing entries of the quarter before and of the flagged quarter, and the
+// release links built by the source adapter's own URL builders (the browser has no copy of the pattern).
+export function breakWithEvidence(brk, listing) {
+  const entries = Array.isArray(listing) ? listing : []
+  const entry = (quarter) => {
+    const e = entries.find((x) => x?.quarter === quarter && typeof x.title === 'string')
+    return e
+      ? { quarter, status: 'listed', title: e.title, publishedAt: typeof e.publishedAt === 'string' ? e.publishedAt : null }
+      : { quarter, status: 'not_in_listing', title: null, publishedAt: null }
+  }
+  const before = quarterBefore(brk?.period)
+  const page = releasePageUrl(brk?.period)
+  return {
+    ...brk,
+    evidence: { listing: before ? [entry(before), entry(brk.period)] : [] },
+    releaseLinks: page ? { page, listing: releaseArchiveUrl(brk.period) } : null,
+  }
+}
 // Cleanup safety margin for clock skew between instances: ids and createdAt come from each instance's own clock, so a
 // publish still in progress on an instance whose clock runs behind can look older than the active manifest. Anything
 // stamped within SKEW_MS before the active manifest's createdAt (or later) is treated as possibly in progress and kept.
@@ -399,7 +430,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
       sourceId: 'dosm',
       snapshotId: view.manifest.snapshots?.dosm ?? null,
       breakReviewsVersion: view.manifest.breakReviewsVersion ?? null,
-      breaks: view.signals.breaks ?? [],
+      breaks: (view.signals.breaks ?? []).map((b) => breakWithEvidence(b, view.snapshots?.dosm?.meta?.listing)),
       reviews,
     })
   }))

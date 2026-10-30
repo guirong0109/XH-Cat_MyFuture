@@ -114,9 +114,11 @@ function setRadar(patch) {
 async function loadRadar(manifestId) {
   state.radar = { ...radarUi(), loading: true, error: null, gone: false }
   const out = await radarApi.load(manifestId)
+  // devStore is remembered from the last answer that said it, so the banner stays up without data (spec §7).
+  const devStore = out.data?.devStore ?? out.devStore ?? radarUi().devStore
   if (out.reload) state.radar = { ...radarUi(), loading: false, gone: true }
-  else if (!out.ok) state.radar = { ...radarUi(), loading: false, error: out.code ?? 'network' }
-  else state.radar = { ...radarUi(), loading: false, data: out.data, newerManifestId: null }
+  else if (!out.ok) state.radar = { ...radarUi(), loading: false, error: out.code ?? 'network', devStore }
+  else state.radar = { ...radarUi(), loading: false, data: out.data, newerManifestId: null, devStore }
   if (state.screen === 'radar') render()
 }
 // Open the evidence panel at once with the signal already loaded; then ask for it again with the same manifest id.
@@ -167,9 +169,17 @@ async function loadJudge() {
   if (!out.ok) return adminFailed('judge', out)
   setAdmin({ loading: false, report: out.data }, 'admTop')
 }
+// The key boxes show the development store banner too (spec §7): read once from the public manifest answer on open.
+async function checkStore() {
+  adminUi().devStore = null
+  const out = await radarApi.storeInfo()
+  adminUi().devStore = out.ok ? out.devStore : null
+  if (out.ok && out.devStore && (state.screen === 'admin' || state.screen === 'judge')) render()
+}
 function ensureAdmin(screen) {
   const a = adminUi()
   a.session = adminApi.session()
+  if (a.devStore === undefined) checkStore()
   if (a.loading) return
   if (screen === 'admin' && a.session?.role === 'admin' && !a.data && !a.msgs?.status) {
     a.loading = true

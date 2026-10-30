@@ -4,20 +4,6 @@
 // reload (then the user signs in again). Every request that changes something sends it as X-Radar-CSRF.
 // Every call returns { ok:true, data } or { ok:false, code, retryable, errors?, result? }.
 
-const DOSM_SITE = 'https://www.dosm.gov.my'
-const DOSM_SLUG = 'big-data-analytics-job-market-insights'
-const QUARTER = /^(\d{4}) Q([1-4])$/
-
-// The DOSM release page and the release listing (archive) for one quarter, as the source adapter builds them.
-export function dosmReleaseLinks(period) {
-  const m = QUARTER.exec(String(period ?? ''))
-  if (!m) return null
-  return {
-    page: `${DOSM_SITE}/portal-main/release-content/${DOSM_SLUG}-q${m[2]}${m[1]}`,
-    listing: `${DOSM_SITE}/portal-main/release-archive/${DOSM_SLUG}-q${m[2]}${m[1]}`,
-  }
-}
-
 const webLink = (url) => {
   try {
     const u = new URL(url)
@@ -93,14 +79,15 @@ export function createRadarAdminApi({ base = '', fetchImpl = (...args) => fetch(
       return call('POST', '/api/admin/radar/mappings', { mappingId, decision, note: note.trim(), evidence: [] })
     },
 
-    // brk: the flagged break as listed (period, observationHash). Evidence: the DOSM release page and the release
-    // listing of that quarter, plus the reviewer's own link (http/https only).
+    // brk: the flagged break as listed (period, observationHash, releaseLinks). Evidence: the DOSM release page and the
+    // release listing of that quarter as the server built them (GET /api/admin/radar/breaks), plus the reviewer's own
+    // link (http/https only).
     async decideBreak({ brk, decision, note, link = '' }) {
       if (needNote(note)) return { ok: false, code: 'note_required', retryable: false }
       const extra = String(link ?? '').trim()
       if (extra && !webLink(extra)) return { ok: false, code: 'bad_link', retryable: false }
-      const release = dosmReleaseLinks(brk?.period)
-      const evidence = [...(release ? [release.page, release.listing] : []), ...(extra ? [extra] : [])]
+      const release = [brk?.releaseLinks?.page, brk?.releaseLinks?.listing].filter((url) => typeof url === 'string' && webLink(url))
+      const evidence = [...release, ...(extra ? [extra] : [])]
       return call('POST', '/api/admin/radar/breaks', { period: brk?.period, observationHash: brk?.observationHash, decision, note: note.trim(), evidence })
     },
 

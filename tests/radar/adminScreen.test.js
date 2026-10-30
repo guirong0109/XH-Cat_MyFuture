@@ -167,6 +167,24 @@ describe('sign-in and session (spec §8.1)', () => {
     const off = { ...data, status: { ...data.status, devStore: false }, public: { ...data.public, devStore: false } }
     expect(adminView({ t, state: adminState(), data: off })).not.toContain(t('rdDevStore'))
   })
+
+  it('the key-box screens (#admin, #judge) show the banner from the public manifest answer, before any sign-in', async () => {
+    const out = await radarApi.storeInfo({ base })
+    expect(out).toEqual({ ok: true, devStore: true })
+    const signedOut = (devStore) => ({ lang: 'en', radarAdmin: { devStore } })
+    const adminBox = adminView({ t, state: signedOut(out.devStore), data: null })
+    expect(adminBox).toContain('id="admKey"')
+    expect(adminBox).toContain(t('rdDevStore'))
+    const judgeBox = judgeView({ t, state: signedOut(out.devStore), data: { report: null } })
+    expect(judgeBox).toContain('id="admKey"')
+    expect(judgeBox).toContain(t('rdDevStore'))
+    for (const html of [adminView({ t, state: signedOut(false), data: null }), judgeView({ t, state: signedOut(false), data: { report: null } })]) {
+      expect(html).not.toContain(t('rdDevStore'))
+    }
+    // Signed in, while the data is still loading, the remembered answer keeps the banner up.
+    expect(adminView({ t, state: { lang: 'en', radarAdmin: { session: admin.session(), devStore: true, loading: true } }, data: null })).toContain(t('rdDevStore'))
+    expect(judgeView({ t, state: { lang: 'en', radarAdmin: { session: judge.session(), devStore: true, loading: true } }, data: { report: null } })).toContain(t('rdDevStore'))
+  })
 })
 
 describe('admin review (spec §8.2, §8.4)', () => {
@@ -227,6 +245,47 @@ describe('admin review (spec §8.2, §8.4)', () => {
     const b = data.breaks.breaks[i]
     expect(html).toContain(`${b.groupsSameWay}/${b.eligibleGroups}`)
     expect(html).toMatch(/<textarea[^>]*id="admBrkNote"[^>]*required/)
+  })
+
+  it('the 2025 Q3 break shows the listing titles of 2025 Q2 and 2025 Q3 side by side, with the server release links', async () => {
+    const data = await adminData()
+    const b = data.breaks.breaks.find((x) => x.period === '2025 Q3')
+    const html = adminView({ t, state: adminState(), data })
+    const titles = html.match(/<table class="rd-brk-titles[^"]*"[\s\S]*?<\/table>/g) ?? []
+    const q3 = titles.find((tb) => tb.includes('2025 Q3') && tb.includes('2025 Q2'))
+    expect(q3).toBeTruthy()
+    expect(unesc(q3)).toContain('Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025')
+    expect(unesc(q3)).toContain('Big Data Analytics: Job Market Insights, Third Quarter of 2025')
+    expect(q3.indexOf('2025 Q2')).toBeLessThan(q3.indexOf('2025 Q3'))
+    expect(html).toContain(t('rdBrkEvTitles'))
+    // A quarter the listing does not reach says so.
+    expect(html).toContain(t('rdBrkEvNotListed'))
+    // The links come from the server answer (no URL pattern in the browser).
+    const moved = structuredClone(data)
+    moved.breaks.breaks.find((x) => x.period === '2025 Q3').releaseLinks = { page: 'https://www.dosm.gov.my/page-from-server', listing: 'https://www.dosm.gov.my/listing-from-server' }
+    const out = adminView({ t, state: adminState(), data: moved })
+    expect(out).toContain('https://www.dosm.gov.my/page-from-server')
+    expect(out).toContain('https://www.dosm.gov.my/listing-from-server')
+    expect(out).not.toContain('release-archive/big-data-analytics-job-market-insights-q32025')
+    expect(b.releaseLinks.page).toBe('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025')
+  })
+
+  it('listing titles are escaped', async () => {
+    const data = structuredClone(await adminData())
+    const b = data.breaks.breaks.find((x) => x.period === '2025 Q3')
+    b.evidence.listing[0].title = '<img src=x onerror=alert(1)>"q'
+    b.evidence.listing[1].publishedAt = '<b>2026</b>'
+    const html = adminView({ t, state: adminState(), data })
+    expect(html).not.toContain('<img src=x')
+    expect(html).not.toContain('<b>2026</b>')
+    expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;&quot;q')
+  })
+
+  it('the browser has no DOSM URL builder of its own', async () => {
+    const mod = await import('../../public/js/radarAdminApi.js')
+    expect(mod.dosmReleaseLinks).toBeUndefined()
+    expect(readFileSync('public/js/radarAdminApi.js', 'utf8')).not.toContain('dosm.gov.my')
+    expect(readFileSync('public/js/screens/radarAdmin.js', 'utf8')).not.toContain('dosm.gov.my')
   })
 
   it('a break decision sends the evidence links and reports where it applies', async () => {

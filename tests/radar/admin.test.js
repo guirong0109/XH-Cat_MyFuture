@@ -16,7 +16,7 @@ import { loadReviews, recordReview } from '../../server/radar/reviews.js'
 const ENV = { RADAR_ADMIN_KEY: 'admin-key-for-tests-0123456789', RADAR_DEMO_KEY: 'demo-key-for-tests-9876543210', RADAR_SESSION_SECRET: 's'.repeat(40) }
 const MIN = 60000
 const bundleStore = createFileStore('data/radar/bundle')
-const BUNDLE_ACTIVE = 'manifest-20261030T060700.206Z-b09a0a5b'
+const BUNDLE_ACTIVE = 'manifest-20261030T072642.885Z-ca493e95'
 
 let references
 beforeAll(async () => {
@@ -274,6 +274,31 @@ describe('field-topic decisions', () => {
 })
 
 describe('break reviews', () => {
+  it('each possible break carries the listing titles of its quarter and the one before, and server-built release links (spec 6.2)', async () => {
+    await start()
+    const session = await login()
+    const list = await call('GET', '/api/admin/radar/breaks', { session })
+    expect(list.status).toBe(200)
+    const q3 = list.body.breaks.find((b) => b.period === '2025 Q3')
+    expect(q3.evidence.listing).toEqual([
+      { quarter: '2025 Q2', status: 'listed', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26' },
+      { quarter: '2025 Q3', status: 'listed', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28' },
+    ])
+    expect(q3.releaseLinks).toEqual({
+      page: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025',
+      listing: 'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q32025',
+    })
+    // A quarter older than the archive listing reaches: said so, never guessed.
+    const q2020 = list.body.breaks.find((b) => b.period === '2020 Q2')
+    expect(q2020.evidence.listing).toEqual([
+      { quarter: '2020 Q1', status: 'not_in_listing', title: null, publishedAt: null },
+      { quarter: '2020 Q2', status: 'not_in_listing', title: null, publishedAt: null },
+    ])
+    // The stored signals are not changed by the answer (evidence is added per request).
+    const again = await call('GET', '/api/admin/radar/breaks', { session })
+    expect(again.body.breaks.find((b) => b.period === '2025 Q3')).toEqual(q3)
+  })
+
   it('a review is tied to the exact event and is applied by a recalculation into a new manifest', async () => {
     const { store } = await start()
     const session = await login()
@@ -431,7 +456,7 @@ describe('orphans and cleanup', () => {
     const { store } = await start()
     const session = await login()
     await call('GET', '/api/radar/manifest')
-    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T06:07:00.206Z
+    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T07:26:42.885Z
     const publish = async (stamp, iso, nonce) => {
       const keys = {
         snapshot: KEYS.snapshot('openalex', `openalex-${stamp}`),
@@ -444,9 +469,9 @@ describe('orphans and cleanup', () => {
       return keys
     }
     // Written by an instance whose clock runs a few minutes behind: still possibly in progress.
-    const skewed = await publish('20261030T060200.206Z', '2026-10-30T06:02:00.206Z', 'skew0001')
+    const skewed = await publish('20261030T072142.885Z', '2026-10-30T07:21:42.885Z', 'skew0001')
     // Clearly older than any plausible skew: a left-over.
-    const stale = await publish('20261030T054700.206Z', '2026-10-30T05:47:00.206Z', 'stale001')
+    const stale = await publish('20261030T070642.885Z', '2026-10-30T07:06:42.885Z', 'stale001')
     const status = await call('GET', '/api/admin/radar/status', { session })
     expect(status.body.orphans).toEqual(Object.values(stale).sort())
     const r = await call('POST', '/api/admin/radar/cleanup', { session })

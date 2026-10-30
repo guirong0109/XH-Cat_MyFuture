@@ -597,6 +597,9 @@ export default {
   rdBrkEvRelease: "Halaman keluaran DOSM {period}", // translation: owner review
   rdBrkEvListing: "Senarai keluaran DOSM {period} (menunjukkan tajuk setiap keluaran)", // translation: owner review
   rdBrkEvTitle: "Tajuk senarai bagi keluaran yang diimport: “{title}”. Perubahan tajuk antara keluaran ialah bukti, bukan punca.", // translation: owner review
+  rdBrkEvTitles: "Tajuk keluaran dalam senarai DOSM (bukti, bukan punca)", // translation: owner review
+  rdBrkEvNotListed: "Tiada dalam senarai keluaran", // translation: owner review
+  rdBrkEvPublished: "diterbitkan {date}", // translation: owner review
   rdBreakApplied: "Keputusan disimpan dan diterapkan: versi data baharu {manifest}.", // translation: owner review
   rdBreakNextRefresh: "Keputusan disimpan. Ia berkuat kuasa pada muat semula seterusnya.", // translation: owner review
   rdDecided: "Keputusan disimpan.", // translation: owner review

@@ -597,6 +597,9 @@ export default {
   rdBrkEvRelease: "DOSM 发布页面 {period}", // translation: owner review
   rdBrkEvListing: "DOSM 发布列表 {period}（显示每次发布的标题）", // translation: owner review
   rdBrkEvTitle: "已导入发布的列表标题：“{title}”。各次发布之间的标题变化是证据，而不是原因。", // translation: owner review
+  rdBrkEvTitles: "DOSM 发布列表中的发布标题（是证据，不是原因）", // translation: owner review
+  rdBrkEvNotListed: "不在发布列表中", // translation: owner review
+  rdBrkEvPublished: "发布于 {date}", // translation: owner review
   rdBreakApplied: "决定已保存并已应用：新数据版本 {manifest}。", // translation: owner review
   rdBreakNextRefresh: "决定已保存，将在下次刷新时应用。", // translation: owner review
   rdDecided: "决定已保存。", // translation: owner review

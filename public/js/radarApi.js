@@ -25,7 +25,7 @@ export async function load(manifestId, { base = '' } = {}) {
   )
   if ([occ, refs, sources].some(gone)) return { reload: true }
   const failed = [occ, refs, sources].find((out) => !out.ok)
-  if (failed) return { ok: false, code: failed.code, retryable: failed.retryable }
+  if (failed) return { ok: false, code: failed.code, retryable: failed.retryable, devStore: Boolean(first.data.devStore) }
   const answers = [first.data, occ.data, refs.data, sources.data]
   return {
     ok: true,
@@ -40,6 +40,14 @@ export async function load(manifestId, { base = '' } = {}) {
       sources: sources.data.sources ?? [],
     },
   }
+}
+
+// storeInfo() → { ok:true, devStore } | { ok:false, code }: the public manifest answer says whether the server runs on
+// the development store (spec §7); the #admin and #judge key boxes read it on open (no key or session involved).
+export async function storeInfo({ base = '' } = {}) {
+  const out = await api('GET', `${base}/api/radar/manifest`)
+  if (!out.ok) return { ok: false, code: out.code, retryable: out.retryable }
+  return { ok: true, devStore: Boolean(out.data?.devStore) }
 }
 
 // signal(id, manifestId) → { ok:true, signal, activeManifestId } | { reload:true } | { ok:false, code }

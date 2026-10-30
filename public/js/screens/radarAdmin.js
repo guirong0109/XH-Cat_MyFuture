@@ -6,12 +6,11 @@
 // adminView({t, state, data}): data = {public (radarApi.load data), status, mappings, breaks, now?}
 // judgeView({t, state, data}):  data = {report (demo before/after report), now?}
 // UI state: state.radarAdmin = {session: {role, expiresAt}, msgs: {signin|map|brk|status|refresh|judge: msg}, notes,
-//                               scen: 'A'|'B', exported}
+//                               scen: 'A'|'B', exported, devStore (from GET /api/radar/manifest on open)}
 import { esc, tag } from '../ui.js'
 import { DASH, finite, fmt, fmtSigned } from '../components/charts/format.js'
 import { fmtDate, fmtInt, fmtPct, fmtSignedPct, ruleText, safeUrl, srcLink, statusTag } from '../components/evidencePanel.js'
 import { statusCards } from './radar.js'
-import { dosmReleaseLinks } from '../radarAdminApi.js'
 import { RADAR_CONFIG } from '../../../shared/radar/config.js'
 
 const SOURCE_NAMES = { openalex: 'OpenAlex', dosm: 'DOSM' }
@@ -121,13 +120,26 @@ function mappingCard(t, state, data) {
 
 // ---------- admin: break review ----------
 
+// The DOSM listing titles of the quarter before and the flagged quarter, side by side (spec 6.2: evidence, not a cause).
+function listingTitles(t, b) {
+  const entries = (b.evidence?.listing ?? []).filter((e) => e && typeof e.quarter === 'string')
+  if (!entries.length) return ''
+  const cell = (e) => (e.status === 'listed' && typeof e.title === 'string'
+    ? `${esc(e.title)}${e.publishedAt ? `<div class="tiny muted">${esc(t('rdBrkEvPublished', { date: e.publishedAt }))}</div>` : ''}`
+    : `<span class="muted">${esc(t('rdBrkEvNotListed'))}</span>`)
+  return `<li><b>${esc(t('rdBrkEvTitles'))}</b>
+    <table class="rd-brk-titles small"><tr>${entries.map((e) => `<th scope="col">${esc(e.quarter)}</th>`).join('')}</tr>
+    <tr>${entries.map((e) => `<td>${cell(e)}</td>`).join('')}</tr></table></li>`
+}
+
 function breakEvidence(t, b, data, reviews) {
   const items = []
-  const release = dosmReleaseLinks(b.period)
-  if (release) {
-    items.push(`<li>${srcLink({ label: t('rdBrkEvRelease', { period: b.period }), url: release.page })}</li>`)
-    items.push(`<li>${srcLink({ label: t('rdBrkEvListing', { period: b.period }), url: release.listing })}</li>`)
-  }
+  // Links built by the server (the source adapter's URL builders); the browser keeps no copy of the pattern.
+  const release = b.releaseLinks ?? {}
+  if (safeUrl(release.page)) items.push(`<li>${srcLink({ label: t('rdBrkEvRelease', { period: b.period }), url: release.page })}</li>`)
+  if (safeUrl(release.listing)) items.push(`<li>${srcLink({ label: t('rdBrkEvListing', { period: b.period }), url: release.listing })}</li>`)
+  const titles = listingTitles(t, b)
+  if (titles) items.push(titles)
   const occ = data.public?.occ
   if (occ?.listingTitle) {
     const link = (occ.sourceLinks ?? []).find((l) => safeUrl(l?.url))
@@ -244,7 +256,7 @@ function exportCard(t, state) {
 export function adminView({ t, state, data }) {
   const u = ui(state)
   const head = `<h1 id="admTop" tabindex="-1">${esc(t('rdAdminTitle'))}</h1><p class="lead">${esc(t('rdAdminLead'))}</p>`
-  const dev = devBanner(t, Boolean(data?.status?.devStore || data?.public?.devStore))
+  const dev = devBanner(t, Boolean(data?.status?.devStore || data?.public?.devStore || u.devStore))
   if (!signedIn(state, 'admin')) return `<div class="rd rd-admin">${head}${dev}${signInCard(t, state, 'admin')}</div>`
   const session = `<div class="row rd-session">${tag('calc', t('rdAdminSignedIn', { minutes: minutesLeft(u.session?.expiresAt, nowOf(data)) }))}
     <button class="btn sm" data-act="admSignOut">${esc(t('rdAdminSignOut'))}</button>
@@ -401,7 +413,7 @@ export function judgeView({ t, state, data }) {
   const u = ui(state)
   const report = data?.report ?? null
   const head = `<h1 id="admTop" tabindex="-1">${esc(t('rdJudgeTitle'))}</h1><p>${tag('self', t('rdJudgeTag'))}</p>`
-  const dev = devBanner(t, Boolean(report?.devStore))
+  const dev = devBanner(t, Boolean(report?.devStore || u.devStore))
   if (!signedIn(state, 'demo')) return `<div class="rd rd-judge">${head}${dev}${signInCard(t, state, 'demo')}</div>`
   const session = `<div class="row rd-session">${tag('calc', t('rdJudgeExpires', { minutes: minutesLeft(report?.expiresAt ?? u.session?.expiresAt, nowOf(data)) }))}
     <button class="btn sm" data-act="admSignOut">${esc(t('rdAdminSignOut'))}</button></div>`

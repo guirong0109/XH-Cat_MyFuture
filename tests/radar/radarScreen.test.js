@@ -3,6 +3,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../../server/app.js'
 import { createFileStore } from '../../server/radar/store/file.js'
+import { createMemoryStore } from '../../server/radar/store/memory.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
@@ -11,8 +12,8 @@ import { evidencePanel, ruleVars } from '../../public/js/components/evidencePane
 import { t as translate } from '../../shared/i18n.js'
 
 const t = (key, vars) => translate('en', key, vars)
-const BUNDLE_ACTIVE = 'manifest-20261030T060700.206Z-b09a0a5b'
-const BUNDLE_OLDER = 'manifest-20261030T060700.153Z-fea18e78'
+const BUNDLE_ACTIVE = 'manifest-20261030T072642.885Z-ca493e95'
+const BUNDLE_OLDER = 'manifest-20261030T072642.811Z-e835d961'
 
 let server
 let base
@@ -277,6 +278,39 @@ describe('evidence panel (spec §11.5, ruling R16/R18)', () => {
     expect(ruleVars({ key: 'rdRuleDosmMixedSteps', vars: { pp: null, relativePercent: undefined, agree: 1, clean: 2 } })).toEqual({ pp: '—', relativePercent: '—', agree: '1', clean: '2' })
     expect(ruleVars({ key: 'rdRuleMixedVolatility', vars: { ratio: 1.1, volatility: 17.97, high: 16 } })).toEqual({ ratio: '1.10', volatility: '18.0', high: '16.0' })
     expect(ruleVars({ key: 'rdRuleDosmMixedVolatility', vars: { pp: 0.4, volatility: 1.8512, high: 1.75 } })).toEqual({ pp: '0.40', volatility: '1.85', high: '1.75' })
+  })
+})
+
+describe('development store banner (spec §7)', () => {
+  it('the bundled read-only data shows no banner; a development store answer does', () => {
+    expect(data.devStore).toBe(false)
+    expect(view(ownProfile())).not.toContain(t('rdDevStore'))
+    expect(view(ownProfile(), {}, { ...linked(), devStore: true })).toContain(t('rdDevStore'))
+  })
+
+  it('stays up while loading, after an error and after manifest_gone, once the server has reported devStore', () => {
+    for (const radar of [{ loading: true }, { error: 'store_unavailable' }, { gone: true }]) {
+      expect(radarView({ t, state: { lang: 'en', radar: { ...radar, devStore: true } }, data: null }), JSON.stringify(radar)).toContain(t('rdDevStore'))
+      expect(radarView({ t, state: { lang: 'en', radar }, data: null })).not.toContain(t('rdDevStore'))
+    }
+  })
+
+  it('a development store server answers devStore on the public manifest and every Radar answer', async () => {
+    const references = await loadRadarReferences('data')
+    const store = createMemoryStore()
+    const radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now: () => new Date('2026-10-31T00:00:00Z'), devStore: true, log: () => {} })
+    const dev = createApp({ radar, d1: null, tempStore: null, llmProviders: [], onetLive: null }).listen(0)
+    await new Promise((resolve) => dev.once('listening', resolve))
+    try {
+      const devBase = `http://127.0.0.1:${dev.address().port}`
+      expect(await radarApi.storeInfo({ base: devBase })).toEqual({ ok: true, devStore: true })
+      const out = await radarApi.load(undefined, { base: devBase })
+      expect(out.data.devStore).toBe(true)
+      expect(radarView({ t, state: { lang: 'en', radar: {} }, data: out.data })).toContain(t('rdDevStore'))
+      expect(await radarApi.storeInfo({ base })).toEqual({ ok: true, devStore: false })
+    } finally {
+      await new Promise((resolve) => dev.close(resolve))
+    }
   })
 })
 

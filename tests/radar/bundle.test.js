@@ -69,6 +69,22 @@ describe('bundled Radar data', () => {
     expect(Buffer.compare(bundled.bytes, committed)).toBe(0)
   })
 
+  it('the DOSM snapshot keeps the release archive listing as break evidence (title change at 2025 Q3)', async () => {
+    const { manifest } = await readActive(store)
+    const { dosm } = await snapshotsOf(manifest)
+    const listing = dosm.meta.listing
+    expect(Array.isArray(listing)).toBe(true)
+    const quarters = listing.map((e) => e.quarter)
+    expect(quarters).toEqual([...quarters].sort())
+    const q2 = listing.find((e) => e.quarter === '2025 Q2')
+    const q3 = listing.find((e) => e.quarter === '2025 Q3')
+    expect(q2.title).toContain('and My Job Profile')
+    expect(q3.title).toContain('Job Market Insights')
+    expect(q3.title).not.toContain('and My Job Profile')
+    expect(q3.publishedAt).toBe('2026-04-28')
+    expect(dosm.meta.listingTitle).toBe('Big Data Analytics: Job Market Insights, Second Quarter of 2026')
+  })
+
   it('the previous manifest is consistent with its signals and is not the active one', async () => {
     const active = (await readActive(store)).manifest
     expect(active.previousManifestId).toBeTruthy()

@@ -1,22 +1,26 @@
 // One-time build of the bundled Radar data (spec §4.4, §7): runs the real OpenAlex adapter (live, no key needed) and
-// builds the DOSM snapshot from the committed original workbook, feeds both through the real ingestor against a memory
+// builds the DOSM snapshot from the committed original workbook (with the release archive listing read from the
+// committed saved archive page, kept as break evidence, spec 6.2), feeds both through the real ingestor against a memory
 // store, then dumps every key to data/radar/bundle/ (same layout as prod/). Run: node scripts/radar-bootstrap.mjs
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { createIngestor } from '../server/radar/ingest.js'
 import { createMemoryStore } from '../server/radar/store/memory.js'
 import { createOpenAlexSource } from '../server/radar/sources/openalex.js'
-import { dosmSnapshotFromWorkbook } from '../server/radar/sources/dosm.js'
+import { dosmSnapshotFromWorkbook, parseDosmListing } from '../server/radar/sources/dosm.js'
 import { loadRadarReferences } from '../server/radar/references.js'
 
 const OUT = path.resolve('data/radar/bundle')
 const WORKBOOK = 'data/radar/source/dosm-jmi-2026q2.xlsx'
+// The real release archive page (saved 2026-10-30). The Q2 2026 release is not listed in its own archive.
+const ARCHIVE = 'tests/fixtures/dosm-archive-2026q2.html'
 const RELEASE = {
   quarter: '2026 Q2',
   publishedAt: '2026-08-18',
   pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q22026',
   dataUrl: 'https://www.dosm.gov.my/portal-main/release-document-log?release_document_id=20742',
-  listingTitle: 'Big Data Analytics: Job Market Insights, Second Quarter of 2026'
+  listingTitle: 'Big Data Analytics: Job Market Insights, Second Quarter of 2026',
+  listing: parseDosmListing(await readFile(ARCHIVE, 'utf8'))
 }
 
 const store = createMemoryStore()
@@ -31,6 +35,7 @@ const dosm = {
 const openalex = createOpenAlexSource({ now })
 const ingestor = createIngestor({ store, sources: { openalex, dosm }, references, now })
 
+if (!RELEASE.listing.length) throw new Error('no listing entries in the saved archive page')
 const first = await ingestor.importDosmRelease(RELEASE)
 console.log('dosm:', first.outcome, first.code ?? '')
 if (first.outcome !== 'published') process.exit(1)

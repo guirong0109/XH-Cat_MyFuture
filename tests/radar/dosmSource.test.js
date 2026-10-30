@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
-import { createDosmSource } from '../../server/radar/sources/dosm.js'
+import { createDosmSource, dosmSnapshotFromWorkbook, parseDosmListing, releaseArchiveUrl, releasePageUrl } from '../../server/radar/sources/dosm.js'
 import { SourceError } from '../../server/radar/sourceError.js'
 import { validateSnapshot } from '../../shared/radar/validate.js'
 import { ARCHIVE_URL, DATA_URL, RELEASE_BASE, ARCHIVE_NO_NEW, ARCHIVE_NEW_Q3, RELEASE_PAGE, RELEASE_PAGE_NO_DATA } from '../helpers/dosmPages.js'
 
 const NOW = () => new Date('2026-10-30T10:00:00Z')
 const XLSX = await readFile('data/radar/source/dosm-jmi-2026q2.xlsx')
+const REAL = await readFile('tests/fixtures/dosm-archive-2026q2.html', 'utf8')
 const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 const html = (body, status = 200) => new Response(body, { status, headers: { 'Content-Type': 'text/html' } })
 
@@ -33,12 +34,13 @@ describe('discover', () => {
     const f = fakeFetch({ [ARCHIVE_URL]: html(ARCHIVE_NEW_Q3) })
     const d = await createDosmSource({ fetchImpl: f, now: NOW }).discover('2026 Q2')
     expect(d.status).toBe('new')
-    expect(d.release).toEqual({
+    expect(d.release).toMatchObject({
       quarter: '2026 Q3',
       title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2026',
       publishedAt: '2026-11-19',
       pageUrl: `${RELEASE_BASE}32026`
     })
+    expect(Object.keys(d.release).sort()).toEqual(['listing', 'pageUrl', 'publishedAt', 'quarter', 'title'])
     expect(f.calls[0].url).toBe(ARCHIVE_URL)
     expect(f.calls[0].init.signal).toBeTruthy()
   })
@@ -176,5 +178,57 @@ describe('fetchSnapshot', () => {
   it('rejects a data link on another host', async () => {
     const e = await code(fetchWith(pageWith('<a href="https://evil.example/portal-main/release-document-log?release_document_id=1">d</a>')))
     expect(e.code).toBe('dosm_dataset_missing')
+  })
+})
+
+describe('release listing kept as break evidence (spec 6.2)', () => {
+  it('URL builders: release page and release archive of one quarter', () => {
+    expect(releasePageUrl('2025 Q3')).toBe(`${RELEASE_BASE}32025`)
+    expect(releaseArchiveUrl('2026 Q2')).toBe(ARCHIVE_URL)
+    expect(releasePageUrl('Q3 2025')).toBe(null)
+    expect(releaseArchiveUrl(undefined)).toBe(null)
+  })
+
+  it('parses every Job Market Insights entry of the real saved archive page, sorted by quarter', () => {
+    const listing = parseDosmListing(REAL)
+    for (const e of listing) expect(Object.keys(e).sort()).toEqual(['publishedAt', 'quarter', 'title'])
+    const quarters = listing.map((e) => e.quarter)
+    expect(quarters).toEqual([...quarters].sort((a, b) => a.localeCompare(b)))
+    const byQ = Object.fromEntries(listing.map((e) => [e.quarter, e]))
+    expect(byQ['2025 Q2']).toEqual({ quarter: '2025 Q2', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26' })
+    expect(byQ['2025 Q3']).toEqual({ quarter: '2025 Q3', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28' })
+    expect(byQ['2026 Q1'].publishedAt).toBe('2026-06-25')
+    // Older releases under another name ("Job Vacancies Landscape") are not Job Market Insights entries.
+    expect(listing.some((e) => /Landscape/.test(e.title))).toBe(false)
+    expect(quarters).toContain('2023 Q1')
+    // The Q2 2026 release is not in its own archive listing; that is fine.
+    expect(quarters).not.toContain('2026 Q2')
+  })
+
+  it('discover keeps the whole listing on the release; fetchSnapshot stores it as meta.listing', async () => {
+    const f = fakeFetch({ [ARCHIVE_URL]: html(ARCHIVE_NEW_Q3) })
+    const d = await createDosmSource({ fetchImpl: f, now: NOW }).discover('2026 Q2')
+    expect(d.release.listing.map((e) => e.quarter)).toEqual(['2025 Q1', '2025 Q2', '2025 Q3', '2025 Q4', '2026 Q1', '2026 Q3'])
+    expect(d.release.listing.some((e) => /Labour Force/.test(e.title))).toBe(false)
+    const listing = parseDosmListing(REAL)
+    const routes = { [PAGE_Q2]: html(RELEASE_PAGE), [DATA_URL]: new Response(XLSX, { status: 200, headers: { 'Content-Type': XLSX_TYPE } }) }
+    const { snapshot } = await createDosmSource({ fetchImpl: fakeFetch(routes), now: NOW }).fetchSnapshot({ ...RELEASE, listing })
+    expect(snapshot.meta.listing).toEqual(listing)
+    expect(snapshot.meta.listingTitle).toBe(RELEASE.title)
+    expect(validateSnapshot(snapshot).ok).toBe(true)
+  })
+
+  it('dosmSnapshotFromWorkbook takes an optional listing (sorted, only quarter/title/publishedAt kept)', () => {
+    const opts = { pageUrl: PAGE_Q2, dataUrl: DATA_URL, fetchedAt: NOW().toISOString() }
+    expect(dosmSnapshotFromWorkbook(XLSX, RELEASE, opts).snapshot.meta.listing).toEqual([])
+    const given = [
+      { quarter: '2025 Q3', title: 'B', publishedAt: '2026-04-28', extra: 'dropped' },
+      { quarter: '2025 Q2', title: 'A', publishedAt: '2026-02-26' },
+      { quarter: 'nonsense', title: 'C', publishedAt: '2026-01-01' }
+    ]
+    expect(dosmSnapshotFromWorkbook(XLSX, RELEASE, { ...opts, listing: given }).snapshot.meta.listing).toEqual([
+      { quarter: '2025 Q2', title: 'A', publishedAt: '2026-02-26' },
+      { quarter: '2025 Q3', title: 'B', publishedAt: '2026-04-28' }
+    ])
   })
 })

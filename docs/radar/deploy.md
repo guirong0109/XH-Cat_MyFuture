@@ -69,7 +69,9 @@ prod/active.json                           the only mutable object: {manifestId,
 prod/manifests/<manifestId>.json           immutable manifests (snapshot ids, signals id, versions, previousManifestId)
 prod/snapshots/openalex/<snapshotId>.json  immutable source snapshots
 prod/snapshots/dosm/<snapshotId>.json
-prod/originals/<source>/<sha256>           original downloads (e.g. the DOSM workbook), named by their hash
+prod/snapshots/onet-skills/<snapshotId>.json   O*NET skill flags (one snapshot per release; about 2-4 MB each)
+prod/snapshots/onet-hottech/<snapshotId>.json   Hot Technologies posting counts
+prod/originals/<source>/<sha256>           original downloads (the DOSM workbook, the Hot Technologies HTML page), named by their hash
 prod/signals/<signalsId>.json              radar-signal/v1 signals for a manifest
 prod/reviews/<reviewId>.json               admin decisions (field ↔ topic, break reviews), immutable, newest wins
 prod/ingest-log/<id>.json                  ingestion log: time, source, operation, outcome, code, ids
@@ -80,6 +82,26 @@ demo/<sessionId>/session.json, state.json  judge sessions (synthetic data only),
 - Keys are built only by server code. A judge session can only touch its own `demo/<sessionId>/` folder.
 - Originals are never deleted by the cleanup (their names carry no time stamp). They are small; remove old ones by
   hand only if needed and only if no kept manifest refers to them.
+
+## 5b. Refreshing the O\*NET skill data (admin, `#admin` → Refresh)
+
+Two more refresh routes, both `POST /api/admin/radar/refresh/:source` with the admin session and CSRF check, the
+same rate limit (once per 5 minutes per source) and the same exclusive lock as the others. No API key is needed and
+no AI model is involved.
+
+| Source id | What it does | What it downloads |
+|---|---|---|
+| `onet-skills` | Body `{"release": "31.1"}` (two digits, a dot, one digit). Refused unless newer than the active release (`onet_release_not_newer`, 409; an unknown release gives `onet_release_not_found`, 404). Reads the skills file and stores a new flag snapshot; the compare-with-last-different-release rule (D25) then makes the signals | The release zip `https://www.onetcenter.org/dl_files/database/db_<major>_<minor>_text.zip` (about 13 MB, read in memory, **never stored**; only its URL and SHA-256 are kept). The URL is built by the server, never taken from the request |
+| `onet-hottech` | No body. Reads the Hot Technologies page and stores a posting-count snapshot for its counting window. If the page layout changed it fails closed (`hottech_layout`, 502) | `https://www.onetonline.org/search/hot_tech/` (about 98 KB; stored as an original under its SHA-256) |
+
+- A new release whose skills file is identical to the last one adds nothing to compare; the screen keeps showing the
+  last change and says "unchanged in <release>".
+- **Bundle size:** the bundled `onet-skills` snapshots are about 10.8 MB together (30.3 and 31.0 are near-duplicates).
+  Plan for that in the R2 free allowance and in the first-start copy.
+- **Judge sessions started before this release** have no O\*NET snapshot: Scenario C answers `validation_failed`
+  (`not_configured`) for them. Reset the judge session after deploying (they expire in 2 hours anyway).
+- To rebuild the bundle locally: `ONET_ZIP_DIR=<folder with db_30_2.zip, db_30_3.zip, db_31_0.zip> node
+  scripts/radar-bootstrap.mjs`. Without `ONET_ZIP_DIR` it downloads the three zips (slow).
 
 ## 6. Backups
 

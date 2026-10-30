@@ -22,6 +22,8 @@ rules and how to work here.
 ## State
 - Round 1 is built (plan tasks 1–21 done) and browser-accepted (`docs/radar/acceptance.md`: 27 of 28 pass; F1 phone
   width on Skills & Careers is open). Deployment notes: `docs/radar/deploy.md`. Nothing pushed, merged or deployed.
+- Skill trends from O\*NET are built on top (spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`, D23–D27;
+  643 tests). Detail in `HANDOVER.md` "Skill trends".
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
@@ -32,6 +34,16 @@ rules and how to work here.
   86,512). Merged year headers fill to the right; "-" is not available. Keep the original workbook and its hash.
 - New data needs a `data/SOURCES.md` entry (where from, date, licence) and a hash.
 - BLS files block automated download: never work around it. The owner downloads them.
+
+## Skill trend rules (D23–D27)
+- Every skill item carries both labels: "US job ads (Lightcast via O\*NET), not Malaysian" and "Software and technology skills only".
+- **D25:** compare a release with the most recent earlier release whose flags differ; show both release numbers.
+- **D26:** only changes become signals; "still in demand" lists are reference data.
+- **D27:** eMASCO jobs say "No official link to O\*NET: skill list not available". Never invent a crosswalk.
+- Hot Technologies (`onet-hottech`): `direction: null`, reason `first_snapshot` while one counting window exists. The rule for
+  two windows needs the owner's decision (D24); add no threshold.
+- The 13 MB release zips are never committed; keep URL and SHA-256 in `data/SOURCES.md`. Keep the Hot Technologies original.
+- The user's jobs and skills are matched in the browser; nothing personal goes to the server or the logs.
 
 ## Conventions (same as the rest of the app)
 - **Test first** (Vitest): failing test, watch it fail, implement, run the whole suite. Real servers on port 0.
@@ -47,10 +59,11 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 568 passed (vitest.config.js skips helper worktrees)
+npm test                                           # expect 643 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 11 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
-node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex live, DOSM from the kept workbook)
+node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook)
+ONET_ZIP_DIR=<dir with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # O*NET zips read locally, not downloaded
 python pipeline/fetch_radar_bridge.py              # rebuild data/radar/occupation-bridge.json
 python -I docs/radar/index_analysis.py <out.json>  # re-fetch OpenAlex and recompute the index analysis
 python -I docs/radar/threshold_analysis.py <DOSM xlsx> <openalex cache json>   # threshold calibration

@@ -1,12 +1,14 @@
 # HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 30 Oct 2026. Branch made from `main` at 928f4a7. Nothing pushed or merged.
+Updated 30 Oct 2026 (skill trends added). Branch made from `main` at 928f4a7. Nothing pushed or merged.
 
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
   fixes found on the way.
-- Tests: **568 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
-  **11 Python tests OK** (`python -m unittest discover pipeline/tests`).
+- **Skill trends from O\*NET are built** (9 tasks, spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`,
+  D23–D27; plan `docs/superpowers/plans/2026-10-30-radar-skill-trends.md`). See "Skill trends" below.
+- Tests: **643 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
+  **11 Python tests OK** (`python -m unittest discover pipeline/tests`). Round 1 alone was 568.
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
   Small notes (N1–N6) are listed there for your judgement.
@@ -40,14 +42,50 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 568 passed
+npm test                                    # 643 passed
 python -m unittest discover pipeline/tests  # 11 OK
-node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (fetches OpenAlex live; DOSM from the kept workbook)
+node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook)
+ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each
 ```
 To try admin and judge on your own machine, set these **in the shell or a local `.env` (never committed)**:
 `RADAR_STORE=memory`, `RADAR_ADMIN_KEY=<any>`, `RADAR_DEMO_KEY=<a different value>`,
 `RADAR_SESSION_SECRET=<32 or more characters>`. Every screen then says "Development store — not durable"; everything
 is lost when the server stops. Test on an address nobody else uses (e.g. `127.0.0.2` or `radar.localhost`).
+
+## Skill trends (O\*NET), added 30 Oct 2026
+Software and technology skills that became, or stopped being, "In Demand" in US job ads, from O\*NET. Every skill item
+says "US job ads (Lightcast via O\*NET), not Malaysian" and "Software and technology skills only".
+- **Sources** (both in `data/SOURCES.md` with URL, date, licence CC BY 4.0 and SHA-256): O\*NET database zips 30.2
+  (Feb 2026), 30.3 (May 2026) and 31.0 (Aug 2026), and the O\*NET OnLine Hot Technologies page (saved 30 Oct 2026,
+  Lightcast US postings 1/25 to 12/25, 176 technologies, 46,885,153 postings in total). The zips are not kept; the page
+  original is. 30.3 and 31.0 have the same skills file.
+- **Comparison rule (D25):** a release is compared with the most recent earlier release whose flags differ; both release
+  numbers are shown. So today the comparison is 30.2 → 30.3 and the screen says "unchanged in 31.0". Measured: 5 newly
+  Hot technologies (Google Looker Analytics, Grafana Labs Grafana Cloud, Intuit TurboTax, Microsoft Power Platform
+  software, Prometheus), none dropped; In Demand: 151 added, 219 dropped across all jobs.
+- **Only changes are signals (D26):** the "still in demand" lists are reference data. **eMASCO jobs (D27):** "No official
+  link to O\*NET: skill list not available"; no crosswalk is invented.
+- **Signals** (`docs/radar/contract.md`): `onet:indemand:<code>:<example>`, `onet:hot:<tech>` (rising or declining, `limited`
+  quality) and `onet:postings:<tech>` (counts, direction `null`, reason `first_snapshot`). New `evidenceKind`
+  `skill_posting_flag`, units `flag` and `postings`, export `references.onetSkills`.
+- **Routes:** `GET /api/radar/skills`; `/api/radar/sources` lists four sources; admin `POST /api/admin/radar/refresh/onet-skills`
+  (body `{release}`) and `/onet-hottech` (`docs/radar/deploy.md` §5b).
+- **Screens:** the Skills & Careers middle column is now "Skills in job ads (US, O\*NET)": per own O\*NET job, newly and no
+  longer in demand (with "On your profile" when the skill is on the confirmed profile), still-in-demand collapsed,
+  Hot Technologies became/no longer, and the posting counts with links to the Hot Technologies page. `#admin` has the two
+  refresh rows; judge Scenario C changes one In Demand flag for Software Developers.
+- **Code:** `shared/radar/onetSkills.js`, `server/radar/sources/onetSkills.js` and `onetHotTech.js`, `server/radar/ingest.js`
+  (`refreshOnetRelease`), `server/radar/demo.js`, `public/js/screens/radar.js`.
+
+**Open for you (skill trends)**
+1. **Hot Technologies direction (D24):** the page has one counting window (2025). When the 2026 window appears, decide the
+   rule that turns two counts into rising or falling. Until then direction is empty and no threshold exists.
+2. Review the new Bahasa Melayu and 中文 texts (marked "translation: owner review").
+3. **Bundle size:** the three `onet-skills` snapshots are about 10.8 MB (30.3 and 31.0 nearly the same). Say if you want
+   them trimmed before deploying.
+4. After deploying, restart judge sessions: sessions made before this change have no O\*NET data and Scenario C fails for them.
+5. Small deferred reviewer notes are in `.superpowers/sdd/2026-10-30-radar-skill-trends/progress.md` (for example a
+   two-digit minor release such as 30.10 is not accepted yet).
 
 ## Still needed from you (spec §17)
 1. **BLS crosswalk files** (SOC 2010 ↔ 2018; ISCO-08 ↔ SOC 2010): download them in a browser into

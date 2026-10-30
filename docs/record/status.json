@@ -355,6 +355,57 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 10",
+      "name": "Radar skill trends from O*NET (branch claude/future-radar)",
+      "tasks": [
+        {
+          "title": "T1 Flag snapshots and change signals",
+          "sub": "shared/radar/onetSkills.js · D25 rule · 151 added / 219 dropped, 5 newly Hot",
+          "status": "done"
+        },
+        {
+          "title": "T2 O*NET release source",
+          "sub": "zip adapter · both skills file names · 404 and bad zip handled",
+          "status": "done"
+        },
+        {
+          "title": "T3 Hot Technologies source",
+          "sub": "page parser, fail-closed · 176 technologies · first snapshot, no direction",
+          "status": "done"
+        },
+        {
+          "title": "T4 Ingest, manifest, admin refresh, bundle",
+          "sub": "four sources · release must be newer · bundled 30.2 / 30.3 / 31.0 + Hot page",
+          "status": "done"
+        },
+        {
+          "title": "T5 Public API and export",
+          "sub": "GET /api/radar/skills · references.onetSkills",
+          "status": "done"
+        },
+        {
+          "title": "T6 Skills & Careers screen",
+          "sub": "O*NET column · both labels · On your profile · eMASCO message · every number linked",
+          "status": "done"
+        },
+        {
+          "title": "T7 Admin and source cards",
+          "sub": "two refresh rows · four source cards · error texts in three languages",
+          "status": "done"
+        },
+        {
+          "title": "T8 Judge Scenario C",
+          "sub": "one In Demand flag changes for Software Developers · production untouched",
+          "status": "done"
+        },
+        {
+          "title": "T9 Docs and records",
+          "sub": "SOURCES, contract, deploy, tools declaration, handover, build record · 643 tests",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -393,13 +444,16 @@
     "Future Skills Radar: branch claude/future-radar from main; clickable mockup docs/mockup-radar.html (tabs AI Impact and Skills & Careers, sections A1-A5 and B1-B6, source status and refresh, filters with unsupported ones disabled and explained, evidence panel, Trend Change Test demo panel; every number is sample data). Checked in the browser at desktop and 375 px. Waiting for your review before any code.",
     "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet.",
     "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
-    "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed."
+    "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
+    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed."
   ],
   "waiting": [
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
+    "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
+    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -437,7 +491,9 @@
     "T25: interest areas come from the same O*NET 31.0 zip (Specific Interest Areas.txt, occupational-interest scale); the other O*NET files are unchanged byte for byte — cost: none",
     "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list",
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
-    "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')"
+    "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
+    "D25: a release is compared with the most recent earlier release whose flags differ, both release numbers shown (31.0 equals 30.3, so the comparison is 30.2 to 30.3) - cost: a quiet release shows the last change again",
+    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script"
   ],
   "log": [
     {
@@ -989,6 +1045,36 @@
       "time": "30 Oct",
       "step": "Final review and fixes",
       "detail": "ready; 7 fixes; 568 tests pass; local trial at radar.localhost:3210"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your request",
+      "detail": "add O*NET skill trends to the Radar: which software skills became or stopped being in demand"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar skill trends spec",
+      "detail": "D23-D27 written; comparison rule, only changes as signals, eMASCO jobs with no O*NET link say so"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T1-T3",
+      "detail": "flag snapshots and signals (30.2 to 30.3: 151 added, 219 dropped, 5 newly Hot, 0 dropped Hot); release adapter; Hot Technologies parser"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T4-T5",
+      "detail": "ingest and admin refresh for both sources; bundle with 30.2 / 30.3 / 31.0 and the Hot page; GET /api/radar/skills and export"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T6-T8",
+      "detail": "Skills & Careers O*NET column, admin refresh rows and source cards, judge Scenario C"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T9",
+      "detail": "sources, contract, deploy notes, tools declaration, handover and build record; npm test 643 passed, pipeline 11 OK"
     }
   ]
 }

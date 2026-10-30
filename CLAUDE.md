@@ -1,8 +1,8 @@
 # CLAUDE.md — `claude/career-matching` (detailed)
 
 Read `HANDOVER.md` here first, then the spec `docs/superpowers/specs/2026-10-30-career-matching-design.md` and the
-diagram `docs/architecture-matching.html`. Once the owner approves them, they bind the build: add nothing they do not
-state.
+diagram `docs/architecture-matching.html`. They are approved and bind the build: add nothing they do not state. All 16 plan tasks are built; the final
+whole-branch review is next. Do not touch main's files; the owner decides on merge.
 
 ## Rules (from `main`, all still apply)
 - **One branch per feature.** This branch keeps the detailed `HANDOVER.md` and `CLAUDE.md`. On merge to `main`, update
@@ -30,6 +30,10 @@ state.
 - Read Radar signals as the contract says (`docs/radar/contract.md`, "What Matching may read / must not infer").
 - Only owner-approved SDG links appear; the path contribution is a count of links with reasons, never a score.
 - The profile sent to `/api/matching` is never stored or logged.
+- Matching uses no language model. Its forbidden keys are score, weight, rank, opportunit; the key is `skillMatch`.
+- Rapid AI uses the ISCO code from the code chain only. Suppressed O\*NET rows are left out and the screen says so.
+- Code: `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`. Browser results:
+  `docs/matching/acceptance.md`.
 
 ## Working here
 - Folder `C:\Users\guiro\XH_Cat_Final` is on this branch. `main` is the worktree `C:\Users\guiro\XH_Cat_Final-main`;
@@ -38,7 +42,7 @@ state.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 651 passed (main at b24660e)
+npm install && npm test     # expect 766 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 11 OK
+python -m unittest discover pipeline/tests   # expect 48 OK
 ```

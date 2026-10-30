@@ -1,13 +1,47 @@
 # HANDOVER — `claude/career-matching` (detailed)
 
-Updated 2026-10-30. Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a short version of this file;
+Updated 2026-10-30 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a short version of this file;
 on merge, put only the important points there and do not overwrite it with this one.
 
 ## State
-- **Brainstorming done; spec written; waiting for the owner's review** of
-  `docs/superpowers/specs/2026-10-30-career-matching-design.md` and the diagram `docs/architecture-matching.html`.
-- No code yet. Next: owner approves spec + diagram → implementation plan (`superpowers:writing-plans`) → owner picks
-  how to run it → build test first.
+- **All 16 plan tasks are built and reviewed** (766 Vitest tests, 48 pipeline tests). A **final whole-branch review is
+  next**, then the owner decides on merge. Nothing is pushed or merged.
+- Browser check on real data done by the controller: `docs/matching/acceptance.md` (A1-A13).
+- Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; plan: `docs/superpowers/plans/2026-10-30-career-matching.md`;
+  diagram: `docs/architecture-matching.html`.
+
+### Works today
+Role list (1812 titled eMASCO roles), card text, DOSM job-ad evidence at group level, "not available" messages that
+name the missing step, SDG tags, `#sdg` path tab, owner review of SDG links in `#admin`, and the judge change test
+(tested with a fixture).
+
+### Waits on the owner
+- **BLS crosswalk files** (SOC 2018 to 2010, SOC 2010 to ISCO-08), saved in `data/radar/source/`, then
+  `python pipeline/fetch_radar_bridge.py`. This unlocks Skill Match percentages, the chain, Rapid AI and "In your
+  field". The browser check of those parts must be repeated then (A13 is only covered by tests today).
+- **SDG approvals** of the 126 team-draft links in `#admin`. Until approved, no SDG tag shows.
+- **DOSM 2025 Q3 break review** (Radar). Until then the job-ad parts are "not enough evidence" and most roles sit in
+  band 4.
+- **BM / 中文 wording review** (strings marked "translation: owner review", also the SDG reasons).
+- A live eMASCO refresh (`pipeline/fetch_emasco.py`) only with the owner's go-ahead.
+
+### Rulings made during the build (from the ledger)
+- Matching uses its own forbidden-key pattern (score, weight, rank, opportunit); the key is `skillMatch`.
+- The judge test may inject signals through a service option if the demo base cannot give a sufficient direction; the
+  real path is still wired.
+- Downloads named in the plan (O\*NET zip, ILO, Anthropic, UN API, one eMASCO page) were approved with the plan.
+- `role_details.json` keeps 1814 entries; the list shows the 1812 with a title, the 2 stubs stay as data only.
+- O\*NET rows marked "Recommend Suppress = Y" (24 of 19,851 important items) are left out, and the screen says so.
+- ILO gradient G3 is "mean at least 0.5 and mean plus SD at least 0.5", closing a gap in the plan's reading of Table 5;
+  no real row is affected.
+- Anthropic task usage is the file's `pct`; only the latest monthly slice (May 2026) of release 2026-06-26 is kept.
+- The UN SDG API is asked per goal with `includechildren=true` (the other form returns no targets).
+- The job-ads part carries `evidenceKind` and `granularity` from DOSM, labelled "group level, not this job", and shows no
+  direction unless the evidence is sufficient.
+- With a thin profile (no percentage) the best O\*NET job is the one with the lowest code, so its Moderate AI part is
+  deterministic.
+- Rapid AI uses the ISCO code from the code chain only, never the first four digits of the role code. Until the BLS
+  files are saved it says "not available". The owner may instead approve the ILO file's ISCO-08 list for that check.
 
 ## What this module does
 Ranks Malaysian eMASCO roles for a confirmed profile, with:
@@ -24,7 +58,7 @@ Ranks Malaysian eMASCO roles for a confirmed profile, with:
   `#admin`; "Choose this role" → path contribution as a count of links per goal with reasons ("potential, not
   measured"); SDG filter on the list.
 
-## Owner decisions (30 Oct) — spec §2, M1–M13
+## Owner decisions (30 Oct) — spec §2, M1–M15 (M14 mockup, M15 MASCO to ISCO by the same 4-digit code)
 Old screenshots = look only, new maths · eMASCO roles · copy the 23 Oct crawl **and** write a new crawl script ·
 **official code chain only** (eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O\*NET) · skills + knowledge only · levels-met
 maths · trends only in a separate outlook and bands · ILO + Anthropic for AI exposure · scope = matching + scenarios +
@@ -33,9 +67,7 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 ## Blocking / waiting on the owner
 - **BLS crosswalk files** (SOC 2018 ↔ 2010, SOC 2010 ↔ ISCO-08): BLS blocks automated downloads; the owner saves them in
   `data/radar/source/`. Without them every role shows "Skill Match not available" with the missing step.
-- **Official MASCO 2020 ↔ ISCO-08 source** (also a Radar open point).
-- **SDG draft links** review in `#admin` once built.
-- **DOSM 2025 Q3 possible break** (Radar): until reviewed, most roles sit in band 2 or 4.
+- **Official MASCO 2020 ↔ ISCO-08 source** (also a Radar open point). Today the step uses the same 4-digit code (M15).
 - ILO and Anthropic data licences are recorded at fetch; if one does not allow reuse, ask the owner.
 
 ## Data used (all on `main` unless marked new)
@@ -53,3 +85,22 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 - No AI or word linking between eMASCO and O\*NET; no crosswalk that has no official source.
 - Radar signals never become a score; group trends are never shown as one job's trend.
 - Nothing beyond the approved diagram.
+
+## Commands
+```bash
+npm test                                      # 766 passed
+python -m unittest discover pipeline/tests    # 48 OK
+npm start                                     # http://localhost:3200, tabs #match and #sdg
+python pipeline/fetch_radar_bridge.py         # after the BLS files are saved
+```
+
+## Where things are
+| What | Where |
+|---|---|
+| Engine (chain, fit, outlook, SDG) | `shared/matching/` |
+| API and admin review routes | `server/matching/` (`/api/matching`, SDG review in `adminRoutes.js`) |
+| Screens | `public/js/screens/match.js`, `sdgTab.js`, `public/js/matchApi.js` |
+| Data | `data/emasco/`, `data/onet/requirements.tsv` and `tasks.tsv`, `data/ai/`, `data/sdg/`, `data/radar/occupation-bridge.json` |
+| Pipeline scripts | `pipeline/fetch_emasco.py`, `import_emasco_details.py`, `fetch_ilo.py`, `fetch_aei.py`, `fetch_sdg_targets.py`, `fetch_radar_bridge.py` |
+| Tests | `tests/matching/`, `pipeline/tests/` |
+| Docs | `docs/matching/acceptance.md`, `data/SOURCES.md`, `docs/tools-declaration.md`, `docs/build-record.html` |

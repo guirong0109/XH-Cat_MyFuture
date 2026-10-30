@@ -443,17 +443,22 @@
         },
         {
           "title": "Engine T9-T12",
-          "sub": "chain, fit, outlook, SDG",
-          "status": "todo"
+          "sub": "chain, fit, outlook, SDG; each reviewed",
+          "status": "done"
         },
         {
           "title": "API + screens T13-T15",
-          "sub": "matching API, tabs, admin",
-          "status": "todo"
+          "sub": "matching API, tabs, admin; each reviewed",
+          "status": "done"
         },
         {
           "title": "Acceptance T16",
-          "sub": "browser check, docs",
+          "sub": "browser check A1-A13, docs, handover; 766 tests, pipeline 48 OK",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "whole-branch review, then your decision on merge",
           "status": "todo"
         }
       ]
@@ -1173,6 +1178,46 @@
       "time": "30 Oct",
       "step": "Matching data T1-T8",
       "detail": "eMASCO 1814 entries; O*NET levels 61,880 rows; chain step by same code (pending until BLS files); ILO 427 jobs; Anthropic 2,710 tasks; 17 goals / 169 targets; 126 SDG draft links; each task reviewed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T9",
+      "detail": "code chain from eMASCO to O*NET; a broken chain names the missing step"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T10",
+      "detail": "Skill Match = levels met over levels needed, 'What would raise it' as a share of all needed levels"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T11",
+      "detail": "outlook parts and four bands per AI scenario; trends never change the percentage"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T12",
+      "detail": "SDG links with your decisions stored in the Radar review store"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching API T13",
+      "detail": "/api/matching: profile used, never stored or logged; Rapid AI uses the ISCO code from the chain only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching screens T14",
+      "detail": "Career matching and SDG contribution tabs"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching admin T15",
+      "detail": "your review of SDG links in #admin (approve or reject, note required)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching acceptance T16",
+      "detail": "browser check A1-A13 in docs/matching/acceptance.md; docs, sources, tools declaration, handover; 766 tests, pipeline 48 OK; waits on BLS files, SDG approvals, DOSM break review, BM/中文 review"
     }
   ]
 }

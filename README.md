@@ -69,6 +69,28 @@ python pipeline/fetch_radar_bridge.py       # rebuild the O*NET -> MASCO major g
 | `OPENALEX_API_KEY` | Admin refresh of OpenAlex on a deployed server (`NODE_ENV=production`) |
 | `RADAR_STORE=memory` | Local development only: admin and judge writes kept in memory, lost on restart; refused in production |
 
+## Career matching (branch `claude/career-matching`)
+
+Two tabs, `#match` and `#sdg`. From a confirmed profile it lists Malaysian eMASCO roles and shows, for each one:
+- **Skill Match**: the levels you meet divided by the levels the job needs (O\*NET skills and knowledge), with a
+  sentence, a You-versus-Needed chart and "What would raise it". It is never changed by trends or AI.
+- **Outlook**, kept apart from the percentage: job-ad trend of the role's group (DOSM, group level only), AI in two
+  scenarios (Moderate: observed use, Anthropic Economic Index; Rapid: potential, ILO WP140), in-demand software.
+- **Four bands** per scenario, and **SDG links** (team draft, shown only after the owner approves each link in `#admin`).
+
+The two routes from a role to O\*NET jobs and from a profile to roles:
+1. **Official code chain**: eMASCO, ISCO-08, SOC 2010, SOC 2018, O\*NET. No word matching, no model, no guess; a broken
+   chain says which step is missing.
+2. **Your field**: ISCED-F field of study, CIP, O\*NET, shown first as "In your field".
+
+Data comes from eMASCO, O\*NET 31.0, ILO WP140, the Anthropic Economic Index, DOSM (through the Radar) and the UN SDG
+API; every file, date and licence is in `data/SOURCES.md`. The profile sent to `/api/matching` is never stored or logged.
+
+**What waits on the owner:** the two BLS crosswalk files (until saved in `data/radar/source/`, Skill Match, the chain,
+Rapid AI and "In your field" say "not available yet"), approval of the SDG links, the review of the DOSM 2025 Q3 break,
+and the BM / 中文 wording review. Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; diagram:
+`docs/architecture-matching.html`; browser check: `docs/matching/acceptance.md`.
+
 ## Setting up the outside services (owner)
 
 1. **Cloudflare D1:**

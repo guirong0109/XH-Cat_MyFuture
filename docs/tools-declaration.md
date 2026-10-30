@@ -1,7 +1,7 @@
 # Technical and Tools Declaration — CV extraction and structured profile module, Future Skills Radar
 
 Every outside tool, data set, model and service these modules use or can use, and its status (CV module 29 Oct 2026;
-Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026).
+Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026; Career matching, branch `claude/career-matching`, 30 Oct 2026).
 
 ## Data
 
@@ -15,6 +15,11 @@ Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026).
 | UNESCO ISCED-F 2013, Statistics Canada concordance, O\*NET CIP and SOC crosswalks | Radar personal relevance: field of study → O\*NET jobs → (SOC 2018 → SOC 2010 → ISCO-08 → MASCO major group) | see `data/SOURCES.md` | as listed there | O\*NET → SOC 2018 in use; BLS steps and ISCO-08 → MASCO pending (owner actions) |
 | O\*NET database releases 30.2 (Feb 2026), 30.3 (May 2026), 31.0 (Aug 2026), Software Skills: "In Demand" and "Hot Technology" flags per job | Radar skill trends: which software and technology skills became or stopped being in demand between two releases (US job ads, Lightcast via O\*NET) | Zips from `https://www.onetcenter.org/dl_files/database/db_<v>_text.zip`, downloaded 2026-10-30; zip and file SHA-256 in `data/SOURCES.md`; zips not kept. No AI model involved | CC BY 4.0, USDOL/ETA | In use (bundled). Admin refresh reads a newer release |
 | O\*NET OnLine Hot Technologies page (`onetonline.org/search/hot_tech/`; Lightcast US unique postings, 1/25 to 12/25) | Radar skill trends: posting counts of 176 hot technologies; first counting window, so no direction yet | Saved 2026-10-30, original kept with SHA-256; `robots.txt` allows the page. No AI model involved | CC BY 4.0, USDOL/ETA | In use (bundled). Admin refresh reads the page again |
+| ILO Working Paper 140, "Generative AI and Jobs: A 2025 update" (Gmyrek et al., 20 May 2025): GenAI exposure scores per ISCO-08 occupation (427), file from the lead author's repository `pgmyrek/2025_GenAI_scores_ISCO08` | Career matching, Rapid AI scenario: potential exposure and the paper's Table 5 gradient. Never part of the Skill Match percentage | Downloaded 2026-10-30; SHA-256 of the original and of `data/ai/ilo_wp140.tsv` in `data/ai/manifest.json`; the 2.6 MB original is not kept. No AI model involved | CC BY 4.0 | In use (bundled) |
+| Anthropic Economic Index, Hugging Face dataset `Anthropic/EconomicIndex`, release 2026-06-26 (claude.ai usage per O\*NET task, May 2026 slice) | Career matching, Moderate AI scenario: how much AI is observed in use for the tasks of a job. Never part of the Skill Match percentage | Downloaded 2026-10-30; SHA-256 in `data/ai/manifest.json`; the 219 MB original is not kept. Only published counts are read; no AI model involved | CC-BY (data) | In use (bundled) |
+| UN Statistics Division SDG API (`unstats.un.org/SDGAPI/v1`, one request per goal) | Career matching: official wording of the 17 goals and 169 targets, shown next to each SDG link | Fetched 2026-10-30 into `data/sdg/targets.json`; the team-draft links in `data/sdg/links.json` are written by the team and shown only after the owner approves each one | UN material; terms not stated on the API | In use (bundled) |
+| BLS crosswalks (SOC 2018 to SOC 2010; SOC 2010 to ISCO-08) | Career matching: the official code chain from an eMASCO role to O\*NET jobs. BLS blocks automated downloads | The owner saves the two files in `data/radar/source/`; `pipeline/fetch_radar_bridge.py` then fills the pending steps with SHA-256 per step | US government publication | **Waiting for the owner**. Until then Skill Match, the chain, Rapid AI and "In your field" say "not available yet" |
+| eMASCO role pages (MASCO 2020; description, tasks, skills, tags) | Career matching: role list and card text | Copied from the team's 23 Oct 2026 crawl by `pipeline/import_emasco_details.py` (1,814 entries); new crawl script `pipeline/fetch_emasco.py` for later refreshes, checks `robots.txt` first and fetches one page a second. Display only | Public government reference | In use (bundled). The crawl script has only been run against saved pages in tests; a live refresh needs the owner's go-ahead |
 | Synthetic Radar base (`data/radar/demo/base.json`) | Judge Trend Change Test only (Scenarios A, B and C; C changes one In Demand flag) | written by the team, labelled synthetic on screen | — | In use; every value fictional |
 | Synthetic CVs and labelled terms (`testing/`) | Tests, extraction evaluation, Model Eval | written by the team | — | In use; no real CVs |
 
@@ -56,11 +61,11 @@ Rules for every AI path:
 
 ## Not used
 
-- No scoring or matching method from the team's earlier project. Matching is the next module. The Radar produces no
-  score, weight or ranking.
+- No scoring or matching method from the team's earlier project. The Radar produces no score, weight or ranking.
+- Career matching uses no language model. Skill Match is arithmetic on published O\*NET levels; the AI scenarios read
+  published ILO and Anthropic numbers; roles reach O\*NET only through official code tables, never by word matching.
 - No new npm packages for the Radar: its xlsx reader is built on the app's own zip reader and tested against the real
   DOSM workbook.
-- No AI exposure (ILO, OECD), AI usage (Anthropic Economic Index) or MyCOL data in Radar Round 1 (later rounds, each
-  with its own approval).
+- No AI exposure or AI usage data in Radar Round 1 (career matching reads ILO and Anthropic data instead). No MyCOL data.
 - No OCR: scanned CVs get a clear message and the manual form.
 - No real personal data.

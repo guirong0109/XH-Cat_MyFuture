@@ -330,7 +330,8 @@
     "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
     "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
     "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
-    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen"
+    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
+    "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more"
   ],
   "log": [
     {
@@ -982,6 +983,16 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "reverted a2edfdd; section 2 back to the black and white three columns"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the pixel look is too far from the site; give section 3 the retro look of section 2, keep its layout"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "section 3 as a hairline ledger with roller-counter numbers, no colour; npm test 255 passed; checked in Chrome at 1440 and 500 px"
     }
   ]
 }

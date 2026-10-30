@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { odometer, rollPlan } from '../public/js/components/odometer.js'
-import welcome, { DATA_FACTS, GUIDE_FACTS } from '../public/js/screens/welcome.js'
+import welcome, { DATA_FACTS, GUIDE_FACTS, STAGES } from '../public/js/screens/welcome.js'
 import { t as translate } from '../shared/i18n.js'
 
 describe('roller counter plan', () => {
@@ -51,7 +51,7 @@ describe('roller counter markup', () => {
 
   it('every number on the landing page is a roller counter', () => {
     const html = welcome({ t: (key, vars) => translate('en', key, vars), state: { lang: 'en' } })
-    expect(html.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length + DATA_FACTS.length)
+    expect(html.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length + DATA_FACTS.length + STAGES.length)
     for (const value of [...GUIDE_FACTS.map((fact) => fact.value), '1,016', '1,766', '124', '41']) {
       expect(html).toContain(`<span class="lp-sr">${value}</span>`)
     }

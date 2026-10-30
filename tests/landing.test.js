@@ -88,3 +88,24 @@ describe('landing page', () => {
     }
   })
 })
+
+describe('how it works, in the look of section 2', () => {
+  const howSection = (lang) => { const html = page(lang); return html.slice(html.indexOf('id="how"'), html.indexOf('id="data"')) }
+
+  it('numbers each stage with a roller counter; no pixel art and no accent colours', () => {
+    const how = howSection('en')
+    expect(how.match(/class="odo"/g)).toHaveLength(STAGES.length)
+    STAGES.forEach((stage, i) => expect(how).toContain(`data-odo="stage-${stage.id}"><span class="lp-sr">0${i + 1}</span>`))
+    expect(how).not.toContain('class="px')
+    expect(how).not.toMatch(/--a:var\(--lp-/)
+  })
+
+  it('the working stage shows a six-cell gauge with the built stages filled, in every language', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const how = howSection(lang)
+      expect(how).toContain(translate(lang, 'ldBuilt', { n: 1, total: STAGES.length }))
+      expect(how.match(/class="lp-quest-step[ "]/g)).toHaveLength(STAGES.length)
+      expect(how.match(/class="lp-quest-step on"/g)).toHaveLength(STAGES.filter((stage) => stage.live).length)
+    }
+  })
+})

@@ -2,7 +2,6 @@
 // quoted with their original source; the data counts come from data/ (tests/landing.test.js checks them).
 import { esc } from '../ui.js'
 import { odometer } from '../components/odometer.js'
-import { ICONS, LOCK, SPRITE, pixelArt, pixelDigits } from '../components/pixel.js'
 
 // Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown side by side in the second section.
 export const GUIDE_FACTS = [
@@ -14,12 +13,12 @@ const GAP_POINTS = 56 - 26
 
 // The six stages of the guide's Final Demo Journey (section 4). Only the profile module is built.
 export const STAGES = [
-  { id: 'profile', title: 'ldS1T', text: 'ldS1D', live: true, accent: 'pink' },
-  { id: 'radar', title: 'ldS2T', text: 'ldS2D', accent: 'blue' },
-  { id: 'match', title: 'ldS3T', text: 'ldS3D', accent: 'lime' },
-  { id: 'roadmap', title: 'ldS4T', text: 'ldS4D', accent: 'pink' },
-  { id: 'sdg', title: 'ldS5T', text: 'ldS5D', accent: 'blue' },
-  { id: 'futures', title: 'ldS6T', text: 'ldS6D', accent: 'lime' },
+  { id: 'profile', title: 'ldS1T', text: 'ldS1D', live: true },
+  { id: 'radar', title: 'ldS2T', text: 'ldS2D' },
+  { id: 'match', title: 'ldS3T', text: 'ldS3D' },
+  { id: 'roadmap', title: 'ldS4T', text: 'ldS4D' },
+  { id: 'sdg', title: 'ldS5T', text: 'ldS5D' },
+  { id: 'futures', title: 'ldS6T', text: 'ldS6D' },
 ]
 
 // Row counts of the stored data (see data/SOURCES.md).
@@ -96,17 +95,17 @@ function gap(t) {
 </section>`
 }
 
-// The live card's level path: a block per stage, the player standing on the built one, the rest locked.
+// The working stage's gauge: a cell per stage, filled when that stage is built.
 function quest(t) {
   const built = t('ldBuilt', { n: STAGES.filter((stage) => stage.live).length, total: STAGES.length })
   return `
-   <div class="lp-quest" role="img" aria-label="${esc(built)}">${STAGES.map((stage) => `<span class="lp-quest-step${stage.live ? ' on' : ''}">${
-    stage.live ? pixelArt(SPRITE, 'px-sprite') : pixelArt(LOCK, 'px-lock')}</span>`).join('<i></i>')}</div>
+   <div class="lp-quest" role="img" aria-label="${esc(built)}">${STAGES.map((stage) => `<span class="lp-quest-step${stage.live ? ' on' : ''}"></span>`).join('')}</div>
    <p class="lp-quest-note">${esc(built)}</p>`
 }
 
+// Each stage is numbered with a roller counter, like the figures in the second section.
 function stageCard(t, stage, i) {
-  const n = pixelDigits(String(i + 1).padStart(2, '0'))
+  const n = odometer(String(i + 1).padStart(2, '0'), `stage-${stage.id}`)
   if (stage.live) {
     return `
   <article class="lp-stage lp-stage-live">
@@ -118,16 +117,16 @@ function stageCard(t, stage, i) {
    <div class="lp-live-b">
     <p>${esc(t(stage.text))}</p>
     <ul class="lp-ticks">${['ldS1a', 'ldS1b', 'ldS1c'].map((k) => `<li>${esc(t(k))}</li>`).join('')}</ul>
-    <button class="lp-btn lp-btn-lime" data-go="access">${esc(t('ldBuild'))} <span aria-hidden="true">→</span></button>
+    <button class="lp-btn lp-btn-ink" data-go="access">${esc(t('ldBuild'))} <span aria-hidden="true">→</span></button>
    </div>
   </article>`
   }
   return `
-  <article class="lp-stage" style="--a:var(--lp-${stage.accent});--on:${stage.accent === 'lime' ? 'var(--lp-on-lime)' : '#fffdf8'}">
-   <div class="lp-stage-top"><span class="lp-stage-icon">${pixelArt(ICONS[stage.id], 'px-icon')}</span><span class="lp-num">${n}</span></div>
+  <article class="lp-stage">
+   <div class="lp-stage-top"><span class="lp-num">${n}</span></div>
    <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
    <p>${esc(t(stage.text))}</p>
-   <span class="lp-pill lp-pill-next">${pixelArt(LOCK, 'px-lock')}${esc(t('ldNext'))}</span>
+   <span class="lp-pill lp-pill-next">${esc(t('ldNext'))}</span>
   </article>`
 }
 

@@ -238,7 +238,7 @@ const adminActions = {
       return setAdmin({ notes, ...adminMsg('map', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admMapNote' : 'admMsg-map')
     }
     radarStale()
-    reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-map')
+    reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided', recalculation: out.data?.recalculation }) }, 'admMsg-map')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')

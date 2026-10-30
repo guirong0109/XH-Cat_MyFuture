@@ -23,6 +23,16 @@ export const OPENALEX_REFERENCE_POPULATION = 'OpenAlex works with primary_topic.
 export const DOSM_SHARE_METRIC = 'share_of_online_job_offerings'
 export const GROUP_SYSTEM = 'MASCO 2020 major group'
 
+// The field-topic mapping version a run records (spec §5): the mapping file's version, plus the version of the owner's
+// stored decisions when there are any, e.g. 'radar-field-topics/v1+decisions:decisions-0123456789abcdef'. No file
+// version → null (a missing version is never papered over).
+export function fieldTopicMappingVersion(versions) {
+  const file = versions?.fieldTopics ?? null
+  if (!file) return null
+  const decisions = versions?.fieldTopicDecisions ?? null
+  return decisions ? `${file}+decisions:${decisions}` : file
+}
+
 const QUARTERS_IN_STEPS = 6 // the oldest comparison a DOSM signal uses is Q-2 vs Q-6; volatility goes to Q-3 vs Q-7
 
 const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
@@ -65,7 +75,7 @@ function openalexSignals(snapshot, references, config, manifestId, momentumOut) 
   const Y = lastYearOf(snapshot)
   if (Y === null) return []
   const cs = referenceCounts(snapshot)
-  const mappingVersion = references?.versions?.fieldTopics ?? null
+  const mappingVersion = fieldTopicMappingVersion(references?.versions)
   return (references?.topics ?? []).map((topic) => {
     const id = topic.openalexId
     const counts = openalexCounts(snapshot, id)

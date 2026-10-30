@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { runPipeline } from '../../shared/radar/pipeline.js'
+import { fieldTopicMappingVersion, runPipeline } from '../../shared/radar/pipeline.js'
 import { buildSignal, validateSignal, FORBIDDEN_KEYS } from '../../shared/radar/contract.js'
 import { dependencyReport } from '../../shared/radar/dependencies.js'
 import { realInputs, DOSM_RELEASE_URL, DOSM_DATA_URL } from '../helpers/radarInputs.js'
@@ -68,6 +68,22 @@ describe('radar-signal/v1 from the real bundled inputs', () => {
     expect(Array.isArray(prof.steps)).toBe(true)
     expect(validateSignal({ ...lang, rule: { key: 7, vars: {} } }).ok).toBe(false)
     expect(validateSignal({ ...lang, steps: 'x' }).ok).toBe(false)
+  })
+
+  it('topic signals record the field-topic decisions in mappingVersion (file version + decisions version)', () => {
+    expect(fieldTopicMappingVersion({ fieldTopics: 'radar-field-topics/v1' })).toBe('radar-field-topics/v1')
+    expect(fieldTopicMappingVersion({ fieldTopics: 'radar-field-topics/v1', fieldTopicDecisions: 'decisions-0123456789abcdef' })).toBe('radar-field-topics/v1+decisions:decisions-0123456789abcdef')
+    // No file version: still missing, whatever decisions exist (validation refuses it).
+    expect(fieldTopicMappingVersion({ fieldTopics: null, fieldTopicDecisions: 'decisions-0123456789abcdef' })).toBeNull()
+    expect(fieldTopicMappingVersion(undefined)).toBeNull()
+    const references = { ...inputs.references, versions: { ...inputs.references.versions, fieldTopicDecisions: 'decisions-0123456789abcdef' } }
+    const r = runPipeline({ ...inputs, references })
+    for (const s of r.signals) {
+      expect(validateSignal(s).ok).toBe(true)
+      if (s.signalId.startsWith('openalex:')) expect(s.mappingVersion).toBe(`${inputs.references.versions.fieldTopics}+decisions:decisions-0123456789abcdef`)
+      else expect(s.mappingVersion).toBe(inputs.references.versions.bridge)
+    }
+    for (const s of out.signals) if (s.signalId.startsWith('openalex:')) expect(s.mappingVersion).toBe(inputs.references.versions.fieldTopics)
   })
 
   it('a missing mapping version is not papered over', () => {

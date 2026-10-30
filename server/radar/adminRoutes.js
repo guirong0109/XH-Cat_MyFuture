@@ -25,6 +25,7 @@ import { originOk, sendAccessError } from './access.js'
 import { demoErrorCode, sendDemoError } from './demoRoutes.js'
 import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
+import { fieldTopicMappingVersion } from '../../shared/radar/pipeline.js'
 import { dosmLink, releasePageUrl } from './sources/dosm.js'
 import {
   BREAK_DECISIONS,
@@ -357,6 +358,27 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
   // Every route under /api/admin/radar needs an admin session, unknown ones too.
   router.use('/api/admin/radar', access.require('admin'))
 
+  // A stored review is applied at once by recalculating the active snapshots into a new manifest (the same safe
+  // publish path as a refresh); if that cannot run now, the review stays stored and the next refresh applies it (the
+  // ingestion reads every stored break review and the decided references).
+  async function applyNow() {
+    let recalculation = { outcome: 'failed', code: 'not_configured' }
+    if (typeof radar.ingestor?.recalculate === 'function') {
+      try {
+        recalculation = await exclusive(() => radar.ingestor.recalculate())
+      } catch (error) {
+        recalculation = { outcome: 'failed', code: errorCode(error) }
+      }
+    }
+    const applied = OK_OUTCOMES.has(recalculation?.outcome)
+    return {
+      outcome: recalculation?.outcome ?? 'failed',
+      code: recalculation?.code ?? null,
+      manifestId: recalculation?.manifestId ?? null,
+      appliesAt: applied ? 'now' : 'next_refresh',
+    }
+  }
+
   const decidedReferences = async () => {
     radar.invalidateReviews?.()
     try {
@@ -399,7 +421,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
   router.get('/api/admin/radar/mappings', guard(async (request, response) => {
     const refs = await decidedReferences()
     const reviews = writable() ? await loadReviews(store, 'field_topic') : []
-    return response.json({ mappingVersion: refs.versions?.fieldTopics ?? null, writable: writable(), mappings: refs.fieldTopics ?? [], reviews })
+    return response.json({ mappingVersion: fieldTopicMappingVersion(refs.versions), writable: writable(), mappings: refs.fieldTopics ?? [], reviews })
   }))
 
   router.post('/api/admin/radar/mappings', jsonBody('16kb'), guard(async (request, response) => {
@@ -431,7 +453,9 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     radar.invalidateReviews?.()
     log(`[radar] review recorded: field_topic ${review.reviewId}`)
     const [mapping] = mergeFieldTopicDecisions([proposal], [...reviews, review])
-    return response.status(201).json({ review, mapping })
+    // The new decisions version goes into mappingVersion of a new manifest and its topic signals (spec §5).
+    const recalculation = await applyNow()
+    return response.status(201).json({ review, mapping, recalculation })
   }))
 
   router.get('/api/admin/radar/breaks', guard(async (request, response) => {
@@ -480,26 +504,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
       })
     })
     log(`[radar] review recorded: break ${review.reviewId}`)
-    // Applied at once by recalculating the active snapshots into a new manifest; if that cannot run now, the review is
-    // stored and the next refresh applies it (the ingestion reads every stored break review).
-    let recalculation = { outcome: 'failed', code: 'not_configured' }
-    if (typeof radar.ingestor?.recalculate === 'function') {
-      try {
-        recalculation = await exclusive(() => radar.ingestor.recalculate())
-      } catch (error) {
-        recalculation = { outcome: 'failed', code: errorCode(error) }
-      }
-    }
-    const applied = OK_OUTCOMES.has(recalculation?.outcome)
-    return response.status(201).json({
-      review,
-      recalculation: {
-        outcome: recalculation?.outcome ?? 'failed',
-        code: recalculation?.code ?? null,
-        manifestId: recalculation?.manifestId ?? null,
-        appliesAt: applied ? 'now' : 'next_refresh',
-      },
-    })
+    return response.status(201).json({ review, recalculation: await applyNow() })
   }))
 
   router.get('/api/admin/radar/export', guard(async (request, response) => {
@@ -507,7 +512,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     const reviews = writable() ? await loadReviews(store) : []
     return response.json({
       schemaVersion: 'radar-field-topics/v1',
-      mappingVersion: refs.versions?.fieldTopics ?? null,
+      mappingVersion: fieldTopicMappingVersion(refs.versions),
       exportedAt: now().toISOString(),
       mappings: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved'),
       reviews,

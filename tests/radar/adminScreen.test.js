@@ -536,7 +536,21 @@ describe('the public Radar after an admin decision (acceptance note N2)', () => 
     expect(app).toMatch(/function ensureRadar\(\) \{[^}]*!r\.data && !r\.loading/)
   })
 
-  it('a mapping decision publishes no manifest of its own, yet a fresh load returns the decided references', async () => {
+  it('after a mapping or break decision the screen says whether it was applied now (new data version) or at the next refresh', async () => {
+    const data = await adminData()
+    for (const name of ['map', 'brk']) {
+      const now = adminView({ t, state: adminState({ msgs: { [name]: { kind: 'ok', recalculation: { outcome: 'published', manifestId: 'manifest-x-1', appliesAt: 'now' } } } }), data })
+      expect(text(now), name).toContain(t('rdBreakApplied', { manifest: 'manifest-x-1' }))
+      const later = adminView({ t, state: adminState({ msgs: { [name]: { kind: 'ok', recalculation: { outcome: 'failed', code: 'store_unavailable', appliesAt: 'next_refresh' } } } }), data })
+      expect(text(later), name).toContain(t('rdBreakNextRefresh'))
+      expect(later, name).toContain('<code>store_unavailable</code>')
+    }
+    const app = readFileSync('public/js/app.js', 'utf8')
+    const map = app.slice(app.indexOf('  admMap: async'), app.indexOf('  admBreak: async'))
+    expect(map).toContain('recalculation: out.data?.recalculation')
+  })
+
+  it('after a mapping decision a fresh load returns the decided references', async () => {
     const out = await admin.decideMapping({ mappingId: '06-language', decision: 'approved', note: 'N2 check.' })
     expect(out.ok).toBe(true)
     // What #radar showed before the decision: the proposal still pending.

@@ -58,8 +58,10 @@ function failingSource(code = 'source_unavailable') {
 
 async function start({ store = createMemoryStore(), now = clock(), writable = true } = {}) {
   const sources = { openalex: failingSource(), dosm: failingSource() }
-  const ingestor = writable ? createIngestor({ store, sources, references, now, log: () => {} }) : null
-  const radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor, now, log: () => {} })
+  // As in production (server/radar/service.js): late-bound, the service merges the stored decisions over the references.
+  let radar = null
+  const ingestor = writable ? createIngestor({ store, sources, loadReferences: () => radar.references(), now, log: () => {} }) : null
+  radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor, now, log: () => {} })
   const radarAccess = createRadarAccess({ env: ENV, now })
   server = createApp({ radar, radarAccess, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
@@ -384,6 +386,60 @@ describe('recalculation after a break review', () => {
     expect((await loadReviews(store, 'break')).map((x) => x.decision)).toEqual(['dismissed_counts'])
     expect((await call('GET', '/api/radar/manifest')).body.manifestId).toBe(BUNDLE_ACTIVE)
     expect(radar).toBeTruthy()
+  })
+})
+
+describe('mappingVersion after field-topic decisions (spec §5)', () => {
+  it('a mapping decision is applied by the same recalculation: a new manifest and topic signals carry file + decisions version', async () => {
+    const { store, radar } = await start()
+    const session = await login()
+    const before = await call('GET', '/api/radar/manifest')
+    expect(before.body.manifestId).toBe(BUNDLE_ACTIVE)
+    expect(before.body.mappingVersion).toBe('radar-field-topics/v1')
+
+    const r = await call('POST', '/api/admin/radar/mappings', { session, body: { mappingId: '06-language', decision: 'approved', note: 'Checked.' } })
+    expect(r.status).toBe(201)
+    expect(r.body.recalculation).toMatchObject({ outcome: 'published', appliesAt: 'now' })
+    const newId = r.body.recalculation.manifestId
+    const manifest = await call('GET', '/api/radar/manifest')
+    expect(manifest.body.manifestId).toBe(newId)
+    expect(manifest.body.previousManifestId).toBe(BUNDLE_ACTIVE)
+    expect(manifest.body.mappingVersion).toMatch(/^radar-field-topics\/v1\+decisions:decisions-[0-9a-f]{16}$/)
+    // Same snapshots: nothing was fetched; only the decisions changed.
+    expect(manifest.body.snapshots).toEqual((await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value.snapshots)
+    const refs = await call('GET', '/api/radar/references')
+    expect(manifest.body.mappingVersion).toBe(`radar-field-topics/v1+decisions:${refs.body.versions.fieldTopicDecisions}`)
+    const signals = (await getJson(store, KEYS.signals(manifest.body.signalsId))).value.signals
+    for (const s of signals.filter((x) => x.signalId.startsWith('openalex:'))) expect(s.mappingVersion).toBe(manifest.body.mappingVersion)
+    for (const s of signals.filter((x) => x.signalId.startsWith('dosm:'))) expect(s.mappingVersion).toBe('radar-occupation-bridge/v1')
+    // The admin list and the export name the same combined version.
+    expect((await call('GET', '/api/admin/radar/mappings', { session })).body.mappingVersion).toBe(manifest.body.mappingVersion)
+    expect((await call('GET', '/api/admin/radar/export', { session })).body.mappingVersion).toBe(manifest.body.mappingVersion)
+
+    // Nothing new to apply → no_change; a second decision → another manifest with another decisions version.
+    expect((await radar.ingestor.recalculate()).outcome).toBe('no_change')
+    const again = await call('POST', '/api/admin/radar/mappings', { session, body: { mappingId: '06-genmedia', decision: 'rejected', note: 'No.' } })
+    expect(again.body.recalculation).toMatchObject({ outcome: 'published' })
+    const latest = await call('GET', '/api/radar/manifest')
+    expect(latest.body.previousManifestId).toBe(newId)
+    expect(latest.body.mappingVersion).not.toBe(manifest.body.mappingVersion)
+  })
+
+  it('a mapping decision whose recalculation cannot publish is kept and applies at the next refresh', async () => {
+    const store = createMemoryStore()
+    await start({ store })
+    const session = await login()
+    await call('GET', '/api/radar/manifest')
+    const put = store.put
+    store.put = async (key, ...rest) => {
+      if (key.startsWith('prod/signals/')) throw Object.assign(new Error('down'), { name: 'StoreError', code: 'store_unavailable' })
+      return put(key, ...rest)
+    }
+    const r = await call('POST', '/api/admin/radar/mappings', { session, body: { mappingId: '06-language', decision: 'approved', note: 'Checked.' } })
+    expect(r.status).toBe(201)
+    expect(r.body.recalculation).toMatchObject({ outcome: 'failed', code: 'store_unavailable', appliesAt: 'next_refresh' })
+    expect((await loadReviews(store, 'field_topic')).map((x) => x.decision)).toEqual(['approved'])
+    expect((await call('GET', '/api/radar/manifest')).body.manifestId).toBe(BUNDLE_ACTIVE)
   })
 })
 

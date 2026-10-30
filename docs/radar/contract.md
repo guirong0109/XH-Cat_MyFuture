@@ -41,7 +41,7 @@ Keys always appear in this order. Keys marked optional are left out when they do
 | `publishedAt`, `fetchedAt` | Source publication date (DOSM) and fetch time. |
 | `methodVersion` | `openalex-count-v1` or `dosm-share-v1`. |
 | `configVersion` | `radar-config/v1` (all thresholds). |
-| `mappingVersion` | Field ↔ topic mapping version (topic signals) or occupation bridge version (group signals). |
+| `mappingVersion` | Topic signals: the field ↔ topic mapping version, and once the owner has stored decisions, the file version plus the decisions version, e.g. `radar-field-topics/v1+decisions:decisions-0123456789abcdef` (`fieldTopicMappingVersion` in `shared/radar/pipeline.js`). A field ↔ topic decision is applied at once by the same recalculation as a break review (a new manifest; if that cannot publish, at the next refresh), so the manifest's `mappingVersion` and its topic signals name the decisions they were built with. Group signals: the occupation bridge version. |
 
 There is **no** `score`, `weight`, `rank`, `match`, `opportunityScore` or `fitScore` field at any depth, and no key
 containing score, weight, rank, match or opportunit… (any case, e.g. `matchScore`, `opportunityIndex`).

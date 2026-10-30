@@ -42,6 +42,15 @@ function minutesLeft(expiresAt, now) {
 }
 
 // A message region: always present (so focus can move to it), filled when there is something to say.
+// After a mapping or break decision: applied now (a new data version) or at the next refresh (with the code).
+function recalcMsg(t, m) {
+  if (m.kind !== 'ok' || !m.recalculation) return null
+  const r = m.recalculation
+  return r.appliesAt === 'now'
+    ? esc(t('rdBreakApplied', { manifest: r.manifestId ?? DASH }))
+    : `${esc(t('rdBreakNextRefresh'))}${r.code ? ` <code>${esc(r.code)}</code> ${esc(errText(t, r.code))}` : ''}`
+}
+
 function message(t, state, name, inner = null) {
   const m = ui(state).msgs?.[name]
   const id = `admMsg-${name}`
@@ -113,7 +122,7 @@ function mappingCard(t, state, data) {
     <p class="small muted">${esc(t('rdAdminMapNote'))}</p>
     <p class="tiny muted">${esc(t('rdMappingVersion'))}: <code>${esc(m.mappingVersion ?? DASH)}</code></p>
     <div class="field"><label for="admMapNote">${esc(t('rdNote'))}</label><textarea id="admMapNote" rows="2" maxlength="2000" required aria-required="true">${esc(ui(state).notes?.map ?? '')}</textarea></div>
-    ${message(t, state, 'map')}
+    ${message(t, state, 'map', (m) => recalcMsg(t, m))}
     <div class="rd-scroll"><table><tr><th>${esc(t('rdColId'))}</th><th>${esc(t('rdColField'))}</th><th>${esc(t('rdColTopic'))}</th><th>${esc(t('rdColReason'))}</th><th>${esc(t('rdColStatus'))}</th><th>${esc(t('rdColDecide'))}</th></tr>${rows || `<tr><td colspan="6" class="muted">${esc(t('rdEvNone'))}</td></tr>`}</table></div>
   </div>`
 }
@@ -169,13 +178,6 @@ function breakCard(t, state, data) {
       <td>${tag(BREAK_KIND[status], t(`rdBreak_${status}`))}</td>
       <td><div class="row rd-decide">${buttons}</div></td></tr>`
   }).join('')
-  const brkMsg = (m) => {
-    if (m.kind !== 'ok' || !m.recalculation) return null
-    const r = m.recalculation
-    return r.appliesAt === 'now'
-      ? esc(t('rdBreakApplied', { manifest: r.manifestId ?? DASH }))
-      : `${esc(t('rdBreakNextRefresh'))}${r.code ? ` <code>${esc(r.code)}</code> ${esc(errText(t, r.code))}` : ''}`
-  }
   return `<div class="card rd-sec" id="admBrkCard">
     <h2>${esc(t('rdAdminBreakTitle'))} ${tag('self', t('rdAdminBreakTag'))}</h2>
     <p class="small muted">${esc(t('rdAdminBreakNote', { totalPercent: fmt(c.totalPercent, 0), groupShare: fmt(c.groupShare * 100, 0), groupPercent: fmt(c.groupPercent, 0) }))}</p>
@@ -184,7 +186,7 @@ function breakCard(t, state, data) {
       <div class="field"><label for="admBrkNote">${esc(t('rdNote'))}</label><textarea id="admBrkNote" rows="2" maxlength="2000" required aria-required="true">${esc(ui(state).notes?.brk ?? '')}</textarea></div>
       <div class="field"><label for="admBrkLink">${esc(t('rdEvidenceLink'))}</label><input type="url" id="admBrkLink" maxlength="500" autocomplete="off" value="${esc(ui(state).notes?.link ?? '')}"></div>
     </div>
-    ${message(t, state, 'brk', brkMsg)}
+    ${message(t, state, 'brk', (m) => recalcMsg(t, m))}
     <div class="rd-scroll"><table><tr><th>${esc(t('rdColQuarter'))}</th><th class="num">${esc(t('rdColTotalQoq'))}</th><th class="num">${esc(t('rdColGroupsSame'))}</th><th>${esc(t('rdEvidence'))}</th><th>${esc(t('rdColStatus'))}</th><th>${esc(t('rdColDecide'))}</th></tr>${rows || `<tr><td colspan="6" class="muted">${esc(t('rdEvNone'))}</td></tr>`}</table></div>
   </div>`
 }

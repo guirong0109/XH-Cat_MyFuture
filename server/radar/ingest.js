@@ -14,7 +14,7 @@ import { randomBytes } from 'node:crypto'
 import { RADAR_CONFIG } from '../../shared/radar/config.js'
 import { validateSnapshot } from '../../shared/radar/validate.js'
 import { diffSnapshots } from '../../shared/radar/diff.js'
-import { runPipeline } from '../../shared/radar/pipeline.js'
+import { fieldTopicMappingVersion, runPipeline } from '../../shared/radar/pipeline.js'
 import { CONTRACT, validateSignal } from '../../shared/radar/contract.js'
 import { dependencyReport } from '../../shared/radar/dependencies.js'
 import { SourceError } from './sourceError.js'
@@ -264,7 +264,7 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
       manifestId,
       createdAt: time,
       snapshots: manifestSnapshots,
-      mappingVersion: references.versions?.fieldTopics ?? null,
+      mappingVersion: fieldTopicMappingVersion(references.versions),
       configVersion: config.version,
       signalsId,
       breakReviewsVersion: reviews.version,
@@ -357,9 +357,11 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
   // Trusted server code only - never call with request data. Same validation, pipeline and manifest as refresh.
   const importDosmRelease = (release) => run('dosm', release)
 
-  // Break reviews take effect here: the active snapshots are run through the same pipeline with the stored reviews and
-  // published as a new manifest (same writes, read-back and conditional activation as a refresh). Nothing is fetched.
-  // Logged under source 'reviews', so it never counts as a check of a data source.
+  // Break reviews and field-topic decisions take effect here: the active snapshots are run through the same pipeline
+  // with the stored break reviews and the decided references, and published as a new manifest (same writes, read-back
+  // and conditional activation as a refresh). Nothing is fetched. Runs only when the break reviews version or the
+  // mapping version (file + decisions) differs from the active manifest's. Logged under source 'reviews', so it never
+  // counts as a check of a data source.
   async function recalculate() {
     const run = newRun('reviews')
     let references
@@ -372,7 +374,9 @@ export function createIngestor({ store, sources = {}, references = {}, loadRefer
     if (state.stop) return state.stop
     const { active, current, before, reviews } = state
     if (!active) return finish(run, 'failed', 'recalculate', { code: 'not_configured' })
-    if ((reviews.version ?? null) === (active.manifest.breakReviewsVersion ?? null)) return finish(run, 'no_change', 'recalculate')
+    const sameReviews = (reviews.version ?? null) === (active.manifest.breakReviewsVersion ?? null)
+    const sameMapping = fieldTopicMappingVersion(references.versions) === (active.manifest.mappingVersion ?? null)
+    if (sameReviews && sameMapping) return finish(run, 'no_change', 'recalculate')
     return calculateAndPublish(run, { active, current, before, reviews, references, observations: { new: [], revisions: [], removed: [] } })
   }
 

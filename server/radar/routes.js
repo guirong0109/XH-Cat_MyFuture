@@ -162,8 +162,8 @@ function skills(view, refs = null) {
     for (const r of changes.inDemand?.added ?? []) slot(r.code).added.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
     for (const r of changes.inDemand?.dropped ?? []) slot(r.code).dropped.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
     // Kept: reference data only (D26), no signal.
-    const names = new Map(sets.flatMap((s) => s.rows).map((r) => [`${r.code} ${r.example}`, r.elementName]))
-    for (const [code, examples] of Object.entries(changes.inDemand?.kept ?? {})) for (const e of examples) slot(code).kept.push(item(e, names.get(`${code} ${e}`)))
+    const names = new Map(sets.flatMap((s) => s.rows).map((r) => [`${r.code}\u0000${r.example}`, r.elementName]))
+    for (const [code, examples] of Object.entries(changes.inDemand?.kept ?? {})) for (const e of examples) slot(code).kept.push(item(e, names.get(`${code}\u0000${e}`)))
   }
   const hotName = new Map(sets.flatMap((s) => s.rows).filter((r) => r.hot).map((r) => [r.example, r.elementName]))
   const hotItem = (e) => item(e, hotName.get(e), withSignal(`onet:hot:${e}`))

@@ -62,6 +62,7 @@ export function fitFor(items, levels) {
     }
     return { ...it, you, status, gap: Math.max(0, it.needed - you) }
   })
+  const totalNeeded = rows.reduce((t, r) => t + r.needed, 0)
   const raise = rows
     .filter((r) => r.gap > 0)
     .map((r) => {
@@ -70,7 +71,7 @@ export function fitFor(items, levels) {
         key: r.key, name: r.name,
         action: r.status === 'missing' ? 'learn' : 'raise',
         from: r.status === 'missing' ? null : wordFor(r.you),
-        to, points: Math.round((r.gap / r.needed) * 100), stillShort: r.needed > LEVEL_POINTS.expert,
+        to, points: Math.round((r.gap / totalNeeded) * 100), stillShort: r.needed > LEVEL_POINTS.expert,
       }
     })
     .sort((a, b) => b.points - a.points || (a.key < b.key ? -1 : a.key > b.key ? 1 : 0))

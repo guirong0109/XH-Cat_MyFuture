@@ -80,18 +80,27 @@ describe('fitFor', () => {
   it('raise list order and points', () => {
     const items = [item('a', 4), item('b', 6), item('c', 4), item('d', 2), item('e', 4)]
     const lv = new Map([
-      ['el:b', { points: 2, notAssessed: false }], // gap 4/6 = 67
-      ['el:c', { points: 2, notAssessed: false }], // gap 2/4 = 50
+      ['el:b', { points: 2, notAssessed: false }], // gap 4 of total 20 = 20
+      ['el:c', { points: 2, notAssessed: false }], // gap 2 of total 20 = 10
       ['el:d', { points: 2, notAssessed: false }], // met
-      ['el:e', { points: 2, notAssessed: false }], // 50
+      ['el:e', { points: 2, notAssessed: false }], // 10
     ])
     const f = fitFor(items, lv)
     expect(f.raise.map((r) => [r.key, r.action, r.from, r.to, r.points, r.stillShort])).toEqual([
-      ['el:a', 'learn', null, 'good', 100, false],
-      ['el:b', 'raise', 'basic', 'expert', 67, false],
-      ['el:c', 'raise', 'basic', 'good', 50, false],
+      ['el:a', 'learn', null, 'good', 20, false],
+      ['el:b', 'raise', 'basic', 'expert', 20, false],
+      ['el:c', 'raise', 'basic', 'good', 10, false],
     ])
     expect(f.raise.length).toBe(3)
+  })
+  it('raise points are a share of all needed levels (owner chart example)', () => {
+    const needs = [2, 2, 2, 1.2, 2.85, 2]
+    const items = needs.map((n, i) => item(`i${i}`, n))
+    const lv = new Map(items.map((it, i) => [it.key, { points: i === 1 ? 2 : 1.5, notAssessed: false }]))
+    const f = fitFor(items, lv)
+    expect(f.percent).toBe(76)
+    // gap 0.5 / 12.05 = 4.15 -> 4; gap 1.35 / 12.05 = 11.2 -> 11 (largest)
+    expect(f.raise.map((r) => [r.key, r.points])).toEqual([['el:i4', 11], ['el:i0', 4], ['el:i2', 4]])
   })
   it('needed above 6 gives expert and stillShort', () => {
     const f = fitFor([item('a', 6.5)], new Map([['el:a', { points: 6, notAssessed: false }]]))

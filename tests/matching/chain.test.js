@@ -2,8 +2,13 @@ import { describe, expect, it } from 'vitest'
 import { makeChain } from '../../shared/matching/chain.js'
 
 const src = (name) => ({ name, file: `${name}.csv`, url: `https://example.org/${name}`, sha256: 'abc' })
+const SYS = {
+  'O*NET-SOC': { system: 'O*NET-SOC', version: '2019' }, 'SOC 2018': { system: 'SOC', version: '2018' },
+  'SOC 2010': { system: 'SOC', version: '2010' }, 'ISCO-08': { system: 'ISCO-08', version: '2008' },
+  'MASCO 2020': { system: 'MASCO', version: '2020' },
+}
 const step = (id, from, to, links, extra = {}) => ({
-  id, from: { system: from, version: '' }, to: { system: to, version: '' }, method: 'crosswalk',
+  id, from: SYS[from], to: SYS[to], method: 'crosswalk',
   status: 'built', source: src(id), pendingReason: null, links, ...extra,
 })
 
@@ -38,7 +43,7 @@ describe('makeChain', () => {
     expect(r.path[0].from).toEqual({ system: 'MASCO 2020', codes: ['2512'] })
     expect(r.path[1].from).toEqual({ system: 'ISCO-08', codes: ['2512'] })
     expect(r.path[1].to).toEqual({ system: 'SOC 2010', codes: ['15-1132'] })
-    expect(r.path[3].to).toEqual({ system: 'O*NET-SOC', codes: ['15-1252.00'] })
+    expect(r.path[3].to).toEqual({ system: 'O*NET-SOC 2019', codes: ['15-1252.00'] })
     expect(r.path[1].source).toEqual({ name: 'soc2010_to_isco08', url: 'https://example.org/soc2010_to_isco08', sha256: 'abc' })
   })
 
@@ -77,7 +82,14 @@ describe('makeChain', () => {
     expect(r.jobs).toEqual([])
     expect(r.missingStep.id).toBe('no_onet_data')
     expect(r.missingStep.reason).toMatch(/no skill data/)
-    expect(r.missingStep.from).toEqual({ system: 'O*NET-SOC', codes: ['15-1299.00'] })
+    expect(r.missingStep.from).toEqual({ system: 'O*NET-SOC 2019', codes: ['15-1299.00'] })
+  })
+
+  it('builds system labels from system plus version', () => {
+    const r = chain().resolve('2512-01')
+    expect(r.path.map((s) => [s.from.system, s.to.system])).toEqual([
+      ['MASCO 2020', 'ISCO-08'], ['ISCO-08', 'SOC 2010'], ['SOC 2010', 'SOC 2018'], ['SOC 2018', 'O*NET-SOC 2019'],
+    ])
   })
 
   it('labels the MASCO step as a code match', () => {

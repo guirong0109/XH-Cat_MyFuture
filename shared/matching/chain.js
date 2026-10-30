@@ -11,7 +11,13 @@ const INVERTED = [
 const NO_ONET = 'the linked O*NET jobs have no skill data (e.g. "All Other" codes)'
 
 const uniq = (xs) => [...new Set(xs)]
-const sysName = (s, fallback) => (s?.system ? s.system : fallback)
+// "SOC" + "2010" -> "SOC 2010"; "ISCO-08" + "2008" stays "ISCO-08" (version already in the name).
+const sysName = (s, fallback) => {
+  if (!s?.system) return fallback
+  const v = s.version == null ? '' : String(s.version)
+  if (!v || s.system.includes(v) || s.system.endsWith(v.slice(-2))) return s.system
+  return `${s.system} ${v}`
+}
 
 export function makeChain(bridgeFile, { hasRequirements = () => true } = {}) {
   const steps = new Map((bridgeFile?.steps ?? []).map((s) => [s.id, s]))

@@ -176,3 +176,46 @@ export function onetSkillSignals(snapshot, { manifestId, config } = {}) {
   for (const r of d.hotDropped) hot(r, 'declining')
   return signals.sort((a, b) => cmp(a.signalId, b.signalId))
 }
+
+export const HOT_TECH_METHOD = 'onet-postings-v1'
+export const HOT_TECH_SYSTEM = 'O*NET Hot Technologies'
+
+// B (onet-hottech): one signal per technology. No direction while the snapshot holds a single counting window (spec 3.2, 5).
+export function hotTechSignals(snapshot, { manifestId, config } = {}) {
+  const rows = (snapshot?.observations ?? []).filter((o) => o.entityType === 'skill_postings' && o.metric === 'postings' && o.entityId !== '__total__')
+  const periods = [...new Set(rows.map((o) => o.period))].sort(cmp)
+  if (!periods.length) return []
+  const latest = periods[periods.length - 1]
+  const first = periods[0]
+  const classification = { system: HOT_TECH_SYSTEM, version: snapshot.classification?.version ?? latest, readAt: snapshot.classification?.readAt ?? snapshot.fetchedAt ?? null }
+  const core = { direction: null, volatility: null, evidenceSufficiency: 'insufficient_evidence', evidenceQuality: null, reasons: periods.length === 1 ? ['first_snapshot', 'us_postings'] : ['us_postings'] }
+  const byTech = new Map()
+  for (const o of rows) (byTech.get(o.entityId) ?? byTech.set(o.entityId, new Map()).get(o.entityId)).set(o.period, o.value)
+  return [...byTech.keys()].sort(cmp).map((tech) => {
+    const values = byTech.get(tech)
+    const startPeriod = periods.find((p) => values.has(p))
+    const endPeriod = [...periods].reverse().find((p) => values.has(p))
+    return buildSignal(core, {
+      manifestId,
+      signalId: `onet:postings:${tech}`,
+      evidenceKind: 'skill_posting_flag',
+      entity: { type: 'skill', system: HOT_TECH_SYSTEM, code: tech, name: tech, sourceUrl: ONET_HOT_URL },
+      granularity: { level: 'skill' },
+      metric: 'postings',
+      unit: 'postings',
+      baseline: { period: startPeriod, value: values.get(startPeriod) },
+      recent: { period: endPeriod, value: values.get(endPeriod) },
+      change: { value: null, unit: 'postings', relativePercent: null },
+      breaks: [],
+      revisions: { count: 0, items: [] },
+      classification,
+      sourceSnapshotIds: [snapshot.snapshotId],
+      evidenceLinks: [{ label: 'O*NET Hot Technologies', url: ONET_HOT_URL }],
+      publishedAt: null,
+      fetchedAt: snapshot.fetchedAt ?? null,
+      methodVersion: HOT_TECH_METHOD,
+      configVersion: config?.version,
+      mappingVersion: `onet-hottech/${latest}`,
+    })
+  })
+}

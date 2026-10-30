@@ -1055,6 +1055,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "four audience folders + front title folder; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer to the full screen width, not a card"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block and footer span the full width, content lined up with the page; npm test 258 passed; checked in Chrome at 1440 and 390 px"
     }
   ]
 }

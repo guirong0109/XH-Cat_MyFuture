@@ -167,11 +167,12 @@ body.landing main{max-width:none;padding:0}
 .lp-clip-wire{fill:none;stroke:#1e1a14;stroke-width:4;stroke-linecap:round}
 .lp-who{border-bottom:0}
 
-/* the end of the page: one rounded panel (.lp-end) holding the closing call to action and the footer. The closing block
+/* the end of the page: one full-width band (.lp-end) holding the closing call to action and the footer, its content
+   lined up with the page (--edge). The closing block
    is the dark top, with a faint tile grid; its bottom edge is cut into scallops (a mask, so the glow runs into them)
    and the footer follows straight underneath. */
-.lp-end{margin:0 0 clamp(16px,3vw,32px);border:1px solid var(--lp-line);border-radius:32px;overflow:hidden;background:var(--lp-paper)}
-.lp-close{padding:clamp(40px,8vw,104px) clamp(24px,8vw,104px) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
+.lp-end{--edge:max(clamp(16px,4vw,48px),calc(50vw - 620px + clamp(16px,4vw,48px)));margin:0 calc(50% - 50vw);background:var(--lp-paper)}
+.lp-close{padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
   background:linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
              linear-gradient(color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
              radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
@@ -185,7 +186,7 @@ body.landing main{max-width:none;padding:0}
 /* footer, under the closing block's wavy edge: the about line top right, a large wordmark with the ATM mascot bottom
    left, the language switch bottom right, then the small print */
 .lp-footer{position:relative;font-size:13px;line-height:1.6;color:var(--lp-muted)}
-.lp-footer-body{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(24px,3vw,36px) clamp(20px,3.4vw,44px) clamp(20px,2.4vw,28px)}
+.lp-footer-body{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(24px,3vw,36px) var(--edge) clamp(20px,2.4vw,28px)}
 .lp-footer-about{justify-self:end;max-width:44ch;text-align:right;font-size:15px;line-height:1.45;font-weight:600;color:var(--lp-ink)}
 .lp-footer-base{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:.22em;font-size:clamp(50px,12.5vw,184px)}
 .lp-footer-base .lp-row{font-size:13px}
@@ -332,7 +333,6 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-folder{grid-template-columns:1fr;padding-bottom:76px}
   .lp-folder .lp-pill{justify-self:start}
   .lp-folder-tab{left:12px;max-width:calc(100% - 24px);white-space:normal;font-size:16px;padding:8px 24px 6px}
-  .lp-end{border-radius:24px}
   .lp-footer-about{justify-self:start;text-align:left}
   .lp-sub,.lp-lead{font-size:17px}
 }

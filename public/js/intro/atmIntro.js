@@ -157,28 +157,18 @@ function drawReceipt(t, ink, pink, H) {
   return { canvas, end }
 }
 
-function signTexture(ink, cream, pink) {
+function signTexture(ink, cream) {
   const canvas = document.createElement('canvas')
   canvas.width = 1024
   canvas.height = 200
   const g = canvas.getContext('2d')
   g.fillStyle = ink
   g.fillRect(0, 0, 1024, 200)
-  g.font = `400 112px ${SERIF}`
-  g.fillStyle = cream
-  g.textBaseline = 'middle'
-  const word = 'FutureReady'
-  const width = g.measureText(word).width
-  const x = 512 - (width + 110) / 2
-  g.fillText(word, x, 104)
-  g.fillStyle = pink
-  g.beginPath()
-  g.roundRect(x + width + 18, 66, 92, 64, 10)
-  g.fill()
-  g.font = `600 40px ${MONO}`
+  g.font = `400 128px ${SERIF}`
   g.fillStyle = cream
   g.textAlign = 'center'
-  g.fillText('MY', x + width + 64, 100)
+  g.textBaseline = 'middle'
+  g.fillText('ATM', 512, 104)
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
   return texture
@@ -313,7 +303,7 @@ export async function mountStage({ t, host, pinned = false, onPhase }) {
   scene.add(ground)
 
   const screen = createScreen('#f5f0e6', colors.lime)
-  const sign = signTexture(colors.ink, colors.cream, colors.pink)
+  const sign = signTexture(colors.ink, colors.cream)
   const { atm, led } = buildAtm(colors, sign, screen.texture)
   scene.add(atm)
 

@@ -935,6 +935,11 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "npm test 252 passed; checked in Chrome at 1440, 720 and 500 px, light and dark; The data counters still fit their cards"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the sign on top of the ATM reads ATM (was FutureReady MY); checked in Chrome"
     }
   ]
 }

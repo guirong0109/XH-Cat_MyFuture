@@ -28,6 +28,8 @@ import { createOccupationLookup } from './occupations/lookup.js'
 import { readFile } from 'node:fs/promises'
 import { createRadarServiceFromEnv } from './radar/service.js'
 import { radarRoutes } from './radar/routes.js'
+import { createRadarAccess } from './radar/access.js'
+import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -45,6 +47,8 @@ export function createApp({
   trustProxy = process.env.TRUST_PROXY ? (Number.isFinite(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : process.env.TRUST_PROXY) : false,
   // Future Skills Radar: bundled data read-only without a writable store (R2, or RADAR_STORE=memory locally).
   radar = createRadarServiceFromEnv({ dataDir, fetchImpl, now }),
+  // Radar admin and judge sign-in (RADAR_ADMIN_KEY, RADAR_DEMO_KEY, RADAR_SESSION_SECRET); fails closed without them.
+  radarAccess = createRadarAccess({ env: process.env, now }),
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -127,7 +131,11 @@ export function createApp({
     return areasPromise
   }
   app.use(interestRoutes({ loadAreas }))
-  if (radar) app.use(radarRoutes({ radar }))
+  if (radar) {
+    app.use(radarRoutes({ radar }))
+    app.use(radarSessionRoutes({ access: radarAccess }))
+    app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
+  }
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

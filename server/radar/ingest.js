@@ -4,9 +4,10 @@
 // read at the start of the run (If-None-Match * when there was none). A run that stops part-way leaves only
 // unreferenced objects, which are listed as orphans.
 //
-// createIngestor({store, sources: {openalex, dosm}, references, config, now, log})
+// createIngestor({store, sources: {openalex, dosm}, references, loadReferences?, config, now, log})
 //   refresh(sourceId) → {outcome: 'published'|'no_change'|'rejected'|'held'|'failed', code?, manifestId?,
 //                        activeManifestId?, diff?: {observations: {new, revisions, removed}, dependencies?}}
+//   recalculate() → same shape as refresh: the active snapshots with the stored break reviews, as a new manifest
 //   status() → {lastChecks: {[sourceId]: {checkedAt, outcome, code, manifestId, lastOkAt}}, orphans: [key], log: [entry]}
 // Log entries hold only time, source, operation, outcome, code and ids: never keys, values or responses.
 import { randomBytes } from 'node:crypto'
@@ -60,12 +61,12 @@ async function loadBreakReviews(store) {
     const got = await getJson(store, key)
     if (got?.value?.kind === 'break') reviews.push(got.value)
   }
-  reviews.sort((a, b) => cmp(String(a.reviewedAt ?? ''), String(b.reviewedAt ?? '')) || cmp(String(a.reviewId ?? ''), String(b.reviewId ?? '')))
+  reviews.sort((a, b) => cmp(String(a.reviewedAt ?? ''), String(b.reviewedAt ?? '')) || (Number(a.version) || 0) - (Number(b.version) || 0) || cmp(String(a.reviewId ?? ''), String(b.reviewId ?? '')))
   const version = reviews.length ? `reviews-${sha256(JSON.stringify(reviews.map((r) => r.reviewId ?? null))).slice(0, 16)}` : null
   return { reviews, version }
 }
 
-export function createIngestor({ store, sources = {}, references = {}, config = RADAR_CONFIG, now = () => new Date(), log = () => {} } = {}) {
+export function createIngestor({ store, sources = {}, references = {}, loadReferences = null, config = RADAR_CONFIG, now = () => new Date(), log = () => {} } = {}) {
   const lastChecks = {}
   const orphans = []
   const recent = []
@@ -117,44 +118,60 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
-  async function run(sourceId, release) {
+  function newRun(source) {
     const time = now().toISOString()
-    const run = {
-      time,
-      stamp: time.replace(/[-:]/g, ''),
-      nonce: randomBytes(4).toString('hex'),
-      source: RADAR_SOURCES.includes(sourceId) ? sourceId : 'unknown',
-      ids: {},
-    }
-    if (!RADAR_SOURCES.includes(sourceId) || !sources[sourceId]) return finish(run, 'failed', 'refresh', { code: 'not_configured' })
+    return { time, stamp: time.replace(/[-:]/g, ''), nonce: randomBytes(4).toString('hex'), source, ids: {} }
+  }
 
-    // 1. The active state, read once: its etag guards the activation at the end.
+  // The reference data for this run: a loader (stored owner decisions merged in) or the fixed object.
+  async function referencesNow() {
+    return typeof loadReferences === 'function' ? await loadReferences() : references
+  }
+
+  // 1. The active state, read once: its etag guards the activation at the end. {stop: result} when the run ends here.
+  async function readState(run) {
     let active
     const current = { openalex: null, dosm: null }
     let before = null
     let reviews
     try {
       active = await readActive(store)
-      if (active && !active.manifest) return finish(run, 'failed', 'read_active', { code: 'manifest_gone' })
+      if (active && !active.manifest) return { stop: await finish(run, 'failed', 'read_active', { code: 'manifest_gone' }) }
       if (active) {
         run.ids.previousManifestId = active.manifest.manifestId
         for (const src of RADAR_SOURCES) {
           const id = active.manifest.snapshots?.[src]
           if (!id) continue
           const got = isSafeId(id) ? await getJson(store, KEYS.snapshot(src, id)) : null
-          if (!got) return finish(run, 'failed', 'read_active', { code: 'manifest_gone' })
+          if (!got) return { stop: await finish(run, 'failed', 'read_active', { code: 'manifest_gone' }) }
           current[src] = { id, snapshot: got.value, hash: contentHash(got.value) }
         }
         // A manifest whose signals cannot be read is as broken as one with a missing snapshot.
         const signalsId = active.manifest.signalsId
         const signals = isSafeId(signalsId) ? await getJson(store, KEYS.signals(signalsId)) : null
-        if (!signals) return finish(run, 'failed', 'read_active', { code: 'manifest_gone' })
+        if (!signals) return { stop: await finish(run, 'failed', 'read_active', { code: 'manifest_gone' }) }
         before = signals.value
       }
       reviews = await loadBreakReviews(store)
     } catch (e) {
-      return finish(run, 'failed', 'read_active', { code: storeCode(e) })
+      return { stop: await finish(run, 'failed', 'read_active', { code: storeCode(e) }) }
     }
+    return { active, current, before, reviews }
+  }
+
+  async function run(sourceId, release) {
+    const run = newRun(RADAR_SOURCES.includes(sourceId) ? sourceId : 'unknown')
+    if (!RADAR_SOURCES.includes(sourceId) || !sources[sourceId]) return finish(run, 'failed', 'refresh', { code: 'not_configured' })
+    let references
+    try {
+      references = await referencesNow()
+    } catch {
+      return finish(run, 'failed', 'refresh', { code: 'not_configured' })
+    }
+
+    const state = await readState(run)
+    if (state.stop) return state.stop
+    const { active, current, before, reviews } = state
 
     // 2. Fetch. Any source failure ends the run with the source's code; nothing has been written.
     let fetched
@@ -218,12 +235,20 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     // R19: revisions travel with the snapshot so the pipeline lists them and lowers evidence quality.
     snapshot.meta = { ...(snapshot.meta ?? {}), revisions: changes.revisions }
 
+    return calculateAndPublish(run, { active, current, before, reviews, references, sourceId, snapshot, original, observations })
+  }
+
+  // Steps 5-8, shared by a refresh (a new snapshot of one source) and a recalculation (no new snapshot: the active
+  // snapshots again, with the stored break reviews). Same pipeline, contract check, immutable writes, read-back and
+  // conditional activation.
+  async function calculateAndPublish(run, { active, current, before, reviews, references, sourceId = null, snapshot = null, original = null, observations }) {
     // 5. Calculate. Every signal must pass the radar-signal/v1 contract before anything is written.
     const manifestId = `manifest-${run.stamp}-${run.nonce}`
     const signalsId = `signals-${run.stamp}-${run.nonce}`
     run.ids.manifestId = manifestId
     run.ids.signalsId = signalsId
-    const snapshots = { openalex: current.openalex?.snapshot, dosm: current.dosm?.snapshot, [sourceId]: snapshot }
+    const snapshots = { openalex: current.openalex?.snapshot, dosm: current.dosm?.snapshot }
+    if (snapshot) snapshots[sourceId] = snapshot
     let out
     try {
       out = runPipeline({ snapshots, references, reviews: reviews.reviews, config, manifestId })
@@ -232,11 +257,13 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
     if (!out.signals.every((s) => validateSignal(s).ok)) return finish(run, 'rejected', 'calculate', { code: 'validation_failed' })
 
-    const otherId = RADAR_SOURCES.find((s) => s !== sourceId)
+    const manifestSnapshots = { openalex: current.openalex?.id ?? null, dosm: current.dosm?.id ?? null }
+    if (snapshot) manifestSnapshots[sourceId] = snapshot.snapshotId
+    const time = run.time
     const manifest = makeManifest({
       manifestId,
       createdAt: time,
-      snapshots: { [sourceId]: snapshot.snapshotId, [otherId]: current[otherId]?.id ?? null },
+      snapshots: manifestSnapshots,
       mappingVersion: references.versions?.fieldTopics ?? null,
       configVersion: config.version,
       signalsId,
@@ -244,23 +271,29 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
       previousManifestId: active?.manifest.manifestId ?? null,
     })
     const signalsDoc = { signalsId, manifestId, createdAt: time, contract: CONTRACT, ...out }
-    // Spec 4.4: the snapshot carries the SHA-256 of its canonical content (which excludes this field).
-    snapshot.contentHash = contentHash(snapshot)
-    const snapshotKey = KEYS.snapshot(sourceId, snapshot.snapshotId)
-    const snapshotBytes = toBytes(snapshot)
+    let snapshotKey = null
+    let snapshotBytes = null
+    if (snapshot) {
+      // Spec 4.4: the snapshot carries the SHA-256 of its canonical content (which excludes this field).
+      snapshot.contentHash = contentHash(snapshot)
+      snapshotKey = KEYS.snapshot(sourceId, snapshot.snapshotId)
+      snapshotBytes = toBytes(snapshot)
+    }
     const signalsBytes = toBytes(signalsDoc)
     const manifestBytes = toBytes(manifest)
 
-    // 6. Save: original, snapshot, signals, manifest, each only if absent (spec §6.5 steps 1-3).
+    // 6. Save: original, snapshot, signals, manifest, each only if absent (spec 6.5 steps 1-3).
     const written = []
-    let operation = 'save_snapshot'
+    let operation = 'save_signals'
     try {
       if (original) {
         operation = 'save_original'
         await putOnce(KEYS.original(sourceId, original.sha256), original.bytes, XLSX_TYPE, written)
       }
-      operation = 'save_snapshot'
-      await putOnce(snapshotKey, snapshotBytes, JSON_TYPE, written)
+      if (snapshot) {
+        operation = 'save_snapshot'
+        await putOnce(snapshotKey, snapshotBytes, JSON_TYPE, written)
+      }
       operation = 'save_signals'
       await putOnce(KEYS.signals(signalsId), signalsBytes, JSON_TYPE, written)
       operation = 'save_manifest'
@@ -269,13 +302,14 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
       return finish(run, 'failed', operation, { code: storeCode(e), written })
     }
 
-    // 7. Read back every object the manifest references and check its hash (spec §6.5 step 4).
-    const checks = [
-      { key: snapshotKey, bytesHash: sha256(snapshotBytes), content: contentHash(snapshot), stored: true },
-      { key: KEYS.signals(signalsId), bytesHash: sha256(signalsBytes) },
-      { key: KEYS.manifest(manifestId), bytesHash: sha256(manifestBytes) },
-    ]
-    if (current[otherId]) checks.push({ key: KEYS.snapshot(otherId, current[otherId].id), content: current[otherId].hash })
+    // 7. Read back every object the manifest references and check its hash (spec 6.5 step 4).
+    const checks = []
+    if (snapshot) checks.push({ key: snapshotKey, bytesHash: sha256(snapshotBytes), content: contentHash(snapshot), stored: true })
+    checks.push({ key: KEYS.signals(signalsId), bytesHash: sha256(signalsBytes) })
+    checks.push({ key: KEYS.manifest(manifestId), bytesHash: sha256(manifestBytes) })
+    for (const src of RADAR_SOURCES) {
+      if (src !== sourceId && current[src]) checks.push({ key: KEYS.snapshot(src, current[src].id), content: current[src].hash })
+    }
     if (original) checks.push({ key: KEYS.original(sourceId, original.sha256), bytesHash: original.sha256 })
     try {
       for (const check of checks) {
@@ -323,6 +357,25 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
   // Trusted server code only - never call with request data. Same validation, pipeline and manifest as refresh.
   const importDosmRelease = (release) => run('dosm', release)
 
+  // Break reviews take effect here: the active snapshots are run through the same pipeline with the stored reviews and
+  // published as a new manifest (same writes, read-back and conditional activation as a refresh). Nothing is fetched.
+  // Logged under source 'reviews', so it never counts as a check of a data source.
+  async function recalculate() {
+    const run = newRun('reviews')
+    let references
+    try {
+      references = await referencesNow()
+    } catch {
+      return finish(run, 'failed', 'recalculate', { code: 'not_configured' })
+    }
+    const state = await readState(run)
+    if (state.stop) return state.stop
+    const { active, current, before, reviews } = state
+    if (!active) return finish(run, 'failed', 'recalculate', { code: 'not_configured' })
+    if ((reviews.version ?? null) === (active.manifest.breakReviewsVersion ?? null)) return finish(run, 'no_change', 'recalculate')
+    return calculateAndPublish(run, { active, current, before, reviews, references, observations: { new: [], revisions: [], removed: [] } })
+  }
+
   function status() {
     return {
       lastChecks: structuredClone(lastChecks),
@@ -331,5 +384,5 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
-  return { refresh, importDosmRelease, status }
+  return { refresh, importDosmRelease, recalculate, status }
 }

@@ -1,7 +1,10 @@
 // Future Skills Radar service (spec §6.5, §7, §12): which manifest answers a request, from which store, in which state.
 //
 // createRadarService({store, bundleStore, references, ingestor, now, config, devStore, log}) →
-//   {answer(manifestId?) → {manifestId, activeManifestId, devStore, states, view}, references(), info(), store, ingestor}
+//   {answer(manifestId?) → {manifestId, activeManifestId, devStore, states, view}, references(), info(), store, ingestor,
+//    checks() → last checks per source (stored ingest log + this process), invalidateReviews()}
+//   references(): with a writable store, stored field-topic decisions (prod/reviews/) are merged over the bundled
+//   proposals (rulings R24, R26), so the public references and export serve the owner's decisions.
 //   view = {manifest, snapshots: {openalex, dosm}, signals}  (signals = the stored signals document)
 //
 // - No writable store: the bundled manifest (data/radar/bundle) is served read-only ('bundled_read_only').
@@ -26,6 +29,7 @@ import { createIngestor } from './ingest.js'
 import { createOpenAlexSource } from './sources/openalex.js'
 import { createDosmSource } from './sources/dosm.js'
 import { loadRadarReferences } from './references.js'
+import { createDecidedReferences } from './reviews.js'
 
 const JSON_TYPE = 'application/json'
 const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -71,6 +75,8 @@ export function createRadarService({
       })
     return referencesPromise
   }
+  const decided = store ? createDecidedReferences({ store, loadBase: loadReferences, now, log }) : null
+  const currentReferences = decided ? decided.get : loadReferences
 
   function remember(view) {
     const id = view.manifest.manifestId
@@ -263,6 +269,17 @@ export function createRadarService({
             checksCache = null
           }
         },
+        ...(typeof ingestor.recalculate === 'function'
+          ? {
+              recalculate: async () => {
+                try {
+                  return await ingestor.recalculate()
+                } finally {
+                  checksCache = null
+                }
+              },
+            }
+          : {}),
         ...(typeof ingestor.importDosmRelease === 'function'
           ? {
               importDosmRelease: async (...args) => {
@@ -310,12 +327,25 @@ export function createRadarService({
     return { manifestId: view.manifest.manifestId, activeManifestId: cur.activeId, devStore, states, view }
   }
 
+  // Last checks for the admin status: the stored ingest log (every instance, survives restarts) and this process.
+  async function checks() {
+    let memoryChecks = {}
+    try {
+      memoryChecks = ingestor?.status?.()?.lastChecks ?? {}
+    } catch {
+      memoryChecks = {}
+    }
+    return mergeChecks(store ? await storedChecks(now()) : {}, memoryChecks)
+  }
+
   return {
     answer,
-    references: loadReferences,
+    references: currentReferences,
     info: () => ({ writable: Boolean(store), devStore }),
     store,
     ingestor: wrappedIngestor,
+    checks,
+    invalidateReviews: () => decided?.invalidate(),
   }
 }
 
@@ -350,14 +380,17 @@ export function radarStoreFromEnv(env = process.env, { logError = defaultLog } =
 }
 
 // The ingestor is built on first use, once the reference data has loaded; until then it has no checks to report.
+// Each run reads the references through loadReferences (with the stored field-topic decisions merged in).
 function lazyIngestor({ store, sources, loadReferences, now, log }) {
   let inner = null
   const get = async () => {
-    inner ??= createIngestor({ store, sources, references: await loadReferences(), now, log })
+    await loadReferences()
+    inner ??= createIngestor({ store, sources, loadReferences, now, log })
     return inner
   }
   return {
     refresh: async (sourceId) => (await get()).refresh(sourceId),
+    recalculate: async () => (await get()).recalculate(),
     importDosmRelease: async (release) => (await get()).importDosmRelease(release),
     status: () => (inner ? inner.status() : { lastChecks: {}, orphans: [], log: [] }),
   }
@@ -373,6 +406,7 @@ export function createRadarServiceFromEnv({ dataDir, fetchImpl = fetch, now = ()
     })
     return referencesPromise
   }
+  let service = null
   const ingestor = store
     ? lazyIngestor({
         store,
@@ -380,13 +414,14 @@ export function createRadarServiceFromEnv({ dataDir, fetchImpl = fetch, now = ()
           openalex: createOpenAlexSource({ fetchImpl, apiKey: env.OPENALEX_API_KEY || undefined, now, requireKey: env.NODE_ENV === 'production' }),
           dosm: createDosmSource({ fetchImpl, now }),
         },
-        loadReferences,
+        // Late-bound: the service merges the stored decisions over the bundled references.
+        loadReferences: () => service.references(),
         now,
         // Ingestion log entries hold time, source, operation, outcome, code and ids only.
         log: (entry) => console.info(`[radar] ${entry.source} ${entry.operation} ${entry.outcome}${entry.code ? ` ${entry.code}` : ''}`),
       })
     : null
-  return createRadarService({
+  service = createRadarService({
     store,
     bundleStore: createFileStore(path.join(dataDir, 'radar', 'bundle')),
     references: loadReferences,
@@ -395,4 +430,5 @@ export function createRadarServiceFromEnv({ dataDir, fetchImpl = fetch, now = ()
     devStore,
     log: logError,
   })
+  return service
 }

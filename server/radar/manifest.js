@@ -32,6 +32,7 @@ export const KEYS = Object.freeze({
   ingestLog: (id) => `prod/ingest-log/${safe(id)}.json`,
   ingestLogPrefix: 'prod/ingest-log/',
   reviewsPrefix: 'prod/reviews/',
+  review: (id) => `prod/reviews/${safe(id)}.json`,
 })
 
 export const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex')

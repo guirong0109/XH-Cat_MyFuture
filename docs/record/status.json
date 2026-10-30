@@ -220,6 +220,11 @@
           "status": "stop"
         },
         {
+          "title": "T28c Roller counters",
+          "sub": "digit wheels in a recessed window",
+          "status": "stop"
+        },
+        {
           "title": "T29 Restyle the app",
           "sub": "profile screens in the same look",
           "status": "todo"
@@ -261,14 +266,16 @@
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
     "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
-    "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))"
+    "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))",
+    "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "T28: your review of the landing page, its wording and the BM / 中文 translations",
-    "T28b: your review of the ATM intro (look, timing, receipt wording)"
+    "T28b: your review of the ATM intro (look, timing, receipt wording)",
+    "T28c: your review of the roller counters"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -844,6 +851,16 @@
       "time": "30 Oct",
       "step": "Your change",
       "detail": "removed the line \"Career foresight for Malaysia\": the product is not for Malaysian users only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choice",
+      "detail": "numbers as mechanical roller counters in a recessed window, lower digits faster, overshoot and rebound"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28c",
+      "detail": "npm test 247 passed; roll checked in Chrome at 15% speed (wheels independent, overshoot visible)"
     }
   ]
 }

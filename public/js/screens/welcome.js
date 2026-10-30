@@ -1,6 +1,7 @@
 // The landing page (welcome screen). Every figure names its source on screen: the guide's three figures are
 // quoted with their original source; the data counts come from data/ (tests/landing.test.js checks them).
 import { esc } from '../ui.js'
+import { odometer } from '../components/odometer.js'
 
 // Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. One accent each.
 export const GUIDE_FACTS = [
@@ -55,7 +56,7 @@ function hero(t) {
   <p class="lp-facts-title">${esc(t('ldFactsTitle'))}</p>
   ${GUIDE_FACTS.map((fact, i) => `
   <div class="lp-fact lp-fact-${fact.accent}" style="--i:${i}">
-   <div class="lp-fact-value">${esc(fact.value)}</div>
+   <div class="lp-fact-value">${odometer(fact.value, `fact-${i}`)}</div>
    <p class="lp-fact-label">${esc(t(fact.label))}</p>
    ${sourced(t, `${t(fact.source)}, ${t('ldFactVia')}`)}
   </div>`).join('')}
@@ -120,7 +121,7 @@ const data = (t) => `
  <div class="lp-data">
   ${DATA_FACTS.map((fact) => `
   <div class="lp-datum${fact.linked ? ' lp-datum-wide' : ''}">
-   <div class="lp-datum-n">${num(fact.count)}</div>
+   <div class="lp-datum-n">${odometer(num(fact.count), `data-${fact.id}`)}</div>
    <p class="lp-datum-label">${esc(t(fact.label))}</p>
    ${fact.linked ? `
    <div class="lp-meter" role="img" aria-label="${esc(t('ldD3Bridge', { linked: fact.linked, count: fact.count }))}"><i style="width:${(100 * fact.linked / fact.count).toFixed(1)}%"></i></div>

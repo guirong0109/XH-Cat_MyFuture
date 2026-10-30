@@ -26,6 +26,7 @@ import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
 import { INTRO_LENGTH, shouldPlayIntro } from './intro/timeline.js'
+import { armOdometers } from './components/odometer.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
@@ -480,6 +481,7 @@ function render() {
   document.body.classList.toggle('landing', page === welcome)
   if (page === welcome && !introStarted) startIntro()
   document.getElementById('main').innerHTML = tabs + view
+  if (page === welcome) armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
   pill.className = saved ? 'pill ok' : 'pill'

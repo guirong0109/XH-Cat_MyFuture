@@ -70,7 +70,7 @@ body.landing main{max-width:none;padding:0}
 .lp-fact-pink .lp-fact-value{color:var(--lp-pink)}
 .lp-fact-blue .lp-fact-value{color:var(--lp-blue)}
 .lp-fact-lime{grid-column:1/-1;background:var(--lp-lime);border-color:var(--lp-lime);color:var(--lp-on-lime)}
-.lp-fact-lime .lp-fact-value{font-size:clamp(58px,7vw,96px)}
+.lp-fact-lime .lp-fact-value{font-size:clamp(46px,5.2vw,76px)}
 .lp-fact-label{font-size:15px;line-height:1.4;margin:12px 0 16px;color:inherit;opacity:.88}
 .lp-src{display:block;margin-top:auto;font-family:var(--lp-mono);font-size:11px;line-height:1.5;color:var(--lp-muted)}
 .lp-fact-lime .lp-src{color:color-mix(in srgb,var(--lp-on-lime) 70%,transparent)}
@@ -164,6 +164,29 @@ body.landing main{max-width:none;padding:0}
 .lp-footer{padding:36px 0 56px;border-top:1px solid var(--lp-line);font-size:13px;line-height:1.6;color:var(--lp-muted)}
 .lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
 .lp-footer p{max-width:92ch;margin-top:8px}
+
+/* mechanical roller counters: digit wheels in a recessed window (odometer.js rolls them) */
+.lp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.odo{display:inline-block;line-height:1}
+.odo-face{display:inline-flex;align-items:center;gap:.08em}
+.odo-window{display:inline-flex;align-items:center;padding:.05em .06em;border-radius:.14em;
+  --win:color-mix(in srgb,var(--lp-ink) 7%,var(--lp-cream));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--lp-ink) 14%,var(--lp-cream)),var(--win) 30%,var(--win) 70%,color-mix(in srgb,var(--lp-ink) 12%,var(--lp-cream)));
+  border:1px solid color-mix(in srgb,var(--lp-ink) 16%,transparent);
+  box-shadow:inset 0 .07em .14em rgba(0,0,0,.32),inset 0 -.04em .08em rgba(255,255,255,.35),0 1px 0 rgba(255,255,255,.55)}
+.odo-wheel{position:relative;display:block;width:.54em;height:1.1em;overflow:hidden;text-align:center}
+.odo-wheel+.odo-wheel{box-shadow:inset 1px 0 0 color-mix(in srgb,var(--lp-ink) 12%,transparent)}
+.odo-wheel::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,0) 30%,rgba(255,255,255,.06) 50%,rgba(0,0,0,0) 70%,rgba(0,0,0,.34))}
+.odo-strip{display:block;transform:translateY(calc(var(--to) * -1.1em));will-change:transform}
+.odo-strip i{display:block;height:1.1em;line-height:1.1em;font-style:normal;font-variant-numeric:tabular-nums lining-nums}
+.odo.armed .odo-strip{transform:translateY(0)}
+.odo-sep{display:block;width:.24em;height:1.1em;line-height:1.1em;text-align:center}
+.lp-fact-value,.lp-datum-n{line-height:1}
+.lp-fact-lime .odo-window{--win:color-mix(in srgb,var(--lp-on-lime) 10%,var(--lp-lime));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--lp-on-lime) 22%,var(--lp-lime)),var(--win) 30%,var(--win) 70%,color-mix(in srgb,var(--lp-on-lime) 20%,var(--lp-lime)));
+  border-color:color-mix(in srgb,var(--lp-on-lime) 22%,transparent)}
+.lp-fact-lime .odo-wheel+.odo-wheel{box-shadow:inset 1px 0 0 color-mix(in srgb,var(--lp-on-lime) 16%,transparent)}
 
 /* the hero rises in; while the ATM intro plays it waits, then rises as the receipt fades */
 .lp-hero-copy>*{animation:lp-rise .8s cubic-bezier(.2,.7,.2,1) both}

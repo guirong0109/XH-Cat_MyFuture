@@ -512,3 +512,33 @@ describe('createIngestor().refresh', () => {
     }
   })
 })
+
+describe('stored contentHash and the trusted import path', () => {
+  it('a published snapshot stores contentHash = SHA-256 of its canonical content', async () => {
+    const { store } = setup()
+    await seed(store)
+    const rev = await setup({ openalex: fakeOpenAlex(() => openalexFetch(revise())), store }).ingestor.refresh('openalex')
+    expect(rev.outcome).toBe('published')
+    const { manifest } = await readActive(store)
+    const snap = JSON.parse((await store.get(KEYS.snapshot('openalex', manifest.snapshots.openalex))).bytes.toString('utf8'))
+    expect(snap.contentHash).toBe(contentHash(snap))
+    expect(snap.contentHash).toMatch(/^[0-9a-f]{64}$/)
+  })
+
+  it('refresh ignores a second argument: no release bypass', async () => {
+    const dosm = fakeDosm()
+    const { ingestor } = setup({ dosm })
+    const r = await ingestor.refresh('dosm', { release: { quarter: '2026 Q2' } })
+    expect(r).toMatchObject({ outcome: 'failed', code: 'not_configured' })
+    expect(dosm.calls).toEqual([])
+  })
+
+  it('importDosmRelease publishes a given release into an empty store', async () => {
+    const dosm = fakeDosm()
+    const { ingestor, store } = setup({ dosm })
+    const r = await ingestor.importDosmRelease({ quarter: '2026 Q2' })
+    expect(r.outcome).toBe('published')
+    expect(dosm.calls).toEqual([['fetchSnapshot', '2026 Q2']])
+    expect((await readActive(store)).manifest.snapshots.dosm).toBeTruthy()
+  })
+})

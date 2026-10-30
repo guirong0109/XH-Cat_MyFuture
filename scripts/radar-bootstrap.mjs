@@ -31,7 +31,7 @@ const dosm = {
 const openalex = createOpenAlexSource({ now })
 const ingestor = createIngestor({ store, sources: { openalex, dosm }, references, now })
 
-const first = await ingestor.refresh('dosm', { release: RELEASE })
+const first = await ingestor.importDosmRelease(RELEASE)
 console.log('dosm:', first.outcome, first.code ?? '')
 if (first.outcome !== 'published') process.exit(1)
 const second = await ingestor.refresh('openalex')

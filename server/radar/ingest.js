@@ -117,7 +117,7 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
-  async function refresh(sourceId, { release } = {}) {
+  async function run(sourceId, release) {
     const time = now().toISOString()
     const run = {
       time,
@@ -244,6 +244,8 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
       previousManifestId: active?.manifest.manifestId ?? null,
     })
     const signalsDoc = { signalsId, manifestId, createdAt: time, contract: CONTRACT, ...out }
+    // Spec 4.4: the snapshot carries the SHA-256 of its canonical content (which excludes this field).
+    snapshot.contentHash = contentHash(snapshot)
     const snapshotKey = KEYS.snapshot(sourceId, snapshot.snapshotId)
     const snapshotBytes = toBytes(snapshot)
     const signalsBytes = toBytes(signalsDoc)
@@ -269,7 +271,7 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
 
     // 7. Read back every object the manifest references and check its hash (spec §6.5 step 4).
     const checks = [
-      { key: snapshotKey, bytesHash: sha256(snapshotBytes), content: contentHash(snapshot) },
+      { key: snapshotKey, bytesHash: sha256(snapshotBytes), content: contentHash(snapshot), stored: true },
       { key: KEYS.signals(signalsId), bytesHash: sha256(signalsBytes) },
       { key: KEYS.manifest(manifestId), bytesHash: sha256(manifestBytes) },
     ]
@@ -280,8 +282,10 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
         const got = await store.get(check.key)
         if (!got) throw new IngestStop('store_unavailable')
         if (check.bytesHash && sha256(got.bytes) !== check.bytesHash) throw new IngestStop('store_unavailable')
-        if (check.content && contentHash(JSON.parse(Buffer.from(got.bytes).toString('utf8'))) !== check.content) {
-          throw new IngestStop('store_unavailable')
+        if (check.content) {
+          const stored = JSON.parse(Buffer.from(got.bytes).toString('utf8'))
+          if (contentHash(stored) !== check.content) throw new IngestStop('store_unavailable')
+          if (check.stored && stored.contentHash !== check.content) throw new IngestStop('store_unavailable')
         }
       }
     } catch (e) {
@@ -312,6 +316,13 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
+  // Public refresh takes the source id only: nothing from a caller can choose what is fetched.
+  const refresh = (sourceId) => run(sourceId, undefined)
+
+  // First bundle / seeding: publish a given DOSM release without discovery (an empty store has no active quarter).
+  // Trusted server code only - never call with request data. Same validation, pipeline and manifest as refresh.
+  const importDosmRelease = (release) => run('dosm', release)
+
   function status() {
     return {
       lastChecks: structuredClone(lastChecks),
@@ -320,5 +331,5 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
-  return { refresh, status }
+  return { refresh, importDosmRelease, status }
 }

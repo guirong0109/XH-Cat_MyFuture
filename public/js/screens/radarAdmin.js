@@ -397,7 +397,8 @@ function changeNames(t, changes) {
 // A skill signal states what its data is and links its source (US job ads, software only).
 function skillNote(t, e) {
   if (e?.system !== 'O*NET Software Skills') return ''
-  const link = e.sourceUrl ? ` · <a href="${esc(e.sourceUrl)}" target="_blank" rel="noopener">${esc(e.sourceUrl)}</a>` : ''
+  const url = safeUrl(e.sourceUrl)
+  const link = url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>` : ''
   return `<div class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}${link}</div>`
 }
 

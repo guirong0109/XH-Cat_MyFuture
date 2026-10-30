@@ -565,6 +565,23 @@ describe('status cards (spec §11.1, §12)', () => {
       expect(html, lang).toContain('2026-10-30')
       expect(html, lang).not.toMatch(/null|NaN|undefined/)
     }
+    // The state of each source: availability, last refresh and its code (same words as the OpenAlex and DOSM cards).
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const states = {
+        'onet-skills': { availability: 'data', refreshHealth: 'failed', refreshCode: 'source_unavailable' },
+        'onet-hottech': { availability: 'unavailable', refreshHealth: 'ok' },
+      }
+      const html = onetSourceCards(sources, tl, states)
+      expect(html, lang).toContain(tl('rdDim_availability'))
+      expect(html, lang).toContain(tl('rdDim_refreshHealth'))
+      expect(html, lang).toContain(tl('rdAvail_data'))
+      expect(html, lang).toContain(tl('rdAvail_unavailable'))
+      expect(html, lang).toContain(tl('rdHealth_failed'))
+      expect(html, lang).toContain(tl('rdHealth_ok'))
+      expect(html, lang).toContain(tl('rdErr_source_unavailable'))
+      expect(html, lang).not.toMatch(/null|NaN|undefined/)
+    }
     expect(onetSourceCards([], t)).toBe('')
     expect(onetSourceCards([{ sourceId: 'onet-skills', name: '<b>x</b>', links: [] }], t)).not.toContain('<b>x</b>')
   })

@@ -1048,7 +1048,7 @@
     },
     {
       "time": "30 Oct",
-      "step": "Your request",
+      "step": "Request (summary)",
       "detail": "add O*NET skill trends to the Radar: which software skills became or stopped being in demand"
     },
     {
@@ -1075,6 +1075,11 @@
       "time": "30 Oct",
       "step": "Skill trends T9",
       "detail": "sources, contract, deploy notes, tools declaration, handover and build record; npm test 643 passed, pipeline 11 OK"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends final review fixes",
+      "detail": "bootstrap rebuild skips active releases; O*NET source cards show state; not-newer refresh keeps its slot; safe source link; source registry names no release; tests for encoded ids and revised Hot counts; npm test 647 passed"
     }
   ]
 }

@@ -463,6 +463,12 @@ describe('judge Trend Change Test (spec §9)', () => {
     expect(html).toContain(t('rdSkLabelUs'))
     expect(html).toContain(t('rdSkLabelSoftware'))
     expect(html).toContain('https://www.onetonline.org/link/summary/15-1252.00')
+    // An entity source link that is not http(s) is shown as no link at all.
+    const bad = JSON.parse(JSON.stringify(c.data))
+    for (const s of bad.signals ?? []) if (s.entity?.system === 'O*NET Software Skills') s.entity.sourceUrl = 'javascript:alert(1)'
+    const unsafe = judgeView({ t, state: judgeState(), data: { report: bad, now: NOW.getTime() } })
+    expect(unsafe).not.toContain('javascript:')
+    expect(unsafe).toContain(t('rdSkLabelUs'))
     await judge.reset()
   })
 

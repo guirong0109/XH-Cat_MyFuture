@@ -177,16 +177,24 @@ export function statusCards(states, t, { sources = [], manifestId = null, ai = n
   }).join('')}</div>`
 }
 
-// Two compact cards for the O*NET sources (US job ads): name, release or counting window, fetched date and link.
-// sources = the /api/radar/sources entries; anything else is left out. Every text goes through esc().
-export function onetSourceCards(sources, t) {
+// Two compact cards for the O*NET sources (US job ads): name, release or counting window, fetched date, link and the
+// source's state (availability, last refresh and its code), shown the same way as the OpenAlex and DOSM cards.
+// sources = the /api/radar/sources entries; states = data.states; anything else is left out. Every text goes through esc().
+export function onetSourceCards(sources, t, states = {}) {
   const cards = (sources ?? []).filter((s) => s?.sourceId === 'onet-skills' || s?.sourceId === 'onet-hottech').map((s) => {
     const skills = s.sourceId === 'onet-skills'
     const link = (s.links ?? []).find((l) => safeUrl(l?.url))
     const period = skills ? s.version ?? s.observationPeriod : s.window?.label ?? s.observationPeriod
+    const st = states?.[s.sourceId] ?? {}
+    const health = st.refreshHealth === 'failed' && st.refreshCode ? `${dim(t, 'Health', st.refreshHealth)} (${dim(t, 'Err', st.refreshCode)})` : dim(t, 'Health', st.refreshHealth)
+    const rows = [
+      ['rdDim_availability', dim(t, 'Avail', st.availability)],
+      ['rdDim_refreshHealth', health],
+    ]
     return `<div class="card rd-src-card rd-onet-card">
       <h3>${esc(t(skills ? 'rdSrcOnetSkills' : 'rdSrcOnetHot'))} ${link ? srcLink(link) : ''}</h3>
       <p class="tiny muted">${esc(t(skills ? 'rdAdminOnetActiveRelease' : 'rdAdminOnetActiveWindow'))}: ${esc(period ?? DASH)} · ${esc(t('rdEvFetched'))}: ${esc(fmtDate(s.fetchedAt))}</p>
+      <dl class="rd-kv tiny">${rows.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
       <p class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}</p>
     </div>`
   })
@@ -604,7 +612,7 @@ export function radarView({ t, state, data }) {
   const body = tab === 'ai' ? aiTab({ t, state, data }) : skillsTab({ t, state, data })
   return `<div class="rd">${head}${banners(t, state, data)}
     ${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}
-    ${onetSourceCards(data.sources, t)}
+    ${onetSourceCards(data.sources, t, data.states)}
     ${sourcesList(t, data.sources ?? [])}
     ${profileCard(t, rel, data)}
     ${tabBar}

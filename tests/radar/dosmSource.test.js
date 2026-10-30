@@ -146,6 +146,21 @@ describe('fetchSnapshot', () => {
     expect((await code(fetchWith(`<div id="data"><h5>Data</h5></div><h5>Press</h5><a href="${DATA_URL}">x</a>`))).code).toBe('dosm_dataset_missing')
   })
 
+  it('an empty Data section followed by any other heading level and a press link -> dosm_dataset_missing', async () => {
+    const press = DATA_URL.replace('20742', '20743')
+    const withPress = (page) => createDosmSource({ fetchImpl: fakeFetch(routes({ [PAGE_Q2]: html(page), [press]: new Response(XLSX, { headers: { 'Content-Type': XLSX_TYPE } }) })), now: NOW }).fetchSnapshot(RELEASE)
+    const page = `<div id="data"><h5>Data</h5><ol></ol></div><h4>Press</h4><a href="${press}">p</a>`
+    expect((await code(withPress(page))).code).toBe('dosm_dataset_missing')
+    const bare = `<div id="data"><h5>Data</h5><ol></ol><h4>Press</h4><a href="${press}">p</a>`
+    expect((await code(withPress(bare))).code).toBe('dosm_dataset_missing')
+  })
+
+  it('finds the data link on the real saved release page', async () => {
+    const real = await readFile('tests/fixtures/dosm-release-2026q2.html', 'utf8')
+    const r = await fetchWith(real)
+    expect(r.snapshot.meta.dataUrl).toBe('https://www.dosm.gov.my/portal-main/release-document-log?release_document_id=20742')
+  })
+
   it('accepts a relative data link and &amp; in the URL', async () => {
     const rel = '<a href="/portal-main/release-document-log?release_document_id=20742">d</a>'
     expect((await fetchWith(pageWith(rel))).snapshot.meta.dataUrl).toBe(DATA_URL)

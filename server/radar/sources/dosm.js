@@ -79,7 +79,7 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
     if (start >= 0) {
       const rest = page.slice(start + 9)
       // The Data section ends at the next id="..." attribute or the next heading other than "Data".
-      const end = rest.search(/\sid="|<h5\b(?![^>]*>\s*Data\s*<)/i)
+      const end = rest.search(/\sid="|<h[1-6]\b(?![^>]*>\s*Data\s*<)/i)
       section = end >= 0 ? rest.slice(0, end) : rest
     }
     const link = /href="([^"]*release-document-log\?release_document_id=\d+[^"]*)"/.exec(section)

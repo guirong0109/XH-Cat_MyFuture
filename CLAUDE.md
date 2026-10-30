@@ -62,7 +62,7 @@ npm install
 npm test                                           # expect 643 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 11 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
-node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook)
+node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<dir with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # O*NET zips read locally, not downloaded
 python pipeline/fetch_radar_bridge.py              # rebuild data/radar/occupation-bridge.json
 python -I docs/radar/index_analysis.py <out.json>  # re-fetch OpenAlex and recompute the index analysis

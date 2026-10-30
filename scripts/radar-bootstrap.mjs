@@ -10,11 +10,15 @@
 //    official one and the SHA-256 is that of the bytes read. The zips are never stored.
 // 3. O*NET Hot Technologies: the live page (refresh('onet-hottech')); the page itself is kept as the original.
 //
-// Run: node scripts/radar-bootstrap.mjs   (optional: ONET_ZIP_DIR=<folder with the three zips>)
+// Rebuilding on the committed bundle: releases not newer than the loaded active onet-skills release are skipped, and an
+// unchanged Hot Technologies page (no_change) is accepted.
+//
+// Run: node scripts/radar-bootstrap.mjs   (optional: ONET_ZIP_DIR=<folder with the three zips>,
+//      RADAR_BUNDLE_DIR=<bundle folder to read and rewrite; default data/radar/bundle>)
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
-import { createIngestor } from '../server/radar/ingest.js'
+import { createIngestor, onetReleaseNotNewer } from '../server/radar/ingest.js'
 import { createMemoryStore } from '../server/radar/store/memory.js'
 import { createFileStore } from '../server/radar/store/file.js'
 import { KEYS } from '../server/radar/manifest.js'
@@ -24,7 +28,7 @@ import { createOnetSkillsSource } from '../server/radar/sources/onetSkills.js'
 import { createOnetHotTechSource } from '../server/radar/sources/onetHotTech.js'
 import { loadRadarReferences } from '../server/radar/references.js'
 
-const OUT = path.resolve('data/radar/bundle')
+const OUT = path.resolve(process.env.RADAR_BUNDLE_DIR || 'data/radar/bundle')
 const WORKBOOK = 'data/radar/source/dosm-jmi-2026q2.xlsx'
 // The real release archive page (saved 2026-10-30). The Q2 2026 release is not listed in its own archive.
 const ARCHIVE = 'tests/fixtures/dosm-archive-2026q2.html'
@@ -61,7 +65,7 @@ if (bundle) {
     await store.put(key, (await bundle.get(key)).bytes)
     loaded += 1
   }
-  console.log(`loaded ${loaded} files from data/radar/bundle`)
+  console.log(`loaded ${loaded} files from ${path.relative(process.cwd(), OUT) || OUT}`)
 } else {
   const workbook = await readFile(WORKBOOK)
   dosmRelease = {
@@ -83,9 +87,10 @@ if (bundle) {
 }
 
 const ingestor = createIngestor({ store, sources, references, now })
-const must = (label, out) => {
+const must = (label, out, { allowNoChange = false } = {}) => {
   console.log(`${label}:`, out.outcome, out.code ?? '')
-  if (out.outcome !== 'published') process.exit(1)
+  if (out.outcome === 'published' || (allowNoChange && out.outcome === 'no_change')) return
+  process.exit(1)
 }
 if (!bundle) {
   must('dosm', await ingestor.importDosmRelease(dosmRelease))
@@ -93,8 +98,14 @@ if (!bundle) {
 }
 
 // 2. and 3.
-for (const release of ONET_RELEASES) must(`onet-skills ${release}`, await ingestor.refreshOnetRelease(release))
-must('onet-hottech', await ingestor.refresh('onet-hottech'))
+for (const release of ONET_RELEASES) {
+  if (await onetReleaseNotNewer(store, release)) {
+    console.log(`onet-skills ${release}: skipped, already active`)
+    continue
+  }
+  must(`onet-skills ${release}`, await ingestor.refreshOnetRelease(release))
+}
+must('onet-hottech', await ingestor.refresh('onet-hottech'), { allowNoChange: true })
 
 await rm(OUT, { recursive: true, force: true })
 let count = 0
@@ -106,4 +117,4 @@ for (const key of await store.list('')) {
   await writeFile(file, (await store.get(key)).bytes)
   count += 1
 }
-console.log(`wrote ${count} files to data/radar/bundle`)
+console.log(`wrote ${count} files to ${path.relative(process.cwd(), OUT) || OUT}`)

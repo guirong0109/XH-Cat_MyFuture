@@ -101,7 +101,7 @@ no AI model is involved.
 - **Judge sessions started before this release** have no O\*NET snapshot: Scenario C answers `validation_failed`
   (`not_configured`) for them. Reset the judge session after deploying (they expire in 2 hours anyway).
 - To rebuild the bundle locally: `ONET_ZIP_DIR=<folder with db_30_2.zip, db_30_3.zip, db_31_0.zip> node
-  scripts/radar-bootstrap.mjs`. Without `ONET_ZIP_DIR` it downloads the three zips (slow).
+  scripts/radar-bootstrap.mjs`. Without `ONET_ZIP_DIR` it downloads the zips (slow). On the committed bundle it skips releases already active ("skipped, already active"), accepts an unchanged Hot Technologies page, and rewrites the same files; `RADAR_BUNDLE_DIR=<folder>` points it at a copy instead of `data/radar/bundle`.
 
 ## 6. Backups
 

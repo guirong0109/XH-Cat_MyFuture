@@ -119,6 +119,22 @@ describe('parseDosmJmi on synthetic layouts', () => {
     expect(t.total).toEqual([10, 20, 30, 40, 50, 60])
   })
 
+  it('refuses a Q1 without its own year, and repeated or unordered quarters', () => {
+    const noYearAtQ1 = layout()
+    noYearAtQ1[3] = { C: '2020' } // G (2021 Q1) has no year and is not merged
+    expect(() => parseDosmJmi(makeXlsx({ sheetXml: sheetXmlFromRows(noYearAtQ1) }))).toThrow(
+      expect.objectContaining({ code: 'dosm_layout_unexpected', detail: expect.stringContaining('year missing at Q1') })
+    )
+    const repeated = layout()
+    repeated[3] = { C: '2020', G: '2020' } // 2020 Q1 appears twice
+    const unordered = layout({ quarters: ['Q1', 'Q2', 'Q4', 'Q3', 'Q1', 'Q2', 'Q3'] })
+    for (const rows of [repeated, unordered]) {
+      expect(() => parseDosmJmi(build(rows))).toThrow(
+        expect.objectContaining({ code: 'dosm_layout_unexpected', detail: expect.stringContaining('quarter') })
+      )
+    }
+  })
+
   it('rejects duplicate or ambiguous group rows', () => {
     const rows = layout()
     rows[15] = { B: 'Services and others', C: 1 } // also starts with "service"

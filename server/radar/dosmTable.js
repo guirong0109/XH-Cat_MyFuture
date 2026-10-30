@@ -72,9 +72,20 @@ export function parseDosmJmi(buffer) {
     const label = (sheet.cell(columnLetters(col) + quarterRow) ?? '').trim()
     if (!/^Q[1-4]$/i.test(label)) break
     // A year written once over the first quarter of a block carries right (merged ranges already fill).
-    const year = (sheet.cell(columnLetters(col) + yearRow) ?? '').trim() || (columns.at(-1)?.year ?? '')
+    // A new year must be written (or merged) over its Q1: never guess the rollover.
+    const own = (sheet.cell(columnLetters(col) + yearRow) ?? '').trim()
+    if (!own && label.toUpperCase() === 'Q1') throw new DosmLayoutError(`year missing at Q1 (${columnLetters(col)}${yearRow})`)
+    const year = own || (columns.at(-1)?.year ?? '')
     if (!/^\d{4}$/.test(year)) throw new DosmLayoutError(`no year above ${columnLetters(col)}${quarterRow}`)
     columns.push({ col, year, period: `${year} ${label.toUpperCase()}` })
+  }
+  // Each period must be exactly the quarter after the one before it.
+  for (let i = 1; i < columns.length; i++) {
+    const [py, pq] = columns[i - 1].period.split(' Q').map(Number)
+    const next = pq === 4 ? `${py + 1} Q1` : `${py} Q${pq + 1}`
+    if (columns[i].period !== next) {
+      throw new DosmLayoutError(`quarters out of order or repeated: ${columns[i - 1].period} then ${columns[i].period}`)
+    }
   }
 
   const series = {}

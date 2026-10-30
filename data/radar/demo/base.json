@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "radar-demo-base/v1",
+  "synthetic": true,
+  "label": "Synthetic test data for the Trend Change Test. Every value is fictional: these are not DOSM or OpenAlex figures.",
+  "dosm": {
+    "note": "Fictional quarterly counts for the nine MASCO 2020 major groups, with a fictional total and unclassified count. Clean history: no possible structural break.",
+    "classification": {
+      "system": "masco2020",
+      "version": "2020"
+    },
+    "sourceUrls": [
+      {
+        "label": "Synthetic values (fictional). Format modelled on DOSM online job offerings by MASCO 2020 major group",
+        "url": "https://www.dosm.gov.my/portal-main/release-archive"
+      }
+    ],
+    "periods": [
+      "2023 Q3",
+      "2023 Q4",
+      "2024 Q1",
+      "2024 Q2",
+      "2024 Q3",
+      "2024 Q4",
+      "2025 Q1",
+      "2025 Q2",
+      "2025 Q3",
+      "2025 Q4",
+      "2026 Q1",
+      "2026 Q2"
+    ],
+    "total": [
+      89000,
+      90000,
+      91000,
+      92000,
+      93000,
+      94000,
+      95000,
+      96000,
+      97000,
+      98000,
+      99000,
+      100000
+    ],
+    "unclassified": [
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000
+    ],
+    "groups": {
+      "1": {
+        "name": "Managers",
+        "values": [
+          7120,
+          7200,
+          7280,
+          7360,
+          7440,
+          7520,
+          7600,
+          7680,
+          7760,
+          7840,
+          7920,
+          8000
+        ]
+      },
+      "2": {
+        "name": "Professionals",
+        "values": [
+          8277,
+          8460,
+          8645,
+          8832,
+          9021,
+          9212,
+          9405,
+          9600,
+          9797,
+          10045,
+          10296,
+          10600
+        ]
+      },
+      "3": {
+        "name": "Technicians and associate professionals",
+        "values": [
+          12460,
+          12645,
+          12831,
+          13018,
+          13206,
+          13395,
+          13585,
+          13776,
+          13968,
+          14161,
+          14355,
+          14550
+        ]
+      },
+      "4": {
+        "name": "Clerical support workers",
+        "values": [
+          8010,
+          8055,
+          8099,
+          8142,
+          8184,
+          8225,
+          8265,
+          8304,
+          8342,
+          8379,
+          8415,
+          8450
+        ]
+      },
+      "5": {
+        "name": "Service and sales workers",
+        "values": [
+          17800,
+          18000,
+          18200,
+          18400,
+          18600,
+          18800,
+          19000,
+          19200,
+          19400,
+          19600,
+          19800,
+          20000
+        ]
+      },
+      "6": {
+        "name": "Skilled agricultural, forestry, livestock and fishery workers",
+        "values": [
+          1780,
+          1800,
+          1820,
+          1840,
+          1860,
+          1880,
+          1900,
+          1920,
+          1940,
+          1960,
+          1980,
+          2000
+        ]
+      },
+      "7": {
+        "name": "Craft and related trades workers",
+        "values": [
+          8010,
+          8100,
+          8190,
+          8280,
+          8370,
+          8460,
+          8550,
+          8640,
+          8730,
+          8820,
+          8910,
+          9000
+        ]
+      },
+      "8": {
+        "name": "Plant and machine operators and assemblers",
+        "values": [
+          6230,
+          6300,
+          6370,
+          6440,
+          6510,
+          6580,
+          6650,
+          6720,
+          6790,
+          6860,
+          6930,
+          7000
+        ]
+      },
+      "9": {
+        "name": "Elementary Occupations",
+        "values": [
+          16313,
+          16440,
+          16565,
+          16688,
+          16809,
+          16928,
+          17045,
+          17160,
+          17273,
+          17335,
+          17394,
+          17400
+        ]
+      }
+    }
+  },
+  "openalex": {
+    "note": "One fictional yearly research-paper series and a fictional reference series.",
+    "lastYear": 2025,
+    "topic": {
+      "axisId": "language",
+      "openalexId": "TDEMO1",
+      "officialTitle": "Synthetic test topic (fictional)",
+      "friendlyLabel": "Synthetic test topic",
+      "sourceUrl": "https://docs.openalex.org"
+    },
+    "sourceUrls": [
+      {
+        "label": "Synthetic values (fictional). Format modelled on OpenAlex works per year for topic TDEMO1",
+        "url": "https://docs.openalex.org"
+      }
+    ],
+    "series": {
+      "2015": 400,
+      "2016": 450,
+      "2017": 500,
+      "2018": 560,
+      "2019": 620,
+      "2020": 700,
+      "2021": 780,
+      "2022": 860,
+      "2023": 950,
+      "2024": 1050,
+      "2025": 1150
+    },
+    "reference": {
+      "2015": 100000,
+      "2016": 105000,
+      "2017": 110000,
+      "2018": 115000,
+      "2019": 120000,
+      "2020": 125000,
+      "2021": 130000,
+      "2022": 135000,
+      "2023": 140000,
+      "2024": 145000,
+      "2025": 150000
+    }
+  },
+  "scenarios": {
+    "A": {
+      "title": "Scenario A: normal change",
+      "description": "Edit a value. The default edit raises Professionals in 2026 Q2 from 10,600 to 11,400 offerings (total stays 100,000).",
+      "defaultEdits": [
+        {
+          "entityId": "masco2020:2",
+          "period": "2026 Q2",
+          "value": 11400
+        }
+      ]
+    },
+    "B": {
+      "title": "Scenario B: structural break",
+      "description": "Multiply the total and seven of the nine groups in the latest quarter by a jump factor (default 1.8).",
+      "period": "2026 Q2",
+      "defaultFactor": 1.8,
+      "groups": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "7",
+        "8"
+      ]
+    }
+  }
+}

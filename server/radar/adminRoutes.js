@@ -21,6 +21,7 @@ import express from 'express'
 import { jsonBody, sendError } from '../errors.js'
 import { createWindowLimiter } from '../rateLimit.js'
 import { originOk, sendAccessError } from './access.js'
+import { demoErrorCode, sendDemoError } from './demoRoutes.js'
 import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
 import {
@@ -255,9 +256,11 @@ async function recentLog(store) {
 
 // ---- routes -----------------------------------------------------------------------------------------------------
 
-export function radarSessionRoutes({ access, log = (message) => console.info(message) }) {
+// demo (optional): the judge Trend Change Test service. A demo sign-in starts its synthetic session (sweeping expired
+// ones); when maxSessions are active it answers demo_full and sets no cookie (spec §9).
+export function radarSessionRoutes({ access, demo = null, log = (message) => console.info(message) }) {
   const router = express.Router()
-  router.post('/api/radar/session', jsonBody('4kb'), (request, response) => {
+  router.post('/api/radar/session', jsonBody('4kb'), async (request, response) => {
     if (!originOk(request)) return sendAccessError(response, 'csrf_failed')
     const body = plainObject(request.body) ? request.body : {}
     const out = access.login(body.role, body.key, request.ip, { label: body.label })
@@ -265,6 +268,15 @@ export function radarSessionRoutes({ access, log = (message) => console.info(mes
     if (!out.ok) {
       log(`[radar] sign-in refused: ${out.code}`)
       return sendAccessError(response, out.code)
+    }
+    if (out.session.role === 'demo' && demo) {
+      try {
+        await demo.start(out.session.sessionId)
+      } catch (error) {
+        const code = demoErrorCode(error)
+        log(`[radar] demo start refused: ${code}`)
+        return sendDemoError(response, code)
+      }
     }
     response.setHeader('Set-Cookie', out.cookie)
     return response.json({ ok: true, role: out.session.role, csrf: out.csrf, expiresAt: out.session.expiresAt })

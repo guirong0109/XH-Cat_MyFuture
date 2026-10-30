@@ -30,6 +30,9 @@ import { createRadarServiceFromEnv } from './radar/service.js'
 import { radarRoutes } from './radar/routes.js'
 import { createRadarAccess } from './radar/access.js'
 import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
+import { createDemoService } from './radar/demo.js'
+import { radarDemoRoutes } from './radar/demoRoutes.js'
+import { loadRadarReferences } from './radar/references.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -49,6 +52,8 @@ export function createApp({
   radar = createRadarServiceFromEnv({ dataDir, fetchImpl, now }),
   // Radar admin and judge sign-in (RADAR_ADMIN_KEY, RADAR_DEMO_KEY, RADAR_SESSION_SECRET); fails closed without them.
   radarAccess = createRadarAccess({ env: process.env, now }),
+  // Judge Trend Change Test: needs the Radar's writable store (R2, or RADAR_STORE=memory locally); null otherwise.
+  radarDemo = undefined,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -132,9 +137,18 @@ export function createApp({
   }
   app.use(interestRoutes({ loadAreas }))
   if (radar) {
+    // The demo reads only the synthetic base and the bundled reference data; storage only under demo/<sessionId>/.
+    const demo = radarDemo !== undefined ? radarDemo : radar.store ? createDemoService({
+      store: radar.store,
+      base: async () => JSON.parse(await readFile(path.join(dataDir, 'radar', 'demo', 'base.json'), 'utf8')),
+      references: () => loadRadarReferences(dataDir),
+      now,
+      devStore: Boolean(radar.info?.().devStore),
+    }) : null
     app.use(radarRoutes({ radar }))
-    app.use(radarSessionRoutes({ access: radarAccess }))
+    app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
+    app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)
 

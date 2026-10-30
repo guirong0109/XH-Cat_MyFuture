@@ -1,12 +1,14 @@
 # HANDOVER — `claude/career-matching` (detailed)
 
-Updated 2026-10-30 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a short version of this file;
+Updated 2026-10-30 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a
+short version of this file;
 on merge, put only the important points there and do not overwrite it with this one.
 
 ## State
 - **All 16 plan tasks are built and reviewed** (766 Vitest tests, 48 pipeline tests). A **final whole-branch review is
   next**, then the owner decides on merge. Nothing is pushed or merged.
-- Browser check on real data done by the controller: `docs/matching/acceptance.md` (A1-A13).
+- A1-A12 checked in the browser on real data (`docs/matching/acceptance.md`); A13 (percentages, chart, what would
+  raise it, scenario moves, judge test) by tests only until the BLS files exist.
 - Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; plan: `docs/superpowers/plans/2026-10-30-career-matching.md`;
   diagram: `docs/architecture-matching.html`.
 
@@ -73,7 +75,7 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 ## Data used (all on `main` unless marked new)
 | Data | Use |
 |---|---|
-| eMASCO 1,766 roles (new: `data/emasco/role_details.json`, copied from the team's 23 Oct crawl; old folder read for data only) | Role list and card text; not in the % |
+| eMASCO roles (new: `data/emasco/role_details.json`, 1,814 entries, 1,812 shown; copied from the team's 23 Oct crawl; old folder read for data only) | Role list and card text; not in the % |
 | O\*NET 31.0 skills + knowledge (new column: level, suppress flag) | Requirements, importance filter, needed level |
 | `data/radar/occupation-bridge.json` (finish the pending steps) | The code chain |
 | ISCED-F → CIP → O\*NET (`data/isced/`) | "In your field" |

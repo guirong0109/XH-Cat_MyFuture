@@ -502,16 +502,17 @@
     "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
     "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
     "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
-    "Career Matching: spec docs/superpowers/specs/2026-10-30-career-matching-design.md and diagram docs/architecture-matching.html written; branch HANDOVER.md and CLAUDE.md detailed"
+    "Career Matching: spec docs/superpowers/specs/2026-10-30-career-matching-design.md and diagram docs/architecture-matching.html written; branch HANDOVER.md and CLAUDE.md detailed",
+    "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
   ],
   "waiting": [
-    "Career Matching: review the plan docs/superpowers/plans/2026-10-30-career-matching.md and pick how to run it; save the two BLS crosswalk files",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
-    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying"
+    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
+    "Career Matching: save the two BLS crosswalk files in data/radar/source/ (the ISCO one as .xlsx or .csv); approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -551,7 +552,18 @@
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
     "D25: a release is compared with the most recent earlier release whose flags differ, both release numbers shown (31.0 equals 30.3, so the comparison is 30.2 to 30.3) - cost: a quiet release shows the last change again",
-    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script"
+    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script",
+    "Career matching: its own forbidden-key pattern (score, weight, rank, opportunit); the key is skillMatch - cost: one regex",
+    "Career matching: the judge test may inject signals through a service option if the demo base gives no sufficient direction - cost: less end-to-end testing of that path",
+    "Career matching: downloads named in the plan were approved with the plan - cost: none",
+    "Career matching: role_details.json keeps 1,814 entries; the list shows the 1,812 with a title - cost: a filter",
+    "Career matching: O*NET rows marked Recommend Suppress are left out and the screen says so - cost: a few core items missing from some percentages",
+    "Career matching: ILO gradient G3 closes a gap in the plan's reading of Table 5; no real row affected - cost: none today",
+    "Career matching: Anthropic task usage is the file's pct; only the latest monthly slice (May 2026) is kept - cost: one filter",
+    "Career matching: UN SDG API asked per goal with includechildren=true - cost: one query flag",
+    "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
+    "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
+    "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then"
   ],
   "log": [
     {

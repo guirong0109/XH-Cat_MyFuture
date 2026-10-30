@@ -71,7 +71,8 @@ python pipeline/fetch_radar_bridge.py       # rebuild the O*NET -> MASCO major g
 
 ## Career matching (branch `claude/career-matching`)
 
-Two tabs, `#match` and `#sdg`. From a confirmed profile it lists Malaysian eMASCO roles and shows, for each one:
+Two tabs, `#match` and `#sdg`. Percentages and the chart appear only once the two BLS files are saved (see the end of
+this section). From a confirmed profile it lists Malaysian eMASCO roles and shows, for each one:
 - **Skill Match**: the levels you meet divided by the levels the job needs (O\*NET skills and knowledge), with a
   sentence, a You-versus-Needed chart and "What would raise it". It is never changed by trends or AI.
 - **Outlook**, kept apart from the percentage: job-ad trend of the role's group (DOSM, group level only), AI in two

@@ -275,7 +275,8 @@
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "T28: your review of the landing page, its wording and the BM / 中文 translations",
     "T28b: your review of the ATM intro (look, timing, receipt wording)",
-    "T28c: your review of the roller counters"
+    "T28c: your review of the roller counters",
+    "T28: the section 2 column headings in BM and 中文 (ldTally1–3)"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -325,7 +326,9 @@
     "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)",
     "T28b: once the receipt is pinned, the headline and its two buttons rise in beside it in the same first section (below it on narrow screens); Replay replaces the scroll cue",
     "T28: the gap section shows 56% and 26% on one 0-100% scale with the 30-point gap marked Calculated; heading: \"More people use AI at work than have been trained for it.\" (follows from the two quoted figures)",
-    "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours"
+    "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
+    "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
+    "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording"
   ],
   "log": [
     {
@@ -922,6 +925,16 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "section 2 redesigned as a ruled ledger; space above it cut from 128 to 64 px; npm test 252 passed; checked in Chrome at 1440 and 500 px, light and dark; How it works and The data unchanged"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "section 2 laid out like your reference (three columns), no bars for 56% and 26%; roller tiles more 3D, digit set inside"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "npm test 252 passed; checked in Chrome at 1440, 720 and 500 px, light and dark; The data counters still fit their cards"
     }
   ]
 }

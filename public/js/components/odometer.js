@@ -1,9 +1,9 @@
-// Mechanical roller counters for the landing page's numbers. Each digit is a wheel in its own recessed window; it rolls
+// Mechanical roller counters for the landing page's numbers. Each digit is a drum in its own tile; it rolls
 // from 0 when first seen, lower digits spin more turns (faster), and it overshoots a little before settling.
 // Without script, or with "reduce motion", the window simply shows the value.
 import { esc } from '../ui.js'
 
-const CELL_EM = 1.1 // height of one digit on the wheel (matches .odo-wheel in landing.css)
+const CELL_EM = 1.45 // height of one digit on the wheel (matches .odo-wheel in landing.css)
 const MAX_TURNS = 3
 
 // rollPlan('600,000+') → { parts: [{kind:'digit', digit, cells, to, ms} | {kind:'sep', char}], suffix: '+' }

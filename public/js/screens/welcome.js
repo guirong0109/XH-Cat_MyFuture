@@ -3,11 +3,11 @@
 import { esc } from '../ui.js'
 import { odometer } from '../components/odometer.js'
 
-// Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown as one ledger in the second section.
+// Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown side by side in the second section.
 export const GUIDE_FACTS = [
-  { value: '56%', label: 'ldFact1', source: 'ldSrcHays' },
-  { value: '26%', label: 'ldFact2', source: 'ldSrcHays' },
-  { value: '600,000+', label: 'ldFact3', source: 'ldSrcMosti' },
+  { value: '56%', heading: 'ldTally1', label: 'ldFact1', source: 'ldSrcHays' },
+  { value: '26%', heading: 'ldTally2', label: 'ldFact2', source: 'ldSrcHays' },
+  { value: '600,000+', heading: 'ldTally3', label: 'ldFact3', source: 'ldSrcMosti' },
 ]
 const GAP_POINTS = 56 - 26
 
@@ -70,16 +70,15 @@ function atm(t) {
   `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
 }
 
-// The second section: the guide's figures as one ledger, a ruled row each. The two shares get a bar on the same
-// 0–100% track; the stretch the trained share falls short by is the section's one accent. The bars grow when the
-// section comes into view (app.js adds .in).
+// The second section: the guide's figures side by side, each a heading, its roller counter and a caption. A bracket
+// under the first two joins them with the calculated gap; the sources sit in one footnote.
 function gap(t) {
   const [use, trained, workers] = GUIDE_FACTS
-  const row = (fact, i, track = '') => `
-  <div class="lp-entry${track ? '' : ' lp-entry-count'}">
-   <div class="lp-entry-n">${odometer(fact.value, `fact-${i}`)}</div>
-   <p class="lp-entry-label">${esc(t(fact.label))}</p>
-   ${track}
+  const col = (fact, i) => `
+  <div class="lp-tally-col">
+   <p class="lp-tally-head">${esc(t(fact.heading))}</p>
+   <div class="lp-tally-n">${odometer(fact.value, `fact-${i}`)}</div>
+   <p class="lp-tally-cap">${esc(t(fact.label))}</p>
   </div>`
   return `
 <section class="lp-section lp-gapsec" id="gap">
@@ -87,15 +86,13 @@ function gap(t) {
   <p class="lp-label">${esc(t('ldFactsTitle'))}</p>
   <h2 class="lp-h2">${esc(t('ldGapTitle'))}</h2>
  </header>
- <div class="lp-ledger">
-  ${row(use, 0, `<div class="lp-entry-track"><div class="lp-track" style="--w:${use.value}" aria-hidden="true"><i></i></div></div>`)}
-  ${row(trained, 1, `<div class="lp-entry-track"><div class="lp-track" style="--w:${trained.value};--to:${use.value}" aria-hidden="true"><i></i><b></b></div>
-   <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p></div>`)}
-  ${row(workers, 2)}
-  <div class="lp-ledger-src">
-   ${sourced(t, `${use.value} · ${trained.value} — ${t(use.source)}, ${t('ldFactVia')}`)}
-   ${sourced(t, `${workers.value} — ${t(workers.source)}, ${t('ldFactVia')}`)}
-  </div>
+ <div class="lp-tally">
+  ${GUIDE_FACTS.map(col).join('')}
+  <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p>
+ </div>
+ <div class="lp-tally-src">
+  ${sourced(t, `${use.value} · ${trained.value} — ${t(use.source)}, ${t('ldFactVia')}`)}
+  ${sourced(t, `${workers.value} — ${t(workers.source)}, ${t('ldFactVia')}`)}
  </div>
 </section>`
 }

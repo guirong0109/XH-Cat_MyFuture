@@ -142,22 +142,28 @@ body.landing main{max-width:none;padding:0}
 .lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
 .lp-footer p{max-width:92ch;margin-top:8px}
 
-/* mechanical roller counters: each digit a wheel in its own recessed window (odometer.js rolls them) */
+/* mechanical roller counters: each digit a drum in its own tile (odometer.js rolls them). The tile is shaded dark at
+   the top and bottom and light in the middle, so the digit reads as sitting inside a turning drum; a faint seam
+   crosses the middle. One cell is 1.45em tall (CELL_EM in odometer.js). */
 .lp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .odo{display:inline-block;line-height:1}
-.odo-face{display:inline-flex;align-items:center;gap:.07em}
-.odo-wheel{position:relative;display:block;width:.56em;height:1.1em;overflow:hidden;text-align:center;border-radius:.1em;
-  --win:color-mix(in srgb,var(--lp-ink) 4%,var(--lp-cream));--edge:color-mix(in srgb,var(--lp-ink) 8%,var(--lp-cream));
-  background:linear-gradient(180deg,var(--edge),var(--win) 30%,var(--win) 70%,var(--edge));
-  border:1px solid color-mix(in srgb,var(--lp-ink) 12%,transparent);
-  box-shadow:inset 0 .04em .08em rgba(0,0,0,.12),0 1px 0 rgba(255,255,255,.55)}
-.odo-wheel::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,0) 26%,rgba(0,0,0,0) 74%,rgba(0,0,0,.1))}
-.odo-strip{display:block;transform:translateY(calc(var(--to) * -1.1em));will-change:transform}
-.odo-strip i{display:block;height:1.1em;line-height:1.1em;font-style:normal;font-variant-numeric:tabular-nums lining-nums}
+.odo-face{display:inline-flex;align-items:center;gap:.12em;font-family:var(--lp-sans);font-weight:600;letter-spacing:0;color:var(--lp-ink)}
+.odo-wheel{position:relative;display:block;width:.88em;height:1.45em;overflow:hidden;text-align:center;border-radius:.13em;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--lp-ink) 9%,var(--lp-paper)),var(--lp-paper) 40%,var(--lp-paper) 60%,
+    color-mix(in srgb,var(--lp-ink) 9%,var(--lp-paper)));
+  border:1px solid color-mix(in srgb,var(--lp-ink) 10%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 .05em .12em rgba(40,30,10,.16),0 .01em .02em rgba(40,30,10,.14)}
+.odo-wheel::before,.odo-wheel::after{content:"";position:absolute;pointer-events:none;z-index:1}
+.odo-wheel::before{left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.07);box-shadow:0 1px 0 rgba(255,255,255,.3)}
+.odo-wheel::after{inset:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(70,50,20,.3),rgba(70,50,20,.07) 20%,rgba(0,0,0,0) 38%,rgba(0,0,0,0) 62%,rgba(70,50,20,.07) 80%,rgba(70,50,20,.3));
+  box-shadow:inset 0 .06em .08em rgba(0,0,0,.14),inset 0 -.06em .08em rgba(0,0,0,.14)}
+.odo-strip{display:block;transform:translateY(calc(var(--to) * -1.45em));will-change:transform}
+.odo-strip i{display:block;height:1.45em;line-height:1.45em;font-style:normal;font-variant-numeric:tabular-nums lining-nums}
 .odo.armed .odo-strip{transform:translateY(0)}
-.odo-sep{display:block;height:1.1em;line-height:1.1em;margin:0 -.02em}
-.odo-suffix{margin-left:.04em}
+.odo-sep{display:block;height:1.45em;line-height:1.45em;margin:0 -.02em}
+.odo-suffix{align-self:flex-end;margin:0 0 .62em .12em;font-size:.6em;line-height:1}
+.lp-datum-n .odo{font-size:.66em}
 
 /* FIRST SECTION. The three.js ATM fills it; once the receipt is pinned (data-phase from app.js) the headline and
    buttons rise in beside it: left on wide screens (receipt on the right), below the receipt on narrow ones.
@@ -219,30 +225,25 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 .atm-stage button:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
 @keyframes atm-nudge{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--lp-ink) 12%,transparent)}}
 
-/* SECOND SECTION: the gap, as one quiet ledger. A ruled row per figure, the numbers in ink on the roller counters,
-   and a single accent: the pink stretch the trained share falls short by. The bars grow when the section comes into
-   view (.in), then the pink stretch follows. It sits close under the stage strip, so it reads as the next step. */
+/* SECOND SECTION: the gap. The three figures side by side, each a heading, its roller counter and a caption, with
+   rules between them. A pink bracket under the first two joins them to the calculated gap (drawn in when the section
+   comes into view, .in); the sources sit in one footnote. It sits close under the stage strip. */
 .lp-gapsec{padding-top:clamp(40px,5vw,64px)}
 .lp-gapsec .lp-head{margin-bottom:clamp(20px,3vw,32px)}
-.lp-ledger{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr);column-gap:clamp(20px,3vw,40px)}
-.lp-entry{display:grid;grid-column:1/-1;grid-template-columns:subgrid;align-items:center;padding:clamp(16px,2.2vw,24px) 0;
-  border-top:1px solid var(--lp-line)}
-.lp-entry-n{justify-self:end;font-family:var(--lp-serif);font-size:clamp(42px,4.4vw,64px);line-height:1;letter-spacing:-.02em;color:var(--lp-ink)}
-.lp-entry-label{font-size:16px;line-height:1.4;color:var(--lp-ink2);max-width:34ch}
-.lp-entry-count .lp-entry-label{grid-column:2/-1}
-.lp-entry-track{display:grid;gap:10px}
-.lp-track{position:relative;height:6px;border-radius:99px;background:color-mix(in srgb,var(--lp-ink) 8%,transparent)}
-.lp-track i,.lp-track b{position:absolute;inset:0 auto 0 0;border-radius:99px}
-.lp-track i{width:var(--w);background:var(--lp-ink);transition:width 1.2s cubic-bezier(.2,.7,.2,1) .2s}
-.lp-track b{left:var(--w);width:calc(var(--to) - var(--w));background:var(--lp-pink);border-radius:0 99px 99px 0;
-  transform-origin:left;transition:scale .7s cubic-bezier(.2,.7,.2,1) 1.3s}
-.lp-gapsec:not(.in) .lp-track i{width:0}
-.lp-gapsec:not(.in) .lp-track b{scale:0 1}
-.lp-gapnote{font-size:13px;line-height:1.5;color:var(--lp-ink2)}
+.lp-tally{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
+.lp-tally-col{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
+  padding:clamp(22px,3vw,32px) clamp(12px,2vw,28px) clamp(18px,2.4vw,26px)}
+.lp-tally-col+.lp-tally-col{border-left:1px solid var(--lp-line)}
+.lp-tally-head{display:flex;align-items:center;gap:12px;width:100%;font:500 11.5px var(--lp-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--lp-ink2)}
+.lp-tally-head::before,.lp-tally-head::after{content:"";flex:1;min-width:12px;height:1px;background:var(--lp-line)}
+.lp-tally-n{font-size:clamp(28px,3.6vw,52px);padding:4px 0}
+.lp-tally-cap{font-size:14px;line-height:1.45;color:var(--lp-muted);max-width:28ch}
+.lp-gapnote{grid-column:1/3;position:relative;margin:0 25%;padding:18px 0 20px;text-align:center;font-size:13px;line-height:1.5;color:var(--lp-ink2)}
 .lp-gapnote .lp-tag{color:var(--lp-muted)}
-.lp-gapnote::before{content:"";display:inline-block;width:16px;height:6px;border-radius:99px;background:var(--lp-pink);
-  vertical-align:middle;margin-right:8px}
-.lp-ledger-src{grid-column:1/-1;display:grid;gap:6px;padding-top:16px;border-top:1px solid var(--lp-line)}
+.lp-gapnote::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;border:1.5px solid var(--lp-pink);border-top:0;
+  border-radius:0 0 6px 6px;transition:scale .8s cubic-bezier(.2,.7,.2,1) .8s}
+.lp-gapsec:not(.in) .lp-gapnote::before{scale:0 1}
+.lp-tally-src{display:grid;gap:6px;padding-top:16px}
 
 @keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
@@ -261,9 +262,12 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-bento{grid-auto-rows:auto}
   .lp-data,.lp-principles{grid-template-columns:1fr}
   body.no-intro .lp-atm{grid-template-columns:1fr}
-  .lp-ledger{grid-template-columns:auto minmax(0,1fr)}
-  .lp-entry-track{grid-column:1/-1}
-  .lp-entry-count .lp-entry-label{grid-column:auto}
+  .lp-tally{grid-template-columns:1fr}
+  .lp-tally-n{font-size:44px}
+  .lp-tally-col+.lp-tally-col{border-left:0;border-top:1px solid var(--lp-line)}
+  .lp-tally-col:nth-of-type(3){order:1;border-top:1px solid var(--lp-line)}
+  .lp-gapnote{grid-column:auto;margin:0;padding-top:0}
+  .lp-gapnote::before{display:none}
   .lp-list li{grid-template-columns:1fr;gap:10px}
   .lp-list .lp-pill{justify-self:start}
   .lp-close{border-radius:24px}
@@ -271,6 +275,4 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 }
 @media (max-width:480px){
   .lp-nav .lp-btn{display:none}
-  .lp-ledger{grid-template-columns:1fr}
-  .lp-entry-n{justify-self:start}
 }

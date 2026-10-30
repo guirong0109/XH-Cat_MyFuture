@@ -25,7 +25,7 @@ import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
-import { INTRO_LENGTH, shouldPlayIntro } from './intro/timeline.js'
+import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
@@ -113,7 +113,13 @@ const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   // Landing page links scroll within the page (a #hash would be read as a screen).
   scrollTo: (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-  replayIntro: () => { window.scrollTo(0, 0); startIntro() },
+  // Start the ATM again from the waiting machine, at the top of the page.
+  replayIntro: () => {
+    stage?.dispose()
+    stage = null
+    window.scrollTo(0, 0)
+    render()
+  },
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
@@ -434,60 +440,84 @@ function onChange(target) {
   }
 }
 
-// The ATM intro (three.js, loaded only here): the receipt carries the question section and waits for the user.
-// Skipped for "reduce motion", without WebGL, or if loading fails; then the page shows the question section itself.
-let introStarted = false
-function startIntro() {
-  introStarted = true
-  if (document.querySelector('.atm-intro')) return
-  let webgl = false
-  try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
-  if (!shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })) {
-    document.body.classList.add('no-intro')
-    return
+// The ATM stage, the landing page's first section (three.js, loaded only here). The ATM waits for a click, then
+// prints the question section on a receipt that stays pinned in the middle. The page is redrawn on every change, so
+// the stage element lives on and is moved into each new drawing; a language change rebuilds it at the same step.
+// Without "reduce motion" or WebGL, or if three.js fails to load, the question section is the first section instead.
+let stage = null
+let stageAllowed = null
+function canShowStage() {
+  if (stageAllowed === null) {
+    let webgl = false
+    try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
+    stageAllowed = shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })
   }
-  // Skip and Esc work at once, even while three.js is still loading; a timer ends an intro that stalls before
-  // the receipt arrives. Once the receipt waits, Continue, a click anywhere, Enter, Space or Esc moves on.
-  const host = document.createElement('div')
-  host.className = 'atm-intro'
-  host.innerHTML = `<button class="atm-skip">${esc(t('introSkip'))} →</button><button class="atm-continue" hidden>${esc(t('introContinue'))} →</button>`
-  document.body.append(host)
-  document.body.classList.add('intro-playing')
-  let scene = null
-  let holding = false
-  const show = () => document.body.classList.remove('intro-playing')
-  const done = () => {
-    show()
-    host.remove()
-    window.removeEventListener('keydown', onKey)
+  return stageAllowed
+}
+
+function placeStage() {
+  const slot = document.querySelector('.lp-atm')
+  if (!slot) return
+  if (!canShowStage()) return document.body.classList.add('no-intro')
+  if (stage && stage.lang !== state.lang) {
+    const pinned = !['arrive', 'idle'].includes(stage.el.dataset.phase)
+    stage.dispose()
+    stage = null
+    return buildStage(slot, pinned)
   }
-  const skip = () => (scene ? scene.skip() : done())
-  const fail = () => {
-    document.body.classList.add('no-intro')
-    done()
-  }
-  const onKey = (event) => {
-    if (event.key === 'Escape' || (holding && (event.key === 'Enter' || event.key === ' '))) {
-      event.preventDefault()
-      skip()
-    }
-  }
-  const onHold = () => {
-    holding = true
-    host.classList.add('holding')
-    host.querySelector('.atm-skip').hidden = true
-    const button = host.querySelector('.atm-continue')
-    button.hidden = false
-    button.focus({ preventScroll: true })
-  }
-  host.querySelector('.atm-skip').addEventListener('click', (event) => { event.stopPropagation(); skip() })
-  host.addEventListener('click', () => { if (holding) skip() })
-  window.addEventListener('keydown', onKey)
-  setTimeout(() => { if (host.isConnected && !holding) skip() }, (INTRO_LENGTH + 6) * 1000)
+  if (stage) return slot.append(stage.el)
+  buildStage(slot, false)
+}
+
+function buildStage(slot, pinned) {
+  const el = document.createElement('div')
+  el.className = 'atm-stage'
+  el.dataset.phase = pinned ? 'pinned' : 'arrive'
+  el.innerHTML = `<button class="atm-cta">${esc(t('introPress'))} <span aria-hidden="true">↵</span></button>`
+    + `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
+    + `<button class="atm-scroll">${esc(t('introScroll'))} <span aria-hidden="true">↓</span></button>`
+  slot.append(el)
+  const current = { el, lang: state.lang, controls: null, wantPrint: false }
+  current.dispose = () => { current.controls?.dispose(); el.remove() }
+  stage = current
+  el.addEventListener('click', (event) => {
+    const button = event.target.closest('button')
+    if (button?.classList.contains('atm-skip')) return current.controls?.skip()
+    if (button?.classList.contains('atm-scroll')) return document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })
+    if (!['arrive', 'idle'].includes(el.dataset.phase)) return
+    if (current.controls) current.controls.print()
+    else current.wantPrint = true
+  })
   import('./intro/atmIntro.js')
-    .then((intro) => intro.playIntro({ t, host, onHold, onReveal: show, onDone: done }))
-    .then((controls) => { scene = controls })
-    .catch(fail)
+    .then((intro) => intro.mountStage({ t, host: el, pinned, onPhase: (phase) => { el.dataset.phase = phase } }))
+    .then((controls) => {
+      if (stage !== current) return controls.dispose()
+      current.controls = controls
+      if (current.wantPrint) controls.print()
+    })
+    .catch(() => {
+      stageAllowed = false
+      current.dispose()
+      if (stage === current) stage = null
+      document.body.classList.add('no-intro')
+    })
+}
+
+// The hero (second section) rises in when it first comes into view.
+let heroSeen = false
+let heroWatch = null
+function watchHero() {
+  const hero = document.getElementById('hero')
+  heroWatch?.disconnect()
+  if (!hero) return
+  if (heroSeen) return hero.classList.add('in')
+  heroWatch = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return
+    heroSeen = true
+    hero.classList.add('in')
+    heroWatch.disconnect()
+  }, { threshold: 0.2 })
+  heroWatch.observe(hero)
 }
 
 function render() {
@@ -501,11 +531,14 @@ function render() {
     : ''
   const page = NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome
   const view = page ? page({ t, state }) : nextModule({ t, state, screen })
-  // The landing page brings its own navigation and full-width layout, and opens with the ATM intro once per visit.
+  // The landing page brings its own navigation and full-width layout; its first section is the ATM stage.
   document.body.classList.toggle('landing', page === welcome)
-  if (page === welcome && !introStarted) startIntro()
   document.getElementById('main').innerHTML = tabs + view
-  if (page === welcome) armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
+  if (page === welcome) {
+    placeStage()
+    watchHero()
+    armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
+  }
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
   pill.className = saved ? 'pill ok' : 'pill'

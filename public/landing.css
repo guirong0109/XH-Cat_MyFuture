@@ -14,10 +14,10 @@
   --lp-cream:#12110e;--lp-paper:#1b1915;--lp-ink:#f3eee3;--lp-ink2:#d3ccbd;--lp-muted:#a1988a;--lp-line:#302c25;
   --lp-pink:#ff5596;--lp-blue:#8090ff;}
 
-body.landing{background:var(--lp-cream);color:var(--lp-ink);font-family:var(--lp-sans)}
+body.landing{background:var(--lp-cream);color:var(--lp-ink);font-family:var(--lp-sans);overflow-x:clip}
 body.landing .top{display:none}
 body.landing main{max-width:none;padding:0}
-.lp{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px);overflow-x:clip}
+.lp{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
 .lp button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .lp :focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px;border-radius:8px}
 .lp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -187,28 +187,33 @@ body.no-intro .lp-replay{display:none}
 .lp-fact-lime .odo-wheel{--win:color-mix(in srgb,var(--lp-on-lime) 5%,var(--lp-lime));--edge:color-mix(in srgb,var(--lp-on-lime) 11%,var(--lp-lime));
   border-color:color-mix(in srgb,var(--lp-on-lime) 16%,transparent)}
 
-/* the hero rises in; while the ATM intro plays it waits, then rises as the receipt fades */
+/* the hero (second section) rises in when it first comes into view (app.js adds .in) */
 .lp-hero-copy>*{animation:lp-rise .8s cubic-bezier(.2,.7,.2,1) both}
 .lp-hero-copy>:nth-child(2){animation-delay:.08s}.lp-hero-copy>:nth-child(3){animation-delay:.16s}
 .lp-hero-copy>:nth-child(4){animation-delay:.24s}.lp-hero-copy>:nth-child(5){animation-delay:.32s}
-body.intro-playing{overflow:hidden}
-body.intro-playing .lp-hero-copy>*,body.intro-playing .lp-fact{animation-play-state:paused}
+.lp-hero:not(.in) .lp-hero-copy>*,.lp-hero:not(.in) .lp-fact{animation-play-state:paused}
 
-/* ATM intro layer (three.js canvas, caption, skip) */
-.atm-intro{position:fixed;inset:0;z-index:50;background:var(--lp-cream);transition:opacity .7s ease}
-.atm-intro.out{opacity:0;pointer-events:none}
-.atm-intro canvas{display:block;width:100%;height:100%}
-/* the receipt waits in the middle: Continue (or a click anywhere) moves on */
-.atm-intro.holding{cursor:pointer}
-.atm-continue{position:absolute;z-index:1;left:0;right:0;width:max-content;margin:0 auto;bottom:clamp(14px,3.2vh,32px);
-  font:500 15px var(--lp-sans);padding:12px 22px;border-radius:99px;border:0;background:var(--lp-ink);color:var(--lp-cream);cursor:pointer;
+/* the ATM stage: the first section, full width and one screen tall (three.js canvas + buttons per step) */
+.lp-atm{position:relative;height:calc(100svh - 65px);min-height:520px;margin:0 calc(50% - 50vw);border-bottom:1px solid var(--lp-line)}
+body.no-intro .lp-atm{display:none}
+.atm-stage{position:absolute;inset:0}
+.atm-stage[data-phase=arrive],.atm-stage[data-phase=idle]{cursor:pointer}
+.atm-stage canvas{display:block;width:100%;height:100%}
+.atm-stage>button.atm-cta,.atm-stage>button.atm-skip,.atm-stage>button.atm-scroll{position:absolute;z-index:1;display:none;cursor:pointer}
+.atm-stage[data-phase=arrive] .atm-cta,.atm-stage[data-phase=idle] .atm-cta,
+.atm-stage[data-phase=print] .atm-skip,.atm-stage[data-phase=tear] .atm-skip,.atm-stage[data-phase=fly] .atm-skip,
+.atm-stage[data-phase=pinned] .atm-scroll{display:inline-flex;align-items:center;gap:8px}
+.atm-stage .atm-cta,.atm-stage .atm-scroll{left:0;right:0;width:max-content;margin:0 auto;bottom:clamp(16px,4vh,40px);
+  font:500 15px var(--lp-sans);padding:13px 22px;border-radius:99px;border:0;background:var(--lp-ink);color:var(--lp-cream);
   animation:lp-rise .5s cubic-bezier(.2,.7,.2,1) both,atm-nudge 2.4s ease-in-out .6s infinite}
-.atm-continue:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
-@keyframes atm-nudge{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--lp-ink) 12%,transparent)}}
-.atm-skip{position:absolute;z-index:1;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);font-family:var(--lp-mono);font-size:12.5px;
-  padding:10px 16px;border-radius:99px;border:1px solid var(--lp-line);background:var(--lp-paper);color:var(--lp-ink);cursor:pointer}
-.atm-skip:hover{border-color:var(--lp-ink2)}
-.atm-skip:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
+.atm-stage .atm-scroll{background:none;color:var(--lp-ink);border:1px solid var(--lp-line);animation:lp-rise .5s cubic-bezier(.2,.7,.2,1) both}
+.atm-scroll span{display:inline-block;animation:atm-bob 1.6s ease-in-out infinite}
+.atm-stage .atm-skip{right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);font-family:var(--lp-mono);font-size:12.5px;
+  padding:10px 16px;border-radius:99px;border:1px solid var(--lp-line);background:var(--lp-paper);color:var(--lp-ink)}
+.atm-skip:hover,.atm-scroll:hover{border-color:var(--lp-ink2)}
+.atm-stage button:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
+@keyframes atm-nudge{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--lp-ink) 12%,transparent)}}
+@keyframes atm-bob{50%{transform:translateY(3px)}}
 
 @keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}

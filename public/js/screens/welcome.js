@@ -42,7 +42,7 @@ const sourced = (t, text) => `<span class="lp-src"><b>${esc(t('ldSourced'))}</b>
 function hero(t) {
   const [before, after] = t('heroLine').split('{em}')
   return `
-<section class="lp-hero">
+<section class="lp-hero" id="hero">
  <div class="lp-hero-copy">
   <h1 class="lp-display">${esc(before)}<em>${esc(t('heroEm'))}</em>${esc(after ?? '')}</h1>
   <p class="lp-sub">${esc(t('heroSub'))}</p>
@@ -68,8 +68,15 @@ function hero(t) {
   `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
 }
 
-// The question section (the ATM story). With the ATM intro it is printed on the receipt instead; this one shows,
-// at the top, only when the intro does not play (body.no-intro).
+// The first section: the ATM stage (app.js mounts the three.js scene into it). The receipt it prints carries the
+// question section; screen readers get the same text here.
+const stage = (t) => `
+<section class="lp-atm" aria-label="${esc(t('introStage'))}">
+ <div class="lp-sr"><p>${esc(t('ldQKicker'))}</p><p>${esc(t('atmTitle'))}</p><p>${esc(t('atmBody'))}</p><p>${esc(t('atmNote'))}</p></div>
+</section>`
+
+// The question section (the ATM story) as page text: the first section instead of the stage when the intro does
+// not play (body.no-intro: reduce motion, no WebGL, or three.js failed to load).
 const question = (t) => `
 <section class="lp-section lp-question">
  <p class="lp-label">${esc(t('ldQKicker'))}</p>
@@ -193,6 +200,7 @@ const nav = (t, state) => `
 export default ({ t, state }) => `
 <div class="lp">
  ${nav(t, state)}
+ ${stage(t)}
  ${question(t)}
  ${hero(t)}
  ${how(t)}

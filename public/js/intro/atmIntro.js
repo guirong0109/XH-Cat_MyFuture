@@ -1,9 +1,9 @@
-// The landing page's opening: a 3D ATM prints the ATM story (the page's question section) on a receipt; the receipt
-// tears off, flips upright and flies to the middle of the screen, and waits there until the user moves on.
+// The landing page's first section: a 3D ATM waits for a click, then prints the ATM story (the question section)
+// on a receipt; the receipt tears off, flips upright and flies to the middle of the section, where it stays pinned.
 // Timing, paper curl and receipt text: timeline.js.
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
-import { INTRO_LENGTH, curlPoint, ease, introAt, receiptLines } from './timeline.js'
+import { INTRO_LENGTH, curlPoint, ease, receiptLines, stageAt } from './timeline.js'
 
 const PAPER_W = 0.62
 const CURL_R = 0.16
@@ -261,9 +261,12 @@ function buildAtm(colors, sign, screen) {
   return { atm, led }
 }
 
-// playIntro({ t, host, onHold, onReveal, onDone }) → { skip }. The caller made `host` (a full-screen layer with the
-// skip and continue buttons) and calls skip() when the user skips or continues. onHold: the receipt is waiting.
-export async function playIntro({ t, host, onHold, onReveal, onDone }) {
+
+// mountStage({ t, host, pinned, onPhase }) → { print, skip, dispose }
+// host: the stage element, the landing page's first section. The ATM comes into view and waits ('idle') until
+// print(); the receipt then prints, tears off and flies to the middle, where it stays ('pinned'). skip() jumps to
+// the pinned receipt; pinned: true starts there (e.g. after a language change). onPhase(phase) on each change.
+export async function mountStage({ t, host, pinned = false, onPhase }) {
   await fontsReady()
   const colors = {
     cream: cssColor('--lp-cream', '#f5f0e6'),
@@ -350,14 +353,16 @@ export async function playIntro({ t, host, onHold, onReveal, onDone }) {
   const resize = () => {
     const w = host.clientWidth
     const h = host.clientHeight
+    if (!w || !h) return // the stage is between two drawings of the page
     renderer.setSize(w, h, false)
     camera.aspect = w / h
-    distance = camera.aspect < 0.8 ? Math.min(1.9, 0.8 / camera.aspect) : 1
+    distance = (camera.aspect < 0.8 ? Math.min(1.9, 0.8 / camera.aspect) : 1) * 1.14 // room for the button below
     look.x = camera.aspect > 1.15 ? -0.6 : 0
     camera.updateProjectionMatrix()
   }
   resize()
-  window.addEventListener('resize', resize)
+  const sizes = new ResizeObserver(resize)
+  sizes.observe(host)
   window.addEventListener('pointermove', onPointer)
 
   let fly = null // frozen camera axes and start/end points of each paper point
@@ -367,9 +372,9 @@ export async function playIntro({ t, host, onHold, onReveal, onDone }) {
     const toward = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion)
     const depth = 3
     const visibleH = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-    // the receipt fills most of the height, a little above the middle to leave room for "Continue"
-    const scale = Math.min((0.76 * visibleH) / PAPER_L, (0.84 * visibleH * camera.aspect) / PAPER_W)
-    const center = camera.position.clone().addScaledVector(toward, -depth).addScaledVector(up, 0.035 * visibleH)
+    // the receipt fills most of the height, a little above the middle to leave room for the scroll cue
+    const scale = Math.min((0.8 * visibleH) / PAPER_L, (0.84 * visibleH * camera.aspect) / PAPER_W)
+    const center = camera.position.clone().addScaledVector(toward, -depth).addScaledVector(up, 0.03 * visibleH)
     fly = flat.map(({ x, y }, i) => ({
       from: hanging(i, PAPER_L, 0.06),
       to: center.clone().addScaledVector(right, -x * scale).addScaledVector(up, y * scale),
@@ -394,38 +399,19 @@ export async function playIntro({ t, host, onHold, onReveal, onDone }) {
     glow.intensity = 3 * opacity
   }
 
-  const start = performance.now()
-  let finished = false
-  let revealed = false
-  let holding = false
-  const reveal = () => {
-    if (revealed) return
-    revealed = true
-    host.classList.add('out')
-    onReveal?.()
-    setTimeout(finish, 700)
-  }
-  function finish() {
-    if (finished) return
-    finished = true
-    renderer.setAnimationLoop(null)
-    window.removeEventListener('resize', resize)
-    window.removeEventListener('pointermove', onPointer)
-    scene.traverse((object) => {
-      object.geometry?.dispose()
-      for (const mat of [object.material].flat()) {
-        mat?.map?.dispose()
-        mat?.dispose()
-      }
-    })
-    renderer.dispose()
-    onDone?.()
-  }
+  const loadedAt = performance.now()
+  let printedAt = pinned ? loadedAt - INTRO_LENGTH * 1000 : null
+  let lastPhase = null
   const frame = () => {
-    const time = (performance.now() - start) / 1000
-    const { phase, k } = introAt(time)
-    // camera
-    if (phase !== 'fly' && phase !== 'hold') {
+    const now = performance.now()
+    const { phase, k } = stageAt((now - loadedAt) / 1000, printedAt === null ? null : (now - printedAt) / 1000)
+    if (phase !== lastPhase) {
+      lastPhase = phase
+      onPhase?.(phase)
+    }
+    const time = (now - loadedAt) / 1000
+    // camera (frozen once the receipt starts flying, so it lands in the middle of the screen)
+    if (!fly) {
       const arrive = phase === 'arrive' ? ease(k) : 1
       const offset = CAMERA_OFFSET.clone().multiplyScalar(distance * (1.45 - 0.45 * arrive))
       offset.x += Math.sin(time * 0.35) * 0.25 + pointer.x * 0.8
@@ -434,7 +420,7 @@ export async function playIntro({ t, host, onHold, onReveal, onDone }) {
       camera.lookAt(look)
     }
     // paper
-    if (phase === 'arrive') placeHanging(0, 0)
+    if (phase === 'arrive' || phase === 'idle') placeHanging(0, 0)
     else if (phase === 'print') placeHanging(PAPER_L * (k - Math.sin(k * Math.PI * 2 * 16) / (Math.PI * 2 * 16) * 0.7), 0)
     else if (phase === 'tear') placeHanging(PAPER_L, 0.06 * ease(k) + Math.sin(k * Math.PI * 3) * 0.01 * (1 - k))
     else {
@@ -450,23 +436,44 @@ export async function playIntro({ t, host, onHold, onReveal, onDone }) {
         v.addScaledVector(fly.toward, Math.sin(Math.PI * e) * (flip * 0.9 + 0.9)) // flip over, and clear the machine
         position.setXYZ(i, v.x, v.y, v.z)
       }
+      // pinned in the middle: the receipt floats gently
+      if (phase === 'pinned') paper.position.copy(fly.up).multiplyScalar(Math.sin(time * 1.4) * 0.012)
     }
     position.needsUpdate = true
     paperGeometry.computeVertexNormals()
-    // waiting in the middle: the receipt floats gently until the user moves on
-    if (phase === 'hold') {
-      if (!holding) {
-        holding = true
-        onHold?.()
-      }
-      paper.position.copy(fly.up).multiplyScalar(Math.sin((time - INTRO_LENGTH) * 1.4) * 0.012)
-    }
     // screen and light
-    const printing = phase === 'arrive' || phase === 'print'
-    screen.draw(printing ? t('introScreen') : t('introScreen2'), phase === 'print' ? k : printing ? 0 : 1)
-    led.visible = !printing || Math.floor(time * 4) % 2 === 0
+    const waiting = phase === 'arrive' || phase === 'idle'
+    screen.draw(waiting ? t('introIdle') : phase === 'print' ? t('introScreen') : t('introScreen2'), phase === 'print' ? k : waiting ? 0 : 1)
+    led.visible = phase !== 'print' || Math.floor(time * 4) % 2 === 0
     renderer.render(scene, camera)
   }
+
+  // draw only while the stage is on screen
+  const visibility = new IntersectionObserver(([entry]) => renderer.setAnimationLoop(entry.isIntersecting ? frame : null))
+  visibility.observe(host)
   renderer.setAnimationLoop(frame)
-  return { skip: reveal }
+
+  return {
+    print() {
+      if (printedAt === null) printedAt = performance.now()
+    },
+    skip() {
+      printedAt = performance.now() - INTRO_LENGTH * 1000
+    },
+    dispose() {
+      renderer.setAnimationLoop(null)
+      visibility.disconnect()
+      sizes.disconnect()
+      window.removeEventListener('pointermove', onPointer)
+      scene.traverse((object) => {
+        object.geometry?.dispose()
+        for (const mat of [object.material].flat()) {
+          mat?.map?.dispose()
+          mat?.dispose()
+        }
+      })
+      renderer.dispose()
+      canvas.remove()
+    },
+  }
 }

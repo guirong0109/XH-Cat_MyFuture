@@ -333,7 +333,10 @@ export default {
   introTitle: "Resit transaksi",
   introScreen: "Mencetak…",
   introScreen2: "Sila ambil resit anda",
-  introContinue: "Teruskan",
+  introPress: "Cetak resit saya",
+  introIdle: "Tekan untuk cetak",
+  introScroll: "Tatal",
+  introStage: "Kisah ATM: sebuah ATM mencetak resit dengan persoalan di bawah.",
   introSkip: "Langkau pengenalan",
   introReplay: "Main semula kisah ATM",
 }

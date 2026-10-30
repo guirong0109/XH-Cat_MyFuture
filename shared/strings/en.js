@@ -333,7 +333,10 @@ export default {
   introTitle: "Transaction receipt",
   introScreen: "Printing…",
   introScreen2: "Please take your receipt",
-  introContinue: "Continue",
+  introPress: "Print my receipt",
+  introIdle: "Press to print",
+  introScroll: "Scroll",
+  introStage: "The ATM story: an ATM prints a receipt with the question below.",
   introSkip: "Skip intro",
   introReplay: "Replay the ATM story",
 }

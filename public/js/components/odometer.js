@@ -38,8 +38,6 @@ const at = (cells) => `translateY(${(-cells * CELL_EM).toFixed(3)}em)`
 
 function roll(counter, elapsed = 0) {
   if (!counter.isConnected) return
-  // the hero's counters wait for the ATM intro to finish
-  if (document.body.classList.contains('intro-playing')) return setTimeout(() => roll(counter), 150)
   if (!startedAt.has(counter.dataset.odo)) startedAt.set(counter.dataset.odo, performance.now())
   for (const strip of counter.querySelectorAll('.odo-strip')) {
     const to = Number(strip.dataset.to)

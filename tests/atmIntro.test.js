@@ -3,24 +3,30 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createApp } from '../server/app.js'
-import { INTRO_LENGTH, curlPoint, introAt, receiptLines, shouldPlayIntro } from '../public/js/intro/timeline.js'
+import { ARRIVE_LENGTH, INTRO_LENGTH, curlPoint, receiptLines, shouldPlayIntro, stageAt } from '../public/js/intro/timeline.js'
 import { t as translate } from '../shared/i18n.js'
 
-describe('ATM intro timeline', () => {
-  it('runs arrive → print → tear → fly, then holds the receipt until the user moves on', () => {
-    const order = ['arrive', 'print', 'tear', 'fly', 'hold']
+describe('ATM stage timeline', () => {
+  it('the ATM arrives, then waits: nothing prints until the user clicks', () => {
+    expect(stageAt(0, null).phase).toBe('arrive')
+    expect(stageAt(ARRIVE_LENGTH, null)).toEqual({ phase: 'idle', k: 1 })
+    expect(stageAt(600, null).phase).toBe('idle')
+  })
+
+  it('after the click: print → tear → fly, then the receipt stays pinned in the middle', () => {
+    const order = ['print', 'tear', 'fly', 'pinned']
     let last = 0
     for (let time = 0; time <= INTRO_LENGTH + 1; time += 0.05) {
-      const { phase, k } = introAt(time)
+      const { phase, k } = stageAt(30, time)
       const index = order.indexOf(phase)
       expect(index).toBeGreaterThanOrEqual(last)
       expect(k).toBeGreaterThanOrEqual(0)
       expect(k).toBeLessThanOrEqual(1)
       last = index
     }
-    expect(introAt(0).phase).toBe('arrive')
-    expect(introAt(INTRO_LENGTH)).toEqual({ phase: 'hold', k: 1 })
-    expect(introAt(INTRO_LENGTH + 600).phase).toBe('hold')
+    expect(stageAt(30, 0).phase).toBe('print')
+    expect(stageAt(30, INTRO_LENGTH)).toEqual({ phase: 'pinned', k: 1 })
+    expect(stageAt(30, INTRO_LENGTH + 600).phase).toBe('pinned')
   })
 
   it('is skipped when the user asks for less motion or the browser has no WebGL', () => {

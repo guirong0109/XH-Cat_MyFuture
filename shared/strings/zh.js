@@ -333,7 +333,10 @@ export default {
   introTitle: "交易凭条",
   introScreen: "正在打印…",
   introScreen2: "请取走凭条",
-  introContinue: "继续",
+  introPress: "打印我的凭条",
+  introIdle: "按下即可打印",
+  introScroll: "向下滚动",
+  introStage: "ATM 故事：一台 ATM 打印出一张凭条，上面写着下面的问题。",
   introSkip: "跳过开场",
   introReplay: "重播 ATM 故事",
 }

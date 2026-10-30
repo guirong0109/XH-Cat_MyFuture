@@ -321,7 +321,8 @@
     "T28b: three.js is served from our own server, not a CDN, so the intro also works offline — cost: about 1.5 MB to download on the first visit (not compressed)",
     "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip",
     "T28b: the receipt waits in the middle until the user clicks Continue (or anywhere, Enter, Space, Esc); the safety timer only ends an intro that stalls before the receipt arrives — cost: a visitor who leaves the tab sees the receipt until they come back",
-    "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)"
+    "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)",
+    "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)"
   ],
   "log": [
     {
@@ -883,6 +884,16 @@
       "time": "30 Oct",
       "step": "Task 28b",
       "detail": "npm test 248 passed; checked in Chrome: receipt holds 4 s+, Continue focused, click shows the page; no-intro shows the question at the top"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "ATM waits for a click; pinned receipt is the first section; the headline section comes after scrolling"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 249 passed; checked in Chrome at 1440 and 500 px: idle 3 s without printing, click prints, receipt pinned, scroll cue reaches the hero"
     }
   ]
 }

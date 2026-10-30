@@ -1,18 +1,22 @@
-// The ATM intro without three.js: when each phase runs, how the receipt paper curls, and what it prints.
+// The ATM stage without three.js: when each phase runs, how the receipt paper curls, and what it prints.
 // The scene (atmIntro.js) reads these, so the timing and the text can be tested in Node.
 
-// Phase lengths in seconds, in order. Then 'hold': the receipt waits in the middle until the user moves on.
-const PHASES = [['arrive', 1.0], ['print', 2.8], ['tear', 0.6], ['fly', 1.6]]
+// The ATM comes into view, then waits ('idle') until the user clicks.
+export const ARRIVE_LENGTH = 1.0
+// After the click, phase lengths in seconds, in order. Then 'pinned': the receipt stays in the middle.
+const PHASES = [['print', 2.8], ['tear', 0.6], ['fly', 1.6]]
 export const INTRO_LENGTH = PHASES.reduce((sum, [, length]) => sum + length, 0)
 
-// introAt(2.1) → { phase: 'print', k: 0.39 }: the phase at this time and how far through it (0..1).
-export function introAt(time) {
+// stageAt(sinceLoad, sincePrint) → { phase, k }: the phase and how far through it (0..1).
+// sincePrint is null until the user clicks to print.
+export function stageAt(sinceLoad, sincePrint) {
+  if (sincePrint === null) return sinceLoad < ARRIVE_LENGTH ? { phase: 'arrive', k: Math.max(0, sinceLoad / ARRIVE_LENGTH) } : { phase: 'idle', k: 1 }
   let start = 0
   for (const [phase, length] of PHASES) {
-    if (time < start + length) return { phase, k: Math.max(0, (time - start) / length) }
+    if (sincePrint < start + length) return { phase, k: Math.max(0, (sincePrint - start) / length) }
     start += length
   }
-  return { phase: 'hold', k: 1 }
+  return { phase: 'pinned', k: 1 }
 }
 
 export const shouldPlayIntro = ({ reducedMotion, webgl }) => !reducedMotion && webgl

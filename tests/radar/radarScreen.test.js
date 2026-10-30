@@ -1,5 +1,6 @@
 // Future Skills Radar screen (spec §11, §12, D2, D3, D18, D21, D22; test plan 29; Review Focus 3 and 4).
 // Render functions are tested on real answers from the public API (bundled data, real server on port 0).
+import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../../server/app.js'
 import { createFileStore } from '../../server/radar/store/file.js'
@@ -105,6 +106,24 @@ describe('Radar screen', () => {
         for (const cell of html.match(/<td class="num">.*?<\/td>/g) ?? []) expect(cell).toMatch(/<a href="https?:\/\//)
       }
     }
+  })
+
+  it('source links in the B1 source line and the evidence panel lists may wrap on a phone (F1, spec §15)', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    // The rule that lets a source link wrap: in the source lines and in the evidence panel lists.
+    const rule = css.match(/([^}]*)\{[^}]*white-space:normal;overflow-wrap:anywhere[^}]*\}/g)?.find((r) => r.includes('.rd-srcline .rd-src')) ?? ''
+    expect(rule).toContain('.rd-srcline .rd-src')
+    expect(rule).toContain('.rd-drawer .rd-list .rd-src')
+    expect(rule).toContain('.rd-drawer .rd-kv .rd-src')
+    // Short tag layouts elsewhere (a number next to its link in a table) keep the link on one line.
+    expect(css).toMatch(/\.rd-src\{[^}]*white-space:nowrap/)
+    // The B1 source link sits in the wrapping source line.
+    const b1 = section(skillsTab(ctx(ownProfile())), 'B1')
+    const line = b1.match(/<p class="[^"]*\brd-srcline\b[^"]*">.*?<\/p>/s)?.[0] ?? ''
+    expect(line).toMatch(/<a href="https:\/\/[^"]+"[^>]*class="rd-src"/)
+    // The evidence panel's source links sit in .rd-list / .rd-kv inside the drawer.
+    const panel = evidencePanel(data.occ.groups.find((g) => g.code === '2').signal, t)
+    expect(panel).toMatch(/<ul class="rd-list">(?:(?!<\/ul>).)*class="rd-src"/s)
   })
 
   it('DOSM interim: ICE status with reason, latest shares and counts, and the context-only total change (D18)', () => {

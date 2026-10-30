@@ -17,7 +17,8 @@ Date: 30 Oct 2026 · Branch `claude/future-radar` at `b827742` · Spec §15 (bro
   midwifery), one job (Software developer, linked by the user to O\*NET 15-1252.00 Software Developers), one role of
   interest (Data Scientists, O\*NET 15-2051.00). Confirmed on the review screen.
 
-Result: **27 of 28 checks pass, 1 fails** (phone width on the Skills & Careers tab). Details below.
+Result: **27 of 28 checks passed, 1 failed** (phone width on the Skills & Careers tab, F1). F1 is now fixed and
+rows 27-28 were re-checked at 360 px (spec §15 width): **28 of 28 pass**. Details below.
 
 ## Results
 
@@ -49,17 +50,22 @@ Result: **27 of 28 checks pass, 1 fails** (phone width on the Skills & Careers t
 | 24 | Judge: Reset | Pass | "Reset to the synthetic base."; demo-manifest-0; Professionals 2026 Q2 back to 10,600; report "No change" |
 | 25 | Judge never changes production | Pass | `GET /api/radar/manifest` before and after the judge runs: same `manifest-20261030T074330.482Z-1ea3dfae` |
 | 26 | Languages EN / BM / 中文 | Pass (notes) | `#radar`, `#admin`, `#judge` all translated, including rule texts and reasons. Source names stay as published (OpenAlex titles, DOSM English group names), as the spec says. See note N3 |
-| 27 | Phone 375 px: AI Impact, evidence panel, admin, judge | Pass | No page-wide horizontal scroll; wide tables (break review, judge grid) scroll inside their own box; evidence panel fills the screen |
-| 28 | Phone 375 px: Skills & Careers | **Fail** | See F1 |
+| 27 | Phone 360 px: AI Impact, evidence panel, admin, judge | Pass | Re-checked at 360 px after the F1 fix (30 Oct): `document.documentElement.scrollWidth` = 360 on AI Impact (own view and View all), the evidence panel (opened from Skills & Careers and from AI Impact), `#admin` (signed in) and `#judge` (signed in), in EN, BM and 中文. Wide tables (break review, judge grid) scroll inside their own box; evidence panel fills the screen |
+| 28 | Phone 360 px: Skills & Careers | Pass (after fix) | Failed at 375 px (F1); fixed by letting source links wrap in source lines and evidence panel lists. Re-checked at 360 px: scrollWidth 360 in EN, BM and 中文, default view and View all; the B1 source line ends at 325 px. With the old `nowrap` forced back the page was 445 px wide again |
 
-## Failure
+## Failure (fixed)
 
 **F1 — Skills & Careers overflows at phone width (all three languages).**
 At 375 px the page is 445 px wide, so the whole page scrolls sideways. Cause: in the B1 source line
 (`.rd-srcline`), the link "DOSM release page: Big Data Analytics: Job Market Insights, Second Quarter of 2026"
 (`a.rd-src`) has `white-space: nowrap` and is 410 px wide. Same in EN, BM and 中文 (the link text is the DOSM title in
 English), in both the own-fields view and "View all". The AI Impact tab, admin and judge screens stay at 375 px.
-Not fixed here (acceptance records only).
+
+**Fixed** (commit `fix: Radar fits a 360 px phone`): `public/styles.css` now lets `.rd-src` links wrap
+(`white-space: normal; overflow-wrap: anywhere`) inside `.rd-srcline` and the evidence panel's `.rd-list` / `.rd-kv`;
+number-plus-link tags elsewhere keep `nowrap`. Re-check at 360 x 780 (browser pane, guest without a profile, so the
+global view, plus View all; `RADAR_STORE=memory`, throwaway keys in the process environment only): every screen in
+rows 27-28 has `scrollWidth` = 360 in EN, BM and 中文.
 
 ## Notes (not failures)
 

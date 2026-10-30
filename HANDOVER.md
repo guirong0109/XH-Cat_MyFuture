@@ -7,9 +7,9 @@ Updated 30 Oct 2026. Branch made from `main` at 928f4a7. Nothing pushed or merge
   fixes found on the way.
 - Tests: **556 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
   **11 Python tests OK** (`python -m unittest discover pipeline/tests`).
-- Browser acceptance (`docs/radar/acceptance.md`): **27 of 28 checks pass.** One failure: on a phone (375 px) the
-  Skills & Careers tab is wider than the screen, because one long DOSM link does not wrap (F1). Six small notes
-  (N1–N6) are listed there for your judgement.
+- Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
+  link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
+  Small notes (N1–N6) are listed there for your judgement.
 - Deployment notes: `docs/radar/deploy.md` (nothing deployed, nothing paid).
 - Spec: `docs/superpowers/specs/2026-10-30-future-radar-round1-design.md` (D1–D22). Plan:
   `docs/superpowers/plans/2026-10-30-future-radar-round1.md`. Output contract for Matching: `docs/radar/contract.md`.
@@ -59,8 +59,8 @@ is lost when the server stops. Test on an address nobody else uses (e.g. `127.0.
 5. **Review in `#admin`**: the 16 field ↔ topic proposals (all pending) and the possible breaks at 2020 Q2, 2020 Q3,
    2021 Q3 and 2025 Q3.
 6. Mockup approval — **done** (30 Oct, with D21 and D22).
-Also: review the Bahasa Melayu and 中文 texts (marked for owner review), and decide on the acceptance failure F1 and
-notes N1–N6.
+Also: review the Bahasa Melayu and 中文 texts (marked for owner review), and decide on the acceptance notes N1–N6
+(F1 is fixed).
 
 ## Decisions taken during the build (plain words)
 Each was a judgement call where the spec was silent or two parts pulled apart; all are reversible.
@@ -89,7 +89,6 @@ Each was a judgement call where the spec was silent or two parts pulled apart; a
 
 ## Known follow-ups (small items deferred by the reviewers; none blocks Round 1)
 - **Screens and wording**
-  - F1: phone width on Skills & Careers (long DOSM link does not wrap).
   - Bahasa Melayu and 中文: about 21 new lines need your review; some new keys lack the "owner review" marker; "pp"
     wording is not uniform in ms/zh.
   - DOSM link labels ("DOSM release page", "DOSM data file") stay English in BM and 中文; the data-file label is generic.

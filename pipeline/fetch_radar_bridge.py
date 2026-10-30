@@ -42,12 +42,21 @@ STEPS = [
      "US Bureau of Labor Statistics, 2010 to 2018 SOC crosswalk", "https://www.bls.gov/soc/2018/crosswalks_used_by_agencies.htm",
      (r"2018 soc code", r"2010 soc code")),
     ("soc2010_to_isco08", ("SOC", "2010"), ("ISCO-08", "2008"),
-     ["isco_soc_crosswalk.csv", "isco_soc_crosswalk.xlsx"],
+     ["isco_soc_crosswalk.csv", "isco_soc_crosswalk.xlsx"],  # matched case-insensitively: ISCO_SOC_Crosswalk.xlsx works too
      "US Bureau of Labor Statistics, ISCO-08 to 2010 SOC crosswalk", "https://www.bls.gov/soc/isco_soc_crosswalk.xls",
      (r"2010 soc code", r"isco-?08 code")),
     ("isco08_to_masco2020_major", ("ISCO-08", "2008"), ("MASCO", "2020"), [],
      "Official Malaysian source for ISCO-08 major group = MASCO 2020 major group", None, None),
 ]
+MASCO_UNIT_STEP = "masco2020_unit_to_isco08"
+MASCO_UNIT_PENDING = "waits for the ISCO-08 code list in the BLS ISCO file"
+MASCO_UNIT_SOURCE = {
+    "name": "MASCO 2020 publication (MOHR): developed in accordance with ISCO; owner decision M15, 30 Oct 2026",
+    "url": "https://jtksm.gov.my/sites/default/files/2022-12/MASCO_2020_BI_Edaran.pdf",
+    "file": None,
+    "sha256": None,
+}
+EMASCO_DETAILS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "emasco", "role_details.json")
 MASCO_PENDING = "No official Malaysian source recorded yet that ISCO-08 major groups equal MASCO 2020 major groups; the owner must provide one."
 
 
@@ -87,7 +96,52 @@ def read_links(name, data, patterns):
     raise ValueError(f"{name}: no header row with columns matching {', '.join(patterns)}")
 
 
-def build_bridge(source_dir, now=None):
+def find_file(source_dir, names):
+    """First accepted name present in source_dir, compared case-insensitively; returns the name as saved on disk."""
+    try:
+        on_disk = os.listdir(source_dir)
+    except OSError:
+        return None
+    for name in names:
+        match = next((f for f in on_disk if f.lower() == name.lower()), None)
+        if match and os.path.isfile(os.path.join(source_dir, match)):
+            return match
+    return None
+
+
+def load_emasco_codes(path=EMASCO_DETAILS):
+    try:
+        with open(path, encoding="utf-8") as handle:
+            return [role["code"] for role in json.load(handle).get("roles", [])]
+    except (OSError, ValueError):
+        return []
+
+
+def masco_unit_step(isco_step, emasco_codes):
+    """MASCO 4-digit unit group -> the ISCO-08 unit group with the same code, only when that code is in the ISCO step."""
+    item = {
+        "id": MASCO_UNIT_STEP,
+        "from": {"system": "MASCO", "version": "2020"},
+        "to": {"system": "ISCO-08", "version": "2008"},
+        "method": "same_code",
+        "status": "pending",
+        "source": dict(MASCO_UNIT_SOURCE),
+        "label": "code match, not an official table",
+        "pendingReason": MASCO_UNIT_PENDING,
+        "links": {},
+    }
+    if isco_step["status"] == "built":
+        isco_codes = {code for codes in isco_step["links"].values() for code in codes}
+        units = sorted({code[:4] for code in emasco_codes if re.match(r"^\d{4}", code or "")})
+        item["links"] = {unit: [unit] for unit in units if unit in isco_codes}
+        item["status"] = "built"
+        item["pendingReason"] = None
+    return item
+
+
+def build_bridge(source_dir, now=None, emasco_codes=None):
+    if emasco_codes is None:
+        emasco_codes = load_emasco_codes()
     steps = []
     for step_id, source_from, source_to, names, source_name, url, patterns in STEPS:
         item = {
@@ -100,7 +154,7 @@ def build_bridge(source_dir, now=None):
             "pendingReason": None,
             "links": {},
         }
-        present = next((n for n in names if os.path.isfile(os.path.join(source_dir, n))), None)
+        present = find_file(source_dir, names)
         if present:
             with open(os.path.join(source_dir, present), "rb") as handle:
                 data = handle.read()
@@ -113,6 +167,7 @@ def build_bridge(source_dir, now=None):
         else:
             item["pendingReason"] = f"{' or '.join(names)} is not in data/radar/source/. Download it in a browser from {url} and save it there."
         steps.append(item)
+    steps.append(masco_unit_step(next(x for x in steps if x["id"] == "soc2010_to_isco08"), emasco_codes))
     return {
         "schemaVersion": "radar-occupation-bridge/v1",
         "builtAt": now or datetime.date.today().isoformat(),

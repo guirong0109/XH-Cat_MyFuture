@@ -3124,6 +3124,28 @@
    "source": null,
    "pendingReason": "No official Malaysian source recorded yet that ISCO-08 major groups equal MASCO 2020 major groups; the owner must provide one.",
    "links": {}
+  },
+  {
+   "id": "masco2020_unit_to_isco08",
+   "from": {
+    "system": "MASCO",
+    "version": "2020"
+   },
+   "to": {
+    "system": "ISCO-08",
+    "version": "2008"
+   },
+   "method": "same_code",
+   "status": "pending",
+   "source": {
+    "name": "MASCO 2020 publication (MOHR): developed in accordance with ISCO; owner decision M15, 30 Oct 2026",
+    "url": "https://jtksm.gov.my/sites/default/files/2022-12/MASCO_2020_BI_Edaran.pdf",
+    "file": null,
+    "sha256": null
+   },
+   "label": "code match, not an official table",
+   "pendingReason": "waits for the ISCO-08 code list in the BLS ISCO file",
+   "links": {}
   }
  ]
 }

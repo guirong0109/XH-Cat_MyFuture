@@ -74,9 +74,9 @@ body.landing main{max-width:none;padding:0}
 .lp-lead{font-size:18px;line-height:1.55;color:var(--lp-ink2);max-width:58ch}
 
 
-/* how it works, in the black-and-white look of the second section. The working stage is a white card with a six-cell
-   gauge of the stages built; the stages still to come stand as signs along a 3D road (the roadmap below). Stage numbers
-   are on the roller counters; no colour. */
+/* how it works: the six stages as a ledger, in the black-and-white look of the second section. Hairline rules between
+   the stages (each cell draws its top and left rule; the grid clips the outer ones), the stage numbers on the roller
+   counters, no colour. The working stage is the first row, on paper, with a six-cell gauge of the stages built. */
 .lp-howsec{padding-top:clamp(40px,5vw,56px)}
 .lp-howsec .lp-head{margin-bottom:clamp(24px,3vw,36px)}
 .lp-bento{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:hidden;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
@@ -108,28 +108,6 @@ body.landing main{max-width:none;padding:0}
 .lp-ticks li{font-size:13px;padding:6px 12px;border:1px solid var(--lp-line);border-radius:99px;color:var(--lp-ink2)}
 .lp-ticks li::before{content:"✓ ";color:var(--lp-ink)}
 .lp-stage-live .lp-btn{align-self:flex-start}
-
-/* the roadmap: a road in perspective over a ground grid that fades towards the horizon (geometry in
-   components/road.js, the SVG stretched to the scene). Each sign stands on a post at its stop, a little smaller the
-   further away it is (--k). On narrow screens the road turns into a vertical path beside the stacked signs. */
-.lp-road{grid-column:1/-1;position:relative;height:clamp(460px,33vw,480px);margin:-1px 0 0 -1px;border-top:1px solid var(--lp-line)}
-.lp-road-scene{position:absolute;inset:0;width:100%;height:100%}
-.lp-road-grid line{stroke:color-mix(in srgb,var(--lp-ink) 22%,transparent);stroke-width:1;vector-effect:non-scaling-stroke}
-.lp-road-band{fill:var(--lp-paper)}
-.lp-road-edge{fill:none;stroke:var(--lp-ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
-.lp-road-centre{fill:none;stroke:var(--lp-ink2);stroke-width:2;stroke-dasharray:12 10;vector-effect:non-scaling-stroke}
-.lp-road-foot{fill:color-mix(in srgb,var(--lp-ink) 22%,transparent)}
-.lp-sign{position:absolute;left:var(--x);top:var(--y);width:min(200px,17.5%);display:flex;flex-direction:column;gap:8px;
-  padding:14px 16px 16px;background:var(--lp-paper);border:1px solid color-mix(in srgb,var(--lp-ink) 14%,transparent);border-radius:10px;
-  box-shadow:0 4px 0 color-mix(in srgb,var(--lp-ink) 12%,var(--lp-paper)),0 18px 28px -16px rgba(40,30,10,.45);
-  transform:translate(-50%,calc(-100% - 36px)) scale(var(--k));transform-origin:50% calc(100% + 36px);transition:translate .25s ease}
-.lp-sign::after{content:"";position:absolute;left:50%;top:calc(100% + 4px);width:3px;height:32px;margin-left:-1.5px;border-radius:2px;
-  background:linear-gradient(90deg,var(--lp-ink),color-mix(in srgb,var(--lp-ink) 60%,var(--lp-paper)))}
-.lp-sign:hover{translate:0 -6px}
-.lp-sign .lp-num{font-size:22px}
-.lp-sign .lp-stage-title{font-size:20px}
-.lp-sign p{font-size:13px;line-height:1.45;color:var(--lp-ink2)}
-.lp-sign .lp-pill{white-space:normal;text-wrap:balance;border-radius:14px;margin-top:4px}
 
 /* the data: quiet */
 .lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
@@ -280,13 +258,6 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 @media (max-width:1000px){
   .lp-bento{grid-template-columns:repeat(6,minmax(0,1fr))}
   .lp-bento .lp-stage-live{grid-column:span 6;grid-row:auto;grid-template-columns:1fr}
-  .lp-road{grid-column:1/-1;height:auto;padding:28px 0 12px 56px}
-  .lp-road-scene{display:none}
-  .lp-road::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:26px;background:var(--lp-paper);
-    border-inline:1.5px solid var(--lp-ink)}
-  .lp-road::after{content:"";position:absolute;left:22.5px;top:0;bottom:0;border-left:2px dashed var(--lp-ink2)}
-  .lp-sign{position:relative;left:auto;top:auto;width:auto;max-width:520px;transform:none;margin-bottom:18px}
-  .lp-sign::after{left:-20px;top:28px;width:20px;height:3px;margin:0}
   .lp-stage{grid-column:span 2}
   .lp-data,.lp-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lp-links{display:none}

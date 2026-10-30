@@ -338,6 +338,77 @@ describe('createIngestor().refresh', () => {
     expect(loserIngestor.status().lastChecks.openalex).toMatchObject({ outcome: 'failed', code: 'publish_conflict' })
   })
 
+  it('the last complete year comes from the clock: a snapshot claiming lastYear 2026 is rejected', async () => {
+    const add2026 = (s) => {
+      const extra = s.observations.filter((o) => o.period === '2025').map((o) => ({ ...o, period: '2026', value: 10 }))
+      return { ...s, lastYear: 2026, observations: [...s.observations, ...extra] }
+    }
+    const claimOnly = (s) => ({ ...s, lastYear: 2026 })
+    for (const edit of [add2026, claimOnly]) {
+      // No lastCompleteYear on the source: the clock (2026-10-30 UTC) gives 2025.
+      const openalex = { fetchSnapshot: async () => edit(openalexFetch(revise())) }
+      for (const source of [openalex, fakeOpenAlex(() => edit(openalexFetch(revise())))]) {
+        const { ingestor, store } = setup({ openalex: source })
+        await seed(store)
+        const before = await activeBytes(store)
+        const keys = await dataKeys(store)
+        expect(await ingestor.refresh('openalex')).toMatchObject({ outcome: 'rejected', code: 'validation_failed' })
+        expect(await activeBytes(store)).toEqual(before)
+        expect(await dataKeys(store)).toEqual(keys)
+      }
+    }
+  })
+
+  it('a missing signals object of the active manifest → failed manifest_gone, nothing written', async () => {
+    const { ingestor, store } = setup({ openalex: fakeOpenAlex(() => openalexFetch(revise())) })
+    await seed(store)
+    await store.delete(KEYS.signals('signals-seed'))
+    const before = await activeBytes(store)
+    const keys = await dataKeys(store)
+    expect(await ingestor.refresh('openalex')).toMatchObject({ outcome: 'failed', code: 'manifest_gone' })
+    expect(await activeBytes(store)).toEqual(before)
+    expect(await dataKeys(store)).toEqual(keys)
+  })
+
+  it('a failed read-back of the DOSM original stops the activation and reports four orphans', async () => {
+    const base = createMemoryStore()
+    await seed(base)
+    const store = instrumented(base, {
+      alterGet: (key, got) => (key.startsWith('prod/originals/') && got ? { ...got, bytes: Buffer.from('not the workbook') } : got),
+    })
+    const { ingestor } = setup({ store })
+    const before = await activeBytes(base)
+    expect(await ingestor.refresh('dosm')).toMatchObject({ outcome: 'failed', code: 'store_unavailable' })
+    expect(await activeBytes(base)).toEqual(before)
+    expect(store.calls.some(([op, key]) => op === 'put' && key === KEYS.active)).toBe(false)
+    const orphans = ingestor.status().orphans
+    expect(orphans.length).toBe(4)
+    expect(orphans).toContain(`prod/originals/dosm/${sha(workbook)}`)
+  })
+
+  it('two first publications racing with no active pointer: one publishes, the other gets publish_conflict', async () => {
+    const store = createMemoryStore()
+    let arrived = 0
+    let release
+    const gate = new Promise((resolve) => (release = resolve))
+    const racer = (snapshotId) =>
+      fakeOpenAlex(async () => {
+        arrived += 1
+        if (arrived === 2) release()
+        await gate
+        return openalexFetch(undefined, snapshotId)
+      })
+    const a = setup({ store, openalex: racer('openalex-a') }).ingestor
+    const b = setup({ store, openalex: racer('openalex-b') }).ingestor
+    const results = await Promise.all([a.refresh('openalex'), b.refresh('openalex')])
+    expect(results.map((r) => r.outcome).sort()).toEqual(['failed', 'published'])
+    const winner = results.find((r) => r.outcome === 'published')
+    const loser = results.find((r) => r.outcome === 'failed')
+    expect(loser).toMatchObject({ code: 'publish_conflict', activeManifestId: winner.manifestId })
+    const active = await readActive(store)
+    expect(active.manifest).toMatchObject({ manifestId: winner.manifestId, previousManifestId: null })
+  })
+
   it('an immutable object is never overwritten: a snapshot id already stored with other content → publish_conflict', async () => {
     const { ingestor, store } = setup({ openalex: fakeOpenAlex(() => openalexFetch(revise(), 'openalex-taken')) })
     await seed(store)

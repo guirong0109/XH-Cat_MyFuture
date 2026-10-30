@@ -145,7 +145,11 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
           if (!got) return finish(run, 'failed', 'read_active', { code: 'manifest_gone' })
           current[src] = { id, snapshot: got.value, hash: contentHash(got.value) }
         }
-        before = active.manifest.signalsId ? (await getJson(store, KEYS.signals(active.manifest.signalsId)))?.value ?? null : null
+        // A manifest whose signals cannot be read is as broken as one with a missing snapshot.
+        const signalsId = active.manifest.signalsId
+        const signals = isSafeId(signalsId) ? await getJson(store, KEYS.signals(signalsId)) : null
+        if (!signals) return finish(run, 'failed', 'read_active', { code: 'manifest_gone' })
+        before = signals.value
       }
       reviews = await loadBreakReviews(store)
     } catch (e) {
@@ -187,7 +191,11 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
       return finish(run, 'rejected', 'validate', { code: 'validation_failed' })
     }
     const expectedEntities = sourceId === 'openalex' ? (references.topics ?? []).map((t) => t.openalexId) : DOSM_EXPECTED
-    const lastYear = sourceId === 'openalex' ? snapshot.lastYear ?? sources.openalex.lastCompleteYear?.() : undefined
+    // Y is the last complete UTC year from the clock, never what the snapshot claims (spec 6.1).
+    const lastYear = sourceId === 'openalex' ? sources.openalex.lastCompleteYear?.() ?? now().getUTCFullYear() - 1 : undefined
+    if (sourceId === 'openalex' && snapshot.lastYear !== undefined && snapshot.lastYear !== lastYear) {
+      return finish(run, 'rejected', 'validate', { code: 'validation_failed' })
+    }
     if (!validateSnapshot(snapshot, { expectedEntities, lastYear }).ok) return finish(run, 'rejected', 'validate', { code: 'validation_failed' })
     if (original) {
       const bytes = original.bytes

@@ -1,0 +1,155 @@
+{
+ "fetchedAt": "2026-10-30T04:40:42+00:00",
+ "topics": {
+  "T10028": {
+   "title": "Topic Modeling",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 1875,
+    "2016": 2659,
+    "2017": 3009,
+    "2018": 4406,
+    "2019": 5574,
+    "2020": 6758,
+    "2021": 7830,
+    "2022": 7939,
+    "2023": 10983,
+    "2024": 17379,
+    "2025": 25167
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT10028%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Artificial Intelligence",
+   "field": "Computer Science"
+  },
+  "T10775": {
+   "title": "Generative Adversarial Networks and Image Synthesis",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 249,
+    "2016": 366,
+    "2017": 818,
+    "2018": 1652,
+    "2019": 2430,
+    "2020": 2882,
+    "2021": 3587,
+    "2022": 3732,
+    "2023": 5426,
+    "2024": 7923,
+    "2025": 10899
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT10775%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Computer Vision and Pattern Recognition",
+   "field": "Computer Science"
+  },
+  "T12549": {
+   "title": "Image and Object Detection Techniques",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 828,
+    "2016": 805,
+    "2017": 686,
+    "2018": 563,
+    "2019": 583,
+    "2020": 562,
+    "2021": 503,
+    "2022": 453,
+    "2023": 491,
+    "2024": 468,
+    "2025": 419
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT12549%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Computer Vision and Pattern Recognition",
+   "field": "Computer Science"
+  },
+  "T10653": {
+   "title": "Robot Manipulation and Learning",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 1575,
+    "2016": 1931,
+    "2017": 2010,
+    "2018": 2403,
+    "2019": 2658,
+    "2020": 2713,
+    "2021": 2907,
+    "2022": 3148,
+    "2023": 3598,
+    "2024": 4414,
+    "2025": 6086
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT10653%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Control and Systems Engineering",
+   "field": "Engineering"
+  },
+  "T13287": {
+   "title": "Robotic Process Automation Applications",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 91,
+    "2016": 135,
+    "2017": 220,
+    "2018": 456,
+    "2019": 676,
+    "2020": 897,
+    "2021": 893,
+    "2022": 1052,
+    "2023": 1366,
+    "2024": 1971,
+    "2025": 3333
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT13287%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Industrial and Manufacturing Engineering",
+   "field": "Engineering"
+  },
+  "T12128": {
+   "title": "AI in Service Interactions",
+   "updated": "2026-10-30T03:01:25",
+   "counts": {
+    "2015": 142,
+    "2016": 223,
+    "2017": 469,
+    "2018": 862,
+    "2019": 1360,
+    "2020": 1663,
+    "2021": 1634,
+    "2022": 1786,
+    "2023": 2822,
+    "2024": 4885,
+    "2025": 8114
+   },
+   "query": "https://api.openalex.org/works?filter=primary_topic.id%3AT12128%2Cpublication_year%3A2015-2025&group_by=publication_year",
+   "subfield": "Artificial Intelligence",
+   "field": "Computer Science"
+  }
+ },
+ "reference": {
+  "all": {
+   "2015": 7932474,
+   "2016": 8147949,
+   "2017": 7913672,
+   "2018": 7854053,
+   "2019": 8120116,
+   "2020": 8424918,
+   "2021": 7673072,
+   "2022": 7236999,
+   "2023": 7562450,
+   "2024": 8102280,
+   "2025": 9381074
+  },
+  "all_query": "https://api.openalex.org/works?filter=type%3Aarticle%7Cpreprint%7Creview%7Cbook-chapter%7Cdissertation%7Carticle%2Cpublication_year%3A2015-2025&group_by=publication_year",
+  "cs": {
+   "2015": 501759,
+   "2016": 520725,
+   "2017": 499692,
+   "2018": 533915,
+   "2019": 559921,
+   "2020": 582104,
+   "2021": 556237,
+   "2022": 551250,
+   "2023": 620908,
+   "2024": 717477,
+   "2025": 906207
+  },
+  "cs_query": "https://api.openalex.org/works?filter=primary_topic.field.id%3A17%2Cpublication_year%3A2015-2025&group_by=publication_year"
+ }
+}

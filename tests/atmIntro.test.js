@@ -7,8 +7,8 @@ import { INTRO_LENGTH, curlPoint, introAt, receiptLines, shouldPlayIntro } from 
 import { t as translate } from '../shared/i18n.js'
 
 describe('ATM intro timeline', () => {
-  it('runs arrive → print → tear → fly → reveal → done, each with progress 0..1', () => {
-    const order = ['arrive', 'print', 'tear', 'fly', 'reveal', 'done']
+  it('runs arrive → print → tear → fly, then holds the receipt until the user moves on', () => {
+    const order = ['arrive', 'print', 'tear', 'fly', 'hold']
     let last = 0
     for (let time = 0; time <= INTRO_LENGTH + 1; time += 0.05) {
       const { phase, k } = introAt(time)
@@ -19,7 +19,8 @@ describe('ATM intro timeline', () => {
       last = index
     }
     expect(introAt(0).phase).toBe('arrive')
-    expect(introAt(INTRO_LENGTH).phase).toBe('done')
+    expect(introAt(INTRO_LENGTH)).toEqual({ phase: 'hold', k: 1 })
+    expect(introAt(INTRO_LENGTH + 600).phase).toBe('hold')
   })
 
   it('is skipped when the user asks for less motion or the browser has no WebGL', () => {
@@ -44,15 +45,17 @@ describe('receipt paper', () => {
     expect(low.y).toBeLessThan(-1.5)
   })
 
-  it('prints the ATM story in the chosen language, ending on the question, marked draft', () => {
+  it('prints the question section (the ATM story) in the chosen language, marked draft, without the page headline', () => {
     for (const lang of ['en', 'ms', 'zh']) {
       const t = (key, vars) => translate(lang, key, vars)
       const lines = receiptLines(t)
-      const text = lines.map((line) => [line.text, line.left, line.right].filter(Boolean).join(' ')).join('\n')
+      const text = lines.map((line) => line.text ?? '').join('\n')
       expect(text).not.toMatch(/undefined|\{\w+\}/)
-      for (const key of ['introCash', 'introMachine', 'introPeople', 'introTeller', 'introNext']) expect(text).toContain(t(key).toUpperCase())
-      expect(lines.at(-2)).toMatchObject({ kind: 'big', text: t('heroLine').replace('{em}', t('heroEm')) })
-      expect(text).toContain(t('atmNote'))
+      expect(lines).toContainEqual({ kind: 'label', text: t('ldQKicker').toUpperCase() })
+      expect(lines).toContainEqual({ kind: 'quote', text: t('atmTitle') })
+      expect(lines).toContainEqual({ kind: 'body', text: t('atmBody') })
+      expect(lines.at(-1)).toEqual({ kind: 'note', text: t('atmNote') })
+      expect(text).not.toContain(t('heroEm'))
     }
   })
 })

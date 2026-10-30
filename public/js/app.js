@@ -434,21 +434,27 @@ function onChange(target) {
   }
 }
 
-// The ATM intro (three.js, loaded only here). Skipped for "reduce motion", without WebGL, or if loading fails.
+// The ATM intro (three.js, loaded only here): the receipt carries the question section and waits for the user.
+// Skipped for "reduce motion", without WebGL, or if loading fails; then the page shows the question section itself.
 let introStarted = false
 function startIntro() {
   introStarted = true
   if (document.querySelector('.atm-intro')) return
   let webgl = false
   try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
-  if (!shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })) return
-  // The skip button and Esc work at once, even while three.js is still loading; a timer ends a stalled intro.
+  if (!shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })) {
+    document.body.classList.add('no-intro')
+    return
+  }
+  // Skip and Esc work at once, even while three.js is still loading; a timer ends an intro that stalls before
+  // the receipt arrives. Once the receipt waits, Continue, a click anywhere, Enter, Space or Esc moves on.
   const host = document.createElement('div')
   host.className = 'atm-intro'
-  host.innerHTML = `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
+  host.innerHTML = `<button class="atm-skip">${esc(t('introSkip'))} →</button><button class="atm-continue" hidden>${esc(t('introContinue'))} →</button>`
   document.body.append(host)
   document.body.classList.add('intro-playing')
   let scene = null
+  let holding = false
   const show = () => document.body.classList.remove('intro-playing')
   const done = () => {
     show()
@@ -456,14 +462,32 @@ function startIntro() {
     window.removeEventListener('keydown', onKey)
   }
   const skip = () => (scene ? scene.skip() : done())
-  const onKey = (event) => { if (event.key === 'Escape') skip() }
-  host.querySelector('.atm-skip').addEventListener('click', skip)
+  const fail = () => {
+    document.body.classList.add('no-intro')
+    done()
+  }
+  const onKey = (event) => {
+    if (event.key === 'Escape' || (holding && (event.key === 'Enter' || event.key === ' '))) {
+      event.preventDefault()
+      skip()
+    }
+  }
+  const onHold = () => {
+    holding = true
+    host.classList.add('holding')
+    host.querySelector('.atm-skip').hidden = true
+    const button = host.querySelector('.atm-continue')
+    button.hidden = false
+    button.focus({ preventScroll: true })
+  }
+  host.querySelector('.atm-skip').addEventListener('click', (event) => { event.stopPropagation(); skip() })
+  host.addEventListener('click', () => { if (holding) skip() })
   window.addEventListener('keydown', onKey)
-  setTimeout(() => { if (host.isConnected) skip() }, (INTRO_LENGTH + 6) * 1000)
+  setTimeout(() => { if (host.isConnected && !holding) skip() }, (INTRO_LENGTH + 6) * 1000)
   import('./intro/atmIntro.js')
-    .then((intro) => intro.playIntro({ t, host, onReveal: show, onDone: done }))
+    .then((intro) => intro.playIntro({ t, host, onHold, onReveal: show, onDone: done }))
     .then((controls) => { scene = controls })
-    .catch(done)
+    .catch(fail)
 }
 
 function render() {

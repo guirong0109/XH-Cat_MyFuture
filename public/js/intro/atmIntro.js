@@ -1,11 +1,11 @@
-// The landing page's opening: a 3D ATM prints the ATM story on a receipt; the receipt tears off, flips upright and
-// flies to the middle of the screen; then the page shows. Timing, paper curl and receipt text: timeline.js.
+// The landing page's opening: a 3D ATM prints the ATM story (the page's question section) on a receipt; the receipt
+// tears off, flips upright and flies to the middle of the screen, and waits there until the user moves on.
+// Timing, paper curl and receipt text: timeline.js.
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
-import { curlPoint, ease, introAt, receiptLines } from './timeline.js'
+import { INTRO_LENGTH, curlPoint, ease, introAt, receiptLines } from './timeline.js'
 
-const PAPER_W = 0.52
-const PAPER_L = 1.15
+const PAPER_W = 0.62
 const CURL_R = 0.16
 const PX = 1000 // receipt canvas pixels per scene unit
 const SLOT = { y: 1.5, z: 0.62 }
@@ -48,10 +48,20 @@ function grain(g, w, h, amount) {
   g.putImageData(image, 0, 0)
 }
 
+// The receipt is as long as its text (which differs by language): drawn once to measure, then at that length.
 function receiptTexture(t, ink, pink) {
+  const end = drawReceipt(t, ink, pink, 1600).end
+  const { canvas } = drawReceipt(t, ink, pink, Math.ceil(end + 230))
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.anisotropy = 8
+  return { texture, length: canvas.height / PX }
+}
+
+function drawReceipt(t, ink, pink, H) {
   const canvas = document.createElement('canvas')
   const W = (canvas.width = PAPER_W * PX)
-  const H = (canvas.height = PAPER_L * PX)
+  canvas.height = H
   const g = canvas.getContext('2d')
   const pad = 44
   const inner = W - 2 * pad
@@ -81,37 +91,36 @@ function receiptTexture(t, ink, pink) {
       y += 46
     } else if (line.kind === 'text') {
       g.font = `500 22px ${MONO}`
-      g.fillStyle = line.accent ? pink : ink
       for (const words of wrap(g, line.text, inner)) {
         g.fillText(words.join(''), pad, y)
         y += 34
       }
     } else if (line.kind === 'rule') {
       rule()
-    } else if (line.kind === 'row') {
-      g.font = line.head ? `500 16px ${MONO}` : `500 22px ${MONO}`
-      g.fillStyle = line.head ? 'rgba(30,26,20,.55)' : ink
-      g.fillText(line.left, pad, y)
-      g.textAlign = 'right'
-      g.fillText(line.right, W - pad, y)
-      const from = pad + g.measureText(line.left).width + 10
-      const to = W - pad - g.measureText(line.right).width - 10
-      g.textAlign = 'left'
-      if (!line.head) for (let x = from; x < to; x += 12) g.fillText('.', x, y)
-      y += line.head ? 32 : 38
-    } else if (line.kind === 'big') {
-      y += 34
-      g.font = `400 64px ${SERIF}`
-      const em = new Set(tokens(t('heroEm')).map((token) => token.trim()))
+    } else if (line.kind === 'label') {
+      y += 8
+      g.font = `500 17px ${MONO}`
+      g.fillStyle = pink
+      g.fillText(`— ${line.text}`, pad, y)
+      y += 62
+    } else if (line.kind === 'quote') {
+      g.font = `400 58px ${SERIF}`
+      g.fillStyle = pink
+      g.fillText('“', pad - 24, y)
+      g.fillStyle = ink
       for (const words of wrap(g, line.text, inner)) {
-        let x = pad
-        for (const word of words) {
-          g.fillStyle = em.has(word.trim().replace(/[?？]$/, '')) ? pink : ink
-          g.fillText(word, x, y)
-          x += g.measureText(word).width
-        }
-        y += 62
+        g.fillText(words.join('').trimEnd(), pad, y)
+        y += 60
       }
+      y += 14
+    } else if (line.kind === 'body') {
+      g.font = `400 20px ${MONO}`
+      g.fillStyle = 'rgba(30,26,20,.86)'
+      for (const words of wrap(g, line.text, inner)) {
+        g.fillText(words.join('').trimEnd(), pad, y)
+        y += 31
+      }
+      y += 12
     } else if (line.kind === 'note') {
       y += 6
       g.font = `400 15px ${MONO}`
@@ -122,6 +131,7 @@ function receiptTexture(t, ink, pink) {
       }
     }
   }
+  const end = y
   // barcode, today's date, and the perforation the receipt tears along
   let seed = 7
   const random = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
@@ -141,10 +151,7 @@ function receiptTexture(t, ink, pink) {
   g.moveTo(0, H - 18)
   g.lineTo(W, H - 18)
   g.stroke()
-  const texture = new THREE.CanvasTexture(canvas)
-  texture.colorSpace = THREE.SRGBColorSpace
-  texture.anisotropy = 8
-  return texture
+  return { canvas, end }
 }
 
 function signTexture(ink, cream, pink) {
@@ -254,9 +261,9 @@ function buildAtm(colors, sign, screen) {
   return { atm, led }
 }
 
-// playIntro({ t, host, onReveal, onDone }) → { skip }. The caller made `host` (a full-screen layer with the skip
-// button) and handles skip clicks and Esc by calling skip().
-export async function playIntro({ t, host, onReveal, onDone }) {
+// playIntro({ t, host, onHold, onReveal, onDone }) → { skip }. The caller made `host` (a full-screen layer with the
+// skip and continue buttons) and calls skip() when the user skips or continues. onHold: the receipt is waiting.
+export async function playIntro({ t, host, onHold, onReveal, onDone }) {
   await fontsReady()
   const colors = {
     cream: cssColor('--lp-cream', '#f5f0e6'),
@@ -271,10 +278,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
 
   const canvas = document.createElement('canvas')
   canvas.setAttribute('aria-hidden', 'true')
-  const caption = document.createElement('p')
-  caption.className = 'atm-caption'
-  caption.textContent = t('atmTitle')
-  host.prepend(canvas, caption)
+  host.prepend(canvas)
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
@@ -307,14 +311,14 @@ export async function playIntro({ t, host, onReveal, onDone }) {
   const { atm, led } = buildAtm(colors, sign, screen.texture)
   scene.add(atm)
 
-  // The receipt: a strip whose points are placed every frame (printing, curling, flying).
+  // The receipt: a strip whose points are placed every frame (printing, curling, flying); as long as its text.
+  const { texture: receipt, length: PAPER_L } = receiptTexture(t, paperInk, colors.pink)
   const paperGeometry = new THREE.PlaneGeometry(PAPER_W, PAPER_L, 1, 140)
   const uv = paperGeometry.attributes.uv
   for (let i = 0; i < uv.count; i += 1) uv.setX(i, 1 - uv.getX(i)) // reads upright once flipped to face the viewer
   const position = paperGeometry.attributes.position
   const flat = Array.from({ length: position.count }, (_, i) => ({ x: position.getX(i), y: position.getY(i) }))
   // The receipt glows a little more as it faces the viewer, so it reads evenly lit in the middle of the screen.
-  const receipt = receiptTexture(t, paperInk, colors.pink)
   const paperMaterial = new THREE.MeshStandardMaterial({ map: receipt, emissive: 0xffffff, emissiveMap: receipt, emissiveIntensity: 0.12, roughness: 0.92, side: THREE.DoubleSide })
   const paper = new THREE.Mesh(paperGeometry, paperMaterial)
   paper.castShadow = true
@@ -340,7 +344,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
     pointer.x = event.clientX / window.innerWidth - 0.5
     pointer.y = event.clientY / window.innerHeight - 0.5
   }
-  // wide screens: the ATM stands right of centre and the caption sits on the left
+  // wide screens: the ATM stands a little right of centre
   let distance = 1
   const look = LOOK.clone()
   const resize = () => {
@@ -349,7 +353,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     distance = camera.aspect < 0.8 ? Math.min(1.9, 0.8 / camera.aspect) : 1
-    look.x = camera.aspect > 1.15 ? -1.1 : 0
+    look.x = camera.aspect > 1.15 ? -0.6 : 0
     camera.updateProjectionMatrix()
   }
   resize()
@@ -363,8 +367,9 @@ export async function playIntro({ t, host, onReveal, onDone }) {
     const toward = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion)
     const depth = 3
     const visibleH = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-    const scale = Math.min((0.78 * visibleH) / PAPER_L, (0.84 * visibleH * camera.aspect) / PAPER_W)
-    const center = camera.position.clone().addScaledVector(toward, -depth)
+    // the receipt fills most of the height, a little above the middle to leave room for "Continue"
+    const scale = Math.min((0.76 * visibleH) / PAPER_L, (0.84 * visibleH * camera.aspect) / PAPER_W)
+    const center = camera.position.clone().addScaledVector(toward, -depth).addScaledVector(up, 0.035 * visibleH)
     fly = flat.map(({ x, y }, i) => ({
       from: hanging(i, PAPER_L, 0.06),
       to: center.clone().addScaledVector(right, -x * scale).addScaledVector(up, y * scale),
@@ -372,6 +377,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
       flip: (y / PAPER_L) * scale,
     }))
     fly.toward = toward
+    fly.up = up
     // the machine fades away and leaves the receipt alone
     atm.traverse((object) => {
       if (!object.material) return
@@ -391,6 +397,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
   const start = performance.now()
   let finished = false
   let revealed = false
+  let holding = false
   const reveal = () => {
     if (revealed) return
     revealed = true
@@ -418,7 +425,7 @@ export async function playIntro({ t, host, onReveal, onDone }) {
     const time = (performance.now() - start) / 1000
     const { phase, k } = introAt(time)
     // camera
-    if (phase !== 'fly' && phase !== 'reveal' && phase !== 'done') {
+    if (phase !== 'fly' && phase !== 'hold') {
       const arrive = phase === 'arrive' ? ease(k) : 1
       const offset = CAMERA_OFFSET.clone().multiplyScalar(distance * (1.45 - 0.45 * arrive))
       offset.x += Math.sin(time * 0.35) * 0.25 + pointer.x * 0.8
@@ -446,13 +453,19 @@ export async function playIntro({ t, host, onReveal, onDone }) {
     }
     position.needsUpdate = true
     paperGeometry.computeVertexNormals()
-    // screen, light, caption
+    // waiting in the middle: the receipt floats gently until the user moves on
+    if (phase === 'hold') {
+      if (!holding) {
+        holding = true
+        onHold?.()
+      }
+      paper.position.copy(fly.up).multiplyScalar(Math.sin((time - INTRO_LENGTH) * 1.4) * 0.012)
+    }
+    // screen and light
     const printing = phase === 'arrive' || phase === 'print'
     screen.draw(printing ? t('introScreen') : t('introScreen2'), phase === 'print' ? k : printing ? 0 : 1)
     led.visible = !printing || Math.floor(time * 4) % 2 === 0
-    caption.classList.toggle('on', time > 0.5 && (phase === 'print' || phase === 'tear'))
     renderer.render(scene, camera)
-    if (phase === 'reveal' || phase === 'done') reveal()
   }
   renderer.setAnimationLoop(frame)
   return { skip: reveal }

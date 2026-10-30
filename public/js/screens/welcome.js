@@ -51,6 +51,7 @@ function hero(t) {
    <button class="lp-btn lp-btn-line" data-act="scrollTo" data-arg="how">${esc(t('ldHowLink'))}</button>
   </div>
   <p class="lp-note">${esc(t('ldGuestNote'))}</p>
+  <button class="lp-replay" data-act="replayIntro">↺ ${esc(t('introReplay'))}</button>
  </div>
  <aside class="lp-facts" aria-label="${esc(t('ldFactsTitle'))}">
   <p class="lp-facts-title">${esc(t('ldFactsTitle'))}</p>
@@ -67,16 +68,15 @@ function hero(t) {
   `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
 }
 
+// The question section (the ATM story). With the ATM intro it is printed on the receipt instead; this one shows,
+// at the top, only when the intro does not play (body.no-intro).
 const question = (t) => `
 <section class="lp-section lp-question">
  <p class="lp-label">${esc(t('ldQKicker'))}</p>
  <div>
   <blockquote class="lp-quote">${esc(t('atmTitle'))}</blockquote>
   <p class="lp-body">${esc(t('atmBody'))}</p>
-  <div class="lp-row lp-question-foot">
-   <button class="lp-btn lp-btn-line lp-btn-sm" data-act="replayIntro">↺ ${esc(t('introReplay'))}</button>
-   <p class="lp-draft">${esc(t('atmNote'))}</p>
-  </div>
+  <p class="lp-draft">${esc(t('atmNote'))}</p>
  </div>
 </section>`
 
@@ -193,8 +193,8 @@ const nav = (t, state) => `
 export default ({ t, state }) => `
 <div class="lp">
  ${nav(t, state)}
- ${hero(t)}
  ${question(t)}
+ ${hero(t)}
  ${how(t)}
  ${data(t)}
  ${principles(t)}

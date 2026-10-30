@@ -319,7 +319,9 @@
     "T28: fonts (Geist, Instrument Serif) load from Google Fonts — cost: one outside request per visit; without it the page falls back to system fonts",
     "T28b: the receipt prints only the ATM story already on the page (draft copy) and today's date — no new history or numbers",
     "T28b: three.js is served from our own server, not a CDN, so the intro also works offline — cost: about 1.5 MB to download on the first visit (not compressed)",
-    "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip"
+    "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip",
+    "T28b: the receipt waits in the middle until the user clicks Continue (or anywhere, Enter, Space, Esc); the safety timer only ends an intro that stalls before the receipt arrives — cost: a visitor who leaves the tab sees the receipt until they come back",
+    "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)"
   ],
   "log": [
     {
@@ -871,6 +873,16 @@
       "time": "30 Oct",
       "step": "Your change",
       "detail": "lighter shading on the roller counter windows"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "question section on the receipt, receipt waits in the middle until the user clicks; page headline stays outside the paper"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 248 passed; checked in Chrome: receipt holds 4 s+, Continue focused, click shows the page; no-intro shows the question at the top"
     }
   ]
 }

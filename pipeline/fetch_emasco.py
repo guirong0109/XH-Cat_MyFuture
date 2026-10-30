@@ -123,19 +123,19 @@ def parse_role(html, code, url):
         state = "tasks_only"
     else:
         state = "unparsed"
-    return {
-        "code": code,
-        "title": title,
-        "description": description,
-        "url": url,
-        "group": major[1].lower() if major else None,
-        "subMajorGroup": {"code": sub[0], "title": sub[1]} if sub else None,
-        "tags": tags,
-        "qualification": qualification,
-        "tasks": tasks,
-        "skills": skills,
-        "pageState": state,
-    }
+    role = empty_role(code, url)
+    role.update(
+        title=title,
+        description=description,
+        group=major[1].lower() if major else None,
+        subMajorGroup={"code": sub[0], "title": sub[1]} if sub else None,
+        tags=tags,
+        qualification=qualification,
+        tasks=tasks,
+        skills=skills,
+        pageState=state,
+    )
+    return role
 
 
 def allowed(robots_txt, path):
@@ -169,19 +169,31 @@ def allowed(robots_txt, path):
     return best is None or best[0] == "allow"
 
 
-def make_fetch():
-    """A fetch function that keeps cookies and sets the English view first (?lang=en)."""
-    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
-    opener.addheaders = [("User-Agent", USER_AGENT)]
+def make_fetch(opener=None, sleep=time.sleep):
+    """A fetch function that keeps cookies and sets the English view first (?lang=en).
+
+    The priming request and the page request are spaced by one second, like every other request.
+    """
+    if opener is None:
+        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        opener.addheaders = [("User-Agent", USER_AGENT)]
     state = {"english": False}
 
     def fetch(url):
         if "/masco/" in url and not state["english"]:
             opener.open(url + "?lang=en", timeout=30).read()
             state["english"] = True
+            sleep(1)
         return opener.open(url, timeout=30).read().decode("utf-8")
 
     return fetch
+
+
+def empty_role(code, url):
+    """The full role shape with nothing filled in (used for failed pages)."""
+    return {"code": code, "title": None, "description": None, "url": url, "group": None,
+            "subMajorGroup": None, "tags": [], "qualification": None, "tasks": [], "skills": [],
+            "pageState": "unparsed"}
 
 
 def _arg(argv, name):
@@ -218,7 +230,7 @@ def main(argv, fetch=None, today=None, sleep=time.sleep):
             roles.append(parse_role(fetch(url), code, url))
         except Exception as error:  # keep going; the stub shows which page failed
             print(f"{code}: {error}")
-            roles.append({"code": code, "title": None, "url": url, "pageState": "unparsed"})
+            roles.append(empty_role(code, url))
     data = {"schemaVersion": SCHEMA, "source": SOURCE, "fetchedAt": today, "roles": roles}
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, f"crawl-{today}.json"), "w", encoding="utf-8", newline="\n") as handle:

@@ -11,6 +11,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import fetch_emasco  # noqa: E402
 from fetch_emasco import allowed, main, parse_role  # noqa: E402
 
+ROLE_KEYS = {"code", "title", "description", "url", "group", "subMajorGroup", "tags", "qualification",
+             "tasks", "skills", "pageState"}
 FIXTURE = os.path.join(os.path.dirname(__file__), "fixtures", "emasco_2521-03.html")
 URL = "https://emasco.mohr.gov.my/masco/2521-03"
 
@@ -131,6 +133,32 @@ class MainTest(unittest.TestCase):
         with open(os.path.join(out, "crawl-2026-11-01.json"), encoding="utf-8") as handle:
             role = json.load(handle)["roles"][0]
         self.assertEqual(role["pageState"], "unparsed")
+        self.assertEqual(set(role), ROLE_KEYS)
+        self.assertIsNone(role["description"])
+        self.assertEqual(role["tags"], [])
+
+
+class ThrottleTest(unittest.TestCase):
+    def test_real_fetch_path_spaces_every_request(self):
+        events = []
+
+        class Resp:
+            def read(self):
+                return b"<html></html>"
+
+        class Opener:
+            def open(self, url, timeout=0):
+                events.append("request " + url)
+                return Resp()
+
+        fetch = fetch_emasco.make_fetch(opener=Opener(), sleep=lambda s: events.append("sleep"))
+        fetch("https://emasco.mohr.gov.my/masco/1111-01")
+        events.append("sleep")  # main sleeps before the next page
+        fetch("https://emasco.mohr.gov.my/masco/1111-02")
+        requests = [i for i, e in enumerate(events) if e.startswith("request")]
+        self.assertEqual(len(requests), 3)
+        for a, b in zip(requests, requests[1:]):
+            self.assertIn("sleep", events[a + 1:b])
 
 
 if __name__ == "__main__":

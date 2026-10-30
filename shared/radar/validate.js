@@ -1,11 +1,13 @@
 // Reject malformed Radar snapshots. Legitimate revisions and vanished periods are not errors here:
 // they are reported by diffSnapshots. An empty cell (value null) in a published period is valid.
 
-const SOURCES = ['openalex', 'dosm']
-const ENTITY_TYPES = ['ai_topic', 'reference', 'occupation_group', 'total', 'unclassified']
-const UNITS = ['papers', 'offerings']
+const SOURCES = ['openalex', 'dosm', 'onet-skills', 'onet-hottech']
+const ENTITY_TYPES = ['ai_topic', 'reference', 'occupation_group', 'total', 'unclassified', 'skill_flag', 'release', 'skill_postings']
+const UNITS = ['papers', 'offerings', 'flag', 'release', 'postings']
 const YEAR = /^\d{4}$/
 const QUARTER = /^(\d{4}) Q([1-4])$/
+const RELEASE = /^\d{2}\.\d$/
+const isOnet = (sourceId) => sourceId === 'onet-skills' || sourceId === 'onet-hottech'
 
 // Position of a period on a running scale, or null when it does not fit the source.
 function ordinal(sourceId, period) {
@@ -40,6 +42,15 @@ export function validateSnapshot(snapshot, { expectedEntities = [], lastYear } =
     }
     entities.add(o.entityId)
     if (!UNITS.includes(o.unit)) add('unknown_unit', `${at}.unit`)
+    if (isOnet(sourceId)) {
+      // O*NET sources: a release (or, for Hot Technologies, a counting year) is the period; no contiguity check; integer counts or flags.
+      if (!(RELEASE.test(o.period) || (sourceId === 'onet-hottech' && YEAR.test(o.period)))) add('bad_period', `${at}.period`)
+      if (typeof o.value !== 'number' || !Number.isInteger(o.value) || o.value < 0) add('bad_value', `${at}.value`)
+      const onetKey = `${o.entityType}|${o.entityId}|${o.period}|${o.metric}`
+      if (seen.has(onetKey)) add('duplicate_period', at)
+      seen.add(onetKey)
+      return
+    }
     if (o.value !== null && (typeof o.value !== 'number' || !Number.isFinite(o.value) || o.value < 0)) {
       add('bad_value', `${at}.value`)
     }

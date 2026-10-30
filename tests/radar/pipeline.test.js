@@ -105,7 +105,7 @@ describe('radar-signal/v1 from the real bundled inputs', () => {
     expect(validateSignal({ ...s, evidenceKind: 'job' }).ok).toBe(false)
     expect(validateSignal({ ...s, evidenceSufficiency: 'enough' }).ok).toBe(false)
     expect(validateSignal({ ...s, evidenceQuality: 'great' }).ok).toBe(false)
-    expect(validateSignal({ ...s, entity: { ...s.entity, type: 'skill' } }).ok).toBe(false)
+    expect(validateSignal({ ...s, entity: { ...s.entity, type: 'person' } }).ok).toBe(false)
     expect(validateSignal({ ...s, granularity: { level: 'person' } }).ok).toBe(false)
     expect(validateSignal({ ...s, change: { ...s.change, unit: 'stars' } }).ok).toBe(false)
     expect(validateSignal({ ...s, breaks: [{ period: '2025 Q3', status: 'ignored' }] }).ok).toBe(false)

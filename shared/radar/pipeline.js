@@ -14,6 +14,7 @@ import { classifyOpenAlex } from './trend.js'
 import { topicMomentum, shareSeries } from './momentum.js'
 import { classifyDosmGroup, dosmContext } from './dosm.js'
 import { detectBreaks, applyBreakReviews } from './breaks.js'
+import { onetSkillSignals, flagChanges } from './onetSkills.js'
 import { dosmTableFromSnapshot, openalexCounts } from './snapshot.js'
 
 export const OPENALEX_METRIC = 'works_primary_topic'
@@ -169,7 +170,12 @@ export function runPipeline({ snapshots = {}, references = {}, reviews = [], con
     signals.push(...dosmSignals(snapshots.dosm, table, breaks, references, config, manifestId))
   }
 
+  const onetSnapshot = snapshots['onet-skills']
+  if (onetSnapshot) signals.push(...onetSkillSignals(onetSnapshot, { manifestId, config }))
+
   signals.sort((a, b) => cmp(a.signalId, b.signalId))
   const orderedMomentum = Object.fromEntries(Object.keys(momentum).sort().map((k) => [k, momentum[k]]))
-  return { signals, breaks, context, momentum: orderedMomentum }
+  const out = { signals, breaks, context, momentum: orderedMomentum }
+  if (onetSnapshot) out.onetSkills = flagChanges(onetSnapshot)
+  return out
 }

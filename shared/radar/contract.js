@@ -9,10 +9,10 @@ export const FORBIDDEN_KEYS = ['score', 'weight', 'rank', 'match', 'opportunityS
 export const FORBIDDEN_KEY_PATTERN = /score|weight|rank|match|opportunit/i
 
 export const ENUMS = Object.freeze({
-  evidenceKind: ['research_indicator', 'occupation_group', 'occupation_direct'],
-  entityType: ['ai_topic', 'occupation_group', 'occupation'],
-  granularityLevel: ['topic', 'group', 'occupation'],
-  changeUnit: ['percent', 'pp', 'log2'],
+  evidenceKind: ['research_indicator', 'occupation_group', 'occupation_direct', 'skill_posting_flag'],
+  entityType: ['ai_topic', 'occupation_group', 'occupation', 'skill'],
+  granularityLevel: ['topic', 'group', 'occupation', 'occupation_skill', 'skill'],
+  changeUnit: ['percent', 'pp', 'log2', 'flag', 'postings'],
   direction: ['rising', 'declining', 'stable', 'emerging', 'mixed', null],
   evidenceSufficiency: ['sufficient', 'insufficient_evidence', 'insufficient_comparable_evidence'],
   evidenceQuality: ['strong', 'moderate', 'limited', null],

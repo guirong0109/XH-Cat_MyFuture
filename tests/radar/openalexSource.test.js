@@ -128,7 +128,52 @@ describe('OpenAlex source', () => {
       system: 'openalex_topics',
       version: '2026-09-15T01:02:03.000000',
       readAt: '2026-10-30T10:00:00.000Z',
-      countingRule: 'primary_topic'
+      countingRule: 'primary_topic',
+      topicUpdated: { T10028: '2026-09-15T01:02:03.000000', T10775: '2026-09-15T01:02:03.000000' }
     })
+  })
+
+  it('stores each topic updated_date and the max as version', async () => {
+    const dates = { T10028: '2026-09-15T00:00:00.000000', T10775: '2026-10-01T00:00:00.000000' }
+    const fetchImpl = async (url) => {
+      const m = /\/topics\/(T\d+)/.exec(String(url))
+      return m ? json({ updated_date: dates[m[1]] }) : json(groupBy())
+    }
+    const snap = await createOpenAlexSource({ fetchImpl, now: NOW }).fetchSnapshot(AXES)
+    expect(snap.classification.topicUpdated).toEqual(dates)
+    expect(snap.classification.version).toBe('2026-10-01T00:00:00.000000')
+  })
+
+  it('a present but malformed count is an error; an absent year is 0', async () => {
+    for (const count of [null, -1, 1.5, 'abc', undefined]) {
+      const fetchImpl = async (url) => {
+        if (String(url).includes('/topics/')) return json({ updated_date: 'x' })
+        const body = groupBy()
+        body.group_by[3].count = count
+        return json(body)
+      }
+      const err = await createOpenAlexSource({ fetchImpl, now: NOW }).fetchSnapshot(AXES).catch((e) => e)
+      expect(err).toBeInstanceOf(SourceError)
+      expect(err.code).toBe('source_unavailable')
+    }
+  })
+
+  it('a failure on the last request returns no snapshot', async () => {
+    let n = 0
+    const fetchImpl = async (url) => {
+      n++
+      if (String(url).includes('primary_topic.field.id:17')) return json({}, 503)
+      return String(url).includes('/topics/') ? json({ updated_date: 'x' }) : json(groupBy())
+    }
+    const err = await createOpenAlexSource({ fetchImpl, now: NOW }).fetchSnapshot(AXES).catch((e) => e)
+    expect(err.code).toBe('source_unavailable')
+    expect(n).toBe(2 * 2 + 1)
+  })
+
+  it('six axes make exactly 13 requests', async () => {
+    const six = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'].map((openalexId, i) => ({ axisId: `a${i}`, openalexId }))
+    const fetchImpl = fakeFetch()
+    await createOpenAlexSource({ fetchImpl, now: NOW }).fetchSnapshot(six)
+    expect(fetchImpl.calls).toHaveLength(13)
   })
 })

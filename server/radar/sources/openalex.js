@@ -44,11 +44,16 @@ export function createOpenAlexSource({ fetchImpl = fetch, apiKey, now = () => ne
     sourceUrls.push(url)
     const body = await getJson(url)
     if (!Array.isArray(body?.group_by)) throw new SourceError('source_unavailable', { retryable: true })
-    const counts = new Map(body.group_by.map((g) => [String(g.key), Number(g.count)]))
+    const counts = new Map(body.group_by.map((g) => [String(g?.key), g?.count]))
     const out = []
     for (let y = FIRST_YEAR; y <= lastYear; y++) {
+      if (!counts.has(String(y))) {
+        out.push([String(y), 0]) // absent from group_by means no works that year
+        continue
+      }
       const n = counts.get(String(y))
-      out.push([String(y), Number.isFinite(n) ? n : 0])
+      if (!Number.isInteger(n) || n < 0) throw new SourceError('source_unavailable', { retryable: true })
+      out.push([String(y), n])
     }
     return out
   }
@@ -67,12 +72,14 @@ export function createOpenAlexSource({ fetchImpl = fetch, apiKey, now = () => ne
       }
     }
     let version = null
+    const topicUpdated = {}
     for (const axis of axes) {
       const id = axis.openalexId
       const metaUrl = `${BASE}/topics/${id}`
       sourceUrls.push(metaUrl)
       const meta = await getJson(metaUrl)
       const updated = typeof meta?.updated_date === 'string' ? meta.updated_date : null
+      if (updated) topicUpdated[id] = updated
       if (updated && (!version || updated > version)) version = updated
       push('ai_topic', id, await yearlySeries(`primary_topic.id:${id}`, lastYear, sourceUrls), axis.officialTitle)
     }
@@ -82,7 +89,7 @@ export function createOpenAlexSource({ fetchImpl = fetch, apiKey, now = () => ne
       snapshotId: `openalex-${fetchedAt.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}`,
       fetchedAt,
       lastYear,
-      classification: { system: 'openalex_topics', version, readAt: fetchedAt, countingRule: 'primary_topic' },
+      classification: { system: 'openalex_topics', version, readAt: fetchedAt, countingRule: 'primary_topic', topicUpdated },
       sourceUrls,
       observations
     }

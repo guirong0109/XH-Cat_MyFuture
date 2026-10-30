@@ -89,6 +89,68 @@ body.landing main{max-width:none;padding:0}
 .lp-lead{font-size:18px;line-height:1.55;color:var(--lp-ink2);max-width:58ch}
 
 
+/* how it works: bento */
+.lp-bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(230px,auto);gap:14px}
+.lp-stage{grid-column:span 2;display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:24px;background:var(--lp-paper);
+  border:1px solid var(--lp-line);transition:transform .2s ease,border-color .2s ease}
+.lp-stage:hover{transform:translateY(-2px);border-color:var(--a,var(--lp-ink2))}
+.lp-stage p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+.lp-stage-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lp-num{font-family:var(--lp-serif);font-size:46px;line-height:1;box-shadow:inset 0 -.24em 0 color-mix(in srgb,var(--a,var(--lp-pink)) 60%,transparent)}
+.lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:29px;line-height:1.05;letter-spacing:-.01em}
+.lp-pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--lp-mono);font-size:11px;padding:5px 10px;border-radius:99px;white-space:nowrap}
+.lp-pill-next{margin-top:auto;align-self:flex-start;border:1px dashed var(--lp-muted);color:var(--lp-muted)}
+.lp-stage-live{grid-column:span 4;grid-row:span 2;padding:clamp(26px,3.4vw,44px);color:var(--lp-cream);border-color:transparent;
+  background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--lp-pink) 42%,transparent),transparent 52%),
+             radial-gradient(circle at 0% 100%,color-mix(in srgb,var(--lp-blue) 30%,transparent),transparent 45%),var(--lp-ink)}
+.lp-stage-live .lp-num{font-size:64px;--a:var(--lp-pink)}
+.lp-stage-live .lp-stage-title{font-size:clamp(40px,4.6vw,64px);margin-top:auto}
+.lp-stage-live p{color:color-mix(in srgb,var(--lp-cream) 80%,transparent);font-size:17px;max-width:46ch}
+.lp-pill-live{background:var(--lp-lime);color:var(--lp-on-lime)}
+.lp-pill-live .lp-dot{background:var(--lp-on-lime);box-shadow:none;animation:lp-blink 1.6s ease-in-out infinite}
+.lp-ticks{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.lp-ticks li{font-size:13px;padding:6px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--lp-cream) 28%,transparent)}
+.lp-ticks li::before{content:"✓ ";color:var(--lp-lime)}
+.lp-stage-live .lp-btn{align-self:flex-start}
+
+/* the data: quiet */
+.lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.lp-datum{display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:20px}
+.lp-datum-n{font-family:var(--lp-serif);font-size:clamp(50px,5vw,72px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
+.lp-datum-label{font-size:15px;line-height:1.4;color:var(--lp-ink2)}
+.lp-meter{height:6px;border-radius:99px;background:var(--lp-line);overflow:hidden;margin-top:6px}
+.lp-meter i{display:block;height:100%;background:var(--lp-blue);border-radius:99px}
+.lp-meter-note{font-size:12.5px;color:var(--lp-muted)}
+.lp-mono{margin-top:auto;padding-top:14px;border-top:1px dashed var(--lp-line);font-family:var(--lp-mono);font-size:11px;line-height:1.55;color:var(--lp-muted)}
+.lp-foot-note{margin-top:22px;font-size:13px;color:var(--lp-muted)}
+
+/* principles */
+.lp-principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,36px)}
+.lp-principle{border-top:2px solid var(--lp-ink);padding-top:18px}
+.lp-pnum{font-family:var(--lp-mono);font-size:12px;color:var(--lp-muted)}
+.lp-principle h3{font-family:var(--lp-serif);font-weight:400;font-size:28px;line-height:1.05;margin:10px 0 10px}
+.lp-principle p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+
+/* who it is for */
+.lp-list{list-style:none;border-top:1px solid var(--lp-line)}
+.lp-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--lp-line)}
+.lp-list h3{font-family:var(--lp-serif);font-weight:400;font-size:clamp(26px,3vw,36px);line-height:1.1}
+.lp-list p{font-size:15px;color:var(--lp-ink2);margin-top:6px;max-width:62ch}
+.lp-list .lp-pill-next{margin-top:0}
+.lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
+.lp-who{border-bottom:0}
+
+/* closing call to action */
+.lp-close{margin:0 0 clamp(48px,7vw,96px);padding:clamp(40px,8vw,104px);border-radius:32px;color:var(--lp-cream);
+  background:radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
+             radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink)}
+.lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
+
+/* footer */
+.lp-footer{padding:36px 0 56px;border-top:1px solid var(--lp-line);font-size:13px;line-height:1.6;color:var(--lp-muted)}
+.lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
+.lp-footer p{max-width:92ch;margin-top:8px}
+
 /* mechanical roller counters: each digit a wheel in its own recessed window (odometer.js rolls them) */
 .lp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .odo{display:inline-block;line-height:1}
@@ -189,9 +251,9 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 .lp-gapsec:not(.in) .lp-gapband{opacity:0}
 .lp-gapband span{position:absolute;top:2px;left:50%;translate:-50% 0;font:500 12px var(--lp-mono);padding:2px 8px;border-radius:99px;
   background:var(--lp-ink);color:var(--lp-cream)}
-.lp-ticks{position:relative;height:14px;font:400 11px var(--lp-mono);color:var(--lp-muted)}
-.lp-ticks span{position:absolute;left:var(--at);translate:-50% 0}
-.lp-ticks span:first-child{translate:0 0}.lp-ticks span:last-child{translate:-100% 0}
+.lp-scale-ticks{position:relative;height:14px;font:400 11px var(--lp-mono);color:var(--lp-muted)}
+.lp-scale-ticks span{position:absolute;left:var(--at);translate:-50% 0}
+.lp-scale-ticks span:first-child{translate:0 0}.lp-scale-ticks span:last-child{translate:-100% 0}
 .lp-gapnote{font-size:13px;color:var(--lp-muted)}
 .lp-gapgrid .lp-fact-lime{justify-content:space-between;border-radius:24px;padding:clamp(22px,3vw,36px)}
 .lp-gapgrid .lp-fact-lime .lp-fact-label{font-size:17px}

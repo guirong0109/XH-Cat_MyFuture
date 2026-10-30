@@ -906,6 +906,11 @@
       "time": "30 Oct",
       "step": "Task 28b",
       "detail": "npm test 251 passed; checked in Chrome at 1440 and 500 px: idle, print, pinned + headline, gap bars grow, Replay returns to the waiting ATM; no-3D shows an HTML receipt"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Fix",
+      "detail": "restored the styles of How it works, The data, Principles, Who it is for, closing and footer (deleted by mistake with the section 2 redesign); renamed the gap scale ticks (clashed with .lp-ticks); test guards every section style"
     }
   ]
 }

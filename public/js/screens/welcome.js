@@ -92,7 +92,7 @@ function gap(t) {
     <div class="lp-bar lp-bar-pink" style="--w:${use.value}"><i></i></div>
     <div class="lp-bar lp-bar-blue" style="--w:${trained.value}"><i></i></div>
     <div class="lp-gapband" style="--from:${trained.value};--to:${use.value}"><span>${GAP_POINTS}</span></div>
-    <div class="lp-ticks">${[0, 25, 50, 75, 100].map((n) => `<span style="--at:${n}%">${n}${n === 100 ? '%' : ''}</span>`).join('')}</div>
+    <div class="lp-scale-ticks">${[0, 25, 50, 75, 100].map((n) => `<span style="--at:${n}%">${n}${n === 100 ? '%' : ''}</span>`).join('')}</div>
    </div>
    <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p>
    ${sourced(t, `${t(use.source)}, ${t('ldFactVia')}`)}

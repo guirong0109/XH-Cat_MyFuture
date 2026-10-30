@@ -59,6 +59,13 @@ describe('landing page', () => {
     expect(html.indexOf('lp-atm')).toBeLessThan(html.indexOf('id="gap"'))
   })
 
+  it('every section of the page keeps its styles in landing.css', async () => {
+    const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
+    for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-gapgrid{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
+      '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-footer{']) expect(css).toContain(rule)
+    for (const [, name] of css.matchAll(/^\.(lp-[\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
+  })
+
   it('the second section puts the two shares on one 0–100% scale with the calculated gap', () => {
     const html = page()
     const gap = html.slice(html.indexOf('id="gap"'), html.indexOf('id="how"'))

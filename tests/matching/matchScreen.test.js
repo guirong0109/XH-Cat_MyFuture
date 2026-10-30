@@ -710,3 +710,13 @@ describe('Owner UI round (31 Oct)', () => {
     expect(cardsOf(page)).toHaveLength(10)
   })
 })
+
+describe('SDG filter width (owner screenshot 31 Oct: long UN goal titles widened the page)', () => {
+  it('the filter column can shrink and the select fills it, so long goal titles never widen the page', () => {
+    const html = view()
+    expect(html).toMatch(/<div class="mt-filter"><label[^>]*for="mtSdgFilter"/)
+    const css = readFileSync(join(root, 'public/styles.css'), 'utf8')
+    expect(css).toMatch(/\.mt \.mt-filter\{[^}]*min-width:0[^}]*\}/)
+    expect(css).toMatch(/\.mt \.mt-filter \.mt-sel\{[^}]*width:100%[^}]*\}/)
+  })
+})

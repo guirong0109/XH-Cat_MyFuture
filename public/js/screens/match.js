@@ -383,7 +383,7 @@ function controls(t, m, roles, profile, titles) {
     <div class="row mt-ctrlrow">
       <div><div class="tiny muted mt-lbl">${esc(t('mtScenario'))} <span class="tag t-est">${esc(t('mtEstimate'))}</span></div>
         <div class="mt-seg" role="group" aria-label="${esc(t('mtScenario'))}">${seg}</div></div>
-      <div><label class="tiny muted mt-lbl" for="mtSdgFilter">${esc(t('mtSdgFilter'))}</label>
+      <div class="mt-filter"><label class="tiny muted mt-lbl" for="mtSdgFilter">${esc(t('mtSdgFilter'))}</label>
         <select id="mtSdgFilter" class="mt-sel">${options}</select>
         <div class="tiny muted">${esc(t('mtSdgFilterSrc'))}</div></div>
     </div>

@@ -175,6 +175,9 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .mt .mt-controls{margin-bottom:12px}
 .mt .mt-ctrlrow{justify-content:space-between;align-items:flex-start}
 .mt .mt-lbl{display:block;margin-bottom:4px}
+/* The goal options carry full UN titles: the column may shrink and the select fills it, so the page never widens. */
+.mt .mt-filter{flex:0 1 340px;min-width:0}
+.mt .mt-filter .mt-sel{width:100%}
 .mt .mt-gap{margin-top:8px}
 .mt-seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:100%}
 .mt-seg button{border:0;background:var(--surface2);padding:7px 14px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);text-align:left}

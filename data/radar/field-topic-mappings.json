@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "radar-field-topics/v1",
+  "mappingVersion": "radar-field-topics/v1",
+  "note": "Proposals only. Every record is pending until the owner approves it in the admin screen.",
+  "mappings": [
+    {
+      "mappingId": "06-language",
+      "iscedCode": "06",
+      "axisId": "language",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "ICT programmes teach the programming and data skills used to build language and text AI.",
+        "ms": "Program ICT mengajar kemahiran pengaturcaraan dan data yang digunakan untuk membina AI bahasa dan teks.",
+        "zh": "信息通信技术课程教授构建语言与文本AI所用的编程和数据技能。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "06-genmedia",
+      "iscedCode": "06",
+      "axisId": "genmedia",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "ICT programmes cover the software and machine learning used to build generative image and media tools.",
+        "ms": "Program ICT merangkumi perisian dan pembelajaran mesin yang digunakan untuk membina alat imej dan media generatif.",
+        "zh": "信息通信技术课程涵盖构建生成式图像与媒体工具所用的软件和机器学习。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "06-vision",
+      "iscedCode": "06",
+      "axisId": "vision",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "ICT programmes cover the software and machine learning used in image and object detection.",
+        "ms": "Program ICT merangkumi perisian dan pembelajaran mesin yang digunakan dalam pengesanan imej dan objek.",
+        "zh": "信息通信技术课程涵盖图像与物体检测所用的软件和机器学习。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "06-automation",
+      "iscedCode": "06",
+      "axisId": "automation",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "ICT programmes cover the software used to automate repetitive digital work.",
+        "ms": "Program ICT merangkumi perisian yang digunakan untuk mengautomasikan kerja digital yang berulang.",
+        "zh": "信息通信技术课程涵盖用于自动化重复性数字工作的软件。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "04-automation",
+      "iscedCode": "04",
+      "axisId": "automation",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Business and administration work includes routine office processes that process automation targets.",
+        "ms": "Kerja perniagaan dan pentadbiran melibatkan proses pejabat rutin yang menjadi sasaran automasi proses.",
+        "zh": "商业与行政工作包含流程自动化所针对的日常办公流程。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "04-service",
+      "iscedCode": "04",
+      "axisId": "service",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Business programmes prepare people for customer-facing roles where service AI is used.",
+        "ms": "Program perniagaan menyediakan pelajar untuk peranan berhadapan pelanggan yang menggunakan AI perkhidmatan.",
+        "zh": "商科课程培养面向客户的岗位人才，这些岗位会使用服务型AI。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "04-language",
+      "iscedCode": "04",
+      "axisId": "language",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Business and law work involves writing, reports and documents that language AI can draft or summarise.",
+        "ms": "Kerja perniagaan dan undang-undang melibatkan penulisan, laporan dan dokumen yang boleh dirangka atau diringkaskan oleh AI bahasa.",
+        "zh": "商业与法律工作涉及写作、报告和文件，语言AI可以起草或总结这些内容。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "07-robotics",
+      "iscedCode": "07",
+      "axisId": "robotics",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Engineering and manufacturing programmes cover the machines and control systems used in robotics.",
+        "ms": "Program kejuruteraan dan pembuatan merangkumi mesin dan sistem kawalan yang digunakan dalam robotik.",
+        "zh": "工程与制造课程涵盖机器人技术所用的机器和控制系统。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "07-vision",
+      "iscedCode": "07",
+      "axisId": "vision",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Engineering programmes use camera-based inspection and detection that computer vision supports.",
+        "ms": "Program kejuruteraan menggunakan pemeriksaan dan pengesanan berasaskan kamera yang disokong oleh penglihatan komputer.",
+        "zh": "工程课程使用计算机视觉所支持的基于摄像头的检查和检测。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "07-automation",
+      "iscedCode": "07",
+      "axisId": "automation",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Engineering and manufacturing work includes the industrial processes that automation changes.",
+        "ms": "Kerja kejuruteraan dan pembuatan melibatkan proses perindustrian yang diubah oleh automasi.",
+        "zh": "工程与制造工作包含被自动化改变的工业流程。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "02-genmedia",
+      "iscedCode": "02",
+      "axisId": "genmedia",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Arts programmes work with images, design and media that generative AI can now produce.",
+        "ms": "Program seni bekerja dengan imej, reka bentuk dan media yang kini boleh dihasilkan oleh AI generatif.",
+        "zh": "艺术课程处理图像、设计和媒体，而生成式AI现在也能生成这些内容。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "09-vision",
+      "iscedCode": "09",
+      "axisId": "vision",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Health programmes use medical images that computer vision is applied to.",
+        "ms": "Program kesihatan menggunakan imej perubatan yang dianalisis oleh penglihatan komputer.",
+        "zh": "健康类课程使用计算机视觉所分析的医学影像。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "09-language",
+      "iscedCode": "09",
+      "axisId": "language",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Health and welfare work involves clinical notes and patient communication that language AI can assist.",
+        "ms": "Kerja kesihatan dan kebajikan melibatkan nota klinikal dan komunikasi pesakit yang boleh dibantu oleh AI bahasa.",
+        "zh": "健康与福利工作涉及临床记录和患者沟通，语言AI可以提供协助。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "10-service",
+      "iscedCode": "10",
+      "axisId": "service",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Services programmes prepare people for customer service roles where service AI is used.",
+        "ms": "Program perkhidmatan menyediakan pelajar untuk peranan khidmat pelanggan yang menggunakan AI perkhidmatan.",
+        "zh": "服务类课程培养客户服务岗位人才，这些岗位会使用服务型AI。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "10-robotics",
+      "iscedCode": "10",
+      "axisId": "robotics",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Services work includes tasks such as cleaning, delivery and food service where service robots are being tried.",
+        "ms": "Kerja perkhidmatan melibatkan tugas seperti pembersihan, penghantaran dan perkhidmatan makanan yang sedang dicuba dengan robot perkhidmatan.",
+        "zh": "服务业工作包括清洁、配送和餐饮服务等任务，目前正在试用服务机器人。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    },
+    {
+      "mappingId": "01-language",
+      "iscedCode": "01",
+      "axisId": "language",
+      "relationship": "field_related_to_ai_topic",
+      "method": "curated",
+      "reason": {
+        "en": "Education work involves writing, feedback and learning materials that language AI can support.",
+        "ms": "Kerja pendidikan melibatkan penulisan, maklum balas dan bahan pembelajaran yang boleh disokong oleh AI bahasa.",
+        "zh": "教育工作涉及写作、反馈和学习材料，语言AI可以提供支持。"
+      },
+      "reviewStatus": "pending",
+      "reviewedBy": null,
+      "reviewedAt": null,
+      "mappingVersion": "radar-field-topics/v1",
+      "revisionOf": null
+    }
+  ]
+}

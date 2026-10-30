@@ -49,6 +49,19 @@ describe('radarChart', () => {
     expect(svg).toContain('≥ 5.7×')
     expect(svg).toMatch(/<polygon class="rd-cmp"[^>]*stroke-dasharray/)
   })
+  it('capped label shows the real ratio, same text in the aria-label', () => {
+    const axes = six(); axes[0] = axis('language', 100, { capped: true, ratio: 6.234 })
+    const svg = radarChart({ axes, comparison: [], t })
+    expect(svg).toContain('≥ 5.7× (6.23×)')
+    expect(svg).toMatch(/aria-label="[^"]*≥ 5\.7× \(6\.23×\)[^"]*"/)
+  })
+  it('bar fallback shows the capped label too', () => {
+    const axes = six().map((a, i) => (i === 0 ? axis(a.axisId, 100, { capped: true, ratio: 6.234 }) : axis(a.axisId, null)))
+    const svg = radarChart({ axes, comparison: [], t })
+    expect(svg).not.toContain('<polygon')
+    expect(svg).toContain('≥ 5.7× (6.23×)')
+    expect(svg).toMatch(/aria-label="[^"]*≥ 5\.7× \(6\.23×\)[^"]*"/)
+  })
   it('labels are escaped and colours come from CSS variables', () => {
     const axes = six(); axes[0].label = '<b>x</b>'
     const svg = radarChart({ axes, comparison: [], t })

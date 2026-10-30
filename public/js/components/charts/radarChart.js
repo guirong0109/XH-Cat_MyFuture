@@ -15,10 +15,13 @@ const at = (i, n, v) => [CX + ((R * v) / 100) * Math.cos(angle(i, n)), CY + ((R 
 const p1 = (n) => Math.round(n * 10) / 10
 const pts = (list) => list.map(([x, y]) => `${p1(x)},${p1(y)}`).join(' ')
 
+// One source for the cap text, used on screen and in the aria-label so they never disagree.
+const capLabel = (a) => (finite(a.ratio) !== null ? `≥ 5.7× (${fmt(a.ratio, 2)}×)` : '≥ 5.7×')
+
 function ariaFor(a, t) {
   const v = finite(a.value)
   const parts = [`${a.label}:`, v === null ? t(`rdMom_${a.state || 'invalid'}`) : `${t('rdMomentum')} ${fmt(v)}`]
-  if (v !== null && a.capped) parts.push(t('rdMomCapped', { ratio: a.ratio != null ? fmt(a.ratio, 2) : '5.7' }))
+  if (v !== null && a.capped) parts.push(capLabel(a), t('rdMomCapped', { ratio: finite(a.ratio) !== null ? fmt(a.ratio, 2) : '5.7' }))
   if (v !== null && a.smallCounts) parts.push(t('rdMomSmall'))
   return parts.join(' ')
 }
@@ -35,7 +38,7 @@ function barFallback(axes, t) {
   axes.forEach((a, i) => {
     const y = 12 + i * rowH
     const v = finite(a.value)
-    const text = v === null ? t(`rdMom_${a.state || 'invalid'}`) : fmt(v)
+    const text = v === null ? t(`rdMom_${a.state || 'invalid'}`) : `${fmt(v)}${a.capped ? ` ${capLabel(a)}` : ''}`
     g += `<g class="rd-barrow" ${wrapAttrs(a, t)}>`
     g += `<text x="${x0 - 8}" y="${y + 14}" text-anchor="end" style="fill:var(--ink);font-size:12px${a.highlighted ? ';font-weight:700' : ''}">${esc(a.label)}</text>`
     g += `<rect x="${x0}" y="${y}" width="${bw}" height="18" rx="3" style="fill:var(--surface);stroke:var(--line)"/>`
@@ -97,7 +100,7 @@ export function radarChart({ axes = [], comparison = [], t }) {
       g += a.smallCounts
         ? `<circle class="rd-small" cx="${p1(x)}" cy="${p1(y)}" r="6" style="fill:var(--surface);stroke:var(--accent);${ring}"/>`
         : `<circle class="rd-pt" cx="${p1(x)}" cy="${p1(y)}" r="6" style="fill:var(--accent);stroke:var(--surface);stroke-width:2"/>`
-      g += `<text x="${p1(x + 9)}" y="${p1(y + 4)}" style="fill:var(--ink);font-size:10px">${esc(fmt(v))}${a.capped ? ' ≥ 5.7×' : ''}</text>`
+      g += `<text x="${p1(x + 9)}" y="${p1(y + 4)}" style="fill:var(--ink);font-size:10px">${esc(fmt(v))}${a.capped ? ` ${esc(capLabel(a))}` : ''}</text>`
     }
     g += '</g>'
   })

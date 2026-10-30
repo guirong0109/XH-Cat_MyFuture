@@ -3,6 +3,7 @@
 import { esc } from '../../ui.js'
 import { fmtSigned, finite } from './format.js'
 
+// Note: row.status and row.text are shown as given, so the caller must pass them already translated.
 const W = 460
 const ROW = 30
 const CX = 290

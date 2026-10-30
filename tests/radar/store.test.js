@@ -77,6 +77,46 @@ describe('scoped store (Test plan 23)', () => {
   })
 })
 
+describe('scoped store hardening', () => {
+  it('refuses a bad prefix at construction', () => {
+    for (const bad of ['demo/s1', '', '/demo/s1/', 'demo/../x/', 'demo\\s1/', undefined, 5]) {
+      expect(() => scopedStore(createMemoryStore(), bad)).toThrowError(expect.objectContaining({ code: 'not_allowed' }))
+    }
+    expect(() => scopedStore(createMemoryStore(), 'demo/s1/')).not.toThrow()
+  })
+
+  it('a prefix with a slash does not leak into a sibling', async () => {
+    const s = scopedStore(createMemoryStore(), 'demo/s1/')
+    await expect(s.get('demo/s10/x')).rejects.toMatchObject({ code: 'not_allowed' })
+  })
+
+  it('refuses the prefix itself, empty and dot segments, non-string keys', async () => {
+    const s = scopedStore(createMemoryStore(), 'demo/s1/')
+    for (const bad of ['demo/s1/', 'demo/s1/./x', 'demo/s1//x', '', null, undefined, 5, {}]) {
+      await expect(s.get(bad)).rejects.toMatchObject({ code: 'not_allowed' })
+      await expect(s.put(bad, Buffer.from('x'))).rejects.toMatchObject({ code: 'not_allowed' })
+      await expect(s.delete(bad)).rejects.toMatchObject({ code: 'not_allowed' })
+    }
+  })
+
+  it('treats %2e%2e as a literal name that stays inside the prefix', async () => {
+    const inner = createMemoryStore()
+    const s = scopedStore(inner, 'demo/s1/')
+    await s.put('demo/s1/%2e%2e/x', Buffer.from('1'))
+    expect(await inner.list('')).toEqual(['demo/s1/%2e%2e/x'])
+  })
+
+  it('list is confined to the prefix, even if the inner store returns more', async () => {
+    const inner = { list: async () => ['demo/s1/a', 'prod/active.json', 'demo/s10/x'] }
+    const s = scopedStore(inner, 'demo/s1/')
+    expect(await s.list('demo/s1/')).toEqual(['demo/s1/a'])
+    expect(await s.list()).toEqual(['demo/s1/a'])
+    await expect(s.list('demo/')).rejects.toMatchObject({ code: 'not_allowed' })
+    await expect(s.list('demo/s1/../')).rejects.toMatchObject({ code: 'not_allowed' })
+    await expect(s.list(5)).rejects.toMatchObject({ code: 'not_allowed' })
+  })
+})
+
 describe('R2 client additions', () => {
   const r2 = (fetchImpl) => createR2({ accountId: 'acc', bucket: 'b', accessKeyId: 'AK', secretAccessKey: 'SK', fetchImpl, now: () => new Date('2026-10-30T10:00:00Z') })
 

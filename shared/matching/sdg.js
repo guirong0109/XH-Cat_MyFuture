@@ -1,6 +1,6 @@
 // SDG links with owner decisions. Pure, no I/O and no Node crypto: server and browser share it.
 // A link (data/sdg/links.json) ties a MASCO sub-major group ("25") or an O*NET item ("el:<id>", "kn:<id>") to one
-// official SDG target, with a reason in English, BM and Chinese. Only links the owner approved count; a decision
+// official SDG target, with a reason in English, BM and Chinese. Every link not rejected by the owner is shown (M16); a decision
 // applies only to the link text it was made on (links[i].hash, computed on the server from id, kind, code, target
 // and reason). Decisions are Radar review records of kind 'sdg_link' (server/radar/reviews.js).
 export const SDG_SOURCE = 'sdg-links'
@@ -33,6 +33,14 @@ export function linkStatuses(links, reviews) {
 export function approvedLinks(links, reviews) {
   const decisions = newestDecisions(links, reviews)
   return (links ?? []).filter((_, i) => decisions[i]?.decision === 'approved')
+}
+
+// Owner decision M16 (31 Oct): every team-draft link is shown at once, except the ones the owner rejected. approvedAt is
+// the date of the owner's approval on the link's current text, or null (not yet reviewed; 'revise' counts as not reviewed).
+export function shownLinks(links, reviews) {
+  return linkStatuses(links, reviews)
+    .filter((l) => l.status !== 'rejected')
+    .map(({ status, reviewedAt, reviewedBy, reviewId, ...l }) => ({ ...l, approvedAt: status === 'approved' ? reviewedAt : null }))
 }
 
 // A role inherits the links of its 2-digit MASCO sub-major group.

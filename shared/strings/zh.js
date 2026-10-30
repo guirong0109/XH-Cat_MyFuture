@@ -715,19 +715,14 @@ export default {
   mtScnRapidText: "快速 AI 使用各工作对生成式 AI 的全部潜在暴露（国际劳工组织第 140 号工作论文，2025）。它从不改变您的技能匹配，但可能让职位换组。", // translation: owner review
   mtSdgFilter: "显示关联到以下目标的职位", // translation: owner review
   mtSdgAll: "所有 SDG", // translation: owner review
-  mtSdgFilterSrc: "只列出有所有者批准关联的目标。", // translation: owner review
+  mtSdgFilterSrc: "列出所有者未拒绝的每条 SDG 团队草稿关联的目标。", // translation: owner review
   mtProfileUsed: "使用的档案：", // translation: owner review
   mtFieldCode: "{title}（ISCED-F {code}）", // translation: owner review
   mtProfileSkills: "{count} 项 O*NET 技能和知识（{na} 项“尚未评估”）", // translation: owner review
   mtEditProfile: "编辑档案", // translation: owner review
   mtNeverStored: "您的档案仅用于计算匹配，从不保存。", // translation: owner review
-  mtBannerTitle: "切换到{scenario}后，{count} 个职位换了组：", // translation: owner review
-  mtBannerTitleOne: "切换到{scenario}后，1 个职位换了组：", // translation: owner review
   mtBannerNoMove: "切换到{scenario}后，没有职位换组。", // translation: owner review
-  mtBannerItem: "{title}（组 {from} → {to}）", // translation: owner review
   mtBannerSame: "技能匹配数字没有改变。", // translation: owner review
-  mtTrendTitle: "趋势数据已更改：在{scenario}中有 {count} 个职位换了组：", // translation: owner review
-  mtTrendTitleOne: "趋势数据已更改：在{scenario}中有 1 个职位换了组：", // translation: owner review
   mtTrendNoMove: "趋势数据已更改，但在{scenario}中没有职位换组。", // translation: owner review
   mtClose: "关闭", // translation: owner review
   mtJudge: "评委趋势变化测试会话：招聘广告组使用您的测试数据。", // translation: owner review
@@ -856,7 +851,7 @@ export default {
   mtSrcModerate: "温和 AI", // translation: owner review
   mtSrcRapid: "快速 AI", // translation: owner review
   mtSrcSdgTargets: "SDG 具体目标", // translation: owner review
-  mtSrcSdgLinks: "SDG 关联（仅在所有者批准后显示）", // translation: owner review
+  mtSrcSdgLinks: "SDG 关联（团队草稿；被拒绝的不显示）", // translation: owner review
   mtSrcDate: "{date}", // translation: owner review
   mtSrcAds: "按组别的招聘广告", // translation: owner review
   mtSrcAdsText: "DOSM 就业市场洞察 {period}（经雷达），发布于 {date}", // translation: owner review
@@ -871,15 +866,36 @@ export default {
   mtSdgLinksTo: "此路径关联到", // translation: owner review
   mtSdgGoalOne: "SDG {goal}（{count} 个关联）", // translation: owner review
   mtSdgGoalMany: "SDG {goal}（{count} 个关联）", // translation: owner review
-  mtSdgNoneText: "此路径上还没有已批准的 SDG 关联。", // translation: owner review
+  mtSdgNoneText: "此路径上还没有 SDG 关联。", // translation: owner review
   mtTarget: "具体目标 {target}", // translation: owner review
   mtViaRole: "经由职位（MASCO 组 {code}）", // translation: owner review
   mtViaItem: "经由您将培养的技能：{name}", // translation: owner review
   mtApprovedDraft: "团队草稿，所有者于 {date} 批准", // translation: owner review
-  mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。关联：团队草稿仅在所有者批准后显示；待审草稿不计入。这里计算带理由的关联，不衡量影响。", // translation: owner review,
+  mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。目标链接：联合国 SDG 网站（sdgs.un.org/goals）。关联：团队草稿，立即显示（所有者决定 M16）；每条都注明所有者是否已审核，被拒绝的不显示。这里计算带理由的关联，不衡量影响。", // translation: owner review
+  mtBannerMoved: "切换到{scenario}后，{moves}。", // translation: owner review
+  mtTrendMoved: "趋势数据已更改：在{scenario}中，{moves}。", // translation: owner review
+  mtMoveOne: "1 个职位从“{from}”（组 {fromNum}）移到“{to}”（组 {toNum}）", // translation: owner review
+  mtMoveMany: "{count} 个职位从“{from}”（组 {fromNum}）移到“{to}”（组 {toNum}）", // translation: owner review
+  mtMoveJoin: "；", // translation: owner review
+  mtPages: "页码", // translation: owner review
+  mtPageN: "第 {page} 页", // translation: owner review
+  mtPrevPage: "上一页", // translation: owner review
+  mtNextPage: "下一页", // translation: owner review
+  mtGoToPage: "跳到第几页", // translation: owner review
+  mtGo: "前往", // translation: owner review
+  mtHideDetail: "隐藏前景和详情", // translation: owner review
+  mtAiCardModerate: "在观察到的使用中，AI 完成任务的占 {pct}%", // translation: owner review
+  mtAiCardRapid: "生成式 AI 暴露度 {pct}% · ILO 第 {group} 组（共 4 组）", // translation: owner review
+  mtAiCardRapidWord: "生成式 AI 暴露度 {pct}% · ILO：{word}", // translation: owner review
+  mtIlo_minimal: "极低暴露", // translation: owner review
+  mtIlo_not_exposed: "未暴露", // translation: owner review
+  mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
+  mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtNotReviewed: "团队草稿，尚未审核", // translation: owner review
+  mtSdgGoalStatus: "SDG {goal}：{status}", // translation: owner review
   rdSdgTitle: "可持续发展目标关联（职业匹配）", // translation: owner review
   rdSdgTag: "团队草稿：负责人审核", // translation: owner review
-  rdSdgNote: "每条关联把一个职业组或一项技能与一个可持续发展目标的具体指标相连，并附理由。只有获批的关联会计入匹配和可持续发展目标页面；待定和被拒绝的不计入。指标来源：联合国统计司 SDG API。", // translation: owner review
+  rdSdgNote: "每条关联把一个职业组或一项技能与一个可持续发展目标的具体指标相连，并附理由。在您作出决定之前，每条关联都以团队草稿形式显示在匹配和可持续发展目标页面上：获批的显示您的批准日期，被拒绝的不显示。指标来源：联合国统计司 SDG API。", // translation: owner review
   rdSdgReadOnly: "此服务器无法保存决定，因此按钮已关闭。", // translation: owner review
   rdSdgKindGroup: "职业组关联（MASCO 次大类）", // translation: owner review
   rdSdgKindItem: "技能与知识关联（O*NET 要素）", // translation: owner review

@@ -103,7 +103,7 @@ describe('Career matching screen', () => {
     expect(text(html)).toContain('Fixture Database Designer')
     expect(html).toContain('href="https://emasco.mohr.gov.my/masco/2521-03"')
     // with the detail: the outlook parts, the Why this match block and the chain path with its label
-    const full = card(FIXTURE.fullRole, { detail: details[FIXTURE.fullRole] })
+    const full = card(FIXTURE.fullRole, { detail: details[FIXTURE.fullRole], open: true })
     expect(text(full)).toContain(t('mtWhy'))
     expect(text(full)).toContain('code match, not an official table')
     expect(text(full)).toContain('Critical Thinking')
@@ -132,8 +132,8 @@ describe('Career matching screen', () => {
     expect(names(eight)).toEqual(names(all).slice(0, 8))
     // the card offers "Show all" only when there are more than 8 items
     const detail = { ...details[FIXTURE.fullRole], fit: { ...details[FIXTURE.fullRole].fit, rows: many } }
-    expect(card(FIXTURE.fullRole, { detail })).toContain('data-act="mAllBars"')
-    expect(card(FIXTURE.fullRole, { detail: details[FIXTURE.fullRole] })).not.toContain('data-act="mAllBars"')
+    expect(card(FIXTURE.fullRole, { detail, open: true })).toContain('data-act="mAllBars"')
+    expect(card(FIXTURE.fullRole, { detail: details[FIXTURE.fullRole], open: true })).not.toContain('data-act="mAllBars"')
   })
 
   it('switching scenario keeps every percent and lists moved roles', () => {
@@ -142,9 +142,9 @@ describe('Career matching screen', () => {
     expect(percents(moderate).sort()).toEqual(percents(rapid).sort())
     expect(percents(rapid)).toContain('71')
     expect(moderate).not.toContain('class="banner mt-banner"')
-    const banner = text(rapid.slice(rapid.indexOf('mt-banner'), rapid.indexOf('data-act="mBannerClose"')))
-    expect(banner).toContain('Fixture Software Developer (group 4 → 2)')
-    expect(banner).not.toContain('Fixture Database Designer')
+    const banner = text(rapid.slice(rapid.indexOf('mt-banner'), rapid.indexOf('data-act="mBannerClose"'))).replace(/\s+/g, ' ')
+    expect(banner).toContain('Switching to Rapid AI moved 1 role from “Not enough evidence yet” (group 4) to “AI may change much of this job (this scenario)” (group 2).')
+    expect(banner).not.toContain('Fixture Software Developer')
     expect(banner).toContain(t('mtBannerSame'))
     // the scenario switch with its two lines
     expect(text(moderate)).toContain(t('mtScnModerateSub'))
@@ -159,7 +159,7 @@ describe('Career matching screen', () => {
     expect(html).toContain(t('mtNotAvailable'))
     expect(html).toContain('ISCO-08 2512 has no row in the BLS ISCO-08 to SOC 2010 crosswalk')
     // Rapid with no ISCO-08 code: not available, with the missing step
-    const noIsco = text(card(FIXTURE.noIscoRole, { detail: details[FIXTURE.noIscoRole], scenario: 'rapid' }))
+    const noIsco = text(card(FIXTURE.noIscoRole, { detail: details[FIXTURE.noIscoRole], scenario: 'rapid', open: true }))
     expect(noIsco).toContain(t('mtAiNoIsco'))
     expect(noIsco).toContain(`MASCO 2020 9999: ${t('mtStep_no_row', { codes: '9999', step: t('mtStepName_masco2020_unit_to_isco08') })}`)
     // every role unavailable (today's real data): the "chain not ready" note, and the screen stays usable
@@ -222,7 +222,7 @@ describe('Career matching screen', () => {
     const role = { ...roleOf(list, FIXTURE.fullRole), title: bad, url: 'javascript:alert(1)', skillMatch: { ...roleOf(list, FIXTURE.fullRole).skillMatch, onetTitle: bad } }
     const d = details[FIXTURE.fullRole]
     const detail = { ...d, title: bad, fit: { ...d.fit, onetTitle: bad, rows: d.fit.rows.map((r) => ({ ...r, name: bad })), raise: d.fit.raise.map((r) => ({ ...r, name: bad })) }, software: [{ name: bad, inDemand: true, have: false }] }
-    const html = roleCard({ t, lang: 'en', role, detail, scenario: 'moderate', chosen: null, usable: true })
+    const html = roleCard({ t, lang: 'en', role, detail, scenario: 'moderate', chosen: null, usable: true, open: true })
     expect(html).not.toContain('<b>Bold')
     expect(html).toContain('&lt;b&gt;Bold')
     expect(html).not.toContain('javascript:')
@@ -274,8 +274,8 @@ describe('Missing step in the user\'s language (final review 3)', () => {
       // the chain path keeps the data reason, marked as English
       expect(side).toContain(tl('mtStepDetail'))
       expect(broken).toContain('<span lang="en">ISCO-08 2512 has no row in the BLS ISCO-08 to SOC 2010 crosswalk</span>')
-      const rapid = roleCard({ t: tl, lang, role: roleOf(list, FIXTURE.noIscoRole), detail: details[FIXTURE.noIscoRole], scenario: 'rapid', chosen: null })
-      const ai = text(rapid.slice(rapid.indexOf('class="mt-parts"'), rapid.indexOf('</dl>')))
+      const rapid = roleCard({ t: tl, lang, role: roleOf(list, FIXTURE.noIscoRole), detail: details[FIXTURE.noIscoRole], scenario: 'rapid', chosen: null, open: true })
+      const ai = text(rapid.slice(rapid.indexOf('class="mt-outgrid"'), rapid.indexOf('<details', rapid.indexOf('class="mt-outgrid"'))))
       expect(ai).toContain(tl('mtStep_no_row', { codes: '9999', step: tl('mtStepName_masco2020_unit_to_isco08') }))
       expect(ai).not.toContain('has no matching ISCO-08 code')
       const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: STEPS[0] } })) }
@@ -307,8 +307,9 @@ describe('Trend data changed banner (final review 1)', () => {
       const tl = (key, vars) => translate(lang, key, vars)
       const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ trend }) } })
       const banner = html.slice(html.indexOf('data-banner="trend"'), html.indexOf('</div>', html.indexOf('data-banner="trend"') + 200) + 6)
-      expect(text(banner)).toContain(tl('mtTrendTitleOne', { scenario: tl('mtScnModerate') }))
-      expect(text(banner)).toContain(tl('mtBannerItem', { title: role.title, from: 4, to: 3 }))
+      const moves = tl('mtMoveOne', { from: tl('mtBand4'), fromNum: 4, to: tl('mtBand3'), toNum: 3 })
+      expect(text(banner)).toContain(tl('mtTrendMoved', { scenario: tl('mtScnModerate'), moves }))
+      expect(text(banner)).not.toContain(role.title)
       expect(text(banner)).toContain(tl('mtBannerSame'))
       expect(html).toContain('data-act="mBannerClose"')
     }
@@ -445,11 +446,11 @@ describe('Banner and missing-step wording (owner feedback 31 Oct)', () => {
   })
 
   it('one moved role reads "1 role", several read "N roles"', () => {
-    expect(t('mtBannerTitleOne', { scenario: 'Rapid AI' })).toBe('Switching to Rapid AI moved 1 role:')
-    expect(t('mtBannerTitle', { scenario: 'Rapid AI', count: 3 })).toBe('Switching to Rapid AI moved 3 roles:')
+    expect(t('mtMoveOne', { from: 'A', fromNum: 4, to: 'B', toNum: 2 })).toBe('1 role from “A” (group 4) to “B” (group 2)')
+    expect(t('mtMoveMany', { count: 3, from: 'A', fromNum: 4, to: 'B', toNum: 2 })).toBe('3 roles from “A” (group 4) to “B” (group 2)')
     const one = list.roles.find((r) => r.bands.moderate !== r.bands.rapid)
     const data = { ...list, roles: list.roles.map((r) => (r.code === one.code ? r : { ...r, bands: { moderate: 4, rapid: 4 } })) }
-    expect(bannerOf(view({ data, scenario: 'rapid', prevScenario: 'moderate' }), 'mt-banner')).toContain(t('mtBannerTitleOne', { scenario: t('mtScnRapid') }))
+    expect(bannerOf(view({ data, scenario: 'rapid', prevScenario: 'moderate' }), 'mt-banner')).toContain('moved 1 role from')
   })
 
   it('a trend change that moves no role says so plainly', () => {
@@ -474,5 +475,233 @@ describe('Banner and missing-step wording (owner feedback 31 Oct)', () => {
       expect(stepText(tl, other)).toContain(tl('mtStep_pending', { step: tl('mtStepName_onet_to_soc2018') }))
     }
     expect(t('mtStep_waitsBls', { step: 'MASCO 2020 → ISCO-08' })).toMatch(/BLS/)
+  })
+})
+
+describe('Owner UI round (31 Oct)', () => {
+  const cardsOf = (html) => [...html.matchAll(/class="card mt-role[^"]*" data-code="([^"]+)"/g)].map((m) => m[1])
+  const pad = (i) => String(i).padStart(3, '0')
+  // n roles outside the field, all in one band, with no Skill Match (ordered by title)
+  const many = (n, bands = { moderate: 4, rapid: 4 }) => ({
+    ...list,
+    roles: Array.from({ length: n }, (_, i) => ({ ...roleOf(list, FIXTURE.noIscoRole), code: `9${pad(i)}-01`, title: `Role ${pad(i)}`, inField: false, bands, sdgGoals: [] })),
+  })
+  const pagerOf = (html) => {
+    const at = html.indexOf('class="mt-pager"')
+    return at < 0 ? '' : html.slice(at, html.indexOf('</nav>', at))
+  }
+  const pageNums = (pager) => [...pager.matchAll(/data-act="mPage" data-arg="[a-z]+:\d:(\d+)"[^>]*>(\d+)</g)].map((m) => Number(m[2]))
+  const aiLine = (html) => {
+    const at = html.indexOf('class="mt-aicard"')
+    return at < 0 ? '' : html.slice(at, html.indexOf('</div>', at))
+  }
+
+  describe('1. short banner that names the groups', () => {
+    it('groups the moved roles by (from, to) with the band names in words and numbers; no role names', () => {
+      const roles = many(25).roles.map((r, i) => ({ ...r, bands: { moderate: 4, rapid: i < 20 ? 2 : i < 23 ? 1 : 4 } }))
+      const html = view({ data: { ...list, roles }, scenario: 'rapid', prevScenario: 'moderate' })
+      const b = text(html.slice(html.indexOf('mt-banner'), html.indexOf('data-act="mBannerClose"'))).replace(/\s+/g, ' ').trim()
+      expect(b).toContain('Switching to Rapid AI moved 20 roles from “Not enough evidence yet” (group 4) to “AI may change much of this job (this scenario)” (group 2); 3 roles from “Not enough evidence yet” (group 4) to “Job ads growing or steady, AI mostly helps” (group 1). Skill Match numbers did not change.')
+      expect(b).not.toContain('Role 0')
+    })
+
+    it('the trend banner uses the same short form, in all three languages', () => {
+      const roles = many(3).roles
+      const trend = { scenario: 'moderate', moved: roles.map((r) => ({ code: r.code, from: 4, to: 3 })) }
+      for (const lang of ['en', 'ms', 'zh']) {
+        const tl = (key, vars) => translate(lang, key, vars)
+        const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ data: { ...list, roles }, trend }) } })
+        const b = text(html.slice(html.indexOf('data-banner="trend"'), html.indexOf('data-act="mBannerClose"', html.indexOf('data-banner="trend"'))))
+        const moves = tl('mtMoveMany', { count: 3, from: tl('mtBand4'), fromNum: 4, to: tl('mtBand3'), toNum: 3 })
+        expect(b).toContain(tl('mtTrendMoved', { scenario: tl('mtScnModerate'), moves }))
+        expect(b).not.toContain('Role 000')
+      }
+    })
+  })
+
+  describe('2. pages instead of long lists', () => {
+    it('10 roles per page, page buttons with aria-labels and aria-current, prev/next and a Go-to-page box', () => {
+      const html = view({ data: many(25) })
+      expect(cardsOf(html)).toHaveLength(10)
+      const pager = pagerOf(html)
+      expect(pageNums(pager)).toEqual([1, 2, 3])
+      expect(pager).toMatch(/<button[^>]*data-arg="other:4:1"[^>]*aria-current="page"/)
+      expect(pager).toContain(`aria-label="${t('mtPageN', { page: 2 })}"`)
+      expect(pager).toMatch(/<button[^>]*aria-label="[^"]+"[^>]*disabled[^>]*>‹</)
+      expect(pager).toMatch(/<button[^>]*data-arg="other:4:2"[^>]*aria-label="[^"]+"[^>]*>›</)
+      expect(html).toMatch(/<form[^>]*data-form="mPageGo" data-arg="other:4"/)
+      expect(html).toMatch(/<input[^>]*type="number"[^>]*min="1" max="3"/)
+      expect(text(html)).toContain(t('mtGoToPage'))
+    })
+
+    it('every role stays reachable; a page past the end shows the last page', () => {
+      const data = many(25)
+      const seen = [1, 2, 3].flatMap((p) => cardsOf(view({ data, pages: { 'other:4': p } })))
+      expect(seen.sort()).toEqual(data.roles.map((r) => r.code).sort())
+      expect(cardsOf(view({ data, pages: { 'other:4': 3 } }))).toEqual(['9020-01', '9021-01', '9022-01', '9023-01', '9024-01'])
+      expect(cardsOf(view({ data, pages: { 'other:4': 99 } }))).toHaveLength(5)
+    })
+
+    it('first, last, current ± 1 and ellipses', () => {
+      const pager = pagerOf(view({ data: many(120), pages: { 'other:4': 6 } }))
+      expect(pageNums(pager)).toEqual([1, 5, 6, 7, 12])
+      expect(pager.match(/…/g)).toHaveLength(2)
+      expect(pager).toMatch(/data-arg="other:4:6"[^>]*aria-current="page"/)
+    })
+
+    it('a list of 10 or fewer has no pager; "In your field" has its own pages', () => {
+      expect(view()).not.toContain('class="mt-pager"')
+      const field = { ...many(12), roles: many(12).roles.map((r) => ({ ...r, inField: true })) }
+      const html = view({ data: field, pages: { 'field:4': 2 } })
+      expect(cardsOf(html)).toEqual(['9010-01', '9011-01'])
+      expect(pagerOf(html)).toMatch(/data-arg="field:4:2"[^>]*aria-current="page"/)
+    })
+
+    it('app: page state lives in state.match, resets on scenario, SDG filter and new data, and is not saved', () => {
+      const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+      const line = (name) => app.slice(app.indexOf(`  ${name}: `), app.indexOf('\n  ', app.indexOf(`  ${name}: `) + 3))
+      const block = (name) => app.slice(app.indexOf(`  ${name}: `), app.indexOf('\n  },', app.indexOf(`  ${name}: `)))
+      expect(block('mScn')).toContain('pages: {}')
+      expect(line('mFilter')).toContain('pages: {}')
+      const load = app.slice(app.indexOf('async function loadMatch('), app.indexOf('\n}', app.indexOf('async function loadMatch(')))
+      expect(load).toContain('pages: {}')
+      expect(app).toContain('mPage: ')
+      expect(app).toContain('mPageGo: ')
+      expect(matchToSave(match({ pages: { 'other:4': 3 }, open: { a: true } }))).toEqual({ scenario: 'moderate', chosen: null })
+    })
+  })
+
+  describe('3. details open and close', () => {
+    const d = () => details[FIXTURE.fullRole]
+    it('closed: "Show outlook and details"; open: "Hide outlook and details" with three boxes and a Why fold', () => {
+      const closed = card(FIXTURE.fullRole, { detail: d(), open: false })
+      expect(closed).toMatch(/data-act="mOpen" data-arg="2521-03" aria-expanded="false">Show outlook and details</)
+      expect(closed).not.toContain('class="mt-outgrid"')
+      const open = card(FIXTURE.fullRole, { detail: d(), open: true })
+      expect(open).toMatch(/data-act="mOpen" data-arg="2521-03" aria-expanded="true">Hide outlook and details</)
+      const grid = open.slice(open.indexOf('class="mt-outgrid"'), open.indexOf('<details', open.indexOf('class="mt-outgrid"')))
+      expect(grid.match(/class="mt-box"/g)).toHaveLength(3)
+      for (const key of ['mtJobAds', 'mtAiPart', 'mtSoftware']) expect(text(grid)).toContain(t(key))
+      // every source line stays
+      expect(text(grid)).toContain('DOSM')
+      expect(text(grid)).toContain(t('mtAiModerateSrc', { job: FIXTURE.bestJob }))
+      expect(text(grid)).toContain(t('mtSwShown'))
+      // "Why this match" is its own fold, closed until asked (open while "Show all" is used)
+      expect(open).toMatch(/<details class="mt-why"><summary>Why this match\?<\/summary>/)
+      expect(card(FIXTURE.fullRole, { detail: d(), open: true, allBars: true })).toMatch(/<details class="mt-why" open>/)
+    })
+
+    it('open while loading: a spinner; open after a failure: try again', () => {
+      expect(card(FIXTURE.fullRole, { detail: { loading: true }, open: true })).toContain('class="spin"')
+      const failed = card(FIXTURE.fullRole, { detail: { error: 'network' }, open: true })
+      expect(text(failed)).toContain(t('mtDetailError'))
+      expect(failed).toContain('data-act="mDetail"')
+    })
+
+    it('the page passes the open state per role code; CSS puts the boxes side by side from 760 px', () => {
+      const html = view({ details: { [FIXTURE.fullRole]: d() }, open: { [FIXTURE.fullRole]: true } })
+      expect(html).toContain('class="mt-outgrid"')
+      expect(view({ details: { [FIXTURE.fullRole]: d() } })).not.toContain('class="mt-outgrid"')
+      const css = readFileSync(join(root, 'public/styles.css'), 'utf8')
+      expect(css).toMatch(/\.mt-outgrid\{display:grid;[^}]*grid-template-columns:minmax\(0,1fr\)/)
+      expect(css).toMatch(/@media \(min-width:760px\)\{[^@]*\.mt-outgrid\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)\}/)
+      const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+      expect(app.slice(app.indexOf('  mOpen: '), app.indexOf('\n  },', app.indexOf('  mOpen: ')))).toContain('loadMatchDetail(code)')
+    })
+  })
+
+  describe('4. AI on the closed card', () => {
+    it('Moderate: the AEI automation % with a bar, labelled estimate with its source', () => {
+      const line = aiLine(card(FIXTURE.fullRole))
+      expect(text(line)).toContain('AI does the task in 30% of observed use')
+      expect(text(line)).toContain(t('mtEstimate'))
+      expect(text(line)).toContain('Anthropic Economic Index')
+      expect(line).toContain('style="width:30%"')
+      // under the title, before the SDG line
+      const html = card(FIXTURE.fullRole)
+      expect(html.indexOf('class="mt-aicard"')).toBeGreaterThan(html.indexOf('class="mt-ttl"'))
+      expect(html.indexOf('class="mt-aicard"')).toBeLessThan(html.indexOf('class="mt-parts"'))
+    })
+
+    it('Rapid: GenAI exposure % and the ILO group; minimal / not exposed in words, bar still shown', () => {
+      const line = aiLine(card(FIXTURE.fullRole, { scenario: 'rapid' }))
+      expect(text(line)).toContain('GenAI exposure 45% · ILO group 1 of 4')
+      expect(text(line)).toContain('ILO')
+      expect(line).toContain('style="width:45%"')
+      for (const [gradient, word] of [['minimal', 'minimal exposure'], ['not_exposed', 'not exposed']]) {
+        const role = { ...roleOf(list, FIXTURE.fullRole), ai: { moderate: { available: false, automationPct: null }, rapid: { available: true, exposurePct: 31, gradient } } }
+        const l = aiLine(roleCard({ t, lang: 'en', role, scenario: 'rapid' }))
+        expect(text(l)).toContain(`GenAI exposure 31% · ILO: ${word}`)
+        expect(l).toContain('style="width:31%"')
+      }
+    })
+
+    it('no data: "no observed data" or "not available", with no bar', () => {
+      const noIsco = aiLine(card(FIXTURE.noIscoRole, { scenario: 'rapid' }))
+      expect(text(noIsco)).toContain(t('mtNotAvailableTag'))
+      expect(noIsco).not.toContain('class="bar')
+      // Moderate: the chain stops before O*NET -> not available; it reaches O*NET but AEI has no data -> no observed data
+      expect(text(aiLine(card(FIXTURE.brokenRole)))).toContain(t('mtNotAvailableTag'))
+      const uncovered = { ...roleOf(list, FIXTURE.fullRole), ai: { moderate: { available: false, automationPct: null }, rapid: { available: false, exposurePct: null, gradient: null } } }
+      const l = aiLine(roleCard({ t, lang: 'en', role: uncovered }))
+      expect(text(l)).toContain(t('mtNoObserved'))
+      expect(l).not.toContain('class="bar')
+      // a role answer with no ai part (older answer) shows no number, never an error
+      const bare = { ...roleOf(list, FIXTURE.fullRole) }
+      delete bare.ai
+      expect(text(aiLine(roleCard({ t, lang: 'en', role: bare })))).toContain(t('mtNoObserved'))
+    })
+  })
+
+  describe('5. every SDG team-draft link shown, each with a UN link (M16)', () => {
+    const un = (n) => `href="https://sdgs.un.org/goals/goal${n}" target="_blank" rel="noopener`
+    it('card tags link to the UN goal page and say whether the owner reviewed them', () => {
+      const role = roleOf(list, FIXTURE.fullRole)
+      expect(role.sdgGoals).toEqual([8, 9])
+      const html = card(FIXTURE.fullRole)
+      expect(html).toContain(`<a class="tag mt-sdg" ${un(9)}`)
+      expect(html).toContain(un(8))
+      expect(text(html)).toContain('team draft, approved by owner on 2026-10-31')
+      const draft = text(roleCard({ t, lang: 'en', role: { ...role, sdgReviewed: {} } }))
+      expect(draft).toContain('team draft, not yet reviewed')
+      expect(draft).not.toContain('approved by owner')
+      const mixed = text(roleCard({ t, lang: 'en', role: { ...role, sdgReviewed: { 9: '2026-10-31' } } }))
+      expect(mixed).toContain('SDG 9: team draft, approved by owner on 2026-10-31')
+      expect(mixed).toContain('SDG 8: team draft, not yet reviewed')
+    })
+
+    it('open panel tags (per target) link to the UN goal page with their review state', () => {
+      const d = details[FIXTURE.fullRole]
+      const draft = { ...d, sdg: { ...d.sdg, tags: d.sdg.tags.map((x) => ({ ...x, approvedAt: null })) } }
+      const html = card(FIXTURE.fullRole, { detail: draft, open: true })
+      expect(html).toContain(un(9))
+      expect(text(html)).toContain('team draft, not yet reviewed')
+    })
+
+    it('the filter lists every goal of a shown link; the #sdg tab links each goal row and names the UN SDG site', () => {
+      expect(text(view())).toContain(t('mtSdgFilterSrc'))
+      expect(t('mtSdgFilterSrc')).not.toMatch(/approved/)
+      const d = details[FIXTURE.fullRole]
+      const pending = { ...d, sdg: { ...d.sdg, tags: d.sdg.tags.map((x) => ({ ...x, approvedAt: null })), pathPreview: { ...d.sdg.pathPreview, goals: d.sdg.pathPreview.goals.map((g) => ({ ...g, links: g.links.map((l) => ({ ...l, approvedAt: null })) })) } } }
+      const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.fullRole, details: { [FIXTURE.fullRole]: pending } }) } })
+      for (const g of [4, 8, 9]) expect(html).toContain(un(g))
+      expect(text(html)).toContain('team draft, not yet reviewed')
+      expect(text(html)).not.toContain('approved by owner')
+      expect(text(html)).toContain('sdgs.un.org')
+      // the count is of every shown link
+      expect(text(html)).toContain('SDG 4 (1 link)')
+    })
+  })
+
+  it('new values are escaped and the forbidden words stay out', () => {
+    const role = { ...roleOf(list, FIXTURE.fullRole), sdgGoals: ['<b>x</b>'], sdgReviewed: { '<b>x</b>': '<b>y</b>' }, ai: { moderate: { available: true, automationPct: '<b>z</b>' }, rapid: { available: true, exposurePct: 3, gradient: '<b>g</b>' } } }
+    for (const scenario of ['moderate', 'rapid']) {
+      const html = roleCard({ t, lang: 'en', role, scenario })
+      for (const v of ['<b>x', '<b>y', '<b>z', '<b>g']) expect(html).not.toContain(v)
+      expect(html).not.toMatch(/goal<|goalNaN|goal&lt;/)
+    }
+    const page = view({ data: many(25), pages: { 'other:4': '<b>2</b>' } })
+    expect(page).not.toContain('<b>2')
+    expect(cardsOf(page)).toHaveLength(10)
   })
 })

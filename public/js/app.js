@@ -336,7 +336,7 @@ const adminActions = {
 // The profile is sent to the matching API for each answer (never stored there). The list is fetched again when the
 // profile changes (every edit makes a new profile object); a role's detail is fetched when it is asked for.
 const matchUi = () => {
-  if (!state.match?.details) state.match = { scenario: 'moderate', prevScenario: null, sdgFilter: '', data: null, details: {}, chosen: null, loading: false, error: null, explore: false, allBars: {}, ...(state.match ?? {}), details: {} }
+  if (!state.match?.details) state.match = { scenario: 'moderate', prevScenario: null, sdgFilter: '', data: null, details: {}, chosen: null, loading: false, error: null, explore: false, allBars: {}, pages: {}, open: {}, ...(state.match ?? {}), details: {} }
   return state.match
 }
 let matchFor = null
@@ -362,7 +362,8 @@ async function loadMatch() {
   else if (m.data) matchBefore = { scenario: scenarioOf(m), bands: bandsAt(m.data, scenarioOf(m)) }
   matchFor = profile
   matchStaleBy = null
-  state.match = { ...m, loading: true, error: null, data: null, details: {}, prevScenario: null, trend: null }
+  // New data: every list back to page 1, every card closed (pages and open cards are not saved to the guest store).
+  state.match = { ...m, loading: true, error: null, data: null, details: {}, prevScenario: null, trend: null, pages: {}, open: {} }
   const out = await matchApi.list(minimizeForGuest(profile), { lang: state.lang })
   // Dropped (stale again, or a new profile): the next load keeps matchBefore when it still applies.
   if (run !== matchRun) return
@@ -395,11 +396,35 @@ const matchActions = {
     const m = matchUi()
     const next = scenario === 'rapid' ? 'rapid' : 'moderate'
     if (next === m.scenario) return
-    state.match = { ...m, prevScenario: m.scenario, scenario: next, trend: null }
+    state.match = { ...m, prevScenario: m.scenario, scenario: next, trend: null, pages: {} }
     persist()
     render()
   },
-  mFilter: (goal) => { state.match = { ...matchUi(), sdgFilter: goal ?? '', prevScenario: null }; render() },
+  mFilter: (goal) => { state.match = { ...matchUi(), sdgFilter: goal ?? '', prevScenario: null, pages: {} }; render() },
+  // A page of one band list: "<list>:<band>:<page>" (list = field | other). The screen shows the last page when past it.
+  mPage: (arg) => {
+    const m = /^(field|other):([1-4]):(\d{1,6})$/.exec(String(arg ?? ''))
+    if (!m) return
+    const key = `${m[1]}:${m[2]}`
+    state.match = { ...matchUi(), pages: { ...(matchUi().pages ?? {}), [key]: Math.max(1, Number(m[3])) } }
+    render()
+    document.querySelector(`.mt-pager [data-arg^="${key}:"][aria-current="page"]`)?.focus()
+  },
+  // The "Go to page" box of one band list (key = "<list>:<band>").
+  mPageGo: (key) => {
+    if (!/^(field|other):[1-4]$/.test(String(key ?? ''))) return
+    const page = Number.parseInt(document.getElementById(`mtGo-${key.replace(':', '-')}`)?.value ?? '', 10)
+    if (Number.isFinite(page) && page >= 1) matchActions.mPage(`${key}:${Math.min(page, 999999)}`)
+  },
+  // "Show outlook and details" / "Hide outlook and details": the open state per role code; the detail is loaded once.
+  mOpen: (code) => {
+    const m = matchUi()
+    const isOpen = m.open?.[code] === true
+    state.match = { ...m, open: { ...(m.open ?? {}), [code]: !isOpen } }
+    const have = state.match.details?.[code]
+    if (!isOpen && (!have || have.error)) return loadMatchDetail(code)
+    render()
+  },
   mBannerClose: () => { state.match = { ...matchUi(), prevScenario: null, trend: null }; render() },
   mExplore: () => { state.match = { ...matchUi(), explore: !matchUi().explore }; render() },
   mAllBars: (code) => { state.match = { ...matchUi(), allBars: { ...matchUi().allBars, [code]: true } }; render() },

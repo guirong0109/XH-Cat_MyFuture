@@ -233,16 +233,41 @@ describe('POST /api/matching', () => {
     expect(roleOf(body, FIXTURE.noIscoRole).bands).toEqual({ moderate: 4, rapid: 4 })
   })
 
-  it('SDG goals: only owner-approved links of the role group', async () => {
+  it('SDG goals (M16): every team-draft link of the role group is shown; approved ones carry the date; rejected ones are hidden', async () => {
     const { store } = await start()
-    const link = SDG_LINKS[0]
-    await recordReview(store, {
-      reviewId: 'review-20261031T000000000Z-00000001', kind: 'sdg_link', target: link.id, decision: 'approved', note: '', evidence: [],
+    const decide = (link, decision, i) => recordReview(store, {
+      reviewId: `review-20261031T000000000Z-0000000${i}`, kind: 'sdg_link', target: link.id, decision, note: '', evidence: [],
       reviewer: 'Owner', reviewedAt: '2026-10-31T00:00:00.000Z', version: 1, appliesTo: { sourceId: 'sdg-links', period: null, observationHash: linkHash(link) },
     })
+    const first = (await post('/api/matching', { profile: FULL })).body
+    expect(roleOf(first, FIXTURE.fullRole).sdgGoals).toEqual([8, 9])
+    expect(roleOf(first, FIXTURE.fullRole).sdgReviewed).toEqual({})
+    expect(roleOf(first, FIXTURE.noIscoRole).sdgGoals).toEqual([])
+    const detail = (await post('/api/matching/role', { profile: FULL, code: FIXTURE.fullRole })).body
+    expect(detail.sdg.tags.map((t) => [t.target, t.approvedAt]).sort()).toEqual([['8.2', null], ['9.c', null]])
+    expect(detail.sdg.pathPreview.total).toBe(3)
+    await decide(SDG_LINKS[0], 'approved', 1)
+    await decide(SDG_LINKS[1], 'rejected', 2)
+    // a new service would read the decisions at once; this one waits for the cache time, so use a fresh server
+    await new Promise((resolve) => server.close(resolve))
+    server = null
+    await start({ store })
     const { body } = await post('/api/matching', { profile: FULL })
     expect(roleOf(body, FIXTURE.fullRole).sdgGoals).toEqual([9])
-    expect(roleOf(body, FIXTURE.noIscoRole).sdgGoals).toEqual([])
+    expect(roleOf(body, FIXTURE.fullRole).sdgReviewed).toEqual({ 9: '2026-10-31' })
+  })
+
+  it('the list carries the closed-card AI numbers per role: Moderate automation %, Rapid exposure % and ILO group', async () => {
+    await start()
+    const { body } = await post('/api/matching', { profile: FULL })
+    expect(roleOf(body, FIXTURE.fullRole).ai).toEqual({ moderate: { available: true, automationPct: 30 }, rapid: { available: true, exposurePct: 45, gradient: 'G1' } })
+    expect(roleOf(body, FIXTURE.brokenRole).ai).toEqual({ moderate: { available: false, automationPct: null }, rapid: { available: true, exposurePct: 62, gradient: 'G3' } })
+    // no chain ISCO-08 code: Rapid not available (the fixture's ILO row for 9999 is never used)
+    expect(roleOf(body, FIXTURE.noIscoRole).ai).toEqual({ moderate: { available: false, automationPct: null }, rapid: { available: false, exposurePct: null, gradient: null } })
+    // the same number that decides band 2
+    const role = (await post('/api/matching/role', { profile: FULL, code: FIXTURE.fullRole })).body
+    expect(roleOf(body, FIXTURE.fullRole).ai.moderate.automationPct).toBe(role.outlook.ai.moderate.values.automationPct)
+    expect(keysDeep(roleOf(body, FIXTURE.fullRole).ai).filter((k) => FORBIDDEN_KEY.test(k))).toEqual([])
   })
 
   it('Review Focus 4: Radar store unreadable -> 200, job ads not available, bands from the AI part only', async () => {
@@ -348,8 +373,8 @@ describe('POST /api/matching', () => {
 })
 
 describe('SDG decisions in matching answers (cache)', () => {
-  const approve = (store, link, i = 1) => recordReview(store, {
-    reviewId: `review-20261031T000000000Z-0000000${i}`, kind: 'sdg_link', target: link.id, decision: 'approved', note: '', evidence: [],
+  const approve = (store, link, i = 1, decision = 'approved') => recordReview(store, {
+    reviewId: `review-20261031T000000000Z-0000000${i}`, kind: 'sdg_link', target: link.id, decision, note: '', evidence: [],
     reviewer: 'Owner', reviewedAt: '2026-10-31T00:00:00.000Z', version: 1, appliesTo: { sourceId: 'sdg-links', period: null, observationHash: linkHash(link) },
   })
 
@@ -371,37 +396,37 @@ describe('SDG decisions in matching answers (cache)', () => {
     const tick = () => new Date(clock)
     const matching = createMatchingServiceFromEnv({ dataDir: fixture.dir, radar: { store, answer: async () => null }, references: fixtureReferences, now: tick, log: () => {} })
     const goals = async () => (await matching.list(FULL, null)).roles.find((r) => r.code === FIXTURE.fullRole).sdgGoals
-    expect(await goals()).toEqual([9])
+    expect(await goals()).toEqual([8, 9])
     const after1 = { ...calls }
     expect(after1.list).toBe(1)
-    expect(await goals()).toEqual([9])
+    expect(await goals()).toEqual([8, 9])
     await matching.role(FULL, FIXTURE.fullRole, null)
     expect(calls).toEqual(after1)
     // A decision written past the matching service is seen only after the cache time ...
-    await approve(memory, SDG_LINKS[1], 2)
+    await approve(memory, SDG_LINKS[1], 2, 'rejected')
     clock += SDG_TTL_MS - 1
-    await goals()
+    expect(await goals()).toEqual([8, 9])
     expect(calls).toEqual(after1)
     clock += 1
-    await goals()
+    expect(await goals()).toEqual([9])
     expect(calls.list).toBe(2)
     // ... or at once after sdgDecided().
-    await approve(memory, SDG_LINKS[2], 3)
+    await approve(memory, SDG_LINKS[0], 3, 'rejected')
     matching.sdgDecided()
-    await goals()
+    expect(await goals()).toEqual([])
     expect(calls.list).toBe(3)
   })
 
   it('a decision through the admin route is visible on the next matching request', async () => {
     await start({ appDataDir: fixture.dir })
     const before = await post('/api/matching', { profile: FULL })
-    expect(roleOf(before.body, FIXTURE.fullRole).sdgGoals).toEqual([])
+    expect(roleOf(before.body, FIXTURE.fullRole).sdgGoals).toEqual([8, 9])
     const session = await login('admin')
-    const decided = await post('/api/admin/matching/sdg-links', { id: SDG_LINKS[0].id, decision: 'approved', note: '' }, { session })
+    const decided = await post('/api/admin/matching/sdg-links', { id: SDG_LINKS[0].id, decision: 'rejected', note: '' }, { session })
     expect(decided.status).toBe(201)
     // The clock does not move: only the admin route's hook can have dropped the cache.
     const after = await post('/api/matching', { profile: FULL })
-    expect(roleOf(after.body, FIXTURE.fullRole).sdgGoals).toEqual([9])
+    expect(roleOf(after.body, FIXTURE.fullRole).sdgGoals).toEqual([8])
   })
 })
 

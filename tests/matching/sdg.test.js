@@ -1,6 +1,6 @@
 // SDG links with owner decisions (Task 12): only approved links count; a decision applies to the exact link text.
 import { describe, expect, it } from 'vitest'
-import { approvedLinks, goalsOfRole, itemLinks, linkStatuses, pathContribution, roleLinks } from '../../shared/matching/sdg.js'
+import { approvedLinks, goalsOfRole, itemLinks, linkStatuses, pathContribution, roleLinks, shownLinks } from '../../shared/matching/sdg.js'
 
 const FORBIDDEN_KEY = /score|weight|rank|opportunit/i
 function keysDeep(value, out = []) {
@@ -122,6 +122,27 @@ describe('role and item links', () => {
 
   it('a path with nothing approved is empty', () => {
     expect(pathContribution([], '2512', ['kn:2.C.4.a'])).toEqual({ goals: [], total: 0 })
+  })
+
+  it('M16 shownLinks: every team-draft link but the rejected ones; approvedAt only on approved links (revise = not reviewed)', () => {
+    const reviews = [
+      review('g25-9.c', 'approved', 'h1', '2026-10-31T02:00:00.000Z'),
+      review('g25-4.4', 'rejected', 'h2'),
+      review('g21-9.5', 'revise', 'h3'),
+      review('el:2.A.1.a-4.6', 'approved', 'old-hash'),
+    ]
+    const shown = shownLinks(LINKS, reviews)
+    expect(shown.map((l) => l.id)).toEqual(['g25-9.c', 'g21-9.5', 'el:2.A.1.a-4.6', 'kn:2.C.4.a-4.4', 'kn:2.C.7.a-16.10'])
+    const byId = Object.fromEntries(shown.map((l) => [l.id, l]))
+    expect(byId['g25-9.c'].approvedAt).toBe('2026-10-31T02:00:00.000Z')
+    expect(byId['g21-9.5'].approvedAt).toBeNull()
+    // a decision made on older link text does not apply
+    expect(byId['el:2.A.1.a-4.6'].approvedAt).toBeNull()
+    expect(byId['kn:2.C.4.a-4.4'].approvedAt).toBeNull()
+    expect(shown.every((l) => !('reviewId' in l) && !('reviewedBy' in l))).toBe(true)
+    expect(shownLinks(LINKS, []).length).toBe(LINKS.length)
+    // the path counts every shown link
+    expect(pathContribution(shown, '2512', ['kn:2.C.4.a']).total).toBe(2)
   })
 
   it('no returned key suggests a score, weight, rank or opportunity', () => {

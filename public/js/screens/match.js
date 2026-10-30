@@ -18,6 +18,9 @@ const SRC_LABEL = {
   'sdg-targets': 'mtSrcSdgTargets', 'sdg-links': 'mtSrcSdgLinks',
 }
 const FIRST_BARS = 8
+// Paging, not a limit: every role of a band stays reachable through the page buttons (owner UI round, 31 Oct).
+export const PAGE_SIZE = 10
+const ILO_WORD = { minimal: 'mtIlo_minimal', not_exposed: 'mtIlo_not_exposed' }
 
 const ui = (state) => state?.match ?? {}
 const isNum = (v) => typeof v === 'number' && Number.isFinite(v)
@@ -34,6 +37,23 @@ const link = (url, text) => {
   return u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>` : esc(text)
 }
 const tagNone = (text) => `<span class="tag mt-none">${esc(text)}</span>`
+const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
+
+// The official UN page of a goal (1-17), or null. Every SDG tag links there (owner decision M16).
+export const unGoalUrl = (goal) => {
+  const n = Number(goal)
+  return Number.isInteger(n) && n >= 1 && n <= 17 ? `https://sdgs.un.org/goals/goal${n}` : null
+}
+const goalOf = (target) => Number(String(target ?? '').split('.')[0])
+export function sdgTag(goal, label, title = '') {
+  const url = safeUrl(unGoalUrl(goal))
+  const tip = title ? ` title="${esc(title)}"` : ''
+  return url
+    ? `<a class="tag mt-sdg" href="${esc(url)}" target="_blank" rel="noopener noreferrer"${tip}>${esc(label)}</a>`
+    : `<span class="tag mt-sdg"${tip}>${esc(label)}</span>`
+}
+// "team draft, approved by owner on <date>" or "team draft, not yet reviewed" (M16).
+export const reviewText = (t, approvedAt) => (typeof approvedAt === 'string' && approvedAt ? t('mtApprovedOn', { date: day(approvedAt) }) : t('mtNotReviewed'))
 
 // Only the scenario and the chosen role are kept with the guest profile; the answers are fetched again.
 export const matchToSave = (m) => ({ scenario: scenarioOf(m), chosen: typeof m?.chosen === 'string' ? m.chosen : null })
@@ -131,13 +151,46 @@ function softwareChips(t, list) {
   return `<div class="mt-chips">${chips}</div><div class="tiny muted">${esc(t('mtSwShown'))}</div>`
 }
 
+// Open panel: one tag per target, linked to the goal's UN page, with its reason (hover) and review state.
 function sdgTags(t, lang, tags) {
   if (!tags?.length) return tagNone(t('mtSdgNone'))
-  return tags.map((g) => `<span class="tag mt-sdg" title="${esc(`${reasonIn(g.reason, lang)} · ${t('mtApprovedOn', { date: day(g.approvedAt) })}`)}">SDG ${esc(g.target)}</span>`).join(' ')
+  return tags.map((g) => `${sdgTag(g.goal ?? goalOf(g.target), `SDG ${g.target}`, reasonIn(g.reason, lang))} <span class="tiny muted">${esc(reviewText(t, g.approvedAt))}</span>`).join('<br>')
 }
-function sdgGoalTags(t, goals) {
-  if (!goals?.length) return tagNone(t('mtSdgNone'))
-  return goals.map((g) => `<span class="tag mt-sdg">SDG ${esc(g)}</span>`).join(' ')
+// Closed card: one tag per goal, then whether the owner reviewed the role's links to it (sdgReviewed: goal -> date).
+function sdgGoalTags(t, role) {
+  const goals = role.sdgGoals ?? []
+  if (!goals.length) return tagNone(t('mtSdgNone'))
+  const reviewed = plainObject(role.sdgReviewed) ? role.sdgReviewed : {}
+  const status = (g) => reviewText(t, Object.hasOwn(reviewed, String(g)) ? reviewed[String(g)] : null)
+  const tags = goals.map((g) => sdgTag(g, `SDG ${g}`, status(g))).join(' ')
+  const all = [...new Set(goals.map(status))]
+  const line = all.length === 1 ? all[0] : goals.map((g) => t('mtSdgGoalStatus', { goal: g, status: status(g) })).join(' · ')
+  return `${tags} <span class="tiny muted">${esc(line)}</span>`
+}
+
+// The closed card's AI line for the scenario shown, from the list answer (role.ai): Moderate = AEI automation %, Rapid =
+// ILO GenAI exposure % and gradient. An estimate, with its source; no data -> said in words, with no bar.
+function aiCard(t, role, scenario) {
+  const est = `<span class="tag t-est">${esc(t('mtEstimate'))}</span>`
+  const src = (key) => ` <span class="tiny muted">(${esc(t(key))})</span>`
+  const bar = (pct) => `<div class="bar o mt-aibar"><i style="width:${Math.max(0, Math.min(100, pct))}%"></i></div>`
+  const wrap = (body) => `<div class="mt-aicard">${body}</div>`
+  if (scenario === 'rapid') {
+    const a = role.ai?.rapid
+    if (!a?.available) return wrap(`${tagNone(t('mtNotAvailableTag'))}${src('mtAiCardSrcRapid')}`)
+    const pct = isNum(a.exposurePct) ? a.exposurePct : null
+    const group = /^G([1-4])$/.exec(String(a.gradient ?? ''))
+    const word = ILO_WORD[a.gradient] ? t(ILO_WORD[a.gradient]) : String(a.gradient ?? '—')
+    const line = group ? t('mtAiCardRapid', { pct: pct ?? '—', group: group[1] }) : t('mtAiCardRapidWord', { pct: pct ?? '—', word })
+    return wrap(`${est} ${esc(line)}${src('mtAiCardSrcRapid')}${pct === null ? '' : bar(pct)}`)
+  }
+  const a = role.ai?.moderate
+  if (a?.available && isNum(a.automationPct)) {
+    return wrap(`${est} ${esc(t('mtAiCardModerate', { pct: a.automationPct }))}${src('mtAiCardSrcModerate')}${bar(a.automationPct)}`)
+  }
+  // The chain stops before O*NET: no job to look up. It reaches O*NET but the index has no data: no observed data.
+  const none = role.unavailable?.missingStep ? t('mtNotAvailableTag') : t('mtNoObserved')
+  return wrap(`${tagNone(none)}${src('mtAiCardSrcModerate')}`)
 }
 
 // eMASCO code -> unit group, then each step of the chain (with its label and source), then the missing step.
@@ -169,7 +222,7 @@ function raiseList(t, d) {
     const text = r.action === 'learn'
       ? t('mtLearn', { name: r.name, to: level(t, r.to) })
       : t('mtRaise', { name: r.name, from: level(t, r.from), to: level(t, r.to) })
-    const sdg = itemLinks.filter((l) => l.via.code === r.key).map((l) => ` <span class="tag mt-sdg">SDG ${esc(l.target)}</span>`).join('')
+    const sdg = itemLinks.filter((l) => l.via.code === r.key).map((l) => ` ${sdgTag(goalOf(l.target), `SDG ${l.target}`, reviewText(t, l.approvedAt))}`).join('')
     const short = r.stillShort ? ` <span class="tiny muted">${esc(t('mtStillShort'))}</span>` : ''
     return `<li><b>${esc(text)}</b> <span class="tag t-ok">${esc(t('mtPts', { points: r.points }))}</span>${sdg}${short}</li>`
   })
@@ -193,7 +246,7 @@ function whyBlock(t, role, d, allBars, onet) {
   const more = rows.length > FIRST_BARS && !allBars
     ? `<button class="btn sm mt-gap" type="button" data-act="mAllBars" data-arg="${esc(role.code)}">${esc(t('mtShowAllItems', { count: rows.length }))}</button>`
     : ''
-  return `<details class="mt-why" open><summary>${esc(t('mtWhy'))}</summary>
+  return `<details class="mt-why"${allBars ? ' open' : ''}><summary>${esc(t('mtWhy'))}</summary>
     <div class="mt-whygrid">
       <div class="mt-chartcard"><h3>${esc(t('mtHowTitle'))}</h3>
         <p class="small">${esc(t('mtSentence', { met: fmt1(f.met), needed: fmt1(f.needed), job: f.onetTitle ?? f.onetCode ?? '', percent: f.percent }))}</p>
@@ -211,37 +264,49 @@ function whyBlock(t, role, d, allBars, onet) {
   </details>`
 }
 
-// One role card. `detail` is the role answer, { loading: true } or { error } (null before it is asked for).
-export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', chosen = null, allBars = false, sources = [] }) {
+// The open panel: Job ads, AI in this job and Software asked as three boxes (side by side from 760 px), the SDG targets,
+// then "Why this match" as its own fold. While the detail loads: a spinner; after a failure: try again.
+function openPanel(t, lang, role, detail, d, scenario, allBars, onet) {
+  if (!d) {
+    const body = detail?.error
+      ? `<span class="tag t-bad">${esc(t('mtDetailError'))}</span> <button class="btn sm" type="button" data-act="mDetail" data-arg="${esc(role.code)}">${esc(t('mtRetry'))}</button>`
+      : `<span class="spin"></span> ${esc(t('mtLoading'))}`
+    return `<div class="mt-open small">${body}</div>`
+  }
+  const box = (title, body) => `<section class="mt-box"><h4>${esc(title)}</h4><div>${body}</div></section>`
+  const why = d.fit ? whyBlock(t, role, d, allBars, onet) : ''
+  return `<div class="mt-open">
+    <div class="mt-outgrid">${box(t('mtJobAds'), jobAdsText(t, d.outlook?.jobAds, d.radar))}${box(t('mtAiPart'), aiText(t, d.outlook?.ai, scenario))}${box(t('mtSoftware'), softwareChips(t, d.software))}</div>
+    <dl class="mt-parts"><dt>SDG</dt><dd>${sdgTags(t, lang, d.sdg?.tags)}</dd></dl>
+    ${why}
+  </div>`
+}
+
+// One role card. `detail` is the role answer, { loading: true } or { error } (null before it is asked for); `open` says
+// whether "Show outlook and details" is open for this role.
+export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', chosen = null, allBars = false, sources = [], open = false }) {
   const d = loadedDetail(detail)
+  const isOpen = open === true
   const isChosen = chosen === role.code
   const onet = (sources ?? []).find((s) => s.id === 'onet') ?? null
-  let parts
-  if (d) {
-    parts = `<dt>${esc(t('mtJobAds'))}</dt><dd>${jobAdsText(t, d.outlook?.jobAds, d.radar)}</dd>
-      <dt>${esc(t('mtAiPart'))}</dt><dd>${aiText(t, d.outlook?.ai, scenario)}</dd>
-      <dt>${esc(t('mtSoftware'))}</dt><dd>${softwareChips(t, d.software)}</dd>
-      <dt>SDG</dt><dd>${sdgTags(t, lang, d.sdg?.tags)}</dd>`
-  } else {
-    const state = detail?.loading
-      ? `<span class="spin"></span> ${esc(t('mtLoading'))}`
-      : `${detail?.error ? `<span class="tag t-bad">${esc(t('mtDetailError'))}</span> ` : ''}<button class="btn sm" type="button" data-act="mDetail" data-arg="${esc(role.code)}">${esc(t('mtShowDetail'))}</button>`
-    parts = `<dt>SDG</dt><dd>${sdgGoalTags(t, role.sdgGoals)}</dd><dt>${esc(t('mtOutlook'))}</dt><dd>${state}</dd>`
-  }
-  const why = d?.fit ? whyBlock(t, role, d, allBars, onet) : role.unavailable?.missingStep && !role.skillMatch ? chainBlock(t, role, d) : ''
+  const panel = isOpen ? openPanel(t, lang, role, detail, d, scenario, allBars, onet) : ''
+  const chain = !(isOpen && d?.fit) && role.unavailable?.missingStep && !role.skillMatch ? chainBlock(t, role, d) : ''
   const url = safeUrl(role.url)
   return `<article class="card mt-role${isChosen ? ' mt-chosen' : ''}" data-code="${esc(role.code)}">
     <div class="mt-main">
       <div><span class="mt-ttl">${esc(role.title)}</span> <span class="mt-code">MASCO ${esc(role.code)}${url ? ` · ${link(url, t('mtEmascoPage'))}` : ''}</span></div>
       <div class="small muted mt-cmp">${comparedLine(t, role, d)}</div>
-      <dl class="mt-parts">${parts}</dl>
+      ${aiCard(t, role, scenario)}
+      <dl class="mt-parts"><dt>SDG</dt><dd>${sdgGoalTags(t, role)}</dd></dl>
       <div class="mt-actions">
+        <button class="btn sm" type="button" data-act="mOpen" data-arg="${esc(role.code)}" aria-expanded="${isOpen}">${esc(t(isOpen ? 'mtHideDetail' : 'mtShowDetail'))}</button>
         <button class="btn sm${isChosen ? '' : ' pri'}" type="button" data-act="mChoose" data-arg="${esc(role.code)}" aria-pressed="${isChosen}">${esc(t(isChosen ? 'mtChosen' : 'mtChoose'))}</button>
         <button class="btn sm" type="button" disabled>${esc(t('mtStudyPlan'))}</button>
       </div>
     </div>
     <div class="mt-side">${sidePanel(t, role)}</div>
-    ${why}
+    ${panel}
+    ${chain}
   </article>`
 }
 
@@ -250,13 +315,45 @@ export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'mode
 const pctOf = (r) => (isNum(r.skillMatch?.percent) ? r.skillMatch.percent : -1)
 const bandOf = (r, scenario) => (BANDS.includes(r.bands?.[scenario]) ? r.bands[scenario] : 4)
 
-function bandList(t, lang, roles, m, sources) {
+// The page shown of one list ("field" or "other") and band: 1 when not set or not a number, the last page when past it.
+export function pageOf(pages, key, count) {
+  const last = Math.max(1, Math.ceil(count / PAGE_SIZE))
+  const p = Number.parseInt(plainObject(pages) ? pages[key] : '', 10)
+  return Number.isFinite(p) ? Math.min(Math.max(p, 1), last) : 1
+}
+// The page numbers to show: first, last, current ± 1, with '…' where pages are skipped.
+export function pageItems(current, last) {
+  const nums = [...new Set([1, current - 1, current, current + 1, last])].filter((n) => n >= 1 && n <= last).sort((a, b) => a - b)
+  const out = []
+  for (const n of nums) {
+    if (out.length && n - out[out.length - 1] > 1) out.push('…')
+    out.push(n)
+  }
+  return out
+}
+// ‹ 1 … 4 5 6 … N ›, then a small "Go to page" box. key = "<list>:<band>".
+function pager(t, key, current, last) {
+  const btn = (page, label, aria, extra = '') => `<button type="button" class="btn sm mt-pg" data-act="mPage" data-arg="${esc(`${key}:${page}`)}" aria-label="${esc(aria)}"${extra}>${esc(label)}</button>`
+  const prev = current > 1 ? btn(current - 1, '‹', t('mtPrevPage')) : `<button type="button" class="btn sm mt-pg" aria-label="${esc(t('mtPrevPage'))}" disabled>‹</button>`
+  const next = current < last ? btn(current + 1, '›', t('mtNextPage')) : `<button type="button" class="btn sm mt-pg" aria-label="${esc(t('mtNextPage'))}" disabled>›</button>`
+  const nums = pageItems(current, last).map((n) => (n === '…' ? '<span class="mt-gap-dots" aria-hidden="true">…</span>' : btn(n, String(n), t('mtPageN', { page: n }), n === current ? ' aria-current="page"' : ''))).join('')
+  const id = `mtGo-${key.replace(':', '-')}`
+  return `<div class="mt-pagerow"><nav class="mt-pager" aria-label="${esc(t('mtPages'))}">${prev}${nums}${next}</nav>
+    <form class="mt-goto" data-form="mPageGo" data-arg="${esc(key)}" novalidate><label class="tiny muted" for="${esc(id)}">${esc(t('mtGoToPage'))}</label>
+      <input id="${esc(id)}" class="mt-goin" type="number" inputmode="numeric" min="1" max="${last}" step="1" value="${current}"><button type="submit" class="btn sm">${esc(t('mtGo'))}</button></form></div>`
+}
+
+function bandList(t, lang, roles, m, sources, list) {
   const scenario = scenarioOf(m)
   return BANDS.map((b) => {
     const inBand = roles.filter((r) => bandOf(r, scenario) === b).sort((x, y) => pctOf(y) - pctOf(x) || cmp(String(x.title), String(y.title)))
-    const cards = inBand.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, chosen: m.chosen, allBars: m.allBars?.[role.code], sources })).join('')
+    const key = `${list}:${b}`
+    const last = Math.max(1, Math.ceil(inBand.length / PAGE_SIZE))
+    const page = pageOf(m.pages, key, inBand.length)
+    const shown = inBand.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    const cards = shown.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, chosen: m.chosen, allBars: m.allBars?.[role.code], sources, open: m.open?.[role.code] === true })).join('')
     return `<section class="mt-band"><div class="mt-bandh"><span class="mt-num">${b}</span>${esc(t(BAND_TITLE[b]))} <span class="mt-bandwhy">· ${esc(t(BAND_WHY[b]))}</span></div>
-      ${cards || `<div class="mt-empty">${esc(t('mtBandEmpty'))}</div>`}</section>`
+      ${cards || `<div class="mt-empty">${esc(t('mtBandEmpty'))}</div>`}${last > 1 ? pager(t, key, page, last) : ''}</section>`
   }).join('')
 }
 
@@ -300,23 +397,32 @@ function banner(t, m, roles) {
   const prev = m.prevScenario === 'rapid' || m.prevScenario === 'moderate' ? m.prevScenario : null
   if (!prev || prev === scenario) return ''
   const moved = movedRoles(roles.map((r) => ({ code: r.code, band: bandOf(r, prev) })), roles.map((r) => ({ code: r.code, band: bandOf(r, scenario) })))
-  return movedBanner(t, BANNER_KEYS.scenario, scenario, moved, roles, '')
+  return movedBanner(t, BANNER_KEYS.scenario, scenario, moved, '')
 }
 
-// One banner text for "what moved": no role → a plain sentence; 1 role → "1 role"; more → "N roles", then the names.
+// One short banner for "what moved" (owner UI round, 31 Oct): no role names, one clause per (from, to) pair of groups,
+// with the group names in words and numbers; no role moved -> a plain sentence.
 const BANNER_KEYS = {
-  scenario: { none: 'mtBannerNoMove', one: 'mtBannerTitleOne', many: 'mtBannerTitle' },
-  trend: { none: 'mtTrendNoMove', one: 'mtTrendTitleOne', many: 'mtTrendTitle' },
+  scenario: { none: 'mtBannerNoMove', moved: 'mtBannerMoved' },
+  trend: { none: 'mtTrendNoMove', moved: 'mtTrendMoved' },
 }
-function movedBanner(t, keys, scenario, moved, roles, attrs) {
+export function movedText(t, keys, scenario, moved) {
   const label = t(scenario === 'rapid' ? 'mtScnRapid' : 'mtScnModerate')
-  const titles = new Map(roles.map((r) => [r.code, r.title]))
-  const items = moved.map((x) => t('mtBannerItem', { title: titles.get(x.code) ?? x.code, from: x.from, to: x.to })).join(' · ')
-  const head = !moved.length ? t(keys.none, { scenario: label })
-    : moved.length === 1 ? t(keys.one, { scenario: label })
-      : t(keys.many, { scenario: label, count: moved.length })
-  const body = moved.length ? `<b>${esc(head)}</b>\n    ${esc(items)}. ${esc(t('mtBannerSame'))}` : `<b>${esc(head)}</b> ${esc(t('mtBannerSame'))}`
-  return `<div class="banner mt-banner" role="status"${attrs}><div>${body}</div>
+  const pairs = new Map()
+  for (const x of moved ?? []) {
+    const id = `${x.from}|${x.to}`
+    pairs.set(id, { from: x.from, to: x.to, count: (pairs.get(id)?.count ?? 0) + 1 })
+  }
+  if (!pairs.size) return t(keys.none, { scenario: label })
+  const band = (b) => (BAND_TITLE[b] ? t(BAND_TITLE[b]) : String(b))
+  const moves = [...pairs.values()]
+    .sort((a, b) => b.count - a.count || Number(a.from) - Number(b.from) || Number(a.to) - Number(b.to))
+    .map((p) => t(p.count === 1 ? 'mtMoveOne' : 'mtMoveMany', { count: p.count, from: band(p.from), fromNum: p.from, to: band(p.to), toNum: p.to }))
+    .join(t('mtMoveJoin'))
+  return t(keys.moved, { scenario: label, moves })
+}
+function movedBanner(t, keys, scenario, moved, attrs) {
+  return `<div class="banner mt-banner" role="status"${attrs}><div><b>${esc(movedText(t, keys, scenario, moved))}</b> ${esc(t('mtBannerSame'))}</div>
     <button class="btn sm" type="button" data-act="mBannerClose">${esc(t('mtClose'))}</button></div>`
 }
 
@@ -331,10 +437,10 @@ export function trendMoves(before, data) {
 }
 
 // The trend data (a Radar refresh or decision, or a judge's Trend Change Test) changed since the list was last shown.
-function trendBanner(t, m, roles) {
+function trendBanner(t, m) {
   const trend = m.trend
   if (!trend || !Array.isArray(trend.moved) || trend.scenario !== scenarioOf(m)) return ''
-  return movedBanner(t, BANNER_KEYS.trend, trend.scenario, trend.moved, roles, ' data-banner="trend"')
+  return movedBanner(t, BANNER_KEYS.trend, trend.scenario, trend.moved, ' data-banner="trend"')
 }
 
 function notes(t, data, profile) {
@@ -413,15 +519,15 @@ export function matchView({ t, state }) {
   const fieldNames = (state.profile?.education?.records ?? []).map((r) => r?.field).filter((f) => f?.code).map((f) => t('mtFieldCode', { title: f.title ?? '', code: f.code }))
   return `<div class="mt">${head}
     ${controls(t, m, all, state.profile, data.goalTitles)}
-    ${trendBanner(t, m, all)}
+    ${trendBanner(t, m)}
     ${banner(t, m, all)}
     ${notes(t, data, state.profile)}
     <h2 class="mt-h2">${esc(t('mtInField'))} <span class="tiny muted">${esc([...fieldNames, t('mtRoleCount', { count: field.length })].join(' · '))}</span></h2>
     <div class="tiny muted">${esc(t('mtInFieldHow'))}</div>
-    ${bandList(t, lang, field, m, data.sources)}
+    ${bandList(t, lang, field, m, data.sources, 'field')}
     <h2 class="mt-h2">${esc(t('mtExplore'))} <span class="tiny muted">${esc(t('mtRoleCount', { count: other.length }))}</span></h2>
     <button class="btn" type="button" data-act="mExplore" aria-expanded="${Boolean(m.explore)}">${esc(t(m.explore ? 'mtHideRoles' : 'mtShowRoles'))}</button>
-    ${m.explore ? bandList(t, lang, other, m, data.sources) : ''}
+    ${m.explore ? bandList(t, lang, other, m, data.sources, 'other') : ''}
     ${sourcesCard(t, data)}
   </div>`
 }

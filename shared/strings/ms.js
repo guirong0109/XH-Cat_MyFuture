@@ -715,19 +715,14 @@ export default {
   mtScnRapidText: "AI Pesat menggunakan pendedahan potensi penuh setiap pekerjaan kepada AI generatif (Kertas Kerja ILO 140, 2025). Ia tidak pernah mengubah Padanan Kemahiran anda; ia boleh memindahkan peranan antara kumpulan.", // translation: owner review
   mtSdgFilter: "Tunjukkan peranan yang berkaitan dengan", // translation: owner review
   mtSdgAll: "Semua SDG", // translation: owner review
-  mtSdgFilterSrc: "Hanya matlamat dengan pautan yang diluluskan pemilik disenaraikan.", // translation: owner review
+  mtSdgFilterSrc: "Matlamat bagi setiap pautan draf pasukan SDG yang tidak ditolak oleh pemilik disenaraikan.", // translation: owner review
   mtProfileUsed: "Profil yang digunakan:", // translation: owner review
   mtFieldCode: "{title} (ISCED-F {code})", // translation: owner review
   mtProfileSkills: "{count} kemahiran dan pengetahuan O*NET ({na} “Belum dinilai”)", // translation: owner review
   mtEditProfile: "Sunting profil", // translation: owner review
   mtNeverStored: "Profil anda dihantar untuk mengira padanan dan tidak pernah disimpan.", // translation: owner review
-  mtBannerTitle: "Bertukar kepada {scenario} memindahkan {count} peranan:", // translation: owner review
-  mtBannerTitleOne: "Bertukar kepada {scenario} memindahkan 1 peranan:", // translation: owner review
   mtBannerNoMove: "Bertukar kepada {scenario} tidak memindahkan mana-mana peranan ke kumpulan lain.", // translation: owner review
-  mtBannerItem: "{title} (kumpulan {from} → {to})", // translation: owner review
   mtBannerSame: "Nombor Padanan Kemahiran tidak berubah.", // translation: owner review
-  mtTrendTitle: "Data trend berubah: {count} peranan berpindah dalam {scenario}:", // translation: owner review
-  mtTrendTitleOne: "Data trend berubah: 1 peranan berpindah dalam {scenario}:", // translation: owner review
   mtTrendNoMove: "Data trend berubah, tetapi tiada peranan berpindah ke kumpulan lain dalam {scenario}.", // translation: owner review
   mtClose: "Tutup", // translation: owner review
   mtJudge: "Sesi Ujian Perubahan Trend juri: kumpulan iklan kerja menggunakan data ujian anda.", // translation: owner review
@@ -856,7 +851,7 @@ export default {
   mtSrcModerate: "AI Sederhana", // translation: owner review
   mtSrcRapid: "AI Pesat", // translation: owner review
   mtSrcSdgTargets: "Sasaran SDG", // translation: owner review
-  mtSrcSdgLinks: "Pautan SDG (ditunjukkan hanya selepas kelulusan pemilik)", // translation: owner review
+  mtSrcSdgLinks: "Pautan SDG (draf pasukan; yang ditolak disembunyikan)", // translation: owner review
   mtSrcDate: "{date}", // translation: owner review
   mtSrcAds: "Iklan kerja mengikut kumpulan", // translation: owner review
   mtSrcAdsText: "DOSM Job Market Insights {period} (melalui Radar), diterbitkan {date}", // translation: owner review
@@ -871,15 +866,36 @@ export default {
   mtSdgLinksTo: "Laluan ini berkait dengan", // translation: owner review
   mtSdgGoalOne: "SDG {goal} ({count} pautan)", // translation: owner review
   mtSdgGoalMany: "SDG {goal} ({count} pautan)", // translation: owner review
-  mtSdgNoneText: "Belum ada pautan SDG yang diluluskan pada laluan ini.", // translation: owner review
+  mtSdgNoneText: "Belum ada pautan SDG pada laluan ini.", // translation: owner review
   mtTarget: "Sasaran {target}", // translation: owner review
   mtViaRole: "melalui peranan (kumpulan MASCO {code})", // translation: owner review
   mtViaItem: "melalui kemahiran yang akan anda bina: {name}", // translation: owner review
   mtApprovedDraft: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
-  mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan: draf pasukan ditunjukkan hanya selepas kelulusan pemilik; draf yang masih menunggu tidak dikira. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review,
+  mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan matlamat: laman SDG PBB (sdgs.un.org/goals). Pautan: draf pasukan, ditunjukkan serta-merta (keputusan pemilik M16); setiap satu menyatakan sama ada pemilik telah menyemaknya, dan yang ditolak disembunyikan. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review
+  mtBannerMoved: "Bertukar kepada {scenario} memindahkan {moves}.", // translation: owner review
+  mtTrendMoved: "Data trend berubah: dalam {scenario} ia memindahkan {moves}.", // translation: owner review
+  mtMoveOne: "1 peranan dari “{from}” (kumpulan {fromNum}) ke “{to}” (kumpulan {toNum})", // translation: owner review
+  mtMoveMany: "{count} peranan dari “{from}” (kumpulan {fromNum}) ke “{to}” (kumpulan {toNum})", // translation: owner review
+  mtMoveJoin: "; ", // translation: owner review
+  mtPages: "Halaman", // translation: owner review
+  mtPageN: "Halaman {page}", // translation: owner review
+  mtPrevPage: "Halaman sebelumnya", // translation: owner review
+  mtNextPage: "Halaman seterusnya", // translation: owner review
+  mtGoToPage: "Pergi ke halaman", // translation: owner review
+  mtGo: "Pergi", // translation: owner review
+  mtHideDetail: "Sembunyikan prospek dan butiran", // translation: owner review
+  mtAiCardModerate: "AI melakukan tugas dalam {pct}% penggunaan yang diperhatikan", // translation: owner review
+  mtAiCardRapid: "Pendedahan GenAI {pct}% · kumpulan ILO {group} daripada 4", // translation: owner review
+  mtAiCardRapidWord: "Pendedahan GenAI {pct}% · ILO: {word}", // translation: owner review
+  mtIlo_minimal: "pendedahan minimum", // translation: owner review
+  mtIlo_not_exposed: "tidak terdedah", // translation: owner review
+  mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
+  mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtNotReviewed: "draf pasukan, belum disemak", // translation: owner review
+  mtSdgGoalStatus: "SDG {goal}: {status}", // translation: owner review
   rdSdgTitle: "Pautan SDG (padanan kerjaya)", // translation: owner review
   rdSdgTag: "Draf pasukan: semakan pemilik", // translation: owner review
-  rdSdgNote: "Setiap pautan menghubungkan kumpulan pekerjaan atau kemahiran dengan satu sasaran SDG, beserta sebab. Hanya pautan yang diluluskan dikira pada skrin padanan dan SDG; yang belum diputuskan atau ditolak tidak dikira. Sumber sasaran: UN Statistics Division SDG API.", // translation: owner review
+  rdSdgNote: "Setiap pautan menghubungkan kumpulan pekerjaan atau kemahiran dengan satu sasaran SDG, beserta sebab. Setiap pautan ditunjukkan pada skrin padanan dan SDG sebagai draf pasukan sehingga anda membuat keputusan: yang diluluskan menunjukkan tarikh anda, yang ditolak disembunyikan. Sumber sasaran: UN Statistics Division SDG API.", // translation: owner review
   rdSdgReadOnly: "Keputusan tersimpan tidak tersedia pada pelayan ini, jadi butang dimatikan.", // translation: owner review
   rdSdgKindGroup: "Pautan kumpulan pekerjaan (kumpulan sub-major MASCO)", // translation: owner review
   rdSdgKindItem: "Pautan kemahiran dan pengetahuan (elemen O*NET)", // translation: owner review

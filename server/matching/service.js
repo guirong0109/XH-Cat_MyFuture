@@ -10,7 +10,7 @@
 //   signals. Any failure -> no signals and radar.state 'unavailable' (job ads "not available", bands from AI only).
 import { bestFit, profileLevels } from '../../shared/matching/fit.js'
 import { aeiForJob, aiPart, bandOf, jobAdsPart } from '../../shared/matching/outlook.js'
-import { goalsOfRole, linkStatuses, pathContribution, roleLinks } from '../../shared/matching/sdg.js'
+import { goalsOfRole, pathContribution, roleLinks, shownLinks } from '../../shared/matching/sdg.js'
 import { nameKey } from '../skills/onetSkills.js'
 import { loadReviews } from '../radar/reviews.js'
 import { loadRadarReferences } from '../radar/references.js'
@@ -177,8 +177,8 @@ export function createMatchingService({ loadData, radar = null, references = nul
     }
   }
 
-  // Owner-approved SDG links, each with its approval date.
-  async function approvedLinks(data) {
+  // The SDG links shown (M16): every team-draft link the owner has not rejected, with approvedAt (null = not reviewed).
+  async function sdgLinks(data) {
     let reviews = []
     if (store) {
       try {
@@ -188,9 +188,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
       }
     }
     const hashed = data.sdg.links.map((l) => ({ ...l, hash: linkHash(l) }))
-    return linkStatuses(hashed, reviews)
-      .filter((l) => l.status === 'approved')
-      .map(({ hash, reviewId, reviewedBy, ...l }) => ({ ...l, approvedAt: l.reviewedAt }))
+    return shownLinks(hashed, reviews).map(({ hash, ...l }) => l)
   }
 
   // Everything one role needs, for both answers.
@@ -211,6 +209,29 @@ export function createMatchingService({ loadData, radar = null, references = nul
   // Official UN goal titles (data/sdg/targets.json, UN Statistics Division SDG API), by goal number.
   const goalTitlesOf = (data) => Object.fromEntries(arr(data.sdg.targets.goals).map((g) => [String(g.code), g.title ?? null]))
 
+  // The closed card's AI line (numbers only): the Moderate automation % that decides band 2, and the Rapid ILO exposure
+  // (mean x 100) and gradient of the chain's ISCO-08 code.
+  const aiNumbers = ({ moderate, rapid }) => ({
+    moderate: { available: moderate.available, automationPct: moderate.available ? moderate.values.automationPct : null },
+    rapid: {
+      available: rapid.available,
+      exposurePct: rapid.available && typeof rapid.values.mean === 'number' ? Math.round(rapid.values.mean * 100) : null,
+      gradient: rapid.available ? rapid.values.gradient : null,
+    },
+  })
+  // goal -> date (YYYY-MM-DD) when the owner approved every one of the role's links to that goal; other goals are not
+  // yet reviewed.
+  const reviewedGoals = (shown, code) => {
+    const byGoal = new Map()
+    for (const l of roleLinks(shown, code)) {
+      const goal = String(Number(String(l.target).split('.')[0]))
+      const date = typeof l.approvedAt === 'string' ? l.approvedAt.slice(0, 10) : null
+      const was = byGoal.get(goal)
+      byGoal.set(goal, was === undefined ? date : was && date ? (date > was ? date : was) : null)
+    }
+    return Object.fromEntries([...byGoal].filter(([, date]) => date))
+  }
+
   const skillMatchOf = (best, mine) =>
     mine.usable && best
       ? { percent: best.fit.percent, met: round2(best.fit.met), needed: round2(best.fit.needed), provisional: best.fit.provisional, onetCode: best.code, onetTitle: best.title }
@@ -219,7 +240,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
   async function list(profile, request) {
     const data = await loadData()
     const mine = readProfile(profile, data)
-    const [{ signals, info }, pointers, approved] = await Promise.all([radarInputs(request), profilePointers(profile, loadReferences, log), approvedLinks(data)])
+    const [{ signals, info }, pointers, approved] = await Promise.all([radarInputs(request), profilePointers(profile, loadReferences, log), sdgLinks(data)])
     const roles = data.roles.map((role) => {
       const core = roleCore(role, data, mine, signals)
       const via = inFieldOf(role.code, core.chain.jobs, pointers)
@@ -232,7 +253,9 @@ export function createMatchingService({ loadData, radar = null, references = nul
         skillMatch: skillMatchOf(core.best, mine),
         unavailable: core.chain.missingStep ? { missingStep: core.chain.missingStep } : null,
         bands: core.bands,
+        ai: aiNumbers(core.ai),
         sdgGoals: goalsOfRole(approved, role.code),
+        sdgReviewed: reviewedGoals(approved, role.code),
       }
     })
     return {
@@ -249,7 +272,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
     const found = data.roles.find((r) => r.code === code)
     if (!found) return null
     const mine = readProfile(profile, data)
-    const [{ signals, inDemand, info }, approved] = await Promise.all([radarInputs(request), approvedLinks(data)])
+    const [{ signals, inDemand, info }, approved] = await Promise.all([radarInputs(request), sdgLinks(data)])
     const core = roleCore(found, data, mine, signals)
     const { best } = core
     const jobs = best ? [best, ...core.others].map((j) => ({ code: j.code, title: j.title, percent: mine.usable ? j.fit.percent : null })) : []

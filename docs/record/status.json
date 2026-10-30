@@ -1003,6 +1003,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "reverted 66866d3; section 3 back to the white card and the five-column ledger"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "no animation for the stage numbers 01-06"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "stage numbers stay on the drum tiles but do not roll (counter without a key); npm test 256 passed; checked in Chrome"
     }
   ]
 }

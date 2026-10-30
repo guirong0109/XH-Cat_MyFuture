@@ -92,10 +92,11 @@ describe('landing page', () => {
 describe('how it works, in the look of section 2', () => {
   const howSection = (lang) => { const html = page(lang); return html.slice(html.indexOf('id="how"'), html.indexOf('id="data"')) }
 
-  it('numbers each stage with a roller counter; no pixel art and no accent colours', () => {
+  it('numbers each stage on still drum tiles (they do not roll); no pixel art and no accent colours', () => {
     const how = howSection('en')
     expect(how.match(/class="odo"/g)).toHaveLength(STAGES.length)
-    STAGES.forEach((stage, i) => expect(how).toContain(`data-odo="stage-${stage.id}"><span class="lp-sr">0${i + 1}</span>`))
+    STAGES.forEach((stage, i) => expect(how).toContain(`<span class="odo"><span class="lp-sr">0${i + 1}</span>`))
+    expect(how).not.toContain('data-odo')
     expect(how).not.toContain('class="px')
     expect(how).not.toMatch(/--a:var\(--lp-/)
   })

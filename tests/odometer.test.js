@@ -42,6 +42,11 @@ describe('roller counter markup', () => {
     expect(html).toContain(`style="--to:${wheel.to}" data-to="${wheel.to}" data-ms="${wheel.ms}"`)
   })
 
+  it('without a key the counter stands still: the roller script never picks it up', () => {
+    expect(odometer('01')).toContain('<span class="odo"><span class="lp-sr">01</span>')
+    expect(odometer('01')).not.toContain('data-odo')
+  })
+
   it('each digit is its own window; separators sit between the windows, not inside one', () => {
     const html = odometer('600,000+', 'x')
     expect(html).not.toContain('odo-window')

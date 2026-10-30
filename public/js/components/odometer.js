@@ -22,12 +22,13 @@ export function rollPlan(value) {
   return { parts, suffix }
 }
 
+// Without a key the counter stands still: it shows its value and armOdometers never rolls it.
 export function odometer(value, key) {
   const { parts, suffix } = rollPlan(value)
   const wheels = parts.map((part) => (part.kind === 'sep'
     ? `<span class="odo-sep">${esc(part.char)}</span>`
     : `<span class="odo-wheel"><span class="odo-strip" style="--to:${part.to}" data-to="${part.to}" data-ms="${part.ms}">${part.cells.map((n) => `<i>${n}</i>`).join('')}</span></span>`)).join('')
-  return `<span class="odo" data-odo="${esc(key)}"><span class="lp-sr">${esc(value)}</span><span class="odo-face" aria-hidden="true">${wheels}${suffix ? `<span class="odo-suffix">${esc(suffix)}</span>` : ''}</span></span>`
+  return `<span class="odo"${key ? ` data-odo="${esc(key)}"` : ''}><span class="lp-sr">${esc(value)}</span><span class="odo-face" aria-hidden="true">${wheels}${suffix ? `<span class="odo-suffix">${esc(suffix)}</span>` : ''}</span></span>`
 }
 
 // Browser only. The app redraws the whole page on any change (a reply from the server, a language change), so each

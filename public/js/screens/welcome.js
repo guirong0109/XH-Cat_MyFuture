@@ -103,9 +103,9 @@ function quest(t) {
    <p class="lp-quest-note">${esc(built)}</p>`
 }
 
-// Each stage is numbered with a roller counter, like the figures in the second section.
+// Each stage is numbered on the drum tiles of the second section's counters, standing still (no key, so no roll).
 function stageCard(t, stage, i) {
-  const n = odometer(String(i + 1).padStart(2, '0'), `stage-${stage.id}`)
+  const n = odometer(String(i + 1).padStart(2, '0'))
   if (stage.live) {
     return `
   <article class="lp-stage lp-stage-live">

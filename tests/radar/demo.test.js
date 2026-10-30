@@ -265,6 +265,60 @@ describe('session expiry and limits', () => {
     expect([...sessions]).toEqual([SID(21)])
   })
 
+  it('judge sign-out ends the demo session: its data is wiped, so repeated sign-in/sign-out never hits demo_full', async () => {
+    const { store, now } = await start()
+    const prod = await prodBytes(store)
+    const cycles = RADAR_CONFIG.demo.maxSessions + 5
+    for (let i = 1; i <= cycles; i++) {
+      const session = await login()
+      expect(session.status, `sign-in ${i}`).toBe(200)
+      const sessionId = JSON.parse(Buffer.from(session.cookie.split('.')[0], 'base64url').toString('utf8')).sessionId
+      expect(await call('POST', '/api/demo/radar/apply', { session, body: { scenario: 'A' } })).toMatchObject({ status: 200 })
+      expect((await store.list(`demo/${sessionId}/`)).length).toBeGreaterThan(0)
+      const out = await call('POST', '/api/radar/logout', { session })
+      expect(out.status, `sign-out ${i}`).toBe(200)
+      // The slot is free at once: nothing of this session is left under demo/.
+      expect(await store.list(`demo/${sessionId}/`)).toEqual([])
+      expect((await call('GET', '/api/demo/radar/diff', { session })).status).toBe(401)
+      // Two minutes between cycles: under the 10 sign-ins per 15 minutes limit, far inside the 120-minute session life.
+      now.advance(2 * MIN)
+    }
+    expect(await store.list('demo/')).toEqual([])
+    expect(await prodBytes(store)).toEqual(prod)
+  })
+
+  it('a sign-out without the CSRF token or with an admin session wipes no demo data', async () => {
+    const { store } = await start()
+    const session = await login()
+    const sessionId = JSON.parse(Buffer.from(session.cookie.split('.')[0], 'base64url').toString('utf8')).sessionId
+    const before = await store.list(`demo/${sessionId}/`)
+    expect(before.length).toBeGreaterThan(0)
+    expect((await call('POST', '/api/radar/logout', { session, csrf: 'wrong' })).status).toBe(403)
+    expect(await store.list(`demo/${sessionId}/`)).toEqual(before)
+    const admin = await login('admin', ENV.RADAR_ADMIN_KEY)
+    expect((await call('POST', '/api/radar/logout', { session: admin })).status).toBe(200)
+    expect(await store.list(`demo/${sessionId}/`)).toEqual(before)
+  })
+
+  it('end(sessionId) deletes only that session folder, through the scoped store', async () => {
+    const store = createMemoryStore()
+    const seen = []
+    const spy = {
+      get: (k) => (seen.push(k), store.get(k)),
+      put: (k, b, o) => (seen.push(k), store.put(k, b, o)),
+      list: (p) => (seen.push(p), store.list(p)),
+      delete: (k) => (seen.push(k), store.delete(k)),
+    }
+    const demo = createDemoService({ store: spy, base: BASE, references, now: clock() })
+    await demo.start(SID(4))
+    await demo.start(SID(5))
+    await demo.end(SID(4))
+    expect(await store.list(`demo/${SID(4)}/`)).toEqual([])
+    expect((await store.list(`demo/${SID(5)}/`)).length).toBeGreaterThan(0)
+    expect(seen.every((k) => k.startsWith('demo/'))).toBe(true)
+    await expect(demo.end('../prod')).rejects.toMatchObject({ code: 'demo_expired' })
+  })
+
   it('a demo login when 20 sessions are active answers demo_full and sets no cookie', async () => {
     const { store, now } = await start()
     const demo = createDemoService({ store, base: BASE, references, now })

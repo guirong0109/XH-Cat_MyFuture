@@ -11,7 +11,8 @@ to the owner with its price first and waits for a yes.
 - **Run a single instance.** The Radar is written for one process:
   - the admin refresh limit (once per 5 minutes per source), the sign-in limit (10 per 15 minutes per address), the
     demo limit (30 changes per minute per session) and the view cache live in that process's memory;
-  - signing out ends a session only in the process that received the sign-out;
+  - signing out ends a session only in the process that received the sign-out (a judge sign-out also deletes that
+    session's `demo/<id>/` data in the store, so its slot is free at once);
   - publishing is safe across instances (conditional writes on `prod/active.json`; the loser gets `publish_conflict`),
     and orphan cleanup keeps anything stamped within **10 minutes** of the active manifest's time, to allow for clock
     differences and a publish still running elsewhere. With two instances, a cleanup can still meet the other

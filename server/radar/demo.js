@@ -5,7 +5,8 @@
 //
 // createDemoService({store, base, references, now, config, devStore}) →
 //   {start(sessionId), apply(sessionId, {scenario: 'A'|'B', edits?: [{entityId, period, value}], factor?}),
-//    diff(sessionId) → report, reset(sessionId) → report}
+//    diff(sessionId) → report, reset(sessionId) → report, end(sessionId)}
+//   end: the judge signed out; that session's data under demo/<id>/ is deleted at once, freeing its slot.
 //   base, references: an object or a loader (called once; a failed load is retried next time).
 //
 // Stored per session: demo/<id>/session.json {sessionId, createdAt, expiresAt} (written once at start) and
@@ -388,5 +389,10 @@ export function createDemoService({ store, base, references, now = () => new Dat
     return buildReport({ session, stored, base: b, references: refs, config, devStore })
   }
 
-  return { start, apply, diff, reset }
+  // Judge sign-out: delete this session's folder (scoped to demo/<id>/), so its slot is free at once.
+  async function end(sessionId) {
+    await wipe(sessionId)
+  }
+
+  return { start, apply, diff, reset, end }
 }

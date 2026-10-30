@@ -117,8 +117,8 @@ Each was a judgement call where the spec was silent or two parts pulled apart; a
     instance, see `docs/radar/deploy.md`).
   - Field ↔ topic decisions do not change `mappingVersion`; admin lists are not paged.
   - Originals are never removed by the cleanup (by design; documented).
-  - Judge: session-limit check has a small race; logging out does not free the session slot; fractional counts are
-    accepted; the synthetic base contains one real DOSM link.
+  - Judge: session-limit check has a small race; fractional counts are accepted (signing out now wipes the demo
+    session and frees its slot); the synthetic base contains one real DOSM link.
   - Ingestion: a lost response on a plain write is not recorded as an orphan; a pipeline exception is reported as
     `validation_failed`.
 - **Docs**

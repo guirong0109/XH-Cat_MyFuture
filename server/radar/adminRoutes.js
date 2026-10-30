@@ -317,7 +317,16 @@ export function radarSessionRoutes({ access, demo = null, log = (message) => con
     response.setHeader('Set-Cookie', out.cookie)
     return response.json({ ok: true, role: out.session.role, csrf: out.csrf, expiresAt: out.session.expiresAt })
   })
-  router.post('/api/radar/logout', (request, response) => access.logout(request, response))
+  // A judge sign-out ends the demo session: its demo/<id>/ data is wiped, so the slot is free at once (spec §9).
+  const endDemo = async (session) => {
+    if (session.role !== 'demo' || typeof demo?.end !== 'function') return
+    try {
+      await demo.end(session.sessionId)
+    } catch (error) {
+      log(`[radar] demo end failed: ${demoErrorCode(error)}`)
+    }
+  }
+  router.post('/api/radar/logout', (request, response) => access.logout(request, response, { onEnd: endDemo }))
   return router
 }
 

@@ -131,13 +131,22 @@ export function createRadarAccess({ env = process.env, now = () => new Date() } 
   }
 
   // POST /api/radar/logout: needs a valid session (either role) and its CSRF token; always clears the cookie.
-  function logout(request, response) {
+  // onEnd(session), when given, runs once the session and token are verified and before the session is revoked (the
+  // judge's demo data is wiped there); a failure in it never keeps the session alive.
+  async function logout(request, response, { onEnd } = {}) {
     const { session, code } = sessionOf(request)
     if (!session) {
       response.setHeader('Set-Cookie', clearCookie())
       return sendAccessError(response, code)
     }
     if (!csrfOk(request, session)) return sendAccessError(response, 'csrf_failed')
+    if (typeof onEnd === 'function') {
+      try {
+        await onEnd(session)
+      } catch {
+        // reported by onEnd itself; the sign-out goes ahead
+      }
+    }
     if (revoked.size >= MAX_REVOKED) prune()
     revoked.set(session.sessionId, Date.parse(session.expiresAt))
     response.setHeader('Set-Cookie', clearCookie())

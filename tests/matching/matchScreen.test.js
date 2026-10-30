@@ -1,6 +1,6 @@
 // Career matching and SDG contribution screens (Task 14, spec §8, mockup docs/mockup-matching.html).
 // Render functions are tested on real answers from the matching API (real server on port 0, fixture data dir with a
-// built bridge, bundled Radar manifest, owner-approved SDG links in a memory store).
+// built bridge, bundled Radar manifest, SDG links approved by the owner in a memory store (all drafts show anyway, M16).
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -197,7 +197,7 @@ describe('Career matching screen', () => {
     expect(nine).toContain('<option value="8">SDG 8 Decent work</option>')
     // the filter never changes a percent
     expect(percents(nine)).toEqual(percents(view()))
-    // a role with no approved link says so
+    // a role with no SDG link says so
     expect(text(card(FIXTURE.noIscoRole))).toContain(t('mtSdgNone'))
   })
 
@@ -215,6 +215,11 @@ describe('Career matching screen', () => {
     expect(html).toContain('2026-10-23')
     expect(html).toContain('DOSM')
     expect(html).toContain(t('mtNeverStored'))
+    // M16: the SDG links source states the rule shown now (team drafts shown, rejected hidden, approved dated)
+    const links = list.sources.find((s) => s.id === 'sdg-links')
+    expect(links.name).not.toMatch(/only after owner approval/)
+    expect(links.name).toMatch(/shown now/)
+    expect(html).not.toMatch(/only after owner approval/)
   })
 
   it('every interpolated value is escaped', () => {
@@ -388,7 +393,7 @@ describe('SDG contribution screen', () => {
     expect(html).toContain('data-go="match"')
   })
 
-  it('a path with no approved link says SDG not tagged yet', () => {
+  it('a path with no SDG link says SDG not tagged yet', () => {
     const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.noIscoRole, details: { [FIXTURE.noIscoRole]: details[FIXTURE.noIscoRole] } }) } })
     expect(text(html)).toContain(t('mtSdgNone'))
     expect(text(html)).toContain('potential, not measured')

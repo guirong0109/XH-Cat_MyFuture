@@ -1,4 +1,4 @@
-// SDG links with owner decisions (Task 12): only approved links count; a decision applies to the exact link text.
+// SDG links with owner decisions (Task 12, M16): every link not rejected is shown, approved ones dated; a decision applies to the exact link text.
 import { describe, expect, it } from 'vitest'
 import { approvedLinks, goalsOfRole, itemLinks, linkStatuses, pathContribution, roleLinks, shownLinks } from '../../shared/matching/sdg.js'
 

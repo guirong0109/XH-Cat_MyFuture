@@ -137,7 +137,7 @@ export async function loadMatchingData(dataDir) {
     { id: 'aei', name: aiManifest.aei?.source ?? 'Anthropic Economic Index', version: aiManifest.aei?.release ?? null, url: aiManifest.aei?.sourceUrl ?? null, licence: aiManifest.aei?.licence ?? null, date: aiManifest.aei?.downloadedAt ?? null, period: aiManifest.aei?.dataPeriod ?? null },
     { id: 'bridge', name: 'Occupation bridge (eMASCO to O*NET)', version: bridgeFile.schemaVersion ?? null, url: null, urls: bridgeFile.steps.filter((s) => s.source?.url).map((s) => ({ step: s.id, url: s.source.url })), date: bridgeFile.builtAt ?? null },
     { id: 'sdg-targets', name: targets.source ?? 'UN Statistics Division SDG API', url: targets.url ?? null, date: targets.fetchedAt ?? null },
-    { id: 'sdg-links', name: 'SDG links (FutureReady team draft, used only after owner approval)', url: null, urls: [], status: linksFile.status ?? 'team draft', date: null },
+    { id: 'sdg-links', name: 'SDG links (FutureReady team draft, shown now; rejected ones hidden, approved ones dated; owner decision M16)', url: null, urls: [], status: linksFile.status ?? 'team draft', date: null },
   ]
 
   return {

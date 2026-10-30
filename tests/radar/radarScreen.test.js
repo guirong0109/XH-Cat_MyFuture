@@ -8,7 +8,7 @@ import { createMemoryStore } from '../../server/radar/store/memory.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
-import { aiTab, radarView, skillsTab, statusCards } from '../../public/js/screens/radar.js'
+import { aiTab, onetSourceCards, radarView, skillsTab, statusCards } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import { esc as esc_ } from '../../public/js/ui.js'
@@ -546,6 +546,27 @@ describe('status cards (spec §11.1, §12)', () => {
     expect(t('rdNextRelease', { date: 'D' })).toBe('next release D (estimated: quarterly, from the last publication date)')
     expect(html).toContain(data.manifestId)
     expect(html).not.toMatch(/\bnull\b|NaN|undefined/)
+  })
+
+  it('two O*NET source cards: name, release or window, fetched date and link, in all three languages', () => {
+    const sources = [
+      { sourceId: 'onet-skills', name: 'O*NET skill flags (US job ads)', version: '31.0', observationPeriod: '31.0', fetchedAt: '2026-10-30T11:39:58Z', links: [{ label: 'O*NET', url: 'https://www.onetcenter.org/database.html' }] },
+      { sourceId: 'onet-hottech', name: 'O*NET Hot Technologies (US job ads)', window: { label: '1/25–12/25', year: '2025' }, observationPeriod: '1/25–12/25', fetchedAt: '2026-10-30T11:40:00Z', links: [{ label: 'O*NET', url: 'https://www.onetonline.org/search/hot_tech/' }] },
+    ]
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const html = onetSourceCards(sources, tl)
+      expect(count(html, /rd-onet-card/g), lang).toBe(2)
+      expect(html, lang).toContain(tl('rdSrcOnetSkills'))
+      expect(html, lang).toContain(tl('rdSrcOnetHot'))
+      expect(html, lang).toContain('31.0')
+      expect(html, lang).toContain('1/25–12/25')
+      expect(html, lang).toContain('href="https://www.onetonline.org/search/hot_tech/"')
+      expect(html, lang).toContain('2026-10-30')
+      expect(html, lang).not.toMatch(/null|NaN|undefined/)
+    }
+    expect(onetSourceCards([], t)).toBe('')
+    expect(onetSourceCards([{ sourceId: 'onet-skills', name: '<b>x</b>', links: [] }], t)).not.toContain('<b>x</b>')
   })
 
   it('the estimated next DOSM release is labelled as an estimate in BM and 中文 too (translations marked for review)', () => {

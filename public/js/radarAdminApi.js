@@ -13,6 +13,8 @@ const webLink = (url) => {
   }
 }
 
+const RELEASE_PATTERN = /^\d{2}\.\d$/ // same as server/radar/sources/onetSkills.js
+
 export function createRadarAdminApi({ base = '', fetchImpl = (...args) => fetch(...args) } = {}) {
   // { role, expiresAt, csrf } in memory only; session() hands out a copy without the token.
   let current = null
@@ -70,7 +72,13 @@ export function createRadarAdminApi({ base = '', fetchImpl = (...args) => fetch(
     mappings: () => call('GET', '/api/admin/radar/mappings'),
     breaks: () => call('GET', '/api/admin/radar/breaks'),
     exportJson: () => call('GET', '/api/admin/radar/export'),
-    refresh: (source) => (source === 'openalex' || source === 'dosm' ? call('POST', `/api/admin/radar/refresh/${source}`) : Promise.resolve({ ok: false, code: 'bad_request', retryable: false })),
+    // onet-skills sends {release} (checked here too: two digits, a dot, one digit); the others send no body.
+    refresh(source, { release } = {}) {
+      const bad = Promise.resolve({ ok: false, code: 'bad_request', retryable: false })
+      if (source === 'openalex' || source === 'dosm' || source === 'onet-hottech') return call('POST', `/api/admin/radar/refresh/${source}`)
+      if (source === 'onet-skills') return RELEASE_PATTERN.test(String(release ?? '')) ? call('POST', '/api/admin/radar/refresh/onet-skills', { release }) : bad
+      return bad
+    },
     cleanup: () => call('POST', '/api/admin/radar/cleanup'),
 
     // Every decision needs a reviewer note (refused here, before anything is sent).

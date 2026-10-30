@@ -359,6 +359,45 @@ describe('admin review (spec §8.2, §8.4)', () => {
     expect(ok).toContain(t('rdRefreshNoChange', { source: 'DOSM' }))
   })
 
+  it('the O*NET rows: skill flags with a release box (pattern, 31.1 sent as {release}) and Hot Technologies, each with last check and active release or window', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data })
+    expect(html).toContain(t('rdAdminOnetSkillsRow'))
+    expect(html).toContain(t('rdAdminOnetHotRow'))
+    expect(html).toMatch(/<input[^>]*id="admOnetRelease"/)
+    expect(html).toContain(`pattern="${String.raw`\d{2}\.\d`}"`)
+    expect(html).toContain('data-act="admRefreshOnetSkills"')
+    expect(html).toContain('data-act="admRefresh" data-arg="onet-hottech"')
+    expect(text(html)).toContain('31.0')
+    expect(text(html)).toContain('2025')
+    const fake = []
+    const api = createRadarAdminApi({ base, fetchImpl: async (url, options) => { fake.push({ url, options }); return new Response('{}', { status: 200 }) } })
+    expect((await api.refresh('onet-skills', { release: '31.1' })).ok).toBe(true)
+    expect(fake[0].url).toBe(`${base}/api/admin/radar/refresh/onet-skills`)
+    expect(fake[0].options.method).toBe('POST')
+    expect(JSON.parse(fake[0].options.body)).toEqual({ release: '31.1' })
+    expect((await api.refresh('onet-hottech')).ok).toBe(true)
+    expect(fake[1].url).toBe(`${base}/api/admin/radar/refresh/onet-hottech`)
+    expect(fake[1].options.body).toBeUndefined()
+    expect(await api.refresh('nope')).toMatchObject({ ok: false, code: 'bad_request' })
+    expect(await api.refresh('onet-skills', { release: '31' })).toMatchObject({ ok: false, code: 'bad_request' })
+    expect(fake).toHaveLength(2)
+  })
+
+  it('O*NET refresh codes show their text in English, BM and 中文', async () => {
+    const data = await adminData()
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (k, v) => translate(lang, k, v)
+      for (const code of ['onet_release_not_newer', 'onet_release_not_found', 'onet_columns', 'hottech_layout']) {
+        expect(tl(`rdErr_${code}`), `${lang} ${code}`).not.toBe(`rdErr_${code}`)
+        const html = adminView({ t: tl, state: adminState({ msgs: { refresh: { kind: 'bad', source: 'onet-skills', code } } }), data })
+        expect(html).toContain(`<code>${code}</code>`)
+        expect(html).toContain(tl(`rdErr_${code}`))
+      }
+      expect(adminView({ t: tl, state: adminState(), data })).toContain(tl('rdAdminOnetSkillsRow'))
+    }
+  })
+
   it('export shows the approved mappings and reviews as JSON', async () => {
     const out = await admin.exportJson()
     expect(out.ok).toBe(true)

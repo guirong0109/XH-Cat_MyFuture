@@ -17,6 +17,7 @@ import { CONTRACT, validateSignal } from '../../shared/radar/contract.js'
 import { shares } from '../../shared/radar/dosm.js'
 import { DOSM_METRIC, DOSM_UNIT, dosmTableFromSnapshot, openalexCounts } from '../../shared/radar/snapshot.js'
 import { DOSM_SHARE_METRIC, OPENALEX_METRIC, OPENALEX_REFERENCE_ID, OPENALEX_REFERENCE_POPULATION, OPENALEX_UNIT } from '../../shared/radar/pipeline.js'
+import { observationPeriodOf } from '../../shared/radar/states.js'
 import { nameKey } from '../skills/onetSkills.js'
 import { RadarError } from './service.js'
 
@@ -27,7 +28,7 @@ const ERRORS = {
   publish_conflict: [503, 'Saved Radar data is not reachable right now.', true],
 }
 
-// The two sources as published, with their links and use policies (data/SOURCES.md).
+// The four sources as published, with their links and use policies (data/SOURCES.md).
 const SOURCES = [
   {
     sourceId: 'openalex',
@@ -50,6 +51,25 @@ const SOURCES = [
     ],
     policy: 'Public DOSM release; licence terms per dosm.gov.my (to confirm).',
     measures: 'Online job offerings per quarter by MASCO 2020 major occupation group (Table 2).',
+  },
+  {
+    sourceId: 'onet-skills',
+    name: 'O*NET skill flags (US job ads)',
+    publisher: 'O*NET Resource Center (US Department of Labor)',
+    links: [
+      { label: 'O*NET database', url: 'https://www.onetcenter.org/database.html' },
+      { label: 'O*NET 31.0 database (zip)', url: 'https://www.onetcenter.org/dl_files/database/db_31_0_text.zip' },
+    ],
+    policy: 'O*NET data is CC BY 4.0. US job ads (Lightcast via O*NET), not Malaysian. Software and technology skills only.',
+    measures: 'Hot Technology and In Demand flags per software example and occupation, by O*NET release (Software Skills table).',
+  },
+  {
+    sourceId: 'onet-hottech',
+    name: 'O*NET Hot Technologies (US job ads)',
+    publisher: 'O*NET OnLine (US Department of Labor)',
+    links: [{ label: 'O*NET Hot Technologies', url: 'https://www.onetonline.org/search/hot_tech/' }],
+    policy: 'O*NET data is CC BY 4.0. US job ads (Lightcast via O*NET), not Malaysian. Software and technology skills only.',
+    measures: 'Postings counted per hot technology over one counting window (Hot Technologies page).',
   },
 ]
 
@@ -267,8 +287,10 @@ export function radarRoutes({ radar }) {
       return {
         ...source,
         snapshotId: snapshot?.snapshotId ?? null,
-        observationPeriod: source.sourceId === 'openalex' ? (snapshot?.lastYear != null ? String(snapshot.lastYear) : null) : snapshot?.lastQuarter ?? null,
+        observationPeriod: observationPeriodOf(source.sourceId, snapshot),
         publishedAt: source.sourceId === 'dosm' ? snapshot?.meta?.publishedAt ?? null : null,
+        ...(source.sourceId === 'onet-skills' ? { version: snapshot?.classification?.version ?? null } : {}),
+        ...(source.sourceId === 'onet-hottech' ? { window: snapshot?.meta?.window ?? null } : {}),
         fetchedAt: snapshot?.fetchedAt ?? null,
         evidenceLinks: snapshot?.sourceUrls ?? [],
       }

@@ -5,17 +5,18 @@
 //                 observationPeriod, publishedAt, expectedNextRelease}}
 //
 // - availability: 'data' | 'no_records' (snapshot without any value) | 'unavailable' (no snapshot in the manifest)
-// - freshness: 'current' | 'stale'. OpenAlex: stale when the last successful check (a refresh that published or found
+// - freshness: 'current' | 'stale' | null. OpenAlex: stale when the last successful check (a refresh that published or found
 //   no new data, or the fetch of the served snapshot) is older than config.freshness.openalexDays. DOSM: stale when
 //   config.freshness.dosmDaysAfterExpected days have passed since the expected next release, taken as the served
-//   release's publishedAt + 92 days (quarterly).
+//   release's publishedAt + 92 days (quarterly). O*NET skill flags and Hot Technologies: null (no release calendar and
+//   no age limit in the spec; the screens show the release or window and its fetched date instead).
 // - refreshHealth: 'ok' | 'failed' (+ refreshCode) | 'never_run' | 'not_configured' (no writable store)
 // - servedFrom: 'active_manifest' | 'bundled_read_only' | 'cached_fallback' (last good data after a failed refresh or
 //   while the store does not answer)
 // Per-signal comparability stays in each signal (evidenceSufficiency, evidenceQuality).
 import { RADAR_CONFIG } from './config.js'
 
-export const STATE_SOURCES = Object.freeze(['openalex', 'dosm'])
+export const STATE_SOURCES = Object.freeze(['openalex', 'dosm', 'onet-skills', 'onet-hottech'])
 export const DOSM_RELEASE_INTERVAL_DAYS = 92
 const DAY = 86400000
 const OK = new Set(['published', 'no_change'])
@@ -36,9 +37,11 @@ function availabilityOf(snapshotId, snapshot) {
   return hasValue ? 'data' : 'no_records'
 }
 
-function observationPeriodOf(sourceId, snapshot) {
+export function observationPeriodOf(sourceId, snapshot) {
   if (!snapshot) return null
   if (sourceId === 'openalex') return snapshot.lastYear != null ? String(snapshot.lastYear) : null
+  if (sourceId === 'onet-skills') return snapshot.classification?.version ?? null
+  if (sourceId === 'onet-hottech') return snapshot.meta?.window?.label ?? null
   return snapshot.lastQuarter ?? snapshot.meta?.quarter ?? null
 }
 
@@ -76,7 +79,10 @@ export function sourceStates({ manifest, snapshots = {}, servedFrom, lastChecks 
     const publishedAt = sourceId === 'dosm' ? snapshot?.meta?.publishedAt ?? snapshot?.publishedAt ?? null : null
     let freshness = 'stale'
     let expectedNextRelease = null
-    if (sourceId === 'openalex') {
+    if (sourceId === 'onet-skills' || sourceId === 'onet-hottech') {
+      // O*NET publishes no release calendar and the spec sets no age limit: freshness is not judged (null).
+      freshness = null
+    } else if (sourceId === 'openalex') {
       const okMs = time(lastSuccessAt)
       if (okMs !== null && nowMs - okMs <= config.freshness.openalexDays * DAY) freshness = 'current'
     } else {

@@ -261,6 +261,14 @@ const adminActions = {
     if (out.ok) radarStale()
     reloadAdmin(adminMsg('refresh', out.ok ? { kind: 'ok', source, result: out.data?.result } : { kind: 'bad', source, code: out.code }), 'admMsg-refresh')
   },
+  admRefreshOnetSkills: async () => {
+    const release = fieldValue('admOnetRelease').trim()
+    if (!/^\d{2}\.\d$/.test(release)) return setAdmin(adminMsg('refresh', { kind: 'bad', source: 'onet-skills', code: 'bad_request' }), 'admOnetRelease')
+    const out = await adminApi.refresh('onet-skills', { release })
+    if (!out.ok && !adminApi.session()) return adminFailed('refresh', out)
+    if (out.ok) radarStale()
+    reloadAdmin(adminMsg('refresh', out.ok ? { kind: 'ok', source: 'onet-skills', result: out.data?.result } : { kind: 'bad', source: 'onet-skills', code: out.code }), 'admMsg-refresh')
+  },
   admCleanup: async () => {
     const out = await adminApi.cleanup()
     if (!out.ok) return adminFailed('status', out)

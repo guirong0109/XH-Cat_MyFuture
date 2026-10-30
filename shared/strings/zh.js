@@ -465,6 +465,20 @@ export default {
   rdErr_demo_expired: "测试会话已结束。请重新登录。",
   rdErr_demo_full: "测试会话太多。请稍后再试。",
   rdErr_manifest_gone: "该版本的数据已不再可用。",
+  rdSrcOnetSkills: "O*NET 技能标记（美国招聘广告）", // translation: owner review
+  rdSrcOnetHot: "O*NET 热门技术（美国招聘广告）", // translation: owner review
+  rdAdminOnetSkillsRow: "O*NET 技能标记", // translation: owner review
+  rdAdminOnetHotRow: "O*NET 热门技术", // translation: owner review
+  rdAdminOnetReleaseLabel: "新版本号", // translation: owner review
+  rdAdminOnetReleaseHint: "两位数字、一个点、一位数字，例如 31.1。必须比当前版本新。", // translation: owner review
+  rdAdminOnetRefresh: "刷新", // translation: owner review
+  rdAdminOnetActiveRelease: "当前版本", // translation: owner review
+  rdAdminOnetActiveWindow: "当前统计期间", // translation: owner review
+  rdAdminOnetLastCheck: "最近一次检查", // translation: owner review
+  rdErr_onet_release_not_newer: "这个 O*NET 版本不比当前版本新，因此没有获取任何内容。", // translation: owner review
+  rdErr_onet_release_not_found: "O*NET 没有这个版本号的数据库文件。", // translation: owner review
+  rdErr_onet_columns: "O*NET 技能表的列与预期不符，因此没有使用。", // translation: owner review
+  rdErr_hottech_layout: "O*NET 热门技术页面的版式无法识别，因此没有使用。", // translation: owner review
   // Radar: admin screen
   rdAdminTitle: "雷达管理",
   rdAdminSignIn: "登录",

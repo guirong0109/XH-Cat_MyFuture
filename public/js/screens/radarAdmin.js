@@ -14,6 +14,9 @@ import { statusCards } from './radar.js'
 import { RADAR_CONFIG } from '../../../shared/radar/config.js'
 
 const SOURCE_NAMES = { openalex: 'OpenAlex', dosm: 'DOSM' }
+// Display name of a source in the admin tables and messages (the two O*NET names are translated).
+const srcName = (t, id) => (id === 'onet-skills' ? t('rdSrcOnetSkills') : id === 'onet-hottech' ? t('rdSrcOnetHot') : SOURCE_NAMES[id] ?? id)
+const RELEASE_PATTERN = '\\d{2}\\.\\d' // HTML pattern attribute: two digits, a dot, one digit
 const LEVELS = { 2: 'rdLevel_broad', 3: 'rdLevel_narrow', 4: 'rdLevel_detailed' }
 const MAP_STATUS = { pending: ['unv', 'rdStatusProposed'], approved: ['ok', 'rdStatusApproved'], rejected: ['bad', 'rdStatusRejected'] }
 const MAP_DECISIONS = [['approved', 'rdApprove'], ['rejected', 'rdReject'], ['revise', 'rdRevise']]
@@ -198,8 +201,8 @@ const resultText = (t, outcome, code) => `${esc(outcome || DASH)}${code ? ` · <
 function statusCard(t, state, data) {
   const s = data.status ?? {}
   const p = data.public ?? {}
-  const checks = Object.entries(s.lastChecks ?? {}).map(([source, c]) => `<tr><td>${esc(SOURCE_NAMES[source] ?? source)}</td><td>${esc(fmtDate(c?.checkedAt))}</td><td>${resultText(t, c?.outcome, c?.code)}</td><td>${esc(fmtDate(c?.lastOkAt))}</td></tr>`).join('')
-  const log = (s.log ?? []).map((e) => `<tr><td>${esc(fmtDate(e.time))}</td><td>${esc(SOURCE_NAMES[e.source] ?? e.source ?? DASH)}</td><td>${esc(e.operation || DASH)}</td><td>${resultText(t, e.outcome, e.code)}${e.ids?.manifestId ? `<div class="tiny muted"><code>${esc(e.ids.manifestId)}</code></div>` : ''}</td></tr>`).join('')
+  const checks = Object.entries(s.lastChecks ?? {}).map(([source, c]) => `<tr><td>${esc(srcName(t, source))}</td><td>${esc(fmtDate(c?.checkedAt))}</td><td>${resultText(t, c?.outcome, c?.code)}</td><td>${esc(fmtDate(c?.lastOkAt))}</td></tr>`).join('')
+  const log = (s.log ?? []).map((e) => `<tr><td>${esc(fmtDate(e.time))}</td><td>${esc(e.source ? srcName(t, e.source) : DASH)}</td><td>${esc(e.operation || DASH)}</td><td>${resultText(t, e.outcome, e.code)}${e.ids?.manifestId ? `<div class="tiny muted"><code>${esc(e.ids.manifestId)}</code></div>` : ''}</td></tr>`).join('')
   const orphans = s.orphans ?? []
   const blocked = s.orphansBlocked ? `<p class="small">${esc(errText(t, s.orphansBlocked))} <code>${esc(s.orphansBlocked)}</code></p>` : ''
   const orphanList = orphans.length ? `<ul class="rd-list tiny">${orphans.map((k) => `<li><code>${esc(k)}</code></li>`).join('')}</ul>` : `<p class="small muted">${esc(t('rdAdminNoOrphans'))}</p>`
@@ -221,10 +224,26 @@ function statusCard(t, state, data) {
   </div>`
 }
 
+// One O*NET row: name, active release or window (with its fetched date), last check with its outcome code.
+function onetRow(t, data, id, control) {
+  const src = (data.public?.sources ?? []).find((s) => s.sourceId === id)
+  const check = data.status?.lastChecks?.[id]
+  const active = id === 'onet-skills' ? src?.version : src?.window?.label
+  const activeLabel = id === 'onet-skills' ? 'rdAdminOnetActiveRelease' : 'rdAdminOnetActiveWindow'
+  return `<div class="rd-onet-row" id="admRow-${esc(id)}">
+    <h3>${esc(t(id === 'onet-skills' ? 'rdAdminOnetSkillsRow' : 'rdAdminOnetHotRow'))}</h3>
+    <dl class="rd-kv tiny">
+      <dt>${esc(t(activeLabel))}</dt><dd>${esc(active ?? DASH)}${src?.fetchedAt ? ` · ${esc(t('rdEvFetched'))} ${esc(fmtDate(src.fetchedAt))}` : ''}</dd>
+      <dt>${esc(t('rdAdminOnetLastCheck'))}</dt><dd>${check ? `${esc(fmtDate(check.checkedAt))} · ${resultText(t, check.outcome, check.code)}` : esc(t('rdHealth_never_run'))}</dd>
+    </dl>
+    <div class="row">${control}</div>
+  </div>`
+}
+
 function refreshCard(t, state, data) {
   const writable = Boolean(data.status?.writable)
   const refreshMsg = (m) => {
-    const source = SOURCE_NAMES[m.source] ?? String(m.source ?? DASH)
+    const source = m.source ? srcName(t, m.source) : DASH
     if (m.kind === 'bad') return `${esc(t('rdRefreshFailed', { source }))} <code>${esc(m.code)}</code> ${esc(errText(t, m.code))}`
     const r = m.result ?? {}
     if (r.outcome === 'published') return esc(t('rdRefreshPublished', { source, manifest: r.manifestId ?? DASH }))
@@ -234,6 +253,11 @@ function refreshCard(t, state, data) {
     <h2>${esc(t('rdAdminRefreshTitle'))}</h2>
     <p class="small muted">${esc(t('rdAdminRefreshNote'))}</p>
     <div class="row"><button class="btn" data-act="admRefresh" data-arg="openalex"${disabled(!writable)}>${esc(t('rdAdminRefreshOpenAlex'))}</button><button class="btn" data-act="admRefresh" data-arg="dosm"${disabled(!writable)}>${esc(t('rdAdminRefreshDosm'))}</button></div>
+    ${onetRow(t, data, 'onet-skills', `<label class="small" for="admOnetRelease">${esc(t('rdAdminOnetReleaseLabel'))}</label>
+      <input id="admOnetRelease" type="text" inputmode="decimal" autocomplete="off" maxlength="4" size="5" pattern="${RELEASE_PATTERN}" placeholder="31.1" aria-describedby="admOnetReleaseHint"${disabled(!writable)}>
+      <button class="btn" data-act="admRefreshOnetSkills"${disabled(!writable)}>${esc(t('rdAdminOnetRefresh'))}</button>
+      <span class="tiny muted" id="admOnetReleaseHint">${esc(t('rdAdminOnetReleaseHint'))}</span>`)}
+    ${onetRow(t, data, 'onet-hottech', `<button class="btn" data-act="admRefresh" data-arg="onet-hottech"${disabled(!writable)}>${esc(t('rdAdminOnetRefresh'))}</button>`)}
     ${message(t, state, 'refresh', refreshMsg)}
   </div>`
 }

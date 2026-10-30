@@ -465,6 +465,20 @@ export default {
   rdErr_demo_expired: "Sesi ujian telah tamat. Log masuk semula.",
   rdErr_demo_full: "Terlalu banyak sesi ujian dibuka. Cuba lagi kemudian.",
   rdErr_manifest_gone: "Versi data itu tidak lagi tersedia.",
+  rdSrcOnetSkills: "Penanda kemahiran O*NET (iklan kerja AS)", // translation: owner review
+  rdSrcOnetHot: "Teknologi Panas O*NET (iklan kerja AS)", // translation: owner review
+  rdAdminOnetSkillsRow: "Penanda kemahiran O*NET", // translation: owner review
+  rdAdminOnetHotRow: "Teknologi Panas O*NET", // translation: owner review
+  rdAdminOnetReleaseLabel: "Nombor keluaran baharu", // translation: owner review
+  rdAdminOnetReleaseHint: "Dua digit, satu titik, satu digit, contohnya 31.1. Mesti lebih baharu daripada keluaran aktif.", // translation: owner review
+  rdAdminOnetRefresh: "Muat semula", // translation: owner review
+  rdAdminOnetActiveRelease: "Keluaran aktif", // translation: owner review
+  rdAdminOnetActiveWindow: "Tempoh pengiraan aktif", // translation: owner review
+  rdAdminOnetLastCheck: "Semakan terakhir", // translation: owner review
+  rdErr_onet_release_not_newer: "Keluaran O*NET ini tidak lebih baharu daripada yang aktif, jadi tiada apa-apa diambil.", // translation: owner review
+  rdErr_onet_release_not_found: "O*NET tiada fail pangkalan data untuk nombor keluaran ini.", // translation: owner review
+  rdErr_onet_columns: "Jadual kemahiran O*NET tidak mempunyai lajur yang dijangka, jadi ia tidak digunakan.", // translation: owner review
+  rdErr_hottech_layout: "Halaman Teknologi Panas O*NET mempunyai susun atur yang tidak dikenali, jadi ia tidak digunakan.", // translation: owner review
   // Radar: admin screen
   rdAdminTitle: "Pentadbir Radar",
   rdAdminSignIn: "Log masuk",

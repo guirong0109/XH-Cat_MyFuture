@@ -2,6 +2,7 @@
 // quoted with their original source; the data counts come from data/ (tests/landing.test.js checks them).
 import { esc } from '../ui.js'
 import { odometer } from '../components/odometer.js'
+import { STOPS, VIEW, grid, road } from '../components/road.js'
 
 // Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown side by side in the second section.
 export const GUIDE_FACTS = [
@@ -121,13 +122,33 @@ function stageCard(t, stage, i) {
    </div>
   </article>`
   }
+  const [x, y] = STOPS[i - 1]
   return `
-  <article class="lp-stage">
+  <article class="lp-sign" style="--x:${x / VIEW.w * 100}%;--y:${y / VIEW.h * 100}%;--k:${1 - (i - 1) * 0.04}">
    <div class="lp-stage-top"><span class="lp-num">${n}</span></div>
    <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
    <p>${esc(t(stage.text))}</p>
    <span class="lp-pill lp-pill-next">${esc(t('ldNext'))}</span>
   </article>`
+}
+
+// The stages still to come, as signs along a road drawn in perspective (components/road.js).
+function roadmap(t) {
+  const { band, left, right, centre } = road()
+  const lines = grid().map(([x1, y1, x2, y2]) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`).join('')
+  return `
+  <div class="lp-road">
+   <svg class="lp-road-scene" viewBox="0 0 ${VIEW.w} ${VIEW.h}" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="lpRoadFade" x1="0" y1="0" x2="0" y2="1"><stop offset="${VIEW.horizon / VIEW.h}" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff"/></linearGradient>
+     <mask id="lpRoadMask"><rect width="${VIEW.w}" height="${VIEW.h}" fill="url(#lpRoadFade)"/></mask></defs>
+    <g class="lp-road-grid" mask="url(#lpRoadMask)">${lines}</g>
+    <polygon class="lp-road-band" points="${band}"/>
+    <polyline class="lp-road-edge" points="${left}"/><polyline class="lp-road-edge" points="${right}"/>
+    <path class="lp-road-centre" d="${centre}"/>
+    ${STOPS.map(([sx, sy], i) => `<ellipse class="lp-road-foot" cx="${sx}" cy="${sy}" rx="${22 - i * 2}" ry="${6 - i * 0.5}"/>`).join('')}
+   </svg>
+   ${STAGES.map((stage, i) => (stage.live ? '' : stageCard(t, stage, i))).join('')}
+  </div>`
 }
 
 const how = (t) => `
@@ -137,7 +158,7 @@ const how = (t) => `
   <h2 class="lp-h2">${esc(t('ldHowTitle'))}</h2>
   <p class="lp-lead">${esc(t('ldHowLead'))}</p>
  </header>
- <div class="lp-bento">${STAGES.map((stage, i) => stageCard(t, stage, i)).join('')}</div>
+ <div class="lp-bento">${STAGES.filter((stage) => stage.live).map((stage) => stageCard(t, stage, STAGES.indexOf(stage))).join('')}${roadmap(t)}</div>
 </section>`
 
 const data = (t) => `

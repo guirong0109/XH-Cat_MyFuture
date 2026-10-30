@@ -118,7 +118,7 @@ On 72 AI topics, windows 2020–2025 (416): Rising 166, Declining 38, Stable 182
   37.0 → SD **18.0 → High** (growth sped up a lot, so year-to-year growth was uneven).
 - **DOSM** (unit: pp): standard deviation (n − 1) of the last four clean YoY pp changes (needs ≥ 3).
   Distribution: P50 0.93 · P75 1.62 · P90 1.89. Candidate: **Low < 0.75**, **Moderate 0.75–1.75**, **High > 1.75**.
-  Example Professionals 2025 Q2 (steps −0.51, −0.70, +0.41, −1.67) → SD **0.89 → Moderate**.
+  Example Professionals 2025 Q2 (steps −0.51, −0.70, +0.41, −1.67) → SD **0.85 → Moderate**.
 
 ## 6. Evidence sufficiency and quality
 

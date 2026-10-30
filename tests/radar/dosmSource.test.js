@@ -59,7 +59,16 @@ describe('discover', () => {
 
   it('rejects an active quarter that is not YYYY Qn', async () => {
     const e = await code(createDosmSource({ fetchImpl: fakeFetch({}), now: NOW }).discover('Q2 2026'))
-    expect(e).toBeInstanceOf(SourceError)
+    expect(e).toBeInstanceOf(TypeError)
+    expect(e).not.toBeInstanceOf(SourceError)
+  })
+
+  it('with several newer quarters returns the earliest one after the active quarter', async () => {
+    const q4 = '<h6><a href="/portal-main/release-content/big-data-analytics-job-market-insights-q42026">20.02.2027 - Big Data Analytics: Job Market Insights, Fourth Quarter of 2026</a></h6>'
+    const f = fakeFetch({ [ARCHIVE_URL]: html(q4 + ARCHIVE_NEW_Q3) })
+    const d = await createDosmSource({ fetchImpl: f, now: NOW }).discover('2026 Q2')
+    expect(d.release.quarter).toBe('2026 Q3')
+    expect(d.release.publishedAt).toBe('2026-11-19')
   })
 })
 
@@ -127,5 +136,27 @@ describe('fetchSnapshot', () => {
     const e = await code(createDosmSource({ fetchImpl: fakeFetch(routes({ [DATA_URL]: html('x', 500) })), now: NOW }).fetchSnapshot(RELEASE))
     expect(e.code).toBe('source_unavailable')
     expect(e.retryable).toBe(true)
+  })
+
+  const pageWith = (data) => `<div id="data"><h5>Data</h5>${data}</div><div id="press_statement"><h5>Press Statement</h5><a href="${DATA_URL.replace('20742', '20743')}">Press</a></div>`
+  const fetchWith = (page) => createDosmSource({ fetchImpl: fakeFetch(routes({ [PAGE_Q2]: html(page) })), now: NOW }).fetchSnapshot(RELEASE)
+
+  it('an empty Data section followed by a Press Statement link -> dosm_dataset_missing', async () => {
+    expect((await code(fetchWith(pageWith('<ol></ol>')))).code).toBe('dosm_dataset_missing')
+    expect((await code(fetchWith(`<div id="data"><h5>Data</h5></div><h5>Press</h5><a href="${DATA_URL}">x</a>`))).code).toBe('dosm_dataset_missing')
+  })
+
+  it('accepts a relative data link and &amp; in the URL', async () => {
+    const rel = '<a href="/portal-main/release-document-log?release_document_id=20742">d</a>'
+    expect((await fetchWith(pageWith(rel))).snapshot.meta.dataUrl).toBe(DATA_URL)
+    const amp = '<a href="/portal-main/release-document-log?release_document_id=20742&amp;cat=x">d</a>'
+    const f = fakeFetch(routes({ [PAGE_Q2]: html(pageWith(amp)), [DATA_URL + '&cat=x']: new Response(XLSX, { headers: { 'Content-Type': XLSX_TYPE } }) }))
+    const r = await createDosmSource({ fetchImpl: f, now: NOW }).fetchSnapshot(RELEASE)
+    expect(r.snapshot.meta.dataUrl).toBe(DATA_URL + '&cat=x')
+  })
+
+  it('rejects a data link on another host', async () => {
+    const e = await code(fetchWith(pageWith('<a href="https://evil.example/portal-main/release-document-log?release_document_id=1">d</a>')))
+    expect(e.code).toBe('dosm_dataset_missing')
   })
 })

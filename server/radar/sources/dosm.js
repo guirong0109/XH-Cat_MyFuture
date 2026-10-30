@@ -46,7 +46,7 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
 
   async function discover(activeQuarter) {
     const active = QUARTER.exec(activeQuarter ?? '')
-    if (!active) throw new SourceError('bad_request', { detail: { field: 'activeQuarter' } })
+    if (!active) throw new TypeError('activeQuarter must look like "2026 Q2"')
     const activeOrdinal = quarterNumber(activeQuarter)
     const text = await getText(`${SITE}/portal-main/release-archive/${SLUG}-q${active[2]}${active[1]}`)
 
@@ -56,7 +56,7 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
     for (const m of text.matchAll(line)) {
       const quarter = `${m[7]} Q${ORDINALS[m[6].toLowerCase()]}`
       const ordinal = quarterNumber(quarter)
-      if (ordinal <= activeOrdinal || (best && ordinal <= best.ordinal)) continue
+      if (ordinal <= activeOrdinal || (best && ordinal >= best.ordinal)) continue
       let pageUrl = releasePageUrl(quarter)
       if (m[1]) {
         try {
@@ -74,13 +74,18 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
   async function fetchSnapshot(release) {
     const pageUrl = release.pageUrl ?? releasePageUrl(release.quarter)
     const page = await getText(pageUrl, { missingOn404: true })
-    const block = page.slice(Math.max(0, page.indexOf('id="data"')))
-    const hasData = page.includes('id="data"')
-    const end = block.search(/id="(?!data")[a-z_]+"\s+class="mt-40"/)
-    const section = hasData ? (end > 0 ? block.slice(0, end) : block) : ''
+    const start = page.indexOf('id="data"')
+    let section = ''
+    if (start >= 0) {
+      const rest = page.slice(start + 9)
+      // The Data section ends at the next id="..." attribute or the next heading other than "Data".
+      const end = rest.search(/\sid="|<h5\b(?![^>]*>\s*Data\s*<)/i)
+      section = end >= 0 ? rest.slice(0, end) : rest
+    }
     const link = /href="([^"]*release-document-log\?release_document_id=\d+[^"]*)"/.exec(section)
     if (!link) throw new SourceError('dosm_dataset_missing', { detail: { reason: 'no data link' } })
     const dataUrl = new URL(link[1].replace(/&amp;/g, '&'), SITE).href
+    if (new URL(dataUrl).host !== 'www.dosm.gov.my') throw new SourceError('dosm_dataset_missing', { detail: { reason: 'foreign host' } })
 
     const response = await get(dataUrl, { missingOn404: true })
     const type = (response.headers.get('content-type') ?? '').toLowerCase()

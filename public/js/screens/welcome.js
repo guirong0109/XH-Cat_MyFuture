@@ -210,11 +210,10 @@ const MASCOT = `<svg class="lp-mascot" viewBox="0 0 132 150" aria-hidden="true">
  <path d="M54 119h24M54 125h18"/>
 </svg>`
 
-// The footer: a panel under a dark band with a wavy edge, the about line, a large wordmark with the mascot, the
-// language switch, and the small print (the O*NET licence asks for its line).
+// The footer, in one panel with the closing block (.lp-end) under its wavy edge: the about line, a large wordmark with
+// the mascot, the language switch, and the small print (the O*NET licence asks for its line).
 const footer = (t, state) => `
 <footer class="lp-footer">
- <div class="lp-footer-band" aria-hidden="true"></div>
  <div class="lp-footer-body">
   <p class="lp-footer-about">${esc(t('ldFootAbout'))}</p>
   <div class="lp-footer-base">
@@ -251,6 +250,8 @@ export default ({ t, state }) => `
  ${data(t)}
  ${principles(t)}
  ${audiences(t)}
+ <div class="lp-end">
  ${closing(t)}
  ${footer(t, state)}
+ </div>
 </div>`

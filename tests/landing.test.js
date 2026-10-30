@@ -68,7 +68,7 @@ describe('landing page', () => {
   it('every section of the page keeps its styles in landing.css', async () => {
     const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
     for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-tally{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
-      '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-footer{']) expect(css).toContain(rule)
+      '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-end{', '.lp-footer{']) expect(css).toContain(rule)
     for (const [, name] of css.matchAll(/^\.(lp-[\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
   })
 
@@ -118,11 +118,18 @@ describe('how it works, in the look of section 2', () => {
 })
 
 describe('footer', () => {
-  it('is a panel with a wavy top band, the about line, a large wordmark with the ATM mascot and the language switch', () => {
+  it('joins the closing call to action in one panel: the dark closing block, then the footer under its wavy edge', () => {
+    const html = page()
+    const end = html.slice(html.indexOf('<div class="lp-end">'))
+    expect(end.indexOf('<section class="lp-close">')).toBeGreaterThan(-1)
+    expect(end.indexOf('<section class="lp-close">')).toBeLessThan(end.indexOf('<footer class="lp-footer">'))
+    expect(html).not.toContain('lp-footer-band')
+  })
+
+  it('shows the about line, a large wordmark with the ATM mascot and the language switch', () => {
     for (const lang of ['en', 'ms', 'zh']) {
       const html = page(lang)
       const foot = html.slice(html.indexOf('<footer'))
-      expect(foot).toContain('class="lp-footer-band"')
       expect(foot).toContain('class="lp-wordmark"')
       expect(foot).toMatch(/<svg class="lp-mascot"[^>]*aria-hidden="true"/)
       expect(foot).toContain(translate(lang, 'ldFootAbout'))

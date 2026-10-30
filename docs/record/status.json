@@ -1034,6 +1034,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "new footer; npm test 256 passed; checked in Chrome at 1440 and 390 px, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block not as a separate box; join it to the footer like your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block is the dark top of the footer panel, its bottom edge cut into scallops; footer band removed; npm test 257 passed; checked in Chrome at 1440 and 390 px"
     }
   ]
 }

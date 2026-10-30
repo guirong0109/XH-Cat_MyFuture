@@ -144,21 +144,24 @@ body.landing main{max-width:none;padding:0}
 .lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
 .lp-who{border-bottom:0}
 
-/* closing call to action */
-.lp-close{margin:0 0 clamp(48px,7vw,96px);padding:clamp(40px,8vw,104px);border-radius:32px;color:var(--lp-cream);
-  background:radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
-             radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink)}
+/* the end of the page: one rounded panel (.lp-end) holding the closing call to action and the footer. The closing block
+   is the dark top, with a faint tile grid; its bottom edge is cut into scallops (a mask, so the glow runs into them)
+   and the footer follows straight underneath. */
+.lp-end{margin:0 0 clamp(16px,3vw,32px);border:1px solid var(--lp-line);border-radius:32px;overflow:hidden;background:var(--lp-paper)}
+.lp-close{padding:clamp(40px,8vw,104px) clamp(24px,8vw,104px) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
+             linear-gradient(color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
+             radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
+             radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink);
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
+    radial-gradient(circle at 14px 0,#000 13.5px,#0000 14px) bottom left/28px 14px repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
+    radial-gradient(circle at 14px 0,#000 13.5px,#0000 14px) bottom left/28px 14px repeat-x}
 .lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
 
-/* footer: a rounded panel under a dark band (a faint tile grid) whose bottom edge is a row of scallops; the about line
-   top right, a large wordmark with the ATM mascot bottom left, the language switch bottom right, then the small print */
-.lp-footer{position:relative;margin:0 0 clamp(16px,3vw,32px);border:1px solid var(--lp-line);border-radius:28px;overflow:hidden;
-  background:var(--lp-paper);font-size:13px;line-height:1.6;color:var(--lp-muted)}
-.lp-footer-band{position:relative;height:clamp(56px,7vw,84px);margin-bottom:16px;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 12%,transparent) 1px,transparent 1px) 0 0/44px 44px,
-             linear-gradient(color-mix(in srgb,var(--lp-cream) 12%,transparent) 1px,transparent 1px) 0 0/44px 44px,var(--lp-ink)}
-.lp-footer-band::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;
-  background:radial-gradient(circle at 14px 0,var(--lp-ink) 13.5px,transparent 14px) 0 0/28px 14px repeat-x}
+/* footer, under the closing block's wavy edge: the about line top right, a large wordmark with the ATM mascot bottom
+   left, the language switch bottom right, then the small print */
+.lp-footer{position:relative;font-size:13px;line-height:1.6;color:var(--lp-muted)}
 .lp-footer-body{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(24px,3vw,36px) clamp(20px,3.4vw,44px) clamp(20px,2.4vw,28px)}
 .lp-footer-about{justify-self:end;max-width:44ch;text-align:right;font-size:15px;line-height:1.45;font-weight:600;color:var(--lp-ink)}
 .lp-footer-base{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:.22em;font-size:clamp(50px,12.5vw,184px)}
@@ -305,7 +308,7 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-gapnote::before{display:none}
   .lp-list li{grid-template-columns:1fr;gap:10px}
   .lp-list .lp-pill{justify-self:start}
-  .lp-close{border-radius:24px}
+  .lp-end{border-radius:24px}
   .lp-footer-about{justify-self:start;text-align:left}
   .lp-sub,.lp-lead{font-size:17px}
 }

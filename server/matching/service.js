@@ -187,6 +187,9 @@ export function createMatchingService({ loadData, radar = null, references = nul
     return { chain: r, best, others, ai: { moderate, rapid }, jobAds, bands: { moderate: bandOf(jobAds, moderate), rapid: bandOf(jobAds, rapid) } }
   }
 
+  // Official UN goal titles (data/sdg/targets.json, UN Statistics Division SDG API), by goal number.
+  const goalTitlesOf = (data) => Object.fromEntries(arr(data.sdg.targets.goals).map((g) => [String(g.code), g.title ?? null]))
+
   const skillMatchOf = (best, mine) =>
     mine.usable && best
       ? { percent: best.fit.percent, met: round2(best.fit.met), needed: round2(best.fit.needed), provisional: best.fit.provisional, onetCode: best.code, onetTitle: best.title }
@@ -215,6 +218,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
       sources: data.sources,
       radar: info,
       profile: { usable: mine.usable, provisional: mine.provisional, unusedIds: mine.unusedIds },
+      goalTitles: goalTitlesOf(data),
       roles,
     }
   }
@@ -264,7 +268,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
       fit,
       outlook: { jobAds: core.jobAds, ai: core.ai },
       software,
-      sdg: { tags, pathPreview: pathContribution(approved, found.code, gapKeys) },
+      sdg: { tags, pathPreview: pathContribution(approved, found.code, gapKeys), goalTitles: goalTitlesOf(data) },
     }
   }
 

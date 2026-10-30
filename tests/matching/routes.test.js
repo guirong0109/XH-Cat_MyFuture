@@ -390,6 +390,12 @@ describe('POST /api/matching/role', () => {
     expect(body.sdg.tags[0]).toMatchObject({ approvedAt: '2026-10-31T00:00:00.000Z', reason: expect.objectContaining({ en: expect.any(String) }) })
     expect(body.sdg.pathPreview.goals.map((g) => g.goal)).toEqual([4, 8, 9])
     expect(body.sdg.pathPreview.total).toBe(3)
+    // every path link, item links too, carries the owner's approval date; goal titles come from targets.json
+    const item = body.sdg.pathPreview.goals.flatMap((g) => g.links).find((l) => l.via.kind === 'item')
+    expect(item).toMatchObject({ target: '4.4', approvedAt: '2026-10-31T00:00:00.000Z' })
+    expect(body.sdg.goalTitles).toMatchObject({ 4: 'Quality education', 9: 'Industry, innovation and infrastructure' })
+    const list = await post('/api/matching', { profile: FULL })
+    expect(list.body.goalTitles).toMatchObject({ 8: 'Decent work' })
   })
 
   it('a role whose chain stops: no fit, Rapid from the chain ISCO code; no chain ISCO code -> Rapid unavailable with the missing step', async () => {

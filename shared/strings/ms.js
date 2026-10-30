@@ -860,6 +860,5 @@ export default {
   mtViaRole: "melalui peranan (kumpulan MASCO {code})", // translation: owner review
   mtViaItem: "melalui kemahiran yang akan anda bina: {name}", // translation: owner review
   mtApprovedDraft: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
-  mtApprovedDraftNoDate: "draf pasukan, diluluskan oleh pemilik", // translation: owner review
   mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan: draf pasukan ditunjukkan hanya selepas kelulusan pemilik; draf yang masih menunggu tidak dikira. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review
 }

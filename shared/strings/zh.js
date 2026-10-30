@@ -860,6 +860,5 @@ export default {
   mtViaRole: "经由职位（MASCO 组 {code}）", // translation: owner review
   mtViaItem: "经由您将培养的技能：{name}", // translation: owner review
   mtApprovedDraft: "团队草稿，所有者于 {date} 批准", // translation: owner review
-  mtApprovedDraftNoDate: "团队草稿，已由所有者批准", // translation: owner review
   mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。关联：团队草稿仅在所有者批准后显示；待审草稿不计入。这里计算带理由的关联，不衡量影响。", // translation: owner review
 }

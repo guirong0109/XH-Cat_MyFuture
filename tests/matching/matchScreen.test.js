@@ -191,7 +191,8 @@ describe('Career matching screen', () => {
     expect(text(nine)).toContain('Fixture Database Designer')
     expect(text(nine)).toContain('Fixture Software Developer')
     expect(text(nine)).not.toContain('Fixture Unknown Unit Role')
-    expect(nine).toContain('<option value="9" selected>')
+    expect(nine).toContain('<option value="9" selected>SDG 9 Industry, innovation and infrastructure</option>')
+    expect(nine).toContain('<option value="8">SDG 8 Decent work</option>')
     // the filter never changes a percent
     expect(percents(nine)).toEqual(percents(view()))
     // a role with no approved link says so
@@ -244,6 +245,12 @@ describe('SDG contribution screen', () => {
     expect(s).toContain('Digital skills for work.')
     expect(s).toContain('Computers and Electronics')
     expect(s).toContain('2026-10-31')
+    // the item link (a skill to build) shows its own approval date
+    const item = html.slice(html.indexOf('Computers and Electronics'))
+    expect(text(item.slice(0, item.indexOf('</div></div>')))).toContain('team draft, approved by owner on 2026-10-31')
+    // the official UN goal title under each goal
+    expect(s).toContain('Quality education')
+    expect(s).toContain('Industry, innovation and infrastructure')
   })
 
   it('no chosen role: a card that leads to Career matching', () => {

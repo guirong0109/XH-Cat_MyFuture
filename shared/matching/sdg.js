@@ -54,7 +54,8 @@ export function goalsOfRole(approved, emascoCode) {
 }
 
 // What a path touches: the role's group links plus the links of the items still to learn, grouped by goal (ascending).
-// count and total are numbers of links, each shown with its reason; never a score.
+// count and total are numbers of links, each shown with its reason and the date the owner approved it (approvedAt,
+// when the caller's approved links carry it); never a score.
 export function pathContribution(approved, emascoCode, gapKeys) {
   const entries = roleLinks(approved, emascoCode).map((l) => ({ link: l, via: 'role' }))
   for (const key of new Set(gapKeys ?? [])) for (const l of itemLinks(approved, key)) entries.push({ link: l, via: 'item' })
@@ -62,7 +63,7 @@ export function pathContribution(approved, emascoCode, gapKeys) {
   for (const { link, via } of entries) {
     const goal = goalOf(link.target)
     if (!byGoal.has(goal)) byGoal.set(goal, [])
-    byGoal.get(goal).push({ target: link.target, reason: link.reason, via: { kind: via, code: link.code, name: link.name ?? null } })
+    byGoal.get(goal).push({ target: link.target, reason: link.reason, approvedAt: link.approvedAt ?? null, via: { kind: via, code: link.code, name: link.name ?? null } })
   }
   const goals = [...byGoal.keys()].sort((a, b) => a - b).map((goal) => ({ goal, count: byGoal.get(goal).length, links: byGoal.get(goal) }))
   return { goals, total: entries.length }

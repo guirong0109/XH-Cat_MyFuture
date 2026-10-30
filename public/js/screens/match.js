@@ -253,13 +253,16 @@ function profileLine(t, profile) {
   return `<div class="mt-src">${esc(t('mtProfileUsed'))} <b>${esc(bits.join(' · '))}</b> · <button class="btn ghost sm mt-link" type="button" data-act="editSkills">${esc(t('mtEditProfile'))}</button> ${esc(t('mtNeverStored'))}</div>`
 }
 
-function controls(t, m, roles, profile) {
+// The official UN title of a goal (data/sdg/targets.json via the API), or '' when it is not known.
+export const goalTitle = (titles, goal) => (titles && typeof titles[String(goal)] === 'string' ? titles[String(goal)] : '')
+
+function controls(t, m, roles, profile, titles) {
   const scenario = scenarioOf(m)
   const goals = [...new Set(roles.flatMap((r) => r.sdgGoals ?? []))].sort((a, b) => a - b)
   const seg = [['moderate', 'mtScnModerate', 'mtScnModerateSub'], ['rapid', 'mtScnRapid', 'mtScnRapidSub']]
     .map(([id, label, sub]) => `<button type="button" class="${scenario === id ? 'on' : ''}" data-act="mScn" data-arg="${id}" aria-pressed="${scenario === id}">${esc(t(label))}<small>${esc(t(sub))}</small></button>`).join('')
   const options = [`<option value=""${m.sdgFilter ? '' : ' selected'}>${esc(t('mtSdgAll'))}</option>`]
-    .concat(goals.map((g) => `<option value="${esc(g)}"${String(m.sdgFilter) === String(g) ? ' selected' : ''}>SDG ${esc(g)}</option>`)).join('')
+    .concat(goals.map((g) => `<option value="${esc(g)}"${String(m.sdgFilter) === String(g) ? ' selected' : ''}>${esc(['SDG', g, goalTitle(titles, g)].filter(Boolean).join(' '))}</option>`)).join('')
   return `<div class="card mt-controls">
     <div class="row mt-ctrlrow">
       <div><div class="tiny muted mt-lbl">${esc(t('mtScenario'))} <span class="tag t-est">${esc(t('mtEstimate'))}</span></div>
@@ -352,7 +355,7 @@ export function matchView({ t, state }) {
   const other = shown.filter((r) => !r.inField)
   const fieldNames = (state.profile?.education?.records ?? []).map((r) => r?.field).filter((f) => f?.code).map((f) => t('mtFieldCode', { title: f.title ?? '', code: f.code }))
   return `<div class="mt">${head}
-    ${controls(t, m, all, state.profile)}
+    ${controls(t, m, all, state.profile, data.goalTitles)}
     ${banner(t, m, all)}
     ${notes(t, data, state.profile)}
     <h2 class="mt-h2">${esc(t('mtInField'))} <span class="tiny muted">${esc([...fieldNames, t('mtRoleCount', { count: field.length })].join(' · '))}</span></h2>

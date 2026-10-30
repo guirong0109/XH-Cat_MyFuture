@@ -105,10 +105,19 @@ describe('role and item links', () => {
     const g4 = out.goals.find((g) => g.goal === 4)
     expect(g4.count).toBe(2)
     expect(g4.links).toEqual([
-      { target: '4.4', reason: reason('skills'), via: { kind: 'role', code: '25', name: null } },
-      { target: '4.4', reason: reason('maths'), via: { kind: 'item', code: 'kn:2.C.4.a', name: 'Mathematics' } },
+      { target: '4.4', reason: reason('skills'), approvedAt: null, via: { kind: 'role', code: '25', name: null } },
+      { target: '4.4', reason: reason('maths'), approvedAt: null, via: { kind: 'item', code: 'kn:2.C.4.a', name: 'Mathematics' } },
     ])
     expect(out.goals.find((g) => g.goal === 16).links[0].via).toEqual({ kind: 'item', code: 'kn:2.C.7.a', name: 'Law' })
+  })
+
+  it('each path link carries the date the owner approved it, for role and item links', () => {
+    const dated = approved.map((l, i) => ({ ...l, approvedAt: `2026-10-3${i % 2}T00:00:00.000Z` }))
+    const out = pathContribution(dated, '2512', ['kn:2.C.4.a'])
+    const all = out.goals.flatMap((g) => g.links)
+    const item = all.find((l) => l.via.kind === 'item')
+    expect(item.approvedAt).toBe(dated.find((l) => l.code === 'kn:2.C.4.a').approvedAt)
+    for (const l of all) expect(l.approvedAt).toMatch(/^2026-10-3[01]T/)
   })
 
   it('a path with nothing approved is empty', () => {

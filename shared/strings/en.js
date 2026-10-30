@@ -860,6 +860,5 @@ export default {
   mtViaRole: "via the role (MASCO group {code})",
   mtViaItem: "via a skill you would build: {name}",
   mtApprovedDraft: "team draft, approved by owner on {date}",
-  mtApprovedDraftNoDate: "team draft, approved by owner",
   mtSdgSrc: "SDG targets: UN Statistics Division SDG API, fetched {date}. Links: team drafts shown only after owner approval; drafts still pending are not counted. This counts links with reasons; it does not measure impact.",
 }

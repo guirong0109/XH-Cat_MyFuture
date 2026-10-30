@@ -1235,6 +1235,11 @@
       "time": "31 Oct",
       "step": "Matching final review fixes",
       "detail": "matching reloads after trend, judge or SDG changes with a 'trend data changed' banner; SDG decisions cached 60 s and dropped on each decision; missing chain step worded in EN/BM/中文; small fixes (level names, SDG card error, no-profile SDG tab, links file error); npm test 777 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching wording fix (your screenshot)",
+      "detail": "banner says no role moved instead of 0 role(s): none; 1 role / N roles; missing steps say they wait for the BLS crosswalk files; npm test 781 passed"
     }
   ]
 }

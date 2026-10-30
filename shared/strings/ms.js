@@ -722,10 +722,13 @@ export default {
   mtEditProfile: "Sunting profil", // translation: owner review
   mtNeverStored: "Profil anda dihantar untuk mengira padanan dan tidak pernah disimpan.", // translation: owner review
   mtBannerTitle: "Bertukar kepada {scenario} memindahkan {count} peranan:", // translation: owner review
+  mtBannerTitleOne: "Bertukar kepada {scenario} memindahkan 1 peranan:", // translation: owner review
+  mtBannerNoMove: "Bertukar kepada {scenario} tidak memindahkan mana-mana peranan ke kumpulan lain.", // translation: owner review
   mtBannerItem: "{title} (kumpulan {from} → {to})", // translation: owner review
-  mtBannerNone: "tiada", // translation: owner review
   mtBannerSame: "Nombor Padanan Kemahiran tidak berubah.", // translation: owner review
   mtTrendTitle: "Data trend berubah: {count} peranan berpindah dalam {scenario}:", // translation: owner review
+  mtTrendTitleOne: "Data trend berubah: 1 peranan berpindah dalam {scenario}:", // translation: owner review
+  mtTrendNoMove: "Data trend berubah, tetapi tiada peranan berpindah ke kumpulan lain dalam {scenario}.", // translation: owner review
   mtClose: "Tutup", // translation: owner review
   mtJudge: "Sesi Ujian Perubahan Trend juri: kumpulan iklan kerja menggunakan data ujian anda.", // translation: owner review
   mtRadarDown: "Data iklan kerja tidak tersedia sekarang, jadi setiap peranan berada dalam kumpulan 4 apabila bahagian iklan kerja diperlukan.", // translation: owner review
@@ -747,6 +750,7 @@ export default {
   mtStep_invalid: "kod ini bukan kod unit MASCO 4 digit", // translation: owner review
   mtStep_no_row: "tiada baris untuk {codes} dalam langkah rasmi {step}", // translation: owner review
   mtStep_pending: "langkah rasmi {step} belum dibina", // translation: owner review
+  mtStep_waitsBls: "langkah rasmi {step} menunggu fail padanan BLS, yang belum disimpan", // translation: owner review
   mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC (jadual silang O*NET)", // translation: owner review
   mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018 (jadual silang BLS)", // translation: owner review
   mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010 (jadual silang BLS)", // translation: owner review

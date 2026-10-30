@@ -722,10 +722,13 @@ export default {
   mtEditProfile: "编辑档案", // translation: owner review
   mtNeverStored: "您的档案仅用于计算匹配，从不保存。", // translation: owner review
   mtBannerTitle: "切换到{scenario}后，{count} 个职位换了组：", // translation: owner review
+  mtBannerTitleOne: "切换到{scenario}后，1 个职位换了组：", // translation: owner review
+  mtBannerNoMove: "切换到{scenario}后，没有职位换组。", // translation: owner review
   mtBannerItem: "{title}（组 {from} → {to}）", // translation: owner review
-  mtBannerNone: "无", // translation: owner review
   mtBannerSame: "技能匹配数字没有改变。", // translation: owner review
   mtTrendTitle: "趋势数据已更改：在{scenario}中有 {count} 个职位换了组：", // translation: owner review
+  mtTrendTitleOne: "趋势数据已更改：在{scenario}中有 1 个职位换了组：", // translation: owner review
+  mtTrendNoMove: "趋势数据已更改，但在{scenario}中没有职位换组。", // translation: owner review
   mtClose: "关闭", // translation: owner review
   mtJudge: "评委趋势变化测试会话：招聘广告组使用您的测试数据。", // translation: owner review
   mtRadarDown: "招聘广告数据暂时不可用，因此需要该部分时所有职位都在第 4 组。", // translation: owner review
@@ -747,6 +750,7 @@ export default {
   mtStep_invalid: "此代码不是 MASCO 4 位单元代码", // translation: owner review
   mtStep_no_row: "官方步骤 {step} 中没有 {codes} 的对应行", // translation: owner review
   mtStep_pending: "官方步骤 {step} 尚未建立", // translation: owner review
+  mtStep_waitsBls: "官方步骤 {step} 正在等待 BLS 对照文件，该文件尚未保存", // translation: owner review
   mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC（O*NET 对照表）", // translation: owner review
   mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018（BLS 对照表）", // translation: owner review
   mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010（BLS 对照表）", // translation: owner review

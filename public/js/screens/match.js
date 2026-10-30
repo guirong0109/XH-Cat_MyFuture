@@ -41,13 +41,16 @@ export const matchToSave = (m) => ({ scenario: scenarioOf(m), chosen: typeof m?.
 // The missing step of the code chain in the user's language, from its id and kind (shared/matching/chain.js). The
 // data's own reason (bridge pendingReason, English) is only an extra detail, never the main text.
 const STEP_KINDS = ['pending', 'no_row', 'invalid', 'no_onet_data']
+const BLS_STEPS = ['masco2020_unit_to_isco08', 'soc2010_to_isco08', 'soc2018_to_soc2010']
 export function stepReason(t, step) {
   if (!step) return ''
   const codes = (step.from?.codes ?? []).join(', ')
   const nameKey = `mtStepName_${step.id}`
   const name = t(nameKey)
   const kind = STEP_KINDS.includes(step.kind) ? step.kind : step.id === 'no_onet_data' ? 'no_onet_data' : 'pending'
-  return t(`mtStep_${kind}`, { step: name === nameKey ? String(step.id ?? '') : name, codes })
+  // These three steps are built from the BLS crosswalk files (pipeline/fetch_radar_bridge.py); say what they wait for.
+  const key = kind === 'pending' && BLS_STEPS.includes(step.id) ? 'mtStep_waitsBls' : `mtStep_${kind}`
+  return t(key, { step: name === nameKey ? String(step.id ?? '') : name, codes })
 }
 // "MASCO 2020 2512: the official step MASCO 2020 → ISCO-08 is not built yet"
 export function stepText(t, step) {
@@ -297,10 +300,23 @@ function banner(t, m, roles) {
   const prev = m.prevScenario === 'rapid' || m.prevScenario === 'moderate' ? m.prevScenario : null
   if (!prev || prev === scenario) return ''
   const moved = movedRoles(roles.map((r) => ({ code: r.code, band: bandOf(r, prev) })), roles.map((r) => ({ code: r.code, band: bandOf(r, scenario) })))
+  return movedBanner(t, BANNER_KEYS.scenario, scenario, moved, roles, '')
+}
+
+// One banner text for "what moved": no role → a plain sentence; 1 role → "1 role"; more → "N roles", then the names.
+const BANNER_KEYS = {
+  scenario: { none: 'mtBannerNoMove', one: 'mtBannerTitleOne', many: 'mtBannerTitle' },
+  trend: { none: 'mtTrendNoMove', one: 'mtTrendTitleOne', many: 'mtTrendTitle' },
+}
+function movedBanner(t, keys, scenario, moved, roles, attrs) {
+  const label = t(scenario === 'rapid' ? 'mtScnRapid' : 'mtScnModerate')
   const titles = new Map(roles.map((r) => [r.code, r.title]))
-  const items = moved.map((x) => t('mtBannerItem', { title: titles.get(x.code) ?? x.code, from: x.from, to: x.to })).join(' · ') || t('mtBannerNone')
-  return `<div class="banner mt-banner" role="status"><div><b>${esc(t('mtBannerTitle', { scenario: t(scenario === 'rapid' ? 'mtScnRapid' : 'mtScnModerate'), count: moved.length }))}</b>
-    ${esc(items)}. ${esc(t('mtBannerSame'))}</div>
+  const items = moved.map((x) => t('mtBannerItem', { title: titles.get(x.code) ?? x.code, from: x.from, to: x.to })).join(' · ')
+  const head = !moved.length ? t(keys.none, { scenario: label })
+    : moved.length === 1 ? t(keys.one, { scenario: label })
+      : t(keys.many, { scenario: label, count: moved.length })
+  const body = moved.length ? `<b>${esc(head)}</b>\n    ${esc(items)}. ${esc(t('mtBannerSame'))}` : `<b>${esc(head)}</b> ${esc(t('mtBannerSame'))}`
+  return `<div class="banner mt-banner" role="status"${attrs}><div>${body}</div>
     <button class="btn sm" type="button" data-act="mBannerClose">${esc(t('mtClose'))}</button></div>`
 }
 
@@ -318,11 +334,7 @@ export function trendMoves(before, data) {
 function trendBanner(t, m, roles) {
   const trend = m.trend
   if (!trend || !Array.isArray(trend.moved) || trend.scenario !== scenarioOf(m)) return ''
-  const titles = new Map(roles.map((r) => [r.code, r.title]))
-  const items = trend.moved.map((x) => t('mtBannerItem', { title: titles.get(x.code) ?? x.code, from: x.from, to: x.to })).join(' · ') || t('mtBannerNone')
-  return `<div class="banner mt-banner" role="status" data-banner="trend"><div><b>${esc(t('mtTrendTitle', { scenario: t(trend.scenario === 'rapid' ? 'mtScnRapid' : 'mtScnModerate'), count: trend.moved.length }))}</b>
-    ${esc(items)}. ${esc(t('mtBannerSame'))}</div>
-    <button class="btn sm" type="button" data-act="mBannerClose">${esc(t('mtClose'))}</button></div>`
+  return movedBanner(t, BANNER_KEYS.trend, trend.scenario, trend.moved, roles, ' data-banner="trend"')
 }
 
 function notes(t, data, profile) {

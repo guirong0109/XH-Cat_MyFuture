@@ -166,7 +166,7 @@ describe('Career matching screen', () => {
     const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: { id: 'masco2020_unit_to_isco08', kind: 'pending', from: { system: 'MASCO 2020', codes: [r.code.slice(0, 4)] }, reason: 'waits for the ISCO-08 code list in the BLS ISCO file' } } })) }
     const page = text(view({ data: today }))
     expect(page).toContain(t('mtChainTitle'))
-    expect(page).toContain(t('mtStep_pending', { step: 'MASCO 2020 → ISCO-08' }))
+    expect(page).toContain(t('mtStep_waitsBls', { step: 'MASCO 2020 → ISCO-08' }))
     // the data's own reason stays as an English detail in the chain path
     expect(page).toContain('waits for the ISCO-08 code list in the BLS ISCO file')
     expect(page).toContain('Fixture Database Designer')
@@ -252,7 +252,9 @@ describe('Missing step in the user\'s language (final review 3)', () => {
       const tl = (key, vars) => translate(lang, key, vars)
       for (const step of STEPS) {
         const out = stepText(tl, step)
-        expect(out, `${lang} ${step.id} ${step.kind}`).toContain(tl(`mtStep_${step.kind}`, { step: tl(`mtStepName_${step.id}`), codes: step.from.codes.join(', ') }))
+        // a pending step built from the BLS files says it waits for them
+        const key = step.kind === 'pending' && step.id !== 'onet_to_soc2018' ? 'mtStep_waitsBls' : `mtStep_${step.kind}`
+        expect(out, `${lang} ${step.id} ${step.kind}`).toContain(tl(key, { step: tl(`mtStepName_${step.id}`), codes: step.from.codes.join(', ') }))
         if (step.from.codes.length) expect(out).toContain(`${step.from.system} ${step.from.codes.join(', ')}`)
         if (lang !== 'en') expect(out, `${lang} ${step.id}`).not.toContain(step.reason)
         expect(out).not.toMatch(/mtStep/)
@@ -279,7 +281,7 @@ describe('Missing step in the user\'s language (final review 3)', () => {
       const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: STEPS[0] } })) }
       const page = matchView({ t: tl, state: { lang, profile: FULL, match: match({ data: today }) } })
       const note = text(page.slice(page.indexOf('class="mt-steps"'), page.indexOf('</ul>', page.indexOf('class="mt-steps"'))))
-      expect(note).toContain(tl('mtStep_pending', { step: 'MASCO 2020 → ISCO-08' }))
+      expect(note).toContain(tl('mtStep_waitsBls', { step: 'MASCO 2020 → ISCO-08' }))
       expect(note).not.toContain('waits for')
     }
   })
@@ -305,13 +307,13 @@ describe('Trend data changed banner (final review 1)', () => {
       const tl = (key, vars) => translate(lang, key, vars)
       const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ trend }) } })
       const banner = html.slice(html.indexOf('data-banner="trend"'), html.indexOf('</div>', html.indexOf('data-banner="trend"') + 200) + 6)
-      expect(text(banner)).toContain(tl('mtTrendTitle', { scenario: tl('mtScnModerate'), count: 1 }))
+      expect(text(banner)).toContain(tl('mtTrendTitleOne', { scenario: tl('mtScnModerate') }))
       expect(text(banner)).toContain(tl('mtBannerItem', { title: role.title, from: 4, to: 3 }))
       expect(text(banner)).toContain(tl('mtBannerSame'))
       expect(html).toContain('data-act="mBannerClose"')
     }
     // nothing moved: still says the data changed ("none"); another scenario shown now, or no trend: no banner
-    expect(text(view({ trend: { scenario: 'moderate', moved: [] } })).replace(/\s+/g, ' ')).toContain(`${t('mtTrendTitle', { scenario: t('mtScnModerate'), count: 0 })} ${t('mtBannerNone')}`)
+    expect(text(view({ trend: { scenario: 'moderate', moved: [] } })).replace(/\s+/g, ' ')).toContain(t('mtTrendNoMove', { scenario: t('mtScnModerate') }))
     expect(view({ trend: { scenario: 'rapid', moved: [] } })).not.toContain('data-banner="trend"')
     expect(view()).not.toContain('data-banner="trend"')
     // escaped
@@ -395,7 +397,7 @@ describe('SDG contribution screen', () => {
 describe('Career matching strings and code', () => {
   const DYNAMIC = [1, 2, 3, 4].flatMap((b) => [`mtBand${b}`, `mtBand${b}Why`])
     .concat(['el', 'kn'].map((k) => `mtKind_${k}`), ['basic', 'good', 'expert'].map((w) => `mtLevel_${w}`))
-    .concat(['pending', 'no_row', 'invalid', 'no_onet_data'].map((k) => `mtStep_${k}`))
+    .concat(['pending', 'no_row', 'invalid', 'no_onet_data', 'waitsBls'].map((k) => `mtStep_${k}`))
     .concat(['masco2020_unit_to_isco08', 'soc2010_to_isco08', 'soc2018_to_soc2010', 'onet_to_soc2018'].map((id) => `mtStepName_${id}`))
 
   it('every text key exists in en, ms and zh', () => {
@@ -422,5 +424,55 @@ describe('Career matching strings and code', () => {
         expect(String(value), key).not.toMatch(FORBIDDEN)
       }
     }
+  })
+})
+
+describe('Banner and missing-step wording (owner feedback 31 Oct)', () => {
+  const bannerOf = (html, marker) => {
+    const at = html.indexOf(marker)
+    return at < 0 ? '' : text(html.slice(at, html.indexOf('data-act="mBannerClose"', at))).replace(/\s+/g, ' ')
+  }
+  it('a scenario switch that moves no role says so plainly, with no count, "none" or "role(s)"', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const data = { ...list, roles: list.roles.map((r) => ({ ...r, bands: { moderate: 4, rapid: 4 } })) }
+      const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ data, scenario: 'moderate', prevScenario: 'rapid' }) } })
+      const b = bannerOf(html, 'mt-banner')
+      expect(b).toContain(tl('mtBannerNoMove', { scenario: tl('mtScnModerate') }))
+      expect(b).toContain(tl('mtBannerSame'))
+      expect(b).not.toContain('role(s)')
+    }
+  })
+
+  it('one moved role reads "1 role", several read "N roles"', () => {
+    expect(t('mtBannerTitleOne', { scenario: 'Rapid AI' })).toBe('Switching to Rapid AI moved 1 role:')
+    expect(t('mtBannerTitle', { scenario: 'Rapid AI', count: 3 })).toBe('Switching to Rapid AI moved 3 roles:')
+    const one = list.roles.find((r) => r.bands.moderate !== r.bands.rapid)
+    const data = { ...list, roles: list.roles.map((r) => (r.code === one.code ? r : { ...r, bands: { moderate: 4, rapid: 4 } })) }
+    expect(bannerOf(view({ data, scenario: 'rapid', prevScenario: 'moderate' }), 'mt-banner')).toContain(t('mtBannerTitleOne', { scenario: t('mtScnRapid') }))
+  })
+
+  it('a trend change that moves no role says so plainly', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ trend: { scenario: 'moderate', moved: [] } }) } })
+      const b = bannerOf(html, 'data-banner="trend"')
+      expect(b).toContain(tl('mtTrendNoMove', { scenario: tl('mtScnModerate') }))
+      expect(b).not.toMatch(/0/)
+    }
+  })
+
+  it('a step that waits for the BLS crosswalk files says so, in all three languages', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      for (const id of ['masco2020_unit_to_isco08', 'soc2010_to_isco08', 'soc2018_to_soc2010']) {
+        const step = { id, kind: 'pending', from: { system: 'MASCO 2020', codes: ['2512'] }, reason: 'x' }
+        expect(stepText(tl, step)).toContain(tl('mtStep_waitsBls', { step: tl(`mtStepName_${id}`) }))
+      }
+      // a pending step that does not depend on BLS keeps the plain wording
+      const other = { id: 'onet_to_soc2018', kind: 'pending', from: { system: 'SOC 2018', codes: ['15-1252'] }, reason: 'x' }
+      expect(stepText(tl, other)).toContain(tl('mtStep_pending', { step: tl('mtStepName_onet_to_soc2018') }))
+    }
+    expect(t('mtStep_waitsBls', { step: 'MASCO 2020 → ISCO-08' })).toMatch(/BLS/)
   })
 })

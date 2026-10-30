@@ -860,5 +860,17 @@ export default {
   mtViaRole: "melalui peranan (kumpulan MASCO {code})", // translation: owner review
   mtViaItem: "melalui kemahiran yang akan anda bina: {name}", // translation: owner review
   mtApprovedDraft: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
-  mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan: draf pasukan ditunjukkan hanya selepas kelulusan pemilik; draf yang masih menunggu tidak dikira. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review
+  mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan: draf pasukan ditunjukkan hanya selepas kelulusan pemilik; draf yang masih menunggu tidak dikira. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review,
+  rdSdgTitle: "Pautan SDG (padanan kerjaya)", // translation: owner review
+  rdSdgTag: "Draf pasukan: semakan pemilik", // translation: owner review
+  rdSdgNote: "Setiap pautan menghubungkan kumpulan pekerjaan atau kemahiran dengan satu sasaran SDG, beserta sebab. Hanya pautan yang diluluskan dikira pada skrin padanan dan SDG; yang belum diputuskan atau ditolak tidak dikira. Sumber sasaran: UN Statistics Division SDG API.", // translation: owner review
+  rdSdgReadOnly: "Keputusan tersimpan tidak tersedia pada pelayan ini, jadi butang dimatikan.", // translation: owner review
+  rdSdgKindGroup: "Pautan kumpulan pekerjaan (kumpulan sub-major MASCO)", // translation: owner review
+  rdSdgKindItem: "Pautan kemahiran dan pengetahuan (elemen O*NET)", // translation: owner review
+  rdSdgGroupCode: "Kumpulan MASCO {code}", // translation: owner review
+  rdSdgExamples: "Peranan dalam kumpulan ini (eMASCO)", // translation: owner review
+  rdSdgTarget: "Sasaran SDG {target}", // translation: owner review
+  rdSdgOtherLangs: "Bahasa lain", // translation: owner review
+  rdColLink: "Pautan", // translation: owner review
+  rdColSdgTarget: "Sasaran", // translation: owner review
 }

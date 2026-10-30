@@ -174,10 +174,10 @@ function adminFailed(name, out) {
 }
 // Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
 async function reloadAdmin(patch = {}, focus = null) {
-  const [pub, status, mappings, breaks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks()])
-  const failed = [status, mappings, breaks].find((out) => !out.ok)
+  const [pub, status, mappings, breaks, sdgLinks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks()])
+  const failed = [status, mappings, breaks, sdgLinks].find((out) => !out.ok)
   if (failed) return adminFailed('status', failed)
-  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data } }, focus)
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, sdgLinks: sdgLinks.data } }, focus)
 }
 async function loadJudge() {
   state.radarAdmin = { ...adminUi(), loading: true }
@@ -245,6 +245,17 @@ const adminActions = {
     }
     radarStale()
     reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided', recalculation: out.data?.recalculation }) }, 'admMsg-map')
+  },
+  admSdg: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admSdgNote')
+    const notes = { ...adminUi().notes, sdg: note }
+    const out = await adminApi.decideSdgLink({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('sdg', out)
+      return setAdmin({ notes, ...adminMsg('sdg', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admSdgNote' : 'admMsg-sdg')
+    }
+    reloadAdmin({ notes: { ...notes, sdg: '' }, ...adminMsg('sdg', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-sdg')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')

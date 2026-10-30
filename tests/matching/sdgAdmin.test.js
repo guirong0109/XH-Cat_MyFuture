@@ -138,6 +138,20 @@ describe('/api/admin/matching/sdg-links', () => {
     expect(second.body.link.status).toBe('pending')
   })
 
+  it('GET adds three sourced role titles to each group link and the official goal titles', async () => {
+    await start()
+    const session = await login()
+    const got = await call('GET', ROUTE, { session })
+    const roles = JSON.parse(readFileSync(new URL('../../data/emasco/role_details.json', import.meta.url), 'utf8')).roles
+    const goals = JSON.parse(readFileSync(new URL('../../data/sdg/targets.json', import.meta.url), 'utf8')).goals
+    const group = got.body.links.find((l) => l.kind === 'masco_submajor')
+    expect(group.examples).toHaveLength(3)
+    const titles = new Set(roles.filter((r) => r.code.startsWith(group.code)).map((r) => r.title))
+    for (const title of group.examples) expect(titles.has(title)).toBe(true)
+    expect(got.body.links.find((l) => l.kind === 'onet_element').examples).toBeUndefined()
+    expect(got.body.goalTitles['16']).toBe(goals.find((g) => g.code === '16').title)
+  })
+
   it('field-topic mappings still list only field-topic reviews', async () => {
     await start()
     const session = await login()

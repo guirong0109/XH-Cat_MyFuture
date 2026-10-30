@@ -860,5 +860,17 @@ export default {
   mtViaRole: "经由职位（MASCO 组 {code}）", // translation: owner review
   mtViaItem: "经由您将培养的技能：{name}", // translation: owner review
   mtApprovedDraft: "团队草稿，所有者于 {date} 批准", // translation: owner review
-  mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。关联：团队草稿仅在所有者批准后显示；待审草稿不计入。这里计算带理由的关联，不衡量影响。", // translation: owner review
+  mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。关联：团队草稿仅在所有者批准后显示；待审草稿不计入。这里计算带理由的关联，不衡量影响。", // translation: owner review,
+  rdSdgTitle: "可持续发展目标关联（职业匹配）", // translation: owner review
+  rdSdgTag: "团队草稿：负责人审核", // translation: owner review
+  rdSdgNote: "每条关联把一个职业组或一项技能与一个可持续发展目标的具体指标相连，并附理由。只有获批的关联会计入匹配和可持续发展目标页面；待定和被拒绝的不计入。指标来源：联合国统计司 SDG API。", // translation: owner review
+  rdSdgReadOnly: "此服务器无法保存决定，因此按钮已关闭。", // translation: owner review
+  rdSdgKindGroup: "职业组关联（MASCO 次大类）", // translation: owner review
+  rdSdgKindItem: "技能与知识关联（O*NET 要素）", // translation: owner review
+  rdSdgGroupCode: "MASCO 组 {code}", // translation: owner review
+  rdSdgExamples: "本组职位（eMASCO）", // translation: owner review
+  rdSdgTarget: "可持续发展目标指标 {target}", // translation: owner review
+  rdSdgOtherLangs: "其他语言", // translation: owner review
+  rdColLink: "关联", // translation: owner review
+  rdColSdgTarget: "指标", // translation: owner review
 }

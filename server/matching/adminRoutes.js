@@ -42,6 +42,28 @@ export function linkHash(link) {
 
 export const loadSdgLinks = async (dataDir) => JSON.parse(await readFile(path.join(dataDir, 'sdg', 'links.json'), 'utf8')).links ?? []
 
+// Three role titles per 2-digit MASCO group (data/emasco/role_details.json) and the goal titles (data/sdg/targets.json),
+// so the owner sees what a group link is about. Best effort: a missing file leaves them out.
+async function loadContext(dataDir) {
+  if (!dataDir) return { byGroup: {}, goalTitles: {} }
+  const safe = async (file) => {
+    try {
+      return JSON.parse(await readFile(path.join(dataDir, ...file.split('/')), 'utf8'))
+    } catch {
+      return null
+    }
+  }
+  const roles = (await safe('emasco/role_details.json'))?.roles ?? []
+  const byGroup = {}
+  for (const role of roles) {
+    const group = String(role.code ?? '').slice(0, 2)
+    const list = (byGroup[group] ??= [])
+    if (typeof role.title === 'string' && list.length < 3 && !list.includes(role.title)) list.push(role.title)
+  }
+  const goalTitles = Object.fromEntries(((await safe('sdg/targets.json'))?.goals ?? []).map((g) => [String(g.code), g.title ?? null]))
+  return { byGroup, goalTitles }
+}
+
 // loadLinks: async () => links (data/sdg/links.json .links); given for tests, else read from dataDir.
 export function matchingAdminRoutes({ radar, access, now = () => new Date(), dataDir = null, loadLinks = null, log = (message) => console.info(message) }) {
   const router = express.Router()
@@ -75,7 +97,9 @@ export function matchingAdminRoutes({ radar, access, now = () => new Date(), dat
   router.get('/api/admin/matching/sdg-links', guard(async (request, response) => {
     const links = await hashedLinks()
     const reviews = writable() ? await loadReviews(store, KIND) : []
-    return response.json({ writable: writable(), links: linkStatuses(links, reviews) })
+    const { byGroup, goalTitles } = await loadContext(dataDir)
+    const listed = linkStatuses(links, reviews).map((l) => (l.kind === 'masco_submajor' && byGroup[l.code]?.length ? { ...l, examples: byGroup[l.code] } : l))
+    return response.json({ writable: writable(), links: listed, goalTitles })
   }))
 
   router.post('/api/admin/matching/sdg-links', jsonBody('16kb'), guard(async (request, response) => {

@@ -1,7 +1,10 @@
 // Future Skills Radar: what a change in signals reaches (spec §6.6). Pure and deterministic: arrays sorted by id,
 // keys in a fixed order. Jobs are reached only through their DOSM group and are marked group level: a group signal is
-// never a signal about one job. Fields are reached only through approved field-topic records. Skill demand has no
+// never a signal about one job. Fields are reached only through approved field-topic records,
+// with the more detailed fields a rejection overrides listed as excludes. Skill demand has no
 // evidence in Round 1.
+
+import { approvedFieldReach } from './relevance.js'
 
 const GROUP_SYSTEM = 'MASCO 2020 major group'
 const SKILLS = [{ reason: 'skill_demand_insufficient_evidence' }]
@@ -81,9 +84,8 @@ export function dependencyReport(before, after, references = {}) {
     const topic = (references.topics ?? []).find((t) => t.openalexId === c.signal.entity.code)
     if (topic) axes.add(topic.axisId)
   }
-  const fields = (references.fieldTopics ?? [])
-    .filter((m) => m.reviewStatus === 'approved' && axes.has(m.axisId))
-    .map((m) => ({ iscedCode: m.iscedCode, axisId: m.axisId, mappingId: m.mappingId }))
+  const fields = [...axes]
+    .flatMap((axisId) => approvedFieldReach(references.fieldTopics, axisId))
     .sort((x, y) => cmp(x.mappingId, y.mappingId))
 
   return {

@@ -28,6 +28,8 @@ Keys always appear in this order. Keys marked optional are left out when they do
 | `evidenceSufficiency` | `sufficient`, `insufficient_evidence`, `insufficient_comparable_evidence` (a possible structural break lies inside the comparison). |
 | `evidenceQuality` | `strong`, `moderate`, `limited`; `null` unless sufficient. |
 | `reasons` | Machine codes explaining the result, e.g. `possible_break`, `new_reporting_category`, `small_counts`, `few_clean_steps`, `steps_disagree`, `high_volatility`, `revision_over_5`, `zero_baseline`, `fewer_years`, `missing_value`, `dropped_to_zero`. |
+| `rule` (optional) | `{key, vars}`: the trend rule that decided the result. `key` is an i18n string key (e.g. `rdRuleRising`, `rdRuleDosmBreak`); `vars` holds the numbers and limits it used, for the evidence panel's plain-words explanation. |
+| `steps` (optional) | The step changes the rule checked. OpenAlex (in time order): `log2` of the three annual changes Y−3→Y−2, Y−2→Y−1, Y−1→Y. DOSM (latest first): YoY pp of Q, Q−1, Q−2. `null` where a step cannot be computed or is not clean; `[]` when evidence is insufficient before steps are read. |
 | `breaks` | Possible structural breaks that touch this signal's comparisons: `{period, status, reviewId?}`, status `unreviewed`, `confirmed`, `dismissed_counts`, `dismissed_shares`. |
 | `revisions` | `{count, items: [{period, old, new}]}`: changed historical values found against the previous snapshot. |
 | `classification` | `{system, version, readAt, countingRule?}` of the source's classification. |
@@ -39,8 +41,10 @@ Keys always appear in this order. Keys marked optional are left out when they do
 | `configVersion` | `radar-config/v1` (all thresholds). |
 | `mappingVersion` | Field ↔ topic mapping version (topic signals) or occupation bridge version (group signals). |
 
-There is **no** `score`, `weight`, `rank`, `match`, `opportunityScore` or `fitScore` field at any depth.
-`validateSignal` rejects a signal that has one, that lacks evidence links, or that uses an unknown enum value.
+There is **no** `score`, `weight`, `rank`, `match`, `opportunityScore` or `fitScore` field at any depth, and no key
+containing score, weight, rank, match or opportunit… (any case, e.g. `matchScore`, `opportunityIndex`).
+`validateSignal` rejects a signal that has one, that lacks evidence links, that has no `mappingVersion` (or other
+version string), or that uses an unknown enum value.
 
 Same snapshots, references, reviews and versions → byte-identical signals.
 
@@ -60,7 +64,11 @@ quarter-on-quarter change in total online job advertisements: **context only**, 
 - `affected.occupations`: eMASCO jobs in a changed group, each `level: "group"` with its mapping path (eMASCO code →
   first digit → MASCO 2020 major group). O\*NET jobs reach a group only once every bridge step is sourced; in Round 1
   they do not.
-- `affected.fields`: ISCED-F fields linked to a changed topic through an **approved** field ↔ topic record only.
+- `affected.fields`: ISCED-F fields linked to a changed topic through an **approved** field ↔ topic record only:
+  `{iscedCode, axisId, mappingId, level, excludes}`. `level` is `broad`, `narrow` or `detailed`. A broad or narrow
+  approval applies to every field under it, except the more detailed codes in `excludes`, where a rejection on the
+  same axis decides instead (spec §4.2, the same rule as personal relevance). An approval that is itself overridden
+  at its own code by another decision is not listed.
 - `affected.skills`: always `[{reason: "skill_demand_insufficient_evidence"}]` in Round 1.
 
 Arrays are sorted by id and keys keep a fixed order, so the same inputs give an identical report.

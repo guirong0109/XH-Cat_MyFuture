@@ -48,6 +48,37 @@ describe('radar-signal/v1 from the real bundled inputs', () => {
     for (const s of out.signals) for (const key of deepKeys(s)) expect(FORBIDDEN_KEYS).not.toContain(key)
   })
 
+  it('any score, weight, rank, match or opportunity-like key is rejected at any depth', () => {
+    const s = out.signals[0]
+    expect(validateSignal({ ...s, matchScore: 1 }).ok).toBe(false)
+    expect(validateSignal({ ...s, change: { ...s.change, opportunityIndex: 2 } }).ok).toBe(false)
+    expect(validateSignal({ ...s, breaks: [{ period: '2025 Q3', status: 'unreviewed', Ranking: 1 }] }).ok).toBe(false)
+    expect(validateSignal({ ...s, entity: { ...s.entity, fitWeighting: 1 } }).ok).toBe(false)
+    expect(validateSignal(s).ok).toBe(true)
+  })
+
+  it('signals carry the explanation rule and steps from the trend core', () => {
+    const lang = byId(out.signals, 'openalex:T10028')
+    expect(lang.rule.key).toBe('rdRuleRising')
+    expect(lang.steps).toHaveLength(3)
+    const keys = Object.keys(lang)
+    expect(keys.slice(keys.indexOf('reasons'), keys.indexOf('reasons') + 3)).toEqual(['reasons', 'rule', 'steps'])
+    const prof = byId(out.signals, 'dosm:masco2020:2')
+    expect(prof.rule).toEqual({ key: 'rdRuleDosmBreak', vars: { breakPeriods: ['2025 Q3'] } })
+    expect(Array.isArray(prof.steps)).toBe(true)
+    expect(validateSignal({ ...lang, rule: { key: 7, vars: {} } }).ok).toBe(false)
+    expect(validateSignal({ ...lang, steps: 'x' }).ok).toBe(false)
+  })
+
+  it('a missing mapping version is not papered over', () => {
+    const references = { ...inputs.references, versions: { ...inputs.references.versions, fieldTopics: null, bridge: null } }
+    const r = runPipeline({ ...inputs, references })
+    for (const s of r.signals) {
+      expect(s.mappingVersion).toBeNull()
+      expect(validateSignal(s).ok).toBe(false)
+    }
+  })
+
   it('missing evidence links and unknown enums are rejected', () => {
     const s = out.signals[0]
     expect(validateSignal({ ...s, evidenceLinks: [] }).ok).toBe(false)
@@ -201,11 +232,32 @@ describe('dependencyReport', () => {
       m.mappingId === '06-language' ? { ...m, reviewStatus: 'approved' } : m.mappingId === '04-language' ? { ...m, reviewStatus: 'rejected' } : m
     )
     const r = dependencyReport(out, changed, { ...inputs.references, fieldTopics })
-    expect(r.affected.fields).toEqual([{ iscedCode: '06', axisId: 'language', mappingId: '06-language' }])
+    expect(r.affected.fields).toEqual([{ iscedCode: '06', axisId: 'language', mappingId: '06-language', level: 'broad', excludes: [] }])
     expect(r.affected.groups).toEqual([])
     expect(r.affected.occupations).toEqual([])
     expect(r.changedSignals).toHaveLength(1)
     expect(r.changedSignals[0].changes).toEqual(['direction'])
+  })
+
+  it('field reach follows overrides: a detailed rejection is excluded from a broad approval', () => {
+    const changed = clone(out)
+    byId(changed.signals, 'openalex:T10028').direction = 'mixed'
+    const base = { relationship: 'field_related_to_ai_topic', method: 'curated' }
+    const fieldTopics = [
+      { ...base, mappingId: '06-language', iscedCode: '06', axisId: 'language', reviewStatus: 'approved' },
+      { ...base, mappingId: '0613-language', iscedCode: '0613', axisId: 'language', reviewStatus: 'rejected' },
+      { ...base, mappingId: '0612-vision', iscedCode: '0612', axisId: 'vision', reviewStatus: 'rejected' },
+      { ...base, mappingId: '0411-language', iscedCode: '0411', axisId: 'language', reviewStatus: 'rejected' },
+    ]
+    const r = dependencyReport(out, changed, { ...inputs.references, fieldTopics })
+    expect(r.affected.fields).toEqual([{ iscedCode: '06', axisId: 'language', mappingId: '06-language', level: 'broad', excludes: ['0613'] }])
+    // A detailed approval overridden by nothing more detailed is reported at its own level.
+    const detailed = [...fieldTopics, { ...base, mappingId: '0613-language-b', iscedCode: '061', axisId: 'language', reviewStatus: 'approved' }]
+    const r2 = dependencyReport(out, changed, { ...inputs.references, fieldTopics: detailed })
+    expect(r2.affected.fields).toEqual([
+      { iscedCode: '06', axisId: 'language', mappingId: '06-language', level: 'broad', excludes: ['0613'] },
+      { iscedCode: '061', axisId: 'language', mappingId: '0613-language-b', level: 'narrow', excludes: ['0613'] },
+    ])
   })
 
   it('added and removed signals are reported', () => {

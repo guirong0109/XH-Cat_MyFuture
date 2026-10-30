@@ -1,10 +1,12 @@
 // Future Skills Radar: the radar-signal/v1 output contract (spec §10). Pure, no I/O.
-// buildSignal assembles one signal in a fixed key order; direction, volatility and evidence come only from the trend
-// core, never from the momentum index. validateSignal rejects score-like fields at any depth, missing evidence links
+// buildSignal assembles one signal in a fixed key order; direction, volatility, evidence, rule and steps come only from
+// the trend core, never from the momentum index. validateSignal rejects score-like fields at any depth, missing evidence links
 // and unknown enum values.
 
 export const CONTRACT = 'radar-signal/v1'
 export const FORBIDDEN_KEYS = ['score', 'weight', 'rank', 'match', 'opportunityScore', 'fitScore']
+// Any key containing one of these words is rejected too (e.g. matchScore, opportunityIndex, ranking).
+export const FORBIDDEN_KEY_PATTERN = /score|weight|rank|match|opportunit/i
 
 export const ENUMS = Object.freeze({
   evidenceKind: ['research_indicator', 'occupation_group', 'occupation_direct'],
@@ -41,6 +43,10 @@ export function buildSignal(core, ctx) {
     evidenceSufficiency: core.evidenceSufficiency,
     evidenceQuality: core.evidenceQuality ?? null,
     reasons: [...(core.reasons ?? [])],
+  })
+  if (core.rule) signal.rule = { key: core.rule.key, vars: core.rule.vars ?? {} }
+  if (core.steps) signal.steps = [...core.steps]
+  Object.assign(signal, {
     breaks: ctx.breaks ?? [],
     revisions: ctx.revisions ?? { count: 0, items: [] },
     classification: ctx.classification,
@@ -67,7 +73,7 @@ function forbiddenPaths(x, at, out) {
   else if (isObj(x)) {
     for (const [k, v] of Object.entries(x)) {
       const here = at ? `${at}.${k}` : k
-      if (FORBIDDEN_KEYS.includes(k)) out.push(here)
+      if (FORBIDDEN_KEYS.includes(k) || FORBIDDEN_KEY_PATTERN.test(k)) out.push(here)
       forbiddenPaths(v, here, out)
     }
   }
@@ -121,6 +127,8 @@ export function validateSignal(signal) {
   oneOf(ENUMS.evidenceQuality, signal.evidenceQuality, 'evidenceQuality')
   if (signal.evidenceSufficiency !== 'sufficient' && signal.evidenceQuality !== null) add('unknown_enum', 'evidenceQuality')
   if (!Array.isArray(signal.reasons)) add('missing_field', 'reasons')
+  if (signal.rule !== undefined && (!isObj(signal.rule) || !isStr(signal.rule.key))) add('missing_field', 'rule')
+  if (signal.steps !== undefined && (!Array.isArray(signal.steps) || !signal.steps.every(isNumOrNull))) add('missing_field', 'steps')
 
   if (!Array.isArray(signal.breaks)) add('missing_field', 'breaks')
   else signal.breaks.forEach((b, i) => {

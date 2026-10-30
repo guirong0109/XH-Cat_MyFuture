@@ -65,7 +65,7 @@ function openalexSignals(snapshot, references, config, manifestId, momentumOut) 
   const Y = lastYearOf(snapshot)
   if (Y === null) return []
   const cs = referenceCounts(snapshot)
-  const mappingVersion = references?.versions?.fieldTopics ?? 'unversioned'
+  const mappingVersion = references?.versions?.fieldTopics ?? null
   return (references?.topics ?? []).map((topic) => {
     const id = topic.openalexId
     const counts = openalexCounts(snapshot, id)
@@ -112,7 +112,7 @@ function openalexSignals(snapshot, references, config, manifestId, momentumOut) 
 
 function dosmSignals(snapshot, table, breaks, references, config, manifestId) {
   const L = table.periods.length - 1
-  const mappingVersion = references?.versions?.bridge ?? 'unversioned'
+  const mappingVersion = references?.versions?.bridge ?? null
   const nearby = (b) => table.periods.indexOf(b.period) >= L - QUARTERS_IN_STEPS
   const signalBreaks = breaks.filter(nearby).map((b) => (b.reviewId ? { period: b.period, status: b.status, reviewId: b.reviewId } : { period: b.period, status: b.status }))
   const links = uniqueLinks(snapshot.sourceUrls ?? [])

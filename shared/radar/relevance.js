@@ -6,7 +6,8 @@ const LEVELS = { 2: 'broad', 3: 'narrow', 4: 'detailed' }
 
 // Approved links that apply to one ISCED-F field. A record at a broad (2-digit) or narrow (3-digit) level applies to
 // every detailed field under it; per axis, the most detailed approved or rejected record decides.
-export function effectiveFieldTopics(mappings, iscedCode) {
+// Per axis, the approved or rejected record that decides for one ISCED-F field: the most detailed one at or above it.
+export function decidingFieldTopics(mappings, iscedCode) {
   const decided = new Map()
   for (const m of mappings ?? []) {
     if (m.reviewStatus !== 'approved' && m.reviewStatus !== 'rejected') continue
@@ -15,6 +16,26 @@ export function effectiveFieldTopics(mappings, iscedCode) {
     const current = decided.get(m.axisId)
     if (!current || code.length > current.length) decided.set(m.axisId, { length: code.length, m })
   }
+  return decided
+}
+
+// Approved records that reach fields on one axis, each with its level and the more detailed codes under it where a
+// rejection on the same axis decides instead (spec §4.2).
+export function approvedFieldReach(mappings, axisId) {
+  const decides = (m) => decidingFieldTopics(mappings, m.iscedCode).get(axisId)?.m === m
+  const onAxis = (mappings ?? []).filter((m) => m.axisId === axisId && decides(m))
+  const rejected = onAxis.filter((m) => m.reviewStatus === 'rejected')
+  return onAxis
+    .filter((m) => m.reviewStatus === 'approved')
+    .map((m) => {
+      const code = String(m.iscedCode)
+      const excludes = [...new Set(rejected.map((r) => String(r.iscedCode)).filter((c) => c.length > code.length && c.startsWith(code)))].sort()
+      return { iscedCode: m.iscedCode, axisId, mappingId: m.mappingId, level: LEVELS[code.length], excludes }
+    })
+}
+
+export function effectiveFieldTopics(mappings, iscedCode) {
+  const decided = decidingFieldTopics(mappings, iscedCode)
   return [...decided.values()]
     .filter(({ m }) => m.reviewStatus === 'approved')
     .sort((a, b) => a.length - b.length)

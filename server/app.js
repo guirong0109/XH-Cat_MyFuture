@@ -26,6 +26,8 @@ import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
 import { createOccupationLookup } from './occupations/lookup.js'
 import { readFile } from 'node:fs/promises'
+import { createRadarServiceFromEnv } from './radar/service.js'
+import { radarRoutes } from './radar/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -41,12 +43,14 @@ export function createApp({
   onetLive = createOnetLiveFromEnv(),
   // Behind a reverse proxy set TRUST_PROXY (e.g. 1 = one proxy hop) so the sign-in and AI limits count each visitor.
   trustProxy = process.env.TRUST_PROXY ? (Number.isFinite(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : process.env.TRUST_PROXY) : false,
+  // Future Skills Radar: bundled data read-only without a writable store (R2, or RADAR_STORE=memory locally).
+  radar = createRadarServiceFromEnv({ dataDir, fetchImpl, now }),
   extraRoutes = null,
 } = {}) {
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', trustProxy)
-  app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive }
+  app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive, radar }
 
   // Which optional services this server has, so the screens can say what is kept where.
   app.get('/api/health', (request, response) => response.json({ ok: true, features: { accounts: Boolean(d1), tempCopy: Boolean(tempStore), ai: llmProviders.length > 0 } }))
@@ -123,6 +127,7 @@ export function createApp({
     return areasPromise
   }
   app.use(interestRoutes({ loadAreas }))
+  if (radar) app.use(radarRoutes({ radar }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

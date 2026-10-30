@@ -52,10 +52,13 @@ export async function loadRadarReferences(dataDir) {
     topics: topics.topics,
     fieldTopics: mappings.mappings,
     bridge: makeBridge(bridgeFile),
+    // The bridge file as built, for the browser (it runs the same lookup for personal relevance).
+    bridgeFile,
     // eMASCO roles {code, title, url}: the jobs a DOSM group signal reaches (group level, by first digit).
     emascoRoles: (emasco.roles ?? []).map((r) => ({ code: r.code, title: r.title, url: r.url ?? null })),
     fieldJobs: (code) => fieldSkills.jobsOf(code),
     fieldName: (code) => fieldSkills.titleOf(code),
+    fieldList: () => fieldSkills.list(),
     versions: { ...fieldSkills.versions, topics: topics.schemaVersion ?? null, fieldTopics: mappings.mappingVersion ?? null, bridge: bridgeFile.schemaVersion ?? null },
   }
 }

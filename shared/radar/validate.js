@@ -54,7 +54,8 @@ export function validateSnapshot(snapshot, { expectedEntities = [], lastYear } =
       seen.add(key)
       const entity = `${o.entityType}|${o.entityId}`
       const prev = lastOrdinal.get(entity)
-      // Strictly ascending, one step at a time: a gap means a period is missing.
+      // Strictly ascending, one step at a time: a gap means a period is missing. Gaps are rejected on purpose:
+      // fetchers must emit explicit zeros for years the source omits (OpenAlex group_by), and DOSM quarters are contiguous.
       if (prev !== undefined && ord !== prev + 1) add('period_order', at)
       lastOrdinal.set(entity, ord)
     }

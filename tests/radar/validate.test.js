@@ -60,6 +60,15 @@ describe('validateSnapshot', () => {
     expect(codes(validateSnapshot(oaSnap([oa('T1', '2024', 1), oa('T1', '2024', 2)]), OPTS))).toContain('duplicate_period')
     expect(codes(validateSnapshot(oaSnap([oa('T1', '2025', 1), oa('T1', '2024', 2)]), OPTS))).toContain('period_order')
   })
+  it('consecutive-period rule: interior gaps are rejected, explicit zeros are valid', () => {
+    const gap = oaSnap([oa('T1', '2022', 5), oa('T1', '2024', 7)])
+    expect(codes(validateSnapshot(gap, OPTS))).toContain('period_order')
+    const zero = oaSnap([oa('T1', '2022', 5), oa('T1', '2023', 0), oa('T1', '2024', 7)])
+    expect(validateSnapshot(zero, OPTS)).toEqual({ ok: true, errors: [] })
+    const skip = dosmSnap(100, 10, '2026 Q1')
+    skip.observations.push(dosm('total', 'masco2020:total', '2026 Q3', 100))
+    expect(codes(validateSnapshot(skip, { expectedEntities: [], lastYear: 2026 }))).toContain('period_order')
+  })
   it('bad_value: negative, non-numeric, NaN', () => {
     for (const v of [-1, '5', NaN, undefined]) {
       expect(codes(validateSnapshot(oaSnap([oa('T1', '2025', v)]), OPTS))).toContain('bad_value')

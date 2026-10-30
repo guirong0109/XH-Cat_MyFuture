@@ -150,10 +150,31 @@ body.landing main{max-width:none;padding:0}
              radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink)}
 .lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
 
-/* footer */
-.lp-footer{padding:36px 0 56px;border-top:1px solid var(--lp-line);font-size:13px;line-height:1.6;color:var(--lp-muted)}
-.lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
-.lp-footer p{max-width:92ch;margin-top:8px}
+/* footer: a rounded panel under a dark band (a faint tile grid) whose bottom edge is a row of scallops; the about line
+   top right, a large wordmark with the ATM mascot bottom left, the language switch bottom right, then the small print */
+.lp-footer{position:relative;margin:0 0 clamp(16px,3vw,32px);border:1px solid var(--lp-line);border-radius:28px;overflow:hidden;
+  background:var(--lp-paper);font-size:13px;line-height:1.6;color:var(--lp-muted)}
+.lp-footer-band{position:relative;height:clamp(56px,7vw,84px);margin-bottom:16px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 12%,transparent) 1px,transparent 1px) 0 0/44px 44px,
+             linear-gradient(color-mix(in srgb,var(--lp-cream) 12%,transparent) 1px,transparent 1px) 0 0/44px 44px,var(--lp-ink)}
+.lp-footer-band::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;
+  background:radial-gradient(circle at 14px 0,var(--lp-ink) 13.5px,transparent 14px) 0 0/28px 14px repeat-x}
+.lp-footer-body{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(24px,3vw,36px) clamp(20px,3.4vw,44px) clamp(20px,2.4vw,28px)}
+.lp-footer-about{justify-self:end;max-width:44ch;text-align:right;font-size:15px;line-height:1.45;font-weight:600;color:var(--lp-ink)}
+.lp-footer-base{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:.22em;font-size:clamp(50px,12.5vw,184px)}
+.lp-footer-base .lp-row{font-size:13px}
+.lp-wordmark{display:flex;align-items:flex-end;gap:.06em;font-family:var(--lp-serif);font-size:clamp(50px,12.5vw,184px);line-height:.8;
+  letter-spacing:-.04em;color:var(--lp-ink);white-space:nowrap}
+.lp-mascot{flex:none;width:.62em;height:auto;margin-bottom:-.04em;fill:var(--lp-paper);stroke:var(--lp-ink);stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.lp-mascot .lp-mascot-ink{fill:var(--lp-ink);stroke:none}
+.lp-mascot .lp-mascot-eye{fill:var(--lp-paper);stroke:none}
+.lp-mascot .lp-mascot-smile{fill:none;stroke:var(--lp-paper)}
+.lp-mascot-arm{transform-origin:100px 70px;transition:rotate .3s ease}
+.lp-wordmark:hover .lp-mascot-arm{rotate:-14deg}
+.lp-footer-fine{padding-top:14px;border-top:1px dashed var(--lp-line);font-size:12px}
+.lp-footer-fine p{max-width:110ch}
+.lp-footer-fine p+p{margin-top:6px}
 
 /* mechanical roller counters: each digit a drum in its own tile (odometer.js rolls them). The tile is shaded dark at
    the top and bottom and light in the middle, so the digit reads as sitting inside a turning drum; a faint seam
@@ -285,6 +306,7 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-list li{grid-template-columns:1fr;gap:10px}
   .lp-list .lp-pill{justify-self:start}
   .lp-close{border-radius:24px}
+  .lp-footer-about{justify-self:start;text-align:left}
   .lp-sub,.lp-lead{font-size:17px}
 }
 @media (max-width:480px){

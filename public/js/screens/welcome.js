@@ -194,15 +194,38 @@ const closing = (t) => `
  </div>
 </section>`
 
+// The footer's mascot: the ATM from the first section, smiling and waving, a receipt curling out of its slot.
+const MASCOT = `<svg class="lp-mascot" viewBox="0 0 132 150" aria-hidden="true">
+ <g class="lp-mascot-arm"><path d="M100 70c14-4 20-14 20-28"/><circle cx="120" cy="36" r="6"/></g>
+ <path d="M32 70c-10 6-14 16-12 28"/>
+ <path d="M44 128v14h-8M76 128v14h8"/>
+ <rect x="22" y="22" width="88" height="108" rx="12"/>
+ <rect class="lp-mascot-ink" x="16" y="10" width="100" height="22" rx="7"/>
+ <rect class="lp-mascot-ink" x="34" y="42" width="64" height="38" rx="7"/>
+ <circle class="lp-mascot-eye" cx="54" cy="58" r="3.5"/><circle class="lp-mascot-eye" cx="78" cy="58" r="3.5"/>
+ <path class="lp-mascot-smile" d="M54 67q12 9 24 0"/>
+ <path d="M40 90h10M56 90h10M72 90h10M40 98h10M56 98h10M72 98h10"/>
+ <rect class="lp-mascot-ink" x="42" y="108" width="48" height="5" rx="2.5"/>
+ <path d="M48 111h36l-2 26q-8-5-16 1t-16-1z"/>
+ <path d="M54 119h24M54 125h18"/>
+</svg>`
+
+// The footer: a panel under a dark band with a wavy edge, the about line, a large wordmark with the mascot, the
+// language switch, and the small print (the O*NET licence asks for its line).
 const footer = (t, state) => `
 <footer class="lp-footer">
- <div class="lp-footer-top">
-  <div class="lp-brand">FutureReady <span>MY</span></div>
-  <div class="lp-row"><span class="lp-muted">${esc(t('ldFootLang'))}</span>${langSwitch(state)}</div>
+ <div class="lp-footer-band" aria-hidden="true"></div>
+ <div class="lp-footer-body">
+  <p class="lp-footer-about">${esc(t('ldFootAbout'))}</p>
+  <div class="lp-footer-base">
+   <div class="lp-wordmark">FutureReady${MASCOT}</div>
+   <div class="lp-row"><span class="lp-muted">${esc(t('ldFootLang'))}</span>${langSwitch(state)}</div>
+  </div>
+  <div class="lp-footer-fine">
+   <p>${esc(t('ldFootOnet'))}</p>
+   <p>${esc(t('langNote'))}</p>
+  </div>
  </div>
- <p>${esc(t('ldFootAbout'))}</p>
- <p>${esc(t('ldFootOnet'))}</p>
- <p class="lp-muted">${esc(t('langNote'))}</p>
 </footer>`
 
 const nav = (t, state) => `

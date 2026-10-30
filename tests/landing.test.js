@@ -116,3 +116,18 @@ describe('how it works, in the look of section 2', () => {
     }
   })
 })
+
+describe('footer', () => {
+  it('is a panel with a wavy top band, the about line, a large wordmark with the ATM mascot and the language switch', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const html = page(lang)
+      const foot = html.slice(html.indexOf('<footer'))
+      expect(foot).toContain('class="lp-footer-band"')
+      expect(foot).toContain('class="lp-wordmark"')
+      expect(foot).toMatch(/<svg class="lp-mascot"[^>]*aria-hidden="true"/)
+      expect(foot).toContain(translate(lang, 'ldFootAbout'))
+      expect(foot).toContain(translate(lang, 'ldFootOnet').replace(/&/g, '&amp;'))
+      for (const code of ['en', 'ms', 'zh']) expect(foot).toContain(`data-act="lang" data-arg="${code}"`)
+    }
+  })
+})

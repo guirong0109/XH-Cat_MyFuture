@@ -1085,6 +1085,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "title back to a plain section heading above the four audience folders; front folder and binder clip removed; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove all folder design from Who it is for"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "Who it is for back to the plain ruled list (same styles as before the folders); npm test 258 passed; checked in Chrome"
     }
   ]
 }

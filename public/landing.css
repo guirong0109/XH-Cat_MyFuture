@@ -135,29 +135,12 @@ body.landing main{max-width:none;padding:0}
 .lp-principle h3{font-family:var(--lp-serif);font-weight:400;font-size:28px;line-height:1.05;margin:10px 0 10px}
 .lp-principle p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
 
-/* who it is for: under the section title, a stack of paper file folders. The page has folder 01 first; column-reverse
-   puts the back folder (04) at the top and 01 at the bottom. Each folder is a pastel paper band with a
-   faint grain; its tab (a rounded trapezoid, drawn by ::before) rises into the folder above at --tab-x, and --z keeps
-   the nearer folders on top. A folder slides up a little on hover, like pulling a file. The paper colours stay the same
-   in dark mode, as paper would. */
-.lp-files{display:flex;flex-direction:column-reverse;padding-top:44px}
-.lp-folder{--paper:#cdb8e3;position:relative;z-index:var(--z);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;
-  align-items:center;padding:26px clamp(20px,3vw,40px) 68px;color:#1e1a14;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.09'/%3E%3C/svg%3E"),var(--paper);
-  box-shadow:0 -1px 0 rgba(30,26,20,.28),0 -10px 20px -14px rgba(30,26,20,.4);transition:translate .25s ease}
-.lp-folder:hover{translate:0 -6px}
-.lp-folder:nth-child(1){--paper:#ecd98f;padding-bottom:32px;border-radius:0 0 18px 18px}
-.lp-folder:nth-child(2){--paper:#b9cde6}
-.lp-folder:nth-child(3){--paper:#f2c6d4}
-.lp-folder:last-child{border-radius:18px 18px 0 0}
-.lp-folder p:not(.lp-folder-tab){font-size:16px;line-height:1.5;color:#3d382f;max-width:60ch}
-.lp-folder-tab{position:absolute;z-index:0;left:var(--tab-x);bottom:calc(100% - 1px);max-width:calc(100% - var(--tab-x) - 16px);
-  padding:10px 34px 8px;font:400 clamp(17px,1.8vw,24px)/1.1 var(--lp-serif);text-transform:uppercase;letter-spacing:.01em;
-  white-space:nowrap;color:#1e1a14}
-.lp-folder-tab::before{content:"";position:absolute;z-index:-1;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.09'/%3E%3C/svg%3E"),var(--paper);border-radius:14px 14px 0 0;
-  box-shadow:0 -1px 0 rgba(30,26,20,.28);transform:perspective(60px) rotateX(9deg);transform-origin:bottom}
-.lp-folder-tab b{font-weight:400}
-.lp-folder .lp-pill-next{margin-top:0;color:#5c5446;border-color:#5c5446}
-.lp-folder .lp-pill-open{background:#1e1a14;color:#f5f0e6}
+/* who it is for */
+.lp-list{list-style:none;border-top:1px solid var(--lp-line)}
+.lp-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--lp-line)}
+.lp-list h3{font-family:var(--lp-serif);font-weight:400;font-size:clamp(26px,3vw,36px);line-height:1.1}
+.lp-list p{font-size:15px;color:var(--lp-ink2);margin-top:6px;max-width:62ch}
+.lp-list .lp-pill-next{margin-top:0}
 .lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
 .lp-who{border-bottom:0}
 
@@ -321,9 +304,8 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
   .lp-tally-col:nth-of-type(3){order:1;border-top:1px solid var(--lp-line)}
   .lp-gapnote{grid-column:auto;margin:0;padding-top:0}
   .lp-gapnote::before{display:none}
-  .lp-folder{grid-template-columns:1fr;padding-bottom:76px}
-  .lp-folder .lp-pill{justify-self:start}
-  .lp-folder-tab{left:12px;max-width:calc(100% - 24px);white-space:normal;font-size:16px;padding:8px 24px 6px}
+  .lp-list li{grid-template-columns:1fr;gap:10px}
+  .lp-list .lp-pill{justify-self:start}
   .lp-footer-about{justify-self:start;text-align:left}
   .lp-sub,.lp-lead{font-size:17px}
 }

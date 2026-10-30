@@ -68,7 +68,7 @@ describe('landing page', () => {
   it('every section of the page keeps its styles in landing.css', async () => {
     const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
     for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-tally{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
-      '.lp-principles{', '.lp-files{', '.lp-close{', '.lp-end{', '.lp-footer{']) expect(css).toContain(rule)
+      '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-end{', '.lp-footer{']) expect(css).toContain(rule)
     for (const [, name] of css.matchAll(/^\.(lp-[\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
   })
 
@@ -139,21 +139,19 @@ describe('footer', () => {
   })
 })
 
-describe('who it is for, as stacked file folders', () => {
-  it('has a folder per audience with a numbered tab, its text and its tag, under a plain section title', () => {
+describe('who it is for', () => {
+  it('lists each audience in a plain row with its text and its tag, under the section title; no folders', () => {
     for (const lang of ['en', 'ms', 'zh']) {
       const html = page(lang)
       const who = html.slice(html.indexOf('<section class="lp-section lp-who"'), html.indexOf('<div class="lp-end">'))
-      expect(who.match(/class="lp-folder"/g)).toHaveLength(4)
-      expect(who).not.toContain('lp-folder-front')
       expect(who).toContain(`<h2 class="lp-h2">${translate(lang, 'ldWhoTitle')}</h2>`)
-      expect(who.indexOf(translate(lang, 'ldWhoTitle'))).toBeLessThan(who.indexOf('class="lp-folder"'))
-      for (const [i, [title, text, open]] of [['catA', 'catAText', true], ['catB', 'catBText', true], ['catC', 'catCText', false], ['catD', 'catDText', false]].entries()) {
-        expect(who).toContain(`<b>0${i + 1}</b> ${translate(lang, title).replace(/&/g, '&amp;')}`)
+      expect(who.match(/<li>/g)).toHaveLength(4)
+      for (const [title, text, open] of [['catA', 'catAText', true], ['catB', 'catBText', true], ['catC', 'catCText', false], ['catD', 'catDText', false]]) {
+        expect(who).toContain(`<h3>${translate(lang, title).replace(/&/g, '&amp;')}</h3>`)
         expect(who).toContain(translate(lang, text))
         expect(who).toContain(translate(lang, open ? 'ldOpen' : 'preview'))
       }
-      expect(who).not.toContain('lp-clip')
+      expect(who).not.toMatch(/lp-folder|lp-files/)
     }
   })
 })

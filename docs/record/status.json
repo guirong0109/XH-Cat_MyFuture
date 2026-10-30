@@ -332,7 +332,8 @@
     "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
     "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
     "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more",
-    "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none"
+    "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none",
+    "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode"
   ],
   "log": [
     {
@@ -1044,6 +1045,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "closing block is the dark top of the footer panel, its bottom edge cut into scallops; footer band removed; npm test 257 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "Who it is for in the stacked file folder design of your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "four audience folders + front title folder; npm test 258 passed; checked in Chrome at 1440 and 390 px"
     }
   ]
 }

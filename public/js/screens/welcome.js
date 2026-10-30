@@ -172,16 +172,32 @@ const principles = (t) => `
  </div>
 </section>`
 
+// A binder clip for the front folder.
+const CLIP = `<svg class="lp-clip" viewBox="0 0 80 72" aria-hidden="true">
+ <path class="lp-clip-wire" d="M24 34V12a6 6 0 0 1 12 0v22M44 34V12a6 6 0 0 1 12 0v22"/>
+ <path d="M10 30h60l-8 34H18z"/>
+</svg>`
+// Where each folder's tab sits along its top edge, back folder (04) first.
+const TAB_AT = ['56%', '4%', '34%', '14%']
+
+// Who it is for: a stack of file folders, one per audience with a numbered tab, and the section title on the front
+// folder with a binder clip. The title comes first in the page; the CSS stacks the folders the other way round, the
+// back folder (04) at the top.
 const audiences = (t) => `
 <section class="lp-section lp-who">
- <header class="lp-head">
-  <p class="lp-label">${esc(t('ldWhoKicker'))}</p>
-  <h2 class="lp-h2">${esc(t('ldWhoTitle'))}</h2>
- </header>
- <ul class="lp-list">${AUDIENCES.map(([title, text, open]) => `
-  <li><div><h3>${esc(t(title))}</h3><p>${esc(t(text))}</p></div>
-   <span class="lp-pill ${open ? 'lp-pill-open' : 'lp-pill-next'}">${esc(t(open ? 'ldOpen' : 'preview'))}</span></li>`).join('')}
- </ul>
+ <div class="lp-files">
+  <header class="lp-folder lp-folder-front" style="--z:5;--tab-x:58%">
+   <p class="lp-folder-tab">${esc(t('ldWhoKicker'))}</p>
+   ${CLIP}
+   <h2 class="lp-files-title">${esc(t('ldWhoTitle'))}</h2>
+  </header>
+  ${AUDIENCES.map(([title, text, open], i) => `
+  <article class="lp-folder" style="--z:${4 - i};--tab-x:${TAB_AT[AUDIENCES.length - 1 - i]}">
+   <h3 class="lp-folder-tab"><b>0${i + 1}</b> ${esc(t(title))}</h3>
+   <p>${esc(t(text))}</p>
+   <span class="lp-pill ${open ? 'lp-pill-open' : 'lp-pill-next'}">${esc(t(open ? 'ldOpen' : 'preview'))}</span>
+  </article>`).join('')}
+ </div>
 </section>`
 
 const closing = (t) => `

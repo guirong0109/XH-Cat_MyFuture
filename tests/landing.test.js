@@ -68,7 +68,7 @@ describe('landing page', () => {
   it('every section of the page keeps its styles in landing.css', async () => {
     const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
     for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-tally{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',
-      '.lp-principles{', '.lp-list{', '.lp-close{', '.lp-end{', '.lp-footer{']) expect(css).toContain(rule)
+      '.lp-principles{', '.lp-files{', '.lp-close{', '.lp-end{', '.lp-footer{']) expect(css).toContain(rule)
     for (const [, name] of css.matchAll(/^\.(lp-[\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
   })
 
@@ -135,6 +135,24 @@ describe('footer', () => {
       expect(foot).toContain(translate(lang, 'ldFootAbout'))
       expect(foot).toContain(translate(lang, 'ldFootOnet').replace(/&/g, '&amp;'))
       for (const code of ['en', 'ms', 'zh']) expect(foot).toContain(`data-act="lang" data-arg="${code}"`)
+    }
+  })
+})
+
+describe('who it is for, as stacked file folders', () => {
+  it('has a folder per audience with a numbered tab, its text and its tag, and the title on the front folder', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const html = page(lang)
+      const who = html.slice(html.indexOf('<section class="lp-section lp-who"'), html.indexOf('<div class="lp-end">'))
+      expect(who.match(/class="lp-folder"/g)).toHaveLength(4)
+      expect(who).toContain('class="lp-folder lp-folder-front"')
+      expect(who.indexOf(translate(lang, 'ldWhoTitle'))).toBeLessThan(who.indexOf('class="lp-folder"'))
+      for (const [i, [title, text, open]] of [['catA', 'catAText', true], ['catB', 'catBText', true], ['catC', 'catCText', false], ['catD', 'catDText', false]].entries()) {
+        expect(who).toContain(`<b>0${i + 1}</b> ${translate(lang, title).replace(/&/g, '&amp;')}`)
+        expect(who).toContain(translate(lang, text))
+        expect(who).toContain(translate(lang, open ? 'ldOpen' : 'preview'))
+      }
+      expect(who).toMatch(/<svg class="lp-clip"[^>]*aria-hidden="true"/)
     }
   })
 })

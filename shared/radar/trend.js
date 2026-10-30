@@ -24,6 +24,13 @@ export function volatilityLabel(value, { low, high } = {}) {
   return 'moderate'
 }
 
+// Sample standard deviation (n - 1). Null for fewer than two finite values.
+export function sampleSd(values) {
+  if (values.length < 2) return null
+  const mean = values.reduce((a, b) => a + b, 0) / values.length
+  return Math.sqrt(values.reduce((a, b) => a + (b - mean) ** 2, 0) / (values.length - 1))
+}
+
 function at(counts, year) {
   const v = counts?.[year]
   return isCount(v) ? v : null

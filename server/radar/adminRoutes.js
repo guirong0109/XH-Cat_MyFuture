@@ -11,7 +11,8 @@
 // POST /api/admin/radar/breaks          {period, observationHash, decision: confirmed|dismissed_counts|dismissed_shares|
 //                                       annotate, note, evidence[]} → review + recalculation into a new manifest
 // GET  /api/admin/radar/export          approved mappings and all review records, as JSON for committing
-// POST /api/admin/radar/cleanup         deletes only the orphans status lists; never a key a stored manifest references
+// POST /api/admin/radar/cleanup         deletes only the orphans status lists; never a key a stored manifest references,
+//                                       nor anything newer than the active manifest
 //
 // No request value is ever used as a store key: review ids are made here, mapping ids and breaks are looked up.
 // Logs carry codes and ids only; never keys, cookies, notes or request bodies.
@@ -126,7 +127,8 @@ async function referencedBy(store, manifestKeys) {
   return { keys, complete }
 }
 
-// The active manifest and its history (previousManifestId chain), as manifest keys. null when active is unreadable.
+// The active manifest and its history (previousManifestId chain), as manifest keys, and the active manifest's
+// createdAt (ms). null when active is unreadable.
 async function liveManifestKeys(store) {
   let pointer
   try {
@@ -139,6 +141,7 @@ async function liveManifestKeys(store) {
   if (!isSafeId(activeId) || !(await store.get(KEYS.manifest(activeId)))) return null
   const keys = []
   const seen = new Set()
+  let activeAt = null
   for (let id = activeId; isSafeId(id) && !seen.has(id); ) {
     seen.add(id)
     let manifest
@@ -149,22 +152,60 @@ async function liveManifestKeys(store) {
       throw error
     }
     if (!manifest) break // the history simply ends here
+    if (id === activeId) activeAt = Date.parse(manifest.createdAt)
     keys.push(KEYS.manifest(id))
     id = manifest.previousManifestId
   }
-  return keys
+  if (!Number.isFinite(activeAt)) return null
+  return { keys, activeAt }
 }
 
-// Objects under prod/manifests|snapshots|signals|originals that neither the active manifest nor its history
-// references. Fails closed: when the active state cannot be read completely, nothing is listed (blocked).
+// The time stamp in an object's id (e.g. manifest-20261030T060700.206Z-ab12cd34, dosm-2026q2-20261030T060700Z), in ms;
+// null when the key carries none (e.g. originals, named by their SHA-256).
+export function keyStamp(key) {
+  const m = /(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\.\d{1,3})?Z/.exec(String(key).split('/').pop() ?? '')
+  if (!m) return null
+  const t = Date.parse(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7] ?? ''}Z`)
+  return Number.isFinite(t) ? t : null
+}
+
+// Stored manifests created at or after the active one: a publish that may still be in progress on another instance.
+async function recentManifestKeys(store, activeAt, exclude) {
+  const out = []
+  for (const key of await store.list('prod/manifests/')) {
+    if (exclude.has(key)) continue
+    let manifest
+    try {
+      manifest = (await getJson(store, key))?.value
+    } catch (error) {
+      if (!(error instanceof SyntaxError)) throw error
+      out.push(key) // unreadable: treated as recent, so nothing it might reference is removed
+      continue
+    }
+    const created = Date.parse(manifest?.createdAt)
+    if (!Number.isFinite(created) || created >= activeAt) out.push(key)
+  }
+  return out
+}
+
+// Objects under prod/manifests|snapshots|signals|originals that are orphans: not referenced by the active manifest or
+// its history, not referenced by any stored manifest created at or after the active one (a publish that may be in
+// progress on another instance), and with an id stamp older than the active manifest's createdAt. Newer or undated
+// unreferenced objects are kept until a later cleanup. Fails closed: when the active state cannot be read completely,
+// nothing is listed (blocked).
 export async function findOrphans(store) {
   const live = await liveManifestKeys(store)
   if (!live) return { orphans: [], blocked: 'manifest_gone' }
-  const { keys: referenced, complete } = await referencedBy(store, live)
+  const recent = await recentManifestKeys(store, live.activeAt, new Set(live.keys))
+  const { keys: referenced, complete } = await referencedBy(store, [...live.keys, ...recent])
   if (!complete) return { orphans: [], blocked: 'manifest_gone' }
   const all = []
   for (const prefix of SCANNED) all.push(...(await store.list(prefix)))
-  return { orphans: [...new Set(all)].filter((key) => !referenced.has(key)).sort(), blocked: null }
+  const old = (key) => {
+    const t = keyStamp(key)
+    return t !== null && t < live.activeAt
+  }
+  return { orphans: [...new Set(all)].filter((key) => !referenced.has(key) && !recent.includes(key) && old(key)).sort(), blocked: null }
 }
 
 // Deletes the candidates that are orphans now. Orphan manifests go first; every other candidate is refused when any
@@ -233,7 +274,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
   const writable = () => Boolean(store) && Boolean(radar.info?.().writable)
   const refreshes = createWindowLimiter({ limit: 1, windowMs: REFRESH_WINDOW_MS, now: () => now().getTime() })
 
-  // Refresh, recalculation and cleanup never run at the same time on this server.
+  // Refresh, recalculation, cleanup and decision writes never run at the same time on this server.
   let chain = Promise.resolve()
   const exclusive = (fn) => {
     const run = chain.then(fn, fn)
@@ -308,18 +349,22 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     const refs = await decidedReferences()
     const proposal = (refs.fieldTopics ?? []).find((m) => m.mappingId === body.mappingId)
     if (!proposal) return fail(response, 'not_found')
-    const reviews = await loadReviews(store)
-    const review = await recordReview(store, {
-      reviewId: newReviewId(now),
-      kind: 'field_topic',
-      target: proposal.mappingId,
-      decision: body.decision,
-      note,
-      evidence,
-      reviewer: request.radarSession.label ?? 'owner',
-      reviewedAt: now().toISOString(),
-      version: nextVersion(reviews, 'field_topic', proposal.mappingId),
-      appliesTo: { sourceId: MAPPING_SOURCE, period: null, observationHash: proposalHash(proposal) },
+    // Under the lock: two decisions on one target never get the same version.
+    const { reviews, review } = await exclusive(async () => {
+      const reviews = await loadReviews(store)
+      const review = await recordReview(store, {
+        reviewId: newReviewId(now),
+        kind: 'field_topic',
+        target: proposal.mappingId,
+        decision: body.decision,
+        note,
+        evidence,
+        reviewer: request.radarSession.label ?? 'owner',
+        reviewedAt: now().toISOString(),
+        version: nextVersion(reviews, 'field_topic', proposal.mappingId),
+        appliesTo: { sourceId: MAPPING_SOURCE, period: null, observationHash: proposalHash(proposal) },
+      })
+      return { reviews, review }
     })
     radar.invalidateReviews?.()
     log(`[radar] review recorded: field_topic ${review.reviewId}`)
@@ -355,19 +400,22 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     if (answer.manifestId !== answer.activeManifestId || answer.states?.dosm?.servedFrom !== 'active_manifest') return fail(response, 'store_unavailable')
     const flagged = (answer.view.signals.breaks ?? []).find((b) => b.period === period && b.observationHash === observationHash)
     if (!flagged) return fail(response, 'not_found')
-    const reviews = await loadReviews(store)
     const target = `dosm:${flagged.period}`
-    const review = await recordReview(store, {
-      reviewId: newReviewId(now),
-      kind: 'break',
-      target,
-      decision: body.decision,
-      note,
-      evidence,
-      reviewer: request.radarSession.label ?? 'owner',
-      reviewedAt: now().toISOString(),
-      version: nextVersion(reviews, 'break', target),
-      appliesTo: { sourceId: 'dosm', period: flagged.period, observationHash: flagged.observationHash },
+    // Under the lock (as the recalculation below, in a separate turn): versions per target stay distinct.
+    const review = await exclusive(async () => {
+      const reviews = await loadReviews(store)
+      return recordReview(store, {
+        reviewId: newReviewId(now),
+        kind: 'break',
+        target,
+        decision: body.decision,
+        note,
+        evidence,
+        reviewer: request.radarSession.label ?? 'owner',
+        reviewedAt: now().toISOString(),
+        version: nextVersion(reviews, 'break', target),
+        appliesTo: { sourceId: 'dosm', period: flagged.period, observationHash: flagged.observationHash },
+      })
     })
     log(`[radar] review recorded: break ${review.reviewId}`)
     // Applied at once by recalculating the active snapshots into a new manifest; if that cannot run now, the review is

@@ -140,7 +140,7 @@ describe('GET /api/admin/radar/status', () => {
     // A first server seeds prod/ from the bundle; then an interrupted run elsewhere left an object behind.
     const first = await start({ store })
     await call('GET', '/api/radar/manifest')
-    await store.put(KEYS.snapshot('dosm', 'dosm-left-behind'), toBytes({ snapshotId: 'dosm-left-behind' }))
+    await store.put(KEYS.snapshot('dosm', 'dosm-20261029T000000Z-left'), toBytes({ snapshotId: 'dosm-20261029T000000Z-left' }))
     await store.put(KEYS.ingestLog('20261030T070000.000Z-aaaa0000'), toBytes({ time: '2026-10-30T07:00:00.000Z', source: 'openalex', operation: 'activate', outcome: 'published', ids: { manifestId: BUNDLE_ACTIVE } }))
     expect(first.radar).toBeTruthy()
     await new Promise((resolve) => server.close(resolve))
@@ -151,7 +151,7 @@ describe('GET /api/admin/radar/status', () => {
     expect(r.status).toBe(200)
     expect(r.body.writable).toBe(true)
     expect(r.body.activeManifestId).toBe(BUNDLE_ACTIVE)
-    expect(r.body.orphans).toEqual([KEYS.snapshot('dosm', 'dosm-left-behind')])
+    expect(r.body.orphans).toEqual([KEYS.snapshot('dosm', 'dosm-20261029T000000Z-left')])
     expect(r.body.lastChecks.openalex).toMatchObject({ checkedAt: '2026-10-30T07:00:00.000Z', outcome: 'published' })
     expect(r.body.log[0]).toMatchObject({ source: 'openalex', outcome: 'published' })
     expect(Array.isArray(r.body.conflicts)).toBe(true)
@@ -232,6 +232,25 @@ describe('field-topic decisions', () => {
       expect(r.body.error.code).toBe(code)
     }
     expect(await store.list(KEYS.reviewsPrefix)).toEqual([])
+  })
+
+  it('two decisions on one target at the same time get different versions', async () => {
+    const store = createMemoryStore()
+    // Slow listings: without a lock both requests would read the history before either writes.
+    const list = store.list
+    store.list = async (prefix) => {
+      const keys = await list(prefix)
+      if (prefix === KEYS.reviewsPrefix) await new Promise((resolve) => setTimeout(resolve, 30))
+      return keys
+    }
+    await start({ store })
+    const session = await login()
+    const both = await Promise.all([
+      call('POST', '/api/admin/radar/mappings', { session, body: { mappingId: '06-language', decision: 'approved', note: '' } }),
+      call('POST', '/api/admin/radar/mappings', { session, body: { mappingId: '06-language', decision: 'rejected', note: '' } }),
+    ])
+    expect(both.map((r) => r.status)).toEqual([201, 201])
+    expect(both.map((r) => r.body.review.version).sort()).toEqual([1, 2])
   })
 
   it('recordReview is immutable (only if absent)', async () => {
@@ -361,11 +380,11 @@ describe('orphans and cleanup', () => {
     const live = await store.list('prod/')
     // Left behind by interrupted runs: a snapshot, signals, and a manifest that was never activated.
     const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value
-    await store.put(KEYS.snapshot('openalex', 'openalex-left'), toBytes({ snapshotId: 'openalex-left' }))
-    await store.put(KEYS.signals('signals-left'), toBytes({ signals: [] }))
-    await store.put(KEYS.manifest('manifest-left'), toBytes({ ...active, manifestId: 'manifest-left', signalsId: 'signals-left', previousManifestId: BUNDLE_ACTIVE }))
+    await store.put(KEYS.snapshot('openalex', 'openalex-20261029T000000Z-left'), toBytes({ snapshotId: 'openalex-20261029T000000Z-left' }))
+    await store.put(KEYS.signals('signals-20261029T000000.000Z-left0001'), toBytes({ signals: [] }))
+    await store.put(KEYS.manifest('manifest-20261029T000000.000Z-left0001'), toBytes({ ...active, manifestId: 'manifest-20261029T000000.000Z-left0001', createdAt: '2026-10-29T00:00:00.000Z', signalsId: 'signals-20261029T000000.000Z-left0001', previousManifestId: BUNDLE_ACTIVE }))
     const status = await call('GET', '/api/admin/radar/status', { session })
-    expect(status.body.orphans).toEqual([KEYS.manifest('manifest-left'), KEYS.signals('signals-left'), KEYS.snapshot('openalex', 'openalex-left')].sort())
+    expect(status.body.orphans).toEqual([KEYS.manifest('manifest-20261029T000000.000Z-left0001'), KEYS.signals('signals-20261029T000000.000Z-left0001'), KEYS.snapshot('openalex', 'openalex-20261029T000000Z-left')].sort())
 
     const r = await call('POST', '/api/admin/radar/cleanup', { session })
     expect(r.status).toBe(200)
@@ -376,14 +395,46 @@ describe('orphans and cleanup', () => {
     expect((await call('GET', '/api/admin/radar/status', { session })).body.orphans).toEqual([])
   })
 
+  it('an in-progress publish newer than the active manifest survives cleanup; old orphans are still removed', async () => {
+    const { store } = await start()
+    const session = await login()
+    await call('GET', '/api/radar/manifest')
+    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value
+    // Another instance is publishing: snapshot, signals and manifest written, active.json not switched yet.
+    const fresh = {
+      snapshot: KEYS.snapshot('openalex', 'openalex-20261031T000000Z'),
+      signals: KEYS.signals('signals-20261031T000000.000Z-new00001'),
+      manifest: KEYS.manifest('manifest-20261031T000000.000Z-new00001'),
+    }
+    await store.put(fresh.snapshot, toBytes({ snapshotId: 'openalex-20261031T000000Z' }))
+    await store.put(fresh.signals, toBytes({ signals: [] }))
+    await store.put(fresh.manifest, toBytes({ ...active, manifestId: 'manifest-20261031T000000.000Z-new00001', createdAt: '2026-10-31T00:00:00.000Z', snapshots: { ...active.snapshots, openalex: 'openalex-20261031T000000Z' }, signalsId: 'signals-20261031T000000.000Z-new00001', previousManifestId: BUNDLE_ACTIVE }))
+    // A run that wrote only its snapshot so far (no manifest yet), also newer than active.
+    const pending = KEYS.snapshot('dosm', 'dosm-2026q3-20261031T000001Z')
+    await store.put(pending, toBytes({ snapshotId: 'dosm-2026q3-20261031T000001Z' }))
+    // An old leftover, older than the active manifest, and one without any id stamp (cannot be dated: kept).
+    const old = KEYS.signals('signals-20261029T000000.000Z-old00001')
+    const undated = KEYS.signals('signals-undated')
+    await store.put(old, toBytes({ signals: [] }))
+    await store.put(undated, toBytes({ signals: [] }))
+
+    const status = await call('GET', '/api/admin/radar/status', { session })
+    expect(status.body.orphans).toEqual([old])
+    const r = await call('POST', '/api/admin/radar/cleanup', { session })
+    expect(r.body.deleted).toEqual([old])
+    for (const key of [...Object.values(fresh), pending, undated]) expect(await store.get(key), key).not.toBe(null)
+    expect(await store.get(old)).toBe(null)
+    expect((await removeOrphans(store, [fresh.snapshot, fresh.signals, fresh.manifest, pending])).deleted).toEqual([])
+  })
+
   it('removeOrphans refuses any key a stored manifest references and anything outside the scanned prefixes', async () => {
     const store = createMemoryStore()
     await start({ store })
     await call('GET', '/api/radar/manifest')
     const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value
     // A stored (not active) manifest still references this snapshot: it must stay.
-    await store.put(KEYS.snapshot('dosm', 'dosm-kept'), toBytes({ snapshotId: 'dosm-kept' }))
-    await store.put(KEYS.manifest('manifest-other'), toBytes({ ...active, manifestId: 'manifest-other', snapshots: { ...active.snapshots, dosm: 'dosm-kept' } }))
+    await store.put(KEYS.snapshot('dosm', 'dosm-20261029T000000Z-kept'), toBytes({ snapshotId: 'dosm-20261029T000000Z-kept' }))
+    await store.put(KEYS.manifest('manifest-20261029T000000.000Z-other001'), toBytes({ ...active, manifestId: 'manifest-20261029T000000.000Z-other001', createdAt: '2026-10-29T00:00:00.000Z', snapshots: { ...active.snapshots, dosm: 'dosm-20261029T000000Z-kept' } }))
     const referenced = [
       KEYS.active,
       KEYS.manifest(BUNDLE_ACTIVE),
@@ -393,10 +444,10 @@ describe('orphans and cleanup', () => {
       'prod/ingest-log/x.json',
       'demo/abc/x.json',
     ]
-    const out = await removeOrphans(store, [...referenced, KEYS.snapshot('dosm', 'dosm-kept')])
+    const out = await removeOrphans(store, [...referenced, KEYS.snapshot('dosm', 'dosm-20261029T000000Z-kept')])
     expect(out.deleted).toEqual([])
-    expect(out.refused.sort()).toEqual([...referenced, KEYS.snapshot('dosm', 'dosm-kept')].sort())
-    expect(await store.get(KEYS.snapshot('dosm', 'dosm-kept'))).not.toBe(null)
-    expect((await findOrphans(store)).orphans).toContain(KEYS.manifest('manifest-other'))
+    expect(out.refused.sort()).toEqual([...referenced, KEYS.snapshot('dosm', 'dosm-20261029T000000Z-kept')].sort())
+    expect(await store.get(KEYS.snapshot('dosm', 'dosm-20261029T000000Z-kept'))).not.toBe(null)
+    expect((await findOrphans(store)).orphans).toContain(KEYS.manifest('manifest-20261029T000000.000Z-other001'))
   })
 })

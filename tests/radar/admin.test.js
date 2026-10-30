@@ -427,6 +427,34 @@ describe('orphans and cleanup', () => {
     expect((await removeOrphans(store, [fresh.snapshot, fresh.signals, fresh.manifest, pending])).deleted).toEqual([])
   })
 
+  it('keeps a clock-skew margin: a publish stamped 5 minutes before the active manifest survives, 20 minutes before is removed', async () => {
+    const { store } = await start()
+    const session = await login()
+    await call('GET', '/api/radar/manifest')
+    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T06:07:00.206Z
+    const publish = async (stamp, iso, nonce) => {
+      const keys = {
+        snapshot: KEYS.snapshot('openalex', `openalex-${stamp}`),
+        signals: KEYS.signals(`signals-${stamp}-${nonce}`),
+        manifest: KEYS.manifest(`manifest-${stamp}-${nonce}`),
+      }
+      await store.put(keys.snapshot, toBytes({ snapshotId: `openalex-${stamp}` }))
+      await store.put(keys.signals, toBytes({ signals: [] }))
+      await store.put(keys.manifest, toBytes({ ...active, manifestId: `manifest-${stamp}-${nonce}`, createdAt: iso, snapshots: { ...active.snapshots, openalex: `openalex-${stamp}` }, signalsId: `signals-${stamp}-${nonce}`, previousManifestId: BUNDLE_ACTIVE }))
+      return keys
+    }
+    // Written by an instance whose clock runs a few minutes behind: still possibly in progress.
+    const skewed = await publish('20261030T060200.206Z', '2026-10-30T06:02:00.206Z', 'skew0001')
+    // Clearly older than any plausible skew: a left-over.
+    const stale = await publish('20261030T054700.206Z', '2026-10-30T05:47:00.206Z', 'stale001')
+    const status = await call('GET', '/api/admin/radar/status', { session })
+    expect(status.body.orphans).toEqual(Object.values(stale).sort())
+    const r = await call('POST', '/api/admin/radar/cleanup', { session })
+    expect(r.body.deleted.sort()).toEqual(Object.values(stale).sort())
+    for (const key of Object.values(skewed)) expect(await store.get(key), key).not.toBe(null)
+    for (const key of Object.values(stale)) expect(await store.get(key), key).toBe(null)
+  })
+
   it('removeOrphans refuses any key a stored manifest references and anything outside the scanned prefixes', async () => {
     const store = createMemoryStore()
     await start({ store })

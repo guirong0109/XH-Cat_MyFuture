@@ -42,6 +42,10 @@ const SCANNED = Object.freeze(['prod/manifests/', 'prod/snapshots/', 'prod/signa
 const MAX_PERIOD = 20
 const MAX_HASH = 4000
 const OK_OUTCOMES = new Set(['published', 'no_change'])
+// Cleanup safety margin for clock skew between instances: ids and createdAt come from each instance's own clock, so a
+// publish still in progress on an instance whose clock runs behind can look older than the active manifest. Anything
+// stamped within SKEW_MS before the active manifest's createdAt (or later) is treated as possibly in progress and kept.
+export const SKEW_MS = 10 * 60 * 1000
 
 const ERRORS = {
   bad_request: [400, 'The request is not valid.', false],
@@ -169,9 +173,10 @@ export function keyStamp(key) {
   return Number.isFinite(t) ? t : null
 }
 
-// Stored manifests created at or after the active one: a publish that may still be in progress on another instance.
+// Stored manifests created at or after (active createdAt - SKEW_MS): a publish that may still be in progress on another
+// instance. Returns a Set of manifest keys.
 async function recentManifestKeys(store, activeAt, exclude) {
-  const out = []
+  const out = new Set()
   for (const key of await store.list('prod/manifests/')) {
     if (exclude.has(key)) continue
     let manifest
@@ -179,18 +184,18 @@ async function recentManifestKeys(store, activeAt, exclude) {
       manifest = (await getJson(store, key))?.value
     } catch (error) {
       if (!(error instanceof SyntaxError)) throw error
-      out.push(key) // unreadable: treated as recent, so nothing it might reference is removed
+      out.add(key) // unreadable: treated as recent, so nothing it might reference is removed
       continue
     }
     const created = Date.parse(manifest?.createdAt)
-    if (!Number.isFinite(created) || created >= activeAt) out.push(key)
+    if (!Number.isFinite(created) || created >= activeAt - SKEW_MS) out.add(key)
   }
   return out
 }
 
 // Objects under prod/manifests|snapshots|signals|originals that are orphans: not referenced by the active manifest or
-// its history, not referenced by any stored manifest created at or after the active one (a publish that may be in
-// progress on another instance), and with an id stamp older than the active manifest's createdAt. Newer or undated
+// its history, not referenced by any stored manifest created at or after (active createdAt - SKEW_MS) (a publish that
+// may be in progress on another instance), and with an id stamp older than (active createdAt - SKEW_MS). Newer or undated
 // unreferenced objects are kept until a later cleanup. Fails closed: when the active state cannot be read completely,
 // nothing is listed (blocked).
 export async function findOrphans(store) {
@@ -203,9 +208,9 @@ export async function findOrphans(store) {
   for (const prefix of SCANNED) all.push(...(await store.list(prefix)))
   const old = (key) => {
     const t = keyStamp(key)
-    return t !== null && t < live.activeAt
+    return t !== null && t < live.activeAt - SKEW_MS
   }
-  return { orphans: [...new Set(all)].filter((key) => !referenced.has(key) && !recent.includes(key) && old(key)).sort(), blocked: null }
+  return { orphans: [...new Set(all)].filter((key) => !referenced.has(key) && !recent.has(key) && old(key)).sort(), blocked: null }
 }
 
 // Deletes the candidates that are orphans now. Orphan manifests go first; every other candidate is refused when any

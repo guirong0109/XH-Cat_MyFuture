@@ -149,15 +149,15 @@ body.landing main{max-width:none;padding:0}
 
 /* the end of the page: one full-width band (.lp-end) holding the closing call to action and the footer, its content
    lined up with the page (--edge). The closing block
-   is the black top (black in dark mode too); its bottom edge is cut into scallops (a mask) and the footer follows
+   is the black top (black in dark mode too); its bottom edge is cut into triangles (a mask) and the footer follows
    straight underneath. */
 .lp-end{margin:0 calc(50% - 50vw);background:var(--lp-cream)}
 .lp-close{--lp-cream:#f5f0e6;padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
   background:#000;
   -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
-    radial-gradient(circle at 14px 0,#000 13.5px,#0000 14px) bottom left/28px 14px repeat-x;
+    conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom left/28px 14px repeat-x;
   mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
-    radial-gradient(circle at 14px 0,#000 13.5px,#0000 14px) bottom left/28px 14px repeat-x}
+    conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom left/28px 14px repeat-x}
 .lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
 
 /* footer, under the closing block's wavy edge: the about line top right, a large wordmark with the ATM mascot bottom

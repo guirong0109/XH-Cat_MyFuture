@@ -1125,6 +1125,16 @@
       "time": "31 Oct",
       "step": "Fix",
       "detail": "nav background spans the full screen width, its content lined up with the page (shared --edge); npm test 258 passed; checked in Chrome at 1653 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer edge as triangles instead of circles"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block bottom edge cut into triangles (zigzag); npm test 258 passed; checked in Chrome"
     }
   ]
 }

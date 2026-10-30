@@ -92,6 +92,27 @@ describe('Radar strings', () => {
     expect(t('zh', 'rdIceReason', { period: '2025 Q3', next: '2026 Q3' })).toContain('2025 Q3')
   })
 
+  it('DOSM rule texts show their numbers and use only the vars shared/radar/dosm.js passes', () => {
+    const passed = {
+      rdRuleDosmRising: ['pp', 'relativePercent', 'agree', 'clean', 'materialPp', 'materialRelativePercent'],
+      rdRuleDosmDeclining: ['pp', 'relativePercent', 'agree', 'clean', 'materialPp', 'materialRelativePercent'],
+      rdRuleDosmMixedSteps: ['pp', 'relativePercent', 'agree', 'clean'],
+      rdRuleDosmMixedVolatility: ['pp', 'volatility', 'high'],
+      rdRuleDosmStable: ['pp', 'relativePercent', 'materialPp', 'materialRelativePercent'],
+      rdRuleDosmNewCategory: ['quarters', 'minQuarters'],
+      rdRuleDosmBreak: ['breakPeriods'],
+      rdRuleDosmMissing: [],
+    }
+    for (const [key, vars] of Object.entries(passed)) {
+      for (const [name, table] of Object.entries(tables)) {
+        const used = (String(table[key]).match(/\{(\w+)\}/g) || []).map((p) => p.slice(1, -1))
+        for (const v of used) expect(vars, `${name}.${key} uses {${v}}`).toContain(v)
+        // every variable passed is shown, except the thresholds of Stable which are also shown
+        for (const v of vars) expect(used, `${name}.${key} shows {${v}}`).toContain(v)
+      }
+    }
+  })
+
   it('every t(\'rd...\') used in existing Radar sources has a key in all three languages', () => {
     for (const file of radarSources()) {
       const text = readFileSync(join(root, file), 'utf8')

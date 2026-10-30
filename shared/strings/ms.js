@@ -506,14 +506,14 @@ export default {
   rdJudgeAfter: "Selepas",
   rdJudgeNoChange: "Tiada perubahan",
   // Radar: DOSM rule texts, extra reasons and break review statuses (Task 5; no placeholders, so nothing can show raw)
-  rdRuleDosmRising: "Meningkat: bahagian iklan pekerjaan bertambah dengan jumlah ketara sepanjang tahun, dan kebanyakan langkah suku tahun terkini sepakat.",
-  rdRuleDosmDeclining: "Menurun: bahagian iklan pekerjaan berkurang dengan jumlah ketara sepanjang tahun, dan kebanyakan langkah suku tahun terkini sepakat.",
-  rdRuleDosmStable: "Stabil: bahagian iklan pekerjaan berubah kurang daripada jumlah ketara sepanjang tahun.",
-  rdRuleDosmMixedSteps: "Bercampur: bahagian berubah dengan jumlah ketara, tetapi langkah suku tahun tidak sepakat tentang arah.",
-  rdRuleDosmMixedVolatility: "Bercampur: bahagian suku tahun naik turun terlalu banyak untuk menentukan arah.",
+  rdRuleDosmRising: "Meningkat: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), pada atau melebihi {materialPp} mata peratus dan {materialRelativePercent}%. {agree} daripada {clean} langkah tahunan yang bersih sepakat.",
+  rdRuleDosmDeclining: "Menurun: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), pada atau melebihi {materialPp} mata peratus dan {materialRelativePercent}% ke bawah. {agree} daripada {clean} langkah tahunan yang bersih sepakat.",
+  rdRuleDosmStable: "Stabil: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), di bawah {materialPp} mata peratus dan {materialRelativePercent}% yang diperlukan untuk dianggap perubahan.",
+  rdRuleDosmMixedSteps: "Bercampur: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}%), tetapi hanya {agree} daripada {clean} langkah tahunan yang bersih sepakat tentang arah.",
+  rdRuleDosmMixedVolatility: "Bercampur: bahagian berubah sebanyak {pp} mata peratus, tetapi perubahan tahunan sangat turun naik ({volatility} mata peratus, melebihi {high} mata peratus).",
   rdRuleDosmMissing: "Bukti tidak mencukupi: ada suku tahun yang diperlukan untuk perbandingan tiada nilai.",
-  rdRuleDosmNewCategory: "Bukti tidak mencukupi: ini ialah kategori pelaporan baharu tanpa sejarah yang cukup untuk dibandingkan.",
-  rdRuleDosmBreak: "Bukti boleh banding tidak mencukupi: kemungkinan perubahan struktur menjadikan perbandingan tahun-ke-tahun tidak boleh dipercayai.",
+  rdRuleDosmNewCategory: "Bukti tidak mencukupi: ini ialah kategori pelaporan baharu dengan {quarters} suku tahun dilaporkan, dan sekurang-kurangnya {minQuarters} diperlukan untuk dibandingkan.",
+  rdRuleDosmBreak: "Bukti boleh banding tidak mencukupi: kemungkinan perubahan struktur pada {breakPeriods} menjadikan perbandingan tahun-ke-tahun tidak boleh dipercayai.",
   rdReason_few_clean_steps: "Terlalu sedikit langkah suku tahun yang bersih untuk menilai arah.", // translation: owner review
   rdReason_possible_break: "Kemungkinan perubahan struktur menjejaskan perbandingan ini.", // translation: owner review
   rdBreak_unreviewed: "Belum disemak",

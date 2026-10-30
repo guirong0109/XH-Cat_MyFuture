@@ -506,14 +506,14 @@ export default {
   rdJudgeAfter: "之后",
   rdJudgeNoChange: "没有变化",
   // Radar: DOSM rule texts, extra reasons and break review statuses (Task 5; no placeholders, so nothing can show raw)
-  rdRuleDosmRising: "上升：招聘广告份额在这一年里有明显增加，且最近大多数季度变化方向一致。",
-  rdRuleDosmDeclining: "下降：招聘广告份额在这一年里有明显减少，且最近大多数季度变化方向一致。",
-  rdRuleDosmStable: "稳定：招聘广告份额在这一年里的变化未达到明显程度。",
-  rdRuleDosmMixedSteps: "走势不一：份额有明显变化，但各季度的变化方向不一致。",
-  rdRuleDosmMixedVolatility: "走势不一：各季度份额起伏太大，无法判断方向。",
+  rdRuleDosmRising: "上升：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），达到或超过{materialPp}个百分点和{materialRelativePercent}%。{clean}个有效的年度变化中有{agree}个方向一致。",
+  rdRuleDosmDeclining: "下降：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），下降幅度达到或超过{materialPp}个百分点和{materialRelativePercent}%。{clean}个有效的年度变化中有{agree}个方向一致。",
+  rdRuleDosmStable: "稳定：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），低于算作变化所需的{materialPp}个百分点和{materialRelativePercent}%。",
+  rdRuleDosmMixedSteps: "走势不一：份额变化了{pp}个百分点（{relativePercent}%），但{clean}个有效的年度变化中只有{agree}个方向一致。",
+  rdRuleDosmMixedVolatility: "走势不一：份额变化了{pp}个百分点，但年度变化波动很大（{volatility}个百分点，超过{high}个百分点）。",
   rdRuleDosmMissing: "证据不足：比较所需的某个季度没有数值。",
-  rdRuleDosmNewCategory: "证据不足：这是新的统计类别，历史数据不足，无法比较。",
-  rdRuleDosmBreak: "可比证据不足：可能出现结构性断层，年同比比较不可靠。",
+  rdRuleDosmNewCategory: "证据不足：这是新的统计类别，只有{quarters}个季度有数据，至少需要{minQuarters}个季度才能比较。",
+  rdRuleDosmBreak: "可比证据不足：{breakPeriods}可能出现结构性断层，年同比比较不可靠。",
   rdReason_few_clean_steps: "可用于判断方向的季度变化太少。", // translation: owner review
   rdReason_possible_break: "可能的结构性断层影响了这次比较。", // translation: owner review
   rdBreak_unreviewed: "尚未审核",

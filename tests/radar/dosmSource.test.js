@@ -40,7 +40,8 @@ describe('discover', () => {
       publishedAt: '2026-11-19',
       pageUrl: `${RELEASE_BASE}32026`
     })
-    expect(Object.keys(d.release).sort()).toEqual(['listing', 'pageUrl', 'publishedAt', 'quarter', 'title'])
+    expect(Object.keys(d.release).sort()).toEqual(['listing', 'listingUrl', 'pageUrl', 'publishedAt', 'quarter', 'title'])
+    expect(d.release.listingUrl).toBe(ARCHIVE_URL)
     expect(f.calls[0].url).toBe(ARCHIVE_URL)
     expect(f.calls[0].init.signal).toBeTruthy()
   })
@@ -191,12 +192,16 @@ describe('release listing kept as break evidence (spec 6.2)', () => {
 
   it('parses every Job Market Insights entry of the real saved archive page, sorted by quarter', () => {
     const listing = parseDosmListing(REAL)
-    for (const e of listing) expect(Object.keys(e).sort()).toEqual(['publishedAt', 'quarter', 'title'])
+    for (const e of listing) expect(Object.keys(e).sort()).toEqual(['pageUrl', 'publishedAt', 'quarter', 'title'])
     const quarters = listing.map((e) => e.quarter)
     expect(quarters).toEqual([...quarters].sort((a, b) => a.localeCompare(b)))
     const byQ = Object.fromEntries(listing.map((e) => [e.quarter, e]))
-    expect(byQ['2025 Q2']).toEqual({ quarter: '2025 Q2', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26' })
-    expect(byQ['2025 Q3']).toEqual({ quarter: '2025 Q3', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28' })
+    // Each entry keeps the real link from the page (D3: every evidence link must work), not the q<n><yyyy> pattern.
+    expect(REAL).toContain('href="/portal-main/release-content/big-data-analytics-job-market-insights-and-my-job-profile-second-quarter-of-"')
+    expect(byQ['2025 Q2']).toEqual({ quarter: '2025 Q2', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26', pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-and-my-job-profile-second-quarter-of-' })
+    expect(byQ['2025 Q2'].pageUrl).not.toBe(releasePageUrl('2025 Q2'))
+    expect(byQ['2023 Q1'].pageUrl).toBe('https://www.dosm.gov.my/portal-main/release-content/5f1a1991-0a85-11ee-96d5-1866daa77ef9')
+    expect(byQ['2025 Q3']).toEqual({ quarter: '2025 Q3', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28', pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025' })
     expect(byQ['2026 Q1'].publishedAt).toBe('2026-06-25')
     // Older releases under another name ("Job Vacancies Landscape") are not Job Market Insights entries.
     expect(listing.some((e) => /Landscape/.test(e.title))).toBe(false)
@@ -214,11 +219,23 @@ describe('release listing kept as break evidence (spec 6.2)', () => {
     const routes = { [PAGE_Q2]: html(RELEASE_PAGE), [DATA_URL]: new Response(XLSX, { status: 200, headers: { 'Content-Type': XLSX_TYPE } }) }
     const { snapshot } = await createDosmSource({ fetchImpl: fakeFetch(routes), now: NOW }).fetchSnapshot({ ...RELEASE, listing })
     expect(snapshot.meta.listing).toEqual(listing)
+    expect(snapshot.meta.listingUrl).toBe(null)
     expect(snapshot.meta.listingTitle).toBe(RELEASE.title)
     expect(validateSnapshot(snapshot).ok).toBe(true)
   })
 
-  it('dosmSnapshotFromWorkbook takes an optional listing (sorted, only quarter/title/publishedAt kept)', () => {
+  it('listing links: relative resolved against the site, &amp; decoded, other hosts and schemes dropped', () => {
+    const line = (href, q) => `<h6><a href="${href}">01.02.2026 - Big Data Analytics: Job Market Insights, ${q} Quarter of 2025</a></h6>`
+    const got = parseDosmListing(
+      line('/portal-main/release-content/x?a=1&amp;b=2', 'First') +
+      line('https://evil.example/portal-main/release-content/y', 'Second') +
+      line('javascript:alert(1)', 'Third') +
+      line('http://www.dosm.gov.my/portal-main/release-content/z', 'Fourth')
+    )
+    expect(got.map((e) => e.pageUrl)).toEqual(['https://www.dosm.gov.my/portal-main/release-content/x?a=1&b=2', null, null, null])
+  })
+
+  it('dosmSnapshotFromWorkbook takes an optional listing (sorted, only quarter/title/publishedAt/pageUrl kept)', () => {
     const opts = { pageUrl: PAGE_Q2, dataUrl: DATA_URL, fetchedAt: NOW().toISOString() }
     expect(dosmSnapshotFromWorkbook(XLSX, RELEASE, opts).snapshot.meta.listing).toEqual([])
     const given = [
@@ -226,9 +243,13 @@ describe('release listing kept as break evidence (spec 6.2)', () => {
       { quarter: '2025 Q2', title: 'A', publishedAt: '2026-02-26' },
       { quarter: 'nonsense', title: 'C', publishedAt: '2026-01-01' }
     ]
-    expect(dosmSnapshotFromWorkbook(XLSX, RELEASE, { ...opts, listing: given }).snapshot.meta.listing).toEqual([
-      { quarter: '2025 Q2', title: 'A', publishedAt: '2026-02-26' },
-      { quarter: '2025 Q3', title: 'B', publishedAt: '2026-04-28' }
+    given[0].pageUrl = 'https://www.dosm.gov.my/portal-main/release-content/b'
+    given[1].pageUrl = 'https://evil.example/a'
+    const meta = dosmSnapshotFromWorkbook(XLSX, RELEASE, { ...opts, listing: given, listingUrl: ARCHIVE_URL }).snapshot.meta
+    expect(meta.listing).toEqual([
+      { quarter: '2025 Q2', title: 'A', publishedAt: '2026-02-26', pageUrl: null },
+      { quarter: '2025 Q3', title: 'B', publishedAt: '2026-04-28', pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/b' }
     ])
+    expect(meta.listingUrl).toBe(ARCHIVE_URL)
   })
 })

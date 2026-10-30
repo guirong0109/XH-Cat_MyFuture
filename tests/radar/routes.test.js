@@ -15,10 +15,10 @@ import { RADAR_CONFIG } from '../../shared/radar/config.js'
 import { FORBIDDEN_KEY_PATTERN, validateSignal } from '../../shared/radar/contract.js'
 import { effectiveFieldTopics } from '../../shared/radar/relevance.js'
 
-const BUNDLE_ACTIVE = 'manifest-20261030T072642.885Z-ca493e95'
-const BUNDLE_OLDER = 'manifest-20261030T072642.811Z-e835d961'
-const OPENALEX_SNAPSHOT = 'openalex-20261030T072642Z'
-const DOSM_SNAPSHOT = 'dosm-2026q2-20261030T072642Z'
+const BUNDLE_ACTIVE = 'manifest-20261030T073351.583Z-74046a19'
+const BUNDLE_OLDER = 'manifest-20261030T073351.495Z-2c6bf0d6'
+const OPENALEX_SNAPSHOT = 'openalex-20261030T073351Z'
+const DOSM_SNAPSHOT = 'dosm-2026q2-20261030T073351Z'
 const DOSM_ORIGINAL = '965f2f20bcb33425eb43eac7f9edfcff186e7fa92048b8b26f8ee8bbe5d25764'
 const DAY = 86400000
 const at = (iso) => () => new Date(iso)
@@ -128,8 +128,8 @@ describe('public Radar API', () => {
       KEYS.snapshot('openalex', OPENALEX_SNAPSHOT),
       KEYS.snapshot('dosm', DOSM_SNAPSHOT),
       KEYS.original('dosm', DOSM_ORIGINAL),
-      KEYS.signals('signals-20261030T072642.885Z-ca493e95'),
-      KEYS.signals('signals-20261030T072642.811Z-e835d961'),
+      KEYS.signals('signals-20261030T073351.583Z-74046a19'),
+      KEYS.signals('signals-20261030T073351.495Z-2c6bf0d6'),
     ]) {
       const copied = await store.get(key)
       expect(copied, key).toBeTruthy()

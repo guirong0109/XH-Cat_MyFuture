@@ -7,7 +7,7 @@ import path from 'node:path'
 import { createIngestor } from '../server/radar/ingest.js'
 import { createMemoryStore } from '../server/radar/store/memory.js'
 import { createOpenAlexSource } from '../server/radar/sources/openalex.js'
-import { dosmSnapshotFromWorkbook, parseDosmListing } from '../server/radar/sources/dosm.js'
+import { dosmSnapshotFromWorkbook, parseDosmListing, releaseArchiveUrl } from '../server/radar/sources/dosm.js'
 import { loadRadarReferences } from '../server/radar/references.js'
 
 const OUT = path.resolve('data/radar/bundle')
@@ -20,7 +20,9 @@ const RELEASE = {
   pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q22026',
   dataUrl: 'https://www.dosm.gov.my/portal-main/release-document-log?release_document_id=20742',
   listingTitle: 'Big Data Analytics: Job Market Insights, Second Quarter of 2026',
-  listing: parseDosmListing(await readFile(ARCHIVE, 'utf8'))
+  listing: parseDosmListing(await readFile(ARCHIVE, 'utf8')),
+  // The page the saved archive was read from (its og:url).
+  listingUrl: releaseArchiveUrl('2026 Q2')
 }
 
 const store = createMemoryStore()

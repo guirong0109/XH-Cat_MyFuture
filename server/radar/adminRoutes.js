@@ -25,7 +25,7 @@ import { originOk, sendAccessError } from './access.js'
 import { demoErrorCode, sendDemoError } from './demoRoutes.js'
 import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
-import { releaseArchiveUrl, releasePageUrl } from './sources/dosm.js'
+import { dosmLink, releasePageUrl } from './sources/dosm.js'
 import {
   BREAK_DECISIONS,
   MAPPING_DECISIONS,
@@ -57,21 +57,26 @@ function quarterBefore(period) {
 
 // Spec 6.2: the DOSM release listing (stored on the DOSM snapshot as meta.listing) is evidence for the break review,
 // never a cause. Each possible break gets the listing entries of the quarter before and of the flagged quarter, and the
-// release links built by the source adapter's own URL builders (the browser has no copy of the pattern).
-export function breakWithEvidence(brk, listing) {
-  const entries = Array.isArray(listing) ? listing : []
+// release links, all built on the server (the browser has no copy of any DOSM URL pattern). D3: every evidence link must
+// work, so the release page is the entry's real link from the archive page; only the active release itself (not in its
+// own archive) falls back to the snapshot's page URL or the adapter's builder; otherwise no page link. The listing link
+// is the archive page that was actually read (meta.listingUrl).
+export function breakWithEvidence(brk, meta) {
+  const entries = Array.isArray(meta?.listing) ? meta.listing : []
+  const found = (quarter) => entries.find((x) => x?.quarter === quarter && typeof x.title === 'string')
   const entry = (quarter) => {
-    const e = entries.find((x) => x?.quarter === quarter && typeof x.title === 'string')
+    const e = found(quarter)
     return e
-      ? { quarter, status: 'listed', title: e.title, publishedAt: typeof e.publishedAt === 'string' ? e.publishedAt : null }
-      : { quarter, status: 'not_in_listing', title: null, publishedAt: null }
+      ? { quarter, status: 'listed', title: e.title, publishedAt: typeof e.publishedAt === 'string' ? e.publishedAt : null, pageUrl: dosmLink(e.pageUrl) }
+      : { quarter, status: 'not_in_listing', title: null, publishedAt: null, pageUrl: null }
   }
   const before = quarterBefore(brk?.period)
-  const page = releasePageUrl(brk?.period)
+  if (!before) return { ...brk, evidence: { listing: [] }, releaseLinks: null }
+  const active = brk.period === meta?.quarter ? dosmLink(meta?.pageUrl) ?? releasePageUrl(brk.period) : null
   return {
     ...brk,
-    evidence: { listing: before ? [entry(before), entry(brk.period)] : [] },
-    releaseLinks: page ? { page, listing: releaseArchiveUrl(brk.period) } : null,
+    evidence: { listing: [entry(before), entry(brk.period)] },
+    releaseLinks: { page: dosmLink(found(brk.period)?.pageUrl) ?? active, listing: dosmLink(meta?.listingUrl) },
   }
 }
 // Cleanup safety margin for clock skew between instances: ids and createdAt come from each instance's own clock, so a
@@ -430,7 +435,7 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
       sourceId: 'dosm',
       snapshotId: view.manifest.snapshots?.dosm ?? null,
       breakReviewsVersion: view.manifest.breakReviewsVersion ?? null,
-      breaks: (view.signals.breaks ?? []).map((b) => breakWithEvidence(b, view.snapshots?.dosm?.meta?.listing)),
+      breaks: (view.signals.breaks ?? []).map((b) => breakWithEvidence(b, view.snapshots?.dosm?.meta)),
       reviews,
     })
   }))

@@ -82,6 +82,10 @@ describe('bundled Radar data', () => {
     expect(q3.title).toContain('Job Market Insights')
     expect(q3.title).not.toContain('and My Job Profile')
     expect(q3.publishedAt).toBe('2026-04-28')
+    // The real links from the archive page (D3), and the archive page that was read.
+    expect(q2.pageUrl).toBe('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-and-my-job-profile-second-quarter-of-')
+    expect(q3.pageUrl).toBe('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025')
+    expect(dosm.meta.listingUrl).toBe('https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026')
     expect(dosm.meta.listingTitle).toBe('Big Data Analytics: Job Market Insights, Second Quarter of 2026')
   })
 

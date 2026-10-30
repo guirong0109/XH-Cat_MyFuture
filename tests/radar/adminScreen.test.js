@@ -231,7 +231,7 @@ describe('admin review (spec §8.2, §8.4)', () => {
     expect(periods).toContain('2025 Q3')
     expect(html).toContain(t('rdAdminBreakTitle'))
     expect(html).toContain('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025')
-    expect(html).toContain('https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q32025')
+    expect(html).toContain('https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026')
     // The listing title of the imported release is shown as evidence (not a cause).
     expect(unesc(html)).toContain(publicData.occ.listingTitle)
     expect(unesc(html)).toContain(t('rdBrkEvTitle', { title: publicData.occ.listingTitle }))
@@ -266,7 +266,7 @@ describe('admin review (spec §8.2, §8.4)', () => {
     const out = adminView({ t, state: adminState(), data: moved })
     expect(out).toContain('https://www.dosm.gov.my/page-from-server')
     expect(out).toContain('https://www.dosm.gov.my/listing-from-server')
-    expect(out).not.toContain('release-archive/big-data-analytics-job-market-insights-q32025')
+    expect(out).not.toContain('release-content/big-data-analytics-job-market-insights-q32025')
     expect(b.releaseLinks.page).toBe('https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025')
   })
 
@@ -296,7 +296,7 @@ describe('admin review (spec §8.2, §8.4)', () => {
     expect(out.ok).toBe(true)
     expect(out.data.review.evidence).toEqual(expect.arrayContaining([
       'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025',
-      'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q32025',
+      'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026',
       'https://example.org/evidence',
     ]))
     const bad = await admin.decideBreak({ brk: b, decision: 'annotate', note: 'x', link: 'javascript:alert(1)' })

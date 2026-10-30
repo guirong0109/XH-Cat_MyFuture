@@ -10,13 +10,13 @@ import { createFileStore } from '../../server/radar/store/file.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import { KEYS, getJson, toBytes } from '../../server/radar/manifest.js'
 import { SourceError } from '../../server/radar/sourceError.js'
-import { findOrphans, removeOrphans } from '../../server/radar/adminRoutes.js'
+import { breakWithEvidence, findOrphans, removeOrphans } from '../../server/radar/adminRoutes.js'
 import { loadReviews, recordReview } from '../../server/radar/reviews.js'
 
 const ENV = { RADAR_ADMIN_KEY: 'admin-key-for-tests-0123456789', RADAR_DEMO_KEY: 'demo-key-for-tests-9876543210', RADAR_SESSION_SECRET: 's'.repeat(40) }
 const MIN = 60000
 const bundleStore = createFileStore('data/radar/bundle')
-const BUNDLE_ACTIVE = 'manifest-20261030T072642.885Z-ca493e95'
+const BUNDLE_ACTIVE = 'manifest-20261030T073351.583Z-74046a19'
 
 let references
 beforeAll(async () => {
@@ -281,19 +281,24 @@ describe('break reviews', () => {
     expect(list.status).toBe(200)
     const q3 = list.body.breaks.find((b) => b.period === '2025 Q3')
     expect(q3.evidence.listing).toEqual([
-      { quarter: '2025 Q2', status: 'listed', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26' },
-      { quarter: '2025 Q3', status: 'listed', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28' },
+      { quarter: '2025 Q2', status: 'listed', title: 'Big Data Analytics: Job Market Insights and My Job Profile, Second Quarter of 2025', publishedAt: '2026-02-26', pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-and-my-job-profile-second-quarter-of-' },
+      { quarter: '2025 Q3', status: 'listed', title: 'Big Data Analytics: Job Market Insights, Third Quarter of 2025', publishedAt: '2026-04-28', pageUrl: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025' },
     ])
     expect(q3.releaseLinks).toEqual({
       page: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q32025',
-      listing: 'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q32025',
+      listing: 'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026',
     })
     // A quarter older than the archive listing reaches: said so, never guessed.
     const q2020 = list.body.breaks.find((b) => b.period === '2020 Q2')
     expect(q2020.evidence.listing).toEqual([
-      { quarter: '2020 Q1', status: 'not_in_listing', title: null, publishedAt: null },
-      { quarter: '2020 Q2', status: 'not_in_listing', title: null, publishedAt: null },
+      { quarter: '2020 Q1', status: 'not_in_listing', title: null, publishedAt: null, pageUrl: null },
+      { quarter: '2020 Q2', status: 'not_in_listing', title: null, publishedAt: null, pageUrl: null },
     ])
+    // No real page for a quarter outside the listing: no guessed link (D3); the archive page that was read stays.
+    expect(q2020.releaseLinks).toEqual({ page: null, listing: 'https://www.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026' })
+    // The active release itself is not in its own archive: its page comes from the snapshot (fallback: the builder).
+    const active = breakWithEvidence({ period: '2026 Q2' }, { quarter: '2026 Q2', pageUrl: null, listing: [], listingUrl: null })
+    expect(active.releaseLinks).toEqual({ page: 'https://www.dosm.gov.my/portal-main/release-content/big-data-analytics-job-market-insights-q22026', listing: null })
     // The stored signals are not changed by the answer (evidence is added per request).
     const again = await call('GET', '/api/admin/radar/breaks', { session })
     expect(again.body.breaks.find((b) => b.period === '2025 Q3')).toEqual(q3)
@@ -456,7 +461,7 @@ describe('orphans and cleanup', () => {
     const { store } = await start()
     const session = await login()
     await call('GET', '/api/radar/manifest')
-    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T07:26:42.885Z
+    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T07:33:51.583Z
     const publish = async (stamp, iso, nonce) => {
       const keys = {
         snapshot: KEYS.snapshot('openalex', `openalex-${stamp}`),
@@ -469,9 +474,9 @@ describe('orphans and cleanup', () => {
       return keys
     }
     // Written by an instance whose clock runs a few minutes behind: still possibly in progress.
-    const skewed = await publish('20261030T072142.885Z', '2026-10-30T07:21:42.885Z', 'skew0001')
+    const skewed = await publish('20261030T072851.583Z', '2026-10-30T07:28:51.583Z', 'skew0001')
     // Clearly older than any plausible skew: a left-over.
-    const stale = await publish('20261030T070642.885Z', '2026-10-30T07:06:42.885Z', 'stale001')
+    const stale = await publish('20261030T071351.583Z', '2026-10-30T07:13:51.583Z', 'stale001')
     const status = await call('GET', '/api/admin/radar/status', { session })
     expect(status.body.orphans).toEqual(Object.values(stale).sort())
     const r = await call('POST', '/api/admin/radar/cleanup', { session })

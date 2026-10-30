@@ -13,12 +13,12 @@ const GAP_POINTS = 56 - 26
 
 // The six stages of the guide's Final Demo Journey (section 4). Only the profile module is built.
 export const STAGES = [
-  { id: 'profile', title: 'ldS1T', text: 'ldS1D', live: true },
-  { id: 'radar', title: 'ldS2T', text: 'ldS2D' },
-  { id: 'match', title: 'ldS3T', text: 'ldS3D' },
-  { id: 'roadmap', title: 'ldS4T', text: 'ldS4D' },
-  { id: 'sdg', title: 'ldS5T', text: 'ldS5D' },
-  { id: 'futures', title: 'ldS6T', text: 'ldS6D' },
+  { id: 'profile', name: 'form', title: 'ldS1T', text: 'ldS1D', live: true },
+  { id: 'radar', name: 'radar', title: 'ldS2T', text: 'ldS2D' },
+  { id: 'match', name: 'match', title: 'ldS3T', text: 'ldS3D' },
+  { id: 'roadmap', name: 'roadmap', title: 'ldS4T', text: 'ldS4D' },
+  { id: 'sdg', name: 'sdg', title: 'ldS5T', text: 'ldS5D' },
+  { id: 'futures', name: 'futures', title: 'ldS6T', text: 'ldS6D' },
 ]
 
 // Row counts of the stored data (see data/SOURCES.md).
@@ -103,11 +103,12 @@ function quest(t) {
    <p class="lp-quest-note">${esc(built)}</p>`
 }
 
-// Each stage is numbered on the drum tiles of the second section's counters, standing still (no key, so no roll).
-function stageCard(t, stage, i) {
-  const n = odometer(String(i + 1).padStart(2, '0'))
-  if (stage.live) {
-    return `
+const stageNumber = (stage) => String(STAGES.indexOf(stage) + 1).padStart(2, '0')
+
+// The working stage: a white card with its gauge, its steps and the button.
+function liveCard(t, stage) {
+  const n = stageNumber(stage)
+  return `
   <article class="lp-stage lp-stage-live">
    <div class="lp-live-a">
     <div class="lp-stage-top"><span class="lp-num">${n}</span><span class="lp-pill lp-pill-live"><i class="lp-dot"></i>${esc(t('ldLive'))}</span></div>
@@ -120,15 +121,14 @@ function stageCard(t, stage, i) {
     <button class="lp-btn lp-btn-ink" data-go="access">${esc(t('ldBuild'))} <span aria-hidden="true">→</span></button>
    </div>
   </article>`
-  }
-  return `
-  <article class="lp-stage">
-   <div class="lp-stage-top"><span class="lp-num">${n}</span></div>
-   <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
-   <p>${esc(t(stage.text))}</p>
-   <span class="lp-pill lp-pill-next">${esc(t('ldNext'))}</span>
-  </article>`
 }
+
+// The stages still to come, as one line of text under the white card: number and short name only.
+const nextBanner = (t) => `
+  <div class="lp-next">
+   <p class="lp-next-label">${esc(t('ldNext'))}</p>
+   <ol>${STAGES.filter((stage) => !stage.live).map((stage) => `<li><b>${stageNumber(stage)}</b>${esc(t(stage.name))}</li>`).join('')}</ol>
+  </div>`
 
 const how = (t) => `
 <section class="lp-section lp-howsec" id="how">
@@ -137,7 +137,7 @@ const how = (t) => `
   <h2 class="lp-h2">${esc(t('ldHowTitle'))}</h2>
   <p class="lp-lead">${esc(t('ldHowLead'))}</p>
  </header>
- <div class="lp-bento">${STAGES.map((stage, i) => stageCard(t, stage, i)).join('')}</div>
+ <div class="lp-bento">${STAGES.filter((stage) => stage.live).map((stage) => liveCard(t, stage)).join('')}${nextBanner(t)}</div>
 </section>`
 
 const data = (t) => `

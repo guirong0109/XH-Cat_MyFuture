@@ -74,9 +74,9 @@ body.landing main{max-width:none;padding:0}
 .lp-lead{font-size:18px;line-height:1.55;color:var(--lp-ink2);max-width:58ch}
 
 
-/* how it works: the six stages as a ledger, in the black-and-white look of the second section. Hairline rules between
-   the stages (each cell draws its top and left rule; the grid clips the outer ones), the stage numbers on the roller
-   counters, no colour. The working stage is the first row, on paper, with a six-cell gauge of the stages built. */
+/* how it works, in the black-and-white look of the second section: the working stage as a white card with a six-cell
+   gauge of the stages built, then the stages still to come as a line of text (.lp-next). Hairline rules between the
+   rows (each row draws its top rule; the grid clips the outer ones); no colour. */
 .lp-howsec{padding-top:clamp(40px,5vw,56px)}
 .lp-howsec .lp-head{margin-bottom:clamp(24px,3vw,36px)}
 .lp-bento{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:hidden;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
@@ -85,7 +85,7 @@ body.landing main{max-width:none;padding:0}
 .lp-stage:hover{background:color-mix(in srgb,var(--lp-paper) 70%,transparent)}
 .lp-stage p{font-size:14px;line-height:1.5;color:var(--lp-ink2)}
 .lp-stage-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.lp-num{font-size:26px}
+.lp-num{font-family:var(--lp-serif);font-size:26px;line-height:1;letter-spacing:-.02em}
 .lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:24px;line-height:1.05;letter-spacing:-.01em}
 .lp-pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--lp-mono);font-size:11px;padding:5px 10px;border-radius:99px;white-space:nowrap}
 .lp-pill-next{margin-top:auto;align-self:flex-start;border:1px dashed var(--lp-muted);color:var(--lp-muted)}
@@ -93,7 +93,7 @@ body.landing main{max-width:none;padding:0}
 .lp-stage-live{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px clamp(24px,4vw,56px);align-items:end;
   padding:clamp(24px,3vw,36px) clamp(16px,1.8vw,24px);background:var(--lp-paper)}
 .lp-stage-live:hover{background:var(--lp-paper)}
-.lp-stage-live .lp-num{font-size:40px}
+.lp-stage-live .lp-num{font-size:56px}
 .lp-live-a,.lp-live-b{display:flex;flex-direction:column;gap:12px;min-width:0}
 .lp-live-a .lp-stage-top{justify-content:flex-start;gap:16px}
 .lp-stage-live .lp-stage-title{font-size:clamp(34px,3.6vw,52px);margin-top:10px}
@@ -108,6 +108,14 @@ body.landing main{max-width:none;padding:0}
 .lp-ticks li{font-size:13px;padding:6px 12px;border:1px solid var(--lp-line);border-radius:99px;color:var(--lp-ink2)}
 .lp-ticks li::before{content:"✓ ";color:var(--lp-ink)}
 .lp-stage-live .lp-btn{align-self:flex-start}
+/* the stages still to come: one line of text under the white card, number and short name only */
+.lp-next{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin:-1px 0 0 -1px;
+  padding:18px clamp(16px,1.8vw,24px);border-top:1px solid var(--lp-line)}
+.lp-next-label{font:500 11px var(--lp-mono);padding:5px 10px;border:1px dashed var(--lp-muted);border-radius:99px;color:var(--lp-muted);white-space:nowrap}
+.lp-next ol{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0;padding:0;
+  font:400 12px var(--lp-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--lp-ink2)}
+.lp-next b{font-weight:500;color:var(--lp-muted);margin-right:8px}
+.lp-next li+li::before{content:"→";margin-right:14px;color:var(--lp-muted)}
 
 /* the data: quiet */
 .lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}

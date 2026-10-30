@@ -1013,6 +1013,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "stage numbers stay on the drum tiles but do not roll (counter without a key); npm test 256 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "stage numbers without the roller tiles; stages 02-06 as a text banner under the white card, no descriptions"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "plain serif stage number, banner of the five next stages (number + short name); npm test 255 passed; checked in Chrome at 1440 and 500 px"
     }
   ]
 }

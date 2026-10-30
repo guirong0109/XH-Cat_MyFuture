@@ -41,8 +41,8 @@ describe('landing page', () => {
     expect(STAGES).toHaveLength(6)
     expect(STAGES.filter((stage) => stage.live).map((stage) => stage.id)).toEqual(['profile'])
     const html = page()
-    expect(html.split(translate('en', 'ldNext')).length - 1).toBe(5)
-    for (const stage of STAGES) expect(html).toContain(translate('en', stage.title))
+    expect(html.split(translate('en', 'ldNext')).length - 1).toBe(1)
+    for (const stage of STAGES) expect(html).toContain(translate('en', stage.live ? stage.title : stage.name))
   })
 
   it('keeps the ATM story marked as draft copy', () => {
@@ -62,7 +62,7 @@ describe('landing page', () => {
   it('lists the six stages only once, in How it works (no stage strip under the first section)', () => {
     const html = page()
     expect(html).not.toContain('lp-strip')
-    expect(html.split(translate('en', 'ldS2T')).length - 1).toBe(1)
+    expect(html.split(translate('en', 'radar')).length - 1).toBe(1)
   })
 
   it('every section of the page keeps its styles in landing.css', async () => {
@@ -92,13 +92,19 @@ describe('landing page', () => {
 describe('how it works, in the look of section 2', () => {
   const howSection = (lang) => { const html = page(lang); return html.slice(html.indexOf('id="how"'), html.indexOf('id="data"')) }
 
-  it('numbers each stage on still drum tiles (they do not roll); no pixel art and no accent colours', () => {
-    const how = howSection('en')
-    expect(how.match(/class="odo"/g)).toHaveLength(STAGES.length)
-    STAGES.forEach((stage, i) => expect(how).toContain(`<span class="odo"><span class="lp-sr">0${i + 1}</span>`))
-    expect(how).not.toContain('data-odo')
-    expect(how).not.toContain('class="px')
-    expect(how).not.toMatch(/--a:var\(--lp-/)
+  it('numbers the stages in plain text and lists the five next ones as a banner, names only, no descriptions', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const how = howSection(lang)
+      expect(how).not.toContain('class="odo"')
+      const banner = how.slice(how.indexOf('class="lp-next"'))
+      expect(banner).toContain(translate(lang, 'ldNext'))
+      const next = STAGES.filter((stage) => !stage.live)
+      expect(banner.match(/<li>/g)).toHaveLength(next.length)
+      for (const stage of next) {
+        expect(banner).toContain(`<b>0${STAGES.indexOf(stage) + 1}</b>${translate(lang, stage.name)}`)
+        expect(how).not.toContain(translate(lang, stage.text))
+      }
+    }
   })
 
   it('the working stage shows a six-cell gauge with the built stages filled, in every language', () => {

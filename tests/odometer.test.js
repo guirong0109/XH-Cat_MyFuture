@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { odometer, rollPlan } from '../public/js/components/odometer.js'
-import welcome, { DATA_FACTS, GUIDE_FACTS, STAGES } from '../public/js/screens/welcome.js'
+import welcome, { DATA_FACTS, GUIDE_FACTS } from '../public/js/screens/welcome.js'
 import { t as translate } from '../shared/i18n.js'
 
 describe('roller counter plan', () => {
@@ -42,11 +42,6 @@ describe('roller counter markup', () => {
     expect(html).toContain(`style="--to:${wheel.to}" data-to="${wheel.to}" data-ms="${wheel.ms}"`)
   })
 
-  it('without a key the counter stands still: the roller script never picks it up', () => {
-    expect(odometer('01')).toContain('<span class="odo"><span class="lp-sr">01</span>')
-    expect(odometer('01')).not.toContain('data-odo')
-  })
-
   it('each digit is its own window; separators sit between the windows, not inside one', () => {
     const html = odometer('600,000+', 'x')
     expect(html).not.toContain('odo-window')
@@ -56,7 +51,7 @@ describe('roller counter markup', () => {
 
   it('every number on the landing page is a roller counter', () => {
     const html = welcome({ t: (key, vars) => translate('en', key, vars), state: { lang: 'en' } })
-    expect(html.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length + DATA_FACTS.length + STAGES.length)
+    expect(html.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length + DATA_FACTS.length)
     for (const value of [...GUIDE_FACTS.map((fact) => fact.value), '1,016', '1,766', '124', '41']) {
       expect(html).toContain(`<span class="lp-sr">${value}</span>`)
     }

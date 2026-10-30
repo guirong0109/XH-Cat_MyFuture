@@ -19,12 +19,14 @@ const refsCache = new WeakMap()
 function refsFor(r) {
   if (refsCache.has(r)) return refsCache.get(r)
   const fields = new Map((r.fields ?? []).map((f) => [f.code, f]))
+  const onetTitles = new Map((r.fields ?? []).flatMap((f) => (f.jobs ?? []).map((j) => [j.code, j.title])))
   const refs = {
     topics: r.topics ?? [],
     fieldTopics: r.fieldTopics ?? [],
     bridge: makeBridge(r.bridge),
     fieldName: (code) => fields.get(code)?.title ?? null,
     fieldJobs: (code) => fields.get(code)?.jobs ?? [],
+    onetTitle: (code) => onetTitles.get(code) ?? null,
   }
   refsCache.set(r, refs)
   return refs
@@ -36,6 +38,13 @@ function relevance(state, data) {
   if (!data?.refs || !profile || profile.profileStatus !== 'confirmed') return null
   const rel = relevantItems(profile, refsFor(data.refs))
   return rel.empty ? null : rel
+}
+
+// The official skill ids on a confirmed profile, also when it has no field or job yet (only ids, never typed names).
+function profileSkillIds(state, data) {
+  const profile = state?.profile
+  if (!data?.refs || !profile || profile.profileStatus !== 'confirmed') return new Set()
+  return relevantItems(profile, refsFor(data.refs)).skillIds
 }
 
 // ---------- small helpers ----------
@@ -291,6 +300,111 @@ export function aiTab({ t, state, data }) {
 
 // ---------- Skills & Careers tab ----------
 
+// "2026-02" → "Feb 2026" (en, ms) or "2026年2月" (zh); anything else is shown as given.
+const MONTH_LOCALES = { en: 'en-US', ms: 'ms-MY', zh: 'zh-CN' }
+function fmtMonth(lang, ym) {
+  const m = /^(\d{4})-(\d{2})$/.exec(String(ym ?? ''))
+  if (!m) return ym ? String(ym) : DASH
+  try {
+    return new Intl.DateTimeFormat(MONTH_LOCALES[lang] ?? 'en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' }).format(Date.UTC(Number(m[1]), Number(m[2]) - 1, 1))
+  } catch {
+    return String(ym)
+  }
+}
+
+const ONET_HOT_URL = 'https://www.onetonline.org/search/hot_tech/'
+const onetJobUrl = (code) => `https://www.onetonline.org/link/summary/${encodeURIComponent(code)}`
+
+// B2 first column (skill-trends spec §6, D23–D27): O*NET's flags on skills that US employers ask for in job ads.
+// Own O*NET jobs by default; every job with changes in View all or without own jobs. Matching the user's jobs and
+// skills happens here, in the browser; a skill is "on your profile" only by its official id (Review Focus 5).
+function onetColumn({ t, state, data, rel, lang }) {
+  const sk = data.skills ?? null
+  const ok = sk?.state === 'data' && sk.release?.current
+  const skillIds = rel?.skillIds ?? profileSkillIds(state, data)
+  const mine = (item) => (item?.skillId && skillIds.has(item.skillId) ? ` ${tag('calc', t('rdOnProfile'))}` : '')
+  const labels = `<p class="tiny muted"><b>${esc(t('rdSkLabelUs'))}</b> · <b>${esc(t('rdSkLabelSoftware'))}</b></p>`
+  const hotLink = { label: 'O*NET Hot Technologies', url: ONET_HOT_URL }
+  const none = `<p class="small muted">${esc(t('rdEvNone'))}</p>`
+
+  let heading = ''
+  if (ok) {
+    const cur = sk.release.current
+    const prev = sk.release.previous
+    const vars = { current: cur.id, currentMonth: fmtMonth(lang, cur.month), previous: prev?.id ?? DASH, previousMonth: fmtMonth(lang, prev?.month) }
+    const same = (cur.releases ?? []).filter((r) => r !== cur.id)
+    heading = !prev ? t('rdSkFirstRelease', vars) : same.length ? t('rdSkHeading', { ...vars, same: same.join(', ') }) : t('rdSkHeadingNew', vars)
+  }
+  const releaseNote = ok ? `O*NET ${sk.release.previous ? `${sk.release.previous.id} → ` : ''}${sk.release.current.id}` : ''
+
+  // One changed or kept skill: its name, the O*NET technology class, the tag when it is on the profile.
+  const skillItem = (item, link) => `<li>${esc(item.example)}${mine(item)}<div class="tiny muted">${item.elementName ? `${esc(item.elementName)} · ` : ''}${esc(releaseNote)} ${srcLink(link)}</div></li>`
+  const list = (items, link) => (items.length ? `<ul class="rd-list small">${items.map((i) => skillItem(i, link)).join('')}</ul>` : none)
+  const sub = (key, vars) => `<div class="tiny muted rd-subhead"><b>${esc(t(key, vars))}</b></div>`
+
+  // A job of the user's own: title, system and code, role, official page; then its skills or why there are none.
+  const jobHead = (o) => `<p class="small rd-subhead"><b>${esc(o.title ?? o.code)}</b> <span class="tiny muted">${esc(`${o.source === 'emasco' ? 'eMASCO' : 'O*NET'} ${o.code} · ${t(`rdRole_${o.role}`)}`)}</span> ${srcLink(jobLink(data, o))}</p>`
+  const ownJob = (o) => {
+    if (o.source !== 'onet') return `<div>${jobHead(o)}<p class="small muted">${esc(t('rdSkNoOnetLink'))}</p></div>`
+    const c = sk.changes?.[o.code]
+    const link = { label: 'O*NET', url: onetJobUrl(o.code) }
+    if (!c || !(c.added.length + c.dropped.length + c.kept.length)) return `<div>${jobHead(o)}<p class="small muted">${esc(t('rdSkNoFlags'))}</p></div>`
+    const kept = c.kept.length
+      ? `<details><summary>${esc(t('rdSkKept', { count: c.kept.length }))}</summary><ul class="rd-list small">${c.kept.map((i) => `<li>${esc(i.example)}${mine(i)}${i.elementName ? `<div class="tiny muted">${esc(i.elementName)}</div>` : ''}</li>`).join('')}</ul><p class="tiny muted">${esc(sk.release.current.releases?.join(', ') ?? sk.release.current.id)} ${srcLink(link)}</p></details>`
+      : ''
+    return `<div>${jobHead(o)}${sub('rdSkAdded')}${list(c.added, link)}${sub('rdSkDropped')}${list(c.dropped, link)}${kept}</div>`
+  }
+
+  // Every job with changes (View all, or nothing of the user's own): changes only, the kept lists stay per own job.
+  const allJobs = () => {
+    const refs = data.refs ? refsFor(data.refs) : null
+    const codes = Object.keys(sk.changes ?? {}).filter((code) => sk.changes[code].added.length + sk.changes[code].dropped.length).sort()
+    const names = (items) => items.map((i) => `${esc(i.example)}${mine(i)}`).join(', ')
+    const rows = codes.map((code) => {
+      const c = sk.changes[code]
+      const title = refs?.onetTitle(code)
+      return `<li><b>${esc(title ?? code)}</b> <span class="tiny muted">${esc(`O*NET ${code}`)}</span> ${srcLink({ label: 'O*NET', url: onetJobUrl(code) })}
+        ${c.added.length ? `<div class="tiny">${esc(t('rdSkAdded'))}: ${names(c.added)}</div>` : ''}${c.dropped.length ? `<div class="tiny">${esc(t('rdSkDropped'))}: ${names(c.dropped)}</div>` : ''}</li>`
+    }).join('')
+    return `<details${viewAllOn(state, 'sk') ? ' open' : ''}><summary>${esc(t('rdSkAllJobs', { count: codes.length }))}</summary>${codes.length ? `<ul class="rd-list small">${rows}</ul>` : none}</details>`
+  }
+
+  const own = rel?.occupations ?? []
+  const showOwn = own.length > 0 && !viewAllOn(state, 'sk')
+  let jobs = ''
+  if (ok) jobs = showOwn ? own.map(ownJob).join('') : allJobs()
+  else jobs = `<p class="small muted">${esc(t('rdSkUnavailable'))}</p>`
+
+  const hot = ok
+    ? `${sub('rdSkHot')}<p class="tiny muted">${esc(t('rdSkHotNote'))}</p>${list(sk.hot?.added ?? [], hotLink)}${sk.hot?.dropped?.length ? `${sub('rdSkHotDropped')}${list(sk.hot.dropped, hotLink)}` : ''}`
+    : ''
+
+  // B: posting counts of one yearly window; no trend until a second window exists (D24).
+  const p = sk?.postings
+  let postings = ''
+  if (p?.rows?.length) {
+    const row = (r) => `<tr><td>${esc(r.technology)}</td><td class="num">${numLink(fmtInt(r.postings), hotLink)}</td></tr>`
+    const head = `<tr><th>${esc(t('rdSkTechCol'))}</th><th class="num">${esc(t('rdSkAdsCol'))}</th></tr>`
+    const total = finite(p.total) !== null ? `<tr><td><b>${esc(t('rdSkTotal'))}</b></td><td class="num">${numLink(fmtInt(p.total), hotLink)}</td></tr>` : ''
+    const top = p.rows.slice(0, 10)
+    const rest = p.rows.slice(10)
+    postings = `${sub('rdSkPostings', { year: p.window?.year ?? DASH })}${p.window?.label ? `<div class="tiny muted">${esc(p.window.label)}</div>` : ''}
+      <p class="tiny"><b>${esc(t('rdSkFirstSnapshot'))}</b></p>
+      <div class="rd-scroll"><table>${head}${top.map(row).join('')}${total}</table></div>
+      ${rest.length ? `<details><summary>${esc(t('rdSkMoreRows', { count: p.rows.length }))}</summary><div class="rd-scroll"><table>${head}${rest.map(row).join('')}</table></div></details>` : ''}`
+  }
+
+  const srcline = sk && (sk.sourceLinks?.length || sk.fetchedAt)
+    ? `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))}</p>`
+    : ''
+
+  return `<div class="rd-col"><b>${esc(t('rdColOnet'))}</b> ${tag('src', t('rdTagObserved'))}
+    <p class="small muted">${esc(t('rdColOnetNote'))}</p>${labels}
+    ${heading ? `<p class="small"><b>${esc(heading)}</b></p>` : ''}
+    ${own.length ? '' : hint(t)}
+    ${jobs}${hot}${postings}${srcline}</div><!--col-->`
+}
+
 export function skillsTab({ t, state, data }) {
   const lang = state?.lang ?? 'en'
   const rel = relevance(state, data)
@@ -340,7 +454,7 @@ export function skillsTab({ t, state, data }) {
     <p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${esc(data.sources?.find((s) => s.sourceId === 'dosm')?.name ?? 'DOSM')} ${(occ.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(t('rdObsPeriod'))} ${esc(latest)} · ${esc(t('rdPublished'))} ${esc(fmtDate(occ.publishedAt))} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(occ.fetchedAt))} · ${esc(t('rdSnapshot'))} <code>${esc(occ.snapshotId ?? DASH)}</code></p>
   </div>`
 
-  // B2: three columns kept apart; individual skill demand is not shown (insufficient evidence, D13).
+  // B2: three columns kept apart: O*NET skills in US job ads (D23), the derived proxy (not produced, D13), AI research.
   const aiRows = sc.axes.map((a) => {
     const s = a.signal
     const papers = finite(s?.baseline?.value) !== null && finite(s?.recent?.value) !== null ? numLink(`${fmtInt(s.baseline.value)} → ${fmtInt(s.recent.value)}`, axisLink(a)) : esc(DASH)
@@ -349,7 +463,7 @@ export function skillsTab({ t, state, data }) {
   const b2 = `<div class="card rd-sec" data-sec="B2">
     <h2>${esc(t('rdB2Title'))}</h2>
     <div class="rd-three">
-      <div class="rd-col"><b>${esc(t('rdColDirect'))}</b> ${tag('unv', t('rdTagNone'))}<p class="small muted">${esc(t('rdColDirectNote'))}</p></div><!--col-->
+      ${onetColumn({ t, state, data, rel, lang })}
       <div class="rd-col"><b>${esc(t('rdColProxy'))}</b> ${tag('unv', t('rdNotProduced'))}<p class="small muted">${esc(t('rdColProxyNote'))}</p></div><!--col-->
       <div class="rd-col"><b>${esc(t('rdColAi'))}</b> ${tag('est', t('rdTagResearch'))}<p class="small muted">${esc(t('rdColAiNote'))}</p>${sc.axes.length ? `<div class="rd-scroll"><table>${aiRows}</table></div>` : rel ? fieldLinks(t, rel) : ''}</div><!--col-->
     </div>

@@ -11,6 +11,7 @@ import * as radarApi from '../../public/js/radarApi.js'
 import { aiTab, radarView, skillsTab, statusCards } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
+import { esc as esc_ } from '../../public/js/ui.js'
 
 const t = (key, vars) => translate('en', key, vars)
 const BUNDLE_ACTIVE = 'manifest-20261030T113958.380Z-ebe71e1d'
@@ -198,13 +199,12 @@ describe('Radar screen', () => {
     expect(sig.activeManifestId).toBe(BUNDLE_ACTIVE)
   })
 
-  it('B2 shows three separate columns; skill demand says insufficient evidence', () => {
+  it('B2 shows three separate columns; the first is O*NET skills in US job ads', () => {
     const sk = skillsTab(ctx(ownProfile()))
     const cols = sk.match(/<div class="rd-col[^"]*"[\s\S]*?<\/div><!--col-->/g)
     expect(cols).toHaveLength(3)
-    expect(cols[0]).toContain(t('rdColDirect'))
-    expect(cols[0]).toContain(t('rdTagNone'))
-    expect(cols[0]).toContain(t('rdColDirectNote'))
+    expect(unesc(cols[0])).toContain(t('rdColOnet'))
+    expect(t('rdColOnet')).toBe('Skills in job ads (US, O*NET)')
     expect(cols[1]).toContain(t('rdColProxy'))
     expect(cols[1]).toContain(t('rdColProxyNote'))
     expect(cols[2]).toContain(t('rdColAi'))
@@ -330,6 +330,146 @@ describe('development store banner (spec §7)', () => {
     } finally {
       await new Promise((resolve) => dev.close(resolve))
     }
+  })
+})
+
+describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
+  const firstCol = (html) => html.match(/<div class="rd-col[^"]*"[\s\S]*?<\/div><!--col-->/g)[0]
+  const onetJob = (code, title, kind = 'job') => ({ term: title, kind, chosen: { source: 'onet', code, title } })
+  const devProfile = (skills = []) => profile({ occupationMappings: [onetJob('15-1252.00', 'Software Developers')], skills })
+  const col = (prof, radar = {}, d = linked()) => firstCol(skillsTab(ctx(prof, radar, d)))
+  // The part of a job block between two headings.
+  const between = (html, from, to) => {
+    const a = html.indexOf(from)
+    const b = html.indexOf(to, a + from.length)
+    return a < 0 ? '' : html.slice(a, b < 0 ? undefined : b)
+  }
+
+  it('own O*NET job: Go under Newly in demand, dropped skills under No longer in demand; other jobs not shown', () => {
+    const c = col(devProfile())
+    expect(c).toContain('15-1252.00')
+    const added = between(c, t('rdSkAdded'), t('rdSkDropped'))
+    expect(added).toContain('>Go<')
+    const dropped = between(c, t('rdSkDropped'), '<details>')
+    expect(dropped).toContain('Microsoft .NET Framework')
+    expect(dropped).not.toContain('>Go<')
+    expect(c).not.toContain('13-2011.00')
+    expect(c).not.toContain('Accounting software')
+  })
+
+  it('Still in demand is a collapsed list (reference data, D26)', () => {
+    const c = col(devProfile())
+    const kept = c.match(/<details(?![^>]*\bopen\b)[^>]*>\s*<summary>[^<]*Still in demand[\s\S]*?<\/details>/)
+    expect(kept).toBeTruthy()
+    expect(kept[0]).toContain('Apache Kafka')
+  })
+
+  it('"On your profile" only for a skill with the official id; a typed name never matches (Review Focus 5)', () => {
+    expect(t('rdOnProfile')).toBe('On your profile')
+    const tagged = col(devProfile([{ name: 'Go', canonicalId: 'onet:tech:go' }]))
+    expect(between(tagged, t('rdSkAdded'), t('rdSkDropped'))).toContain(t('rdOnProfile'))
+    const typed = col(devProfile([{ name: 'Go', canonicalId: null }]))
+    expect(typed).not.toContain(t('rdOnProfile'))
+  })
+
+  it('eMASCO job: no official link to O*NET (D27)', () => {
+    expect(t('rdSkNoOnetLink')).toBe('No official link to O*NET: skill list not available')
+    const c = col(ownProfile())
+    expect(c).toContain('2512-01')
+    expect(unesc(c)).toContain(t('rdSkNoOnetLink'))
+  })
+
+  it('an O*NET job with no flagged rows is listed with "No skills flagged" (Review Focus 1)', () => {
+    expect(data.skills.changes['25-1199.00']).toBeUndefined()
+    const prof = profile({ occupationMappings: [onetJob('25-1199.00', 'Postsecondary Teachers, All Other')] })
+    const c = col(prof)
+    expect(c).toContain('25-1199.00')
+    expect(c).toContain(esc_(t('rdSkNoFlags')))
+  })
+
+  it('heading names both releases with months and the release that left the flags unchanged', () => {
+    const c = unesc(col(devProfile()))
+    for (const s of ['30.2', '30.3', '31.0', 'Feb 2026', 'May 2026']) expect(c, s).toContain(s)
+    expect(c).toContain(t('rdSkHeading', { previous: '30.2', previousMonth: 'Feb 2026', current: '30.3', currentMonth: 'May 2026', same: '31.0' }))
+  })
+
+  it('both labels, the Hot Technologies list and the US job ads table with the first-snapshot note', () => {
+    const c = unesc(col(devProfile()))
+    expect(t('rdSkLabelUs')).toBe('US job ads (Lightcast via O*NET), not Malaysian')
+    expect(t('rdSkLabelSoftware')).toBe('Software and technology skills only')
+    expect(c).toContain(t('rdSkLabelUs'))
+    expect(c).toContain(t('rdSkLabelSoftware'))
+    expect(c).toContain(t('rdSkHot'))
+    expect(c).toContain('Prometheus')
+    expect(c).toContain(t('rdSkPostings', { year: '2025' }))
+    expect(c).toContain(t('rdSkFirstSnapshot'))
+    expect(c).toContain('3,421,542')
+    expect(c).toContain('https://www.onetonline.org/search/hot_tech/')
+    expect(c).toContain('https://www.onetonline.org/link/summary/15-1252.00')
+  })
+
+  it('every link in the column is https and every number has its link', () => {
+    for (const prof of [devProfile(), null, ownProfile()]) {
+      for (const radar of [{}, { all: { sk: true } }]) {
+        const c = col(prof, radar)
+        const hrefs = [...c.matchAll(/href="([^"]*)"/g)].map((m) => m[1])
+        expect(hrefs.length).toBeGreaterThan(0)
+        for (const h of hrefs) expect(h).toMatch(/^https:\/\//)
+        expect(c).not.toMatch(/<span class="rd-num">[^<]*<\/span>(?! <a href="https?:\/\/)/)
+      }
+    }
+  })
+
+  it('View all lists every job with changes', () => {
+    const c = col(devProfile(), { all: { sk: true } })
+    expect(c).toContain('13-2011.00')
+    expect(c).toContain('Accounting software')
+    const withChanges = Object.entries(data.skills.changes).filter(([, v]) => v.added.length + v.dropped.length).map(([code]) => code)
+    for (const code of withChanges) expect(c, code).toContain(`O*NET ${code}`)
+  })
+
+  it('no profile → global view of every job with changes, with the add-your-profile hint', () => {
+    const c = col(null)
+    expect(c).toContain(t('rdAddProfile'))
+    expect(c).toContain('13-2011.00')
+    expect(c).toContain('15-1252.00')
+    expect(c).not.toContain(t('rdOnProfile'))
+  })
+
+  it('no O*NET data → says so, no crash, no null', () => {
+    const d = { ...linked(), skills: { ...data.skills, state: 'unavailable', release: null, changes: {}, hot: { added: [], dropped: [] }, postings: null, sourceLinks: [] } }
+    for (const prof of [devProfile(), null]) {
+      const c = col(prof, {}, d)
+      expect(c).toContain(esc_(t('rdSkUnavailable')))
+      expect(c).not.toMatch(/\bnull\b|NaN|undefined/)
+    }
+    const none = col(devProfile(), {}, { ...linked(), skills: undefined })
+    expect(none).toContain(esc_(t('rdSkUnavailable')))
+  })
+
+  it('never renders null/undefined and escapes skill names', () => {
+    expect(col(devProfile())).not.toMatch(/\bnull\b|NaN|undefined/)
+    const evil = '<img src=x onerror=alert(1)>'
+    const s = data.skills
+    const bad = { ...linked(), skills: { ...s, changes: { '15-1252.00': { added: [{ example: evil, skillId: 'onet:tech:x', elementName: evil }], dropped: [], kept: [] } }, hot: { added: [{ example: evil, skillId: 'x', elementName: null }], dropped: [] }, postings: { ...s.postings, rows: [{ technology: evil, postings: 3 }] } } }
+    for (const radar of [{}, { all: { sk: true } }]) {
+      const c = col(devProfile(), radar, bad)
+      expect(c).not.toContain('<img')
+      expect(c).toContain('&lt;img src=x')
+    }
+  })
+
+  it('BM and 中文: the column texts are translated and the months follow the language', () => {
+    for (const lang of ['ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const c = unesc(firstCol(skillsTab({ t: tl, state: { lang, profile: devProfile(), radar: {} }, data: linked() })))
+      expect(tl('rdColOnet')).not.toBe(t('rdColOnet'))
+      expect(c, lang).toContain(tl('rdColOnet'))
+      expect(c, lang).toContain(tl('rdSkLabelUs'))
+      expect(c, lang).not.toMatch(/\bnull\b|NaN|undefined/)
+    }
+    const zh = unesc(firstCol(skillsTab({ t: (k, v) => translate('zh', k, v), state: { lang: 'zh', profile: devProfile(), radar: {} }, data: linked() })))
+    expect(zh).toContain('2026年2月')
   })
 })
 

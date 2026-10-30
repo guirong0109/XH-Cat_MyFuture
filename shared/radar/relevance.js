@@ -96,5 +96,9 @@ export function relevantItems(profile, refs) {
     } else if (item?.name) interests.push({ id: item.id ?? null, name: item.name, source: item.source ?? 'text' })
   }
 
-  return { fields, occupations, groups, axes, interests, empty: !fields.length && !occupations.length && !interests.length }
+  // Only official skill ids (onet:tech:<name>) count; a skill the user typed (no canonicalId) never matches by name.
+  const skillIds = new Set()
+  for (const skill of profile?.skills ?? []) if (typeof skill?.canonicalId === 'string' && skill.canonicalId) skillIds.add(skill.canonicalId)
+
+  return { fields, occupations, groups, axes, interests, skillIds, empty: !fields.length && !occupations.length && !interests.length }
 }

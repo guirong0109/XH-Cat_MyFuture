@@ -111,6 +111,13 @@ describe('relevantItems', () => {
     expect(r.axes).toEqual([])
     expect(r.empty).toBe(false)
   })
+  it('skillIds holds only the official ids of profile skills, never a typed name (Review Focus 5)', () => {
+    const p = profile({ skills: [{ name: 'Go', canonicalId: 'onet:tech:go' }, { name: 'Go', canonicalId: null }, { name: 'Rust' }, { name: 'x', canonicalId: '' }] })
+    const r = relevantItems(p, refs)
+    expect(r.skillIds).toBeInstanceOf(Set)
+    expect([...r.skillIds]).toEqual(['onet:tech:go'])
+    expect([...relevantItems(null, refs).skillIds]).toEqual([])
+  })
   it('no profile or nothing linked gives empty: true', () => {
     expect(relevantItems(null, refs).empty).toBe(true)
     expect(relevantItems(profile(), refs).empty).toBe(true)

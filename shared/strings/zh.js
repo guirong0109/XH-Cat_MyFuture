@@ -576,4 +576,82 @@ export default {
   rdNotCompared: "未作比较：这两个季度之间可能存在结构性断层。",
   rdEvChangeWindow: "时间窗口内的变化",
   rdPapersCol: "研究论文数（起始年 → 最新年）",
+  // Radar admin and judge screens (Task 20) (translation: owner review)
+  rdAdminLead: "审核领域 ↔ AI 主题链接和可能的结构性断点，查看数据导入状态并刷新数据源。", // translation: owner review
+  rdAdminKeyNote: "密钥在服务器上核对，绝不会保存在此浏览器中。会话持续 60 分钟。", // translation: owner review
+  rdJudgeKeyNote: "使用评委密钥登录。测试会话持续 2 小时。更改只作用于您自己的合成副本。", // translation: owner review
+  rdAdminLabel: "审核人姓名（可选）", // translation: owner review
+  rdAdminReadOnly: "此服务器以只读方式提供内置数据：此处无法做决定、刷新或清理。", // translation: owner review
+  rdAdminMapNote: "提议在获批前保持待定。只有获批的链接会改变雷达上的突出显示。宽泛或狭义领域上的链接适用于其下所有详细领域；被拒绝的详细链接会覆盖它。", // translation: owner review
+  rdMappingVersion: "映射版本", // translation: owner review
+  rdNote: "审核备注（每个决定都必须填写）", // translation: owner review
+  rdNoteRequired: "每个决定都需要审核备注。未发送任何内容。", // translation: owner review
+  rdEvidenceLink: "额外证据链接（可选，https://…）", // translation: owner review
+  rdLinkInvalid: "证据链接必须是以 https:// 或 http:// 开头的网址。未发送任何内容。", // translation: owner review
+  rdColId: "编号", // translation: owner review
+  rdRevise: "修订", // translation: owner review
+  rdBreakDismissShares: "排除份额", // translation: owner review
+  rdBreakAnnotate: "添加注释", // translation: owner review
+  rdAdminBreakNote: "当招聘广告总数变动 {totalPercent}% 或以上，且至少 {groupShare}% 的组别同向变动 {groupPercent}% 或以上时，规则会标记该季度。它无法区分真实冲击与覆盖范围的变化。审核与确切的观测值绑定，观测值改变后审核不再适用。", // translation: owner review
+  rdObsHash: "标记所依据的观测值", // translation: owner review
+  rdBrkEvRelease: "DOSM 发布页面 {period}", // translation: owner review
+  rdBrkEvListing: "DOSM 发布列表 {period}（显示每次发布的标题）", // translation: owner review
+  rdBrkEvTitle: "已导入发布的列表标题：“{title}”。各次发布之间的标题变化是证据，而不是原因。", // translation: owner review
+  rdBreakApplied: "决定已保存并已应用：新数据版本 {manifest}。", // translation: owner review
+  rdBreakNextRefresh: "决定已保存，将在下次刷新时应用。", // translation: owner review
+  rdDecided: "决定已保存。", // translation: owner review
+  rdDecision_approved: "已批准", // translation: owner review
+  rdDecision_rejected: "已拒绝", // translation: owner review
+  rdDecision_revise: "修订（退回为提议）", // translation: owner review
+  rdDecision_confirmed: "确认为断点", // translation: owner review
+  rdDecision_dismissed_counts: "就数量排除", // translation: owner review
+  rdDecision_dismissed_shares: "就份额排除", // translation: owner review
+  rdDecision_annotate: "已添加注释", // translation: owner review
+  rdAdminChecks: "最近检查", // translation: owner review
+  rdAdminLog: "最近日志", // translation: owner review
+  rdAdminLogNote: "日志只记录数据源、操作、错误代码、时间和编号，绝不记录密钥或完整响应。", // translation: owner review
+  rdAdminNoOrphans: "没有孤立对象。", // translation: owner review
+  rdAdminCleaned: "清理删除了 {deleted} 个对象；保留了 {refused} 个。", // translation: owner review
+  rdAdminRefreshNote: "打开雷达从不抓取数据。只有管理员可以启动刷新，每个数据源每 5 分钟最多一次。", // translation: owner review
+  rdRefreshPublished: "{source}：新数据已发布为版本 {manifest}。", // translation: owner review
+  rdRefreshNoChange: "{source}：已检查——没有新数据。当前版本未改变。", // translation: owner review
+  rdRefreshFailed: "{source}：未发布任何内容；当前版本未改变。", // translation: owner review
+  rdNoHistory: "尚无决定。历史会被保留；以最新的决定为准。", // translation: owner review
+  rdExportNote: "已批准的映射和全部审核记录，以 JSON 格式供提交。", // translation: owner review
+  rdSignedOut: "已退出登录。", // translation: owner review
+  rdErr_other: "出现问题，请重试。", // translation: owner review
+  rdErr_bad_request: "请求无效。", // translation: owner review
+  rdErr_not_found: "当前数据中没有此项。", // translation: owner review
+  rdErr_too_many_attempts: "尝试次数过多。请等几分钟后再试。", // translation: owner review
+  rdErr_network: "无法连接服务器。请检查网络后重试。", // translation: owner review
+  rdJudgeScenario: "情景", // translation: owner review
+  rdJudgeSynthetic: "合成测试数据：所有数值均为虚构，并非 DOSM 或 OpenAlex 的数据。", // translation: owner review
+  rdJudgeEditNote: "修改任意数量（整数，零或以上）。只发送您修改的单元格；先进行校验。", // translation: owner review
+  rdJudgeNoEdit: "请先修改至少一个数值。未发送任何内容。", // translation: owner review
+  rdJudgeBNote: "将 {period} 的总数及组别 {groups} 乘以此系数。", // translation: owner review
+  rdJudgeKept: "更改被拒绝；保留上一个状态。", // translation: owner review
+  rdJudgeResetDone: "已重置为合成基础数据。", // translation: owner review
+  rdJudgeObs: "变化的观测值", // translation: owner review
+  rdJudgeSignals: "分类", // translation: owner review
+  rdJudgeBreaksAdded: "新增的可能断点", // translation: owner review
+  rdJudgePossibleBreak: "可能的结构性断点", // translation: owner review
+  rdJudgeInsufficient: "变为可比证据不足的比较", // translation: owner review
+  rdJudgeAffected: "受影响", // translation: owner review
+  rdJudgeGroups: "DOSM 组别（组别层级）", // translation: owner review
+  rdJudgeJobs: "职业（组别层级，通过其 DOSM 组别）", // translation: owner review
+  rdJudgeFields: "领域（仅限获批链接）", // translation: owner review
+  rdJudgeJobsCount: "{count} 个职业——显示列表", // translation: owner review
+  rdJudgeSkillsTitle: "技能", // translation: owner review
+  rdJudgeSkills: "第一轮中，单项技能需求的证据不足。", // translation: owner review
+  rdJudgeProd: "此测试绝不会改变正式数据：它在您自己的合成副本上运行。", // translation: owner review
+  rdChange_added: "新增", // translation: owner review
+  rdChange_removed: "删除", // translation: owner review
+  rdChange_direction: "方向", // translation: owner review
+  rdChange_evidenceSufficiency: "证据充分性", // translation: owner review
+  rdChange_evidenceQuality: "证据质量", // translation: owner review
+  rdChange_values: "数值", // translation: owner review
+  rdChange_reasons: "原因", // translation: owner review
+  rdChange_breaks: "断点", // translation: owner review
+  rdChange_revisions: "修订", // translation: owner review
+  rdChange_versions: "版本", // translation: owner review
 }

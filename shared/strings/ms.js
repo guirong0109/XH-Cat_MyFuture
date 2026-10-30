@@ -576,4 +576,82 @@ export default {
   rdNotCompared: "Tidak dibandingkan: kedua-dua suku tahun merentasi kemungkinan perubahan struktur.",
   rdEvChangeWindow: "Perubahan sepanjang tempoh",
   rdPapersCol: "Kertas penyelidikan (tahun mula → tahun terkini)",
+  // Radar admin and judge screens (Task 20) (translation: owner review)
+  rdAdminLead: "Semak pautan bidang ↔ topik AI dan kemungkinan perubahan struktur, semak pengambilan data dan muat semula sumber.", // translation: owner review
+  rdAdminKeyNote: "Kunci disemak di pelayan dan tidak pernah disimpan dalam pelayar ini. Sesi berlangsung 60 minit.", // translation: owner review
+  rdJudgeKeyNote: "Log masuk dengan kunci juri. Sesi ujian berlangsung 2 jam. Perubahan hanya berlaku pada salinan sintetik anda sendiri.", // translation: owner review
+  rdAdminLabel: "Nama penyemak (pilihan)", // translation: owner review
+  rdAdminReadOnly: "Pelayan ini menyajikan data terbina dalam secara baca sahaja: keputusan, muat semula dan pembersihan tidak tersedia di sini.", // translation: owner review
+  rdAdminMapNote: "Cadangan kekal belum diputuskan sehingga diluluskan. Hanya pautan yang diluluskan mengubah penonjolan pada Radar. Pautan pada bidang luas atau sempit terpakai kepada setiap bidang terperinci di bawahnya; pautan terperinci yang ditolak mengatasinya.", // translation: owner review
+  rdMappingVersion: "Versi pemetaan", // translation: owner review
+  rdNote: "Nota penyemak (wajib untuk setiap keputusan)", // translation: owner review
+  rdNoteRequired: "Nota penyemak diperlukan untuk setiap keputusan. Tiada apa-apa dihantar.", // translation: owner review
+  rdEvidenceLink: "Pautan bukti tambahan (pilihan, https://…)", // translation: owner review
+  rdLinkInvalid: "Pautan bukti mesti alamat web yang bermula dengan https:// atau http://. Tiada apa-apa dihantar.", // translation: owner review
+  rdColId: "ID", // translation: owner review
+  rdRevise: "Semak semula", // translation: owner review
+  rdBreakDismissShares: "Tolak bahagian", // translation: owner review
+  rdBreakAnnotate: "Catat", // translation: owner review
+  rdAdminBreakNote: "Peraturan menandakan suku tahun apabila jumlah iklan kerja berubah {totalPercent}% atau lebih dan sekurang-kurangnya {groupShare}% kumpulan berubah ke arah yang sama sebanyak {groupPercent}% atau lebih. Ia tidak dapat membezakan kejutan sebenar daripada perubahan liputan. Semakan terikat kepada pemerhatian yang tepat dan tidak lagi terpakai jika ia berubah.", // translation: owner review
+  rdObsHash: "Pemerhatian yang menjadi asas tanda", // translation: owner review
+  rdBrkEvRelease: "Halaman keluaran DOSM {period}", // translation: owner review
+  rdBrkEvListing: "Senarai keluaran DOSM {period} (menunjukkan tajuk setiap keluaran)", // translation: owner review
+  rdBrkEvTitle: "Tajuk senarai bagi keluaran yang diimport: “{title}”. Perubahan tajuk antara keluaran ialah bukti, bukan punca.", // translation: owner review
+  rdBreakApplied: "Keputusan disimpan dan diterapkan: versi data baharu {manifest}.", // translation: owner review
+  rdBreakNextRefresh: "Keputusan disimpan. Ia berkuat kuasa pada muat semula seterusnya.", // translation: owner review
+  rdDecided: "Keputusan disimpan.", // translation: owner review
+  rdDecision_approved: "Diluluskan", // translation: owner review
+  rdDecision_rejected: "Ditolak", // translation: owner review
+  rdDecision_revise: "Semak semula (kembali kepada cadangan)", // translation: owner review
+  rdDecision_confirmed: "Disahkan sebagai perubahan struktur", // translation: owner review
+  rdDecision_dismissed_counts: "Ditolak untuk kiraan", // translation: owner review
+  rdDecision_dismissed_shares: "Ditolak untuk bahagian", // translation: owner review
+  rdDecision_annotate: "Nota ditambah", // translation: owner review
+  rdAdminChecks: "Semakan terakhir", // translation: owner review
+  rdAdminLog: "Log terkini", // translation: owner review
+  rdAdminLogNote: "Log hanya menyimpan sumber, operasi, kod ralat, masa dan id. Tidak pernah kunci atau respons penuh.", // translation: owner review
+  rdAdminNoOrphans: "Tiada objek yatim.", // translation: owner review
+  rdAdminCleaned: "Pembersihan membuang {deleted} objek; {refused} disimpan.", // translation: owner review
+  rdAdminRefreshNote: "Membuka Radar tidak pernah mengambil data. Hanya pentadbir memulakan muat semula, paling kerap sekali setiap 5 minit bagi setiap sumber.", // translation: owner review
+  rdRefreshPublished: "{source}: data baharu diterbitkan sebagai versi {manifest}.", // translation: owner review
+  rdRefreshNoChange: "{source}: disemak — tiada data baharu. Versi aktif tidak berubah.", // translation: owner review
+  rdRefreshFailed: "{source}: tiada apa-apa diterbitkan; versi aktif tidak berubah.", // translation: owner review
+  rdNoHistory: "Belum ada keputusan. Sejarah disimpan; keputusan terbaharu diguna pakai.", // translation: owner review
+  rdExportNote: "Pemetaan yang diluluskan dan semua rekod semakan, sebagai JSON untuk disimpan dalam repositori.", // translation: owner review
+  rdSignedOut: "Telah log keluar.", // translation: owner review
+  rdErr_other: "Sesuatu tidak kena. Sila cuba lagi.", // translation: owner review
+  rdErr_bad_request: "Permintaan tidak sah.", // translation: owner review
+  rdErr_not_found: "Item ini tiada dalam data semasa.", // translation: owner review
+  rdErr_too_many_attempts: "Ini telah dicuba terlalu kerap. Sila tunggu beberapa minit dan cuba lagi.", // translation: owner review
+  rdErr_network: "Pelayan tidak dapat dihubungi. Semak sambungan dan cuba lagi.", // translation: owner review
+  rdJudgeScenario: "Senario", // translation: owner review
+  rdJudgeSynthetic: "Data ujian sintetik: setiap nilai adalah rekaan; ini bukan angka DOSM atau OpenAlex.", // translation: owner review
+  rdJudgeEditNote: "Ubah mana-mana kiraan (nombor bulat, sifar atau lebih). Hanya sel yang anda ubah dihantar; pengesahan dijalankan dahulu.", // translation: owner review
+  rdJudgeNoEdit: "Ubah sekurang-kurangnya satu nilai dahulu. Tiada apa-apa dihantar.", // translation: owner review
+  rdJudgeBNote: "Mendarab jumlah dan kumpulan {groups} pada {period} dengan faktor ini.", // translation: owner review
+  rdJudgeKept: "Perubahan ditolak; keadaan terakhir dikekalkan.", // translation: owner review
+  rdJudgeResetDone: "Ditetapkan semula kepada asas sintetik.", // translation: owner review
+  rdJudgeObs: "Pemerhatian yang berubah", // translation: owner review
+  rdJudgeSignals: "Klasifikasi", // translation: owner review
+  rdJudgeBreaksAdded: "Kemungkinan perubahan struktur yang ditambah", // translation: owner review
+  rdJudgePossibleBreak: "Kemungkinan perubahan struktur", // translation: owner review
+  rdJudgeInsufficient: "Perbandingan yang menjadi bukti setanding tidak mencukupi", // translation: owner review
+  rdJudgeAffected: "Terjejas", // translation: owner review
+  rdJudgeGroups: "Kumpulan DOSM (peringkat kumpulan)", // translation: owner review
+  rdJudgeJobs: "Pekerjaan (peringkat kumpulan, melalui kumpulan DOSM)", // translation: owner review
+  rdJudgeFields: "Bidang (pautan yang diluluskan sahaja)", // translation: owner review
+  rdJudgeJobsCount: "{count} pekerjaan — tunjukkan senarai", // translation: owner review
+  rdJudgeSkillsTitle: "Kemahiran", // translation: owner review
+  rdJudgeSkills: "Permintaan kemahiran individu tidak mempunyai bukti yang mencukupi dalam Pusingan 1.", // translation: owner review
+  rdJudgeProd: "Data pengeluaran tidak pernah diubah oleh ujian ini: ia dijalankan pada salinan sintetik anda sendiri.", // translation: owner review
+  rdChange_added: "ditambah", // translation: owner review
+  rdChange_removed: "dibuang", // translation: owner review
+  rdChange_direction: "arah", // translation: owner review
+  rdChange_evidenceSufficiency: "kecukupan bukti", // translation: owner review
+  rdChange_evidenceQuality: "kualiti bukti", // translation: owner review
+  rdChange_values: "nilai", // translation: owner review
+  rdChange_reasons: "sebab", // translation: owner review
+  rdChange_breaks: "perubahan struktur", // translation: owner review
+  rdChange_revisions: "semakan semula", // translation: owner review
+  rdChange_versions: "versi", // translation: owner review
 }

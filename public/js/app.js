@@ -19,6 +19,8 @@ import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import radarScreen from './screens/radar.js'
 import * as radarApi from './radarApi.js'
+import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
+import { radarAdminApi as adminApi } from './radarAdminApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -58,8 +60,9 @@ let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
-  // occupation search results and upload progress are only shown, never saved (nor the Radar data)
-  saved = store.save({ ...state, message: null, radar: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
+  // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
+  saved = store.save({ ...state, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -132,6 +135,134 @@ async function openEvidence(kind, id, signalId) {
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+}
+
+// ---------- Radar admin (#admin) and judge Trend Change Test (#judge) ----------
+// The key is read from the password box once, the box is cleared at once, and the key is never stored. The CSRF token
+// stays in radarAdminApi's memory; state.radarAdmin holds only what is shown and is never persisted (see persist()).
+const adminUi = () => (state.radarAdmin ??= {})
+function setAdmin(patch, focus = null) {
+  state.radarAdmin = { ...adminUi(), ...patch, focus }
+  render()
+}
+const adminMsg = (name, m) => ({ msgs: { ...adminUi().msgs, [name]: m } })
+// A failed call: back to the key box when the session is gone (expired, signed out, key rotated), else the message.
+function adminFailed(name, out) {
+  if (!adminApi.session()) {
+    state.radarAdmin = { msgs: { signin: { kind: 'bad', code: out.code } }, focus: 'admKey' }
+    return render()
+  }
+  setAdmin({ loading: false, ...adminMsg(name, { kind: 'bad', code: out.code, errors: out.errors }) }, `admMsg-${name}`)
+}
+// Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
+async function reloadAdmin(patch = {}, focus = null) {
+  const [pub, status, mappings, breaks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks()])
+  const failed = [status, mappings, breaks].find((out) => !out.ok)
+  if (failed) return adminFailed('status', failed)
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data } }, focus)
+}
+async function loadJudge() {
+  state.radarAdmin = { ...adminUi(), loading: true }
+  const out = await adminApi.diff()
+  if (!out.ok) return adminFailed('judge', out)
+  setAdmin({ loading: false, report: out.data }, 'admTop')
+}
+function ensureAdmin(screen) {
+  const a = adminUi()
+  a.session = adminApi.session()
+  if (a.loading) return
+  if (screen === 'admin' && a.session?.role === 'admin' && !a.data && !a.msgs?.status) {
+    a.loading = true
+    // The first full render replaces the page: focus goes back to the heading (after sign-in or Reload).
+    reloadAdmin({}, 'admTop')
+  }
+  if (screen === 'judge' && a.session?.role === 'demo' && !a.report && !a.msgs?.judge) loadJudge()
+}
+const fieldValue = (id) => document.getElementById(id)?.value ?? ''
+
+const adminActions = {
+  admSignIn: async (role) => {
+    const box = document.getElementById('admKey')
+    let key = box?.value ?? ''
+    if (box) box.value = ''
+    const label = fieldValue('admLabel')
+    if (!key) return setAdmin(adminMsg('signin', { kind: 'bad', code: 'not_allowed' }), 'admKey')
+    const out = await adminApi.signIn(role === 'demo' ? 'demo' : 'admin', key, { label })
+    key = ''
+    if (!out.ok) return setAdmin(adminMsg('signin', { kind: 'bad', code: out.code }), 'admKey')
+    state.radarAdmin = { msgs: {}, focus: 'admTop' }
+    render()
+  },
+  admSignOut: async () => {
+    await adminApi.signOut()
+    state.radarAdmin = { msgs: { signin: { kind: 'ok', key: 'rdSignedOut' } }, focus: 'admMsg-signin' }
+    render()
+  },
+  admReload: () => {
+    state.radarAdmin = { ...adminUi(), data: null, report: null, msgs: {}, loading: false }
+    render()
+  },
+  admExport: async () => {
+    const out = await adminApi.exportJson()
+    if (!out.ok) return adminFailed('status', out)
+    setAdmin({ exported: out.data }, 'admExportJson')
+  },
+  admExportClose: () => setAdmin({ exported: null }, 'admTop'),
+  admMap: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admMapNote')
+    const notes = { ...adminUi().notes, map: note }
+    const out = await adminApi.decideMapping({ mappingId: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('map', out)
+      return setAdmin({ notes, ...adminMsg('map', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admMapNote' : 'admMsg-map')
+    }
+    reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-map')
+  },
+  admBreak: async (arg) => {
+    const [i, decision] = String(arg).split('|')
+    const brk = adminUi().data?.breaks?.breaks?.[Number(i)]
+    const note = fieldValue('admBrkNote')
+    const link = fieldValue('admBrkLink')
+    const notes = { ...adminUi().notes, brk: note, link }
+    const out = await adminApi.decideBreak({ brk, decision, note, link })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('brk', out)
+      const focus = out.code === 'note_required' ? 'admBrkNote' : out.code === 'bad_link' ? 'admBrkLink' : 'admMsg-brk'
+      return setAdmin({ notes, ...adminMsg('brk', { kind: 'bad', code: out.code }) }, focus)
+    }
+    reloadAdmin({ notes: { ...notes, brk: '', link: '' }, ...adminMsg('brk', { kind: 'ok', recalculation: out.data.recalculation }) }, 'admMsg-brk')
+  },
+  admRefresh: async (source) => {
+    const out = await adminApi.refresh(source)
+    if (!out.ok && !adminApi.session()) return adminFailed('refresh', out)
+    reloadAdmin(adminMsg('refresh', out.ok ? { kind: 'ok', source, result: out.data?.result } : { kind: 'bad', source, code: out.code }), 'admMsg-refresh')
+  },
+  admCleanup: async () => {
+    const out = await adminApi.cleanup()
+    if (!out.ok) return adminFailed('status', out)
+    reloadAdmin(adminMsg('status', { kind: 'ok', key: 'rdAdminCleaned', vars: { deleted: out.data.deleted.length, refused: out.data.refused.length } }), 'admMsg-status')
+  },
+  admScen: (scen) => setAdmin({ scen: scen === 'B' ? 'B' : 'A' }, `demoScen${scen === 'B' ? 'B' : 'A'}`),
+  demoApply: async (scen) => {
+    const report = adminUi().report
+    let body
+    if (scen === 'B') {
+      body = { scenario: 'B', factor: Number(fieldValue('demoFactor')) }
+    } else {
+      const edits = judgeEdits(report, [...document.querySelectorAll('[data-demo-cell]')].map((input) => [input.dataset.demoCell, input.value]))
+      if (!edits.length) return setAdmin(adminMsg('judge', { kind: 'bad', code: 'no_edit' }), 'admMsg-judge')
+      body = { scenario: 'A', edits }
+    }
+    const out = await adminApi.apply(body)
+    if (!out.ok) return adminFailed('judge', out)
+    setAdmin({ report: out.data, ...adminMsg('judge', null) }, 'demoReport')
+  },
+  demoReset: async () => {
+    const out = await adminApi.reset()
+    if (!out.ok) return adminFailed('judge', out)
+    setAdmin({ report: out.data, ...adminMsg('judge', { kind: 'ok', key: 'rdJudgeResetDone' }) }, 'admMsg-judge')
+  },
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
@@ -409,6 +540,8 @@ const actions = {
   },
 }
 
+Object.assign(actions, adminActions)
+
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
   const email = document.getElementById('acEmail')?.value.trim() ?? ''
@@ -503,8 +636,30 @@ function render() {
     ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`
     : ''
   if (screen === 'radar') ensureRadar()
-  const view = screen === 'radar' ? radarScreen({ t, state }) : NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
+  let view
+  if (screen === 'radar') view = radarScreen({ t, state })
+  else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
+  else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
+  else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  // A re-render while the key box is being filled (e.g. a late /api/health answer) keeps what was typed and the focus;
+  // the key is carried over from the old box to the new one only, never through the state.
+  const typing = ['admKey', 'admLabel'].map((id) => document.getElementById(id)).filter((box) => box?.value)
+  const carried = typing.map((box) => [box.id, box.value, document.activeElement === box])
   document.getElementById('main').innerHTML = tabs + view
+  for (const [id, value, focused] of carried) {
+    const box = document.getElementById(id)
+    if (!box) continue
+    box.value = value
+    if (focused) box.focus()
+  }
+  carried.length = 0
+  // Admin and judge screens: focus moves to what the last action changed (a message, the report, a field to fix).
+  const focus = state.radarAdmin?.focus
+  if (focus) {
+    state.radarAdmin.focus = null
+    document.getElementById(focus)?.focus()
+  }
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
   pill.className = saved ? 'pill ok' : 'pill'
@@ -521,6 +676,13 @@ document.addEventListener('click', (event) => {
   if (!target) return
   if (target.dataset.go) return go(target.dataset.go)
   actions[target.dataset.act]?.(target.dataset.arg)
+})
+// Forms marked data-form (the Radar key box): Enter or the submit button runs the action; the page never reloads.
+document.addEventListener('submit', (event) => {
+  const form = event.target.closest?.('[data-form]')
+  if (!form) return
+  event.preventDefault()
+  actions[form.dataset.form]?.(form.dataset.arg)
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)

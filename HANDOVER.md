@@ -20,7 +20,7 @@ Ranks Malaysian eMASCO roles for a confirmed profile, with:
   (ILO WP140), plus the DOSM group trend (group level, not this job) and O\*NET in-demand software.
 - **4 bands**: (1) job ads growing/steady and AI mostly helps, (2) AI may change much of this job in this scenario,
   (3) fewer job ads, (4) not enough evidence. "In your field" first, then "Explore all roles".
-- **SDG**: team-draft links (≈43 MASCO sub-major groups + 68 O\*NET items), shown only after owner approval in
+- **SDG**: team-draft links (48 MASCO sub-major groups + 68 O\*NET items), shown only after owner approval in
   `#admin`; "Choose this role" → path contribution as a count of links per goal with reasons ("potential, not
   measured"); SDG filter on the list.
 

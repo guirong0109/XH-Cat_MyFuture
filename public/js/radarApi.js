@@ -14,19 +14,19 @@ function newerOf(manifestId, answers) {
 }
 
 // load(manifestId?) → { ok:true, data } | { reload:true } | { ok:false, code, retryable }
-// data = { manifestId, activeManifestId, devStore, states, ai, occ, refs, sources }
+// data = { manifestId, activeManifestId, devStore, states, ai, occ, refs, sources, skills }
 export async function load(manifestId, { base = '' } = {}) {
   const first = await api('GET', `${base}/api/radar/ai/topics${query(manifestId)}`)
   if (gone(first)) return { reload: true }
   if (!first.ok) return { ok: false, code: first.code, retryable: first.retryable }
   const id = first.data.manifestId
-  const [occ, refs, sources] = await Promise.all(
-    ['occupations', 'references', 'sources'].map((route) => api('GET', `${base}/api/radar/${route}${query(id)}`)),
+  const [occ, refs, sources, skills] = await Promise.all(
+    ['occupations', 'references', 'sources', 'skills'].map((route) => api('GET', `${base}/api/radar/${route}${query(id)}`)),
   )
-  if ([occ, refs, sources].some(gone)) return { reload: true }
-  const failed = [occ, refs, sources].find((out) => !out.ok)
+  if ([occ, refs, sources, skills].some(gone)) return { reload: true }
+  const failed = [occ, refs, sources, skills].find((out) => !out.ok)
   if (failed) return { ok: false, code: failed.code, retryable: failed.retryable, devStore: Boolean(first.data.devStore) }
-  const answers = [first.data, occ.data, refs.data, sources.data]
+  const answers = [first.data, occ.data, refs.data, sources.data, skills.data]
   return {
     ok: true,
     data: {
@@ -38,6 +38,7 @@ export async function load(manifestId, { base = '' } = {}) {
       occ: occ.data,
       refs: refs.data,
       sources: sources.data.sources ?? [],
+      skills: skills.data,
     },
   }
 }

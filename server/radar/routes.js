@@ -7,6 +7,7 @@
 // GET /api/radar/sources        source registry, links, policies, periods, states
 // GET /api/radar/ai/topics      the six axes: yearly series, momentum, signals; the Computer Science reference series
 // GET /api/radar/occupations    DOSM groups: counts, shares, signals; total; breaks; context indicator (context_only)
+// GET /api/radar/skills        O*NET software skills: changes per job, new Hot Technologies, US posting counts
 // GET /api/radar/references     topics, field-topic records, occupation bridge, ISCED-F fields with O*NET jobs
 // GET /api/radar/signals/:id    one signal with its full evidence
 // GET /api/radar/export         radar-signal/v1 signals of the active manifest + references for Matching
@@ -16,6 +17,7 @@ import { CONTRACT, validateSignal } from '../../shared/radar/contract.js'
 import { shares } from '../../shared/radar/dosm.js'
 import { DOSM_METRIC, DOSM_UNIT, dosmTableFromSnapshot, openalexCounts } from '../../shared/radar/snapshot.js'
 import { DOSM_SHARE_METRIC, OPENALEX_METRIC, OPENALEX_REFERENCE_ID, OPENALEX_REFERENCE_POPULATION, OPENALEX_UNIT } from '../../shared/radar/pipeline.js'
+import { nameKey } from '../skills/onetSkills.js'
 import { RadarError } from './service.js'
 
 const ERRORS = {
@@ -135,6 +137,68 @@ function occupations(view) {
   }
 }
 
+const ONET_DATABASE_URL = 'https://www.onetcenter.org/database.html'
+const ONET_HOT_PAGE_URL = 'https://www.onetonline.org/search/hot_tech/'
+const releaseOf = (set) => (set ? { id: set.id, releases: set.releases ?? [set.id], month: set.month ?? null } : null)
+
+// O*NET software skills (skill-trends spec §5, §6). Browser compares skillId (onet:tech:<nameKey>), not names.
+function skills(view) {
+  const skillSnap = view.snapshots['onet-skills']
+  const hotSnap = view.snapshots['onet-hottech']
+  const changes = view.signals.onetSkills ?? null
+  const sets = skillSnap?.meta?.flagSets ?? []
+  const known = new Set(view.signals.signals.map((s) => s.signalId))
+  const withSignal = (id) => (known.has(id) ? { signalId: id } : {})
+  const item = (example, elementName, extra = {}) => ({ example, skillId: `onet:tech:${nameKey(example)}`, elementName: elementName ?? null, ...extra })
+  const perJob = {}
+  const slot = (code) => (perJob[code] ??= { added: [], dropped: [], kept: [] })
+  if (changes) {
+    for (const r of changes.inDemand?.added ?? []) slot(r.code).added.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
+    for (const r of changes.inDemand?.dropped ?? []) slot(r.code).dropped.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
+    // Kept: reference data only (D26), no signal.
+    const names = new Map(sets.flatMap((s) => s.rows).map((r) => [`${r.code} ${r.example}`, r.elementName]))
+    for (const [code, examples] of Object.entries(changes.inDemand?.kept ?? {})) for (const e of examples) slot(code).kept.push(item(e, names.get(`${code} ${e}`)))
+  }
+  const hotName = new Map(sets.flatMap((s) => s.rows).filter((r) => r.hot).map((r) => [r.example, r.elementName]))
+  const hotItem = (e) => item(e, hotName.get(e), withSignal(`onet:hot:${e}`))
+  const current = sets.at(-1) ?? null
+  const previous = sets.length > 1 ? sets.at(-2) : null
+  const latest = skillSnap?.classification?.version ?? null
+  const rows = []
+  let total = null
+  for (const o of hotSnap?.observations ?? []) {
+    if (typeof o.value !== 'number') continue
+    if (o.entityId === '__total__') total = o.value
+    else rows.push({ technology: o.entityId, postings: o.value })
+  }
+  rows.sort((a, b) => b.postings - a.postings || (a.technology < b.technology ? -1 : a.technology > b.technology ? 1 : 0))
+  const sourceLinks = []
+  if (skillSnap) sourceLinks.push({ label: `O*NET database ${latest ?? ''}`.trim(), url: ONET_DATABASE_URL })
+  if (hotSnap) sourceLinks.push({ label: 'O*NET Hot Technologies', url: ONET_HOT_PAGE_URL })
+  return {
+    state: skillSnap ? 'data' : 'unavailable',
+    release: skillSnap && current ? { latest, current: releaseOf(current), previous: releaseOf(previous) } : null,
+    changes: perJob,
+    hot: { added: (changes?.hot?.added ?? []).map(hotItem), dropped: (changes?.hot?.dropped ?? []).map(hotItem) },
+    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows } : null,
+    labels: { usPostings: true, softwareOnly: true },
+    sourceLinks,
+    fetchedAt: skillSnap?.fetchedAt ?? hotSnap?.fetchedAt ?? null,
+  }
+}
+
+// Reference lists for Matching (spec §5): what is flagged at the latest release, not signals.
+function onetSkillsReference(view) {
+  const changes = view.signals.onetSkills ?? null
+  const latest = view.snapshots['onet-skills']?.classification?.version ?? null
+  return {
+    release: changes ? latest : null,
+    comparedWith: changes?.previous ?? null,
+    inDemand: changes?.inDemand?.kept ?? {},
+    hot: changes?.hot?.current ?? [],
+  }
+}
+
 // Reference data for personal relevance in the browser (built once; it does not depend on the manifest).
 const referencesCache = new WeakMap()
 function referenceData(refs) {
@@ -208,6 +272,8 @@ export function radarRoutes({ radar }) {
 
   router.get('/api/radar/occupations', handle(({ view }) => occupations(view)))
 
+  router.get('/api/radar/skills', handle(({ view }) => skills(view)))
+
   router.get('/api/radar/references', handle(async () => referenceData(await refsOrUnavailable())))
 
   router.get('/api/radar/signals/:id', handle(({ view }, request, response) => {
@@ -231,6 +297,7 @@ export function radarRoutes({ radar }) {
         // Decided records only (ruling R26): consumers apply the effectiveFieldTopics rule (shared/radar/relevance.js).
         fieldTopics: decided(refs.fieldTopics),
         bridgeSteps: refs.bridge?.steps ?? [],
+        onetSkills: onetSkillsReference(view),
       },
     }
   }, { manifestParam: false }))

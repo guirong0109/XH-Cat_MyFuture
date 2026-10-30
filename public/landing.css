@@ -117,9 +117,11 @@ body.landing main{max-width:none;padding:0}
 .lp-next b{font-weight:500;color:var(--lp-muted);margin-right:8px}
 .lp-next li+li::before{content:"→";margin-right:14px;color:var(--lp-muted)}
 
-/* the data: quiet */
-.lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.lp-datum{display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:20px}
+/* the data: quiet. No cards: thin rules between the counts, like the second section (each count draws its top and
+   left rule; the grid clips the outer ones, so the rules stay right when the columns wrap) */
+.lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
+.lp-datum{display:flex;flex-direction:column;gap:8px;padding:24px clamp(16px,2vw,28px);margin:-1px 0 0 -1px;
+  border-top:1px solid var(--lp-line);border-left:1px solid var(--lp-line)}
 .lp-datum-n{font-family:var(--lp-serif);font-size:clamp(50px,5vw,72px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
 .lp-datum-label{font-size:15px;line-height:1.4;color:var(--lp-ink2)}
 .lp-meter{height:6px;border-radius:99px;background:var(--lp-line);overflow:hidden;margin-top:6px}

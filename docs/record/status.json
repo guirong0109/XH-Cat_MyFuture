@@ -1105,6 +1105,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "footer on the page cream instead of paper; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the white cards in The data"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "The data counts without cards, thin rules between them like section 2; npm test 258 passed; checked in Chrome at 1440 and 820 px"
     }
   ]
 }

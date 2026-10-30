@@ -1,86 +1,63 @@
-# HANDOVER — `main` (important points only)
+# HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 2026-10-30. Every feature branch has a detailed `HANDOVER.md` and `CLAUDE.md`. Read those for the work in
-that branch. This file keeps only what matters across the whole project.
+Updated 30 Oct 2026. Branch made from `main` at 928f4a7. Nothing pushed.
 
-## Goal
-FutureReady MY is a career-planning app for Malaysia, built for the Domain 1 finalist round. A user builds a
-**confirmed, structured profile** (from a CV or a form). Later modules use it: matching, learning roadmap, SDG and
-scenario comparison.
+## Where things stand
+- **Design done, waiting for the owner's review of the written spec:**
+  `docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`. No Radar code yet.
+- Next after spec approval: the implementation plan (writing-plans), then the owner picks how to run it. The plan's
+  first screen task is updating `docs/mockup-radar.html` for owner approval.
 
-## Modules on `main`
-| Module | Branch (detailed docs there) | Merged | State |
-|---|---|---|---|
-| CV extraction and structured profile | `claude/cv-profile-module` | PR #1, `301c10e`, 2026-10-29 | Done; 179 tests pass; final review fixed |
-| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; checked in the browser |
-| Fix: skill search finds everyday skills | `claude/cv-profile-module` | merged 2026-10-30 | Done; 232 tests pass; CV eval unchanged |
-| Matching and the rest of the journey | not started | — | Next |
+## What the Radar is (Round 1)
+Two tabs, **AI Impact** and **Skills & Careers**, from two real sources:
+- **OpenAlex:** research papers per year for six approved AI topics (by `primary_topic`).
+- **DOSM Big Data Analytics: Job Market Insights:** online job offerings by MASCO major group, quarterly since 2019 Q3,
+  from the quarterly Excel file ("Data JMI Qn YYYY").
 
-## Profile form since 2026-10-30 (owner requests)
-- **Search as you type:** skills (O\*NET), roles of interest (O\*NET + eMASCO) and field of study (UNESCO
-  ISCED-F 2013). Nothing is linked silently.
-- **"Prefer not to say" is the default** of every optional field (a dropdown, no checkbox). Skill level starts on
-  "Not assessed yet".
-- **Field of study → O\*NET** through official tables only: ISCED-F → CIP (Statistics Canada) → O\*NET jobs (O\*NET
-  crosswalk). 118 of 124 fields reach O\*NET. Originals are kept in `data/isced/source/`.
-- **Skills suggested from the field of study:** "typical of the field" (more common in its jobs than overall).
-  They are click-to-add chips, never added automatically. This is not matching and gives no score.
-- **"Career interests and fields"** is one list: the 41 O\*NET interest areas, several allowed.
-  `preferredCareerFields` is gone; old profiles are converted.
-- **Skill search covers more than software.** It also searches O\*NET work styles (e.g. Leadership Orientation),
-  knowledge areas and work activities, with general skills before software products. These lists are for search
-  only, so CV reading is unchanged. O\*NET's wording is needed: "Cooperation", not "teamwork".
-- **Every list shows its source on screen.** The owner calls this highly important; keep it for anything new.
-- **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
-  and not used yet.
+It produces trend signals (`radar-signal/v1`) and the jobs, fields and skills they relate to. **No scores or rankings**:
+Matching is a later module with its own spec.
 
-## Open points for the owner
-- **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
-  (1.76 against 1.60). Adding a minimum gap is the owner's call.
-- **Field-of-study names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search
-  in English.
-- **The reason for a suggested skill is hover text,** so phones don't show it. Revisit at the visual redesign.
+## Owner decisions to remember (full list D1–D20 in the spec)
+- Rounds: 1 core, 2 visuals (ILO/OECD exposure, network), 3 extra evidence (MyCOL, Anthropic, …).
+- Default view shows only the user's own fields, jobs and roles; "View all" at the bottom. Every item has a source link.
+- Axes (approved): T10028 Language Models & Text AI (official title "Topic Modeling"), T10775 Generative Media AI,
+  T12549 Computer Vision (narrow topic), T10653 Robotics, T13287 Process Automation, T12128 Service AI.
+- Field ↔ topic links: proposals `pending` until the owner approves each in the admin screen.
+- **Research Momentum Index** = clamp(50 + 20·log2(R/B), 0, 100), 3-year window; chart only, never decides direction.
+- **DOSM indicator** = group share of all online job ads, year on year, in percentage points.
+- **Possible structural breaks** at 2020 Q2, 2020 Q3, 2021 Q3, 2025 Q3 (rule in spec §5.4). Not assumed to be coverage
+  changes. Because of 2025 Q3, DOSM directions are "insufficient comparable evidence" until reviewed or until the
+  2026 Q3 release (due 17 Nov 2026). Meanwhile show shares, counts and DOSM's q/q total change as "context only".
+- Thresholds are versioned prototype settings (`radar-config/v1`), calibrated in `docs/radar/threshold-analysis.md`.
+- Admin and judge access by server keys with signed cookies; deployed state in R2; one Node instance (Render/Railway
+  class); nothing paid without approval.
 
-## Next module: matching (not started)
-It reads the confirmed profile JSON:
-- skills (`canonicalId`, `proficiency`) and `employment.records[].occupation.code`;
-- `occupationMappings` and `preferences` (`careerInterests` hold O\*NET interest-area ids `onet:ia:…`);
-- the field of study (`education.records[].field.code`, ISCED-F).
+## Evidence kept in the repo
+- `docs/radar/index-analysis.md` (+ raw OpenAlex counts and query URLs, script): why log2 with k = 20.
+- `docs/radar/threshold-analysis.md` (+ scripts): DOSM shares, breaks, thresholds, volatility, edge cases.
+- `docs/mockup-radar.html`: first mockup (sample data); to be updated to the spec.
 
-The bridges are ready, stored only and not used yet: `data/isced/isced_cip.tsv` + `cip_onet.tsv` (field → jobs),
-and `data/onet/interest_areas.tsv` (area → jobs, 1–7).
+## Things found that matter
+- OpenAlex files most LLM papers under T10028, titled "Topic Modeling".
+- Computer Science papers grew +64% in 2022–2025, so the share-of-CS view is offered separately.
+- DOSM totals doubled in 2021 Q3 and 2025 Q3; at 2025 Q3 the release title also dropped "and My Job Profile"
+  (evidence for the review, not a proven cause).
+- DOSM's data file stops at nine major groups: no detailed job or skill trends from it (stated as a known gap).
 
-**No scoring method from the old project.**
-
-## What is not switched on yet (needs the owner's keys or OK)
-- **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
-  "cached".
-- **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them, accounts say "not available" and guests still work
-  fully.
-- **RunPod endpoints:** L3 skill matching and the AI re-read. Ask the owner to approve the price first. There is no
-  Claude key either (`CV_LLM_BACKUP_KEY`).
+## Waiting on the owner
+1. Review the Round 1 spec.
+2. Download two BLS crosswalk files in a browser (they block automated download).
+3. An official source that MASCO 2020 major groups match ISCO-08 major groups (else O\*NET jobs stay unmapped to groups).
+4. R2 settings; a free OpenAlex API key (only for deployed refresh).
 
 ## Commands
 ```bash
-npm install
-npm test          # expect 232 passed
-npm start         # http://localhost:3200, reads .env if present (copy .env.example)
+npm install && npm test     # expect 232 passed
+npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 8 OK
-python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas)
-python pipeline/fetch_isced.py               # rebuild data/isced (fields of study + CIP bridge)
 ```
-Every data file, its source, date and licence: `data/SOURCES.md`.
-
-## Rules that apply to every branch
-- **Branches:** one branch per feature. Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md`. On every merge
-  to `main`, put only the important points into these two files.
-- Follow the owner's architecture diagrams exactly. Add nothing they do not state, such as extra limits.
-- Use no scoring method from the previous project. Don't use the `C:/Users/guiro/XH-Cat_Domain1` folder as a
-  template.
-- Ask the owner before anything paid, and before merge, push, PR or force-push.
 
 ## Repository
 - `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
-- Branches: `main` and `claude/cv-profile-module`. `main` is also checked out as a worktree at
-  `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
-- Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.
+- `main` is checked out as a worktree at `C:\Users\guiro\XH_Cat_Final-main`; merge there.
+- Node ≥ 22.12 (built on 24.16.0), Python 3.

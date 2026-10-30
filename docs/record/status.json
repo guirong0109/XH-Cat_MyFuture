@@ -433,8 +433,28 @@
         },
         {
           "title": "Implementation plan",
-          "sub": "16 tasks; waiting for your review",
-          "status": "stop"
+          "sub": "16 tasks; approved, running",
+          "status": "done"
+        },
+        {
+          "title": "Data T1-T8",
+          "sub": "eMASCO, O*NET levels, chain, ILO, Anthropic, SDG",
+          "status": "done"
+        },
+        {
+          "title": "Engine T9-T12",
+          "sub": "chain, fit, outlook, SDG",
+          "status": "todo"
+        },
+        {
+          "title": "API + screens T13-T15",
+          "sub": "matching API, tabs, admin",
+          "status": "todo"
+        },
+        {
+          "title": "Acceptance T16",
+          "sub": "browser check, docs",
+          "status": "todo"
         }
       ]
     }
@@ -1148,6 +1168,11 @@
       "time": "30 Oct",
       "step": "Matching plan",
       "detail": "16 test-first tasks written; waiting for your review"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching data T1-T8",
+      "detail": "eMASCO 1814 entries; O*NET levels 61,880 rows; chain step by same code (pending until BLS files); ILO 427 jobs; Anthropic 2,710 tasks; 17 goals / 169 targets; 126 SDG draft links; each task reviewed"
     }
   ]
 }

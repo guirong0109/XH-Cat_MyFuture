@@ -23,7 +23,7 @@ a stable versioned contract (`radar-signal/v1`) that the later Matching module w
 
 **In scope (Round 1)**
 
-- Two tabs: **AI Impact** and **Skills & Careers**.
+- Two tabs: **Skills & Careers** (first, opens by default) and **AI Impact** (D21).
 - Two real sources: **OpenAlex** (research activity on six approved AI topics) and **DOSM Big Data Analytics: Job
   Market Insights** (online job offerings by MASCO major group).
 - Reference data already in the repo: O\*NET 31.0, eMASCO (MASCO 2020), UNESCO ISCED-F 2013 with the
@@ -74,6 +74,8 @@ owner's approval): DOSM release text (top 5 detailed jobs per quarter), MyCOL, I
 | D18 | While DOSM directions are insufficient: show latest shares, counts and DOSM's quarter-on-quarter total change as "context only" (Option B). |
 | D19 | Two judge scenarios: normal trend change, and structural break. |
 | D20 | Section 3 refinements: OpenAlex key for deployed refresh; DOSM discovery through the official release listing; revision handling; atomic manifest; demo security and expiry on every request; separate answer-state dimensions. |
+| D21 | Mockup v2 approved (30 Oct 2026). Tab order: **Skills & Careers first** (opens by default), then **AI Impact**. |
+| D22 | The Radar screens use the app's existing design on `main` (`public/styles.css`: colour tokens, light and dark themes, teal accent, cards, tags, buttons). The mockup gives layout and content only, not its dark-navy style. |
 
 ## 3. Architecture
 
@@ -445,6 +447,13 @@ From the confirmed profile, computed in the browser by `shared/radar/relevance.j
 Source name and link(s), official names and ids, observation period, publication date, fetch time, manifest and
 snapshot ids, metric and unit, values, formula with the numbers filled in, thresholds used, breaks and reviews,
 revisions, mapping path, limitations. Every factual item has a reference link (D3).
+
+### 11.5a Tab order and look (D21, D22)
+
+Skills & Careers is the first tab and opens by default; AI Impact is second. All Radar, admin and judge screens
+reuse `public/styles.css` (tokens `--bg`, `--surface`, `--accent`, `--src`, `--calc`, `--est`, `--ok`, `--bad`,
+its light/dark themes and classes `.card`, `.tag`, `.btn`, `.tabs`) and add only Radar-specific classes built on
+those tokens. Chart colours come from the same tokens, with text labels as before.
 
 ### 11.6 Mockup first
 

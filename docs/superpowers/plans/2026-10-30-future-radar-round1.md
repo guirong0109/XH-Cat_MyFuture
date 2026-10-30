@@ -28,7 +28,9 @@ access control and judge sessions. Browser screens in `public/js/` with hand-wri
 - Test first; real servers on port 0; the existing 232 tests stay green after every task.
 - Commits small: `feat:` / `fix:` / `docs:`, no attribution lines. After each task, update `docs/record/status.json`
   (group "Step 9") and run `python docs/record/build_record.py`; commit both with the task.
-- Screen tasks (17–20) start only after the owner approves the mockup from Task 1.
+- Screen tasks (17–20) start only after the owner approves the mockup from Task 1 (approved 30 Oct 2026 with
+  changes D21, D22: Skills & Careers tab first and default, then AI Impact; screens use the existing
+  `public/styles.css` design of `main`, not the mockup's dark-navy style).
 
 ## Review Focus
 
@@ -781,7 +783,9 @@ it('Continue to My Career Matches goes to match (next-module placeholder)', () =
 ```
 
 - [ ] **Step 2: Run** — Expected: FAIL.
-- [ ] **Step 3: Implement** following the approved mockup.
+- [ ] **Step 3: Implement** following the approved mockup's layout, with the Skills & Careers tab first and
+  default (D21) and the existing `public/styles.css` design (D22); add a test that the first tab rendered and
+  selected by default is Skills & Careers.
 - [ ] **Step 4: Run** — Expected: PASS; `npm test` all pass.
 - [ ] **Step 5: Commit** `feat: Future Skills Radar screen (AI Impact and Skills & Careers)`
 

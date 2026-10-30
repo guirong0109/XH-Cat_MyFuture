@@ -38,7 +38,7 @@ rows 27-28 were re-checked at 360 px (spec §15 width): **28 of 28 pass**. Detai
 | 12 | Admin: sign in | Pass | Key box (password field), optional reviewer name; "Signed in as admin · session ends in 60 min" |
 | 13 | Admin: wrong key role | Pass | Judge key in the admin box (tried in 中文) → "您没有权限执行此操作。 not_allowed"; server log only `sign-in refused: not_allowed` |
 | 14 | Admin: decision needs a note | Pass | Reject without a note → "A reviewer note is required for every decision. Nothing was sent." |
-| 15 | Admin: approve one field ↔ topic proposal with a note | Pass | 06-language approved; status "Approved · acceptance-test · time"; decision history row with the note; new data version published (`manifest-…074330…`) |
+| 15 | Admin: approve one field ↔ topic proposal with a note | Pass | 06-language approved; status "Approved · acceptance-test · time"; decision history row with the note. Correction: at the time of this run a field ↔ topic decision published no manifest (it only changed the references); the new data version (`manifest-…074330…`) came from the break review recalculation (row 17 log: `reviews · activate · published`). Since the fix `mappingVersion includes field-topic decisions`, a field ↔ topic decision is applied by the same recalculation and publishes a new manifest whose `mappingVersion` names the decisions (Vitest; not re-run in the browser) |
 | 16 | Admin: reject one proposal with a note | Pass | 10-robotics rejected; listed in the history |
 | 17 | Admin: annotate the 2025 Q3 possible break | Pass | Note shown under 2025 Q3 with the evidence links (release page Q3 2025 and the archive listing); status stays "Not reviewed yet" (an annotation is not a decision); history row "dosm:2025 Q3 · Note added". The listing shows the title change (Q2 2025 "… and My Job Profile", Q3 2025 without it) as evidence, not a cause |
 | 18 | Admin: status with five states, conflicts, orphans, log | Pass | Same five state rows as the public cards; Conflicts 0; Orphan objects 0; recent log `reviews · activate · published` with the manifest id |
@@ -74,7 +74,9 @@ rows 27-28 has `scrollWidth` = 360 in EN, BM and 中文.
   items → global view), but the user already added them; a clearer sentence would help. For the owner to decide.
 - **N2** — After an admin decision in the same tab, going back to `#radar` kept showing the previous data version until
   the page was reloaded (the public screen holds the data it loaded). A reload showed the new version and the new
-  highlighting.
+  highlighting. **Fixed** (commit `fix: Radar reloads after admin decisions`): a successful decision, refresh or
+  clean-up drops the Radar data in that tab, so `#radar` loads afresh (checked in the browser: going back to `#radar`
+  after a decision fetched the references again).
 - **N3** — In BM and 中文 the source link labels "DOSM release page: …" and "DOSM data file: Data JMI" stay in English
   (they come from the stored snapshot). The site header's "CV and profile module · synthetic data only" label also
   stays in English (existing header, not Radar).

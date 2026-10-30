@@ -111,5 +111,7 @@ demo/<sessionId>/session.json, state.json  judge sessions (synthetic data only),
 4. Deploy one instance with `npm start`.
 5. Open the Radar once: the log shows `seeded prod from the bundle: <manifest id>`.
 6. Sign in to `#admin`, press "Reload" and make one decision, to check the proxy passes the host (no `csrf_failed`).
-7. Real-R2 check of conditional writes (spec §7, owner action 3): one admin decision publishes a new manifest; the
-   status shows Conflicts 0 and the new active manifest id.
+7. Real-R2 check of conditional writes (spec §7, owner action 3): one admin decision that changes something (a break
+   review, or a field ↔ topic decision) is applied by a recalculation that publishes a new manifest; the decision's
+   message names it, and the status shows Conflicts 0 and the new active manifest id. (A refresh with new data also
+   publishes; a refresh with no change, or a clean-up, publishes nothing.)

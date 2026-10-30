@@ -115,7 +115,8 @@ Each was a judgement call where the spec was silent or two parts pulled apart; a
     mapped; checked with a fake only until real R2 settings exist.
   - Sign-out ends a session only in the process that received it; limits and caches are per process (run one
     instance, see `docs/radar/deploy.md`).
-  - Field ↔ topic decisions do not change `mappingVersion`; admin lists are not paged.
+  - Admin lists are not paged. (Field ↔ topic decisions now publish a new manifest and change `mappingVersion` to
+    `<file version>+decisions:<decisions version>`.)
   - Originals are never removed by the cleanup (by design; documented).
   - Judge: session-limit check has a small race; fractional counts are accepted (signing out now wipes the demo
     session and frees its slot); the synthetic base contains one real DOSM link.

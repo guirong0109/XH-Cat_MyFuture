@@ -1,0 +1,51 @@
+// Calls to the public Future Skills Radar API (spec §13). The first answer fixes the manifest id; every follow-up call
+// sends ?manifest=<id> back, so one screen never mixes data versions (spec §6.5, Review Focus 4).
+// An id the server no longer stores answers 409 manifest_gone → { reload: true } (the screen offers to reload).
+// The server receives no profile data: personal relevance is worked out in the browser.
+import { api } from './api.js'
+
+const query = (manifestId) => (manifestId ? `?manifest=${encodeURIComponent(manifestId)}` : '')
+const gone = (out) => !out.ok && out.code === 'manifest_gone'
+
+// A newer active manifest than the one shown, from any answer (null when the shown one is still active).
+function newerOf(manifestId, answers) {
+  for (const a of answers) if (a?.activeManifestId && a.activeManifestId !== manifestId) return a.activeManifestId
+  return null
+}
+
+// load(manifestId?) → { ok:true, data } | { reload:true } | { ok:false, code, retryable }
+// data = { manifestId, activeManifestId, devStore, states, ai, occ, refs, sources }
+export async function load(manifestId, { base = '' } = {}) {
+  const first = await api('GET', `${base}/api/radar/ai/topics${query(manifestId)}`)
+  if (gone(first)) return { reload: true }
+  if (!first.ok) return { ok: false, code: first.code, retryable: first.retryable }
+  const id = first.data.manifestId
+  const [occ, refs, sources] = await Promise.all(
+    ['occupations', 'references', 'sources'].map((route) => api('GET', `${base}/api/radar/${route}${query(id)}`)),
+  )
+  if ([occ, refs, sources].some(gone)) return { reload: true }
+  const failed = [occ, refs, sources].find((out) => !out.ok)
+  if (failed) return { ok: false, code: failed.code, retryable: failed.retryable }
+  const answers = [first.data, occ.data, refs.data, sources.data]
+  return {
+    ok: true,
+    data: {
+      manifestId: id,
+      activeManifestId: newerOf(id, answers) ?? id,
+      devStore: Boolean(first.data.devStore),
+      states: first.data.states ?? {},
+      ai: first.data,
+      occ: occ.data,
+      refs: refs.data,
+      sources: sources.data.sources ?? [],
+    },
+  }
+}
+
+// signal(id, manifestId) → { ok:true, signal, activeManifestId } | { reload:true } | { ok:false, code }
+export async function signal(signalId, manifestId, { base = '' } = {}) {
+  const out = await api('GET', `${base}/api/radar/signals/${encodeURIComponent(signalId)}${query(manifestId)}`)
+  if (gone(out)) return { reload: true }
+  if (!out.ok) return { ok: false, code: out.code, retryable: out.retryable }
+  return { ok: true, signal: out.data.signal, activeManifestId: out.data.activeManifestId ?? manifestId }
+}

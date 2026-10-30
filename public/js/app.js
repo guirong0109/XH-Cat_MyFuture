@@ -17,6 +17,8 @@ import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
+import radarScreen from './screens/radar.js'
+import * as radarApi from './radarApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -56,8 +58,8 @@ let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
 
 function persist() {
-  // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // occupation search results and upload progress are only shown, never saved (nor the Radar data)
+  saved = store.save({ ...state, message: null, radar: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -99,6 +101,39 @@ function go(screen) {
   window.scrollTo(0, 0)
 }
 
+// ---------- Future Skills Radar ----------
+// The screen keeps the manifest id it loaded and sends it on every follow-up call (spec §6.5, Review Focus 4).
+const radarUi = () => (state.radar ??= {})
+function setRadar(patch) {
+  state.radar = { ...radarUi(), ...patch }
+  render()
+}
+async function loadRadar(manifestId) {
+  state.radar = { ...radarUi(), loading: true, error: null, gone: false }
+  const out = await radarApi.load(manifestId)
+  if (out.reload) state.radar = { ...radarUi(), loading: false, gone: true }
+  else if (!out.ok) state.radar = { ...radarUi(), loading: false, error: out.code ?? 'network' }
+  else state.radar = { ...radarUi(), loading: false, data: out.data, newerManifestId: null }
+  if (state.screen === 'radar') render()
+}
+// Open the evidence panel at once with the signal already loaded; then ask for it again with the same manifest id.
+async function openEvidence(kind, id, signalId) {
+  setRadar({ open: { kind, id }, signal: null })
+  document.getElementById('radarDrawer')?.focus()
+  const data = radarUi().data
+  if (!data || !signalId) return
+  const out = await radarApi.signal(signalId, data.manifestId)
+  if (radarUi().open?.id !== id) return
+  if (out.reload) return setRadar({ gone: true })
+  if (!out.ok) return undefined
+  setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
+  document.getElementById('radarDrawer')?.focus()
+}
+function ensureRadar() {
+  const r = radarUi()
+  if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+}
+
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
 function update(profile) {
   state.profile = { ...profile, profileStatus: 'draft' }
@@ -108,6 +143,35 @@ function update(profile) {
 }
 
 const actions = {
+  // Radar: Skills & Careers is the first tab and opens by default (D21).
+  radarTab: (tab) => setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null }),
+  viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
+  radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),
+  radarLine: (axisId) => {
+    const hidden = new Set(radarUi().hidden ?? [])
+    if (hidden.has(axisId)) hidden.delete(axisId)
+    else hidden.add(axisId)
+    setRadar({ hidden: [...hidden] })
+  },
+  axis: (axisId) => {
+    const axis = radarUi().data?.ai?.axes?.find((a) => a.axisId === axisId)
+    openEvidence('axis', axisId, axis?.signal?.signalId)
+  },
+  group: (code) => {
+    const group = radarUi().data?.occ?.groups?.find((g) => g.code === code)
+    openEvidence('group', code, group?.signal?.signalId)
+  },
+  evClose: () => {
+    const open = radarUi().open
+    setRadar({ open: null, signal: null })
+    if (open) document.querySelector(`[data-act="${open.kind}"][data-arg="${CSS.escape(open.id)}"]`)?.focus()
+  },
+  // A newer manifest, or the one shown is gone: load the active one afresh.
+  reloadManifest: () => {
+    state.radar = { ...radarUi(), data: null, open: null, signal: null, newerManifestId: null, gone: false, error: null }
+    loadRadar()
+    render()
+  },
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
@@ -438,7 +502,8 @@ function render() {
   const tabs = TABS.includes(screen)
     ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`
     : ''
-  const view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  if (screen === 'radar') ensureRadar()
+  const view = screen === 'radar' ? radarScreen({ t, state }) : NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
   document.getElementById('main').innerHTML = tabs + view
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
@@ -492,6 +557,13 @@ document.addEventListener('input', (event) => {
   searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
 })
 document.addEventListener('keydown', (event) => {
+  // Radar: chart points are keyboard buttons (role="button"); Escape closes the evidence panel.
+  const role = event.target.getAttribute?.('role')
+  if ((event.key === 'Enter' || event.key === ' ') && role === 'button' && event.target.dataset?.act && event.target.tagName !== 'BUTTON') {
+    event.preventDefault()
+    return actions[event.target.dataset.act]?.(event.target.dataset.arg)
+  }
+  if (event.key === 'Escape' && state.radar?.open) return actions.evClose()
   const search = event.target.dataset?.search
   if (event.key !== 'Enter' || !search) return
   event.preventDefault()

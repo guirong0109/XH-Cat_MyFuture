@@ -33,6 +33,7 @@ import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
 import { createDemoService } from './radar/demo.js'
 import { radarDemoRoutes } from './radar/demoRoutes.js'
 import { loadRadarReferences } from './radar/references.js'
+import { matchingAdminRoutes } from './matching/adminRoutes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -148,6 +149,8 @@ export function createApp({
     app.use(radarRoutes({ radar }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
+    // Owner decisions on the SDG links (career matching), in the Radar review store.
+    app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)

@@ -151,7 +151,7 @@ export function statusCards(states, t, { sources = [], manifestId = null, ai = n
     const name = src?.name ?? (id === 'dosm' ? 'DOSM' : 'OpenAlex')
     const link = (src?.links ?? []).find((l) => safeUrl(l?.url))
     const health = st.refreshHealth === 'failed' && st.refreshCode ? `${dim(t, 'Health', st.refreshHealth)} (${dim(t, 'Err', st.refreshCode)})` : dim(t, 'Health', st.refreshHealth)
-    const fresh = id === 'dosm' && st.expectedNextRelease ? `${dim(t, 'Fresh', st.freshness)} · ${t('rdNextRelease')} ${fmtDate(st.expectedNextRelease)}` : dim(t, 'Fresh', st.freshness)
+    const fresh = id === 'dosm' && st.expectedNextRelease ? `${dim(t, 'Fresh', st.freshness)} · ${t('rdNextRelease', { date: fmtDate(st.expectedNextRelease) })}` : dim(t, 'Fresh', st.freshness)
     const rows = [
       ['rdDim_availability', dim(t, 'Avail', st.availability)],
       ['rdDim_freshness', fresh],

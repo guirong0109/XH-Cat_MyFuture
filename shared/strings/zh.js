@@ -529,7 +529,7 @@ export default {
   rdLevel_detailed: "细类领域",
   rdApprovedAt: "在{level}层级获批",
   rdViaField: "与您的领域 {field} 关联（在{level}层级获批）",
-  rdNextRelease: "预计下次发布",
+  rdNextRelease: "下次发布 {date}（估计：按季度，从上次发布日期推算）", // translation: owner review
   rdSourcePolicy: "使用政策",
   rdFieldsLabel: "学习领域",
   rdRolesLabel: "工作与职位",

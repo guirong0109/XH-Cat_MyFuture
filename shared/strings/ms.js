@@ -529,7 +529,7 @@ export default {
   rdLevel_detailed: "bidang terperinci",
   rdApprovedAt: "diluluskan pada peringkat {level}",
   rdViaField: "Dipautkan kepada bidang anda {field} (diluluskan pada peringkat {level})",
-  rdNextRelease: "keluaran seterusnya dijangka",
+  rdNextRelease: "keluaran seterusnya {date} (anggaran: setiap suku tahun, dari tarikh penerbitan terakhir)", // translation: owner review
   rdSourcePolicy: "Polisi penggunaan",
   rdFieldsLabel: "Bidang pengajian",
   rdRolesLabel: "Pekerjaan dan peranan",

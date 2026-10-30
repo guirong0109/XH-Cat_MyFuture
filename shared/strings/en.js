@@ -529,7 +529,7 @@ export default {
   rdLevel_detailed: "detailed field",
   rdApprovedAt: "approved at {level} level",
   rdViaField: "Linked to your field {field} (approved at {level} level)",
-  rdNextRelease: "next release expected",
+  rdNextRelease: "next release {date} (estimated: quarterly, from the last publication date)",
   rdSourcePolicy: "Use policy",
   rdFieldsLabel: "Fields of study",
   rdRolesLabel: "Jobs and roles",

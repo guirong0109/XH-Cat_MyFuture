@@ -343,7 +343,23 @@ describe('status cards (spec §11.1, §12)', () => {
     expect(html).toContain(t('rdHealth_not_configured'))
     expect(html).toContain('2026 Q2')
     expect(html).toContain('2026-08-18')
+    // The next DOSM release date is worked out (publication date + one quarter), so it is labelled as an estimate.
+    expect(html).toContain(t('rdNextRelease', { date: '2026-11-18' }))
+    expect(t('rdNextRelease', { date: 'D' })).toBe('next release D (estimated: quarterly, from the last publication date)')
     expect(html).toContain(data.manifestId)
     expect(html).not.toMatch(/\bnull\b|NaN|undefined/)
+  })
+
+  it('the estimated next DOSM release is labelled as an estimate in BM and 中文 too (translations marked for review)', () => {
+    for (const lang of ['ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const html = statusCards(data.states, tl, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })
+      expect(html, lang).toContain(tl('rdNextRelease', { date: '2026-11-18' }))
+      expect(tl('rdNextRelease', { date: 'D' }), lang).not.toBe(t('rdNextRelease', { date: 'D' }))
+      const line = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n').find((l) => l.trimStart().startsWith('rdNextRelease:'))
+      expect(line, lang).toContain('// translation: owner review')
+    }
+    expect(translate('ms', 'rdNextRelease', { date: 'D' })).toMatch(/anggaran/)
+    expect(translate('zh', 'rdNextRelease', { date: 'D' })).toMatch(/估计/)
   })
 })

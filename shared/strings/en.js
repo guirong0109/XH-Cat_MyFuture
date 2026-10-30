@@ -6,6 +6,7 @@ export default {
   hero: 'Where could your skills take you in the AI era?',
   heroSub: 'Start with who you are today: your studies, work and skills, from your CV or a short form.',
   chooseLang: 'Choose your language',
+  themeToDark: 'Dark mode', themeToLight: 'Light mode',
   langNote: 'The interface stays in this language. It only changes when you choose another one.',
   start: 'Get started', signin: 'Sign in', create: 'Create an account', guest: 'Continue as guest',
   atmNote: 'ATM storyline · draft copy, confirm with team',

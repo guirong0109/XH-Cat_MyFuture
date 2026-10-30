@@ -6,6 +6,7 @@ export default {
   hero: 'Ke mana kemahiran anda boleh membawa anda dalam era AI?',
   heroSub: 'Mulakan dengan diri anda hari ini: pengajian, kerja dan kemahiran, daripada CV atau borang ringkas.',
   chooseLang: 'Pilih bahasa anda',
+  themeToDark: 'Mod gelap', themeToLight: 'Mod cerah',
   langNote: 'Antara muka kekal dalam bahasa ini. Ia hanya berubah apabila anda memilih bahasa lain.',
   start: 'Mula', signin: 'Log masuk', create: 'Cipta akaun', guest: 'Teruskan sebagai tetamu',
   atmNote: 'Kisah ATM · draf, sahkan dengan pasukan',

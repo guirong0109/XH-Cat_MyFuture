@@ -6,6 +6,7 @@ export default {
   hero: '在AI时代，你的技能能带你走向哪里？',
   heroSub: '从今天的你开始：你的学历、工作和技能，来自简历或简短表格。',
   chooseLang: '选择语言',
+  themeToDark: '深色模式', themeToLight: '浅色模式',
   langNote: '界面会保持这种语言，只有在你选择其他语言时才会改变。',
   start: '开始', signin: '登录', create: '创建账户', guest: '以访客身份继续',
   atmNote: 'ATM 故事 · 草稿，请与团队确认',

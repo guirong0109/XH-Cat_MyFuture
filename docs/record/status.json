@@ -783,6 +783,11 @@
       "time": "30 Oct",
       "step": "Task 26",
       "detail": "npm test 232 passed; CV eval unchanged; checked in the browser ('leadership' → Leadership Orientation)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Light/dark switch (main)",
+      "detail": "Light is the default; header button switches to dark and the choice is remembered in this browser. npm test 236 passed; checked in the browser"
     }
   ]
 }

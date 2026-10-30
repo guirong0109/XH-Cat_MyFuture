@@ -17,6 +17,7 @@ import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
+import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -46,6 +47,7 @@ const PREFERENCES_SECTION = 4
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
+let theme = loadTheme(safeLocalStorage())
 let state = fresh()
 let resumeTo = null
 let saved = false
@@ -154,6 +156,11 @@ const actions = {
     if (!confirm(t('backNewConfirm'))) return
     state = { ...fresh(), lang: state.lang }
     go('access')
+  },
+  theme: () => {
+    theme = toggleTheme(theme)
+    saveTheme(safeLocalStorage(), theme)
+    render()
   },
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
@@ -434,6 +441,8 @@ function render() {
   if (NEEDS_PROFILE.includes(state.screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   document.documentElement.lang = state.lang
   document.getElementById('langSel').value = state.lang
+  document.documentElement.dataset.theme = theme
+  document.getElementById('themeBtn').textContent = t(theme === 'dark' ? 'themeToLight' : 'themeToDark')
   const screen = state.screen
   const tabs = TABS.includes(screen)
     ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`

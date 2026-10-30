@@ -441,9 +441,10 @@ function onChange(target) {
 }
 
 // The ATM stage, the landing page's first section (three.js, loaded only here). The ATM waits for a click, then
-// prints the question section on a receipt that stays pinned in the middle. The page is redrawn on every change, so
-// the stage element lives on and is moved into each new drawing; a language change rebuilds it at the same step.
-// Without "reduce motion" or WebGL, or if three.js fails to load, the question section is the first section instead.
+// prints the question section on a receipt that stays pinned; the section's headline and buttons then rise in beside
+// it (the section carries the step as data-phase). The page is redrawn on every change, so the stage element lives on
+// and is moved into each new drawing; a language change rebuilds it at the same step. With "reduce motion", without
+// WebGL, or if three.js fails to load, the section shows the headline beside an HTML receipt instead (body.no-intro).
 let stage = null
 let stageAllowed = null
 function canShowStage() {
@@ -456,7 +457,7 @@ function canShowStage() {
 }
 
 function placeStage() {
-  const slot = document.querySelector('.lp-atm')
+  const slot = document.querySelector('.lp-atm-canvas')
   if (!slot) return
   if (!canShowStage()) return document.body.classList.add('no-intro')
   if (stage && stage.lang !== state.lang) {
@@ -465,31 +466,38 @@ function placeStage() {
     stage = null
     return buildStage(slot, pinned)
   }
-  if (stage) return slot.append(stage.el)
-  buildStage(slot, false)
+  if (!stage) return buildStage(slot, false)
+  slot.append(stage.el)
+  setPhase(stage.el, stage.el.dataset.phase)
+}
+
+const setPhase = (el, phase) => {
+  el.dataset.phase = phase
+  const section = el.closest('.lp-atm')
+  if (section) section.dataset.phase = phase
 }
 
 function buildStage(slot, pinned) {
   const el = document.createElement('div')
   el.className = 'atm-stage'
-  el.dataset.phase = pinned ? 'pinned' : 'arrive'
   el.innerHTML = `<button class="atm-cta">${esc(t('introPress'))} <span aria-hidden="true">↵</span></button>`
     + `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
-    + `<button class="atm-scroll">${esc(t('introScroll'))} <span aria-hidden="true">↓</span></button>`
+    + `<button class="atm-replay">↺ ${esc(t('introReplay'))}</button>`
   slot.append(el)
+  setPhase(el, pinned ? 'pinned' : 'arrive')
   const current = { el, lang: state.lang, controls: null, wantPrint: false }
   current.dispose = () => { current.controls?.dispose(); el.remove() }
   stage = current
   el.addEventListener('click', (event) => {
     const button = event.target.closest('button')
     if (button?.classList.contains('atm-skip')) return current.controls?.skip()
-    if (button?.classList.contains('atm-scroll')) return document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })
+    if (button?.classList.contains('atm-replay')) return actions.replayIntro()
     if (!['arrive', 'idle'].includes(el.dataset.phase)) return
     if (current.controls) current.controls.print()
     else current.wantPrint = true
   })
   import('./intro/atmIntro.js')
-    .then((intro) => intro.mountStage({ t, host: el, pinned, onPhase: (phase) => { el.dataset.phase = phase } }))
+    .then((intro) => intro.mountStage({ t, host: el, pinned, onPhase: (phase) => setPhase(el, phase) }))
     .then((controls) => {
       if (stage !== current) return controls.dispose()
       current.controls = controls
@@ -503,21 +511,21 @@ function buildStage(slot, pinned) {
     })
 }
 
-// The hero (second section) rises in when it first comes into view.
-let heroSeen = false
-let heroWatch = null
-function watchHero() {
-  const hero = document.getElementById('hero')
-  heroWatch?.disconnect()
-  if (!hero) return
-  if (heroSeen) return hero.classList.add('in')
-  heroWatch = new IntersectionObserver((entries) => {
+// The gap section (second section) animates its bars when it first comes into view.
+let gapSeen = false
+let gapWatch = null
+function watchGap() {
+  const section = document.getElementById('gap')
+  gapWatch?.disconnect()
+  if (!section) return
+  if (gapSeen) return section.classList.add('in')
+  gapWatch = new IntersectionObserver((entries) => {
     if (!entries.some((entry) => entry.isIntersecting)) return
-    heroSeen = true
-    hero.classList.add('in')
-    heroWatch.disconnect()
-  }, { threshold: 0.2 })
-  heroWatch.observe(hero)
+    gapSeen = true
+    section.classList.add('in')
+    gapWatch.disconnect()
+  }, { threshold: 0.3 })
+  gapWatch.observe(section)
 }
 
 function render() {
@@ -536,7 +544,7 @@ function render() {
   document.getElementById('main').innerHTML = tabs + view
   if (page === welcome) {
     placeStage()
-    watchHero()
+    watchGap()
     armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
   }
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })

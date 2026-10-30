@@ -322,7 +322,9 @@
     "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip",
     "T28b: the receipt waits in the middle until the user clicks Continue (or anywhere, Enter, Space, Esc); the safety timer only ends an intro that stalls before the receipt arrives — cost: a visitor who leaves the tab sees the receipt until they come back",
     "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)",
-    "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)"
+    "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)",
+    "T28b: once the receipt is pinned, the headline and its two buttons rise in beside it in the same first section (below it on narrow screens); Replay replaces the scroll cue",
+    "T28: the gap section shows 56% and 26% on one 0-100% scale with the 30-point gap marked Calculated; heading: \"More people use AI at work than have been trained for it.\" (follows from the two quoted figures)"
   ],
   "log": [
     {
@@ -894,6 +896,16 @@
       "time": "30 Oct",
       "step": "Task 28b",
       "detail": "npm test 249 passed; checked in Chrome at 1440 and 500 px: idle 3 s without printing, click prints, receipt pinned, scroll cue reaches the hero"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "headline + buttons beside the pinned receipt in one section; Replay instead of Scroll; the gap figures as a redesigned second section"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 251 passed; checked in Chrome at 1440 and 500 px: idle, print, pinned + headline, gap bars grow, Replay returns to the waiting ATM; no-3D shows an HTML receipt"
     }
   ]
 }

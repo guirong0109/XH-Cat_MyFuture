@@ -48,4 +48,25 @@ describe('landing page', () => {
   it('keeps the ATM story marked as draft copy', () => {
     expect(page()).toContain(translate('en', 'atmNote'))
   })
+
+  it('the first section holds the receipt story, the headline and the two buttons together', () => {
+    const html = page()
+    const first = html.slice(html.indexOf('<section class="lp-atm"'), html.indexOf('</section>', html.indexOf('<section class="lp-atm"')))
+    expect(first).toContain(translate('en', 'heroEm'))
+    expect(first).toContain('data-go="access"')
+    expect(first).toContain('data-act="scrollTo" data-arg="how"')
+    for (const key of ['atmTitle', 'atmBody', 'atmNote']) expect(first).toContain(translate('en', key).replace(/"/g, '&quot;'))
+    expect(html.indexOf('lp-atm')).toBeLessThan(html.indexOf('id="gap"'))
+  })
+
+  it('the second section puts the two shares on one 0–100% scale with the calculated gap', () => {
+    const html = page()
+    const gap = html.slice(html.indexOf('id="gap"'), html.indexOf('id="how"'))
+    expect(gap).toContain(translate('en', 'ldFactsTitle'))
+    expect(gap).toContain('style="--w:56%"')
+    expect(gap).toContain('style="--w:26%"')
+    expect(gap).toContain('style="--from:26%;--to:56%"')
+    expect(gap).toContain(translate('en', 'ldGap', { n: 30 }))
+    expect(gap.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length)
+  })
 })

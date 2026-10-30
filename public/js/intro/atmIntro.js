@@ -11,6 +11,9 @@ const PX = 1000 // receipt canvas pixels per scene unit
 const SLOT = { y: 1.5, z: 0.62 }
 const LOOK = new THREE.Vector3(0, 1.62, 0.4)
 const CAMERA_OFFSET = new THREE.Vector3(2.5, 0.85, 7.1)
+// Wider than this (width / height), the stage puts the receipt in the right half and the headline on the left.
+// Matches the (min-aspect-ratio: 115/100) layout in landing.css.
+const WIDE = 1.15
 const MONO = '"Geist Mono", ui-monospace, Consolas, monospace'
 const SERIF = '"Instrument Serif", "Noto Serif SC", "Songti SC", Georgia, serif'
 
@@ -357,7 +360,7 @@ export async function mountStage({ t, host, pinned = false, onPhase }) {
     renderer.setSize(w, h, false)
     camera.aspect = w / h
     distance = (camera.aspect < 0.8 ? Math.min(1.9, 0.8 / camera.aspect) : 1) * 1.14 // room for the button below
-    look.x = camera.aspect > 1.15 ? -0.6 : 0
+    look.x = camera.aspect > WIDE ? -0.6 : 0
     camera.updateProjectionMatrix()
   }
   resize()
@@ -372,9 +375,13 @@ export async function mountStage({ t, host, pinned = false, onPhase }) {
     const toward = new THREE.Vector3(0, 0, 1).applyQuaternion(camera.quaternion)
     const depth = 3
     const visibleH = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))
-    // the receipt fills most of the height, a little above the middle to leave room for the scroll cue
-    const scale = Math.min((0.8 * visibleH) / PAPER_L, (0.84 * visibleH * camera.aspect) / PAPER_W)
+    // The receipt fills most of the height, a little above the middle to leave room for the replay button. On wide
+    // screens it lands in the right half (around 70% across) so the headline fits beside it (landing.css).
+    const visibleW = visibleH * camera.aspect
+    const wide = camera.aspect > WIDE
+    const scale = Math.min((0.8 * visibleH) / PAPER_L, ((wide ? 0.36 : 0.84) * visibleW) / PAPER_W)
     const center = camera.position.clone().addScaledVector(toward, -depth).addScaledVector(up, 0.03 * visibleH)
+      .addScaledVector(right, wide ? 0.2 * visibleW : 0)
     fly = flat.map(({ x, y }, i) => ({
       from: hanging(i, PAPER_L, 0.06),
       to: center.clone().addScaledVector(right, -x * scale).addScaledVector(up, y * scale),

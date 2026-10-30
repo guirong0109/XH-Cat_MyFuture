@@ -39,11 +39,15 @@ const langSwitch = (state) => `<div class="lp-lang" role="group">${LANGS.map(([k
 
 const sourced = (t, text) => `<span class="lp-src"><b>${esc(t('ldSourced'))}</b> ${esc(text)}</span>`
 
-function hero(t) {
+// The first section. app.js mounts the three.js ATM into .lp-atm-canvas: it waits for a click, prints the question
+// section on a receipt that stays pinned, and the headline with its buttons rises in beside it. The HTML receipt
+// carries the same story: read out to screen readers, and on screen when the 3D intro does not play (body.no-intro).
+function atm(t) {
   const [before, after] = t('heroLine').split('{em}')
   return `
-<section class="lp-hero" id="hero">
- <div class="lp-hero-copy">
+<section class="lp-atm" aria-label="${esc(t('introStage'))}">
+ <div class="lp-atm-canvas"></div>
+ <div class="lp-atm-copy">
   <h1 class="lp-display">${esc(before)}<em>${esc(t('heroEm'))}</em>${esc(after ?? '')}</h1>
   <p class="lp-sub">${esc(t('heroSub'))}</p>
   <div class="lp-cta">
@@ -51,41 +55,56 @@ function hero(t) {
    <button class="lp-btn lp-btn-line" data-act="scrollTo" data-arg="how">${esc(t('ldHowLink'))}</button>
   </div>
   <p class="lp-note">${esc(t('ldGuestNote'))}</p>
-  <button class="lp-replay" data-act="replayIntro">↺ ${esc(t('introReplay'))}</button>
  </div>
- <aside class="lp-facts" aria-label="${esc(t('ldFactsTitle'))}">
-  <p class="lp-facts-title">${esc(t('ldFactsTitle'))}</p>
-  ${GUIDE_FACTS.map((fact, i) => `
-  <div class="lp-fact lp-fact-${fact.accent}" style="--i:${i}">
-   <div class="lp-fact-value">${odometer(fact.value, `fact-${i}`)}</div>
-   <p class="lp-fact-label">${esc(t(fact.label))}</p>
-   ${sourced(t, `${t(fact.source)}, ${t('ldFactVia')}`)}
-  </div>`).join('')}
-  <p class="lp-gap"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p>
- </aside>
+ <article class="lp-receipt">
+  <p class="lp-receipt-brand">FUTUREREADY MY</p>
+  <p class="lp-receipt-title">${esc(t('introTitle'))}</p>
+  <p class="lp-receipt-label">— ${esc(t('ldQKicker'))}</p>
+  <blockquote class="lp-receipt-quote">${esc(t('atmTitle'))}</blockquote>
+  <p class="lp-receipt-body">${esc(t('atmBody'))}</p>
+  <p class="lp-receipt-note">${esc(t('atmNote'))}</p>
+  <div class="lp-receipt-code" aria-hidden="true"></div>
+ </article>
 </section>
 <div class="lp-strip" aria-hidden="true">${['form', 'radar', 'match', 'roadmap', 'sdg', 'futures'].map((k, i) =>
   `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
 }
 
-// The first section: the ATM stage (app.js mounts the three.js scene into it). The receipt it prints carries the
-// question section; screen readers get the same text here.
-const stage = (t) => `
-<section class="lp-atm" aria-label="${esc(t('introStage'))}">
- <div class="lp-sr"><p>${esc(t('ldQKicker'))}</p><p>${esc(t('atmTitle'))}</p><p>${esc(t('atmBody'))}</p><p>${esc(t('atmNote'))}</p></div>
-</section>`
-
-// The question section (the ATM story) as page text: the first section instead of the stage when the intro does
-// not play (body.no-intro: reduce motion, no WebGL, or three.js failed to load).
-const question = (t) => `
-<section class="lp-section lp-question">
- <p class="lp-label">${esc(t('ldQKicker'))}</p>
- <div>
-  <blockquote class="lp-quote">${esc(t('atmTitle'))}</blockquote>
-  <p class="lp-body">${esc(t('atmBody'))}</p>
-  <p class="lp-draft">${esc(t('atmNote'))}</p>
+// The second section: the guide's figures. The two shares sit on one 0–100% scale so the gap between them shows;
+// the bars grow when the section comes into view (app.js adds .in).
+function gap(t) {
+  const [use, trained, workers] = GUIDE_FACTS
+  const share = (fact, i) => `
+   <div class="lp-share lp-share-${fact.accent}">
+    <div class="lp-fact-value">${odometer(fact.value, `fact-${i}`)}</div>
+    <p>${esc(t(fact.label))}</p>
+   </div>`
+  return `
+<section class="lp-section lp-gapsec" id="gap">
+ <header class="lp-head">
+  <p class="lp-label">${esc(t('ldFactsTitle'))}</p>
+  <h2 class="lp-h2">${esc(t('ldGapTitle'))}</h2>
+ </header>
+ <div class="lp-gapgrid">
+  <article class="lp-gapcard">
+   <div class="lp-shares">${share(use, 0)}${share(trained, 1)}</div>
+   <div class="lp-scale" role="img" aria-label="${esc(`${use.value} · ${trained.value} · ${t('ldGap', { n: GAP_POINTS })}`)}">
+    <div class="lp-bar lp-bar-pink" style="--w:${use.value}"><i></i></div>
+    <div class="lp-bar lp-bar-blue" style="--w:${trained.value}"><i></i></div>
+    <div class="lp-gapband" style="--from:${trained.value};--to:${use.value}"><span>${GAP_POINTS}</span></div>
+    <div class="lp-ticks">${[0, 25, 50, 75, 100].map((n) => `<span style="--at:${n}%">${n}${n === 100 ? '%' : ''}</span>`).join('')}</div>
+   </div>
+   <p class="lp-gapnote"><span class="lp-tag">${esc(t('ldCalc'))}</span> ${esc(t('ldGap', { n: GAP_POINTS }))}</p>
+   ${sourced(t, `${t(use.source)}, ${t('ldFactVia')}`)}
+  </article>
+  <article class="lp-fact lp-fact-lime">
+   <div class="lp-fact-value">${odometer(workers.value, 'fact-2')}</div>
+   <p class="lp-fact-label">${esc(t(workers.label))}</p>
+   ${sourced(t, `${t(workers.source)}, ${t('ldFactVia')}`)}
+  </article>
  </div>
 </section>`
+}
 
 function stageCard(t, stage, i) {
   const n = String(i + 1).padStart(2, '0')
@@ -200,9 +219,8 @@ const nav = (t, state) => `
 export default ({ t, state }) => `
 <div class="lp">
  ${nav(t, state)}
- ${stage(t)}
- ${question(t)}
- ${hero(t)}
+ ${atm(t)}
+ ${gap(t)}
  ${how(t)}
  ${data(t)}
  ${principles(t)}

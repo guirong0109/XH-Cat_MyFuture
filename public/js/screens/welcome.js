@@ -66,9 +66,7 @@ function atm(t) {
   <p class="lp-receipt-note">${esc(t('atmNote'))}</p>
   <div class="lp-receipt-code" aria-hidden="true"></div>
  </article>
-</section>
-<div class="lp-strip" aria-hidden="true">${['form', 'radar', 'match', 'roadmap', 'sdg', 'futures'].map((k, i) =>
-  `<span><b>${String(i + 1).padStart(2, '0')}</b>${esc(t(k))}</span>`).join('<i>→</i>')}</div>`
+</section>`
 }
 
 // The second section: the guide's figures side by side, each a heading, its roller counter and a caption. A bracket

@@ -962,6 +962,16 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "live card one wide low row, the five next stages in one row; space between sections 2 and 3 about 105 px (was about 256); fixed the live card showing half width on mid screens; npm test 257 passed; checked in Chrome at 1440, 820 and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "remove the six-stage strip under the first section (How it works already shows the stages)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "strip and its styles removed; test checks the stages are listed once; npm test 258 passed; checked in Chrome"
     }
   ]
 }

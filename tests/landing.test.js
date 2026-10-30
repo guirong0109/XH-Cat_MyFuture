@@ -59,6 +59,12 @@ describe('landing page', () => {
     expect(html.indexOf('lp-atm')).toBeLessThan(html.indexOf('id="gap"'))
   })
 
+  it('lists the six stages only once, in How it works (no stage strip under the first section)', () => {
+    const html = page()
+    expect(html).not.toContain('lp-strip')
+    expect(html.split(translate('en', 'ldS2T')).length - 1).toBe(1)
+  })
+
   it('every section of the page keeps its styles in landing.css', async () => {
     const css = await readFile(new URL('../public/landing.css', import.meta.url), 'utf8')
     for (const rule of ['.lp-nav{', '.lp-atm{', '.lp-tally{', '.lp-bento{', '.lp-stage-live{', '.lp-ticks{', '.lp-data{',

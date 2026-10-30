@@ -64,12 +64,6 @@ body.landing main{max-width:none;padding:0}
 .lp-src b{font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;padding:1px 6px;border:1px solid currentColor;border-radius:99px}
 .lp-tag{font-family:var(--lp-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border:1px dashed currentColor;border-radius:99px;margin-right:4px}
 
-/* the six stages as a line */
-.lp-strip{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:18px 0;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line);
-  font-family:var(--lp-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--lp-ink2)}
-.lp-strip b{font-weight:500;color:var(--lp-muted);margin-right:8px}
-.lp-strip i{font-style:normal;color:var(--lp-line)}
-
 /* sections */
 .lp-section{padding:clamp(64px,9vw,128px) 0;border-bottom:1px solid var(--lp-line);scroll-margin-top:72px}
 .lp-head{max-width:780px;margin-bottom:clamp(32px,4vw,52px)}
@@ -261,7 +255,7 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 
 /* SECOND SECTION: the gap. The three figures side by side, each a heading, its roller counter and a caption, with
    rules between them. A pink bracket under the first two joins them to the calculated gap (drawn in when the section
-   comes into view, .in); the sources sit in one footnote. It sits close under the stage strip. */
+   comes into view, .in); the sources sit in one footnote. It sits close under the first section. */
 .lp-gapsec{padding:clamp(40px,5vw,64px) 0 clamp(32px,4vw,48px)}
 .lp-gapsec .lp-head{margin-bottom:clamp(20px,3vw,32px)}
 .lp-tally{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}

@@ -5,7 +5,7 @@ rules and how to work here.
 
 ## Owner rules (always)
 - **Follow the owner's decisions exactly.** The source of truth is the Round 1 spec
-  (`docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`, decisions D1–D20). Add nothing it does not state:
+  (`docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`, decisions D1–D22). Add nothing it does not state:
   no extra limits, features or screens.
 - **No scoring or matching.** No Current Skill Match, Future Opportunity score, ranking weight, skills gap or ranked
   careers in this branch. Use no method from the previous project. Don't use `C:/Users/guiro/XH-Cat_Domain1` as a template.
@@ -19,9 +19,11 @@ rules and how to work here.
   `main`, put only the important points into main's files.
 - Use plain words with the owner. The owner writes English, sometimes briefly.
 
-## Gates
-- Code starts only after the owner approves the written spec **and** the implementation plan, and picks how to run it.
-- Screen code starts only after the owner approves the updated mockup (`docs/mockup-radar.html`, spec §11.6).
+## State
+- Round 1 is built (plan tasks 1–21 done) and browser-accepted (`docs/radar/acceptance.md`: 27 of 28 pass; F1 phone
+  width on Skills & Careers is open). Deployment notes: `docs/radar/deploy.md`. Nothing pushed, merged or deployed.
+- Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
+- Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
 ## Data rules
 - OpenAlex: count by `primary_topic`, complete calendar years, compare only inside one snapshot. Keep query URLs
@@ -44,11 +46,19 @@ rules and how to work here.
 
 ## Commands
 ```bash
-npm install && npm test                            # expect 232 passed (Radar tests add to this)
-npm start                                          # http://localhost:3200
-python -m unittest discover pipeline/tests         # expect 8 OK
+npm install
+npx vitest run --dir tests                         # expect 556 passed (use --dir tests while helper worktrees exist)
+python -m unittest discover pipeline/tests         # expect 11 OK
+npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
+node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex live, DOSM from the kept workbook)
+python pipeline/fetch_radar_bridge.py              # rebuild data/radar/occupation-bridge.json
 python -I docs/radar/index_analysis.py <out.json>  # re-fetch OpenAlex and recompute the index analysis
 python -I docs/radar/threshold_analysis.py <DOSM xlsx> <openalex cache json>   # threshold calibration
+python docs/record/build_record.py                 # docs/record/status.json -> docs/build-record.html
 ```
+Local admin and judge: set `RADAR_STORE=memory`, `RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY` (different values) and
+`RADAR_SESSION_SECRET` (32+ characters) in the shell or an uncommitted `.env`. Never write keys into tracked files,
+reports or chat. `RADAR_STORE=memory` is development only (refused with `NODE_ENV=production`).
+
 Browser pane: `record` (8766) serves `docs/` (mockups, build record); `cvmodule` (3200). Test the app on an address
-nobody else uses (e.g. `127.0.0.2:3200`).
+nobody else uses (e.g. `127.0.0.2:3200` or `radar.localhost`).

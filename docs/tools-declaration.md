@@ -1,6 +1,7 @@
-# Technical and Tools Declaration — CV extraction and structured profile module
+# Technical and Tools Declaration — CV extraction and structured profile module, Future Skills Radar
 
-Every outside tool, data set, model and service this module uses or can use, and its status on 29 Oct 2026.
+Every outside tool, data set, model and service these modules use or can use, and its status (CV module 29 Oct 2026;
+Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026).
 
 ## Data
 
@@ -9,6 +10,10 @@ Every outside tool, data set, model and service this module uses or can use, and
 | O\*NET Database (occupations, job titles, skills, software examples) | Skill ids (`onet:tech:…`, `onet:el:…`), occupation search snapshot | 31.0, downloaded 2026-10-29 (`data/onet/manifest.json`, SHA-256 checked) | CC BY 4.0, U.S. Department of Labor / ETA | In use |
 | O\*NET Web Services (api-v2, keyword search) | Live occupation lookup, first in the order live → cached → eMASCO | v2 API | O\*NET Web Services terms | Code ready; needs the owner's free key `ONET_API_KEY` |
 | eMASCO (MASCO 2020, Ministry of Human Resources Malaysia) | Malaysian occupation titles listed next to O\*NET; fallback source | fetched 2026-10-23, 1,766 occupations (code, title, URL only) | Public government reference | In use |
+| OpenAlex API (`api.openalex.org`: topics and works grouped by publication year) | Radar AI Impact: yearly research-paper counts for six approved AI topics by `primary_topic`, plus the Computer Science field (17) as reference | Snapshot fetched 2026-10-30 without a key (`data/radar/bundle/`); query URLs kept, never with a key | OpenAlex data CC0 | In use (bundled). Deployed refresh needs the owner's free key `OPENALEX_API_KEY` |
+| DOSM Big Data Analytics: Job Market Insights (release pages, release archive listing, quarterly workbook "Data JMI") | Radar Skills & Careers: online job advertisements by MASCO 2020 major group, shares and possible structural breaks; release titles as break evidence | Q2 2026 workbook downloaded 2026-10-30, kept byte for byte with SHA-256 (`data/radar/source/`); archive page saved 2026-10-30 | Public DOSM release; licence terms per dosm.gov.my (to confirm) | In use (bundled). Admin refresh discovers the next release from the official listing |
+| UNESCO ISCED-F 2013, Statistics Canada concordance, O\*NET CIP and SOC crosswalks | Radar personal relevance: field of study → O\*NET jobs → (SOC 2018 → SOC 2010 → ISCO-08 → MASCO major group) | see `data/SOURCES.md` | as listed there | O\*NET → SOC 2018 in use; BLS steps and ISCO-08 → MASCO pending (owner actions) |
+| Synthetic Radar base (`data/radar/demo/base.json`) | Judge Trend Change Test only | written by the team, labelled synthetic on screen | — | In use; every value fictional |
 | Synthetic CVs and labelled terms (`testing/`) | Tests, extraction evaluation, Model Eval | written by the team | — | In use; no real CVs |
 
 ## Models and AI services
@@ -37,6 +42,7 @@ Rules for every AI path:
 | Vitest 5.0 | Tests | In use (dev only) |
 | Python 3 (standard library) | `pipeline/fetch_onet.py` O\*NET refresh and its tests | In use |
 | Cloudflare D1 (REST query API) | Accounts, sessions, saved profiles | Code ready; needs the owner's D1 settings. Tested with `node:sqlite` and the real `migrations.sql` |
+| Cloudflare R2 (same client, plus `ListObjectsV2` and conditional `If-Match` / `If-None-Match: *` writes) | Radar state: immutable snapshots, manifests, signals, owner reviews and ingestion log under `prod/`; judge sessions under `demo/<session>/`; `prod/active.json` switched only by conditional write | Code ready, tested with a fake; needs the owner's R2 settings (free allowance) and the real-R2 check. Without R2 the Radar serves its bundled data read-only |
 | Cloudflare R2 (S3-compatible API, Signature V4) | Temporary CV copy `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule | Code ready; needs the owner's R2 settings |
 
 ## Development tools
@@ -48,6 +54,11 @@ Rules for every AI path:
 
 ## Not used
 
-- No scoring or matching method from the team's earlier project. Matching is the next module.
+- No scoring or matching method from the team's earlier project. Matching is the next module. The Radar produces no
+  score, weight or ranking.
+- No new npm packages for the Radar: its xlsx reader is built on the app's own zip reader and tested against the real
+  DOSM workbook.
+- No AI exposure (ILO, OECD), AI usage (Anthropic Economic Index) or MyCOL data in Radar Round 1 (later rounds, each
+  with its own approval).
 - No OCR: scanned CVs get a clear message and the manual form.
 - No real personal data.

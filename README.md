@@ -47,6 +47,28 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
 | `CV_MAX_MB` | Upload limit (default 10) |
 | `TRUST_PROXY` | Behind a reverse proxy: number of proxy hops, so the sign-in and AI re-read limits count each visitor, not the proxy |
 
+## Future Skills Radar (branch `claude/future-radar`)
+
+Two tabs at `#radar` — Skills & Careers and AI Impact — built from OpenAlex research counts and DOSM Job Market
+Insights, linked to the user's own confirmed profile. No scores or rankings. Spec:
+`docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`; acceptance: `docs/radar/acceptance.md`;
+deployment notes: `docs/radar/deploy.md`; contract for Matching: `docs/radar/contract.md`.
+
+```bash
+npm start                                   # #radar serves the bundled data in data/radar/bundle/ (read-only)
+npx vitest run --dir tests                  # all tests, Radar included (556)
+python -m unittest discover pipeline/tests  # Python pipeline tests, Radar bridge included (11)
+node scripts/radar-bootstrap.mjs            # rebuild the bundle: OpenAlex fetched live (no key), DOSM from the kept workbook
+python pipeline/fetch_radar_bridge.py       # rebuild the O*NET -> MASCO major group bridge from the kept files
+```
+
+| Setting | What it turns on |
+|---|---|
+| `RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`, `RADAR_SESSION_SECRET` | `#admin` (reviews, refresh, status) and `#judge` (Trend Change Test). The two keys must differ; the secret needs 32+ bytes |
+| `R2_*` (above) | Durable Radar state under `prod/` and judge sessions under `demo/`; without R2 the Radar is read-only |
+| `OPENALEX_API_KEY` | Admin refresh of OpenAlex on a deployed server (`NODE_ENV=production`) |
+| `RADAR_STORE=memory` | Local development only: admin and judge writes kept in memory, lost on restart; refused in production |
+
 ## Setting up the outside services (owner)
 
 1. **Cloudflare D1:**
@@ -59,7 +81,8 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
       The Node command reads the `D1_*` settings from `.env`.
 2. **Cloudflare R2:**
    1. Create a bucket and an R2 API token (access key id and secret), then set the four `R2_*` settings.
-   2. Add a lifecycle rule on the bucket that deletes objects under `cv-temp/` after 1 day.
+   2. Add a lifecycle rule on the bucket that deletes objects under `cv-temp/` after 1 day. Limit it to `cv-temp/`:
+      the Radar keeps its state under `prod/` and `demo/` in the same bucket.
 3. **O\*NET Web Services:** register for a free key and set `ONET_API_KEY`.
 4. **RunPod (optional, billed per second while running):**
    1. Create serverless endpoints for the embedding model (`BAAI/bge-m3`) and/or a chat model behind the OpenAI-compatible routes, then set the matching settings.

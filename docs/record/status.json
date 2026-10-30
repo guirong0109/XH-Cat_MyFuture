@@ -236,8 +236,118 @@
         },
         {
           "title": "R0 Implementation plan",
-          "sub": "21 tasks (docs/superpowers/plans/2026-10-30-future-radar-round1.md) · waiting for your review",
-          "status": "stop"
+          "sub": "21 tasks (docs/superpowers/plans/2026-10-30-future-radar-round1.md) · run with reviews per task",
+          "status": "done"
+        },
+        {
+          "title": "T1 Mockup v2",
+          "sub": "approved by you 30 Oct: Skills & Careers first (D21), main app design (D22)",
+          "status": "done"
+        },
+        {
+          "title": "T2 Config + Momentum Index",
+          "sub": "radar-config/v1; log2, k = 20",
+          "status": "done"
+        },
+        {
+          "title": "T3 Workbook reader",
+          "sub": "own xlsx reader; real DOSM Q2 2026 table by cell address",
+          "status": "done"
+        },
+        {
+          "title": "T4 OpenAlex trend rules",
+          "sub": "direction, volatility, evidence",
+          "status": "done"
+        },
+        {
+          "title": "T5 DOSM shares + breaks",
+          "sub": "pp change, possible structural breaks, share rules",
+          "status": "done"
+        },
+        {
+          "title": "T6 Snapshots",
+          "sub": "shape, validation, diff (new vs revision vs removed)",
+          "status": "done"
+        },
+        {
+          "title": "T7 Reference data",
+          "sub": "topics, field-topic proposals, occupation bridge, personal relevance",
+          "status": "done"
+        },
+        {
+          "title": "T8 Contract + pipeline",
+          "sub": "radar-signal/v1, runPipeline, dependency report",
+          "status": "done"
+        },
+        {
+          "title": "T9 OpenAlex adapter",
+          "sub": "key, rate limit, failures",
+          "status": "done"
+        },
+        {
+          "title": "T10 DOSM adapter",
+          "sub": "release discovery from the official listing, download",
+          "status": "done"
+        },
+        {
+          "title": "T11 Storage",
+          "sub": "memory, file, R2 list + conditional writes",
+          "status": "done"
+        },
+        {
+          "title": "T12 Ingestion",
+          "sub": "immutable snapshots, atomic manifest activation",
+          "status": "done"
+        },
+        {
+          "title": "T13 Bundled snapshots",
+          "sub": "real OpenAlex + DOSM data in data/radar/bundle/",
+          "status": "done"
+        },
+        {
+          "title": "T14 Public API",
+          "sub": "manifest consistency, five answer states",
+          "status": "done"
+        },
+        {
+          "title": "T15 Admin access",
+          "sub": "signed sessions, CSRF, admin review API, cleanup",
+          "status": "done"
+        },
+        {
+          "title": "T16 Judge test",
+          "sub": "Trend Change Test, Scenario A and B, reset",
+          "status": "done"
+        },
+        {
+          "title": "T17 Strings",
+          "sub": "EN / BM / 中文",
+          "status": "done"
+        },
+        {
+          "title": "T18 Charts",
+          "sub": "SVG radar, lines, diverging bars; keyboard and text labels",
+          "status": "done"
+        },
+        {
+          "title": "T19 Radar screen",
+          "sub": "Skills & Careers and AI Impact, evidence panel",
+          "status": "done"
+        },
+        {
+          "title": "T20 Admin + judge screens",
+          "sub": "#admin and #judge",
+          "status": "done"
+        },
+        {
+          "title": "Integration fixes",
+          "sub": "source links {label, url}; OpenAlex reference id; dev-store banner on every screen; DOSM listing titles as break evidence",
+          "status": "done"
+        },
+        {
+          "title": "T21 Acceptance + docs",
+          "sub": "browser 27/28 pass (F1 phone width open); deploy notes; handover",
+          "status": "done"
         }
       ]
     }
@@ -276,10 +386,11 @@
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
     "Future Skills Radar: branch claude/future-radar from main; clickable mockup docs/mockup-radar.html (tabs AI Impact and Skills & Careers, sections A1-A5 and B1-B6, source status and refresh, filters with unsupported ones disabled and explained, evidence panel, Trend Change Test demo panel; every number is sample data). Checked in the browser at desktop and 375 px. Waiting for your review before any code.",
-    "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet."
+    "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet.",
+    "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged."
   ],
   "waiting": [
-    "Future Skills Radar: review the implementation plan and choose how to run it",
+    "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
@@ -857,6 +968,16 @@
       "time": "30 Oct",
       "step": "Spec approved; plan written",
       "detail": "21 test-first tasks; mockup v2 first, screens after your mockup OK"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar T1-T20 + integration fixes",
+      "detail": "All plan tasks built test first and reviewed; fixes for source links, OpenAlex reference id, dev-store banner and DOSM listing evidence"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar T21 acceptance",
+      "detail": "Tests 556 passed, pipeline 11 OK; browser 27/28 pass (F1: phone width on Skills & Careers); deploy notes, handover, README, tools declaration"
     }
   ]
 }

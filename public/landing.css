@@ -1,0 +1,195 @@
+/* Landing page ("Editorial Dopamine"): cream canvas, serif headlines, one saturated accent per figure.
+   The future is loud (accents, big type); the evidence is quiet (white cards, mono source lines). */
+:root{
+  --lp-cream:#f5f0e6;--lp-paper:#fffdf8;--lp-ink:#15130f;--lp-ink2:#3d382f;--lp-muted:#6f6758;--lp-line:#e3dbca;
+  --lp-pink:#f0186d;--lp-blue:#2b3cff;--lp-lime:#c6f135;--lp-on-lime:#15130f;
+  --lp-serif:"Instrument Serif","Noto Serif SC","Songti SC","STSong",Georgia,serif;
+  --lp-sans:"Geist",system-ui,-apple-system,"Segoe UI","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --lp-mono:"Geist Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --lp-cream:#12110e;--lp-paper:#1b1915;--lp-ink:#f3eee3;--lp-ink2:#d3ccbd;--lp-muted:#a1988a;--lp-line:#302c25;
+  --lp-pink:#ff5596;--lp-blue:#8090ff;}}
+:root[data-theme="dark"]{
+  --lp-cream:#12110e;--lp-paper:#1b1915;--lp-ink:#f3eee3;--lp-ink2:#d3ccbd;--lp-muted:#a1988a;--lp-line:#302c25;
+  --lp-pink:#ff5596;--lp-blue:#8090ff;}
+
+body.landing{background:var(--lp-cream);color:var(--lp-ink);font-family:var(--lp-sans)}
+body.landing .top{display:none}
+body.landing main{max-width:none;padding:0}
+.lp{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px);overflow-x:clip}
+.lp button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.lp :focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px;border-radius:8px}
+.lp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lp-muted{color:var(--lp-muted)}
+
+/* navigation */
+.lp-nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:20px;padding:14px 0;
+  background:color-mix(in srgb,var(--lp-cream) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--lp-line)}
+.lp-brand{font-family:var(--lp-serif);font-size:26px;line-height:1;letter-spacing:-.01em;white-space:nowrap}
+.lp-brand span{font-family:var(--lp-sans);font-size:10.5px;font-weight:600;letter-spacing:.08em;vertical-align:5px;margin-left:3px;
+  padding:3px 6px;border-radius:5px;background:var(--lp-ink);color:var(--lp-cream)}
+.lp-links{display:flex;gap:4px;flex:1;justify-content:center}
+.lp-links button{padding:8px 12px;font-size:14px;color:var(--lp-muted);border-radius:99px}
+.lp-links button:hover{color:var(--lp-ink);background:var(--lp-paper)}
+.lp-lang{display:inline-flex;border:1px solid var(--lp-line);border-radius:99px;padding:3px;background:var(--lp-paper)}
+.lp-lang button{font-family:var(--lp-mono);font-size:11.5px;padding:5px 10px;border-radius:99px;color:var(--lp-muted)}
+.lp-lang button.on{background:var(--lp-ink);color:var(--lp-cream)}
+
+/* buttons */
+.lp .lp-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:99px;font-size:15px;font-weight:500;
+  border:1px solid transparent;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.lp .lp-btn:hover{transform:translateY(-1px)}
+.lp .lp-btn-sm{padding:9px 16px;font-size:14px}
+.lp .lp-btn-ink{background:var(--lp-ink);color:var(--lp-cream)}
+.lp .lp-btn-line{border-color:var(--lp-ink2);color:var(--lp-ink)}
+.lp .lp-btn-line:hover{background:var(--lp-paper)}
+.lp .lp-btn-lime{background:var(--lp-lime);color:var(--lp-on-lime)}
+.lp .lp-btn-ghost{border-color:color-mix(in srgb,var(--lp-cream) 40%,transparent);color:var(--lp-cream)}
+
+/* hero */
+.lp-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:end;
+  padding:clamp(40px,8vw,104px) 0 clamp(40px,5vw,64px)}
+.lp-kicker{display:flex;align-items:center;gap:10px;font-family:var(--lp-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lp-muted)}
+.lp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lp-pink);box-shadow:0 0 0 0 var(--lp-pink);animation:lp-pulse 2.4s ease-out infinite}
+.lp-display{font-family:var(--lp-serif);font-weight:400;font-size:clamp(50px,8.2vw,116px);line-height:.93;letter-spacing:-.025em;margin:22px 0 26px;text-wrap:balance}
+.lp-display em{font-style:italic;color:var(--lp-pink)}
+.lp-display-sm{font-size:clamp(44px,7vw,96px);margin:0 0 20px}
+:lang(zh) .lp-display{font-size:clamp(40px,6.2vw,86px);line-height:1.14;letter-spacing:0}
+:lang(zh) .lp-display em{font-style:normal}
+.lp-sub{font-size:19px;line-height:1.55;color:var(--lp-ink2);max-width:46ch}
+.lp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.lp-note{margin-top:16px;font-size:13px;color:var(--lp-muted)}
+
+/* the three figures from the guide: the dopamine moment */
+.lp-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lp-facts-title{grid-column:1/-1;font-family:var(--lp-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lp-muted)}
+.lp-fact{display:flex;flex-direction:column;background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:22px;padding:22px;
+  animation:lp-rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i) * 110ms + 120ms)}
+.lp-fact-value{font-family:var(--lp-serif);font-size:clamp(58px,6vw,86px);line-height:.9;letter-spacing:-.03em;font-variant-numeric:lining-nums}
+.lp-fact-pink .lp-fact-value{color:var(--lp-pink)}
+.lp-fact-blue .lp-fact-value{color:var(--lp-blue)}
+.lp-fact-lime{grid-column:1/-1;background:var(--lp-lime);border-color:var(--lp-lime);color:var(--lp-on-lime)}
+.lp-fact-lime .lp-fact-value{font-size:clamp(58px,7vw,96px)}
+.lp-fact-label{font-size:15px;line-height:1.4;margin:12px 0 16px;color:inherit;opacity:.88}
+.lp-src{display:block;margin-top:auto;font-family:var(--lp-mono);font-size:11px;line-height:1.5;color:var(--lp-muted)}
+.lp-fact-lime .lp-src{color:color-mix(in srgb,var(--lp-on-lime) 70%,transparent)}
+.lp-src b{font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;padding:1px 6px;border:1px solid currentColor;border-radius:99px}
+.lp-gap{grid-column:1/-1;font-size:13px;color:var(--lp-muted)}
+.lp-tag{font-family:var(--lp-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border:1px dashed currentColor;border-radius:99px;margin-right:4px}
+
+/* the six stages as a line */
+.lp-strip{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:18px 0;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line);
+  font-family:var(--lp-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--lp-ink2)}
+.lp-strip b{font-weight:500;color:var(--lp-muted);margin-right:8px}
+.lp-strip i{font-style:normal;color:var(--lp-line)}
+
+/* sections */
+.lp-section{padding:clamp(64px,9vw,128px) 0;border-bottom:1px solid var(--lp-line);scroll-margin-top:72px}
+.lp-head{max-width:780px;margin-bottom:clamp(32px,4vw,52px)}
+.lp-label{font-family:var(--lp-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lp-muted)}
+.lp-label::before{content:"";display:inline-block;width:28px;height:1px;background:currentColor;vertical-align:middle;margin-right:10px}
+.lp-h2{font-family:var(--lp-serif);font-weight:400;font-size:clamp(38px,5vw,66px);line-height:1;letter-spacing:-.02em;margin:16px 0;text-wrap:balance}
+:lang(zh) .lp-h2{line-height:1.2;letter-spacing:0}
+.lp-lead{font-size:18px;line-height:1.55;color:var(--lp-ink2);max-width:58ch}
+
+/* the question (ATM story) */
+.lp-question{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+.lp-quote{position:relative;font-family:var(--lp-serif);font-size:clamp(32px,4.2vw,56px);line-height:1.06;letter-spacing:-.015em;text-wrap:balance}
+.lp-quote::before{content:"“";position:absolute;left:-.5em;top:-.08em;color:var(--lp-pink)}
+:lang(zh) .lp-quote{line-height:1.3;letter-spacing:0}
+.lp-body{font-size:18px;line-height:1.6;color:var(--lp-ink2);max-width:62ch;margin-top:26px}
+.lp-draft{display:inline-block;margin-top:18px;font-family:var(--lp-mono);font-size:11px;color:var(--lp-muted);padding:4px 10px;border:1px dashed var(--lp-line);border-radius:99px}
+
+/* how it works: bento */
+.lp-bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(230px,auto);gap:14px}
+.lp-stage{grid-column:span 2;display:flex;flex-direction:column;gap:12px;padding:26px;border-radius:24px;background:var(--lp-paper);
+  border:1px solid var(--lp-line);transition:transform .2s ease,border-color .2s ease}
+.lp-stage:hover{transform:translateY(-2px);border-color:var(--a,var(--lp-ink2))}
+.lp-stage p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+.lp-stage-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lp-num{font-family:var(--lp-serif);font-size:46px;line-height:1;box-shadow:inset 0 -.24em 0 color-mix(in srgb,var(--a,var(--lp-pink)) 60%,transparent)}
+.lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:29px;line-height:1.05;letter-spacing:-.01em}
+.lp-pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--lp-mono);font-size:11px;padding:5px 10px;border-radius:99px;white-space:nowrap}
+.lp-pill-next{margin-top:auto;align-self:flex-start;border:1px dashed var(--lp-muted);color:var(--lp-muted)}
+.lp-stage-live{grid-column:span 4;grid-row:span 2;padding:clamp(26px,3.4vw,44px);color:var(--lp-cream);border-color:transparent;
+  background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--lp-pink) 42%,transparent),transparent 52%),
+             radial-gradient(circle at 0% 100%,color-mix(in srgb,var(--lp-blue) 30%,transparent),transparent 45%),var(--lp-ink)}
+.lp-stage-live .lp-num{font-size:64px;--a:var(--lp-pink)}
+.lp-stage-live .lp-stage-title{font-size:clamp(40px,4.6vw,64px);margin-top:auto}
+.lp-stage-live p{color:color-mix(in srgb,var(--lp-cream) 80%,transparent);font-size:17px;max-width:46ch}
+.lp-pill-live{background:var(--lp-lime);color:var(--lp-on-lime)}
+.lp-pill-live .lp-dot{background:var(--lp-on-lime);box-shadow:none;animation:lp-blink 1.6s ease-in-out infinite}
+.lp-ticks{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.lp-ticks li{font-size:13px;padding:6px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--lp-cream) 28%,transparent)}
+.lp-ticks li::before{content:"✓ ";color:var(--lp-lime)}
+.lp-stage-live .lp-btn{align-self:flex-start}
+
+/* the data: quiet */
+.lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.lp-datum{display:flex;flex-direction:column;gap:8px;padding:24px;background:var(--lp-paper);border:1px solid var(--lp-line);border-radius:20px}
+.lp-datum-n{font-family:var(--lp-serif);font-size:clamp(50px,5vw,72px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
+.lp-datum-label{font-size:15px;line-height:1.4;color:var(--lp-ink2)}
+.lp-meter{height:6px;border-radius:99px;background:var(--lp-line);overflow:hidden;margin-top:6px}
+.lp-meter i{display:block;height:100%;background:var(--lp-blue);border-radius:99px}
+.lp-meter-note{font-size:12.5px;color:var(--lp-muted)}
+.lp-mono{margin-top:auto;padding-top:14px;border-top:1px dashed var(--lp-line);font-family:var(--lp-mono);font-size:11px;line-height:1.55;color:var(--lp-muted)}
+.lp-foot-note{margin-top:22px;font-size:13px;color:var(--lp-muted)}
+
+/* principles */
+.lp-principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,36px)}
+.lp-principle{border-top:2px solid var(--lp-ink);padding-top:18px}
+.lp-pnum{font-family:var(--lp-mono);font-size:12px;color:var(--lp-muted)}
+.lp-principle h3{font-family:var(--lp-serif);font-weight:400;font-size:28px;line-height:1.05;margin:10px 0 10px}
+.lp-principle p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+
+/* who it is for */
+.lp-list{list-style:none;border-top:1px solid var(--lp-line)}
+.lp-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--lp-line)}
+.lp-list h3{font-family:var(--lp-serif);font-weight:400;font-size:clamp(26px,3vw,36px);line-height:1.1}
+.lp-list p{font-size:15px;color:var(--lp-ink2);margin-top:6px;max-width:62ch}
+.lp-list .lp-pill-next{margin-top:0}
+.lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
+.lp-who{border-bottom:0}
+
+/* closing call to action */
+.lp-close{margin:0 0 clamp(48px,7vw,96px);padding:clamp(40px,8vw,104px);border-radius:32px;color:var(--lp-cream);
+  background:radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
+             radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink)}
+.lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
+
+/* footer */
+.lp-footer{padding:36px 0 56px;border-top:1px solid var(--lp-line);font-size:13px;line-height:1.6;color:var(--lp-muted)}
+.lp-footer-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px;color:var(--lp-ink)}
+.lp-footer p{max-width:92ch;margin-top:8px}
+
+@keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
+@keyframes lp-blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.lp *,.lp *::before{animation:none!important;transition:none!important}}
+
+@media (max-width:1000px){
+  .lp-hero{grid-template-columns:1fr;align-items:start}
+  .lp-stage-live{grid-column:span 6;grid-row:auto}
+  .lp-stage{grid-column:span 3}
+  .lp-data,.lp-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-links{display:none}
+  .lp-nav{justify-content:space-between}
+}
+@media (max-width:640px){
+  .lp-stage,.lp-stage-live{grid-column:1/-1}
+  .lp-bento{grid-auto-rows:auto}
+  .lp-data,.lp-principles{grid-template-columns:1fr}
+  .lp-question{grid-template-columns:1fr;gap:18px}
+  .lp-quote::before{position:static;margin-right:.1em}
+  .lp-list li{grid-template-columns:1fr;gap:10px}
+  .lp-list .lp-pill{justify-self:start}
+  .lp-close{border-radius:24px}
+  .lp-sub,.lp-lead,.lp-body{font-size:17px}
+}
+@media (max-width:480px){
+  .lp-nav .lp-btn{display:none}
+  .lp-fact{padding:18px}
+  .lp-fact-value{font-size:52px}
+}

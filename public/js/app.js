@@ -109,6 +109,8 @@ function update(profile) {
 
 const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
+  // Landing page links scroll within the page (a #hash would be read as a screen).
+  scrollTo: (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
@@ -438,7 +440,10 @@ function render() {
   const tabs = TABS.includes(screen)
     ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`
     : ''
-  const view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  const page = NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome
+  const view = page ? page({ t, state }) : nextModule({ t, state, screen })
+  // The landing page brings its own navigation and full-width layout.
+  document.body.classList.toggle('landing', page === welcome)
   document.getElementById('main').innerHTML = tabs + view
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')

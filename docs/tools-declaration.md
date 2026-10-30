@@ -35,6 +35,7 @@ Rules for every AI path:
 | Express 5.3 | HTTP server and API | In use |
 | pdfjs-dist 6.4 (legacy Node build) | Reading PDF text | In use |
 | Vitest 5.0 | Tests | In use (dev only) |
+| Google Fonts (Geist, Geist Mono, Instrument Serif) | Typefaces of the landing page, loaded from fonts.googleapis.com; system fonts are used when it cannot be reached | In use (SIL Open Font License) |
 | Python 3 (standard library) | `pipeline/fetch_onet.py` O\*NET refresh and its tests | In use |
 | Cloudflare D1 (REST query API) | Accounts, sessions, saved profiles | Code ready; needs the owner's D1 settings. Tested with `node:sqlite` and the real `migrations.sql` |
 | Cloudflare R2 (S3-compatible API, Signature V4) | Temporary CV copy `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule | Code ready; needs the owner's R2 settings |

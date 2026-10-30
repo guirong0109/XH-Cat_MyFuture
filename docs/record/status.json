@@ -330,8 +330,7 @@
     "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
     "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
     "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
-    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
-    "T28: section 2 uses the How it works pixel cards: a title bar in pink / blue / lime per figure, roller counters inside, a thick pixel bracket for the gap - cost: colour returns to section 2, so the roller tiles now sit in a louder frame"
+    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen"
   ],
   "log": [
     {
@@ -977,12 +976,12 @@
     {
       "time": "30 Oct",
       "step": "Your change",
-      "detail": "sections 2 and 3 did not share a look; add colour to section 2"
+      "detail": "roll back the coloured section 2; keep the black and white version"
     },
     {
       "time": "30 Oct",
       "step": "Task 28",
-      "detail": "section 2 figures as pixel cards with coloured title bars; npm test 258 passed; checked in Chrome at 1440 and 500 px, light and dark"
+      "detail": "reverted a2edfdd; section 2 back to the black and white three columns"
     }
   ]
 }

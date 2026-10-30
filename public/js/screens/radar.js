@@ -323,7 +323,9 @@ function onetColumn({ t, state, data, rel, lang }) {
   const ok = sk?.state === 'data' && sk.release?.current
   const skillIds = rel?.skillIds ?? profileSkillIds(state, data)
   const mine = (item) => (item?.skillId && skillIds.has(item.skillId) ? ` ${tag('calc', t('rdOnProfile'))}` : '')
-  const labels = `<p class="tiny muted"><b>${esc(t('rdSkLabelUs'))}</b> · <b>${esc(t('rdSkLabelSoftware'))}</b></p>`
+  // Both labels sit inside every block of skills (job card, View all job card, Hot list, postings table).
+  const labels = `<p class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}</p>`
+  const block = (kind, html, el = 'div') => `<${el} class="rd-skblock" data-block="${kind}">${html}</${el}><!--block-->`
   const hotLink = { label: 'O*NET Hot Technologies', url: ONET_HOT_URL }
   const none = `<p class="small muted">${esc(t('rdEvNone'))}</p>`
 
@@ -335,10 +337,11 @@ function onetColumn({ t, state, data, rel, lang }) {
     const same = (cur.releases ?? []).filter((r) => r !== cur.id)
     heading = !prev ? t('rdSkFirstRelease', vars) : same.length ? t('rdSkHeading', { ...vars, same: same.join(', ') }) : t('rdSkHeadingNew', vars)
   }
-  const releaseNote = ok ? `O*NET ${sk.release.previous ? `${sk.release.previous.id} → ` : ''}${sk.release.current.id}` : ''
+  // The release (with its month) where a change was seen, or where a kept flag stands: next to each item's link.
+  const itemDate = ok ? `O*NET ${sk.release.current.id} · ${fmtMonth(lang, sk.release.current.month)}` : ''
 
   // One changed or kept skill: its name, the O*NET technology class, the tag when it is on the profile.
-  const skillItem = (item, link) => `<li>${esc(item.example)}${mine(item)}<div class="tiny muted">${item.elementName ? `${esc(item.elementName)} · ` : ''}${esc(releaseNote)} ${srcLink(link)}</div></li>`
+  const skillItem = (item, link) => `<li>${esc(item.example)}${mine(item)}<div class="tiny muted">${item.elementName ? `${esc(item.elementName)} · ` : ''}${esc(itemDate)} ${srcLink(link)}</div></li>`
   const list = (items, link) => (items.length ? `<ul class="rd-list small">${items.map((i) => skillItem(i, link)).join('')}</ul>` : none)
   const sub = (key, vars) => `<div class="tiny muted rd-subhead"><b>${esc(t(key, vars))}</b></div>`
 
@@ -349,10 +352,8 @@ function onetColumn({ t, state, data, rel, lang }) {
     const c = sk.changes?.[o.code]
     const link = { label: 'O*NET', url: onetJobUrl(o.code) }
     if (!c || !(c.added.length + c.dropped.length + c.kept.length)) return `<div>${jobHead(o)}<p class="small muted">${esc(t('rdSkNoFlags'))}</p></div>`
-    const kept = c.kept.length
-      ? `<details><summary>${esc(t('rdSkKept', { count: c.kept.length }))}</summary><ul class="rd-list small">${c.kept.map((i) => `<li>${esc(i.example)}${mine(i)}${i.elementName ? `<div class="tiny muted">${esc(i.elementName)}</div>` : ''}</li>`).join('')}</ul><p class="tiny muted">${esc(sk.release.current.releases?.join(', ') ?? sk.release.current.id)} ${srcLink(link)}</p></details>`
-      : ''
-    return `<div>${jobHead(o)}${sub('rdSkAdded')}${list(c.added, link)}${sub('rdSkDropped')}${list(c.dropped, link)}${kept}</div>`
+    const kept = c.kept.length ? `<details><summary>${esc(t('rdSkKept', { count: c.kept.length }))}</summary>${list(c.kept, link)}</details>` : ''
+    return block('job', `${jobHead(o)}${labels}${sub('rdSkAdded')}${list(c.added, link)}${sub('rdSkDropped')}${list(c.dropped, link)}${kept}`)
   }
 
   // Every job with changes (View all, or nothing of the user's own): changes only, the kept lists stay per own job.
@@ -362,9 +363,10 @@ function onetColumn({ t, state, data, rel, lang }) {
     const names = (items) => items.map((i) => `${esc(i.example)}${mine(i)}`).join(', ')
     const rows = codes.map((code) => {
       const c = sk.changes[code]
-      const title = refs?.onetTitle(code)
-      return `<li><b>${esc(title ?? code)}</b> <span class="tiny muted">${esc(`O*NET ${code}`)}</span> ${srcLink({ label: 'O*NET', url: onetJobUrl(code) })}
-        ${c.added.length ? `<div class="tiny">${esc(t('rdSkAdded'))}: ${names(c.added)}</div>` : ''}${c.dropped.length ? `<div class="tiny">${esc(t('rdSkDropped'))}: ${names(c.dropped)}</div>` : ''}</li>`
+      const title = c.title ?? refs?.onetTitle(code) ?? code
+      const link = { label: 'O*NET', url: onetJobUrl(code) }
+      return block('alljob', `<b>${esc(title)}</b> <span class="tiny muted">${esc(`O*NET ${code}`)}</span>${labels}
+        ${c.added.length ? `<div class="tiny">${esc(t('rdSkAdded'))}: ${names(c.added)}</div>` : ''}${c.dropped.length ? `<div class="tiny">${esc(t('rdSkDropped'))}: ${names(c.dropped)}</div>` : ''}<div class="tiny muted">${esc(itemDate)} ${srcLink(link)}</div>`, 'li')
     }).join('')
     return `<details${viewAllOn(state, 'sk') ? ' open' : ''}><summary>${esc(t('rdSkAllJobs', { count: codes.length }))}</summary>${codes.length ? `<ul class="rd-list small">${rows}</ul>` : none}</details>`
   }
@@ -376,22 +378,23 @@ function onetColumn({ t, state, data, rel, lang }) {
   else jobs = `<p class="small muted">${esc(t('rdSkUnavailable'))}</p>`
 
   const hot = ok
-    ? `${sub('rdSkHot')}<p class="tiny muted">${esc(t('rdSkHotNote'))}</p>${list(sk.hot?.added ?? [], hotLink)}${sk.hot?.dropped?.length ? `${sub('rdSkHotDropped')}${list(sk.hot.dropped, hotLink)}` : ''}`
+    ? block('hot', `${sub('rdSkHot')}${labels}<p class="tiny muted">${esc(t('rdSkHotNote'))}</p>${list(sk.hot?.added ?? [], hotLink)}${sk.hot?.dropped?.length ? `${sub('rdSkHotDropped')}${list(sk.hot.dropped, hotLink)}` : ''}`)
     : ''
 
-  // B: posting counts of one yearly window; no trend until a second window exists (D24).
+  // B: posting counts of one yearly window; the first-snapshot note while the posting signals hold one window (D24).
   const p = sk?.postings
   let postings = ''
   if (p?.rows?.length) {
-    const row = (r) => `<tr><td>${esc(r.technology)}</td><td class="num">${numLink(fmtInt(r.postings), hotLink)}</td></tr>`
+    const winLink = { label: p.window?.label ? `O*NET · ${p.window.label}` : 'O*NET Hot Technologies', url: ONET_HOT_URL }
+    const row = (r) => `<tr><td>${esc(r.technology)}</td><td class="num">${numLink(fmtInt(r.postings), winLink)}</td></tr>`
     const head = `<tr><th>${esc(t('rdSkTechCol'))}</th><th class="num">${esc(t('rdSkAdsCol'))}</th></tr>`
-    const total = finite(p.total) !== null ? `<tr><td><b>${esc(t('rdSkTotal'))}</b></td><td class="num">${numLink(fmtInt(p.total), hotLink)}</td></tr>` : ''
+    const total = finite(p.total) !== null ? `<tr><td><b>${esc(t('rdSkTotal'))}</b></td><td class="num">${numLink(fmtInt(p.total), winLink)}</td></tr>` : ''
     const top = p.rows.slice(0, 10)
     const rest = p.rows.slice(10)
-    postings = `${sub('rdSkPostings', { year: p.window?.year ?? DASH })}${p.window?.label ? `<div class="tiny muted">${esc(p.window.label)}</div>` : ''}
-      <p class="tiny"><b>${esc(t('rdSkFirstSnapshot'))}</b></p>
+    postings = block('postings', `${sub('rdSkPostings', { year: p.window?.year ?? DASH })}${labels}
+      ${p.firstSnapshot ? `<p class="tiny"><b>${esc(t('rdSkFirstSnapshot'))}</b></p>` : ''}
       <div class="rd-scroll"><table>${head}${top.map(row).join('')}${total}</table></div>
-      ${rest.length ? `<details><summary>${esc(t('rdSkMoreRows', { count: p.rows.length }))}</summary><div class="rd-scroll"><table>${head}${rest.map(row).join('')}</table></div></details>` : ''}`
+      ${rest.length ? `<details><summary>${esc(t('rdSkMoreRows', { count: p.rows.length }))}</summary><div class="rd-scroll"><table>${head}${rest.map(row).join('')}</table></div></details>` : ''}`)
   }
 
   const srcline = sk && (sk.sourceLinks?.length || sk.fetchedAt)
@@ -399,7 +402,7 @@ function onetColumn({ t, state, data, rel, lang }) {
     : ''
 
   return `<div class="rd-col"><b>${esc(t('rdColOnet'))}</b> ${tag('src', t('rdTagObserved'))}
-    <p class="small muted">${esc(t('rdColOnetNote'))}</p>${labels}
+    <p class="small muted">${esc(t('rdColOnetNote'))}</p>
     ${heading ? `<p class="small"><b>${esc(heading)}</b></p>` : ''}
     ${own.length ? '' : hint(t)}
     ${jobs}${hot}${postings}${srcline}</div><!--col-->`

@@ -52,6 +52,13 @@ function section(html, id) {
   const next = html.indexOf('data-sec=', start + 10)
   return html.slice(start, next < 0 ? undefined : next)
 }
+// Every number (rd-num) is followed directly by its https source link; there is at least one number.
+function expectNumbersLinked(html) {
+  const nums = [...html.matchAll(/<span class="rd-num">[^<]*<\/span>(.{0,40})/g)]
+  expect(nums.length).toBeGreaterThan(0)
+  for (const m of nums) expect(m[1]).toMatch(/^ <a href="https:\/\//)
+}
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const unesc = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
 const lineLabels = (html) => unesc(html.match(/<svg class="rd-lines"[^>]*aria-label="([^"]*)"/)[1])
 
@@ -102,7 +109,7 @@ describe('Radar screen', () => {
         expect(nums).toBeGreaterThan(0)
         expect(count(html, /<a href="https?:\/\//g)).toBeGreaterThanOrEqual(nums)
         // each number is followed directly by its source link
-        expect(html).not.toMatch(/<span class="rd-num">[^<]*<\/span>(?! <a href="https?:\/\/)/)
+        expectNumbersLinked(html)
         // every numeric table cell holds a linked number
         for (const cell of html.match(/<td class="num">.*?<\/td>/g) ?? []) expect(cell).toMatch(/<a href="https?:\/\//)
       }
@@ -415,9 +422,60 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
         const hrefs = [...c.matchAll(/href="([^"]*)"/g)].map((m) => m[1])
         expect(hrefs.length).toBeGreaterThan(0)
         for (const h of hrefs) expect(h).toMatch(/^https:\/\//)
-        expect(c).not.toMatch(/<span class="rd-num">[^<]*<\/span>(?! <a href="https?:\/\/)/)
+        expectNumbersLinked(c)
       }
     }
+  })
+
+  const blocks = (html, kind) => [...html.matchAll(/data-block="(\w+)"[\s\S]*?<!--block-->/g)].filter((m) => m[1] === kind).map((m) => m[0])
+  const LABELS = () => [t('rdSkLabelUs'), t('rdSkLabelSoftware')]
+
+  it('both labels sit inside every block: own job card, Hot list, postings, every View all job card', () => {
+    const c = unesc(col(devProfile()))
+    for (const kind of ['job', 'hot', 'postings']) {
+      const list = blocks(c, kind)
+      expect(list.length, kind).toBeGreaterThan(0)
+      for (const b of list) for (const l of LABELS()) expect(b, kind).toContain(l)
+    }
+    const all = unesc(col(devProfile(), { all: { sk: true } }))
+    const cards = blocks(all, 'alljob')
+    expect(cards.length).toBe(Object.values(data.skills.changes).filter((v) => v.added.length + v.dropped.length).length)
+    for (const b of cards) for (const l of LABELS()) expect(b).toContain(l)
+  })
+
+  it('every item shows its release and month next to its source link; postings rows show the window', () => {
+    const c = unesc(col(devProfile()))
+    const date = 'O*NET 30.3 · May 2026'
+    for (const kind of ['job', 'hot']) {
+      const items = blocks(c, kind).flatMap((b) => b.match(/<li>[\s\S]*?<\/li>/g) ?? [])
+      expect(items.length, kind).toBeGreaterThan(0)
+      for (const li of items) expect(li, kind).toMatch(new RegExp(`${reEsc(date)} <a href="https://`))
+    }
+    const kept = blocks(c, 'job')[0].match(/<details>[\s\S]*?<\/details>/)[0]
+    expect(kept).toContain(date)
+    const cells = blocks(c, 'postings')[0].match(/<td class="num">[\s\S]*?<\/td>/g)
+    expect(cells.length).toBeGreaterThan(10)
+    for (const cell of cells) expect(cell).toMatch(/<a href="https:\/\/[^"]*"[^>]*>[^<]*1\/25–12\/25<\/a>/)
+    for (const b of blocks(unesc(col(devProfile(), { all: { sk: true } })), 'alljob')) expect(b).toMatch(new RegExp(`${reEsc(date)} <a href="https://`))
+  })
+
+  it('View all job cards use the O*NET title from the skills answer', () => {
+    const codes = Object.entries(data.skills.changes).filter(([, v]) => v.added.length + v.dropped.length)
+    const all = col(devProfile(), { all: { sk: true } })
+    for (const [code, v] of codes) {
+      expect(v.title, code).toBeTruthy()
+      expect(all, code).toContain(`<b>${esc_(v.title)}</b>`)
+    }
+    const item = { example: 'Go', skillId: 'onet:tech:go', elementName: null }
+    const d = { ...linked(), skills: { ...data.skills, changes: { '99-0000.00': { title: 'Test Job Title', added: [item], dropped: [], kept: [] } } } }
+    expect(col(null, {}, d)).toContain('<b>Test Job Title</b>')
+  })
+
+  it('the first-snapshot note follows the posting signals: hidden once a second window exists', () => {
+    expect(data.skills.postings.firstSnapshot).toBe(true)
+    expect(unesc(col(devProfile()))).toContain(t('rdSkFirstSnapshot'))
+    const d = { ...linked(), skills: { ...data.skills, postings: { ...data.skills.postings, firstSnapshot: false } } }
+    expect(unesc(col(devProfile(), {}, d))).not.toContain(t('rdSkFirstSnapshot'))
   })
 
   it('View all lists every job with changes', () => {

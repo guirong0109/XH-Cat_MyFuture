@@ -29,6 +29,8 @@ export async function loadRadarReferences(dataDir) {
     fieldJobs: (code) => fieldSkills.jobsOf(code),
     fieldName: (code) => fieldSkills.titleOf(code),
     fieldList: () => fieldSkills.list(),
+    // O*NET job title by code (the catalogue snapshot in data/onet/occupations.tsv).
+    onetTitle: (code) => fieldSkills.jobTitle(code),
     versions: { ...fieldSkills.versions, topics: topics.schemaVersion ?? null, fieldTopics: mappings.mappingVersion ?? null, bridge: bridgeFile.schemaVersion ?? null },
   }
 }

@@ -142,7 +142,13 @@ const ONET_HOT_PAGE_URL = 'https://www.onetonline.org/search/hot_tech/'
 const releaseOf = (set) => (set ? { id: set.id, releases: set.releases ?? [set.id], month: set.month ?? null } : null)
 
 // O*NET software skills (skill-trends spec §5, §6). Browser compares skillId (onet:tech:<nameKey>), not names.
-function skills(view) {
+function firstPostingSnapshot(view) {
+  const posts = view.signals.signals.filter((s) => String(s.signalId).startsWith('onet:postings:'))
+  return posts.length > 0 && posts.every((s) => s.direction === null && (s.reasons ?? []).includes('first_snapshot'))
+}
+
+// Each job entry carries its O*NET title (null when the catalogue does not know the code).
+function skills(view, refs = null) {
   const skillSnap = view.snapshots['onet-skills']
   const hotSnap = view.snapshots['onet-hottech']
   const changes = view.signals.onetSkills ?? null
@@ -151,7 +157,7 @@ function skills(view) {
   const withSignal = (id) => (known.has(id) ? { signalId: id } : {})
   const item = (example, elementName, extra = {}) => ({ example, skillId: `onet:tech:${nameKey(example)}`, elementName: elementName ?? null, ...extra })
   const perJob = {}
-  const slot = (code) => (perJob[code] ??= { added: [], dropped: [], kept: [] })
+  const slot = (code) => (perJob[code] ??= { title: refs?.onetTitle?.(code) ?? null, added: [], dropped: [], kept: [] })
   if (changes) {
     for (const r of changes.inDemand?.added ?? []) slot(r.code).added.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
     for (const r of changes.inDemand?.dropped ?? []) slot(r.code).dropped.push(item(r.example, r.elementName, withSignal(`onet:indemand:${r.code}:${r.example}`)))
@@ -180,7 +186,8 @@ function skills(view) {
     release: skillSnap && current ? { latest, current: releaseOf(current), previous: releaseOf(previous) } : null,
     changes: perJob,
     hot: { added: (changes?.hot?.added ?? []).map(hotItem), dropped: (changes?.hot?.dropped ?? []).map(hotItem) },
-    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows } : null,
+    // firstSnapshot: the posting signals hold one counting window, so they show no direction yet (D24).
+    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows, firstSnapshot: firstPostingSnapshot(view) } : null,
     labels: { usPostings: true, softwareOnly: true },
     sourceLinks,
     fetchedAt: skillSnap?.fetchedAt ?? hotSnap?.fetchedAt ?? null,
@@ -272,7 +279,7 @@ export function radarRoutes({ radar }) {
 
   router.get('/api/radar/occupations', handle(({ view }) => occupations(view)))
 
-  router.get('/api/radar/skills', handle(({ view }) => skills(view)))
+  router.get('/api/radar/skills', handle(async ({ view }) => skills(view, radar.references ? await radar.references().catch(() => null) : null)))
 
   router.get('/api/radar/references', handle(async () => referenceData(await refsOrUnavailable())))
 

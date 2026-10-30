@@ -114,5 +114,5 @@ export async function loadFieldSkills({ iscedDir, onetDir }) {
     return [...jobs].sort().map((job) => ({ code: job, title: jobTitles.get(job) }))
   }
 
-  return { has: (code) => fields.has(code), titleOf: (code) => fields.get(code) ?? null, list: () => [...fields].map(([code, title]) => ({ code, title })), jobsOf, suggest, versions: { isced: isced.manifest.version, onet: onet.manifest.version } }
+  return { has: (code) => fields.has(code), titleOf: (code) => fields.get(code) ?? null, list: () => [...fields].map(([code, title]) => ({ code, title })), jobsOf, jobTitle: (code) => jobTitles.get(code) ?? null, suggest, versions: { isced: isced.manifest.version, onet: onet.manifest.version } }
 }

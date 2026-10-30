@@ -16,12 +16,18 @@ on merge, put only the important points there and do not overwrite it with this 
 Role list (1812 titled eMASCO roles), card text, DOSM job-ad evidence at group level, "not available" messages that
 name the missing step, SDG tags, `#sdg` path tab, owner review of SDG links in `#admin`, and the judge change test
 (tested with a fixture).
+Owner UI round (31 Oct): a one-line banner grouped by (from group, to group) with no role names; each band list shows
+10 roles per page (`‹ 1 … N ›` and a "Go to page" box; paging, not a cap); "Show / Hide outlook and details" with Job
+ads, AI and Software as three boxes (side by side from 760 px) and "Why this match" as its own fold; an AI line with a
+bar on every closed card (Moderate: AEI automation %; Rapid: ILO GenAI exposure % and group); all SDG team drafts
+shown at once with a link to the goal's UN page (M16).
 
 ### Waits on the owner
 - **BLS crosswalk files: done 2026-10-31** (fetched with the owner's OK, kept in `data/radar/source/`, chain
   rebuilt). 1,261 of 1,812 roles now reach O\*NET and show a Skill Match; 540 roles in Malaysian-only 4-digit
   groups stop at the same-code step (M15) and 11 reach only O\*NET "All Other" jobs with no skill data.
-- **SDG approvals** of the 126 team-draft links in `#admin`. Until approved, no SDG tag shows.
+- **SDG reviews** of the 126 team-draft links in `#admin`. Since M16 (31 Oct) every link shows at once as "team
+  draft, not yet reviewed"; approving adds the date, rejecting hides it.
 - **DOSM 2025 Q3 break review** (Radar). Until then the job-ad parts are "not enough evidence" and most roles sit in
   band 4.
 - **BM / 中文 wording review** (strings marked "translation: owner review", also the SDG reasons).
@@ -42,6 +48,9 @@ name the missing step, SDG tags, `#sdg` path tab, owner review of SDG links in `
   direction unless the evidence is sufficient.
 - With a thin profile (no percentage) the best O\*NET job is the one with the lowest code, so its Moderate AI part is
   deterministic.
+- M16 (owner, 31 Oct): every SDG team-draft link is shown at once, labelled with its review state; a rejected link is
+  hidden; the path counts every shown link; each tag links to `https://sdgs.un.org/goals/goal<N>`. Replaces "only
+  owner-approved links".
 - Rapid AI uses the ISCO code from the code chain only, never the first four digits of the role code. Until the BLS
   files are saved it says "not available". The owner may instead approve the ILO file's ISCO-08 list for that check.
 

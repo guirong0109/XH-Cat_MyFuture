@@ -37,6 +37,7 @@ Work in `C:\Users\guiro\XH_Cat_Final` on branch `claude/career-matching`.
 - No key containing `score`, `weight`, `rank` or `opportunit` in any matching response or data file (the Radar's
   `FORBIDDEN_KEY_PATTERN`); the Skill Match key is `skillMatch`, its value `percent`.
 - Only owner-approved SDG links are used. The path contribution is a count of links per goal, never a score.
+  Note (31 Oct): owner decision M16 replaces "only owner-approved links": every team-draft link not rejected by the owner is shown, labelled with its review state (spec §2, §7).
 - The profile sent to `/api/matching*` is never stored and never logged; logs hold codes only.
 - Every list and number on screen shows its source and date; every UI text goes through `t(lang, key)` with keys in
   `shared/strings/en.js`, `ms.js` and `zh.js` (BM and 中文 marked `translation: owner review` in a comment); every

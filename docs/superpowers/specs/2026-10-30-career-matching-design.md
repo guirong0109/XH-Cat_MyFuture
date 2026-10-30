@@ -44,6 +44,7 @@ names its source and date; a role with no official data says so instead of guess
 | M11 | SDG links | Team draft at MASCO sub-major group level (48 two-digit groups in eMASCO) and for the 68 O\*NET skills + knowledge items; pending until the owner approves each in `#admin` |
 | M15 | MASCO ↔ ISCO-08 | No official table exists (checked 30 Oct). A MASCO 2020 unit group links to the ISCO-08 unit group with the **same 4-digit code**, only when that code exists in ISCO-08 (the codes in the BLS ISCO-08 file). Source shown: the MASCO 2020 publication's statement that it follows ISCO, plus "owner decision, 30 Oct 2026". Every path labels this step "code match, not an official table" |
 | M14 | Mockup | `docs/mockup-matching.html` approved by the owner (30 Oct): matching on the existing "Career matching" tab (`#match`), SDG contribution on the existing "SDG contribution" tab (`#sdg`), chart items in O\*NET importance order (first 8, "Show all"), Skill Match above the details on phones |
+| M16 | SDG tags shown now (31 Oct) | Replaces "only owner-approved links": every team-draft link in `data/sdg/links.json` is shown at once on cards, in the SDG filter and on `#sdg`, labelled "team draft, not yet reviewed"; a link the owner approved in `#admin` shows "team draft, approved by owner on <date>"; a rejected link is hidden ("revise" = not reviewed). The path contribution counts every shown link. Each tag and goal row links to the goal's UN page `https://sdgs.un.org/goals/goal<N>`. Admin review is unchanged |
 | M12 | Career interests | Not used in v1 (O\*NET marks the values "AI/Expert"; no official cut-off) |
 | M13 | Diagram | Claude drafts `docs/architecture-matching.html`; the owner approves it |
 
@@ -141,12 +142,13 @@ O\*NET; it still appears when its eMASCO code matches a past job or role of inte
 
 ## 7. SDG mapping (`shared/matching/sdg.js`, pure)
 
-- Links come from `data/sdg/links.json`; **only owner-approved links** are used. A role takes the approved links of its
-  MASCO sub-major group (first two digits); a skill or knowledge item takes its own. No approved link → "SDG not
-  tagged yet".
-- Each tag shows goal, target, the one-line reason and "team draft, approved by owner on <date>".
+- Links come from `data/sdg/links.json`; **every team-draft link the owner has not rejected** is shown (M16, 31 Oct;
+  this replaced "only owner-approved links"). A role takes the shown links of its MASCO sub-major group (first two
+  digits); a skill or knowledge item takes its own. No shown link → "SDG not tagged yet".
+- Each tag shows goal, target, the one-line reason and "team draft, not yet reviewed" or "team draft, approved by owner
+  on <date>", and links to the goal's official UN page `https://sdgs.un.org/goals/goal<N>`.
 - **Choose this role** (saved in the guest store) sets the path. The **SDG contribution** counts approved links on the
-  path: the role's links plus the links of the items still to learn or raise for its best O\*NET job. Shown per goal
+  path (every shown link, M16): the role's links plus the links of the items still to learn or raise for its best O\*NET job. Shown per goal
   ("SDG 4: 2 links, SDG 8: 3"), every reason listed, labelled "potential, not measured". No impact score.
 - **SDG filter** on the list ("roles linked to SDG 7") narrows what is shown; it never changes a Skill Match or band.
 - Owner review in `#admin` (same keys and review store as the Radar): approve or reject each draft link.

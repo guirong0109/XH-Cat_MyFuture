@@ -45,3 +45,13 @@ Date: 30 Oct 2026 · Branch `claude/career-matching` at `a7f2c33` (before this d
 - Waits for the owner: the two BLS crosswalk files. Then Skill Match percentages, the chart, "What would raise it",
   the code chain, Rapid AI and "In your field" can be checked in the browser. This check must be repeated then.
 - Minor: after approving an SDG link, reload the page to see the new tag.
+
+## Owner UI round, 31 Oct 2026 (real data, BLS chain built; own server on http://127.0.0.2:3231, test profile with field 0613)
+
+| # | Check | Result |
+|---|---|---|
+| U1 | Switch to Rapid AI | PASS. One line, no role names: "Switching to Rapid AI moved 400 roles from “AI may change much of this job (this scenario)” (group 2) to “Not enough evidence yet” (group 4); 73 roles from “Not enough evidence yet” (group 4) to “AI may change much of this job (this scenario)” (group 2). Skill Match numbers did not change." |
+| U2 | Pages | PASS. 98 roles in your field, 1714 to explore; 10 cards per band page; pagers such as `‹ 1 2 … 155 ›`; page 2 button works; "Go to page" 999 shows the last page (155) and focus moves to it. |
+| U3 | Show / Hide outlook and details | PASS. The button turns to "Hide outlook and details"; Job ads, AI in this job and Software asked sit in three columns at desktop width and stack at phone width (375 px, no sideways scroll); "Why this match?" is its own fold; source lines kept. |
+| U4 | AI on the closed card | PASS. Moderate: "estimate AI does the task in 60.9% of observed use (Anthropic Economic Index)" with a bar; Rapid: "estimate GenAI exposure 57% · ILO group 3 of 4 (ILO WP140)" with a bar. |
+| U5 | SDG tags (M16) | PASS. Cards show "SDG 9 team draft, not yet reviewed" with a link to https://sdgs.un.org/goals/goal9; `#sdg` lists every shown link (e.g. SDG 4, 6 links), each goal row links to its UN page, and the source line names the UN SDG site. |

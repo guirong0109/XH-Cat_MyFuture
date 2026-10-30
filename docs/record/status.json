@@ -1,5 +1,5 @@
 {
-  "updated": "30 Oct 2026",
+  "updated": "31 Oct 2026",
   "groups": [
     {
       "id": "S0",
@@ -563,7 +563,8 @@
     "Career matching: UN SDG API asked per goal with includechildren=true - cost: one query flag",
     "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
     "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
-    "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then"
+    "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
+    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page"
   ],
   "log": [
     {
@@ -1245,6 +1246,11 @@
       "time": "31 Oct",
       "step": "BLS crosswalk files saved (your OK)",
       "detail": "both files fetched and kept in data/radar/source/; chain rebuilt: 1,261 of 1,812 roles reach O*NET and show a Skill Match; 540 Malaysian-only codes say no ISCO-08 match; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching UI round (your 5 approved changes)",
+      "detail": "short banner naming the groups; 10 roles per page with page buttons and Go to page; Show/Hide outlook and details with three boxes and a Why fold; AI line with a bar on every card; all SDG team drafts shown with a UN goal link (M16); npm test 800 passed"
     }
   ]
 }

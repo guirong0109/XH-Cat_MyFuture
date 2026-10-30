@@ -92,7 +92,10 @@ describe('fetchSnapshot', () => {
     expect(snapshot.sourceId).toBe('dosm')
     expect(snapshot.fetchedAt).toBe('2026-10-30T10:00:00.000Z')
     expect(snapshot.originals[0].sha256).toBe(sha)
-    expect(snapshot.sourceUrls).toEqual([PAGE_Q2, DATA_URL])
+    expect(snapshot.sourceUrls).toEqual([
+      { label: 'DOSM release page: Big Data Analytics: Job Market Insights, Second Quarter of 2026', url: PAGE_Q2 },
+      { label: 'DOSM data file: Data JMI', url: DATA_URL }
+    ])
     expect([...new Set(snapshot.observations.filter((o) => o.entityType === 'total').map((o) => o.period))]).toHaveLength(28)
     expect(snapshot.observations.at(-1).period).toBe('2026 Q2')
     expect(snapshot.meta).toMatchObject({

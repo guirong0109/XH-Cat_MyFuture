@@ -39,9 +39,9 @@ export function createOpenAlexSource({ fetchImpl = fetch, apiKey, now = () => ne
   }
 
   // Counts per year 2015..lastYear, with an explicit 0 for every year group_by leaves out.
-  async function yearlySeries(filter, lastYear, sourceUrls) {
+  async function yearlySeries(filter, lastYear, sourceUrls, label) {
     const url = `${BASE}/works?filter=${filter},publication_year:${FIRST_YEAR}-${lastYear}&group_by=publication_year`
-    sourceUrls.push(url)
+    sourceUrls.push({ label: `OpenAlex works query: ${label}`, url })
     const body = await getJson(url)
     if (!Array.isArray(body?.group_by)) throw new SourceError('source_unavailable', { retryable: true })
     const counts = new Map(body.group_by.map((g) => [String(g?.key), g?.count]))
@@ -76,14 +76,14 @@ export function createOpenAlexSource({ fetchImpl = fetch, apiKey, now = () => ne
     for (const axis of axes) {
       const id = axis.openalexId
       const metaUrl = `${BASE}/topics/${id}`
-      sourceUrls.push(metaUrl)
+      sourceUrls.push({ label: `OpenAlex topic: ${id}`, url: metaUrl })
       const meta = await getJson(metaUrl)
       const updated = typeof meta?.updated_date === 'string' ? meta.updated_date : null
       if (updated) topicUpdated[id] = updated
       if (updated && (!version || updated > version)) version = updated
-      push('ai_topic', id, await yearlySeries(`primary_topic.id:${id}`, lastYear, sourceUrls), axis.officialTitle)
+      push('ai_topic', id, await yearlySeries(`primary_topic.id:${id}`, lastYear, sourceUrls, axis.officialTitle ?? id), axis.officialTitle)
     }
-    push('reference', REFERENCE.entityId, await yearlySeries(`primary_topic.field.id:${REFERENCE.fieldId}`, lastYear, sourceUrls), REFERENCE.label)
+    push('reference', REFERENCE.entityId, await yearlySeries(`primary_topic.field.id:${REFERENCE.fieldId}`, lastYear, sourceUrls, REFERENCE.label), REFERENCE.label)
     return {
       sourceId: 'openalex',
       snapshotId: `openalex-${fetchedAt.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}`,

@@ -22,6 +22,12 @@ export const releasePageUrl = (quarter) => {
   return `${SITE}/portal-main/release-content/${SLUG}-q${m[2]}${m[1]}`
 }
 
+// File name from the URL path when it has one (a release-document-log link has none).
+const dataFileName = (url) => {
+  const last = decodeURIComponent(new URL(url).pathname.split('/').filter(Boolean).at(-1) ?? '')
+  return /\.[a-z0-9]{2,5}$/i.test(last) ? last : 'Data JMI'
+}
+
 export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } = {}) {
   async function get(url, { missingOn404 = false } = {}) {
     let response
@@ -119,7 +125,10 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
       fetchedAt,
       lastQuarter: lastPeriod,
       classification: { system: 'masco2020', version: '2020', readAt: fetchedAt },
-      sourceUrls: [pageUrl, dataUrl],
+      sourceUrls: [
+        { label: `DOSM release page: ${release.listingTitle ?? release.title ?? release.quarter}`, url: pageUrl },
+        { label: `DOSM data file: ${dataFileName(dataUrl)}`, url: dataUrl }
+      ],
       originals: [{ name, sha256 }],
       meta: {
         quarter: release.quarter,

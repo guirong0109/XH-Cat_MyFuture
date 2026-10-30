@@ -18,7 +18,7 @@ import { dosmTableFromSnapshot, openalexCounts } from './snapshot.js'
 
 export const OPENALEX_METRIC = 'works_primary_topic'
 export const OPENALEX_UNIT = 'papers'
-export const OPENALEX_REFERENCE_ID = 'field:17'
+export const OPENALEX_REFERENCE_ID = 'openalex:field:17'
 export const OPENALEX_REFERENCE_POPULATION = 'OpenAlex works with primary_topic.field.id 17 (Computer Science)'
 export const DOSM_SHARE_METRIC = 'share_of_online_job_offerings'
 export const GROUP_SYSTEM = 'MASCO 2020 major group'

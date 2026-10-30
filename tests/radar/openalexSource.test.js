@@ -116,7 +116,7 @@ describe('OpenAlex source', () => {
     expect(fetchImpl.calls.some((u) => u.startsWith('https://api.openalex.org/topics/T10775'))).toBe(true)
     expect(JSON.stringify(snap)).not.toContain('SECRET123')
     expect(snap.sourceUrls.length).toBe(fetchImpl.calls.length)
-    expect(snap.sourceUrls.every((u) => !u.includes('api_key'))).toBe(true)
+    expect(snap.sourceUrls.every((u) => !u.url.includes('api_key') && /^OpenAlex (works query|topic): /.test(u.label))).toBe(true)
   })
 
   it('records topic updated_date, counting rule and snapshot id', async () => {

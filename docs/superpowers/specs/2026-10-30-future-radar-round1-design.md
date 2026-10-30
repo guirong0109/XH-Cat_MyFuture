@@ -76,6 +76,7 @@ owner's approval): DOSM release text (top 5 detailed jobs per quarter), MyCOL, I
 | D20 | Section 3 refinements: OpenAlex key for deployed refresh; DOSM discovery through the official release listing; revision handling; atomic manifest; demo security and expiry on every request; separate answer-state dimensions. |
 | D21 | Mockup v2 approved (30 Oct 2026). Tab order: **Skills & Careers first** (opens by default), then **AI Impact**. |
 | D22 | The Radar screens use the app's existing design on `main` (`public/styles.css`: colour tokens, light and dark themes, teal accent, cards, tags, buttons). The mockup gives layout and content only, not its dark-navy style. |
+| D23–D27 | Skill trends from O\*NET job-posting flags (US, software skills only), added 30 Oct 2026: see `2026-10-30-radar-skill-trends-design.md`. |
 
 ## 3. Architecture
 

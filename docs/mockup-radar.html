@@ -465,7 +465,8 @@ function renderProfile(){
 /* ---------- A2 radar ---------- */
 const RING = [[30,'halved'],[50,'same'],[70,'doubled'],[90,'four']];
 function renderRadar(){
-  const wpx=$('#radar').clientWidth||460, sc=Math.max(1,Math.min(1.6,460/wpx)), narrow=sc>1.1, fs=Math.round(12*sc*10)/10, rfs=Math.round(10.5*sc*10)/10;
+  const wpx=$('#radar').clientWidth; if(!wpx) return; /* hidden tab: re-rendered when the AI tab is shown */
+  const sc=Math.max(1,Math.min(1.6,460/wpx)), narrow=sc>1.1, fs=Math.round(12*sc*10)/10, rfs=Math.round(10.5*sc*10)/10;
   const Y=+$('#radarY').value, cmp=$('#radarCmp').checked, cx=230, cy=narrow?185:175, R=narrow?100:118, n=AX.length;
   const wrap=(s,max)=>{ const out=[]; let cur=''; s.split(' ').forEach(w=>{ if(cur && (cur+' '+w).length>max){out.push(cur);cur=w;} else cur=cur?cur+' '+w:w; }); if(cur) out.push(cur); return out; };
   const lnk=linkedAxes();
@@ -594,7 +595,7 @@ function renderDiv(){
     } else {
       right = `<div class="btrack"><div class="bbar" style="background:#475a85;left:0;width:${Math.min(100,g.sh/60*100)}%"></div></div><div class="tiny">Latest share <b>${g.sh.toFixed(2)}%</b> · <b>${fmt(g.cnt)}</b> adverts · change in pp: <span class="tag t-none">not classified</span> ${lk('DOSM',U.dosm)}</div>`;
     }
-    return `<div class="brow" tabindex="0" role="button" onclick="divDetail(${idx})" onkeydown="if(event.target===this&&(event.key==='Enter'||event.key===' ')){event.preventDefault();divDetail(${idx})}" title="Click for evidence"><div class="nm"><span>${g.c} · ${esc(g.n)}</span>${userGroups().has(g.c)?'<span class="tag t-obs">from your profile</span>':''}</div><div>${right}</div></div>`;
+    return `<div class="brow" onclick="if(!event.target.closest('a,button'))divDetail(${idx})"><div class="nm"><button class="btn sm" style="text-align:left" onclick="divDetail(${idx})" aria-label="Evidence for ${g.c} ${esc(g.n)}">${g.c} · ${esc(g.n)}</button>${userGroups().has(g.c)?'<span class="tag t-obs">from your profile</span>':''}</div><div>${right}</div></div>`;
   }).join('') + (classified?`<div class="tiny muted" style="display:flex;justify-content:space-between;margin-top:6px"><span>← smaller share</span><span>larger share →</span></div>`:'');
   $('#b1ctx').innerHTML = `Quarter-on-quarter change in total online job advertisements — ${esc(tt('ctx'))}: <b>−11.4%</b> ${lk('DOSM',U.dosm)}<div class="tiny muted">DOSM's own figure for 2026 Q2 vs 2026 Q1. It is never used to classify a group, job or skill.</div>`;
   $('#b1src').innerHTML = `Source: <b>DOSM Big Data Analytics: Job Market Insights</b>, Table 2 (major group) ${lk('Q2 2026 release',U.dosm)} · Observation 2026 Q2 · Published 18 Aug 2026 · Fetched 30 Oct 2026 · Snapshot <b>dosm-s1</b> · Method <b>dosm-share-v1</b> · Thresholds: 1.0 pp and 10% relative, ≥ 2 clean steps (prototype settings, not an official standard). Counts in this mockup are derived from the shares; sample.`;
@@ -661,6 +662,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
   S.tab=b.dataset.tab; document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
   $('#tab-ai').classList.toggle('hidden',S.tab!=='ai'); $('#tab-sk').classList.toggle('hidden',S.tab!=='sk');
+  if(S.tab==='ai') renderRadar();
 });
 function applyLang(){
   document.documentElement.lang=S.lang;

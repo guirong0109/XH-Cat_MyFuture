@@ -58,7 +58,7 @@ describe('makeChain', () => {
     const r = chain(b).resolve('2512-01')
     expect(r.jobs).toEqual([])
     expect(r.isco).toBe('2512')
-    expect(r.missingStep).toEqual({ id: 'soc2010_to_isco08', from: { system: 'ISCO-08', codes: ['2512'] }, reason: 'BLS file not downloaded yet' })
+    expect(r.missingStep).toEqual({ id: 'soc2010_to_isco08', kind: 'pending', from: { system: 'ISCO-08', codes: ['2512'] }, reason: 'BLS file not downloaded yet' })
     expect(r.path.map((s) => s.id)).toEqual(['masco2020_unit_to_isco08'])
   })
 
@@ -67,6 +67,7 @@ describe('makeChain', () => {
     expect(r.isco).toBeNull()
     expect(r.missingStep.id).toBe('masco2020_unit_to_isco08')
     expect(r.missingStep.from).toEqual({ system: 'MASCO 2020', codes: ['9999'] })
+    expect(r.missingStep.kind).toBe('no_row')
     expect(r.path).toEqual([])
   })
 
@@ -75,6 +76,7 @@ describe('makeChain', () => {
     expect(r.isco).toBe('2519')
     expect(r.missingStep.id).toBe('soc2010_to_isco08')
     expect(r.missingStep.reason).toBe('ISCO-08 2519 has no row in the BLS ISCO-08 to SOC 2010 crosswalk')
+    expect(r.missingStep.kind).toBe('no_row')
   })
 
   it('reports no_onet_data when only All Other jobs are linked', () => {
@@ -82,6 +84,7 @@ describe('makeChain', () => {
     expect(r.jobs).toEqual([])
     expect(r.missingStep.id).toBe('no_onet_data')
     expect(r.missingStep.reason).toMatch(/no skill data/)
+    expect(r.missingStep.kind).toBe('no_onet_data')
     expect(r.missingStep.from).toEqual({ system: 'O*NET-SOC 2019', codes: ['15-1299.00'] })
   })
 
@@ -99,8 +102,8 @@ describe('makeChain', () => {
   })
 
   it('handles invalid input and a missing bridge', () => {
-    expect(chain().resolve('xx').missingStep.id).toBe('masco2020_unit_to_isco08')
-    expect(makeChain(null, { hasRequirements }).resolve('2512-01').missingStep.id).toBe('masco2020_unit_to_isco08')
+    expect(chain().resolve('xx').missingStep).toMatchObject({ id: 'masco2020_unit_to_isco08', kind: 'invalid' })
+    expect(makeChain(null, { hasRequirements }).resolve('2512-01').missingStep).toMatchObject({ id: 'masco2020_unit_to_isco08', kind: 'pending' })
   })
 
   it('has no score-like keys', () => {

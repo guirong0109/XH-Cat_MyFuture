@@ -13,7 +13,7 @@ import { recordReview } from '../../server/radar/reviews.js'
 import { linkHash } from '../../server/matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import * as matchApi from '../../public/js/matchApi.js'
-import { matchView, roleCard, matchToSave } from '../../public/js/screens/match.js'
+import { bandsAt, matchView, roleCard, matchToSave, stepText, trendMoves } from '../../public/js/screens/match.js'
 import { sdgView } from '../../public/js/screens/sdgTab.js'
 import { fitChart } from '../../public/js/components/fitChart.js'
 import en from '../../shared/strings/en.js'
@@ -161,11 +161,13 @@ describe('Career matching screen', () => {
     // Rapid with no ISCO-08 code: not available, with the missing step
     const noIsco = text(card(FIXTURE.noIscoRole, { detail: details[FIXTURE.noIscoRole], scenario: 'rapid' }))
     expect(noIsco).toContain(t('mtAiNoIsco'))
-    expect(noIsco).toContain('MASCO unit 9999 has no matching ISCO-08 code')
+    expect(noIsco).toContain(`MASCO 2020 9999: ${t('mtStep_no_row', { codes: '9999', step: t('mtStepName_masco2020_unit_to_isco08') })}`)
     // every role unavailable (today's real data): the "chain not ready" note, and the screen stays usable
-    const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: { id: 'masco2020_unit_to_isco08', from: { system: 'MASCO 2020', codes: [r.code.slice(0, 4)] }, reason: 'waits for the ISCO-08 code list in the BLS ISCO file' } } })) }
+    const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: { id: 'masco2020_unit_to_isco08', kind: 'pending', from: { system: 'MASCO 2020', codes: [r.code.slice(0, 4)] }, reason: 'waits for the ISCO-08 code list in the BLS ISCO file' } } })) }
     const page = text(view({ data: today }))
     expect(page).toContain(t('mtChainTitle'))
+    expect(page).toContain(t('mtStep_pending', { step: 'MASCO 2020 → ISCO-08' }))
+    // the data's own reason stays as an English detail in the chain path
     expect(page).toContain('waits for the ISCO-08 code list in the BLS ISCO file')
     expect(page).toContain('Fixture Database Designer')
     expect(page).toContain(t('mtChoose'))
@@ -232,6 +234,123 @@ describe('Career matching screen', () => {
   })
 })
 
+describe('Missing step in the user\'s language (final review 3)', () => {
+  const STEPS = [
+    { id: 'masco2020_unit_to_isco08', kind: 'pending', from: { system: 'MASCO 2020', codes: ['2512'] }, reason: 'waits for the ISCO-08 code list in the BLS ISCO file' },
+    { id: 'masco2020_unit_to_isco08', kind: 'no_row', from: { system: 'MASCO 2020', codes: ['9999'] }, reason: 'MASCO unit 9999 has no matching ISCO-08 code' },
+    { id: 'masco2020_unit_to_isco08', kind: 'invalid', from: { system: 'MASCO 2020', codes: [] }, reason: 'the code is not a MASCO 4-digit unit code' },
+    { id: 'soc2010_to_isco08', kind: 'pending', from: { system: 'ISCO-08', codes: ['2512'] }, reason: 'isco_soc_crosswalk.csv is not in data/radar/source/.' },
+    { id: 'soc2010_to_isco08', kind: 'no_row', from: { system: 'ISCO-08', codes: ['2519'] }, reason: 'ISCO-08 2519 has no row in the BLS ISCO-08 to SOC 2010 crosswalk' },
+    { id: 'soc2018_to_soc2010', kind: 'pending', from: { system: 'SOC 2010', codes: ['15-1132'] }, reason: 'soc_2010_to_2018_crosswalk.csv is not in data/radar/source/.' },
+    { id: 'onet_to_soc2018', kind: 'no_row', from: { system: 'SOC 2018', codes: ['15-1299'] }, reason: 'SOC 2018 15-1299 has no row in the O*NET-SOC to SOC 2018 crosswalk' },
+    { id: 'no_onet_data', kind: 'no_onet_data', from: { system: 'O*NET-SOC 2019', codes: ['15-1299.00'] }, reason: 'the linked O*NET jobs have no skill data (e.g. "All Other" codes)' },
+  ]
+  const tables = { en, ms, zh }
+
+  it('every missing step id and kind has its own text in en, ms and zh (no English data reason in BM or 中文)', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      for (const step of STEPS) {
+        const out = stepText(tl, step)
+        expect(out, `${lang} ${step.id} ${step.kind}`).toContain(tl(`mtStep_${step.kind}`, { step: tl(`mtStepName_${step.id}`), codes: step.from.codes.join(', ') }))
+        if (step.from.codes.length) expect(out).toContain(`${step.from.system} ${step.from.codes.join(', ')}`)
+        if (lang !== 'en') expect(out, `${lang} ${step.id}`).not.toContain(step.reason)
+        expect(out).not.toMatch(/mtStep/)
+      }
+      for (const id of ['masco2020_unit_to_isco08', 'soc2010_to_isco08', 'soc2018_to_soc2010', 'onet_to_soc2018']) expect(tables[lang][`mtStepName_${id}`], `${lang} ${id}`).toBeTruthy()
+    }
+  })
+
+  it('cards, the Rapid part and the chain note use the translated text; the data reason is only an English detail', () => {
+    for (const lang of ['ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const broken = roleCard({ t: tl, lang, role: roleOf(list, FIXTURE.brokenRole), detail: null, scenario: 'moderate', chosen: null })
+      const side = text(broken.slice(broken.indexOf('class="mt-side"')))
+      const want = tl('mtStep_no_row', { codes: '2512', step: tl('mtStepName_soc2010_to_isco08') })
+      expect(text(broken.slice(broken.indexOf('class="mt-side"'), broken.indexOf('<details')))).toContain(want)
+      expect(text(broken.slice(broken.indexOf('class="mt-side"'), broken.indexOf('<details')))).not.toContain('has no row in the BLS')
+      // the chain path keeps the data reason, marked as English
+      expect(side).toContain(tl('mtStepDetail'))
+      expect(broken).toContain('<span lang="en">ISCO-08 2512 has no row in the BLS ISCO-08 to SOC 2010 crosswalk</span>')
+      const rapid = roleCard({ t: tl, lang, role: roleOf(list, FIXTURE.noIscoRole), detail: details[FIXTURE.noIscoRole], scenario: 'rapid', chosen: null })
+      const ai = text(rapid.slice(rapid.indexOf('class="mt-parts"'), rapid.indexOf('</dl>')))
+      expect(ai).toContain(tl('mtStep_no_row', { codes: '9999', step: tl('mtStepName_masco2020_unit_to_isco08') }))
+      expect(ai).not.toContain('has no matching ISCO-08 code')
+      const today = { ...list, roles: list.roles.map((r) => ({ ...r, skillMatch: null, unavailable: { missingStep: STEPS[0] } })) }
+      const page = matchView({ t: tl, state: { lang, profile: FULL, match: match({ data: today }) } })
+      const note = text(page.slice(page.indexOf('class="mt-steps"'), page.indexOf('</ul>', page.indexOf('class="mt-steps"'))))
+      expect(note).toContain(tl('mtStep_pending', { step: 'MASCO 2020 → ISCO-08' }))
+      expect(note).not.toContain('waits for')
+    }
+  })
+})
+
+describe('Trend data changed banner (final review 1)', () => {
+  it('trendMoves lists the roles that moved band in the scenario shown before', () => {
+    const before = { scenario: 'moderate', bands: bandsAt(list, 'moderate') }
+    expect(before.bands.length).toBe(list.roles.length)
+    const role = list.roles[0]
+    const from = before.bands[0].band
+    const to = from === 3 ? 1 : 3
+    const after = { ...list, roles: list.roles.map((r, i) => (i === 0 ? { ...r, bands: { ...r.bands, moderate: to } } : r)) }
+    expect(trendMoves(before, after)).toEqual({ scenario: 'moderate', moved: [{ code: role.code, from, to }] })
+    expect(trendMoves(before, list)).toEqual({ scenario: 'moderate', moved: [] })
+    expect(trendMoves(null, list)).toBeNull()
+  })
+
+  it('the banner names what moved, says the Skill Match did not change, and closes; in all three languages', () => {
+    const role = roleOf(list, FIXTURE.fullRole)
+    const trend = { scenario: 'moderate', moved: [{ code: role.code, from: 4, to: 3 }] }
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const html = matchView({ t: tl, state: { lang, profile: FULL, match: match({ trend }) } })
+      const banner = html.slice(html.indexOf('data-banner="trend"'), html.indexOf('</div>', html.indexOf('data-banner="trend"') + 200) + 6)
+      expect(text(banner)).toContain(tl('mtTrendTitle', { scenario: tl('mtScnModerate'), count: 1 }))
+      expect(text(banner)).toContain(tl('mtBannerItem', { title: role.title, from: 4, to: 3 }))
+      expect(text(banner)).toContain(tl('mtBannerSame'))
+      expect(html).toContain('data-act="mBannerClose"')
+    }
+    // nothing moved: still says the data changed ("none"); another scenario shown now, or no trend: no banner
+    expect(text(view({ trend: { scenario: 'moderate', moved: [] } })).replace(/\s+/g, ' ')).toContain(`${t('mtTrendTitle', { scenario: t('mtScnModerate'), count: 0 })} ${t('mtBannerNone')}`)
+    expect(view({ trend: { scenario: 'rapid', moved: [] } })).not.toContain('data-banner="trend"')
+    expect(view()).not.toContain('data-banner="trend"')
+    // escaped
+    const bad = { ...list, roles: list.roles.map((r) => (r.code === role.code ? { ...r, title: '<b>Bold</b>' } : r)) }
+    expect(view({ data: bad, trend })).not.toContain('<b>Bold')
+  })
+
+  it('app: every trend change, judge sign-in / sign-out and SDG decision marks matching stale; the list keeps the bands from before', () => {
+    const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+    const body = (name) => {
+      const start = app.indexOf(`  ${name}: async`)
+      expect(start, name).toBeGreaterThan(0)
+      return app.slice(start, app.indexOf('\n  },', start))
+    }
+    const fn = (name) => app.slice(app.indexOf(`function ${name}(`), app.indexOf('\n}', app.indexOf(`function ${name}(`)))
+    // wherever the Radar goes stale, matching does too
+    expect(fn('radarStale')).toContain('matchStale()')
+    for (const name of ['demoApply', 'demoReset']) {
+      const b = body(name)
+      expect(b, name).toContain('matchStale()')
+      expect(b.indexOf('matchStale()'), name).toBeGreaterThan(b.indexOf('if (!out.ok)'))
+    }
+    expect(body('admSdg')).toContain('matchStale(false)')
+    expect(body('admSdg').indexOf('matchStale(false)')).toBeGreaterThan(body('admSdg').indexOf('if (!out.ok)'))
+    expect(body('admSignIn')).toMatch(/if \(role === 'demo'\) matchStale\(\)/)
+    expect(body('admSignOut')).toMatch(/wasJudge\) matchStale\(\)/)
+    // stale: drop loads on their way and load again on the next render
+    const stale = fn('matchStale')
+    expect(stale).toContain('matchRun += 1')
+    expect(fn('ensureMatch')).toMatch(/matchFor !== state\.profile \|\| matchStaleBy\) loadMatch\(\)/)
+    // the bands from before (same profile, trend change only) give the banner
+    const load = fn('loadMatch')
+    expect(load).toContain("matchStaleBy !== 'trend' || matchFor !== profile")
+    expect(load).toContain('bandsAt(m.data, scenarioOf(m))')
+    expect(load).toContain('trendMoves(matchBefore, out.data)')
+    expect(app).toMatch(/mBannerClose: \(\) => \{[^}]*trend: null/)
+  })
+})
+
 describe('SDG contribution screen', () => {
   it('sdg tab shows counts and "potential, not measured"', () => {
     const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.fullRole, details: { [FIXTURE.fullRole]: details[FIXTURE.fullRole] } }) } })
@@ -253,6 +372,13 @@ describe('SDG contribution screen', () => {
     expect(s).toContain('Industry, innovation and infrastructure')
   })
 
+  it('a remembered chosen role but no profile: the no-profile card, not a spinner (final review 6)', () => {
+    const html = sdgView({ t, state: { lang: 'en', profile: null, match: match({ data: null, chosen: FIXTURE.fullRole }) } })
+    expect(text(html)).toContain(t('mtNoProfile'))
+    expect(html).toContain('data-go="source"')
+    expect(html).not.toContain('class="spin"')
+  })
+
   it('no chosen role: a card that leads to Career matching', () => {
     const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match() } })
     expect(text(html)).toContain(t('mtSdgNoRole'))
@@ -269,6 +395,8 @@ describe('SDG contribution screen', () => {
 describe('Career matching strings and code', () => {
   const DYNAMIC = [1, 2, 3, 4].flatMap((b) => [`mtBand${b}`, `mtBand${b}Why`])
     .concat(['el', 'kn'].map((k) => `mtKind_${k}`), ['basic', 'good', 'expert'].map((w) => `mtLevel_${w}`))
+    .concat(['pending', 'no_row', 'invalid', 'no_onet_data'].map((k) => `mtStep_${k}`))
+    .concat(['masco2020_unit_to_isco08', 'soc2010_to_isco08', 'soc2018_to_soc2010', 'onet_to_soc2018'].map((id) => `mtStepName_${id}`))
 
   it('every text key exists in en, ms and zh', () => {
     const used = new Set(DYNAMIC)

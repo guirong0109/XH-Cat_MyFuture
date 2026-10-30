@@ -40,19 +40,21 @@ export function makeChain(bridgeFile, { hasRequirements = () => true } = {}) {
 
   function resolve(emascoCode) {
     const path = []
-    const stop = (isco, id, system, codes, reason) => ({ isco, jobs: [], path, missingStep: { id, from: { system, codes }, reason } })
+    // kind: 'pending' (step not built), 'no_row' (no link for these codes), 'invalid' (not a MASCO unit code) or
+    // 'no_onet_data'. The screen words the step from id + kind in the user's language; `reason` stays an English detail.
+    const stop = (isco, id, system, codes, reason, kind) => ({ isco, jobs: [], path, missingStep: { id, kind, from: { system, codes }, reason } })
     const unit = typeof emascoCode === 'string' && /^\d{4}/.test(emascoCode) ? emascoCode.slice(0, 4) : null
     const first = steps.get(FIRST)
     const mascoSys = sysName(first?.from, 'MASCO 2020')
     const fromCodes = unit ? [unit] : []
     if (first?.status !== 'built') {
-      return stop(null, FIRST, mascoSys, fromCodes, first?.pendingReason ?? 'the MASCO to ISCO-08 step is not built yet')
+      return stop(null, FIRST, mascoSys, fromCodes, first?.pendingReason ?? 'the MASCO to ISCO-08 step is not built yet', 'pending')
     }
     const iscoList = unit ? uniq(first.links?.[unit] ?? []) : []
     if (!iscoList.length) {
       return stop(null, FIRST, mascoSys, fromCodes, unit
         ? `MASCO unit ${unit} has no matching ISCO-08 code`
-        : 'the code is not a MASCO 4-digit unit code')
+        : 'the code is not a MASCO 4-digit unit code', unit ? 'no_row' : 'invalid')
     }
     path.push(pathStep(FIRST, first, fromCodes, iscoList, mascoSys, sysName(first.to, 'ISCO-08')))
     const isco = iscoList[0]
@@ -61,17 +63,17 @@ export function makeChain(bridgeFile, { hasRequirements = () => true } = {}) {
     let system = sysName(first.to, 'ISCO-08')
     for (const { id, gap } of INVERTED) {
       const s = steps.get(id)
-      if (s?.status !== 'built') return stop(isco, id, system, codes, s?.pendingReason ?? `the ${id} step is not built yet`)
+      if (s?.status !== 'built') return stop(isco, id, system, codes, s?.pendingReason ?? `the ${id} step is not built yet`, 'pending')
       const m = invert(id)
       const next = uniq(codes.flatMap((c) => m.get(c) ?? []))
-      if (!next.length) return stop(isco, id, system, codes, gap(codes.join(', ')))
+      if (!next.length) return stop(isco, id, system, codes, gap(codes.join(', ')), 'no_row')
       const toSys = sysName(s.from, system)
       path.push(pathStep(id, s, codes, next, system, toSys))
       codes = next
       system = toSys
     }
     const jobs = codes.filter((c) => hasRequirements(c)).sort()
-    if (!jobs.length) return stop(isco, 'no_onet_data', system, codes, NO_ONET)
+    if (!jobs.length) return stop(isco, 'no_onet_data', system, codes, NO_ONET, 'no_onet_data')
     return { isco, jobs, path, missingStep: null }
   }
   return { resolve }

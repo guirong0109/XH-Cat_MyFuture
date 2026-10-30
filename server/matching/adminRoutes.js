@@ -21,6 +21,7 @@ const ERRORS = {
   bad_request: [400, 'The request is not valid.', false],
   not_found: [404, 'No such SDG link in the current data.', false],
   not_configured: [503, 'This is not available on this server.', false],
+  data_unavailable: [503, 'SDG link data could not be read.', false],
   store_unavailable: [503, 'Saved decisions are not reachable right now.', true],
   publish_conflict: [409, 'Another change was saved at the same time. Reload and try again.', true],
 }
@@ -65,7 +66,8 @@ async function loadContext(dataDir) {
 }
 
 // loadLinks: async () => links (data/sdg/links.json .links); given for tests, else read from dataDir.
-export function matchingAdminRoutes({ radar, access, now = () => new Date(), dataDir = null, loadLinks = null, log = (message) => console.info(message) }) {
+// onDecision: called after each recorded decision (the matching service drops its cached SDG decisions).
+export function matchingAdminRoutes({ radar, access, now = () => new Date(), dataDir = null, loadLinks = null, onDecision = () => {}, log = (message) => console.info(message) }) {
   const router = express.Router()
   const store = radar?.store ?? null
   const writable = () => Boolean(store) && Boolean(radar.info?.().writable)
@@ -83,13 +85,23 @@ export function matchingAdminRoutes({ radar, access, now = () => new Date(), dat
     try {
       return await handler(request, response)
     } catch (error) {
-      const code = error?.code === 'precondition_failed' ? 'publish_conflict' : 'store_unavailable'
+      const code = error?.code === 'precondition_failed' ? 'publish_conflict' : error?.code === 'data_unavailable' ? 'data_unavailable' : 'store_unavailable'
       log(`[matching] admin request failed: ${code}`)
       return fail(response, code)
     }
   }
 
-  const hashedLinks = async () => (await readLinks()).map((link) => ({ ...link, hash: linkHash(link) }))
+  // A missing or malformed data/sdg/links.json is a data problem, not a store problem; no path in the answer or log.
+  const hashedLinks = async () => {
+    let links
+    try {
+      links = await readLinks()
+    } catch {
+      links = null
+    }
+    if (!Array.isArray(links) || !links.every(plainObject)) throw Object.assign(new Error('SDG link data could not be read'), { code: 'data_unavailable' })
+    return links.map((link) => ({ ...link, hash: linkHash(link) }))
+  }
 
   // Every route under /api/admin/matching needs an admin session, unknown ones too.
   router.use('/api/admin/matching', access.require('admin'))
@@ -126,6 +138,11 @@ export function matchingAdminRoutes({ radar, access, now = () => new Date(), dat
       return { reviews, review }
     })
     log(`[matching] review recorded: ${KIND} ${review.reviewId}`)
+    try {
+      onDecision()
+    } catch {
+      // the decision is stored; a failed hook only delays it reaching matching by the cache time
+    }
     const [decided] = linkStatuses([link], [...reviews, review])
     return response.status(201).json({ review, link: decided })
   }))

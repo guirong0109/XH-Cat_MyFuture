@@ -1,6 +1,8 @@
 // SDG link decisions in the Radar review store (Task 12): GET/POST /api/admin/matching/sdg-links, admin session and
 // CSRF like /api/admin/radar/mappings. Real servers on port 0, memory store, cookies by hand.
-import { readFileSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import express from 'express'
 import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../../server/app.js'
@@ -56,12 +58,12 @@ async function start({ store = createMemoryStore(), writable = true } = {}) {
 }
 
 // The route module alone, with injected links (as the app mounts it, plus the sign-in route).
-async function startModule({ links, store = createMemoryStore() }) {
+async function startModule({ links, store = createMemoryStore(), dataDir = null, logs = null }) {
   const access = createRadarAccess({ env: ENV, now })
   const radar = { store, info: () => ({ writable: true }) }
   const app = express()
   app.use(radarSessionRoutes({ access, log: () => {} }))
-  app.use(matchingAdminRoutes({ radar, access, now, loadLinks: async () => links(), log: () => {} }))
+  app.use(matchingAdminRoutes({ radar, access, now, dataDir, loadLinks: links ? async () => links() : null, log: (m) => logs?.push(m) }))
   await listen(app)
   return { store }
 }
@@ -199,6 +201,32 @@ describe('/api/admin/matching/sdg-links', () => {
     const r = await call('POST', ROUTE, { session, body: { id: LINKS[0].id, decision: 'approved' } })
     expect(r.status).toBe(503)
     expect(r.body.error.code).toBe('not_configured')
+  })
+
+  it('missing or malformed data/sdg/links.json -> 503 data_unavailable (not store_unavailable), no file path', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'sdg-links-'))
+    try {
+      for (const content of [null, '{ not json', JSON.stringify({ links: { a: 1 } }), JSON.stringify({ links: ['x'] })]) {
+        if (content !== null) {
+          mkdirSync(join(dir, 'sdg'), { recursive: true })
+          writeFileSync(join(dir, 'sdg', 'links.json'), content)
+        }
+        const logs = []
+        await startModule({ dataDir: dir, logs })
+        const session = await login()
+        for (const r of [await call('GET', ROUTE, { session }), await call('POST', ROUTE, { session, body: { id: LINKS[0].id, decision: 'approved' } })]) {
+          expect(r.status, String(content)).toBe(503)
+          expect(r.body.error).toEqual({ code: 'data_unavailable', message: 'SDG link data could not be read.', retryable: false })
+          expect(JSON.stringify(r.body)).not.toContain(dir)
+          expect(JSON.stringify(r.body)).not.toMatch(/links\.json|sdg[\\/]/)
+        }
+        expect(logs.join(' ')).not.toContain(dir)
+        await new Promise((resolve) => server.close(resolve))
+        server = null
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
   })
 
   it('a changed reason puts an approved link back to pending (injected links)', async () => {

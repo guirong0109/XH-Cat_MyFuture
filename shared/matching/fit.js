@@ -32,7 +32,7 @@ export function profileLevels(profile) {
     const m = /^onet:(el|kn):(.+)$/.exec(s?.canonicalId ?? '')
     if (!m) continue
     const key = `${m[1]}:${m[2]}`
-    const pts = LEVEL_POINTS[s.proficiency] ?? null
+    const pts = typeof s.proficiency === 'string' && Object.hasOwn(LEVEL_POINTS, s.proficiency) ? LEVEL_POINTS[s.proficiency] : null
     const prev = out.get(key)
     if (!prev) out.set(key, { points: pts, notAssessed: pts == null })
     else if (pts != null && (prev.points == null || pts > prev.points)) out.set(key, { points: pts, notAssessed: false })

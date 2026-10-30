@@ -91,15 +91,19 @@ export async function recordReview(store, review) {
 // Every stored review record, oldest first. Unreadable or malformed records are skipped.
 export async function loadReviews(store, kind = null) {
   const keys = await store.list(KEYS.reviewsPrefix)
-  const out = []
-  for (const key of keys) {
-    let got = null
+  // Read in parallel; a malformed record is skipped, any other failure fails the whole read (as before).
+  const read = await Promise.all(keys.map(async (key) => {
     try {
-      got = await getJson(store, key)
+      return { key, got: await getJson(store, key) }
     } catch (error) {
-      if (error instanceof SyntaxError) continue
+      if (error instanceof SyntaxError) return null
       throw error
     }
+  }))
+  const out = []
+  for (const entry of read) {
+    if (!entry) continue
+    const { key, got } = entry
     const review = got?.value
     if (!validReview(review) || key !== reviewKey(review.reviewId)) continue
     if (kind && review.kind !== kind) continue

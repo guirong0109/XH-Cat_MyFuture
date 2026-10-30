@@ -13,6 +13,11 @@ export function sdgView({ t, state }) {
     return `<div class="mt">${head}<div class="card"><h3>${esc(t('mtSdgNoRole'))}</h3><p class="small muted">${esc(t('mtSdgNoRoleText'))}</p>
       <div class="mt-actions"><button class="btn pri" type="button" data-go="match">${esc(t('mtGoMatch'))}</button></div></div></div>`
   }
+  // A role remembered from before, but no profile now: nothing can be fetched (the path needs the profile).
+  if (!state?.profile) {
+    return `<div class="mt">${head}<div class="card"><h3>${esc(t('mtNoProfile'))}</h3><p class="small muted">${esc(t('mtNoProfileText'))}</p>
+      <div class="mt-actions"><button class="btn pri" type="button" data-go="source">${esc(t('mtBuildProfile'))}</button></div></div></div>`
+  }
   const raw = m.details?.[chosen]
   const d = loadedDetail(raw)
   if (!d) {

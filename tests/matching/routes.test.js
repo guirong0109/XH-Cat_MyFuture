@@ -12,7 +12,7 @@ import { loadRadarReferences } from '../../server/radar/references.js'
 import { createDemoService, DemoError } from '../../server/radar/demo.js'
 import { recordReview } from '../../server/radar/reviews.js'
 import { linkHash } from '../../server/matching/adminRoutes.js'
-import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
+import { SDG_TTL_MS, createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import { MatchingDataError, loadMatchingData } from '../../server/matching/data.js'
 import { FIXTURE, SDG_LINKS, fixtureReferences, makeMatchingFixture } from '../helpers/matchingFixture.js'
 
@@ -72,12 +72,12 @@ afterEach(async () => {
 
 // The app as in production, with the fixture data dir for matching only. radarOverride replaces the Radar service
 // (e.g. one whose store does not answer); demoOverride replaces the judge demo service.
-async function start({ store = createMemoryStore(), radarOverride = null, demoOverride, dataDir = fixture.dir } = {}) {
+async function start({ store = createMemoryStore(), radarOverride = null, demoOverride, dataDir = fixture.dir, appDataDir = undefined } = {}) {
   const radar = radarOverride ?? createRadarService({ store, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
   const radarAccess = createRadarAccess({ env: ENV, now })
   const demo = demoOverride !== undefined ? demoOverride : createDemoService({ store, base: BASE, references: async () => references, now })
   const matching = createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, references: fixtureReferences, now, log: () => {} })
-  server = createApp({ radar, radarAccess, radarDemo: demo, matching, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ ...(appDataDir ? { dataDir: appDataDir } : {}), radar, radarAccess, radarDemo: demo, matching, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   return { store, radar, demo }
@@ -339,6 +339,64 @@ describe('POST /api/matching', () => {
     } finally {
       await bad.cleanup()
     }
+  })
+})
+
+describe('SDG decisions in matching answers (cache)', () => {
+  const approve = (store, link, i = 1) => recordReview(store, {
+    reviewId: `review-20261031T000000000Z-0000000${i}`, kind: 'sdg_link', target: link.id, decision: 'approved', note: '', evidence: [],
+    reviewer: 'Owner', reviewedAt: '2026-10-31T00:00:00.000Z', version: 1, appliesTo: { sourceId: 'sdg-links', period: null, observationHash: linkHash(link) },
+  })
+
+  it('a second request within the cache time does not read the review store again; after it, or after sdgDecided, it does', async () => {
+    const memory = createMemoryStore()
+    const calls = { list: 0, get: 0 }
+    const store = new Proxy(memory, {
+      get(target, name) {
+        const value = target[name]
+        if (typeof value !== 'function') return value
+        return (...args) => {
+          if (name in calls) calls[name] += 1
+          return value.apply(target, args)
+        }
+      },
+    })
+    await approve(memory, SDG_LINKS[0])
+    let clock = Date.parse('2026-10-31T00:00:00.000Z')
+    const tick = () => new Date(clock)
+    const matching = createMatchingServiceFromEnv({ dataDir: fixture.dir, radar: { store, answer: async () => null }, references: fixtureReferences, now: tick, log: () => {} })
+    const goals = async () => (await matching.list(FULL, null)).roles.find((r) => r.code === FIXTURE.fullRole).sdgGoals
+    expect(await goals()).toEqual([9])
+    const after1 = { ...calls }
+    expect(after1.list).toBe(1)
+    expect(await goals()).toEqual([9])
+    await matching.role(FULL, FIXTURE.fullRole, null)
+    expect(calls).toEqual(after1)
+    // A decision written past the matching service is seen only after the cache time ...
+    await approve(memory, SDG_LINKS[1], 2)
+    clock += SDG_TTL_MS - 1
+    await goals()
+    expect(calls).toEqual(after1)
+    clock += 1
+    await goals()
+    expect(calls.list).toBe(2)
+    // ... or at once after sdgDecided().
+    await approve(memory, SDG_LINKS[2], 3)
+    matching.sdgDecided()
+    await goals()
+    expect(calls.list).toBe(3)
+  })
+
+  it('a decision through the admin route is visible on the next matching request', async () => {
+    await start({ appDataDir: fixture.dir })
+    const before = await post('/api/matching', { profile: FULL })
+    expect(roleOf(before.body, FIXTURE.fullRole).sdgGoals).toEqual([])
+    const session = await login('admin')
+    const decided = await post('/api/admin/matching/sdg-links', { id: SDG_LINKS[0].id, decision: 'approved', note: '' }, { session })
+    expect(decided.status).toBe(201)
+    // The clock does not move: only the admin route's hook can have dropped the cache.
+    const after = await post('/api/matching', { profile: FULL })
+    expect(roleOf(after.body, FIXTURE.fullRole).sdgGoals).toEqual([9])
   })
 })
 

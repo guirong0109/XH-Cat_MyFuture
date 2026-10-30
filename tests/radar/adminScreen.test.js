@@ -701,6 +701,23 @@ describe('SDG link review card (Task 15)', () => {
     expect(app).toContain('sdgLinks: sdgLinks.data')
   })
 
+  it('a failed SDG link list fails only the SDG card; the other admin cards still show (final review 5)', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data: { ...data, sdgLinks: null, sdgLinksError: 'data_unavailable' } })
+    const mine = card(html)
+    expect(mine).toContain(esc(t('rdSdgTitle')))
+    expect(text(mine)).toContain(t('rdErr_data_unavailable'))
+    expect(mine).not.toContain('data-act="admSdg"')
+    expect(html).toContain('id="admBrkCard"')
+    expect(html).toContain('id="admMapCard"')
+    const app = readFileSync('public/js/app.js', 'utf8')
+    const reload = app.slice(app.indexOf('async function reloadAdmin('), app.indexOf('\n}', app.indexOf('async function reloadAdmin(')))
+    expect(reload).toContain('const failed = [status, mappings, breaks].find(')
+    expect(reload).toMatch(/if \(!sdgLinks\.ok && !adminApi\.session\(\)\) return adminFailed/)
+    expect(reload).toContain("sdgLinksError: sdgLinks.code ?? 'network'")
+    for (const lang of ['ms', 'zh']) expect(translate(lang, 'rdErr_data_unavailable')).not.toBe(t('rdErr_data_unavailable'))
+  })
+
   it('has strings in all three languages and no score / weight / rank / opportunity text key', async () => {
     const keys = Object.keys(en).filter((k) => k.startsWith('rdSdg'))
     expect(keys.length).toBeGreaterThan(5)

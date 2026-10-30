@@ -38,6 +38,13 @@ describe('profileLevels', () => {
     expect(m.get('kn:c')).toEqual({ points: 4, notAssessed: false })
     expect(m.size).toBe(3)
   })
+
+  it('a proficiency that is an Object property name is not a level (not assessed)', () => {
+    const m = profileLevels({ skills: [skill('onet:el:a', 'constructor'), skill('onet:el:b', '__proto__'), skill('onet:el:c', 'toString'), skill('onet:el:c', 'hasOwnProperty')] })
+    expect(m.get('el:a')).toEqual({ points: null, notAssessed: true })
+    expect(m.get('el:b')).toEqual({ points: null, notAssessed: true })
+    expect(m.get('el:c')).toEqual({ points: null, notAssessed: true })
+  })
 })
 
 describe('levelsMet', () => {

@@ -460,6 +460,7 @@ export default {
   rdErr_periods_removed: "Data baharu tiada tempoh yang ada sebelum ini, jadi ia tidak diterbitkan.",
   rdErr_publish_conflict: "Orang lain menerbitkan pada masa yang sama. Sila cuba lagi.",
   rdErr_store_unavailable: "Stor data tidak tersedia sekarang.",
+  rdErr_data_unavailable: "Data pautan SDG tidak dapat dibaca.", // translation: owner review
   rdErr_not_configured: "Ciri ini belum disediakan pada pelayan ini.",
   rdErr_not_allowed: "Anda tidak dibenarkan melakukan ini.",
   rdErr_csrf_failed: "Permintaan tidak dapat disemak. Muat semula halaman dan cuba lagi.",
@@ -724,6 +725,7 @@ export default {
   mtBannerItem: "{title} (kumpulan {from} → {to})", // translation: owner review
   mtBannerNone: "tiada", // translation: owner review
   mtBannerSame: "Nombor Padanan Kemahiran tidak berubah.", // translation: owner review
+  mtTrendTitle: "Data trend berubah: {count} peranan berpindah dalam {scenario}:", // translation: owner review
   mtClose: "Tutup", // translation: owner review
   mtJudge: "Sesi Ujian Perubahan Trend juri: kumpulan iklan kerja menggunakan data ujian anda.", // translation: owner review
   mtRadarDown: "Data iklan kerja tidak tersedia sekarang, jadi setiap peranan berada dalam kumpulan 4 apabila bahagian iklan kerja diperlukan.", // translation: owner review
@@ -740,6 +742,16 @@ export default {
   mtChainTitle: "Padanan Kemahiran belum tersedia untuk mana-mana peranan.", // translation: owner review
   mtChainText: "Setiap peranan memerlukan rantaian kod rasmi eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET. Yang tiada hari ini:", // translation: owner review
   mtChainStep: "{reason} ({count} peranan)", // translation: owner review
+  mtStepDetail: "Nota data (Bahasa Inggeris):", // translation: owner review
+  mtStep_no_onet_data: "pekerjaan O*NET yang dipautkan ({codes}) tiada data kemahiran (cth. kod \"All Other\")", // translation: owner review
+  mtStep_invalid: "kod ini bukan kod unit MASCO 4 digit", // translation: owner review
+  mtStep_no_row: "tiada baris untuk {codes} dalam langkah rasmi {step}", // translation: owner review
+  mtStep_pending: "langkah rasmi {step} belum dibina", // translation: owner review
+  mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC (jadual silang O*NET)", // translation: owner review
+  mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018 (jadual silang BLS)", // translation: owner review
+  mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010 (jadual silang BLS)", // translation: owner review
+  mtStepName_masco2020_unit_to_isco08: "MASCO 2020 → ISCO-08", // translation: owner review
+  mtStepAt: "{from}: {reason}", // translation: owner review
   mtChainStill: "Peranan, prospek dan tag SDG masih ditunjukkan.", // translation: owner review
   mtInField: "Dalam bidang anda", // translation: owner review
   mtRoleCount: "{count} peranan", // translation: owner review

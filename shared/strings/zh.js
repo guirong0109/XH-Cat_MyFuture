@@ -460,6 +460,7 @@ export default {
   rdErr_periods_removed: "新数据缺少之前已有的时段，因此没有发布。",
   rdErr_publish_conflict: "有人同时进行了发布。请再试一次。",
   rdErr_store_unavailable: "数据存储目前不可用。",
+  rdErr_data_unavailable: "无法读取 SDG 关联数据。", // translation: owner review
   rdErr_not_configured: "这台服务器尚未设置此功能。",
   rdErr_not_allowed: "您没有权限执行此操作。",
   rdErr_csrf_failed: "无法验证请求。请刷新页面后再试。",
@@ -724,6 +725,7 @@ export default {
   mtBannerItem: "{title}（组 {from} → {to}）", // translation: owner review
   mtBannerNone: "无", // translation: owner review
   mtBannerSame: "技能匹配数字没有改变。", // translation: owner review
+  mtTrendTitle: "趋势数据已更改：在{scenario}中有 {count} 个职位换了组：", // translation: owner review
   mtClose: "关闭", // translation: owner review
   mtJudge: "评委趋势变化测试会话：招聘广告组使用您的测试数据。", // translation: owner review
   mtRadarDown: "招聘广告数据暂时不可用，因此需要该部分时所有职位都在第 4 组。", // translation: owner review
@@ -740,6 +742,16 @@ export default {
   mtChainTitle: "目前所有职位都还没有技能匹配。", // translation: owner review
   mtChainText: "每个职位都需要官方代码链 eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET。目前缺少：", // translation: owner review
   mtChainStep: "{reason}（{count} 个职位）", // translation: owner review
+  mtStepDetail: "数据说明（英文）：", // translation: owner review
+  mtStep_no_onet_data: "关联的 O*NET 职业（{codes}）没有技能数据（例如 \"All Other\" 代码）", // translation: owner review
+  mtStep_invalid: "此代码不是 MASCO 4 位单元代码", // translation: owner review
+  mtStep_no_row: "官方步骤 {step} 中没有 {codes} 的对应行", // translation: owner review
+  mtStep_pending: "官方步骤 {step} 尚未建立", // translation: owner review
+  mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC（O*NET 对照表）", // translation: owner review
+  mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018（BLS 对照表）", // translation: owner review
+  mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010（BLS 对照表）", // translation: owner review
+  mtStepName_masco2020_unit_to_isco08: "MASCO 2020 → ISCO-08", // translation: owner review
+  mtStepAt: "{from}：{reason}", // translation: owner review
   mtChainStill: "职位、前景和 SDG 标签仍会显示。", // translation: owner review
   mtInField: "您的领域", // translation: owner review
   mtRoleCount: "{count} 个职位", // translation: owner review

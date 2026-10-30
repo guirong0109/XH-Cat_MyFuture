@@ -2,7 +2,8 @@
 // dropped. Nothing here stores it or logs it; logs carry codes only.
 //
 // createMatchingService({loadData, radar, references, demo, access, store, now, log}) ->
-//   {list(profile, request) -> ListAnswer, role(profile, code, request) -> RoleAnswer | null (unknown code)}
+//   {list(profile, request) -> ListAnswer, role(profile, code, request) -> RoleAnswer | null (unknown code),
+//    sdgDecided() -> drops the cached SDG decisions (called by the admin route after each decision)}
 //   loadData: async () => loadMatchingData(...) result (throws MatchingDataError).
 //   references: the Radar references (fieldJobs) or an async loader; store: the Radar review store (SDG decisions).
 //   Signals: a judge (demo session) gets demo.diff(sessionId).signals, everyone else the active Radar manifest's
@@ -18,6 +19,9 @@ import { linkHash } from './adminRoutes.js'
 import { loadMatchingData } from './data.js'
 
 const SDG_KIND = 'sdg_link'
+// The SDG decisions are read from the review store at most once a minute (like the Radar's CHECKS_TTL_MS), and at once
+// after a decision through /api/admin/matching/sdg-links (sdgDecided).
+export const SDG_TTL_MS = 60000
 const round2 = (n) => Math.round(n * 100) / 100
 const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 const arr = (v) => (Array.isArray(v) ? v : [])
@@ -114,8 +118,25 @@ function jobAdsOf(signals, code) {
   }
 }
 
-export function createMatchingService({ loadData, radar = null, references = null, demo = null, access = null, store = null, now = () => new Date(), log = (message) => console.error(message) }) {
+export function createMatchingService({ loadData, radar = null, references = null, demo = null, access = null, store = null, now = () => new Date(), log = (message) => console.error(message), sdgTtlMs = SDG_TTL_MS }) {
   const loadReferences = typeof references === 'function' ? once(references) : async () => references
+  // {at, promise} of the last SDG decision read; a failed read is not kept. A decision drops it, also while a read
+  // is still on its way (that read answers the requests already waiting on it, and is not kept).
+  let sdgCache = null
+  function sdgReviews() {
+    const at = now().getTime()
+    if (sdgCache && at - sdgCache.at >= 0 && at - sdgCache.at < sdgTtlMs) return sdgCache.promise
+    const entry = { at, promise: null }
+    entry.promise = loadReviews(store, SDG_KIND).catch((error) => {
+      if (sdgCache === entry) sdgCache = null
+      throw error
+    })
+    sdgCache = entry
+    return entry.promise
+  }
+  function sdgDecided() {
+    sdgCache = null
+  }
 
   // The Radar inputs of this request: signals (a judge's demo session, or the active manifest) and in-demand lists.
   async function radarInputs(request) {
@@ -161,7 +182,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
     let reviews = []
     if (store) {
       try {
-        reviews = await loadReviews(store, SDG_KIND)
+        reviews = await sdgReviews()
       } catch (error) {
         log(`[matching] sdg decisions unavailable: ${codeOf(error)}`)
       }
@@ -272,7 +293,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
     }
   }
 
-  return { list, role }
+  return { list, role, sdgDecided }
 }
 
 // The app's matching service: data from dataDir (loaded once), the Radar's references and review store.

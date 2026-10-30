@@ -38,11 +38,23 @@ const tagNone = (text) => `<span class="tag mt-none">${esc(text)}</span>`
 // Only the scenario and the chosen role are kept with the guest profile; the answers are fetched again.
 export const matchToSave = (m) => ({ scenario: scenarioOf(m), chosen: typeof m?.chosen === 'string' ? m.chosen : null })
 
-// "MASCO 2020 2512: waits for the ISCO-08 code list in the BLS ISCO file"
-export function stepText(step) {
+// The missing step of the code chain in the user's language, from its id and kind (shared/matching/chain.js). The
+// data's own reason (bridge pendingReason, English) is only an extra detail, never the main text.
+const STEP_KINDS = ['pending', 'no_row', 'invalid', 'no_onet_data']
+export function stepReason(t, step) {
+  if (!step) return ''
+  const codes = (step.from?.codes ?? []).join(', ')
+  const nameKey = `mtStepName_${step.id}`
+  const name = t(nameKey)
+  const kind = STEP_KINDS.includes(step.kind) ? step.kind : step.id === 'no_onet_data' ? 'no_onet_data' : 'pending'
+  return t(`mtStep_${kind}`, { step: name === nameKey ? String(step.id ?? '') : name, codes })
+}
+// "MASCO 2020 2512: the official step MASCO 2020 → ISCO-08 is not built yet"
+export function stepText(t, step) {
   if (!step) return ''
   const from = [step.from?.system, (step.from?.codes ?? []).join(', ')].filter(Boolean).join(' ')
-  return [from, step.reason].filter(Boolean).join(': ')
+  const reason = stepReason(t, step)
+  return from ? t('mtStepAt', { from, reason }) : reason
 }
 
 // ---------- the parts of a card ----------
@@ -52,7 +64,7 @@ function sidePanel(t, role) {
   const missing = role.unavailable?.missingStep
   if (!sm && missing) {
     return `<div class="tiny muted">${esc(t('mtSkillMatch'))}</div><div class="mt-big">${esc(t('mtNotAvailable'))}</div>
-      <div class="tiny muted">${esc(t('mtNoLink'))} ${esc(t('mtMissing'))} ${esc(stepText(missing))}</div>`
+      <div class="tiny muted">${esc(t('mtNoLink'))} ${esc(t('mtMissing'))} ${esc(stepText(t, missing))}</div>`
   }
   if (!sm) {
     return `<div class="tiny muted">${esc(t('mtSkillMatch'))}</div><div class="mt-big">${esc(t('mtNoPct'))}</div><div class="tiny muted">${esc(t('mtNoPctText'))}</div>`
@@ -98,7 +110,7 @@ function aiText(t, ai, scenario) {
     if (a?.available) {
       return `${est} ${esc(t('mtAiRapid', { gradient: a.values?.gradient ?? '—' }))}${much(a)} <span class="tiny muted">(${esc(t('mtAiRapidSrc', { isco: a.isco ?? '—' }))})</span>`
     }
-    if (a?.missingStep) return `${tagNone(t('mtNotAvailableTag'))} ${esc(t('mtAiNoIsco'))} ${esc(t('mtMissing'))} ${esc(stepText(a.missingStep))}`
+    if (a?.missingStep) return `${tagNone(t('mtNotAvailableTag'))} ${esc(t('mtAiNoIsco'))} ${esc(t('mtMissing'))} ${esc(stepText(t, a.missingStep))}`
     return `${tagNone(t('mtNotAvailableTag'))} ${esc(t('mtAiNoIlo', { isco: a?.isco ?? '—' }))}`
   }
   const a = ai?.moderate
@@ -134,7 +146,11 @@ function pathList(t, code, chain) {
     const src = s.source?.name ? ` <span class="tiny muted">(${link(s.source.url, s.source.name)})</span>` : ''
     items.push(`<li>${esc(s.from?.system ?? '')} ${esc((s.from?.codes ?? []).join(', '))} → ${esc(s.to?.system ?? '')} <b>${esc((s.to?.codes ?? []).join(', '))}</b>${label}${src}</li>`)
   }
-  if (chain?.missingStep) items.push(`<li class="miss"><b>${esc(t('mtMissing'))}</b> ${esc(stepText(chain.missingStep))}</li>`)
+  if (chain?.missingStep) {
+    const reason = typeof chain.missingStep.reason === 'string' ? chain.missingStep.reason : ''
+    const detail = reason ? `<div class="tiny muted">${esc(t('mtStepDetail'))} <span lang="en">${esc(reason)}</span></div>` : ''
+    items.push(`<li class="miss"><b>${esc(t('mtMissing'))}</b> ${esc(stepText(t, chain.missingStep))}${detail}</li>`)
+  }
   return `<ol class="mt-path">${items.join('')}</ol>`
 }
 
@@ -288,6 +304,27 @@ function banner(t, m, roles) {
     <button class="btn sm" type="button" data-act="mBannerClose">${esc(t('mtClose'))}</button></div>`
 }
 
+// {code, band} of every listed role in one scenario: what the trend-data banner compares before and after.
+export const bandsAt = (data, scenario) => (data?.roles ?? []).map((r) => ({ code: r.code, band: bandOf(r, scenario) }))
+// After the trend data changed (same profile): the roles that moved band in the scenario shown then.
+// before = {scenario, bands: bandsAt(oldData, scenario)} -> {scenario, moved: [{code, from, to}]}, or null.
+export function trendMoves(before, data) {
+  if (!before || !Array.isArray(before.bands) || !data) return null
+  const scenario = before.scenario === 'rapid' ? 'rapid' : 'moderate'
+  return { scenario, moved: movedRoles(before.bands, bandsAt(data, scenario)) }
+}
+
+// The trend data (a Radar refresh or decision, or a judge's Trend Change Test) changed since the list was last shown.
+function trendBanner(t, m, roles) {
+  const trend = m.trend
+  if (!trend || !Array.isArray(trend.moved) || trend.scenario !== scenarioOf(m)) return ''
+  const titles = new Map(roles.map((r) => [r.code, r.title]))
+  const items = trend.moved.map((x) => t('mtBannerItem', { title: titles.get(x.code) ?? x.code, from: x.from, to: x.to })).join(' · ') || t('mtBannerNone')
+  return `<div class="banner mt-banner" role="status" data-banner="trend"><div><b>${esc(t('mtTrendTitle', { scenario: t(trend.scenario === 'rapid' ? 'mtScnRapid' : 'mtScnModerate'), count: trend.moved.length }))}</b>
+    ${esc(items)}. ${esc(t('mtBannerSame'))}</div>
+    <button class="btn sm" type="button" data-act="mBannerClose">${esc(t('mtClose'))}</button></div>`
+}
+
 function notes(t, data, profile) {
   const out = []
   if (data.radar?.judgeSession) out.push(`<div class="mt-note">${esc(t('mtJudge'))}</div>`)
@@ -312,10 +349,18 @@ function notes(t, data, profile) {
     const steps = new Map()
     for (const r of roles) {
       const s = r.unavailable.missingStep
-      if (!steps.has(s.id)) steps.set(s.id, { id: s.id, reason: s.reason, count: 0 })
-      steps.get(s.id).count += 1
+      const id = `${s.id}|${s.kind ?? ''}`
+      if (!steps.has(id)) steps.set(id, { step: s, codes: new Set(), count: 0 })
+      const g = steps.get(id)
+      g.count += 1
+      for (const c of s.from?.codes ?? []) g.codes.add(c)
     }
-    const list = [...steps.values()].map((s) => `<li>${esc(t('mtChainStep', { reason: s.reason ?? s.id, count: s.count }))}</li>`).join('')
+    // One line per missing step for all roles; at most 5 codes named (a pending step names none).
+    const codesOf = (g) => {
+      const all = [...g.codes].sort()
+      return g.step.kind === 'pending' ? [] : all.length > 5 ? [...all.slice(0, 5), '…'] : all
+    }
+    const list = [...steps.values()].map((g) => `<li>${esc(t('mtChainStep', { reason: stepReason(t, { ...g.step, from: { ...g.step.from, codes: codesOf(g) } }), count: g.count }))}</li>`).join('')
     out.push(`<div class="mt-note warn"><b>${esc(t('mtChainTitle'))}</b> ${esc(t('mtChainText'))}<ul class="mt-steps">${list}</ul>${esc(t('mtChainStill'))}</div>`)
   }
   return out.join('')
@@ -356,6 +401,7 @@ export function matchView({ t, state }) {
   const fieldNames = (state.profile?.education?.records ?? []).map((r) => r?.field).filter((f) => f?.code).map((f) => t('mtFieldCode', { title: f.title ?? '', code: f.code }))
   return `<div class="mt">${head}
     ${controls(t, m, all, state.profile, data.goalTitles)}
+    ${trendBanner(t, m, all)}
     ${banner(t, m, all)}
     ${notes(t, data, state.profile)}
     <h2 class="mt-h2">${esc(t('mtInField'))} <span class="tiny muted">${esc([...fieldNames, t('mtRoleCount', { count: field.length })].join(' · '))}</span></h2>

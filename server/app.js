@@ -150,13 +150,15 @@ export function createApp({
     devStore: Boolean(radar.info?.().devStore),
   }) : null
   // The profile sent here is used for the answer and dropped: never stored, never logged.
-  app.use(matchingRoutes({ matching: matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now }) }))
+  const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
+  app.use(matchingRoutes({ matching: matchingService }))
   if (radar) {
     app.use(radarRoutes({ radar }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
     // Owner decisions on the SDG links (career matching), in the Radar review store.
-    app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir }))
+    // A decision drops the matching service's cached SDG decisions, so the next matching answer shows it.
+    app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir, onDecision: () => matchingService?.sdgDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)

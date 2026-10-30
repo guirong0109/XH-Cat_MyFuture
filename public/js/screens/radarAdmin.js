@@ -137,6 +137,14 @@ const SDG_KINDS = [['masco_submajor', 'rdSdgKindGroup'], ['onet_element', 'rdSdg
 
 function sdgLinkCard(t, state, data) {
   const lang = state?.lang ?? 'en'
+  // The SDG link list could not be read: only this card says so; the other admin cards still show.
+  if (data.sdgLinksError) {
+    return `<div class="card rd-sec" id="admSdgCard">
+    <h2>${esc(t('rdSdgTitle'))} ${tag('self', t('rdSdgTag'))}</h2>
+    ${message(t, state, 'sdg')}
+    <div class="banner b-bad" role="alert"><div>${esc(errText(t, data.sdgLinksError))}${CLIENT_CODES[data.sdgLinksError] ? '' : ` <code>${esc(data.sdgLinksError)}</code>`}</div></div>
+  </div>`
+  }
   const s = data.sdgLinks ?? {}
   const writable = Boolean(s.writable)
   const links = s.links ?? []

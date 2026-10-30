@@ -21,7 +21,7 @@ A user with a confirmed profile sees Malaysian eMASCO roles ranked inside clear 
   Developers, so fit is 76%") and a You vs Needed chart;
 - **what would raise it** (the items with the biggest gaps, in points);
 - a **job outlook** for the chosen AI scenario (Moderate / Rapid), as separate sourced parts, never blended;
-- **SDG tags** with one-line reasons (owner-approved only), and an SDG contribution for the role the user chooses.
+- **SDG tags** with one-line reasons (every team draft shown now, rejected ones hidden: M16), and an SDG contribution for the role the user chooses.
 
 Success: judges can ask "why this score, and what would raise it?" and read the answer on the card; switching the
 scenario or changing the trend data visibly moves roles between bands with a banner saying what moved; every number
@@ -41,7 +41,7 @@ names its source and date; a role with no official data says so instead of guess
 | M8 | Trends | Never in the Skill Match. A separate outlook, and the bands of the list |
 | M9 | AI exposure | ILO WP140 (Rapid) + Anthropic Economic Index (Moderate) |
 | M10 | Scope | Matching + scenarios + SDG mapping. Study plan stays "not available yet" |
-| M11 | SDG links | Team draft at MASCO sub-major group level (48 two-digit groups in eMASCO) and for the 68 O\*NET skills + knowledge items; pending until the owner approves each in `#admin` |
+| M11 | SDG links | Team draft at MASCO sub-major group level (48 two-digit groups in eMASCO) and for the 68 O\*NET skills + knowledge items; pending until the owner approves each in `#admin` (replaced by M16: shown now, labelled "not yet reviewed") |
 | M15 | MASCO ↔ ISCO-08 | No official table exists (checked 30 Oct). A MASCO 2020 unit group links to the ISCO-08 unit group with the **same 4-digit code**, only when that code exists in ISCO-08 (the codes in the BLS ISCO-08 file). Source shown: the MASCO 2020 publication's statement that it follows ISCO, plus "owner decision, 30 Oct 2026". Every path labels this step "code match, not an official table" |
 | M14 | Mockup | `docs/mockup-matching.html` approved by the owner (30 Oct): matching on the existing "Career matching" tab (`#match`), SDG contribution on the existing "SDG contribution" tab (`#sdg`), chart items in O\*NET importance order (first 8, "Show all"), Skill Match above the details on phones |
 | M16 | SDG tags shown now (31 Oct) | Replaces "only owner-approved links": every team-draft link in `data/sdg/links.json` is shown at once on cards, in the SDG filter and on `#sdg`, labelled "team draft, not yet reviewed"; a link the owner approved in `#admin` shows "team draft, approved by owner on <date>"; a rejected link is hidden ("revise" = not reviewed). The path contribution counts every shown link. Each tag and goal row links to the goal's UN page `https://sdgs.un.org/goals/goal<N>`. Admin review is unchanged |
@@ -64,7 +64,7 @@ original is kept when it is small. Nothing is invented: a missing value stays mi
 | `data/ai/ilo_wp140.tsv` | Per ISCO-08 4-digit occupation: mean and SD of the 2025 task scores, and the ILO gradient worked out with WP140 Table 5 | `Final_Scores_ISCO08_Gmyrek_et_al_2025.xlsx` from the lead author's repository named in WP140 (https://github.com/pgmyrek/2025_GenAI_scores_ISCO08), CC BY 4.0; paper https://doi.org/10.54394/HETP0387 | Columns `ISCO_08`, `mean_score_2025`, `SD_2025` |
 | `data/ai/aei_tasks.tsv` | Per O\*NET task: `usage_pct`, `collaboration_bucket_automation_pct`, `collaboration_bucket_augmentation_pct` | Anthropic Economic Index `release_2026_06_26`, `data/aei_claude_ai_2026-06-26.csv` (Hugging Face `Anthropic/EconomicIndex`), data CC-BY | Rows `category_name=onet`, `hierarchy_level=0`; the 219 MB original is not kept, its URL and SHA-256 are |
 | `data/sdg/targets.json` | 17 goals and 169 targets, official UN wording | UN Statistics Division SDG API, `/v1/sdg/Goal/{n}/Target/List` | Terms recorded as found |
-| `data/sdg/links.json` | Team-draft links: `{id, kind: masco_submajor\|onet_element, code, target, reason{en,ms,zh}}` | Written for this project, labelled "team draft" | Owner decisions are stored like the Radar reviews; only approved links are used |
+| `data/sdg/links.json` | Team-draft links: `{id, kind: masco_submajor\|onet_element, code, target, reason{en,ms,zh}}` | Written for this project, labelled "team draft" | Owner decisions are stored like the Radar reviews; every link not rejected is shown (M16) |
 
 The Radar export (`radar-signal/v1`, read in-process from the active manifest) gives the DOSM major-group signals and
 the O\*NET "in demand" lists. Matching reads it and never changes it.
@@ -147,8 +147,8 @@ O\*NET; it still appears when its eMASCO code matches a past job or role of inte
   digits); a skill or knowledge item takes its own. No shown link → "SDG not tagged yet".
 - Each tag shows goal, target, the one-line reason and "team draft, not yet reviewed" or "team draft, approved by owner
   on <date>", and links to the goal's official UN page `https://sdgs.un.org/goals/goal<N>`.
-- **Choose this role** (saved in the guest store) sets the path. The **SDG contribution** counts approved links on the
-  path (every shown link, M16): the role's links plus the links of the items still to learn or raise for its best O\*NET job. Shown per goal
+- **Choose this role** (saved in the guest store) sets the path. The **SDG contribution** counts every shown link on the
+  path (M16): the role's links plus the links of the items still to learn or raise for its best O\*NET job. Shown per goal
   ("SDG 4: 2 links, SDG 8: 3"), every reason listed, labelled "potential, not measured". No impact score.
 - **SDG filter** on the list ("roles linked to SDG 7") narrows what is shown; it never changes a Skill Match or band.
 - Owner review in `#admin` (same keys and review store as the Radar): approve or reject each draft link.
@@ -156,7 +156,8 @@ O\*NET; it still appears when its eMASCO code matches a past job or role of inte
 ## 8. Server and screen
 
 - `POST /api/matching` `{profile, lang}` → for every role: code, title, URL, best O\*NET job, Skill Match (or the
-  reason it is missing), provisional, in-your-field, band per scenario, SDG goals; plus sources and dates. The profile is
+  reason it is missing), provisional, in-your-field, band per scenario, SDG goals, `sdgReviewed` (goal → date the owner approved all its links), `ai`
+  (`moderate: {available, automationPct}`, `rapid: {available, exposurePct, gradient}` for the closed card); plus sources and dates. The profile is
   validated, used and dropped: never stored or logged.
 - `POST /api/matching/role` `{profile, code}` → the full card detail: items, chart data, raise list, chain path, outlook
   parts for both scenarios, also-asked lists, SDG tags.
@@ -184,7 +185,7 @@ Test first (Vitest) for each unit; Python unit tests for each pipeline script wi
   not-assessed (provisional), suppressed rows, importance < 3 excluded, raise list order and points, N > 6.
 - `chain.js`: full path; each missing step; one ISCO code to several O\*NET jobs; best-job choice and ties.
 - `outlook.js`: each band in each scenario; insufficient DOSM; missing AI data; band-move banner list.
-- `sdg.js`: only approved links; group inheritance; path count; filter.
+- `sdg.js`: every link not rejected is shown (M16), approved ones dated; group inheritance; path count; filter.
 - Routes: real app on a random port; profile never logged; thin profile; unknown ids.
 - Browser check on `127.0.0.2:3200` (desktop and 360 px): scenario switch, why-this-match chart, choose a role, SDG
   panel, judge change test moves bands.

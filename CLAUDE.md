@@ -28,7 +28,7 @@ whole-branch review is next. Do not touch main's files; the owner decides on mer
   available" with the missing step, never a guess.
 - Trends and the AI scenario never change the Skill Match; they set the outlook parts and the band.
 - Read Radar signals as the contract says (`docs/radar/contract.md`, "What Matching may read / must not infer").
-- Only owner-approved SDG links appear; the path contribution is a count of links with reasons, never a score.
+- Every SDG team-draft link appears now (M16, 31 Oct), labelled "not yet reviewed" or "approved by owner on <date>"; rejected ones are hidden; the path contribution is a count of links with reasons, never a score.
 - The profile sent to `/api/matching` is never stored or logged.
 - Matching uses no language model. Its forbidden keys are score, weight, rank, opportunit; the key is `skillMatch`.
 - Rapid AI uses the ISCO code from the code chain only. Suppressed O\*NET rows are left out and the screen says so.

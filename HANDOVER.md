@@ -18,9 +18,9 @@ name the missing step, SDG tags, `#sdg` path tab, owner review of SDG links in `
 (tested with a fixture).
 
 ### Waits on the owner
-- **BLS crosswalk files** (SOC 2018 to 2010, SOC 2010 to ISCO-08), saved in `data/radar/source/`, then
-  `python pipeline/fetch_radar_bridge.py`. This unlocks Skill Match percentages, the chain, Rapid AI and "In your
-  field". The browser check of those parts must be repeated then (A13 is only covered by tests today).
+- **BLS crosswalk files: done 2026-10-31** (fetched with the owner's OK, kept in `data/radar/source/`, chain
+  rebuilt). 1,261 of 1,812 roles now reach O\*NET and show a Skill Match; 540 roles in Malaysian-only 4-digit
+  groups stop at the same-code step (M15) and 11 reach only O\*NET "All Other" jobs with no skill data.
 - **SDG approvals** of the 126 team-draft links in `#admin`. Until approved, no SDG tag shows.
 - **DOSM 2025 Q3 break review** (Radar). Until then the job-ad parts are "not enough evidence" and most roles sit in
   band 4.
@@ -67,8 +67,8 @@ maths · trends only in a separate outlook and bands · ILO + Anthropic for AI e
 SDG (no study plan) · SDG team draft, owner approves · career interests not used in v1 · Claude drafts the diagram.
 
 ## Blocking / waiting on the owner
-- **BLS crosswalk files** (SOC 2018 ↔ 2010, SOC 2010 ↔ ISCO-08): BLS blocks automated downloads; the owner saves them in
-  `data/radar/source/`. Without them every role shows "Skill Match not available" with the missing step.
+- **BLS crosswalk files**: saved 2026-10-31 (BLS refuses scripted downloads; fetched with the web-fetch tool with the
+  owner's OK; the ISCO `.xls` sheet saved as `.csv` by Excel). Refresh the same way if BLS publishes new tables.
 - **Official MASCO 2020 ↔ ISCO-08 source** (also a Radar open point). Today the step uses the same 4-digit code (M15).
 - ILO and Anthropic data licences are recorded at fetch; if one does not allow reuse, ask the owner.
 

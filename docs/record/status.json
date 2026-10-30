@@ -512,7 +512,7 @@
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
     "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
-    "Career Matching: save the two BLS crosswalk files in data/radar/source/ (the ISCO one as .xlsx or .csv); approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
+    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1240,6 +1240,11 @@
       "time": "30 Oct",
       "step": "Matching wording fix (your screenshot)",
       "detail": "banner says no role moved instead of 0 role(s): none; 1 role / N roles; missing steps say they wait for the BLS crosswalk files; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "BLS crosswalk files saved (your OK)",
+      "detail": "both files fetched and kept in data/radar/source/; chain rebuilt: 1,261 of 1,812 roles reach O*NET and show a Skill Match; 540 Malaysian-only codes say no ISCO-08 match; npm test 781 passed"
     }
   ]
 }

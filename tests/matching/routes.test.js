@@ -141,11 +141,16 @@ describe('loadMatchingData', () => {
     }
   })
 
-  it('real data: 1812 roles listed, the 2 unparsed stubs left out; BLS steps pending -> every role has a missing step', async () => {
+  it('real data: 1812 roles listed, the 2 unparsed stubs left out; with the BLS files saved most roles reach O*NET', async () => {
     const data = await loadMatchingData('data')
     expect(data.roles).toHaveLength(1812)
     expect(data.roles.every((r) => typeof r.title === 'string')).toBe(true)
-    expect(data.roles.some((r) => data.chain.resolve(r.code).missingStep === null)).toBe(false)
+    const chains = data.roles.map((r) => data.chain.resolve(r.code))
+    expect(chains.filter((c) => c.missingStep === null).length).toBeGreaterThan(1000)
+    expect(data.chain.resolve('2512-01')).toMatchObject({ isco: '2512', missingStep: null })
+    expect(data.chain.resolve('2512-01').jobs).toContain('15-1252.00')
+    // a Malaysian-only unit code (1121; ISCO-08 has 1120) stops at the same-code step, never guessed (M15)
+    expect(data.chain.resolve('1121-01').missingStep).toMatchObject({ id: 'masco2020_unit_to_isco08', kind: 'no_row' })
   })
 })
 
@@ -470,14 +475,16 @@ describe('POST /api/matching/role', () => {
     expect(noIsco.body.outlook.ai.rapid).not.toHaveProperty('iscoFrom')
   })
 
-  it('real bridge (MASCO step pending): Rapid is unavailable for a real role, with the missing step', async () => {
+  it('real bridge: Rapid uses the chain ISCO code; a Malaysian-only code stays unavailable with the missing step', async () => {
     const real = await loadMatchingData('data')
-    expect(real.ilo.get('2512')).toBeTruthy() // ILO has the code; the chain does not reach it yet
+    expect(real.ilo.get('2512')).toBeTruthy()
     const matching = createMatchingServiceFromEnv({ dataDir: 'data', radar: null, references: fixtureReferences, log: () => {} })
     const answer = await matching.role(FULL, '2512-01', { headers: {} })
-    expect(answer.outlook.ai.rapid).toMatchObject({ available: false, isco: null, missingStep: { id: 'masco2020_unit_to_isco08' } })
+    expect(answer.outlook.ai.rapid).toMatchObject({ available: true, isco: '2512', missingStep: null })
+    const other = await matching.role(FULL, '1121-01', { headers: {} })
+    expect(other.outlook.ai.rapid).toMatchObject({ available: false, isco: null, missingStep: { id: 'masco2020_unit_to_isco08' } })
     const list = await matching.list(FULL, { headers: {} })
-    expect(list.roles.find((r) => r.code === '2512-01').bands.rapid).toBe(4)
+    expect(list.roles.find((r) => r.code === '1121-01').bands.rapid).toBe(4)
   })
 
   it('unknown role code -> 404; the unparsed stub -> 404', async () => {

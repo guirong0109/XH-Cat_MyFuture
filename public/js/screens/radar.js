@@ -448,6 +448,11 @@ function drawer(t, state, data) {
 
 // ---------- the screen ----------
 
+// The Radar UI state with its loaded data dropped, so the next visit to #radar loads afresh. Used after an admin
+// decision, refresh or clean-up: a field-topic decision changes the references without a manifest of its own, so the
+// data shown would stay out of date. The view choices (tab, mode, hidden lines, View all) and the banner flag stay.
+export const staleRadar = (radar) => ({ ...(radar ?? {}), data: null, open: null, signal: null, newerManifestId: null, gone: false, error: null, loading: false })
+
 export function radarView({ t, state, data }) {
   const u = ui(state)
   const head = `<h1>${esc(t('rdTitle'))}</h1><p class="lead">${esc(t('rdLead'))}</p><p class="small muted">${esc(t('rdSub'))}</p>`

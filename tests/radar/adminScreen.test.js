@@ -14,6 +14,7 @@ import { SourceError } from '../../server/radar/sourceError.js'
 import * as radarApi from '../../public/js/radarApi.js'
 import { createRadarAdminApi } from '../../public/js/radarAdminApi.js'
 import { adminView, judgeView } from '../../public/js/screens/radarAdmin.js'
+import { staleRadar } from '../../public/js/screens/radar.js'
 import { ruleText } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import en from '../../shared/strings/en.js'
@@ -501,6 +502,48 @@ describe('escaping', () => {
     r.current.dosm.groups['2'].name = evil
     const j = judgeView({ t, state: judgeState({ msgs: { judge: { kind: 'bad', code: 'validation_failed', errors: [{ code: evil, path: evil }] } } }), data: { report: r, now: NOW.getTime() } })
     expect(j).not.toContain('<img')
+  })
+})
+
+describe('the public Radar after an admin decision (acceptance note N2)', () => {
+  it('staleRadar drops the loaded data (so #radar loads again) and keeps the view choices', () => {
+    const before = { tab: 'ai', mode: 'share', hidden: ['robotics'], all: { sk: true }, devStore: true, data: publicData, open: { kind: 'axis', id: 'language' }, signal: { signalId: 'x' }, newerManifestId: 'm-2', gone: true, error: 'network', loading: true }
+    const after = staleRadar(before)
+    expect(after).toMatchObject({ tab: 'ai', mode: 'share', hidden: ['robotics'], all: { sk: true }, devStore: true })
+    expect(after).toMatchObject({ data: null, open: null, signal: null, newerManifestId: null, gone: false, error: null, loading: false })
+    expect(staleRadar(undefined)).toMatchObject({ data: null, loading: false })
+  })
+
+  it('every successful admin decision, refresh and clean-up marks the Radar stale; loads cannot land after that', () => {
+    const app = readFileSync('public/js/app.js', 'utf8')
+    const body = (name) => {
+      const start = app.indexOf(`  ${name}: async`)
+      expect(start, name).toBeGreaterThan(0)
+      return app.slice(start, app.indexOf('\n  },', start))
+    }
+    for (const name of ['admMap', 'admBreak', 'admRefresh', 'admCleanup']) expect(body(name), name).toContain('radarStale()')
+    // A failed mapping or break decision leaves the Radar as it is (nothing changed on the server).
+    for (const name of ['admMap', 'admBreak']) {
+      const b = body(name)
+      expect(b.indexOf('radarStale()'), name).toBeGreaterThan(b.indexOf('if (!out.ok)'))
+    }
+    const stale = app.slice(app.indexOf('function radarStale()'), app.indexOf('\n}', app.indexOf('function radarStale()')))
+    expect(stale).toContain('staleRadar(')
+    // A load still on its way when the data went stale is dropped (it may hold the data from before the decision).
+    expect(app).toMatch(/async function loadRadar\([^)]*\) \{\r?\n\s+const run = \+\+radarRun/)
+    expect(app).toMatch(/if \(run !== radarRun\) return/)
+    // ensureRadar loads again once the data was dropped.
+    expect(app).toMatch(/function ensureRadar\(\) \{[^}]*!r\.data && !r\.loading/)
+  })
+
+  it('a mapping decision publishes no manifest of its own, yet a fresh load returns the decided references', async () => {
+    const out = await admin.decideMapping({ mappingId: '06-language', decision: 'approved', note: 'N2 check.' })
+    expect(out.ok).toBe(true)
+    // What #radar showed before the decision: the proposal still pending.
+    expect(publicData.refs.fieldTopics.find((m) => m.mappingId === '06-language')?.reviewStatus ?? 'pending').not.toBe('approved')
+    const fresh = await radarApi.load(undefined, { base })
+    expect(fresh.ok).toBe(true)
+    expect(fresh.data.refs.fieldTopics.find((m) => m.mappingId === '06-language').reviewStatus).toBe('approved')
   })
 })
 

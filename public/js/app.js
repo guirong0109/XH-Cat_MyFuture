@@ -17,7 +17,7 @@ import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
-import radarScreen from './screens/radar.js'
+import radarScreen, { staleRadar } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -111,9 +111,13 @@ function setRadar(patch) {
   state.radar = { ...radarUi(), ...patch }
   render()
 }
+// Each load gets a number; a load that ends after a newer one started (or after the data went stale) is dropped.
+let radarRun = 0
 async function loadRadar(manifestId) {
+  const run = ++radarRun
   state.radar = { ...radarUi(), loading: true, error: null, gone: false }
   const out = await radarApi.load(manifestId)
+  if (run !== radarRun) return
   // devStore is remembered from the last answer that said it, so the banner stays up without data (spec §7).
   const devStore = out.data?.devStore ?? out.devStore ?? radarUi().devStore
   if (out.reload) state.radar = { ...radarUi(), loading: false, gone: true }
@@ -137,6 +141,12 @@ async function openEvidence(kind, id, signalId) {
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+}
+// After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
+// changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
+function radarStale() {
+  radarRun += 1
+  state.radar = staleRadar(state.radar)
 }
 
 // ---------- Radar admin (#admin) and judge Trend Change Test (#judge) ----------
@@ -227,6 +237,7 @@ const adminActions = {
       if (!adminApi.session()) return adminFailed('map', out)
       return setAdmin({ notes, ...adminMsg('map', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admMapNote' : 'admMsg-map')
     }
+    radarStale()
     reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-map')
   },
   admBreak: async (arg) => {
@@ -241,16 +252,19 @@ const adminActions = {
       const focus = out.code === 'note_required' ? 'admBrkNote' : out.code === 'bad_link' ? 'admBrkLink' : 'admMsg-brk'
       return setAdmin({ notes, ...adminMsg('brk', { kind: 'bad', code: out.code }) }, focus)
     }
+    radarStale()
     reloadAdmin({ notes: { ...notes, brk: '', link: '' }, ...adminMsg('brk', { kind: 'ok', recalculation: out.data.recalculation }) }, 'admMsg-brk')
   },
   admRefresh: async (source) => {
     const out = await adminApi.refresh(source)
     if (!out.ok && !adminApi.session()) return adminFailed('refresh', out)
+    if (out.ok) radarStale()
     reloadAdmin(adminMsg('refresh', out.ok ? { kind: 'ok', source, result: out.data?.result } : { kind: 'bad', source, code: out.code }), 'admMsg-refresh')
   },
   admCleanup: async () => {
     const out = await adminApi.cleanup()
     if (!out.ok) return adminFailed('status', out)
+    radarStale()
     reloadAdmin(adminMsg('status', { kind: 'ok', key: 'rdAdminCleaned', vars: { deleted: out.data.deleted.length, refused: out.data.refused.length } }), 'admMsg-status')
   },
   admScen: (scen) => setAdmin({ scen: scen === 'B' ? 'B' : 'A' }, `demoScen${scen === 'B' ? 'B' : 'A'}`),

@@ -16,7 +16,7 @@ import { loadReviews, recordReview } from '../../server/radar/reviews.js'
 const ENV = { RADAR_ADMIN_KEY: 'admin-key-for-tests-0123456789', RADAR_DEMO_KEY: 'demo-key-for-tests-9876543210', RADAR_SESSION_SECRET: 's'.repeat(40) }
 const MIN = 60000
 const bundleStore = createFileStore('data/radar/bundle')
-const BUNDLE_ACTIVE = 'manifest-20261030T073351.583Z-74046a19'
+const BUNDLE_ACTIVE = 'manifest-20261030T113958.380Z-ebe71e1d'
 
 let references
 beforeAll(async () => {
@@ -517,7 +517,7 @@ describe('orphans and cleanup', () => {
     const { store } = await start()
     const session = await login()
     await call('GET', '/api/radar/manifest')
-    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T07:33:51.583Z
+    const active = (await getJson(store, KEYS.manifest(BUNDLE_ACTIVE))).value // createdAt 2026-10-30T11:39:58.380Z
     const publish = async (stamp, iso, nonce) => {
       const keys = {
         snapshot: KEYS.snapshot('openalex', `openalex-${stamp}`),
@@ -530,9 +530,9 @@ describe('orphans and cleanup', () => {
       return keys
     }
     // Written by an instance whose clock runs a few minutes behind: still possibly in progress.
-    const skewed = await publish('20261030T072851.583Z', '2026-10-30T07:28:51.583Z', 'skew0001')
+    const skewed = await publish('20261030T113458.380Z', '2026-10-30T11:34:58.380Z', 'skew0001')
     // Clearly older than any plausible skew: a left-over.
-    const stale = await publish('20261030T071351.583Z', '2026-10-30T07:13:51.583Z', 'stale001')
+    const stale = await publish('20261030T111958.380Z', '2026-10-30T11:19:58.380Z', 'stale001')
     const status = await call('GET', '/api/admin/radar/status', { session })
     expect(status.body.orphans).toEqual(Object.values(stale).sort())
     const r = await call('POST', '/api/admin/radar/cleanup', { session })

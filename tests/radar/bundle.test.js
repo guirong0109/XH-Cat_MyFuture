@@ -89,6 +89,29 @@ describe('bundled Radar data', () => {
     expect(dosm.meta.listingTitle).toBe('Big Data Analytics: Job Market Insights, Second Quarter of 2026')
   })
 
+  it('O*NET skill flags: release 31.0, compared 30.2 → 30.3 (D25); Hot Technologies: the 2025 window with its page kept', async () => {
+    const { manifest } = await readActive(store)
+    const snaps = await snapshotsOf(manifest)
+    const onet = snaps['onet-skills']
+    expect(onet.classification.version).toBe('31.0')
+    expect(onet.meta.flagSets.map((s) => s.releases)).toEqual([['30.2'], ['30.3', '31.0']])
+    for (const set of onet.meta.flagSets) {
+      expect(set.zipUrl).toMatch(/^https:\/\/www\.onetcenter\.org\/dl_files\/database\/db_\d{2}_\d_text\.zip$/)
+      expect(set.zipSha256).toMatch(/^[0-9a-f]{64}$/)
+    }
+    expect(onet.meta.flagSets[1].fileSha256).toBe('3fd63fb00251af89bf55eb1d24986e654ff61d0e5214fc238fbb56da7b4c4f4c')
+    const { value } = await getJson(store, KEYS.signals(manifest.signalsId))
+    const ids = value.signals.map((s) => s.signalId)
+    expect(ids).toContain('onet:indemand:15-1252.00:Go')
+    expect(value.onetSkills).toMatchObject({ previous: '30.2', current: '30.3' })
+    const hot = snaps['onet-hottech']
+    expect(hot.meta.window.year).toBe('2025')
+    expect(hot.originals).toHaveLength(1)
+    const page = await store.get(KEYS.original('onet-hottech', hot.originals[0].sha256))
+    expect(sha256(page.bytes)).toBe(hot.originals[0].sha256)
+    expect(ids.some((id) => id.startsWith('onet:postings:'))).toBe(true)
+  })
+
   it('the previous manifest is consistent with its signals and is not the active one', async () => {
     const active = (await readActive(store)).manifest
     expect(active.previousManifestId).toBeTruthy()

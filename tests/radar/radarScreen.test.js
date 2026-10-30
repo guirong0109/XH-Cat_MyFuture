@@ -13,7 +13,7 @@ import { evidencePanel, ruleVars } from '../../public/js/components/evidencePane
 import { t as translate } from '../../shared/i18n.js'
 
 const t = (key, vars) => translate('en', key, vars)
-const BUNDLE_ACTIVE = 'manifest-20261030T073351.583Z-74046a19'
+const BUNDLE_ACTIVE = 'manifest-20261030T113958.380Z-ebe71e1d'
 const BUNDLE_OLDER = 'manifest-20261030T073351.495Z-2c6bf0d6'
 
 let server

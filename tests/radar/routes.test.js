@@ -15,7 +15,7 @@ import { RADAR_CONFIG } from '../../shared/radar/config.js'
 import { FORBIDDEN_KEY_PATTERN, validateSignal } from '../../shared/radar/contract.js'
 import { effectiveFieldTopics } from '../../shared/radar/relevance.js'
 
-const BUNDLE_ACTIVE = 'manifest-20261030T073351.583Z-74046a19'
+const BUNDLE_ACTIVE = 'manifest-20261030T113958.380Z-ebe71e1d'
 const BUNDLE_OLDER = 'manifest-20261030T073351.495Z-2c6bf0d6'
 const OPENALEX_SNAPSHOT = 'openalex-20261030T073351Z'
 const DOSM_SNAPSHOT = 'dosm-2026q2-20261030T073351Z'
@@ -103,7 +103,7 @@ describe('public Radar API', () => {
     for (const source of ['openalex', 'dosm']) {
       expect(body.states[source]).toMatchObject({ availability: 'data', freshness: 'current', refreshHealth: 'not_configured', servedFrom: 'bundled_read_only' })
     }
-    expect(body.snapshots).toEqual({ openalex: OPENALEX_SNAPSHOT, dosm: DOSM_SNAPSHOT })
+    expect(body.snapshots).toEqual({ openalex: OPENALEX_SNAPSHOT, dosm: DOSM_SNAPSHOT, 'onet-skills': 'onet-skills-31.0', 'onet-hottech': 'onet-hottech-2025-f6300b66' })
   })
 
   it('with R2 configured but unreachable and nothing cached, falls back to the bundle and says the store failed (Test 19)', async () => {
@@ -130,6 +130,11 @@ describe('public Radar API', () => {
       KEYS.original('dosm', DOSM_ORIGINAL),
       KEYS.signals('signals-20261030T073351.583Z-74046a19'),
       KEYS.signals('signals-20261030T073351.495Z-2c6bf0d6'),
+      KEYS.signals('signals-20261030T113958.380Z-ebe71e1d'),
+      KEYS.snapshot('onet-skills', 'onet-skills-31.0'),
+      KEYS.snapshot('onet-skills', 'onet-skills-30.2'),
+      KEYS.snapshot('onet-hottech', 'onet-hottech-2025-f6300b66'),
+      KEYS.original('onet-hottech', 'f6300b66b9e725c5999d30d803be87c2c2de18262500145709a161f322ec9e9f'),
     ]) {
       const copied = await store.get(key)
       expect(copied, key).toBeTruthy()
@@ -397,7 +402,11 @@ describe('public Radar API', () => {
     expect(body.contract).toBe('radar-signal/v1')
     expect(body.manifestId).toBe(BUNDLE_ACTIVE)
     expect(body.states.dosm).toBeTruthy()
-    expect(body.signals).toHaveLength(15)
+    // 15 Round 1 signals (OpenAlex, DOSM); O*NET 30.2 → 30.3: 151 + 219 In Demand changes and 5 new Hot; 176 Hot Technologies counts.
+    expect(body.signals.filter((s) => /^(openalex|dosm):/.test(s.signalId))).toHaveLength(15)
+    expect(body.signals.filter((s) => /^onet:(indemand|hot):/.test(s.signalId))).toHaveLength(375)
+    expect(body.signals.filter((s) => s.signalId.startsWith('onet:postings:'))).toHaveLength(176)
+    expect(body.signals).toHaveLength(566)
     for (const s of body.signals) {
       expect(s.contract).toBe('radar-signal/v1')
       expect(validateSignal(s).ok, s.signalId).toBe(true)

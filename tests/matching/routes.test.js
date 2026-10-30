@@ -392,16 +392,28 @@ describe('POST /api/matching/role', () => {
     expect(body.sdg.pathPreview.total).toBe(3)
   })
 
-  it('a role whose chain stops: no fit, Rapid from the chain ISCO code; before ISCO from the unit code', async () => {
+  it('a role whose chain stops: no fit, Rapid from the chain ISCO code; no chain ISCO code -> Rapid unavailable with the missing step', async () => {
     await start()
     const broken = await post('/api/matching/role', { profile: FULL, code: FIXTURE.brokenRole })
     expect(broken.body.fit).toBeNull()
     expect(broken.body.jobs).toEqual([])
     expect(broken.body.chain.missingStep.id).toBe('soc2010_to_isco08')
     expect(broken.body.outlook.ai.moderate.available).toBe(false)
-    expect(broken.body.outlook.ai.rapid).toMatchObject({ available: true, changesMuch: true, isco: '2512' })
+    expect(broken.body.outlook.ai.rapid).toMatchObject({ available: true, changesMuch: true, isco: '2512', missingStep: null })
+    // The fixture has an ILO row for 9999: a same-digits stand-in would find it; only the bridge step may give ISCO-08.
     const noIsco = await post('/api/matching/role', { profile: FULL, code: FIXTURE.noIscoRole })
-    expect(noIsco.body.outlook.ai.rapid).toMatchObject({ available: false, isco: '9999' })
+    expect(noIsco.body.outlook.ai.rapid).toMatchObject({ available: false, changesMuch: null, isco: null, values: null, missingStep: { id: 'masco2020_unit_to_isco08' } })
+    expect(noIsco.body.outlook.ai.rapid).not.toHaveProperty('iscoFrom')
+  })
+
+  it('real bridge (MASCO step pending): Rapid is unavailable for a real role, with the missing step', async () => {
+    const real = await loadMatchingData('data')
+    expect(real.ilo.get('2512')).toBeTruthy() // ILO has the code; the chain does not reach it yet
+    const matching = createMatchingServiceFromEnv({ dataDir: 'data', radar: null, references: fixtureReferences, log: () => {} })
+    const answer = await matching.role(FULL, '2512-01', { headers: {} })
+    expect(answer.outlook.ai.rapid).toMatchObject({ available: false, isco: null, missingStep: { id: 'masco2020_unit_to_isco08' } })
+    const list = await matching.list(FULL, { headers: {} })
+    expect(list.roles.find((r) => r.code === '2512-01').bands.rapid).toBe(4)
   })
 
   it('unknown role code -> 404; the unparsed stub -> 404', async () => {

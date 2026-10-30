@@ -5,7 +5,8 @@
 //   2521-03  full chain: MASCO 2521 -> ISCO 2521 -> SOC 2010 15-1141 -> SOC 2018 15-1242/15-1243 -> two O*NET jobs.
 //            Moderate AI: observed tasks, automation 30% (does not change much); Rapid: ILO G1. DOSM group 2.
 //   2512-01  chain stops at SOC 2010 (ISCO 2512 has no BLS row); Rapid: ILO G3 (AI may change much).
-//   9999-01  MASCO unit 9999 is not in ISCO-08: chain stops at the first step; no AI data.
+//   9999-01  MASCO unit 9999 is not in ISCO-08: chain stops at the first step; no AI data. Its ILO row (G4)
+//            must never be used: ISCO-08 comes only from the bridge step.
 //   1113-01  unparsed stub (title null): never listed.
 import { createHash } from 'node:crypto'
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
@@ -80,6 +81,7 @@ const SOFTWARE = [
 const ILO = [
   ['2512', 'Software developers', '0.62', '0.10', 'G3'],
   ['2521', 'Database designers and administrators', '0.45', '0.12', 'G1'],
+  ['9999', 'Not reached through the bridge (stand-in check)', '0.70', '0.10', 'G4'],
 ]
 
 const SYS = {

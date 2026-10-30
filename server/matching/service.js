@@ -178,10 +178,11 @@ export function createMatchingService({ loadData, radar = null, references = nul
     const jobs = r.jobs.map((code) => ({ code, title: data.jobs.get(code)?.title ?? null, items: data.jobs.get(code)?.items ?? [] }))
     const { best, others } = jobs.length ? bestFit(jobs, mine.levels) : { best: null, others: [] }
     const aei = best ? aeiForJob(best.code, data.tasksByJob, data.aeiByTask) : null
-    const unit = /^\d{4}/.test(role.code) ? role.code.slice(0, 4) : null
-    const isco = r.isco ?? unit
     const moderate = { ...aiPart('moderate', { aei }), onetCode: best?.code ?? null }
-    const rapid = { ...aiPart('rapid', { ilo: isco ? data.ilo.get(isco) : null }), isco, iscoFrom: r.isco ? 'chain' : unit ? 'unit_code' : null }
+    // ISCO-08 only from the bridge step masco2020_unit_to_isco08 (spec M15), never a stand-in: no code -> not available,
+    // with the chain's missing step so the screen can say why.
+    const isco = r.isco ?? null
+    const rapid = { ...aiPart('rapid', { ilo: isco ? data.ilo.get(isco) : null }), isco, missingStep: isco ? null : r.missingStep }
     const jobAds = jobAdsOf(signals, role.code)
     return { chain: r, best, others, ai: { moderate, rapid }, jobAds, bands: { moderate: bandOf(jobAds, moderate), rapid: bandOf(jobAds, rapid) } }
   }

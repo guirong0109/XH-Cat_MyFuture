@@ -300,6 +300,7 @@ export default {
   ldS1b: "或简短表格",
   ldS1c: "每项技能由你确认",
   ldLive: "现已可用",
+  ldBuilt: "{total} 个阶段已建成 {n} 个",
   ldNext: "下一个模块 · 尚未构建",
   ldBuild: "建立我的档案",
   ldDataKicker: "数据",

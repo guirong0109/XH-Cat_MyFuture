@@ -300,6 +300,7 @@ export default {
   ldS1b: "Or a short form",
   ldS1c: "You confirm every skill",
   ldLive: "Working now",
+  ldBuilt: "{n} of {total} stages built",
   ldNext: "Next module · not built yet",
   ldBuild: "Build my profile",
   ldDataKicker: "The data",

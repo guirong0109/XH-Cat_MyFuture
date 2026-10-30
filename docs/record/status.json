@@ -276,7 +276,8 @@
     "T28: your review of the landing page, its wording and the BM / 中文 translations",
     "T28b: your review of the ATM intro (look, timing, receipt wording)",
     "T28c: your review of the roller counters",
-    "T28: the section 2 column headings in BM and 中文 (ldTally1–3)"
+    "T28: the section 2 column headings in BM and 中文 (ldTally1–3)",
+    "T28: the stages-built line in BM and 中文 (ldBuilt)"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -328,7 +329,8 @@
     "T28: the gap section shows 56% and 26% on one 0-100% scale with the 30-point gap marked Calculated; heading: \"More people use AI at work than have been trained for it.\" (follows from the two quoted figures)",
     "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
     "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
-    "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording"
+    "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
+    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen"
   ],
   "log": [
     {
@@ -940,6 +942,16 @@
       "time": "30 Oct",
       "step": "Your change",
       "detail": "the sign on top of the ATM reads ATM (was FutureReady MY); checked in Chrome"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works looked too simple; add pixel, retro elements"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "pixel icons, pixel numbers, notched cards with stepped hover, level path with the player on stage 1; npm test 257 passed; checked in Chrome at 1440 and 500 px, light and dark"
     }
   ]
 }

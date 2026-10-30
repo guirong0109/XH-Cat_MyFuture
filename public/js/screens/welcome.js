@@ -2,6 +2,7 @@
 // quoted with their original source; the data counts come from data/ (tests/landing.test.js checks them).
 import { esc } from '../ui.js'
 import { odometer } from '../components/odometer.js'
+import { ICONS, LOCK, SPRITE, pixelArt, pixelDigits } from '../components/pixel.js'
 
 // Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown side by side in the second section.
 export const GUIDE_FACTS = [
@@ -97,12 +98,22 @@ function gap(t) {
 </section>`
 }
 
+// The live card's level path: a block per stage, the player standing on the built one, the rest locked.
+function quest(t) {
+  const built = t('ldBuilt', { n: STAGES.filter((stage) => stage.live).length, total: STAGES.length })
+  return `
+   <div class="lp-quest" role="img" aria-label="${esc(built)}">${STAGES.map((stage) => `<span class="lp-quest-step${stage.live ? ' on' : ''}">${
+    stage.live ? pixelArt(SPRITE, 'px-sprite') : pixelArt(LOCK, 'px-lock')}</span>`).join('<i></i>')}</div>
+   <p class="lp-quest-note">${esc(built)}</p>`
+}
+
 function stageCard(t, stage, i) {
-  const n = String(i + 1).padStart(2, '0')
+  const n = pixelDigits(String(i + 1).padStart(2, '0'))
   if (stage.live) {
     return `
   <article class="lp-stage lp-stage-live">
    <div class="lp-stage-top"><span class="lp-num">${n}</span><span class="lp-pill lp-pill-live"><i class="lp-dot"></i>${esc(t('ldLive'))}</span></div>
+   ${quest(t)}
    <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
    <p>${esc(t(stage.text))}</p>
    <ul class="lp-ticks">${['ldS1a', 'ldS1b', 'ldS1c'].map((k) => `<li>${esc(t(k))}</li>`).join('')}</ul>
@@ -110,11 +121,11 @@ function stageCard(t, stage, i) {
   </article>`
   }
   return `
-  <article class="lp-stage" style="--a:var(--lp-${stage.accent})">
-   <div class="lp-stage-top"><span class="lp-num">${n}</span></div>
+  <article class="lp-stage" style="--a:var(--lp-${stage.accent});--on:${stage.accent === 'lime' ? 'var(--lp-on-lime)' : '#fffdf8'}">
+   <div class="lp-stage-top"><span class="lp-stage-icon">${pixelArt(ICONS[stage.id], 'px-icon')}</span><span class="lp-num">${n}</span></div>
    <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
    <p>${esc(t(stage.text))}</p>
-   <span class="lp-pill lp-pill-next">${esc(t('ldNext'))}</span>
+   <span class="lp-pill lp-pill-next">${pixelArt(LOCK, 'px-lock')}${esc(t('ldNext'))}</span>
   </article>`
 }
 

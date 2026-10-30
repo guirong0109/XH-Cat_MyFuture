@@ -300,6 +300,7 @@ export default {
   ldS1b: "Atau borang ringkas",
   ldS1c: "Anda sahkan setiap kemahiran",
   ldLive: "Berfungsi sekarang",
+  ldBuilt: "{n} daripada {total} peringkat sudah dibina",
   ldNext: "Modul seterusnya · belum dibina",
   ldBuild: "Bina profil saya",
   ldDataKicker: "Data",

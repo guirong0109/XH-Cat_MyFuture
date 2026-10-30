@@ -71,9 +71,10 @@ export function parseDosmJmi(buffer) {
   for (let col = firstCol; col < MAX_COLUMN; col++) {
     const label = (sheet.cell(columnLetters(col) + quarterRow) ?? '').trim()
     if (!/^Q[1-4]$/i.test(label)) break
-    const year = (sheet.cell(columnLetters(col) + yearRow) ?? '').trim()
+    // A year written once over the first quarter of a block carries right (merged ranges already fill).
+    const year = (sheet.cell(columnLetters(col) + yearRow) ?? '').trim() || (columns.at(-1)?.year ?? '')
     if (!/^\d{4}$/.test(year)) throw new DosmLayoutError(`no year above ${columnLetters(col)}${quarterRow}`)
-    columns.push({ col, period: `${year} ${label.toUpperCase()}` })
+    columns.push({ col, year, period: `${year} ${label.toUpperCase()}` })
   }
 
   const series = {}
@@ -88,6 +89,7 @@ export function parseDosmJmi(buffer) {
     else {
       const match = GROUP_PREFIXES.find(([prefix]) => lower.startsWith(prefix))
       if (!match) throw new DosmLayoutError(`unknown group row "${label}"`)
+      if (groups[match[1]]) throw new DosmLayoutError(`duplicate group: "${label}" and "${groups[match[1]].name}"`)
       groups[match[1]] = { name: label, values }
     }
   }

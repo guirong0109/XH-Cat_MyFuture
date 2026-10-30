@@ -102,6 +102,32 @@ describe('parseDosmJmi on synthetic layouts', () => {
     expect(sheet.rows).toContain(5)
   })
 
+  it('unmerged year headers carry right across the quarter run, beside an annual block', () => {
+    // shift the quarter columns C..I to E..K and put an annual block (C, D) to the left
+    const shift = { C: 'E', D: 'F', E: 'G', F: 'H', G: 'I', H: 'J', I: 'K' }
+    const base = layout()
+    const rows = {}
+    for (const [r, cols] of Object.entries(base)) {
+      rows[r] = {}
+      for (const [c, v] of Object.entries(cols)) rows[r][shift[c] ?? c] = v
+      if (Number(r) >= 4 && Number(r) <= 15) rows[r].C = Number(r) === 4 ? '2019' : 999
+      if (Number(r) >= 4 && Number(r) <= 15) rows[r].D = Number(r) === 4 ? '2020' : 888
+    }
+    rows[3] = { E: '2020', I: '2021' } // years only over the first quarter of each block, no merges
+    const t = parseDosmJmi(makeXlsx({ sheetXml: sheetXmlFromRows(rows) }))
+    expect(t.periods).toEqual(['2020 Q1', '2020 Q2', '2020 Q3', '2020 Q4', '2021 Q1', '2021 Q2'])
+    expect(t.total).toEqual([10, 20, 30, 40, 50, 60])
+  })
+
+  it('rejects duplicate or ambiguous group rows', () => {
+    const rows = layout()
+    rows[15] = { B: 'Services and others', C: 1 } // also starts with "service"
+    rows[16] = { B: 'Unclassified', C: 1 }
+    expect(() => parseDosmJmi(build(rows))).toThrow(
+      expect.objectContaining({ code: 'dosm_layout_unexpected', detail: expect.stringContaining('duplicate group') })
+    )
+  })
+
   it('rejects unexpected layouts', () => {
     const noTable2 = build(layout({ title: 'Table 1: Something else' }))
     const noQuarterRow = build(layout({ quarters: ['2020', '2021', 'x', 'y', 'z', 'w', 'v'] }))

@@ -804,6 +804,9 @@ export default {
   mtAiNoIsco: "belum ada kod ISCO-08 untuk peranan ini.", // translation: owner review
   mtAiNoIlo: "ILO WP140 tiada baris untuk ISCO-08 {isco}", // translation: owner review
   mtSwNone: "senarai perisian tidak tersedia", // translation: owner review
+  mtSwSummary: "Anda ada {have} daripada {total} · {demand} dalam permintaan", // translation: owner review
+  mtSwMore: "+ {count} lagi", // translation: owner review
+  mtSwFewer: "Tunjuk kurang", // translation: owner review
   mtInDemand: "dalam permintaan", // translation: owner review
   mtSwShown: "Iklan kerja AS (Lightcast melalui O*NET) · ditunjukkan sahaja, bukan dalam %", // translation: owner review
   mtSdgNone: "SDG belum ditandakan", // translation: owner review

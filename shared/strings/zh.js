@@ -804,6 +804,9 @@ export default {
   mtAiNoIsco: "此职位还没有 ISCO-08 代码。", // translation: owner review
   mtAiNoIlo: "ILO WP140 没有 ISCO-08 {isco} 的数据", // translation: owner review
   mtSwNone: "软件列表不可用", // translation: owner review
+  mtSwSummary: "你拥有 {total} 项中的 {have} 项 · {demand} 项需求旺盛", // translation: owner review
+  mtSwMore: "+ 另外 {count} 项", // translation: owner review
+  mtSwFewer: "收起", // translation: owner review
   mtInDemand: "需求高", // translation: owner review
   mtSwShown: "美国招聘广告（Lightcast，经 O*NET）· 仅显示，不计入百分比", // translation: owner review
   mtSdgNone: "尚未标注 SDG", // translation: owner review

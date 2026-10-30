@@ -145,10 +145,19 @@ function aiText(t, ai, scenario) {
   return `${tagNone(t('mtNoObserved'))} ${esc(t('mtAiNoCover'))}`
 }
 
-function softwareChips(t, list) {
+// Software asked: a one-line count, the 8 most useful chips (yours first, then "in demand"), the rest in a fold.
+const SW_SHOWN = 8
+export function softwareChips(t, list) {
   if (!list?.length) return `<span class="muted small">${esc(t('mtSwNone'))}</span>`
-  const chips = list.map((s) => `<span class="mt-chip${s.have ? ' have' : ''}">${s.have ? '✓ ' : ''}${esc(s.name)}${s.inDemand ? ` · ${esc(t('mtInDemand'))}` : ''}</span>`).join('')
-  return `<div class="mt-chips">${chips}</div><div class="tiny muted">${esc(t('mtSwShown'))}</div>`
+  const order = (s) => (s.have ? 0 : s.inDemand ? 1 : 2)
+  const sorted = list.map((s, i) => ({ s, i })).sort((a, b) => order(a.s) - order(b.s) || a.i - b.i).map((x) => x.s)
+  const chip = (s) => `<span class="mt-chip${s.have ? ' have' : ''}">${s.have ? '✓ ' : ''}${esc(s.name)}${s.inDemand ? ` · ${esc(t('mtInDemand'))}` : ''}</span>`
+  const summary = t('mtSwSummary', { have: list.filter((s) => s.have).length, total: list.length, demand: list.filter((s) => s.inDemand).length })
+  const rest = sorted.slice(SW_SHOWN)
+  const more = rest.length
+    ? `<details class="mt-swmore"><summary><span class="mt-swopen">${esc(t('mtSwMore', { count: rest.length }))}</span><span class="mt-swclose">${esc(t('mtSwFewer'))}</span></summary><div class="mt-chips">${rest.map(chip).join('')}</div></details>`
+    : ''
+  return `<div class="tiny mt-swsum">${esc(summary)}</div><div class="mt-chips">${sorted.slice(0, SW_SHOWN).map(chip).join('')}</div>${more}<div class="tiny muted">${esc(t('mtSwShown'))}</div>`
 }
 
 // Open panel: one tag per target, linked to the goal's UN page, with its reason (hover) and review state.

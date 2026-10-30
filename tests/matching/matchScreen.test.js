@@ -13,7 +13,7 @@ import { recordReview } from '../../server/radar/reviews.js'
 import { linkHash } from '../../server/matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import * as matchApi from '../../public/js/matchApi.js'
-import { bandsAt, matchView, roleCard, matchToSave, stepText, trendMoves } from '../../public/js/screens/match.js'
+import { bandsAt, matchView, roleCard, matchToSave, softwareChips, stepText, trendMoves } from '../../public/js/screens/match.js'
 import { sdgView } from '../../public/js/screens/sdgTab.js'
 import { fitChart } from '../../public/js/components/fitChart.js'
 import en from '../../shared/strings/en.js'
@@ -584,7 +584,7 @@ describe('Owner UI round (31 Oct)', () => {
       expect(closed).not.toContain('class="mt-outgrid"')
       const open = card(FIXTURE.fullRole, { detail: d(), open: true })
       expect(open).toMatch(/data-act="mOpen" data-arg="2521-03" aria-expanded="true">Hide outlook and details</)
-      const grid = open.slice(open.indexOf('class="mt-outgrid"'), open.indexOf('<details', open.indexOf('class="mt-outgrid"')))
+      const grid = open.slice(open.indexOf('class="mt-outgrid"'), open.indexOf('<details class="mt-why"', open.indexOf('class="mt-outgrid"')))
       expect(grid.match(/class="mt-box"/g)).toHaveLength(3)
       for (const key of ['mtJobAds', 'mtAiPart', 'mtSoftware']) expect(text(grid)).toContain(t(key))
       // every source line stays
@@ -718,5 +718,37 @@ describe('SDG filter width (owner screenshot 31 Oct: long UN goal titles widened
     const css = readFileSync(join(root, 'public/styles.css'), 'utf8')
     expect(css).toMatch(/\.mt \.mt-filter\{[^}]*min-width:0[^}]*\}/)
     expect(css).toMatch(/\.mt \.mt-filter \.mt-sel\{[^}]*width:100%[^}]*\}/)
+  })
+})
+
+describe('Software asked box (owner request 31 Oct: too long)', () => {
+  const sw = (n, have, inDemand) => ({ name: `Tool ${n}`, have, inDemand })
+  const many = [sw(1, false, false), sw(2, false, true), sw(3, true, false), ...Array.from({ length: 20 }, (_, i) => sw(i + 4, false, i % 3 === 0)), sw(24, true, true)]
+
+  it('shows a one-line count, the 8 most useful chips first (yours, then in demand), and the rest behind a fold', () => {
+    for (const lang of ['en', 'ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const html = softwareChips(tl, many)
+      expect(text(html)).toContain(tl('mtSwSummary', { have: 2, total: 24, demand: many.filter((s) => s.inDemand).length }))
+      const shown = html.slice(0, html.indexOf('<details'))
+      expect((shown.match(/class="mt-chip( have)?"/g) || []).length).toBe(8)
+      // yours first, then in demand
+      const at = (name) => shown.indexOf(`${name}</span>`) >= 0 ? shown.indexOf(`${name}</span>`) : shown.indexOf(`${name} · `)
+      expect(at('Tool 3')).toBeGreaterThan(-1)
+      expect(at('Tool 3')).toBeLessThan(at('Tool 2'))
+      expect(at('Tool 24')).toBeLessThan(at('Tool 2'))
+      expect(shown).not.toContain('Tool 1</span>')
+      const more = html.slice(html.indexOf('<details'))
+      expect(text(more)).toContain(tl('mtSwMore', { count: 16 }))
+      expect((more.match(/class="mt-chip( have)?"/g) || []).length).toBe(16)
+      expect(text(html)).toContain(tl('mtSwShown'))
+    }
+  })
+
+  it('8 or fewer: no fold; none: "not available"; names are escaped', () => {
+    const few = softwareChips(t, many.slice(0, 5))
+    expect(few).not.toContain('<details')
+    expect(softwareChips(t, [])).toContain(t('mtSwNone'))
+    expect(softwareChips(t, [{ name: '<b>x</b>', have: true, inDemand: false }])).not.toContain('<b>x</b>')
   })
 })

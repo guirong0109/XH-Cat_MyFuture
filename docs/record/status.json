@@ -1261,6 +1261,11 @@
       "time": "30 Oct",
       "step": "Matching UI round checked in the browser",
       "detail": "short group banner, pages of 10, open/close details, AI bar on cards, all SDG drafts with UN links (M16); SDG filter width fixed (long UN goal titles had widened the page); npm test 801 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Software asked box (your request)",
+      "detail": "count line, 8 chips (yours first, then in demand), the rest behind '+ N more' / 'Show fewer'; npm test 803 passed"
     }
   ]
 }

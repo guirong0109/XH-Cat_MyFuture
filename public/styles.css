@@ -213,6 +213,14 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .mt-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
 .mt-chip{font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:var(--surface2)}
 .mt-chip.have{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+/* Software asked: count line, 8 chips, the rest in a fold whose label reads "+ N more" closed and "Show fewer" open */
+.mt-swsum{color:var(--ink);font-weight:600;margin-bottom:2px}
+.mt-swmore{margin-top:6px}
+.mt-swmore summary{cursor:pointer;color:var(--accent);font-size:12.5px;font-weight:600;list-style:none}
+.mt-swmore summary::-webkit-details-marker{display:none}
+.mt-swmore .mt-swclose,.mt-swmore[open] .mt-swopen{display:none}
+.mt-swmore[open] .mt-swclose{display:inline}
+.mt-swmore[open] summary{margin-bottom:4px}
 .mt-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .mt-actions .btn[disabled]{opacity:.55;cursor:default}
 .tag.mt-none{background:var(--surface2);color:var(--muted);border:1px dashed var(--line)}

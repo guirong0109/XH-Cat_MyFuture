@@ -22,6 +22,9 @@ import radarScreen, { staleRadar } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
+import matchScreen, { matchToSave } from './screens/match.js'
+import sdgScreen from './screens/sdgTab.js'
+import * as matchApi from './matchApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -64,7 +67,8 @@ const t = (key, vars) => translate(state.lang, key, vars)
 function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
-  saved = store.save({ ...state, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
+  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -302,6 +306,68 @@ const adminActions = {
     if (!out.ok) return adminFailed('judge', out)
     setAdmin({ report: out.data, ...adminMsg('judge', { kind: 'ok', key: 'rdJudgeResetDone' }) }, 'admMsg-judge')
   },
+}
+
+// ---------- Career matching (#match) and SDG contribution (#sdg) ----------
+// The profile is sent to the matching API for each answer (never stored there). The list is fetched again when the
+// profile changes (every edit makes a new profile object); a role's detail is fetched when it is asked for.
+const matchUi = () => {
+  if (!state.match?.details) state.match = { scenario: 'moderate', prevScenario: null, sdgFilter: '', data: null, details: {}, chosen: null, loading: false, error: null, explore: false, allBars: {}, ...(state.match ?? {}), details: {} }
+  return state.match
+}
+let matchFor = null
+let matchRun = 0
+const matchScreens = () => state.screen === 'match' || state.screen === 'sdg'
+async function loadMatch() {
+  const run = ++matchRun
+  const profile = state.profile
+  matchFor = profile
+  state.match = { ...matchUi(), loading: true, error: null, data: null, details: {}, prevScenario: null }
+  const out = await matchApi.list(minimizeForGuest(profile), { lang: state.lang })
+  if (run !== matchRun) return
+  state.match = { ...matchUi(), loading: false, data: out.ok ? out.data : null, error: out.ok ? null : out.code ?? 'network' }
+  if (matchScreens()) render()
+}
+async function loadMatchDetail(code) {
+  if (!code || !state.profile) return
+  const run = matchRun
+  const m = matchUi()
+  m.details = { ...m.details, [code]: { loading: true } }
+  if (matchScreens()) render()
+  const out = await matchApi.role(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== matchRun) return
+  state.match.details = { ...state.match.details, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (matchScreens()) render()
+}
+function ensureMatch() {
+  const m = matchUi()
+  if (!state.profile) return
+  if (matchFor !== state.profile) loadMatch()
+  // The SDG tab shows the chosen role's path: its detail is needed.
+  if (state.screen === 'sdg' && m.chosen && !state.match.details?.[m.chosen]) loadMatchDetail(m.chosen)
+}
+const matchActions = {
+  // The scenario only moves roles between bands; the banner lists the roles that moved.
+  mScn: (scenario) => {
+    const m = matchUi()
+    const next = scenario === 'rapid' ? 'rapid' : 'moderate'
+    if (next === m.scenario) return
+    state.match = { ...m, prevScenario: m.scenario, scenario: next }
+    persist()
+    render()
+  },
+  mFilter: (goal) => { state.match = { ...matchUi(), sdgFilter: goal ?? '', prevScenario: null }; render() },
+  mBannerClose: () => { state.match = { ...matchUi(), prevScenario: null }; render() },
+  mExplore: () => { state.match = { ...matchUi(), explore: !matchUi().explore }; render() },
+  mAllBars: (code) => { state.match = { ...matchUi(), allBars: { ...matchUi().allBars, [code]: true } }; render() },
+  mDetail: (code) => loadMatchDetail(code),
+  mChoose: (code) => {
+    const m = matchUi()
+    state.match = { ...m, chosen: m.chosen === code ? null : code, prevScenario: null }
+    persist()
+    render()
+  },
+  mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
@@ -584,7 +650,7 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions)
+Object.assign(actions, adminActions, matchActions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -683,8 +749,11 @@ function render() {
     : ''
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
+  if (screen === 'match' || screen === 'sdg') ensureMatch()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
+  else if (screen === 'match') view = matchScreen({ t, state })
+  else if (screen === 'sdg') view = sdgScreen({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
   else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
@@ -732,6 +801,7 @@ document.addEventListener('submit', (event) => {
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
+  if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })

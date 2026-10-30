@@ -30,6 +30,7 @@ export const KEYS = Object.freeze({
   signals: (id) => `prod/signals/${safe(id)}.json`,
   manifest: (id) => `prod/manifests/${safe(id)}.json`,
   ingestLog: (id) => `prod/ingest-log/${safe(id)}.json`,
+  ingestLogPrefix: 'prod/ingest-log/',
   reviewsPrefix: 'prod/reviews/',
 })
 

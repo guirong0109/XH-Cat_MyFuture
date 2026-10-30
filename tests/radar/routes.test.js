@@ -306,13 +306,72 @@ describe('public Radar API', () => {
     expect(body.manifestId).toBe(BUNDLE_ACTIVE)
     expect(body.states.openalex).toBeTruthy()
     expect(body.topics).toHaveLength(6)
-    expect(body.fieldTopics.length).toBeGreaterThan(0)
+    expect(body.fieldTopics).toEqual([]) // all proposals are pending today; only approved links are public
     expect(body.bridge.schemaVersion).toBe('radar-occupation-bridge/v1')
     expect(body.bridge.steps.length).toBeGreaterThan(0)
     const field = body.fields.find((f) => f.code === '0613')
     expect(field.title).toEqual(expect.any(String))
     expect(field.jobs.length).toBeGreaterThan(0)
     expect(body.emascoRoles.length).toBeGreaterThan(0)
+  })
+
+  it('/api/radar/references serves approved field-topic links only (all pending today → empty)', async () => {
+    await start(service())
+    expect(references.fieldTopics.length).toBeGreaterThan(0)
+    expect((await get('/api/radar/references')).body.fieldTopics).toEqual([])
+    await new Promise((resolve) => server.close(resolve))
+    const approved = { ...references.fieldTopics[0], reviewStatus: 'approved', reviewedBy: 'owner' }
+    const rejected = { ...references.fieldTopics[1], reviewStatus: 'rejected' }
+    const refs = { ...references, fieldTopics: [approved, rejected, ...references.fieldTopics.slice(2)] }
+    await start(service({ references: async () => refs }))
+    const { body } = await get('/api/radar/references')
+    expect(body.fieldTopics).toEqual([approved])
+  })
+
+  it('refresh state comes from the stored ingest log: a new service reports a failed refresh; a recent no_change check keeps OpenAlex current (R23)', async () => {
+    const store = createMemoryStore()
+    await service({ store }).answer() // seeds prod/
+    const entry = (time, source, outcome, code) => ({ time, source, operation: 'refresh', outcome, ...(code ? { code } : {}), ids: {} })
+    const put = (stamp, e) => store.put(KEYS.ingestLog(stamp), toBytes(e), { ifNoneMatch: '*' })
+    await put('20261110T000000.000Z-aaaa0001', entry('2026-11-10T00:00:00.000Z', 'dosm', 'published'))
+    await put('20261118T000000.000Z-aaaa0002', entry('2026-11-18T00:00:00.000Z', 'openalex', 'no_change'))
+    await put('20261119T000000.000Z-aaaa0003', entry('2026-11-19T00:00:00.000Z', 'dosm', 'failed', 'dosm_layout_unexpected'))
+    // A fresh process (no in-memory checks), 20 days after the OpenAlex snapshot was fetched.
+    await start(service({ store, ingestor: ingestorWith({}), now: at('2026-11-20T00:00:00Z') }))
+    const { body } = await get('/api/radar/manifest')
+    expect(body.states.dosm).toMatchObject({ refreshHealth: 'failed', refreshCode: 'dosm_layout_unexpected', servedFrom: 'cached_fallback', lastCheckedAt: '2026-11-19T00:00:00.000Z' })
+    expect(body.states.dosm.lastSuccessAt).toBe('2026-11-10T00:00:00.000Z')
+    expect(body.states.openalex).toMatchObject({ refreshHealth: 'ok', freshness: 'current', servedFrom: 'active_manifest', lastSuccessAt: '2026-11-18T00:00:00.000Z' })
+  })
+
+  it('stored checks are cached briefly and re-read after a refresh through the service', async () => {
+    const store = createMemoryStore()
+    let lists = 0
+    const counting = { ...store, list: async (prefix) => { lists += 1; return store.list(prefix) } }
+    let clock = new Date('2026-10-31T00:00:00Z')
+    const refreshes = []
+    const ingestor = { status: () => ({ lastChecks: {}, orphans: [], log: [] }), refresh: async (source) => { refreshes.push(source); await store.put(KEYS.ingestLog('20261031T000001.000Z-bbbb0001'), toBytes({ time: '2026-10-31T00:00:01.000Z', source, operation: 'refresh', outcome: 'failed', code: 'source_unavailable', ids: {} })); return { outcome: 'failed', code: 'source_unavailable' } } }
+    const radar = service({ store: counting, ingestor, now: () => clock })
+    await radar.answer()
+    await radar.answer()
+    const afterTwo = lists
+    expect((await radar.answer()).states.openalex.refreshHealth).toBe('never_run')
+    expect(lists).toBe(afterTwo) // no new listing within the cache time
+    await radar.ingestor.refresh('openalex')
+    expect((await radar.answer()).states.openalex).toMatchObject({ refreshHealth: 'failed', refreshCode: 'source_unavailable' })
+    expect(refreshes).toEqual(['openalex'])
+    const before = lists
+    clock = new Date(clock.getTime() + 61000)
+    await radar.answer()
+    expect(lists).toBe(before + 1)
+  })
+
+  it('a seed that meets different bytes under a bundled key reports publish_conflict, not store_unavailable', async () => {
+    const store = createMemoryStore()
+    await store.put(KEYS.manifest(BUNDLE_ACTIVE), toBytes({ manifestId: BUNDLE_ACTIVE, different: true }))
+    const answer = await service({ store }).answer()
+    expect(answer.states.dosm).toMatchObject({ servedFrom: 'bundled_read_only', refreshHealth: 'failed', refreshCode: 'publish_conflict' })
+    expect(await store.get(KEYS.active)).toBeNull()
   })
 
   it('/api/radar/export returns radar-signal/v1 only, no score fields', async () => {

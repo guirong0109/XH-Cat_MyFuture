@@ -140,7 +140,8 @@ function referenceData(refs) {
   const data = {
     versions: refs.versions ?? {},
     topics: refs.topics ?? [],
-    fieldTopics: refs.fieldTopics ?? [],
+    // Only approved links leave the server on public routes (spec §13, D6); pending and rejected stay with the admin API.
+    fieldTopics: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved'),
     bridge: refs.bridgeFile ?? null,
     fields: (refs.fieldList?.() ?? []).map((f) => ({ code: f.code, title: f.title, jobs: refs.fieldJobs(f.code) })),
     emascoRoles: refs.emascoRoles ?? [],

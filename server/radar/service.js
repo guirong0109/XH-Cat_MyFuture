@@ -30,6 +30,8 @@ import { loadRadarReferences } from './references.js'
 const JSON_TYPE = 'application/json'
 const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 const KEEP_VIEWS = 8
+const CHECKS_TTL_MS = 60000
+const OK_OUTCOMES = new Set(['published', 'no_change'])
 
 export class RadarError extends Error {
   constructor(code) {
@@ -217,13 +219,63 @@ export function createRadarService({
     } catch (error) {
       const code = codeOf(error)
       log(`[radar] store read failed: ${code}`)
-      const storeCode = code === 'not_configured' ? 'not_configured' : 'store_unavailable'
+      const storeCode = ['not_configured', 'publish_conflict'].includes(code) ? code : 'store_unavailable'
       if (lastGood) return { view: lastGood, activeId: lastGood.manifest.manifestId, servedFrom: 'cached_fallback', storeCode }
       const view = await bundleActiveView().catch(() => null)
       if (view) return { view, activeId: view.manifest.manifestId, servedFrom: 'bundled_read_only', storeCode }
       throw new RadarError(storeCode)
     }
   }
+
+  // Refresh state per source from prod/ingest-log/ (ruling R23): the same on every instance and after a restart.
+  // Read newest first until each source has its latest entry and its latest successful one; cached for a minute so
+  // public GETs do not list the store on every request, and dropped after each refresh through this service.
+  let checksCache = null
+  async function storedChecks(nowDate) {
+    const nowMs = nowDate.getTime()
+    if (checksCache && nowMs - checksCache.at < CHECKS_TTL_MS) return checksCache.checks
+    const checks = {}
+    try {
+      const keys = (await store.list(KEYS.ingestLogPrefix)).sort().reverse()
+      for (const key of keys) {
+        if (RADAR_SOURCES.every((s) => checks[s]?.lastOkAt)) break
+        const entry = (await getJson(store, key).catch(() => null))?.value
+        if (!entry || !RADAR_SOURCES.includes(entry.source) || typeof entry.time !== 'string') continue
+        const check = (checks[entry.source] ??= { checkedAt: entry.time, outcome: entry.outcome, code: entry.code ?? null, manifestId: entry.ids?.manifestId ?? null, lastOkAt: null })
+        if (!check.lastOkAt && OK_OUTCOMES.has(entry.outcome)) check.lastOkAt = entry.time
+      }
+    } catch (error) {
+      log(`[radar] ingest log read failed: ${codeOf(error)}`)
+      return checksCache?.checks ?? {}
+    }
+    checksCache = { at: nowMs, checks }
+    return checks
+  }
+
+  const wrappedIngestor = ingestor && typeof ingestor.refresh === 'function'
+    ? {
+        ...ingestor,
+        status: () => ingestor.status(),
+        refresh: async (...args) => {
+          try {
+            return await ingestor.refresh(...args)
+          } finally {
+            checksCache = null
+          }
+        },
+        ...(typeof ingestor.importDosmRelease === 'function'
+          ? {
+              importDosmRelease: async (...args) => {
+                try {
+                  return await ingestor.importDosmRelease(...args)
+                } finally {
+                  checksCache = null
+                }
+              },
+            }
+          : {}),
+      }
+    : ingestor
 
   async function answer(requestedId) {
     const now_ = now()
@@ -246,12 +298,14 @@ export function createRadarService({
       }
       if (!view) throw new RadarError('manifest_gone')
     }
-    let lastChecks = {}
+    let memoryChecks = {}
     try {
-      lastChecks = ingestor?.status?.()?.lastChecks ?? {}
+      memoryChecks = ingestor?.status?.()?.lastChecks ?? {}
     } catch {
-      lastChecks = {}
+      memoryChecks = {}
     }
+    const stored = cur.servedFrom === 'active_manifest' ? await storedChecks(now_) : {}
+    const lastChecks = mergeChecks(stored, memoryChecks)
     const states = sourceStates({ manifest: view.manifest, snapshots: view.snapshots, servedFrom: cur.servedFrom, lastChecks, now: now_, config, storeCode: cur.storeCode })
     return { manifestId: view.manifest.manifestId, activeManifestId: cur.activeId, devStore, states, view }
   }
@@ -261,8 +315,23 @@ export function createRadarService({
     references: loadReferences,
     info: () => ({ writable: Boolean(store), devStore }),
     store,
-    ingestor,
+    ingestor: wrappedIngestor,
   }
+}
+
+const later = (a, b) => (!a ? b : !b ? a : new Date(b).getTime() > new Date(a).getTime() ? b : a)
+
+// Stored and in-memory checks: the later check decides health; the later success decides lastOkAt.
+export function mergeChecks(stored = {}, memory = {}) {
+  const out = {}
+  for (const sourceId of RADAR_SOURCES) {
+    const a = stored[sourceId]
+    const b = memory[sourceId]
+    if (!a && !b) continue
+    const newest = !a ? b : !b ? a : later(a.checkedAt, b.checkedAt) === b.checkedAt ? b : a
+    out[sourceId] = { ...newest, lastOkAt: later(a?.lastOkAt ?? null, b?.lastOkAt ?? null) }
+  }
+  return out
 }
 
 // Which store the Radar writes to. RADAR_STORE=memory (local development only) wins over R2 and is refused when

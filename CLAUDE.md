@@ -47,7 +47,7 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npx vitest run --dir tests                         # expect 556 passed (use --dir tests while helper worktrees exist)
+npm test                                           # expect 556 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 11 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex live, DOSM from the kept workbook)

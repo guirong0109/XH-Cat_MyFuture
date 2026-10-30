@@ -1,0 +1,1518 @@
+{
+  "schemaVersion": "sdg-links/v1",
+  "status": "team draft",
+  "links": [
+    {
+      "id": "g11-16.6",
+      "kind": "masco_submajor",
+      "code": "11",
+      "name": null,
+      "target": "16.6",
+      "reason": {
+        "en": "Legislators, senior officials and chief executives set policy and answer for how public bodies and firms are run.",
+        "ms": "Penggubal undang-undang, pegawai kanan dan ketua eksekutif menetapkan dasar dan bertanggungjawab atas cara badan awam dan syarikat diurus.",
+        "zh": "立法者、高级官员和首席执行官制定政策，并对公共机构和企业的运作负责。"
+      }
+    },
+    {
+      "id": "g12-8.8",
+      "kind": "masco_submajor",
+      "code": "12",
+      "name": null,
+      "target": "8.8",
+      "reason": {
+        "en": "HR and safety and health managers in this group run the systems that keep workplaces lawful and safe for staff.",
+        "ms": "Pengurus sumber manusia serta keselamatan dan kesihatan dalam kumpulan ini mengurus sistem yang memastikan tempat kerja sah dan selamat.",
+        "zh": "本组的人力资源经理和职业安全卫生经理负责管理让工作场所合法、安全的制度。"
+      }
+    },
+    {
+      "id": "g12-12.6",
+      "kind": "masco_submajor",
+      "code": "12",
+      "name": null,
+      "target": "12.6",
+      "reason": {
+        "en": "Sustainability and compliance managers in this group bring sustainable practices into firms and report on them.",
+        "ms": "Pengurus kelestarian dan pematuhan dalam kumpulan ini membawa amalan lestari ke dalam syarikat dan melaporkannya.",
+        "zh": "本组的可持续发展经理和合规经理把可持续做法引入企业，并对此进行报告。"
+      }
+    },
+    {
+      "id": "g13-9.2",
+      "kind": "masco_submajor",
+      "code": "13",
+      "name": null,
+      "target": "9.2",
+      "reason": {
+        "en": "Managers of farms, factories, energy plants and mines plan the production that adds industry jobs and output.",
+        "ms": "Pengurus ladang, kilang, loji tenaga dan lombong merancang pengeluaran yang menambah pekerjaan dan hasil industri.",
+        "zh": "农场、工厂、能源厂和矿场的经理规划生产，增加工业就业和产出。"
+      }
+    },
+    {
+      "id": "g14-8.9",
+      "kind": "masco_submajor",
+      "code": "14",
+      "name": null,
+      "target": "8.9",
+      "reason": {
+        "en": "Hotel, restaurant and catering managers run tourism services that create local jobs and serve local food and products.",
+        "ms": "Pengurus hotel, restoran dan katering mengendalikan perkhidmatan pelancongan yang mewujudkan pekerjaan tempatan dan menyajikan produk tempatan.",
+        "zh": "酒店、餐厅和餐饮经理经营旅游服务，创造本地就业，提供本地食品和产品。"
+      }
+    },
+    {
+      "id": "g15-9.c",
+      "kind": "masco_submajor",
+      "code": "15",
+      "name": null,
+      "target": "9.c",
+      "reason": {
+        "en": "ICT, network and internet service managers plan the networks and systems that give people and firms internet access.",
+        "ms": "Pengurus ICT, rangkaian dan perkhidmatan internet merancang rangkaian dan sistem yang memberi orang ramai dan syarikat akses internet.",
+        "zh": "信息通信技术、网络和互联网服务经理规划让个人和企业上网的网络与系统。"
+      }
+    },
+    {
+      "id": "g16-3.8",
+      "kind": "masco_submajor",
+      "code": "16",
+      "name": null,
+      "target": "3.8",
+      "reason": {
+        "en": "Heads of health, aged care and personal care services in this group run the places where people get essential care.",
+        "ms": "Ketua perkhidmatan kesihatan, penjagaan warga emas dan penjagaan diri dalam kumpulan ini mengurus tempat orang mendapat penjagaan asas.",
+        "zh": "本组的医疗、养老和个人护理服务负责人管理人们获得基本照护的场所。"
+      }
+    },
+    {
+      "id": "g16-4.1",
+      "kind": "masco_submajor",
+      "code": "16",
+      "name": null,
+      "target": "4.1",
+      "reason": {
+        "en": "Principals and education managers in this group run the schools where children get primary and secondary education.",
+        "ms": "Pengetua dan pengurus pendidikan dalam kumpulan ini mengurus sekolah tempat kanak-kanak mendapat pendidikan rendah dan menengah.",
+        "zh": "本组的校长和教育管理者管理儿童接受小学和中学教育的学校。"
+      }
+    },
+    {
+      "id": "g21-9.5",
+      "kind": "masco_submajor",
+      "code": "21",
+      "name": null,
+      "target": "9.5",
+      "reason": {
+        "en": "Scientists and engineers do the research and technical design that upgrades industry and builds new technology.",
+        "ms": "Saintis dan jurutera menjalankan penyelidikan dan reka bentuk teknikal yang menaik taraf industri dan membina teknologi baharu.",
+        "zh": "科学家和工程师开展研究和技术设计，提升产业并开发新技术。"
+      }
+    },
+    {
+      "id": "g22-3.8",
+      "kind": "masco_submajor",
+      "code": "22",
+      "name": null,
+      "target": "3.8",
+      "reason": {
+        "en": "Doctors, nurses, pharmacists and other clinicians deliver the essential health care that universal coverage depends on.",
+        "ms": "Doktor, jururawat, ahli farmasi dan klinisian lain memberi penjagaan kesihatan asas yang menjadi teras liputan kesihatan sejagat.",
+        "zh": "医生、护士、药剂师和其他临床人员提供全民健康覆盖所依赖的基本医疗服务。"
+      }
+    },
+    {
+      "id": "g23-4.3",
+      "kind": "masco_submajor",
+      "code": "23",
+      "name": null,
+      "target": "4.3",
+      "reason": {
+        "en": "Lecturers and polytechnic teaching staff provide the technical, vocational and university education the target names.",
+        "ms": "Pensyarah dan tenaga pengajar politeknik menyediakan pendidikan teknikal, vokasional dan universiti yang disebut dalam sasaran ini.",
+        "zh": "讲师和理工学院教学人员提供该目标所指的技术、职业和大学教育。"
+      }
+    },
+    {
+      "id": "g24-16.5",
+      "kind": "masco_submajor",
+      "code": "24",
+      "name": null,
+      "target": "16.5",
+      "reason": {
+        "en": "Accountants, auditors and compliance officers check financial records, which helps find and prevent fraud and bribery.",
+        "ms": "Akauntan, juruaudit dan pegawai pematuhan menyemak rekod kewangan, yang membantu mengesan dan mencegah penipuan dan rasuah.",
+        "zh": "会计师、审计师和合规人员核查财务记录，有助于发现和防止欺诈与贿赂。"
+      }
+    },
+    {
+      "id": "g25-9.c",
+      "kind": "masco_submajor",
+      "code": "25",
+      "name": null,
+      "target": "9.c",
+      "reason": {
+        "en": "Software developers and systems analysts build the apps and systems through which people use the internet.",
+        "ms": "Pembangun perisian dan penganalisis sistem membina aplikasi dan sistem yang digunakan orang ramai untuk mengakses internet.",
+        "zh": "软件开发人员和系统分析师开发人们使用互联网所依靠的应用和系统。"
+      }
+    },
+    {
+      "id": "g26-16.3",
+      "kind": "masco_submajor",
+      "code": "26",
+      "name": null,
+      "target": "16.3",
+      "reason": {
+        "en": "Lawyers, judges and court officers run the legal process through which people get access to justice.",
+        "ms": "Peguam, hakim dan pegawai mahkamah mengendalikan proses undang-undang yang memberi orang ramai akses kepada keadilan.",
+        "zh": "律师、法官和法院官员负责法律程序，使人们能够诉诸司法。"
+      }
+    },
+    {
+      "id": "g27-8.9",
+      "kind": "masco_submajor",
+      "code": "27",
+      "name": null,
+      "target": "8.9",
+      "reason": {
+        "en": "Guest service, food and beverage executives and chefs run hotel and food services that tourism jobs depend on.",
+        "ms": "Eksekutif perkhidmatan tetamu, makanan dan minuman serta cef mengurus perkhidmatan hotel dan makanan yang menjadi sandaran pekerjaan pelancongan.",
+        "zh": "宾客服务、餐饮主管和厨师经营旅游业就业所依赖的酒店和餐饮服务。"
+      }
+    },
+    {
+      "id": "g28-11.4",
+      "kind": "masco_submajor",
+      "code": "28",
+      "name": null,
+      "target": "11.4",
+      "reason": {
+        "en": "Archivists, curators, librarians and cultural officers record, keep and present Malaysia's cultural heritage.",
+        "ms": "Arkivis, kurator, pustakawan dan pegawai kebudayaan merekod, memelihara dan mempamerkan warisan budaya Malaysia.",
+        "zh": "档案员、策展人、图书馆员和文化官员记录、保存并展示马来西亚的文化遗产。"
+      }
+    },
+    {
+      "id": "g28-3.4",
+      "kind": "masco_submajor",
+      "code": "28",
+      "name": null,
+      "target": "3.4",
+      "reason": {
+        "en": "Psychologists, psychotherapists and counsellors in this group assess and treat mental health problems.",
+        "ms": "Ahli psikologi, ahli psikoterapi dan kaunselor dalam kumpulan ini menilai dan merawat masalah kesihatan mental.",
+        "zh": "本组的心理学家、心理治疗师和辅导员评估并治疗心理健康问题。"
+      }
+    },
+    {
+      "id": "g29-17.1",
+      "kind": "masco_submajor",
+      "code": "29",
+      "name": null,
+      "target": "17.1",
+      "reason": {
+        "en": "Tax, customs and excise officers collect the revenue that the government uses to pay for public services.",
+        "ms": "Pegawai cukai, kastam dan eksais memungut hasil yang digunakan kerajaan untuk membiayai perkhidmatan awam.",
+        "zh": "税务、海关和消费税官员征收政府用于支付公共服务的收入。"
+      }
+    },
+    {
+      "id": "g29-16.1",
+      "kind": "masco_submajor",
+      "code": "29",
+      "name": null,
+      "target": "16.1",
+      "reason": {
+        "en": "Senior police, fire, civil defence and prison officers lead services that prevent violence and protect people.",
+        "ms": "Pegawai kanan polis, bomba, pertahanan awam dan penjara memimpin perkhidmatan yang mencegah keganasan dan melindungi orang ramai.",
+        "zh": "高级警官、消防、民防和监狱官员领导预防暴力、保护民众的服务。"
+      }
+    },
+    {
+      "id": "g31-9.1",
+      "kind": "masco_submajor",
+      "code": "31",
+      "name": null,
+      "target": "9.1",
+      "reason": {
+        "en": "Engineering and science technicians test materials, draw plans and supervise sites that build and maintain infrastructure.",
+        "ms": "Juruteknik kejuruteraan dan sains menguji bahan, melukis pelan dan menyelia tapak yang membina dan menyelenggara infrastruktur.",
+        "zh": "工程和科学技术员检测材料、绘制图纸并监督建设和维护基础设施的工地。"
+      }
+    },
+    {
+      "id": "g32-3.8",
+      "kind": "masco_submajor",
+      "code": "32",
+      "name": null,
+      "target": "3.8",
+      "reason": {
+        "en": "Radiographers, lab technicians, pharmacy and nursing associates provide tests, medicines and care in health services.",
+        "ms": "Juru X-ray, juruteknik makmal, pembantu farmasi dan jururawat memberi ujian, ubat dan penjagaan dalam perkhidmatan kesihatan.",
+        "zh": "放射技师、化验技术员、药剂和护理辅助人员在医疗服务中提供检查、药品和护理。"
+      }
+    },
+    {
+      "id": "g33-8.10",
+      "kind": "masco_submajor",
+      "code": "33",
+      "name": null,
+      "target": "8.10",
+      "reason": {
+        "en": "Loan, insurance and brokerage officers deliver the banking, insurance and finance services people and firms use.",
+        "ms": "Pegawai pinjaman, insurans dan broker menyediakan perkhidmatan perbankan, insurans dan kewangan yang digunakan orang ramai dan syarikat.",
+        "zh": "贷款、保险和经纪人员提供个人和企业使用的银行、保险和金融服务。"
+      }
+    },
+    {
+      "id": "g34-16.3",
+      "kind": "masco_submajor",
+      "code": "34",
+      "name": null,
+      "target": "16.3",
+      "reason": {
+        "en": "Paralegals, law clerks and court clerks prepare the documents and records that court cases rely on.",
+        "ms": "Paralegal, kerani undang-undang dan kerani mahkamah menyediakan dokumen dan rekod yang menjadi sandaran kes mahkamah.",
+        "zh": "律师助理、法律文员和法院书记员准备法院案件所依赖的文件和记录。"
+      }
+    },
+    {
+      "id": "g35-9.c",
+      "kind": "masco_submajor",
+      "code": "35",
+      "name": null,
+      "target": "9.c",
+      "reason": {
+        "en": "Computer and help-desk technicians keep computers and networks running so people can use digital services.",
+        "ms": "Juruteknik komputer dan meja bantuan memastikan komputer dan rangkaian berfungsi supaya orang ramai boleh menggunakan perkhidmatan digital.",
+        "zh": "电脑和服务台技术员维护电脑和网络运行，让人们能使用数字服务。"
+      }
+    },
+    {
+      "id": "g36-10.2",
+      "kind": "masco_submajor",
+      "code": "36",
+      "name": null,
+      "target": "10.2",
+      "reason": {
+        "en": "Social, community and youth workers help people who are left out get support and take part in community life.",
+        "ms": "Pekerja sosial, komuniti dan belia membantu golongan terpinggir mendapat sokongan dan menyertai kehidupan komuniti.",
+        "zh": "社工、社区工作者和青年工作者帮助被边缘化的人获得支持并参与社区生活。"
+      }
+    },
+    {
+      "id": "g36-3.4",
+      "kind": "masco_submajor",
+      "code": "36",
+      "name": null,
+      "target": "3.4",
+      "reason": {
+        "en": "Sports coaches and fitness instructors in this group lead physical activity that helps prevent non-communicable disease.",
+        "ms": "Jurulatih sukan dan pengajar kecergasan dalam kumpulan ini memimpin aktiviti fizikal yang membantu mencegah penyakit tidak berjangkit.",
+        "zh": "本组的体育教练和健身教练带领体育活动，有助于预防非传染性疾病。"
+      }
+    },
+    {
+      "id": "g37-16.1",
+      "kind": "masco_submajor",
+      "code": "37",
+      "name": null,
+      "target": "16.1",
+      "reason": {
+        "en": "Police, customs enforcement, civil defence and fire officers act to prevent violence and protect people from harm.",
+        "ms": "Pegawai polis, penguatkuasaan kastam, pertahanan awam dan bomba bertindak mencegah keganasan dan melindungi orang ramai.",
+        "zh": "警察、海关执法、民防和消防人员采取行动预防暴力，保护民众免受伤害。"
+      }
+    },
+    {
+      "id": "g41-16.6",
+      "kind": "masco_submajor",
+      "code": "41",
+      "name": null,
+      "target": "16.6",
+      "reason": {
+        "en": "Clerks and secretaries keep the records and documents that let offices and public bodies work and account for their work.",
+        "ms": "Kerani dan setiausaha menyimpan rekod dan dokumen yang membolehkan pejabat dan badan awam berfungsi dan bertanggungjawab.",
+        "zh": "文员和秘书保管记录和文件，使办公室和公共机构能够运作并对其工作负责。"
+      }
+    },
+    {
+      "id": "g42-8.10",
+      "kind": "masco_submajor",
+      "code": "42",
+      "name": null,
+      "target": "8.10",
+      "reason": {
+        "en": "Bank tellers, money changers and postal counter clerks serve people at the counter where they use banking and payments.",
+        "ms": "Juruwang bank, pengurup wang dan kerani kaunter pos melayan orang ramai di kaunter untuk urusan perbankan dan pembayaran.",
+        "zh": "银行柜员、货币兑换员和邮局柜台职员在柜台为人们办理银行和支付业务。"
+      }
+    },
+    {
+      "id": "g43-16.6",
+      "kind": "masco_submajor",
+      "code": "43",
+      "name": null,
+      "target": "16.6",
+      "reason": {
+        "en": "Finance, tax and payroll clerks keep accurate accounts so organisations can show where their money went.",
+        "ms": "Kerani kewangan, cukai dan gaji menyimpan akaun yang tepat supaya organisasi dapat menunjukkan ke mana wang dibelanjakan.",
+        "zh": "财务、税务和薪资文员保持准确的账目，使机构能说明资金的去向。"
+      }
+    },
+    {
+      "id": "g43-11.2",
+      "kind": "masco_submajor",
+      "code": "43",
+      "name": null,
+      "target": "11.2",
+      "reason": {
+        "en": "Transport clerks and bus and rail inspectors in this group schedule and check services so public transport runs safely.",
+        "ms": "Kerani pengangkutan serta pemeriksa bas dan kereta api dalam kumpulan ini menjadualkan dan memeriksa perkhidmatan pengangkutan awam.",
+        "zh": "本组的运输文员以及巴士和铁路检查员安排并检查服务，使公共交通安全运行。"
+      }
+    },
+    {
+      "id": "g44-16.10",
+      "kind": "masco_submajor",
+      "code": "44",
+      "name": null,
+      "target": "16.10",
+      "reason": {
+        "en": "Library assistants, postal and filing clerks deliver mail and keep books and records available to the public.",
+        "ms": "Pembantu perpustakaan, kerani pos dan fail menghantar surat serta memastikan buku dan rekod boleh dicapai orang ramai.",
+        "zh": "图书馆助理、邮政和档案文员投递邮件，并让公众能够查阅图书和记录。"
+      }
+    },
+    {
+      "id": "g51-8.9",
+      "kind": "masco_submajor",
+      "code": "51",
+      "name": null,
+      "target": "8.9",
+      "reason": {
+        "en": "Tourist guides, cooks, waiters and travel crew deliver the tourism services that create jobs and show local culture.",
+        "ms": "Pemandu pelancong, tukang masak, pelayan dan kru perjalanan memberi perkhidmatan pelancongan yang mewujudkan pekerjaan dan memaparkan budaya tempatan.",
+        "zh": "导游、厨师、服务员和旅行乘务人员提供旅游服务，创造就业并展示本地文化。"
+      }
+    },
+    {
+      "id": "g52-8.3",
+      "kind": "masco_submajor",
+      "code": "52",
+      "name": null,
+      "target": "8.3",
+      "reason": {
+        "en": "Hawkers, shopkeepers and sales staff run and staff small shops, a common route into self-employment and small business.",
+        "ms": "Penjaja, pekedai dan jurujual mengendalikan kedai kecil, laluan biasa ke arah bekerja sendiri dan perniagaan kecil.",
+        "zh": "小贩、店主和销售人员经营或受雇于小店，这是走向自雇和小企业的常见途径。"
+      }
+    },
+    {
+      "id": "g53-4.2",
+      "kind": "masco_submajor",
+      "code": "53",
+      "name": null,
+      "target": "4.2",
+      "reason": {
+        "en": "Child care and kindergarten workers give young children early care and pre-school learning.",
+        "ms": "Pekerja taska dan tadika memberi penjagaan awal dan pembelajaran prasekolah kepada kanak-kanak kecil.",
+        "zh": "托儿和幼儿园工作者为幼儿提供早期照护和学前教育。"
+      }
+    },
+    {
+      "id": "g53-3.8",
+      "kind": "masco_submajor",
+      "code": "53",
+      "name": null,
+      "target": "3.8",
+      "reason": {
+        "en": "Nursing assistants, healthcare and home care workers give basic health and personal care to patients and older people.",
+        "ms": "Pembantu jururawat, pekerja penjagaan kesihatan dan penjagaan di rumah memberi penjagaan asas kepada pesakit dan warga emas.",
+        "zh": "护理助理、医疗护理员和居家护理员为病人和老年人提供基本健康和个人护理。"
+      }
+    },
+    {
+      "id": "g54-16.1",
+      "kind": "masco_submajor",
+      "code": "54",
+      "name": null,
+      "target": "16.1",
+      "reason": {
+        "en": "Police constables, guards and lifeguards protect people and property and step in to prevent violence and injury.",
+        "ms": "Konstabel polis, pengawal dan penyelamat pantai melindungi orang ramai dan harta serta bertindak mencegah keganasan dan kecederaan.",
+        "zh": "警员、保安和救生员保护人员和财产，介入预防暴力和伤害。"
+      }
+    },
+    {
+      "id": "g61-2.3",
+      "kind": "masco_submajor",
+      "code": "61",
+      "name": null,
+      "target": "2.3",
+      "reason": {
+        "en": "Crop and livestock farmers and plantation workers produce food; their productivity and income are what the target aims to raise.",
+        "ms": "Petani tanaman dan penternak serta pekerja ladang menghasilkan makanan; produktiviti dan pendapatan mereka ingin ditingkatkan oleh sasaran ini.",
+        "zh": "种植户、养殖户和种植园工人生产粮食；该目标正是要提高他们的生产力和收入。"
+      }
+    },
+    {
+      "id": "g61-2.4",
+      "kind": "masco_submajor",
+      "code": "61",
+      "name": null,
+      "target": "2.4",
+      "reason": {
+        "en": "How farmers grow crops and raise animals decides whether food production is sustainable and resilient.",
+        "ms": "Cara petani menanam dan menternak menentukan sama ada pengeluaran makanan lestari dan berdaya tahan.",
+        "zh": "农民种植作物和饲养牲畜的方式决定粮食生产是否可持续、有韧性。"
+      }
+    },
+    {
+      "id": "g62-15.2",
+      "kind": "masco_submajor",
+      "code": "62",
+      "name": null,
+      "target": "15.2",
+      "reason": {
+        "en": "Forestry workers and forest rangers plant, manage and guard forests.",
+        "ms": "Pekerja perhutanan dan renjer hutan menanam, mengurus dan menjaga hutan.",
+        "zh": "林业工人和护林员种植、管理和看护森林。"
+      }
+    },
+    {
+      "id": "g62-14.4",
+      "kind": "masco_submajor",
+      "code": "62",
+      "name": null,
+      "target": "14.4",
+      "reason": {
+        "en": "Fishing and aquaculture workers do the harvesting that the target says must be regulated to end overfishing.",
+        "ms": "Pekerja perikanan dan akuakultur melakukan penuaian yang menurut sasaran ini perlu dikawal untuk menamatkan penangkapan ikan berlebihan.",
+        "zh": "渔业和水产养殖工人从事捕捞，该目标要求对其加以规管以结束过度捕捞。"
+      }
+    },
+    {
+      "id": "g63-2.3",
+      "kind": "masco_submajor",
+      "code": "63",
+      "name": null,
+      "target": "2.3",
+      "reason": {
+        "en": "Subsistence farmers and gatherers are the small-scale food producers whose productivity and income the target aims to double.",
+        "ms": "Petani sara diri dan pengumpul hasil hutan ialah pengeluar makanan kecil yang produktiviti dan pendapatannya ingin digandakan oleh sasaran ini.",
+        "zh": "自给农民和采集者是小规模粮食生产者，该目标要使其生产力和收入翻倍。"
+      }
+    },
+    {
+      "id": "g71-11.1",
+      "kind": "masco_submajor",
+      "code": "71",
+      "name": null,
+      "target": "11.1",
+      "reason": {
+        "en": "House builders, bricklayers and carpenters build the homes and buildings people need for adequate, safe housing.",
+        "ms": "Pembina rumah, tukang bata dan tukang kayu membina rumah dan bangunan yang diperlukan untuk perumahan yang selamat dan sempurna.",
+        "zh": "建房工人、砌砖工和木工建造人们获得适当、安全住房所需的房屋和建筑。"
+      }
+    },
+    {
+      "id": "g72-9.2",
+      "kind": "masco_submajor",
+      "code": "72",
+      "name": null,
+      "target": "9.2",
+      "reason": {
+        "en": "Welders, fitters and machine tool workers make and repair the metal parts and machines that factories run on.",
+        "ms": "Pengimpal, jurupasang dan pekerja mesin perkakas membuat dan membaiki bahagian logam dan mesin yang menggerakkan kilang.",
+        "zh": "焊工、装配工和机床工人制造和修理工厂运转所需的金属部件和机器。"
+      }
+    },
+    {
+      "id": "g73-8.3",
+      "kind": "masco_submajor",
+      "code": "73",
+      "name": null,
+      "target": "8.3",
+      "reason": {
+        "en": "Jewellers, potters, handicraft makers and printers often run small workshops built on craft skills and creativity.",
+        "ms": "Tukang barang kemas, tukang tembikar, pembuat kraf tangan dan pencetak sering mengusahakan bengkel kecil berasaskan kemahiran kraf dan kreativiti.",
+        "zh": "珠宝匠、陶工、手工艺人和印刷工常经营依靠手艺和创意的小作坊。"
+      }
+    },
+    {
+      "id": "g74-7.1",
+      "kind": "masco_submajor",
+      "code": "74",
+      "name": null,
+      "target": "7.1",
+      "reason": {
+        "en": "Electricians and power line workers install and maintain the wiring and lines that bring reliable electricity to homes.",
+        "ms": "Juruelektrik dan pekerja talian kuasa memasang dan menyelenggara pendawaian dan talian yang membekalkan elektrik kepada rumah.",
+        "zh": "电工和电力线路工人安装和维护为家庭提供可靠电力的线路。"
+      }
+    },
+    {
+      "id": "g74-7.2",
+      "kind": "masco_submajor",
+      "code": "74",
+      "name": null,
+      "target": "7.2",
+      "reason": {
+        "en": "Solar photovoltaic installers in this group put up and maintain the panels that add renewable energy to the supply.",
+        "ms": "Pemasang fotovolta solar dalam kumpulan ini memasang dan menyelenggara panel yang menambah tenaga boleh baharu dalam bekalan.",
+        "zh": "本组的太阳能光伏安装员安装和维护太阳能板，增加可再生能源供应。"
+      }
+    },
+    {
+      "id": "g75-2.1",
+      "kind": "masco_submajor",
+      "code": "75",
+      "name": null,
+      "target": "2.1",
+      "reason": {
+        "en": "Bakers, meat and food processors turn farm produce into safe food; halal checkers and tasters check its quality.",
+        "ms": "Pembuat roti serta pemproses daging dan makanan menjadikan hasil ladang makanan selamat; pemeriksa halal dan penguji menyemak kualitinya.",
+        "zh": "面包师、肉类和食品加工工人把农产品加工成安全食品；清真检查员和品评员检查其质量。"
+      }
+    },
+    {
+      "id": "g76-9.2",
+      "kind": "masco_submajor",
+      "code": "76",
+      "name": null,
+      "target": "9.2",
+      "reason": {
+        "en": "Woodworkers, garment and shoe makers work in light manufacturing, a main source of industry jobs.",
+        "ms": "Pekerja kayu, pembuat pakaian dan kasut bekerja dalam pembuatan ringan, sumber utama pekerjaan industri.",
+        "zh": "木工、服装和制鞋工人从事轻工制造，这是工业就业的主要来源。"
+      }
+    },
+    {
+      "id": "g81-9.2",
+      "kind": "masco_submajor",
+      "code": "81",
+      "name": null,
+      "target": "9.2",
+      "reason": {
+        "en": "Machine and plant operators run the production lines of mines, factories and processing plants.",
+        "ms": "Operator mesin dan loji mengendalikan barisan pengeluaran lombong, kilang dan loji pemprosesan.",
+        "zh": "机器和设备操作员操作矿场、工厂和加工厂的生产线。"
+      }
+    },
+    {
+      "id": "g82-9.2",
+      "kind": "masco_submajor",
+      "code": "82",
+      "name": null,
+      "target": "9.2",
+      "reason": {
+        "en": "Assemblers put together the electrical, metal, plastic and other products that factories make.",
+        "ms": "Pemasang menghimpunkan produk elektrik, logam, plastik dan lain-lain yang dihasilkan kilang.",
+        "zh": "装配工组装工厂生产的电气、金属、塑料等产品。"
+      }
+    },
+    {
+      "id": "g83-11.2",
+      "kind": "masco_submajor",
+      "code": "83",
+      "name": null,
+      "target": "11.2",
+      "reason": {
+        "en": "Bus, taxi, train and lorry drivers run the transport people and goods depend on; safe driving cuts road deaths.",
+        "ms": "Pemandu bas, teksi, kereta api dan lori mengendalikan pengangkutan orang dan barang; pemanduan selamat mengurangkan kematian jalan raya.",
+        "zh": "巴士、出租车、火车和货车司机提供人员和货物所依赖的交通；安全驾驶减少道路死亡。"
+      }
+    },
+    {
+      "id": "g91-6.2",
+      "kind": "masco_submajor",
+      "code": "91",
+      "name": null,
+      "target": "6.2",
+      "reason": {
+        "en": "Cleaners, housekeeping and laundry workers keep homes, hotels and public areas clean and hygienic.",
+        "ms": "Pencuci, pekerja pengemasan dan dobi memastikan rumah, hotel dan kawasan awam bersih dan terjaga kebersihannya.",
+        "zh": "清洁工、客房和洗衣工人保持住宅、酒店和公共区域清洁卫生。"
+      }
+    },
+    {
+      "id": "g92-2.4",
+      "kind": "masco_submajor",
+      "code": "92",
+      "name": null,
+      "target": "2.4",
+      "reason": {
+        "en": "Farm, estate and fishery labourers do the planting, tending and harvesting through which farming practices are carried out.",
+        "ms": "Buruh ladang, estet dan perikanan melakukan kerja menanam, menjaga dan menuai yang melaksanakan amalan pertanian.",
+        "zh": "农场、种植园和渔业劳工从事种植、照料和收获，农业做法正是通过他们落实的。"
+      }
+    },
+    {
+      "id": "g93-9.1",
+      "kind": "masco_submajor",
+      "code": "93",
+      "name": null,
+      "target": "9.1",
+      "reason": {
+        "en": "Construction and site labourers do the earthworks, piling and building work that infrastructure projects need.",
+        "ms": "Buruh pembinaan dan tapak melakukan kerja tanah, cerucuk dan binaan yang diperlukan projek infrastruktur.",
+        "zh": "建筑和工地劳工从事基础设施项目所需的土方、打桩和施工工作。"
+      }
+    },
+    {
+      "id": "g94-12.3",
+      "kind": "masco_submajor",
+      "code": "94",
+      "name": null,
+      "target": "12.3",
+      "reason": {
+        "en": "Kitchen and food stall assistants prepare and store food; careful handling cuts food waste in food service.",
+        "ms": "Pembantu dapur dan gerai makanan menyediakan dan menyimpan makanan; pengendalian yang teliti mengurangkan pembaziran makanan.",
+        "zh": "厨房和食品摊助理准备和储存食物；细心处理可减少餐饮业的食物浪费。"
+      }
+    },
+    {
+      "id": "g95-8.3",
+      "kind": "masco_submajor",
+      "code": "95",
+      "name": null,
+      "target": "8.3",
+      "reason": {
+        "en": "Hawkers, couriers and street service workers often work in small, informal businesses that the target seeks to support.",
+        "ms": "Penjaja, kurier dan pekerja perkhidmatan jalanan sering bekerja dalam perniagaan kecil tidak formal yang ingin disokong oleh sasaran ini.",
+        "zh": "小贩、快递员和街头服务人员常在小型非正规企业工作，该目标旨在支持这类企业。"
+      }
+    },
+    {
+      "id": "g96-11.6",
+      "kind": "masco_submajor",
+      "code": "96",
+      "name": null,
+      "target": "11.6",
+      "reason": {
+        "en": "Refuse collectors and cleaning workers collect and remove city waste, cutting its harm to health and the environment.",
+        "ms": "Pengutip sampah dan pekerja pembersihan mengutip dan membuang sisa bandar, mengurangkan kesannya terhadap kesihatan dan alam sekitar.",
+        "zh": "垃圾收集工和清洁工收集和清运城市垃圾，减少其对健康和环境的危害。"
+      }
+    },
+    {
+      "id": "el:2.A.1.a-4.6",
+      "kind": "onet_element",
+      "code": "el:2.A.1.a",
+      "name": "Reading Comprehension",
+      "target": "4.6",
+      "reason": {
+        "en": "Understanding written work documents is literacy, which the target wants all youth and most adults to reach.",
+        "ms": "Memahami dokumen kerja bertulis ialah literasi, yang ingin dicapai oleh semua belia dan kebanyakan orang dewasa menurut sasaran ini.",
+        "zh": "读懂书面工作文件属于读写能力，该目标希望所有青年和大多数成年人都具备。"
+      }
+    },
+    {
+      "id": "el:2.A.1.b-3.4",
+      "kind": "onet_element",
+      "code": "el:2.A.1.b",
+      "name": "Active Listening",
+      "target": "3.4",
+      "reason": {
+        "en": "Giving full attention to what people say is basic to counselling and care, including support for mental health.",
+        "ms": "Memberi perhatian penuh kepada kata-kata orang ialah asas kaunseling dan penjagaan, termasuk sokongan kesihatan mental.",
+        "zh": "专注倾听他人是辅导和照护的基础，包括心理健康支持。"
+      }
+    },
+    {
+      "id": "el:2.A.1.c-4.6",
+      "kind": "onet_element",
+      "code": "el:2.A.1.c",
+      "name": "Writing",
+      "target": "4.6",
+      "reason": {
+        "en": "Writing clearly is a core literacy skill that the target wants all youth and most adults to have.",
+        "ms": "Menulis dengan jelas ialah kemahiran literasi teras yang ingin dimiliki oleh semua belia dan kebanyakan orang dewasa.",
+        "zh": "清晰写作是核心读写技能，该目标希望所有青年和大多数成年人都具备。"
+      }
+    },
+    {
+      "id": "el:2.A.1.d-4.4",
+      "kind": "onet_element",
+      "code": "el:2.A.1.d",
+      "name": "Speaking",
+      "target": "4.4",
+      "reason": {
+        "en": "Speaking clearly to colleagues and customers is a job skill employers ask for in nearly every role.",
+        "ms": "Bercakap dengan jelas kepada rakan sekerja dan pelanggan ialah kemahiran kerja yang diminta majikan dalam hampir semua jawatan.",
+        "zh": "与同事和顾客清楚沟通是几乎所有岗位雇主都要求的工作技能。"
+      }
+    },
+    {
+      "id": "el:2.A.1.e-4.6",
+      "kind": "onet_element",
+      "code": "el:2.A.1.e",
+      "name": "Mathematics",
+      "target": "4.6",
+      "reason": {
+        "en": "Using maths to solve work problems is numeracy, one of the two skills the target wants all youth to have.",
+        "ms": "Menggunakan matematik untuk menyelesaikan masalah kerja ialah numerasi, salah satu daripada dua kemahiran dalam sasaran ini.",
+        "zh": "用数学解决工作问题属于计算能力，是该目标希望所有青年具备的两项技能之一。"
+      }
+    },
+    {
+      "id": "el:2.A.1.f-9.5",
+      "kind": "onet_element",
+      "code": "el:2.A.1.f",
+      "name": "Science",
+      "target": "9.5",
+      "reason": {
+        "en": "Using scientific methods to solve problems is the base skill of the research the target asks countries to grow.",
+        "ms": "Menggunakan kaedah saintifik untuk menyelesaikan masalah ialah kemahiran asas penyelidikan yang ingin dikembangkan oleh sasaran ini.",
+        "zh": "用科学方法解决问题是该目标要求各国扩大的研究工作的基础技能。"
+      }
+    },
+    {
+      "id": "el:2.A.2.a-4.4",
+      "kind": "onet_element",
+      "code": "el:2.A.2.a",
+      "name": "Critical Thinking",
+      "target": "4.4",
+      "reason": {
+        "en": "Weighing options and spotting weak points is a transferable skill used in most jobs and in starting a business.",
+        "ms": "Menimbang pilihan dan mengenal pasti kelemahan ialah kemahiran boleh pindah yang digunakan dalam kebanyakan kerja dan dalam memulakan perniagaan.",
+        "zh": "权衡选项、找出弱点是一项可迁移技能，用于大多数工作和创业。"
+      }
+    },
+    {
+      "id": "el:2.A.2.b-4.4",
+      "kind": "onet_element",
+      "code": "el:2.A.2.b",
+      "name": "Active Learning",
+      "target": "4.4",
+      "reason": {
+        "en": "Picking up new information for current and future work keeps a person's skills relevant as jobs change.",
+        "ms": "Mempelajari maklumat baharu untuk kerja semasa dan akan datang memastikan kemahiran seseorang kekal relevan apabila pekerjaan berubah.",
+        "zh": "为当前和未来工作吸收新信息，使个人技能随工作变化保持适用。"
+      }
+    },
+    {
+      "id": "el:2.A.2.c-4.c",
+      "kind": "onet_element",
+      "code": "el:2.A.2.c",
+      "name": "Learning Strategies",
+      "target": "4.c",
+      "reason": {
+        "en": "Choosing the right methods to teach and learn new things is a core skill of qualified teachers and trainers.",
+        "ms": "Memilih kaedah yang betul untuk mengajar dan mempelajari perkara baharu ialah kemahiran teras guru dan jurulatih bertauliah.",
+        "zh": "选择合适的方法来教授和学习新事物，是合格教师和培训师的核心技能。"
+      }
+    },
+    {
+      "id": "el:2.A.2.d-16.6",
+      "kind": "onet_element",
+      "code": "el:2.A.2.d",
+      "name": "Monitoring",
+      "target": "16.6",
+      "reason": {
+        "en": "Checking how people and teams perform and fixing problems makes organisations more effective and accountable.",
+        "ms": "Memantau prestasi individu dan pasukan serta membetulkan masalah menjadikan organisasi lebih berkesan dan bertanggungjawab.",
+        "zh": "检查个人和团队的表现并纠正问题，使机构更有效、更负责。"
+      }
+    },
+    {
+      "id": "el:2.B.1.a-10.2",
+      "kind": "onet_element",
+      "code": "el:2.B.1.a",
+      "name": "Social Perceptiveness",
+      "target": "10.2",
+      "reason": {
+        "en": "Noticing how others react and why helps workers serve people of every background with respect.",
+        "ms": "Menyedari reaksi orang lain dan sebabnya membantu pekerja melayan orang dari semua latar belakang dengan hormat.",
+        "zh": "察觉他人的反应及其原因，帮助工作者尊重地服务各种背景的人。"
+      }
+    },
+    {
+      "id": "el:2.B.1.b-17.17",
+      "kind": "onet_element",
+      "code": "el:2.B.1.b",
+      "name": "Coordination",
+      "target": "17.17",
+      "reason": {
+        "en": "Adjusting your actions to others is how joint work between public bodies, firms and community groups gets done.",
+        "ms": "Menyelaraskan tindakan dengan orang lain ialah cara kerja bersama antara badan awam, syarikat dan kumpulan komuniti dilaksanakan.",
+        "zh": "根据他人调整自己的行动，是公共机构、企业和社区团体合作得以完成的方式。"
+      }
+    },
+    {
+      "id": "el:2.B.1.c-12.8",
+      "kind": "onet_element",
+      "code": "el:2.B.1.c",
+      "name": "Persuasion",
+      "target": "12.8",
+      "reason": {
+        "en": "Persuading people to change their minds or habits is used in campaigns that raise awareness of sustainable lifestyles.",
+        "ms": "Memujuk orang mengubah fikiran atau tabiat digunakan dalam kempen meningkatkan kesedaran tentang gaya hidup lestari.",
+        "zh": "说服人们改变想法或习惯，用于提高可持续生活方式意识的宣传活动。"
+      }
+    },
+    {
+      "id": "el:2.B.1.d-8.8",
+      "kind": "onet_element",
+      "code": "el:2.B.1.d",
+      "name": "Negotiation",
+      "target": "8.8",
+      "reason": {
+        "en": "Bringing people together to settle differences is used in wage and workplace talks that protect labour rights.",
+        "ms": "Menyatukan pihak untuk menyelesaikan perbezaan digunakan dalam rundingan gaji dan tempat kerja yang melindungi hak pekerja.",
+        "zh": "促成各方化解分歧，用于保护劳动权益的工资和职场谈判。"
+      }
+    },
+    {
+      "id": "el:2.B.1.e-4.c",
+      "kind": "onet_element",
+      "code": "el:2.B.1.e",
+      "name": "Instructing",
+      "target": "4.c",
+      "reason": {
+        "en": "Teaching others how to do something is the main skill of teachers and trainers, whose supply the target wants to raise.",
+        "ms": "Mengajar orang lain melakukan sesuatu ialah kemahiran utama guru dan jurulatih, yang bilangannya ingin ditambah oleh sasaran ini.",
+        "zh": "教他人如何做事是教师和培训师的主要技能，该目标希望增加这类人员的供给。"
+      }
+    },
+    {
+      "id": "el:2.B.1.f-16.7",
+      "kind": "onet_element",
+      "code": "el:2.B.1.f",
+      "name": "Service Orientation",
+      "target": "16.7",
+      "reason": {
+        "en": "Actively looking for ways to help people is what makes services responsive to the people they serve.",
+        "ms": "Berusaha mencari cara membantu orang ialah perkara yang menjadikan perkhidmatan responsif kepada orang yang dilayan.",
+        "zh": "主动寻找帮助他人的方法，使服务能够回应所服务对象的需要。"
+      }
+    },
+    {
+      "id": "el:2.B.2.i-9.5",
+      "kind": "onet_element",
+      "code": "el:2.B.2.i",
+      "name": "Complex Problem Solving",
+      "target": "9.5",
+      "reason": {
+        "en": "Finding and solving new, complex problems is the core of the research and innovation work the target aims to grow.",
+        "ms": "Mengenal pasti dan menyelesaikan masalah baharu yang kompleks ialah teras kerja penyelidikan dan inovasi dalam sasaran ini.",
+        "zh": "发现并解决新的复杂问题，是该目标要扩大的研究和创新工作的核心。"
+      }
+    },
+    {
+      "id": "el:2.B.3.a-9.b",
+      "kind": "onet_element",
+      "code": "el:2.B.3.a",
+      "name": "Operations Analysis",
+      "target": "9.b",
+      "reason": {
+        "en": "Working out what users need from a product or system is the first step in developing technology locally.",
+        "ms": "Mengenal pasti keperluan pengguna daripada produk atau sistem ialah langkah pertama membangunkan teknologi tempatan.",
+        "zh": "弄清用户对产品或系统的需求，是本地技术开发的第一步。"
+      }
+    },
+    {
+      "id": "el:2.B.3.b-9.b",
+      "kind": "onet_element",
+      "code": "el:2.B.3.b",
+      "name": "Technology Design",
+      "target": "9.b",
+      "reason": {
+        "en": "Creating or adapting devices and technology to meet user needs is the skill behind domestic technology development.",
+        "ms": "Mencipta atau menyesuaikan peranti dan teknologi mengikut keperluan pengguna ialah kemahiran di sebalik pembangunan teknologi domestik.",
+        "zh": "创造或改造设备和技术以满足用户需求，是本国技术开发背后的技能。"
+      }
+    },
+    {
+      "id": "el:2.B.3.c-9.4",
+      "kind": "onet_element",
+      "code": "el:2.B.3.c",
+      "name": "Equipment Selection",
+      "target": "9.4",
+      "reason": {
+        "en": "Choosing the right tools and equipment for a job is how firms take up cleaner, more efficient technology.",
+        "ms": "Memilih alat dan peralatan yang betul untuk sesuatu kerja ialah cara syarikat menggunakan teknologi yang lebih bersih dan cekap.",
+        "zh": "为工作选择合适的工具和设备，是企业采用更清洁、更高效技术的途径。"
+      }
+    },
+    {
+      "id": "el:2.B.3.d-9.1",
+      "kind": "onet_element",
+      "code": "el:2.B.3.d",
+      "name": "Installation",
+      "target": "9.1",
+      "reason": {
+        "en": "Installing equipment, machines and wiring to specification is how new infrastructure is put into service.",
+        "ms": "Memasang peralatan, mesin dan pendawaian mengikut spesifikasi ialah cara infrastruktur baharu mula digunakan.",
+        "zh": "按规格安装设备、机器和线路，是新基础设施投入使用的方式。"
+      }
+    },
+    {
+      "id": "el:2.B.3.e-9.b",
+      "kind": "onet_element",
+      "code": "el:2.B.3.e",
+      "name": "Programming",
+      "target": "9.b",
+      "reason": {
+        "en": "Writing computer programs is how a country builds its own software instead of only buying it from abroad.",
+        "ms": "Menulis atur cara komputer ialah cara sesebuah negara membina perisian sendiri dan bukan hanya membelinya dari luar negara.",
+        "zh": "编写计算机程序是一个国家自主开发软件、而不只是从国外购买的途径。"
+      }
+    },
+    {
+      "id": "el:2.B.3.g-8.8",
+      "kind": "onet_element",
+      "code": "el:2.B.3.g",
+      "name": "Operations Monitoring",
+      "target": "8.8",
+      "reason": {
+        "en": "Watching gauges and readings so machines run properly prevents breakdowns and accidents at work.",
+        "ms": "Memantau tolok dan bacaan supaya mesin berfungsi dengan betul mencegah kerosakan dan kemalangan di tempat kerja.",
+        "zh": "监看仪表和读数确保机器正常运行，可防止故障和工伤事故。"
+      }
+    },
+    {
+      "id": "el:2.B.3.h-9.2",
+      "kind": "onet_element",
+      "code": "el:2.B.3.h",
+      "name": "Operation and Control",
+      "target": "9.2",
+      "reason": {
+        "en": "Running machines and control systems is the everyday work of industrial production lines.",
+        "ms": "Mengendalikan mesin dan sistem kawalan ialah kerja harian barisan pengeluaran industri.",
+        "zh": "操作机器和控制系统是工业生产线的日常工作。"
+      }
+    },
+    {
+      "id": "el:2.B.3.j-12.5",
+      "kind": "onet_element",
+      "code": "el:2.B.3.j",
+      "name": "Equipment Maintenance",
+      "target": "12.5",
+      "reason": {
+        "en": "Routine maintenance keeps machines working longer, so fewer are thrown away and replaced.",
+        "ms": "Penyelenggaraan berkala memanjangkan hayat mesin, jadi lebih sedikit mesin dibuang dan diganti.",
+        "zh": "定期维护延长机器的使用寿命，减少报废和更换。"
+      }
+    },
+    {
+      "id": "el:2.B.3.k-9.1",
+      "kind": "onet_element",
+      "code": "el:2.B.3.k",
+      "name": "Troubleshooting",
+      "target": "9.1",
+      "reason": {
+        "en": "Finding the cause of faults and fixing them keeps infrastructure and services reliable.",
+        "ms": "Mengenal pasti punca kerosakan dan membaikinya memastikan infrastruktur dan perkhidmatan boleh diharap.",
+        "zh": "找出故障原因并加以排除，使基础设施和服务保持可靠。"
+      }
+    },
+    {
+      "id": "el:2.B.3.l-12.5",
+      "kind": "onet_element",
+      "code": "el:2.B.3.l",
+      "name": "Repairing",
+      "target": "12.5",
+      "reason": {
+        "en": "Repairing machines and systems instead of replacing them reduces waste through reuse.",
+        "ms": "Membaiki mesin dan sistem dan bukan menggantikannya mengurangkan sisa melalui guna semula.",
+        "zh": "修理机器和系统而不是更换，通过再利用减少废弃物。"
+      }
+    },
+    {
+      "id": "el:2.B.3.m-12.5",
+      "kind": "onet_element",
+      "code": "el:2.B.3.m",
+      "name": "Quality Control Analysis",
+      "target": "12.5",
+      "reason": {
+        "en": "Testing products and processes catches defects early, cutting rejected goods and wasted materials.",
+        "ms": "Menguji produk dan proses mengesan kecacatan lebih awal, mengurangkan barang ditolak dan bahan terbuang.",
+        "zh": "检测产品和工序可及早发现缺陷，减少次品和材料浪费。"
+      }
+    },
+    {
+      "id": "el:2.B.4.e-16.7",
+      "kind": "onet_element",
+      "code": "el:2.B.4.e",
+      "name": "Judgment and Decision Making",
+      "target": "16.7",
+      "reason": {
+        "en": "Weighing the costs and benefits of options before acting is basic to sound decisions at every level.",
+        "ms": "Menimbang kos dan faedah pilihan sebelum bertindak ialah asas keputusan yang wajar di semua peringkat.",
+        "zh": "行动前权衡各选项的成本和收益，是各层级作出合理决策的基础。"
+      }
+    },
+    {
+      "id": "el:2.B.4.g-17.14",
+      "kind": "onet_element",
+      "code": "el:2.B.4.g",
+      "name": "Systems Analysis",
+      "target": "17.14",
+      "reason": {
+        "en": "Working out how a system works and how changes affect it helps make policies that fit together.",
+        "ms": "Memahami cara sesuatu sistem berfungsi dan kesan perubahan terhadapnya membantu menghasilkan dasar yang selaras.",
+        "zh": "弄清系统如何运作以及变化如何影响系统，有助于制定相互协调的政策。"
+      }
+    },
+    {
+      "id": "el:2.B.4.h-17.19",
+      "kind": "onet_element",
+      "code": "el:2.B.4.h",
+      "name": "Systems Evaluation",
+      "target": "17.19",
+      "reason": {
+        "en": "Choosing indicators of how well a system performs is the skill behind measuring progress on sustainable development.",
+        "ms": "Memilih penunjuk prestasi sesuatu sistem ialah kemahiran di sebalik pengukuran kemajuan pembangunan lestari.",
+        "zh": "选择衡量系统表现的指标，是衡量可持续发展进展背后的技能。"
+      }
+    },
+    {
+      "id": "el:2.B.5.a-4.4",
+      "kind": "onet_element",
+      "code": "el:2.B.5.a",
+      "name": "Time Management",
+      "target": "4.4",
+      "reason": {
+        "en": "Managing your own time and others' time is a basic work skill employers expect in a decent job.",
+        "ms": "Mengurus masa sendiri dan masa orang lain ialah kemahiran kerja asas yang diharapkan majikan.",
+        "zh": "管理自己和他人的时间是雇主期望的基本工作技能。"
+      }
+    },
+    {
+      "id": "el:2.B.5.b-16.6",
+      "kind": "onet_element",
+      "code": "el:2.B.5.b",
+      "name": "Management of Financial Resources",
+      "target": "16.6",
+      "reason": {
+        "en": "Planning spending and accounting for it keeps an organisation's use of money transparent and accountable.",
+        "ms": "Merancang perbelanjaan dan mengakaunkannya memastikan penggunaan wang organisasi telus dan bertanggungjawab.",
+        "zh": "规划支出并做好核算，使机构用钱透明、负责。"
+      }
+    },
+    {
+      "id": "el:2.B.5.c-12.2",
+      "kind": "onet_element",
+      "code": "el:2.B.5.c",
+      "name": "Management of Material Resources",
+      "target": "12.2",
+      "reason": {
+        "en": "Getting and using equipment, facilities and materials with care cuts waste of natural resources.",
+        "ms": "Memperoleh dan menggunakan peralatan, kemudahan dan bahan dengan teliti mengurangkan pembaziran sumber asli.",
+        "zh": "审慎地获取和使用设备、设施和材料，可减少自然资源的浪费。"
+      }
+    },
+    {
+      "id": "el:2.B.5.d-8.5",
+      "kind": "onet_element",
+      "code": "el:2.B.5.d",
+      "name": "Management of Personnel Resources",
+      "target": "8.5",
+      "reason": {
+        "en": "Motivating, developing and directing staff, and picking the right people, helps make jobs productive and decent.",
+        "ms": "Memotivasi, membangun dan mengarah kakitangan serta memilih orang yang sesuai membantu menjadikan pekerjaan produktif dan wajar.",
+        "zh": "激励、培养和指导员工并选对人，有助于使工作富有成效且体面。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.a-16.6",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.a",
+      "name": "Administration and Management",
+      "target": "16.6",
+      "reason": {
+        "en": "Knowing how to plan, lead and coordinate an organisation is needed to run effective, accountable institutions.",
+        "ms": "Pengetahuan merancang, memimpin dan menyelaras organisasi diperlukan untuk menjalankan institusi yang berkesan dan bertanggungjawab.",
+        "zh": "懂得规划、领导和协调机构，是运营有效、负责的机构所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.b-16.6",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.b",
+      "name": "Administrative",
+      "target": "16.6",
+      "reason": {
+        "en": "Keeping records, files and forms in order lets public bodies and firms work in a transparent way.",
+        "ms": "Menyusun rekod, fail dan borang dengan teratur membolehkan badan awam dan syarikat bekerja secara telus.",
+        "zh": "将记录、档案和表格整理有序，使公共机构和企业能透明运作。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.c-16.5",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.c",
+      "name": "Economics and Accounting",
+      "target": "16.5",
+      "reason": {
+        "en": "Accounting knowledge lets people keep and check financial records, which helps detect fraud and bribery.",
+        "ms": "Pengetahuan perakaunan membolehkan orang menyimpan dan menyemak rekod kewangan, yang membantu mengesan penipuan dan rasuah.",
+        "zh": "会计知识使人能够记录和核查财务记录，有助于发现欺诈和贿赂。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.d-8.3",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.d",
+      "name": "Sales and Marketing",
+      "target": "8.3",
+      "reason": {
+        "en": "Knowing how to market and sell products helps small firms and entrepreneurs grow.",
+        "ms": "Pengetahuan memasarkan dan menjual produk membantu syarikat kecil dan usahawan berkembang.",
+        "zh": "懂得营销和销售产品，有助于小企业和创业者成长。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.e-8.9",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.e",
+      "name": "Customer and Personal Service",
+      "target": "8.9",
+      "reason": {
+        "en": "Serving customers well is core to the hotel, tour and food businesses that tourism jobs depend on.",
+        "ms": "Melayan pelanggan dengan baik ialah teras perniagaan hotel, pelancongan dan makanan yang menjadi sandaran pekerjaan pelancongan.",
+        "zh": "做好客户服务，是旅游就业所依赖的酒店、旅行和餐饮业务的核心。"
+      }
+    },
+    {
+      "id": "kn:2.C.1.f-8.8",
+      "kind": "onet_element",
+      "code": "kn:2.C.1.f",
+      "name": "Personnel and Human Resources",
+      "target": "8.8",
+      "reason": {
+        "en": "Knowing hiring, pay, benefits and labour relations is needed to uphold labour rights at work.",
+        "ms": "Pengetahuan tentang pengambilan, gaji, faedah dan perhubungan perusahaan diperlukan untuk menegakkan hak pekerja.",
+        "zh": "了解招聘、薪酬、福利和劳资关系，是维护职场劳动权益所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.10-11.2",
+      "kind": "onet_element",
+      "code": "kn:2.C.10",
+      "name": "Transportation",
+      "target": "11.2",
+      "reason": {
+        "en": "Knowing how to move people and goods by road, rail, sea and air is needed to run safe, affordable transport.",
+        "ms": "Pengetahuan memindahkan orang dan barang melalui jalan raya, rel, laut dan udara diperlukan untuk pengangkutan yang selamat dan mampu milik.",
+        "zh": "懂得通过公路、铁路、海运和航空运送人员和货物，是运营安全、可负担交通所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.2.a-9.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.2.a",
+      "name": "Production and Processing",
+      "target": "9.4",
+      "reason": {
+        "en": "Knowing raw materials and production processes lets factories cut waste and use resources more efficiently.",
+        "ms": "Pengetahuan tentang bahan mentah dan proses pengeluaran membolehkan kilang mengurangkan sisa dan menggunakan sumber dengan lebih cekap.",
+        "zh": "了解原材料和生产工序，使工厂能减少浪费、更高效地使用资源。"
+      }
+    },
+    {
+      "id": "kn:2.C.2.b-2.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.2.b",
+      "name": "Food Production",
+      "target": "2.4",
+      "reason": {
+        "en": "Knowing how to grow crops and raise animals is needed for productive and sustainable farming.",
+        "ms": "Pengetahuan menanam tanaman dan menternak haiwan diperlukan untuk pertanian yang produktif dan lestari.",
+        "zh": "懂得种植作物和饲养动物，是高产、可持续农业所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.3.a-9.c",
+      "kind": "onet_element",
+      "code": "kn:2.C.3.a",
+      "name": "Computers and Electronics",
+      "target": "9.c",
+      "reason": {
+        "en": "Knowing computer hardware and software is needed to build and run the ICT that gives people internet access.",
+        "ms": "Pengetahuan perkakasan dan perisian komputer diperlukan untuk membina dan mengendalikan ICT yang memberi akses internet.",
+        "zh": "了解计算机硬件和软件，是建设和运行让人们上网的信息通信技术所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.3.b-9.1",
+      "kind": "onet_element",
+      "code": "kn:2.C.3.b",
+      "name": "Engineering and Technology",
+      "target": "9.1",
+      "reason": {
+        "en": "Engineering knowledge is used to design and build roads, power, water and other infrastructure.",
+        "ms": "Pengetahuan kejuruteraan digunakan untuk mereka bentuk dan membina jalan raya, bekalan kuasa, air dan infrastruktur lain.",
+        "zh": "工程知识用于设计和建设道路、电力、供水等基础设施。"
+      }
+    },
+    {
+      "id": "kn:2.C.3.c-11.3",
+      "kind": "onet_element",
+      "code": "kn:2.C.3.c",
+      "name": "Design",
+      "target": "11.3",
+      "reason": {
+        "en": "Drawing technical plans and models is how buildings and urban areas are planned before they are built.",
+        "ms": "Melukis pelan teknikal dan model ialah cara bangunan dan kawasan bandar dirancang sebelum dibina.",
+        "zh": "绘制技术图纸和模型，是建筑和城区在建造前进行规划的方式。"
+      }
+    },
+    {
+      "id": "kn:2.C.3.d-11.1",
+      "kind": "onet_element",
+      "code": "kn:2.C.3.d",
+      "name": "Building and Construction",
+      "target": "11.1",
+      "reason": {
+        "en": "Knowing building materials and methods is needed to build safe, adequate homes and upgrade poor housing.",
+        "ms": "Pengetahuan bahan dan kaedah binaan diperlukan untuk membina rumah yang selamat dan sempurna serta menaik taraf perumahan daif.",
+        "zh": "了解建筑材料和方法，是建造安全、适当的住房并改造简陋住房所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.3.e-9.2",
+      "kind": "onet_element",
+      "code": "kn:2.C.3.e",
+      "name": "Mechanical",
+      "target": "9.2",
+      "reason": {
+        "en": "Knowing how machines and tools work is needed for the manufacturing jobs that industrialisation creates.",
+        "ms": "Pengetahuan cara mesin dan alat berfungsi diperlukan untuk pekerjaan pembuatan yang diwujudkan oleh perindustrian.",
+        "zh": "了解机器和工具的工作原理，是工业化所创造的制造业岗位所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.a-4.6",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.a",
+      "name": "Mathematics",
+      "target": "4.6",
+      "reason": {
+        "en": "Knowing arithmetic, algebra and statistics is the numeracy the target wants all youth to achieve.",
+        "ms": "Pengetahuan aritmetik, algebra dan statistik ialah numerasi yang ingin dicapai oleh semua belia menurut sasaran ini.",
+        "zh": "掌握算术、代数和统计属于该目标希望所有青年达到的计算能力。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.b-7.2",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.b",
+      "name": "Physics",
+      "target": "7.2",
+      "reason": {
+        "en": "Physics knowledge of energy and electricity is used to design solar, wind and other renewable energy systems.",
+        "ms": "Pengetahuan fizik tentang tenaga dan elektrik digunakan untuk mereka bentuk sistem tenaga solar, angin dan tenaga boleh baharu lain.",
+        "zh": "有关能量和电的物理知识，用于设计太阳能、风能等可再生能源系统。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.c-12.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.c",
+      "name": "Chemistry",
+      "target": "12.4",
+      "reason": {
+        "en": "Knowing chemical properties, hazards and disposal is needed to handle chemicals and wastes safely.",
+        "ms": "Pengetahuan sifat, bahaya dan pelupusan bahan kimia diperlukan untuk mengendalikan bahan kimia dan sisa dengan selamat.",
+        "zh": "了解化学品的性质、危害和处置方法，是安全处理化学品和废物所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.d-15.5",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.d",
+      "name": "Biology",
+      "target": "15.5",
+      "reason": {
+        "en": "Knowing plants, animals and how they depend on their habitat is needed to protect biodiversity.",
+        "ms": "Pengetahuan tentang tumbuhan, haiwan dan pergantungan mereka pada habitat diperlukan untuk melindungi biodiversiti.",
+        "zh": "了解动植物及其对栖息地的依赖，是保护生物多样性所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.e-3.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.e",
+      "name": "Psychology",
+      "target": "3.4",
+      "reason": {
+        "en": "Knowledge of human behaviour and mental disorders is used to assess and treat mental health problems.",
+        "ms": "Pengetahuan tentang tingkah laku manusia dan gangguan mental digunakan untuk menilai dan merawat masalah kesihatan mental.",
+        "zh": "关于人类行为和精神障碍的知识，用于评估和治疗心理健康问题。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.f-10.2",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.f",
+      "name": "Sociology and Anthropology",
+      "target": "10.2",
+      "reason": {
+        "en": "Knowing how groups, cultures and ethnic groups behave helps design work and services that include everyone.",
+        "ms": "Pengetahuan tentang tingkah laku kumpulan, budaya dan etnik membantu mereka bentuk kerja dan perkhidmatan yang merangkumi semua.",
+        "zh": "了解群体、文化和族群的行为，有助于设计包容所有人的工作和服务。"
+      }
+    },
+    {
+      "id": "kn:2.C.4.g-13.1",
+      "kind": "onet_element",
+      "code": "kn:2.C.4.g",
+      "name": "Geography",
+      "target": "13.1",
+      "reason": {
+        "en": "Knowing land, sea and weather patterns is used to map hazards such as floods and plan for climate risks.",
+        "ms": "Pengetahuan tentang corak tanah, laut dan cuaca digunakan untuk memetakan bahaya seperti banjir dan merancang bagi risiko iklim.",
+        "zh": "了解陆地、海洋和天气规律，用于绘制洪水等灾害地图并规划应对气候风险。"
+      }
+    },
+    {
+      "id": "kn:2.C.5.a-3.8",
+      "kind": "onet_element",
+      "code": "kn:2.C.5.a",
+      "name": "Medicine and Dentistry",
+      "target": "3.8",
+      "reason": {
+        "en": "Knowing how to diagnose and treat illness and injury is the base of the essential health care the target aims for.",
+        "ms": "Pengetahuan mendiagnosis dan merawat penyakit dan kecederaan ialah asas penjagaan kesihatan penting dalam sasaran ini.",
+        "zh": "懂得诊断和治疗疾病与伤害，是该目标所追求的基本医疗服务的基础。"
+      }
+    },
+    {
+      "id": "kn:2.C.5.b-3.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.5.b",
+      "name": "Therapy and Counseling",
+      "target": "3.4",
+      "reason": {
+        "en": "Knowing how to treat physical and mental conditions and give counselling supports mental health and well-being.",
+        "ms": "Pengetahuan merawat keadaan fizikal dan mental serta memberi kaunseling menyokong kesihatan mental dan kesejahteraan.",
+        "zh": "懂得治疗身心疾患并提供辅导，有助于心理健康和福祉。"
+      }
+    },
+    {
+      "id": "kn:2.C.6-4.c",
+      "kind": "onet_element",
+      "code": "kn:2.C.6",
+      "name": "Education and Training",
+      "target": "4.c",
+      "reason": {
+        "en": "Knowing how to design courses, teach and test learning is the knowledge base of qualified teachers and trainers.",
+        "ms": "Pengetahuan mereka bentuk kursus, mengajar dan menguji pembelajaran ialah asas pengetahuan guru dan jurulatih bertauliah.",
+        "zh": "懂得设计课程、教学和检测学习效果，是合格教师和培训师的知识基础。"
+      }
+    },
+    {
+      "id": "kn:2.C.7.a-4.6",
+      "kind": "onet_element",
+      "code": "kn:2.C.7.a",
+      "name": "English Language",
+      "target": "4.6",
+      "reason": {
+        "en": "Knowing English spelling, grammar and composition is part of the literacy the target wants all youth to reach.",
+        "ms": "Pengetahuan ejaan, tatabahasa dan karangan bahasa Inggeris ialah sebahagian literasi yang ingin dicapai oleh semua belia.",
+        "zh": "掌握英语拼写、语法和写作，是该目标希望所有青年达到的读写能力的一部分。"
+      }
+    },
+    {
+      "id": "kn:2.C.7.b-8.9",
+      "kind": "onet_element",
+      "code": "kn:2.C.7.b",
+      "name": "Foreign Language",
+      "target": "8.9",
+      "reason": {
+        "en": "Speaking visitors' languages helps tourism workers serve international guests and show local culture.",
+        "ms": "Bertutur dalam bahasa pelawat membantu pekerja pelancongan melayan tetamu antarabangsa dan memperkenalkan budaya tempatan.",
+        "zh": "会说游客的语言，有助于旅游从业者接待国际宾客并介绍本地文化。"
+      }
+    },
+    {
+      "id": "kn:2.C.7.c-11.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.7.c",
+      "name": "Fine Arts",
+      "target": "11.4",
+      "reason": {
+        "en": "Knowing music, dance, visual arts and drama helps keep and pass on cultural heritage.",
+        "ms": "Pengetahuan muzik, tarian, seni visual dan drama membantu memelihara dan mewariskan warisan budaya.",
+        "zh": "了解音乐、舞蹈、视觉艺术和戏剧，有助于保护和传承文化遗产。"
+      }
+    },
+    {
+      "id": "kn:2.C.7.d-11.4",
+      "kind": "onet_element",
+      "code": "kn:2.C.7.d",
+      "name": "History and Archeology",
+      "target": "11.4",
+      "reason": {
+        "en": "Knowing history and archaeology is needed to find, study and protect cultural heritage sites.",
+        "ms": "Pengetahuan sejarah dan arkeologi diperlukan untuk menemui, mengkaji dan melindungi tapak warisan budaya.",
+        "zh": "历史和考古知识是发现、研究和保护文化遗产地所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.7.e-4.7",
+      "kind": "onet_element",
+      "code": "kn:2.C.7.e",
+      "name": "Philosophy and Theology",
+      "target": "4.7",
+      "reason": {
+        "en": "Knowing different beliefs and ethical systems supports respect for cultural diversity and a culture of peace.",
+        "ms": "Pengetahuan tentang pelbagai kepercayaan dan sistem etika menyokong penghormatan terhadap kepelbagaian budaya dan budaya damai.",
+        "zh": "了解不同的信仰和伦理体系，有助于尊重文化多样性和和平文化。"
+      }
+    },
+    {
+      "id": "kn:2.C.8.a-16.1",
+      "kind": "onet_element",
+      "code": "kn:2.C.8.a",
+      "name": "Public Safety and Security",
+      "target": "16.1",
+      "reason": {
+        "en": "Knowing security procedures and equipment is used to protect people and property and prevent violence.",
+        "ms": "Pengetahuan prosedur dan peralatan keselamatan digunakan untuk melindungi orang dan harta serta mencegah keganasan.",
+        "zh": "了解安保程序和设备，用于保护人员和财产、预防暴力。"
+      }
+    },
+    {
+      "id": "kn:2.C.8.b-16.3",
+      "kind": "onet_element",
+      "code": "kn:2.C.8.b",
+      "name": "Law and Government",
+      "target": "16.3",
+      "reason": {
+        "en": "Knowing laws, court procedures and government rules is needed to uphold the rule of law and access to justice.",
+        "ms": "Pengetahuan undang-undang, prosedur mahkamah dan peraturan kerajaan diperlukan untuk menegakkan kedaulatan undang-undang.",
+        "zh": "了解法律、法院程序和政府规章，是维护法治和司法公正所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.9.a-9.c",
+      "kind": "onet_element",
+      "code": "kn:2.C.9.a",
+      "name": "Telecommunications",
+      "target": "9.c",
+      "reason": {
+        "en": "Knowing how telecom systems are set up and run is needed to extend affordable internet and phone access.",
+        "ms": "Pengetahuan cara sistem telekomunikasi dipasang dan dikendalikan diperlukan untuk meluaskan akses internet dan telefon mampu milik.",
+        "zh": "了解电信系统的建设和运营，是扩大可负担的互联网和电话接入所必需的。"
+      }
+    },
+    {
+      "id": "kn:2.C.9.b-16.10",
+      "kind": "onet_element",
+      "code": "kn:2.C.9.b",
+      "name": "Communications and Media",
+      "target": "16.10",
+      "reason": {
+        "en": "Knowing how media produce and share information supports public access to information.",
+        "ms": "Pengetahuan cara media menghasilkan dan menyebarkan maklumat menyokong akses awam kepada maklumat.",
+        "zh": "了解媒体如何制作和传播信息，有助于公众获取信息。"
+      }
+    }
+  ]
+}

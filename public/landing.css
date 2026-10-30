@@ -169,14 +169,11 @@ body.landing main{max-width:none;padding:0}
 
 /* the end of the page: one full-width band (.lp-end) holding the closing call to action and the footer, its content
    lined up with the page (--edge). The closing block
-   is the dark top, with a faint tile grid; its bottom edge is cut into scallops (a mask, so the glow runs into them)
-   and the footer follows straight underneath. */
+   is the black top (black in dark mode too); its bottom edge is cut into scallops (a mask) and the footer follows
+   straight underneath. */
 .lp-end{--edge:max(clamp(16px,4vw,48px),calc(50vw - 620px + clamp(16px,4vw,48px)));margin:0 calc(50% - 50vw);background:var(--lp-paper)}
-.lp-close{padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
-  background:linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
-             linear-gradient(color-mix(in srgb,var(--lp-cream) 7%,transparent) 1px,transparent 1px) 0 0/44px 44px,
-             radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--lp-blue) 45%,transparent),transparent 50%),
-             radial-gradient(circle at 10% 110%,color-mix(in srgb,var(--lp-pink) 40%,transparent),transparent 50%),var(--lp-ink);
+.lp-close{--lp-cream:#f5f0e6;padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
+  background:#000;
   -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
     radial-gradient(circle at 14px 0,#000 13.5px,#0000 14px) bottom left/28px 14px repeat-x;
   mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,

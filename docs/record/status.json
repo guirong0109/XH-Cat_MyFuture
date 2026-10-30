@@ -1065,6 +1065,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "closing block and footer span the full width, content lined up with the page; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block background black"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block solid black (glow and grid removed), black in dark mode too; npm test 258 passed; checked in Chrome, light and dark"
     }
   ]
 }

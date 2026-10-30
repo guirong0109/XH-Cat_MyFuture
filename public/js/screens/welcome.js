@@ -6,9 +6,9 @@ import { ICONS, LOCK, SPRITE, pixelArt, pixelDigits } from '../components/pixel.
 
 // Quoted in the Aiversecity Domain 1 Finalist Guide, section 1. Shown side by side in the second section.
 export const GUIDE_FACTS = [
-  { value: '56%', heading: 'ldTally1', label: 'ldFact1', source: 'ldSrcHays' },
-  { value: '26%', heading: 'ldTally2', label: 'ldFact2', source: 'ldSrcHays' },
-  { value: '600,000+', heading: 'ldTally3', label: 'ldFact3', source: 'ldSrcMosti' },
+  { value: '56%', heading: 'ldTally1', accent: 'pink', label: 'ldFact1', source: 'ldSrcHays' },
+  { value: '26%', heading: 'ldTally2', accent: 'blue', label: 'ldFact2', source: 'ldSrcHays' },
+  { value: '600,000+', heading: 'ldTally3', accent: 'lime', label: 'ldFact3', source: 'ldSrcMosti' },
 ]
 const GAP_POINTS = 56 - 26
 
@@ -69,12 +69,13 @@ function atm(t) {
 </section>`
 }
 
-// The second section: the guide's figures side by side, each a heading, its roller counter and a caption. A bracket
-// under the first two joins them with the calculated gap; the sources sit in one footnote.
+// The second section: the guide's figures side by side as pixel cards like How it works, each with a title bar in its
+// accent, its roller counter and a caption. A bracket under the first two joins them with the calculated gap; the
+// sources sit in one footnote.
 function gap(t) {
   const [use, trained, workers] = GUIDE_FACTS
   const col = (fact, i) => `
-  <div class="lp-tally-col">
+  <div class="lp-tally-col" style="--a:var(--lp-${fact.accent});--on:${fact.accent === 'lime' ? 'var(--lp-on-lime)' : '#fffdf8'}">
    <p class="lp-tally-head">${esc(t(fact.heading))}</p>
    <div class="lp-tally-n">${odometer(fact.value, `fact-${i}`)}</div>
    <p class="lp-tally-cap">${esc(t(fact.label))}</p>

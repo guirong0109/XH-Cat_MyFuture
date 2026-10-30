@@ -78,6 +78,7 @@ describe('landing page', () => {
       const gap = html.slice(html.indexOf('id="gap"'), html.indexOf('id="how"'))
       expect(gap).toContain(translate(lang, 'ldFactsTitle'))
       expect(gap.match(/class="lp-tally-col"/g)).toHaveLength(GUIDE_FACTS.length)
+      for (const accent of ['pink', 'blue', 'lime']) expect(gap).toContain(`--a:var(--lp-${accent})`)
       expect(gap.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length)
       for (const fact of GUIDE_FACTS) {
         expect(gap).toContain(translate(lang, fact.heading))

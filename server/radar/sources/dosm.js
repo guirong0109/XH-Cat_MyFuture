@@ -28,6 +28,46 @@ const dataFileName = (url) => {
   return /\.[a-z0-9]{2,5}$/i.test(last) ? last : 'Data JMI'
 }
 
+// Snapshot + original from workbook bytes and the release metadata (shared by fetchSnapshot and the bootstrap).
+export function dosmSnapshotFromWorkbook(bytes, release, { pageUrl, dataUrl, fetchedAt }) {
+  let table
+  try {
+    table = parseDosmJmi(bytes)
+  } catch (e) {
+    if (e?.code === 'not_xlsx') throw new SourceError('dosm_dataset_missing', { detail: { reason: 'not_xlsx' } })
+    if (e?.code === 'dosm_layout_unexpected') throw new SourceError('dosm_layout_unexpected', { detail: { reason: e.detail } })
+    throw e
+  }
+  const lastPeriod = table.periods.at(-1)
+  if (lastPeriod !== release.quarter) {
+    throw new SourceError('dosm_layout_unexpected', { detail: { reason: `last quarter ${lastPeriod} differs from listing ${release.quarter}` } })
+  }
+
+  const sha256 = createHash('sha256').update(bytes).digest('hex')
+  const name = `dosm-jmi-${release.quarter.replace(' ', '').toLowerCase()}.xlsx`
+  const snapshot = {
+    sourceId: 'dosm',
+    snapshotId: `dosm-${release.quarter.replace(' ', '').toLowerCase()}-${fetchedAt.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}`,
+    fetchedAt,
+    lastQuarter: lastPeriod,
+    classification: { system: 'masco2020', version: '2020', readAt: fetchedAt },
+    sourceUrls: [
+      { label: `DOSM release page: ${release.listingTitle ?? release.title ?? release.quarter}`, url: pageUrl },
+      { label: `DOSM data file: ${dataFileName(dataUrl)}`, url: dataUrl }
+    ],
+    originals: [{ name, sha256 }],
+    meta: {
+      quarter: release.quarter,
+      publishedAt: release.publishedAt ?? null,
+      pageUrl,
+      dataUrl,
+      listingTitle: release.listingTitle ?? release.title ?? null
+    },
+    observations: dosmSnapshotObservations(table)
+  }
+  return { snapshot, original: { name, bytes, sha256 } }
+}
+
 export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } = {}) {
   async function get(url, { missingOn404 = false } = {}) {
     let response
@@ -103,43 +143,7 @@ export function createDosmSource({ fetchImpl = fetch, now = () => new Date() } =
       throw new SourceError('source_unavailable', { retryable: true })
     }
 
-    let table
-    try {
-      table = parseDosmJmi(bytes)
-    } catch (e) {
-      if (e?.code === 'not_xlsx') throw new SourceError('dosm_dataset_missing', { detail: { reason: 'not_xlsx' } })
-      if (e?.code === 'dosm_layout_unexpected') throw new SourceError('dosm_layout_unexpected', { detail: { reason: e.detail } })
-      throw e
-    }
-    const lastPeriod = table.periods.at(-1)
-    if (lastPeriod !== release.quarter) {
-      throw new SourceError('dosm_layout_unexpected', { detail: { reason: `last quarter ${lastPeriod} differs from listing ${release.quarter}` } })
-    }
-
-    const sha256 = createHash('sha256').update(bytes).digest('hex')
-    const name = `dosm-jmi-${release.quarter.replace(' ', '').toLowerCase()}.xlsx`
-    const fetchedAt = now().toISOString()
-    const snapshot = {
-      sourceId: 'dosm',
-      snapshotId: `dosm-${release.quarter.replace(' ', '').toLowerCase()}-${fetchedAt.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}`,
-      fetchedAt,
-      lastQuarter: lastPeriod,
-      classification: { system: 'masco2020', version: '2020', readAt: fetchedAt },
-      sourceUrls: [
-        { label: `DOSM release page: ${release.listingTitle ?? release.title ?? release.quarter}`, url: pageUrl },
-        { label: `DOSM data file: ${dataFileName(dataUrl)}`, url: dataUrl }
-      ],
-      originals: [{ name, sha256 }],
-      meta: {
-        quarter: release.quarter,
-        publishedAt: release.publishedAt ?? null,
-        pageUrl,
-        dataUrl,
-        listingTitle: release.listingTitle ?? release.title ?? null
-      },
-      observations: dosmSnapshotObservations(table)
-    }
-    return { snapshot, original: { name, bytes, sha256 } }
+    return dosmSnapshotFromWorkbook(bytes, release, { pageUrl, dataUrl, fetchedAt: now().toISOString() })
   }
 
   return { discover, fetchSnapshot }

@@ -3,3 +3,4 @@ data/isced/*.tsv text eol=lf
 data/isced/source/* -text
 data/radar/source/* -text
 data/radar/*.json text eol=lf
+data/radar/bundle/** -text

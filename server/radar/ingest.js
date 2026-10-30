@@ -117,7 +117,7 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     }
   }
 
-  async function refresh(sourceId) {
+  async function refresh(sourceId, { release } = {}) {
     const time = now().toISOString()
     const run = {
       time,
@@ -160,12 +160,17 @@ export function createIngestor({ store, sources = {}, references = {}, config = 
     let fetched
     let original = null
     if (sourceId === 'dosm') {
-      const quarter = lastQuarter(current.dosm?.snapshot)
-      if (!quarter) return finish(run, 'failed', 'discover', { code: 'not_configured' })
+      // A given release (first bundle only, from code) skips discovery; everything after it is the normal path.
+      const quarter = release ? null : lastQuarter(current.dosm?.snapshot)
+      if (!release && !quarter) return finish(run, 'failed', 'discover', { code: 'not_configured' })
       try {
-        const found = await sources.dosm.discover(quarter)
-        if (found?.status !== 'new') return finish(run, 'no_change', 'discover')
-        const got = await sources.dosm.fetchSnapshot(found.release)
+        let target = release
+        if (!target) {
+          const found = await sources.dosm.discover(quarter)
+          if (found?.status !== 'new') return finish(run, 'no_change', 'discover')
+          target = found.release
+        }
+        const got = await sources.dosm.fetchSnapshot(target)
         fetched = got?.snapshot
         original = got?.original ?? null
       } catch (e) {

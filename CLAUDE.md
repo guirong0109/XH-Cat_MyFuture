@@ -29,7 +29,13 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 232 passed
+npm install && npm test     # expect 651 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 8 OK
+python -m unittest discover pipeline/tests   # expect 11 OK
 ```
+
+## Future Skills Radar (details: branch `claude/future-radar`)
+- Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.
+- Output contract `radar-signal/v1` (`docs/radar/contract.md`): never add score, weight, rank or match fields.
+- Field ↔ topic links and structural breaks are the owner's decisions; never approve them on the owner's behalf.
+- Admin and judge keys live only in server env; never print, log or commit them.

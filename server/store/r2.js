@@ -5,6 +5,7 @@ import { StoreError } from './d1.js'
 
 const sha256 = (data) => createHash('sha256').update(data).digest('hex')
 const hmac = (key, data) => createHmac('sha256', key).update(data).digest()
+const decodeXml = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
 const encodePath = (path) => path.split('/').map((part) => encodeURIComponent(part)).join('/')
 
 // headers: every header to sign (lower-case names), including host and x-amz-date.
@@ -26,11 +27,13 @@ export function signV4({ method, url, headers, payloadHash, accessKeyId, secretA
 export function createR2({ accountId, bucket, accessKeyId, secretAccessKey, fetchImpl = fetch, now = () => new Date(), timeoutMs = 15000 }) {
   const host = `${accountId}.r2.cloudflarestorage.com`
 
-  async function send(method, key, body = null, contentType = null) {
-    const url = `https://${host}/${bucket}/${encodePath(key)}`
+  // extra: more headers to sign and send (conditional writes). query: a ready-made canonical query string.
+  // bucketLevel: address the bucket itself (ListObjectsV2) instead of an object.
+  async function send(method, key, body = null, contentType = null, { extra = {}, query = '', bucketLevel = false } = {}) {
+    const url = `https://${host}/${bucket}${bucketLevel ? '' : '/' + encodePath(key)}${query ? '?' + query : ''}`
     const amzDate = now().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
     const payloadHash = sha256(body ?? '')
-    const headers = { host, 'x-amz-content-sha256': payloadHash, 'x-amz-date': amzDate, ...(contentType ? { 'content-type': contentType } : {}) }
+    const headers = { host, 'x-amz-content-sha256': payloadHash, 'x-amz-date': amzDate, ...(contentType ? { 'content-type': contentType } : {}), ...extra }
     const { authorization } = signV4({ method, url, headers, payloadHash, accessKeyId, secretAccessKey, region: 'auto', service: 's3', amzDate })
     const { host: _host, ...sent } = headers
     try {
@@ -44,14 +47,38 @@ export function createR2({ accountId, bucket, accessKeyId, secretAccessKey, fetc
   }
 
   return {
-    async put(key, buffer, contentType) {
-      check(await send('PUT', key, buffer, contentType))
+    // Optional conditional write: ifMatch -> If-Match, ifNoneMatch -> If-None-Match; 412 -> precondition_failed.
+    async put(key, buffer, contentType, { ifMatch, ifNoneMatch } = {}) {
+      const extra = {}
+      if (ifMatch) extra['if-match'] = ifMatch
+      if (ifNoneMatch) extra['if-none-match'] = ifNoneMatch
+      const response = await send('PUT', key, buffer, contentType, { extra })
+      if (response.status === 412) throw new StoreError('precondition_failed')
+      check(response)
+      return { etag: response.headers.get('etag') ?? undefined }
+    },
+    // ListObjectsV2 for a prefix, following continuation tokens. Returns the keys.
+    async list(prefix) {
+      const keys = []
+      let token = null
+      do {
+        const params = [['list-type', '2'], ['prefix', prefix]]
+        if (token) params.push(['continuation-token', token])
+        const query = params.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).sort().join('&')
+        const response = await send('GET', '', null, null, { query, bucketLevel: true })
+        check(response)
+        const xml = await response.text()
+        for (const m of xml.matchAll(/<Key>([^<]*)<\/Key>/g)) keys.push(decodeXml(m[1]))
+        const next = /<NextContinuationToken>([^<]*)<\/NextContinuationToken>/.exec(xml)
+        token = next ? decodeXml(next[1]) : null
+      } while (token)
+      return keys
     },
     async get(key) {
       const response = await send('GET', key)
       if (response.status === 404) return null
       check(response)
-      return { buffer: Buffer.from(await response.arrayBuffer()), contentType: response.headers.get('content-type') }
+      return { buffer: Buffer.from(await response.arrayBuffer()), contentType: response.headers.get('content-type'), etag: response.headers.get('etag') ?? undefined }
     },
     async delete(key) {
       const response = await send('DELETE', key)

@@ -261,4 +261,439 @@ export default {
   occNoneStored: "O*NET 在线搜索目前不可用，存储的列表中也没有匹配项。您的原文已保留；您可以稍后再试。",
   cvPrivacyServer: "为了可选的 AI 重新读取，文件副本最多在我们的服务器上保存一天；一旦您保存档案或删除数据，副本会立即删除。",
   savedNowhere: "未保存：无法连接您的账户，且此浏览器不允许保存。请保持此页面打开，或开启网站存储。",
+  // Radar: fixed copy (spec and index-analysis.md section 8)
+  rdTooltip: "研究势头指数：这个主题的研究论文在3年里增长得有多快。50 = 和之前一样。每翻一倍加20分，每减半一次减20分。它只统计研究论文——不衡量工作、招聘，也不衡量人工智能有多强。",
+  rdWhyIndex: "人工智能研究往往以翻倍的方式增长，所以我们用翻倍次数，而不用百分比。这样增长快的主题不会全部挤在顶部，可以区分开来。我们也始终显示真实的论文数量，因为小主题可能从很少的论文起步快速增长。",
+  rdWhyTitle: "为什么用这个指数？",
+  rdB1Title: "马来西亚在线招聘广告份额的变化",
+  rdContextLabel: "在线招聘广告总数的环比变化——仅供参考",
+  rdNoFieldLinks: "这个领域的已核实关联不足",
+  rdNoRankings: "职业排名目前还不属于这个模块。",
+  rdIce: "可比证据不足",
+  rdIceReason: "{period}可能出现结构性断层，在审核之前或{next}的数据公布之前，年同比比较不可靠。",
+  rdDevStore: "开发用存储——不会长期保存",
+  // Radar: header and tabs (Skills & Careers first, AI Impact second)
+  rdTitle: "未来技能雷达",
+  rdLead: "探索人工智能如何改变工作、技能和职业机会。",
+  rdSub: "了解正在发生的变化，查看证据，并看看这些变化与您的未来有何关系。",
+  rdTabSK: "技能与职业",
+  rdTabSKq: "哪些技能和工作正在变化，哪些与我有关？",
+  rdTabAI: "人工智能影响",
+  rdTabAIq: "人工智能如何改变工作的性质？",
+  rdViewSources: "查看数据来源",
+  rdSourcesTitle: "数据来源",
+  rdSourcesNote: "每个来源按自己的计划更新。显示的日期是来源自己报告的日期。",
+  rdViewAll: "查看全部",
+  rdViewMine: "只看与我的资料相关的内容",
+  rdViewAllAi: "显示所有人工智能主题。默认不显示您资料之外的内容。",
+  rdViewAllSk: "显示马来西亚统计局的所有职业组、所有人工智能主题，以及所有技能有变化的 O*NET 职业。",
+  rdAddProfile: "添加您的学习领域或职位，即可看到与您相关的内容",
+  rdYourProfile: "您的资料",
+  rdLoading: "加载中…",
+  rdUnavailable: "目前无法获取这些信息。",
+  rdNoData: "没有可显示的数据。",
+  // Radar: section titles and columns
+  rdA1Title: "每年研究论文数",
+  rdA1Metric: "每年研究论文数（OpenAlex）",
+  rdA2Title: "按人工智能主题的研究势头",
+  rdA5Title: "研究信号对您意味着什么",
+  rdA5Note: "研究信号反映的是研究论文，而不是工作。",
+  rdB2Title: "上升、下降和新兴的技能",
+  rdB5Title: "您的学习领域",
+  rdB6Title: "这对您意味着什么",
+  rdB6Next: "继续查看“我的职业匹配”",
+  rdColProxy: "推算代理指标",
+  rdColProxyNote: "未生成：我们不会从职业组推测技能需求。",
+  rdColAi: "人工智能研究势头",
+  rdColAiNote: "这是研究，不是招聘。",
+  rdColOnet: "招聘广告中的技能（美国，O*NET）",
+  rdColOnetNote: "O*NET 标出美国雇主在招聘广告中要求的软件和技术技能。我们把一个 O*NET 版本与前一个版本作比较。",
+  rdSkLabelUs: "美国招聘广告（Lightcast 经 O*NET），并非马来西亚数据",
+  rdSkLabelSoftware: "仅限软件和技术技能",
+  rdSkHeading: "在最近一次 O*NET 技能更新中发生变化（{previous}，{previousMonth} → {current}，{currentMonth}；{same} 中没有变化）",
+  rdSkHeadingNew: "在最近一次 O*NET 技能更新中发生变化（{previous}，{previousMonth} → {current}，{currentMonth}）",
+  rdSkFirstRelease: "这是读取的第一个 O*NET 版本（{current}，{currentMonth}）：从下一次技能更新起才会显示变化。",
+  rdSkUnavailable: "暂时还没有 O*NET 技能数据。",
+  rdSkAdded: "新近有需求",
+  rdSkDropped: "不再有需求",
+  rdSkKept: "仍有需求（{count}）",
+  rdSkNoFlags: "此版本中没有为这个职业标出任何技能",
+  rdSkNoOnetLink: "没有与 O*NET 的官方对应：无法提供技能列表",
+  rdOnProfile: "在您的个人资料中",
+  rdSkHot: "成为热门技术",
+  rdSkHotDropped: "不再是热门技术",
+  rdSkHotNote: "热门技术：O*NET 在所有职业的美国招聘广告中最常见到的技能。",
+  rdSkPostings: "{year} 年的美国招聘广告",
+  rdSkFirstSnapshot: "第一份快照：从下一份年度快照起才会显示趋势",
+  rdSkTechCol: "技术",
+  rdSkAdsCol: "招聘广告",
+  rdSkTotal: "统计的全部招聘广告",
+  rdSkMoreRows: "全部 {count} 项技术",
+  rdSkAllJobs: "所有有变化的 O*NET 职业（{count}）",
+  rdLinkedJobs: "关联的工作（官方对照表）",
+  rdLinkedGroups: "对应的统计局职业组（组级别）",
+  rdLinkedAxes: "关联的人工智能主题（仅限已批准）",
+  rdPath: "关联方式",
+  rdLatestShare: "最新份额",
+  rdLatestCount: "广告数",
+  rdPpUnit: "个百分点",
+  rdPapers: "篇论文",
+  rdMomentum: "势头",
+  // Radar: metric toggle, rings, tags
+  rdMetricCount: "论文数量",
+  rdMetricShare: "计算机科学占比",
+  rdRingHalved: "减半",
+  rdRingSame: "不变",
+  rdRingDoubled: "翻倍",
+  rdRingFour: "4倍",
+  rdWindowSelected: "所选时段",
+  rdWindowCompare: "对比时段",
+  rdFewAxes: "有效指数的主题不足 3 个，因此改用柱状图代替雷达图。",
+  rdPointHollow: "空心或灰色的点：无法计算出数字（请看原因）。",
+  rdTagObserved: "观测数据",
+  rdTagResearch: "研究信号",
+  rdTagSample: "示例",
+  rdTagSynthetic: "合成数据",
+  rdTagNone: "证据不足",
+  rdShowOnChart: "显示或隐藏这条线",
+  // Radar: friendly axis labels (translation: owner review)
+  rdAxis_language: "语言模型与文本AI", // translation: owner review
+  rdAxis_genmedia: "生成式媒体AI", // translation: owner review
+  rdAxis_vision: "计算机视觉", // translation: owner review
+  rdAxis_robotics: "机器人", // translation: owner review
+  rdAxis_automation: "流程自动化", // translation: owner review
+  rdAxis_service: "服务AI", // translation: owner review
+  // Radar: direction, volatility, evidence
+  rdDir_rising: "上升",
+  rdDir_declining: "下降",
+  rdDir_stable: "稳定",
+  rdDir_emerging: "新兴",
+  rdDir_mixed: "走势不一",
+  rdDir_insufficient: "证据不足",
+  rdVolatility: "波动性",
+  rdVol_low: "低",
+  rdVol_moderate: "中等",
+  rdVol_high: "高",
+  rdEvidence: "证据",
+  rdSuff_sufficient: "证据充足",
+  rdSuff_insufficient_evidence: "证据不足",
+  rdSuff_insufficient_comparable_evidence: "可比证据不足",
+  rdQual_strong: "证据强",
+  rdQual_moderate: "证据中等",
+  rdQual_limited: "证据有限",
+  // Radar: reason codes (translation: owner review)
+  rdReason_fewer_years: "数据年份少于所需年数。", // translation: owner review
+  rdReason_missing_value: "所需的某一年没有数值。", // translation: owner review
+  rdReason_dropped_to_zero: "数量降到了零，因此不计算变化。", // translation: owner review
+  rdReason_zero_baseline: "起始数量为零，无法计算比值。", // translation: owner review
+  rdReason_steps_disagree: "各年的变化方向不一致。", // translation: owner review
+  rdReason_high_volatility: "各年的数量起伏很大。", // translation: owner review
+  rdReason_revision_over_5: "来源对过去数量的修订超过了 5%。", // translation: owner review
+  rdReason_small_counts: "数量较少，结果不太确定。", // translation: owner review
+  rdReason_new_reporting_category: "新的统计类别：历史数据不足，无法比较。", // translation: owner review
+  rdReason_possible_structural_break: "可能出现结构性断层：数据的统计方式可能已经改变。", // translation: owner review
+  rdReason_not_material: "变化太小，不算真正的变化。", // translation: owner review
+  // Radar: rule texts (placeholders are filled from the rule vars)
+  rdRuleRising: "上升：数量是3年前的{ratio}倍（至少需要{limit}倍），且3个年度变化中至少{agree}个是上升的。",
+  rdRuleDeclining: "下降：数量是3年前的{ratio}倍（需要不超过{limit}倍），且3个年度变化中至少{agree}个是下降的。",
+  rdRuleStable: "稳定：数量是3年前的{ratio}倍，在{declining}和{rising}之间，且各年数量波动不大。",
+  rdRuleEmerging: "新兴：从{baseline}篇增至{recent}篇（起点低于{baselineBelow}，现在至少{recentAtLeast}，至少是原来的{ratioAtLeast}倍），且最近两年每年都在增加。",
+  rdRuleMixedSteps: "走势不一：数量是3年前的{ratio}倍，但3个年度变化中只有{agree}个方向一致。",
+  rdRuleMixedVolatility: "走势不一：数量是3年前的{ratio}倍，但各年数量波动很大（{volatility}，超过{high}）。",
+  rdRuleInsufficientYears: "证据不足：只有{years}年的数据，至少需要{minYears}年。",
+  rdRuleInsufficientMissing: "证据不足：比较的起始年或最后一年没有数值。",
+  rdRuleInsufficientZero: "证据不足：之前有论文而最新数量为零，因此不给出走势方向。",
+  rdRuleInsufficientBaseline: "证据不足：起始数量为{baseline}（现在为{recent}），无法计算比值。",
+  // Radar: momentum states
+  rdMom_ok: "已计算指数",
+  rdMom_no_activity: "两个时段都没有论文",
+  rdMom_no_baseline: "起始年没有论文，因此没有指数",
+  rdMom_dropped_to_zero: "最新一年没有论文，因此没有指数",
+  rdMom_invalid: "数据缺失，因此没有指数",
+  rdMomCapped: "显示在量表顶部。实际比值为{ratio}倍。",
+  rdMomSmall: "数量较少：小主题可能从很少的论文起步快速增长。",
+  // Radar: the five state dimensions
+  rdDim_availability: "可用性",
+  rdDim_freshness: "时效性",
+  rdDim_refreshHealth: "最近一次刷新",
+  rdDim_servedFrom: "数据来自",
+  rdDim_comparability: "可比性",
+  rdAvail_data: "有数据",
+  rdAvail_no_records: "没有记录",
+  rdAvail_unavailable: "无法获取",
+  rdFresh_current: "最新",
+  rdFresh_stale: "已过时",
+  rdHealth_ok: "成功",
+  rdHealth_failed: "失败",
+  rdHealth_never_run: "从未运行",
+  rdHealth_not_configured: "尚未设置",
+  rdServed_active_manifest: "当前已发布的数据",
+  rdServed_bundled_read_only: "内置副本（只读）",
+  rdServed_cached_fallback: "刷新失败后的上一份可用副本",
+  rdLastFetch: "最近一次成功获取",
+  rdPublished: "发布日期",
+  rdObsPeriod: "观测期",
+  rdManifestId: "当前清单",
+  // Radar: evidence panel
+  rdEvTitle: "证据",
+  rdEvSource: "来源",
+  rdEvFetched: "获取时间",
+  rdEvMetric: "指标和单位",
+  rdEvValues: "数值",
+  rdEvFormula: "带入数字的公式",
+  rdEvThresholds: "使用的阈值",
+  rdEvRule: "适用的规则",
+  rdEvBreaks: "断层与审核",
+  rdEvRevisions: "数据修订",
+  rdEvLimits: "局限",
+  rdEvLinks: "链接",
+  rdEvClose: "关闭",
+  rdEvOpen: "查看证据",
+  // Radar: API error codes
+  rdErr_openalex_key_missing: "尚未设置 OpenAlex 密钥。",
+  rdErr_openalex_rate_limited: "OpenAlex 要求我们放慢请求。请稍后再试。",
+  rdErr_openalex_auth_failed: "OpenAlex 不接受我们的密钥。",
+  rdErr_source_unavailable: "无法连接到数据来源。",
+  rdErr_dosm_dataset_missing: "找不到统计局的数据集。",
+  rdErr_dosm_layout_unexpected: "统计局文件的格式我们无法识别，因此没有使用。",
+  rdErr_validation_failed: "新数据未通过检查，因此没有发布。",
+  rdErr_periods_removed: "新数据缺少之前已有的时段，因此没有发布。",
+  rdErr_publish_conflict: "有人同时进行了发布。请再试一次。",
+  rdErr_store_unavailable: "数据存储目前不可用。",
+  rdErr_not_configured: "这台服务器尚未设置此功能。",
+  rdErr_not_allowed: "您没有权限执行此操作。",
+  rdErr_csrf_failed: "无法验证请求。请刷新页面后再试。",
+  rdErr_demo_expired: "测试会话已结束。请重新登录。",
+  rdErr_demo_full: "测试会话太多。请稍后再试。",
+  rdErr_manifest_gone: "该版本的数据已不再可用。",
+  rdSrcOnetSkills: "O*NET 技能标记（美国招聘广告）", // translation: owner review
+  rdSrcOnetHot: "O*NET 热门技术（美国招聘广告）", // translation: owner review
+  rdAdminOnetSkillsRow: "O*NET 技能标记", // translation: owner review
+  rdAdminOnetHotRow: "O*NET 热门技术", // translation: owner review
+  rdAdminOnetReleaseLabel: "新版本号", // translation: owner review
+  rdAdminOnetReleaseHint: "两位数字、一个点、一位数字，例如 31.1。必须比当前版本新。", // translation: owner review
+  rdAdminOnetRefresh: "刷新", // translation: owner review
+  rdAdminOnetActiveRelease: "当前版本", // translation: owner review
+  rdAdminOnetActiveWindow: "当前统计期间", // translation: owner review
+  rdAdminOnetLastCheck: "最近一次检查", // translation: owner review
+  rdErr_onet_release_not_newer: "这个 O*NET 版本不比当前版本新，因此没有获取任何内容。", // translation: owner review
+  rdErr_onet_release_not_found: "O*NET 没有这个版本号的数据库文件。", // translation: owner review
+  rdErr_onet_columns: "O*NET 技能表的列与预期不符，因此没有使用。", // translation: owner review
+  rdErr_hottech_layout: "O*NET 热门技术页面的版式无法识别，因此没有使用。", // translation: owner review
+  // Radar: admin screen
+  rdAdminTitle: "雷达管理",
+  rdAdminSignIn: "登录",
+  rdAdminKey: "管理密钥",
+  rdAdminSignOut: "退出登录",
+  rdAdminSignedIn: "已以管理员身份登录 · 会话将在{minutes}分钟后结束",
+  rdAdminMapTitle: "领域 ↔ 人工智能主题关联",
+  rdAdminMapTag: "关联审核",
+  rdAdminBreakTitle: "可能的结构性断层",
+  rdAdminBreakTag: "断层审核",
+  rdAdminIngestTitle: "数据导入状态",
+  rdAdminOrphans: "无引用的对象",
+  rdAdminCleanUp: "清理",
+  rdAdminConflicts: "冲突",
+  rdAdminRefreshTitle: "刷新数据来源",
+  rdAdminRefreshOpenAlex: "刷新 OpenAlex",
+  rdAdminRefreshDosm: "刷新统计局数据",
+  rdAdminHistoryTitle: "决定记录",
+  rdAdminExport: "导出已批准的决定",
+  rdColTime: "时间（UTC）",
+  rdColSource: "来源",
+  rdColOperation: "操作",
+  rdColResult: "结果",
+  rdColField: "领域（层级）",
+  rdColTopic: "人工智能主题",
+  rdColReason: "理由",
+  rdColStatus: "状态",
+  rdColDecide: "决定",
+  rdColQuarter: "季度",
+  rdColTotalQoq: "总数环比",
+  rdColGroupsSame: "同向变化的职业组",
+  rdColWhen: "时间",
+  rdColReviewer: "审核人",
+  rdColItem: "项目",
+  rdColDecision: "决定",
+  rdColNote: "备注",
+  rdApprove: "批准",
+  rdReject: "拒绝",
+  rdBreakConfirm: "确认断层",
+  rdBreakDismiss: "驳回（不采纳）",
+  rdStatusProposed: "待审核",
+  rdStatusApproved: "已批准",
+  rdStatusRejected: "已拒绝",
+  rdStatusConfirmed: "已确认",
+  rdStatusDismissed: "已驳回",
+  // Radar: judge Trend Change Test screen
+  rdJudgeTitle: "趋势变化测试——评委面板",
+  rdJudgeTag: "仅限测试人员 · 合成数据",
+  rdJudgeKey: "评委密钥",
+  rdScenA: "场景 A——正常变化",
+  rdScenB: "场景 B——结构性断层",
+  rdScenC: "场景 C——技能成为 In Demand", // translation: owner review
+  rdJudgeSeries: "合成数据序列",
+  rdJudgeManifest: "合成清单",
+  rdJudgeBaseline: "基准值",
+  rdJudgeLatest: "最新值",
+  rdJudgeFactor: "最新季度的跳变倍数",
+  rdJudgeApply: "应用并重新计算",
+  rdJudgeReset: "重置",
+  rdJudgeDiff: "前后对比报告",
+  rdJudgeBefore: "之前",
+  rdJudgeAfter: "之后",
+  rdJudgeNoChange: "没有变化",
+  // Radar: DOSM rule texts, extra reasons and break review statuses (Task 5; no placeholders, so nothing can show raw)
+  rdRuleDosmRising: "上升：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），达到或超过{materialPp}个百分点和{materialRelativePercent}%。{clean}个有效的年度变化中有{agree}个方向一致。",
+  rdRuleDosmDeclining: "下降：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），下降幅度达到或超过{materialPp}个百分点和{materialRelativePercent}%。{clean}个有效的年度变化中有{agree}个方向一致。",
+  rdRuleDosmStable: "稳定：份额变化了{pp}个百分点（占起始份额的{relativePercent}%），低于算作变化所需的{materialPp}个百分点和{materialRelativePercent}%。",
+  rdRuleDosmMixedSteps: "走势不一：份额变化了{pp}个百分点（{relativePercent}%），但{clean}个有效的年度变化中只有{agree}个方向一致。",
+  rdRuleDosmMixedVolatility: "走势不一：份额变化了{pp}个百分点，但年度变化波动很大（{volatility}个百分点，超过{high}个百分点）。",
+  rdRuleDosmMissing: "证据不足：比较所需的某个季度没有数值。",
+  rdRuleDosmNewCategory: "证据不足：这是新的统计类别，只有{quarters}个季度有数据，至少需要{minQuarters}个季度才能比较。",
+  rdRuleDosmBreak: "可比证据不足：{breakPeriods}可能出现结构性断层，年同比比较不可靠。",
+  rdReason_few_clean_steps: "可用于判断方向的季度变化太少。", // translation: owner review
+  rdReason_possible_break: "可能的结构性断层影响了这次比较。", // translation: owner review
+  rdBreak_unreviewed: "尚未审核",
+  rdBreak_confirmed: "已确认为断层",
+  rdBreak_dismissed_counts: "已驳回：数量可比",
+  rdBreak_dismissed_shares: "已驳回：份额可比",
+  rdJudgeExpires: "此测试会话将在{minutes}分钟后结束。",
+  rdNewData: "有新数据——请重新载入",
+  rdReload: "重新载入",
+  rdEditProfile: "编辑个人资料",
+  rdLevel_broad: "大类领域",
+  rdLevel_narrow: "中类领域",
+  rdLevel_detailed: "细类领域",
+  rdApprovedAt: "在{level}层级获批",
+  rdViaField: "与您的领域 {field} 关联（在{level}层级获批）",
+  rdNextRelease: "下次发布 {date}（估计：按季度，从上次发布日期推算）", // translation: owner review
+  rdSourcePolicy: "使用政策",
+  rdFieldsLabel: "学习领域",
+  rdRolesLabel: "工作与职位",
+  rdInterestsLabel: "兴趣领域",
+  rdInterestsNote: "已列出，但在第一轮中不与职业大类关联。",
+  rdProfileNote: "默认情况下，本页只显示与您的个人资料相关的内容；每个标签页底部有“查看全部”。这些在您的浏览器中计算——不会向服务器发送任何个人信息。",
+  rdRole_held: "曾任职位",
+  rdRole_interest: "感兴趣的职位",
+  rdRole_job: "工作",
+  rdFromProfile: "来自您的个人资料",
+  rdCsLink: "计算机科学论文数",
+  rdSnapshot: "数据快照",
+  rdGlobalView: "正在显示全局视图：所有大类和主题。",
+  rdIceShown: "显示最新占比和数量，但不显示方向。",
+  rdContextNote: "DOSM 自己公布的 {period} 与 {previous} 相比的数字。它从不用于判断任何职业大类、工作或技能。",
+  rdGroupCol: "MASCO 职业大类",
+  rdEvChange: "变化（同比）",
+  rdTotalAds: "全部在线招聘广告",
+  rdNoGroupsMine: "您的工作或职位尚未关联到任何 DOSM 职业大类。",
+  rdNotProduced: "未生成",
+  rdGroupLevel: "DOSM 职业大类（大类层级）",
+  rdGroupPending: "尚未对应到 DOSM 职业大类：ISCO-08 → MASCO 这一步仍在等待官方来源。",
+  rdGroupUnmapped: "没有与 DOSM 职业大类的关联。",
+  rdEvNone: "无",
+  rdB5None: "添加您的学习领域，即可查看与之关联的工作和 AI 主题。",
+  rdPathPrefix: "eMASCO 代码：职业大类是其第一位数字（大类层级）。",
+  rdB6Insufficient: "具体技能和细分职业：尚无经核实的马来西亚数据。",
+  rdB6Basis: "基于数据版本 {manifest}。本页不会为您打分。",
+  rdCsContext: "同一时间段内的计算机科学论文",
+  rdJobsInGroup: "您在此大类中的工作",
+  rdFormulaShare: "占比 = 该大类广告数 ÷ 全部广告数 × 100。变化 = 最新占比 − 一年前的占比。",
+  rdThreshDosm: "变化至少达到 {materialPp} pp 且为起始占比的 {materialRelativePercent}% 时才算数。波动性：低于 {low} pp 为低，高于 {high} pp 为高。{strong} 条广告起为强证据，{moderate} 条起为中等。新类别需要 {quarters} 个已公布季度。原型设置，并非官方标准。",
+  rdThreshOpenAlex: "达到 {rising}× 或以上为上升，{declining}× 或以下为下降。波动性：低于 {low} 为低，高于 {high} 对数点为高。{strong} 篇论文起为强证据，{moderate} 篇起为中等。指数：k = {k}，时间窗口 {years} 年。原型设置，并非官方标准。",
+  rdLogPoints: "对数点",
+  rdLimitDosm: "仅包括主要平台的在线招聘广告，且只到职业大类层级：同一大类中的工作并非都朝同一方向变化。",
+  rdLimitOpenAlex: "统计以该主题为主要主题的研究论文。它不衡量工作、招聘或技能需求。同一时间段内计算机科学整体也在增长。",
+  rdNarrowTopic: "这是一个较窄的主题（每年约 400–800 篇论文）：大多数计算机视觉研究属于其他主题，因此始终显示其论文数。",
+  rdOfficialTitle: "官方名称",
+  rdSubfield: "子领域",
+  rdDescription: "描述（OpenAlex）",
+  rdEvSteps: "逐步变化",
+  rdEvMapping: "对应路径",
+  rdEvMethod: "方法、设置与对应版本",
+  rdNotCompared: "未作比较：这两个季度之间可能存在结构性断层。",
+  rdEvChangeWindow: "时间窗口内的变化",
+  rdPapersCol: "研究论文数（起始年 → 最新年）",
+  // Radar admin and judge screens (Task 20) (translation: owner review)
+  rdAdminLead: "审核领域 ↔ AI 主题链接和可能的结构性断点，查看数据导入状态并刷新数据源。", // translation: owner review
+  rdAdminKeyNote: "密钥在服务器上核对，绝不会保存在此浏览器中。会话持续 60 分钟。", // translation: owner review
+  rdJudgeKeyNote: "使用评委密钥登录。测试会话持续 2 小时。更改只作用于您自己的合成副本。", // translation: owner review
+  rdAdminLabel: "审核人姓名（可选）", // translation: owner review
+  rdAdminReadOnly: "此服务器以只读方式提供内置数据：此处无法做决定、刷新或清理。", // translation: owner review
+  rdAdminMapNote: "提议在获批前保持待定。只有获批的链接会改变雷达上的突出显示。宽泛或狭义领域上的链接适用于其下所有详细领域；被拒绝的详细链接会覆盖它。", // translation: owner review
+  rdMappingVersion: "映射版本", // translation: owner review
+  rdNote: "审核备注（每个决定都必须填写）", // translation: owner review
+  rdNoteRequired: "每个决定都需要审核备注。未发送任何内容。", // translation: owner review
+  rdEvidenceLink: "额外证据链接（可选，https://…）", // translation: owner review
+  rdLinkInvalid: "证据链接必须是以 https:// 或 http:// 开头的网址。未发送任何内容。", // translation: owner review
+  rdColId: "编号", // translation: owner review
+  rdRevise: "修订", // translation: owner review
+  rdBreakDismissShares: "排除份额", // translation: owner review
+  rdBreakAnnotate: "添加注释", // translation: owner review
+  rdAdminBreakNote: "当招聘广告总数变动 {totalPercent}% 或以上，且至少 {groupShare}% 的组别同向变动 {groupPercent}% 或以上时，规则会标记该季度。它无法区分真实冲击与覆盖范围的变化。审核与确切的观测值绑定，观测值改变后审核不再适用。", // translation: owner review
+  rdObsHash: "标记所依据的观测值", // translation: owner review
+  rdBrkEvRelease: "DOSM 发布页面 {period}", // translation: owner review
+  rdBrkEvListing: "DOSM 发布列表 {period}（显示每次发布的标题）", // translation: owner review
+  rdBrkEvTitle: "已导入发布的列表标题：“{title}”。各次发布之间的标题变化是证据，而不是原因。", // translation: owner review
+  rdBrkEvTitles: "DOSM 发布列表中的发布标题（是证据，不是原因）", // translation: owner review
+  rdBrkEvNotListed: "不在发布列表中", // translation: owner review
+  rdBrkEvPublished: "发布于 {date}", // translation: owner review
+  rdBreakApplied: "决定已保存并已应用：新数据版本 {manifest}。", // translation: owner review
+  rdBreakNextRefresh: "决定已保存，将在下次刷新时应用。", // translation: owner review
+  rdDecided: "决定已保存。", // translation: owner review
+  rdDecision_approved: "已批准", // translation: owner review
+  rdDecision_rejected: "已拒绝", // translation: owner review
+  rdDecision_revise: "修订（退回为提议）", // translation: owner review
+  rdDecision_confirmed: "确认为断点", // translation: owner review
+  rdDecision_dismissed_counts: "就数量排除", // translation: owner review
+  rdDecision_dismissed_shares: "就份额排除", // translation: owner review
+  rdDecision_annotate: "已添加注释", // translation: owner review
+  rdAdminChecks: "最近检查", // translation: owner review
+  rdAdminLog: "最近日志", // translation: owner review
+  rdAdminLogNote: "日志只记录数据源、操作、错误代码、时间和编号，绝不记录密钥或完整响应。", // translation: owner review
+  rdAdminNoOrphans: "没有孤立对象。", // translation: owner review
+  rdAdminCleaned: "清理删除了 {deleted} 个对象；保留了 {refused} 个。", // translation: owner review
+  rdAdminRefreshNote: "打开雷达从不抓取数据。只有管理员可以启动刷新，每个数据源每 5 分钟最多一次。", // translation: owner review
+  rdRefreshPublished: "{source}：新数据已发布为版本 {manifest}。", // translation: owner review
+  rdRefreshNoChange: "{source}：已检查——没有新数据。当前版本未改变。", // translation: owner review
+  rdRefreshFailed: "{source}：未发布任何内容；当前版本未改变。", // translation: owner review
+  rdNoHistory: "尚无决定。历史会被保留；以最新的决定为准。", // translation: owner review
+  rdExportNote: "已批准的映射和全部审核记录，以 JSON 格式供提交。", // translation: owner review
+  rdSignedOut: "已退出登录。", // translation: owner review
+  rdErr_other: "出现问题，请重试。", // translation: owner review
+  rdErr_bad_request: "请求无效。", // translation: owner review
+  rdErr_not_found: "当前数据中没有此项。", // translation: owner review
+  rdErr_too_many_attempts: "尝试次数过多。请等几分钟后再试。", // translation: owner review
+  rdErr_network: "无法连接服务器。请检查网络后重试。", // translation: owner review
+  rdJudgeScenario: "情景", // translation: owner review
+  rdJudgeSynthetic: "合成测试数据：所有数值均为虚构，并非 DOSM 或 OpenAlex 的数据。", // translation: owner review
+  rdJudgeEditNote: "修改任意数量（整数，零或以上）。只发送您修改的单元格；先进行校验。", // translation: owner review
+  rdJudgeNoEdit: "请先修改至少一个数值。未发送任何内容。", // translation: owner review
+  rdJudgeBNote: "将 {period} 的总数及组别 {groups} 乘以此系数。", // translation: owner review
+  rdJudgeCNote: "在最新版本集中，将 {skill} 加为 {job} 的 In Demand。该技能在此职业的较早和最新真实版本中均未被标记，因此显示为新进入需求。", // translation: owner review
+  rdJudgeKept: "更改被拒绝；保留上一个状态。", // translation: owner review
+  rdJudgeResetDone: "已重置为合成基础数据。", // translation: owner review
+  rdJudgeObs: "变化的观测值", // translation: owner review
+  rdJudgeSignals: "分类", // translation: owner review
+  rdJudgeBreaksAdded: "新增的可能断点", // translation: owner review
+  rdJudgePossibleBreak: "可能的结构性断点", // translation: owner review
+  rdJudgeInsufficient: "变为可比证据不足的比较", // translation: owner review
+  rdJudgeAffected: "受影响", // translation: owner review
+  rdJudgeGroups: "DOSM 组别（组别层级）", // translation: owner review
+  rdJudgeJobs: "职业（组别层级，通过其 DOSM 组别）", // translation: owner review
+  rdJudgeFields: "领域（仅限获批链接）", // translation: owner review
+  rdJudgeJobsCount: "{count} 个职业——显示列表", // translation: owner review
+  rdJudgeSkillsTitle: "技能", // translation: owner review
+  rdJudgeSkills: "第一轮中，单项技能需求的证据不足。", // translation: owner review
+  rdJudgeProd: "此测试绝不会改变正式数据：它在您自己的合成副本上运行。", // translation: owner review
+  rdChange_added: "新增", // translation: owner review
+  rdChange_removed: "删除", // translation: owner review
+  rdChange_direction: "方向", // translation: owner review
+  rdChange_evidenceSufficiency: "证据充分性", // translation: owner review
+  rdChange_evidenceQuality: "证据质量", // translation: owner review
+  rdChange_values: "数值", // translation: owner review
+  rdChange_reasons: "原因", // translation: owner review
+  rdChange_breaks: "断点", // translation: owner review
+  rdChange_revisions: "修订", // translation: owner review
+  rdChange_versions: "版本", // translation: owner review
 }

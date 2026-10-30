@@ -261,4 +261,439 @@ export default {
   occNoneStored: "Carian O*NET secara langsung tidak tersedia sekarang, dan senarai yang disimpan tiada padanan. Perkataan anda dikekalkan; anda boleh cuba lagi nanti.",
   cvPrivacyServer: "Untuk bacaan semula AI pilihan, salinan fail disimpan di pelayan kami paling lama satu hari, dan dipadam sebaik sahaja anda menyimpan profil atau memadam data anda.",
   savedNowhere: "Tidak disimpan: akaun anda tidak dapat dihubungi dan pelayar ini tidak membenarkan penyimpanan. Biarkan halaman ini terbuka, atau hidupkan storan laman.",
+  // Radar: fixed copy (spec and index-analysis.md section 8)
+  rdTooltip: "Indeks Momentum Penyelidikan: seberapa pantas kertas penyelidikan tentang topik ini bertambah dalam 3 tahun. 50 = sama seperti sebelum ini. Setiap penggandaan menambah 20 mata; setiap pengurangan separuh menolak 20 mata. Ia mengira kertas penyelidikan — ia tidak mengukur pekerjaan, pengambilan pekerja atau sehebat mana AI itu.",
+  rdWhyIndex: "Penyelidikan AI sering berkembang dengan penggandaan, jadi kami menggunakan penggandaan, bukan peratusan. Ini mengekalkan topik yang berkembang pantas supaya tidak semuanya mencecah paras tertinggi. Kami sentiasa menunjukkan bilangan kertas sebenar juga, kerana topik kecil boleh berkembang pantas daripada sangat sedikit kertas.",
+  rdWhyTitle: "Mengapa indeks ini?",
+  rdB1Title: "Perubahan dalam bahagian iklan pekerjaan dalam talian Malaysia",
+  rdContextLabel: "Perubahan suku-ke-suku dalam jumlah iklan pekerjaan dalam talian — untuk konteks sahaja",
+  rdNoFieldLinks: "Tiada sambungan disahkan yang mencukupi untuk bidang ini",
+  rdNoRankings: "Kedudukan kerjaya belum menjadi sebahagian daripada modul ini.",
+  rdIce: "Bukti Boleh Banding Tidak Mencukupi",
+  rdIceReason: "Kemungkinan perubahan struktur pada {period} menjadikan perbandingan tahun-ke-tahun tidak boleh dipercayai sehingga ia disemak atau sehingga data {next} tiba.",
+  rdDevStore: "Stor pembangunan — tidak tahan lama",
+  // Radar: header and tabs (Skills & Careers first, AI Impact second)
+  rdTitle: "Radar Kemahiran Masa Depan",
+  rdLead: "Terokai bagaimana kecerdasan buatan mengubah pekerjaan, kemahiran dan peluang kerjaya.",
+  rdSub: "Ketahui apa yang berlaku, semak bukti, dan lihat kaitannya dengan masa depan anda.",
+  rdTabSK: "Kemahiran & Kerjaya",
+  rdTabSKq: "Kemahiran dan pekerjaan mana yang berubah, dan mana yang penting kepada saya?",
+  rdTabAI: "Kesan AI",
+  rdTabAIq: "Bagaimana AI mengubah sifat pekerjaan?",
+  rdViewSources: "Lihat sumber data",
+  rdSourcesTitle: "Sumber data",
+  rdSourcesNote: "Setiap sumber dikemas kini mengikut jadualnya sendiri. Tarikh yang ditunjukkan ialah tarikh yang dilaporkan oleh sumber.",
+  rdViewAll: "Lihat semua",
+  rdViewMine: "Kembali ke profil saya sahaja",
+  rdViewAllAi: "Menunjukkan setiap topik AI. Secara lalai, tiada apa di luar profil anda ditunjukkan.",
+  rdViewAllSk: "Menunjukkan setiap kumpulan pekerjaan DOSM, setiap topik AI dan setiap pekerjaan O*NET yang kemahirannya berubah.",
+  rdAddProfile: "Tambah bidang pengajian atau peranan anda untuk melihat apa yang berkaitan dengan anda",
+  rdYourProfile: "Profil anda",
+  rdLoading: "Memuatkan…",
+  rdUnavailable: "Maklumat ini tidak tersedia sekarang.",
+  rdNoData: "Tiada data untuk ditunjukkan.",
+  // Radar: section titles and columns
+  rdA1Title: "Kertas penyelidikan setahun",
+  rdA1Metric: "Kertas penyelidikan setahun (OpenAlex)",
+  rdA2Title: "Momentum penyelidikan mengikut topik AI",
+  rdA5Title: "Apa kata isyarat penyelidikan untuk anda",
+  rdA5Note: "Isyarat penyelidikan adalah tentang kertas penyelidikan, bukan tentang pekerjaan.",
+  rdB2Title: "Kemahiran yang meningkat, menurun dan baru muncul",
+  rdB5Title: "Bidang pengajian anda",
+  rdB6Title: "Maksudnya untuk anda",
+  rdB6Next: "Teruskan ke Padanan Kerjaya Saya",
+  rdColProxy: "Proksi terbitan",
+  rdColProxyNote: "Tidak dihasilkan: kami tidak meneka permintaan kemahiran daripada kumpulan pekerjaan.",
+  rdColAi: "Momentum penyelidikan AI",
+  rdColAiNote: "Ini ialah penyelidikan, bukan pengambilan pekerja.",
+  rdColOnet: "Kemahiran dalam iklan jawatan (AS, O*NET)",
+  rdColOnetNote: "O*NET menandakan kemahiran perisian dan teknologi yang diminta oleh majikan AS dalam iklan jawatan. Kami membandingkan satu keluaran O*NET dengan keluaran sebelumnya.",
+  rdSkLabelUs: "Iklan jawatan AS (Lightcast melalui O*NET), bukan Malaysia",
+  rdSkLabelSoftware: "Kemahiran perisian dan teknologi sahaja",
+  rdSkHeading: "Berubah pada kemas kini kemahiran O*NET yang terakhir ({previous}, {previousMonth} → {current}, {currentMonth}; tidak berubah dalam {same})",
+  rdSkHeadingNew: "Berubah pada kemas kini kemahiran O*NET yang terakhir ({previous}, {previousMonth} → {current}, {currentMonth})",
+  rdSkFirstRelease: "Keluaran O*NET pertama yang dibaca ({current}, {currentMonth}): perubahan akan ditunjukkan mulai kemas kini kemahiran seterusnya.",
+  rdSkUnavailable: "Data kemahiran O*NET belum tersedia.",
+  rdSkAdded: "Baru diperlukan",
+  rdSkDropped: "Tidak lagi diperlukan",
+  rdSkKept: "Masih diperlukan ({count})",
+  rdSkNoFlags: "Tiada kemahiran ditandakan untuk pekerjaan ini dalam keluaran ini",
+  rdSkNoOnetLink: "Tiada pautan rasmi ke O*NET: senarai kemahiran tidak tersedia",
+  rdOnProfile: "Ada dalam profil anda",
+  rdSkHot: "Menjadi Teknologi Hangat",
+  rdSkHotDropped: "Tidak lagi Teknologi Hangat",
+  rdSkHotNote: "Teknologi Hangat: kemahiran yang paling kerap ditemui O*NET dalam iklan jawatan AS, merentas semua pekerjaan.",
+  rdSkPostings: "Iklan jawatan AS pada {year}",
+  rdSkFirstSnapshot: "Petikan pertama: trend akan kelihatan mulai petikan tahunan seterusnya",
+  rdSkTechCol: "Teknologi",
+  rdSkAdsCol: "Iklan jawatan",
+  rdSkTotal: "Semua iklan jawatan yang dikira",
+  rdSkMoreRows: "Kesemua {count} teknologi",
+  rdSkAllJobs: "Setiap pekerjaan O*NET yang berubah ({count})",
+  rdLinkedJobs: "Pekerjaan berkaitan (padanan rasmi)",
+  rdLinkedGroups: "Kumpulan DOSM mereka (peringkat kumpulan)",
+  rdLinkedAxes: "Topik AI berkaitan (yang diluluskan sahaja)",
+  rdPath: "Bagaimana ia dikaitkan",
+  rdLatestShare: "Bahagian terkini",
+  rdLatestCount: "Iklan",
+  rdPpUnit: "mata peratus",
+  rdPapers: "kertas",
+  rdMomentum: "Momentum",
+  // Radar: metric toggle, rings, tags
+  rdMetricCount: "Bilangan kertas",
+  rdMetricShare: "Bahagian Sains Komputer",
+  rdRingHalved: "separuh",
+  rdRingSame: "sama",
+  rdRingDoubled: "dua kali ganda",
+  rdRingFour: "4×",
+  rdWindowSelected: "Tempoh dipilih",
+  rdWindowCompare: "Tempoh perbandingan",
+  rdFewAxes: "Kurang daripada 3 topik mempunyai indeks yang sah, jadi bar ditunjukkan dan bukannya radar.",
+  rdPointHollow: "Titik kosong atau kelabu: tiada angka boleh dikira (lihat sebab).",
+  rdTagObserved: "Diperhatikan",
+  rdTagResearch: "Isyarat penyelidikan",
+  rdTagSample: "Contoh",
+  rdTagSynthetic: "Sintetik",
+  rdTagNone: "Bukti tidak mencukupi",
+  rdShowOnChart: "Tunjuk atau sembunyikan garisan ini",
+  // Radar: friendly axis labels (translation: owner review)
+  rdAxis_language: "Model Bahasa & AI Teks", // translation: owner review
+  rdAxis_genmedia: "AI Media Generatif", // translation: owner review
+  rdAxis_vision: "Penglihatan Komputer", // translation: owner review
+  rdAxis_robotics: "Robotik", // translation: owner review
+  rdAxis_automation: "Automasi Proses", // translation: owner review
+  rdAxis_service: "AI Perkhidmatan", // translation: owner review
+  // Radar: direction, volatility, evidence
+  rdDir_rising: "Meningkat",
+  rdDir_declining: "Menurun",
+  rdDir_stable: "Stabil",
+  rdDir_emerging: "Baru muncul",
+  rdDir_mixed: "Bercampur",
+  rdDir_insufficient: "Bukti tidak mencukupi",
+  rdVolatility: "Turun naik",
+  rdVol_low: "Rendah",
+  rdVol_moderate: "Sederhana",
+  rdVol_high: "Tinggi",
+  rdEvidence: "Bukti",
+  rdSuff_sufficient: "Bukti mencukupi",
+  rdSuff_insufficient_evidence: "Bukti tidak mencukupi",
+  rdSuff_insufficient_comparable_evidence: "Bukti boleh banding tidak mencukupi",
+  rdQual_strong: "Bukti kukuh",
+  rdQual_moderate: "Bukti sederhana",
+  rdQual_limited: "Bukti terhad",
+  // Radar: reason codes (translation: owner review)
+  rdReason_fewer_years: "Data kurang daripada bilangan tahun yang diperlukan.", // translation: owner review
+  rdReason_missing_value: "Ada tahun yang diperlukan tiada nilai.", // translation: owner review
+  rdReason_dropped_to_zero: "Bilangan jatuh kepada sifar, jadi tiada perubahan dikira.", // translation: owner review
+  rdReason_zero_baseline: "Bilangan permulaan ialah sifar, jadi nisbah tidak boleh dikira.", // translation: owner review
+  rdReason_steps_disagree: "Langkah tahunan tidak sepakat tentang arah.", // translation: owner review
+  rdReason_high_volatility: "Bilangan tahunan naik turun dengan banyak.", // translation: owner review
+  rdReason_revision_over_5: "Sumber telah menyemak semula bilangan lepas lebih daripada 5%.", // translation: owner review
+  rdReason_small_counts: "Bilangan kecil, jadi keputusan kurang pasti.", // translation: owner review
+  rdReason_new_reporting_category: "Kategori pelaporan baharu: tiada sejarah yang cukup untuk dibandingkan.", // translation: owner review
+  rdReason_possible_structural_break: "Kemungkinan perubahan struktur: cara data dikira mungkin telah berubah.", // translation: owner review
+  rdReason_not_material: "Perubahan terlalu kecil untuk dianggap perubahan sebenar.", // translation: owner review
+  // Radar: rule texts (placeholders are filled from the rule vars)
+  rdRuleRising: "Meningkat: bilangan ialah {ratio} kali ganda bilangan 3 tahun lalu (perlu sekurang-kurangnya {limit}), dan sekurang-kurangnya {agree} daripada 3 langkah tahunan meningkat.",
+  rdRuleDeclining: "Menurun: bilangan ialah {ratio} kali ganda bilangan 3 tahun lalu (paling banyak {limit} diperlukan), dan sekurang-kurangnya {agree} daripada 3 langkah tahunan menurun.",
+  rdRuleStable: "Stabil: bilangan ialah {ratio} kali ganda bilangan 3 tahun lalu, antara {declining} dan {rising}, dan bilangan tahunan tidak terlalu turun naik.",
+  rdRuleEmerging: "Baru muncul: daripada {baseline} kertas kepada {recent} (permulaan di bawah {baselineBelow}, kini sekurang-kurangnya {recentAtLeast}, sekurang-kurangnya {ratioAtLeast} kali ganda), meningkat pada setiap satu daripada dua tahun terakhir.",
+  rdRuleMixedSteps: "Bercampur: bilangan ialah {ratio} kali ganda bilangan 3 tahun lalu, tetapi hanya {agree} daripada 3 langkah tahunan sepakat tentang arah.",
+  rdRuleMixedVolatility: "Bercampur: bilangan ialah {ratio} kali ganda bilangan 3 tahun lalu, tetapi bilangan tahunan sangat turun naik ({volatility}, melebihi {high}).",
+  rdRuleInsufficientYears: "Bukti tidak mencukupi: {years} tahun data, dan sekurang-kurangnya {minYears} diperlukan.",
+  rdRuleInsufficientMissing: "Bukti tidak mencukupi: tahun pertama atau terakhir perbandingan tiada nilai.",
+  rdRuleInsufficientZero: "Bukti tidak mencukupi: bilangan terkini ialah sifar selepas kertas terdahulu, jadi tiada arah diberikan.",
+  rdRuleInsufficientBaseline: "Bukti tidak mencukupi: bilangan permulaan ialah {baseline} (kini {recent}), jadi nisbah tidak boleh dikira.",
+  // Radar: momentum states
+  rdMom_ok: "Indeks dikira",
+  rdMom_no_activity: "Tiada kertas dalam kedua-dua tempoh",
+  rdMom_no_baseline: "Tiada kertas pada tahun permulaan, jadi tiada indeks",
+  rdMom_dropped_to_zero: "Tiada kertas pada tahun terkini, jadi tiada indeks",
+  rdMom_invalid: "Data tiada, jadi tiada indeks",
+  rdMomCapped: "Ditunjukkan di puncak skala. Nisbah sebenar ialah {ratio} kali ganda.",
+  rdMomSmall: "Bilangan kecil: topik kecil boleh berkembang pantas daripada sangat sedikit kertas.",
+  // Radar: the five state dimensions
+  rdDim_availability: "Ketersediaan",
+  rdDim_freshness: "Kesegaran data",
+  rdDim_refreshHealth: "Muat semula terakhir",
+  rdDim_servedFrom: "Dihidangkan daripada",
+  rdDim_comparability: "Kebolehbandingan",
+  rdAvail_data: "Data tersedia",
+  rdAvail_no_records: "Tiada rekod",
+  rdAvail_unavailable: "Tidak tersedia",
+  rdFresh_current: "Terkini",
+  rdFresh_stale: "Sudah lapuk",
+  rdHealth_ok: "Berjaya",
+  rdHealth_failed: "Gagal",
+  rdHealth_never_run: "Belum pernah dijalankan",
+  rdHealth_not_configured: "Belum disediakan",
+  rdServed_active_manifest: "Data diterbitkan yang aktif",
+  rdServed_bundled_read_only: "Salinan terbina dalam (baca sahaja)",
+  rdServed_cached_fallback: "Salinan baik terakhir selepas muat semula gagal",
+  rdLastFetch: "Pengambilan berjaya terakhir",
+  rdPublished: "Diterbitkan",
+  rdObsPeriod: "Tempoh pemerhatian",
+  rdManifestId: "Manifes aktif",
+  // Radar: evidence panel
+  rdEvTitle: "Bukti",
+  rdEvSource: "Sumber",
+  rdEvFetched: "Diambil",
+  rdEvMetric: "Metrik dan unit",
+  rdEvValues: "Nilai",
+  rdEvFormula: "Formula dengan angka diisi",
+  rdEvThresholds: "Ambang yang digunakan",
+  rdEvRule: "Peraturan yang digunakan",
+  rdEvBreaks: "Perubahan struktur dan semakan",
+  rdEvRevisions: "Semakan semula data",
+  rdEvLimits: "Had",
+  rdEvLinks: "Pautan",
+  rdEvClose: "Tutup",
+  rdEvOpen: "Tunjukkan bukti",
+  // Radar: API error codes
+  rdErr_openalex_key_missing: "Kunci OpenAlex belum disediakan.",
+  rdErr_openalex_rate_limited: "OpenAlex meminta kami memperlahankan permintaan. Cuba lagi kemudian.",
+  rdErr_openalex_auth_failed: "OpenAlex tidak menerima kunci kami.",
+  rdErr_source_unavailable: "Sumber data tidak dapat dihubungi.",
+  rdErr_dosm_dataset_missing: "Set data DOSM tidak ditemui.",
+  rdErr_dosm_layout_unexpected: "Fail DOSM mempunyai susun atur yang tidak kami kenali, jadi ia tidak digunakan.",
+  rdErr_validation_failed: "Data baharu gagal pemeriksaan, jadi ia tidak diterbitkan.",
+  rdErr_periods_removed: "Data baharu tiada tempoh yang ada sebelum ini, jadi ia tidak diterbitkan.",
+  rdErr_publish_conflict: "Orang lain menerbitkan pada masa yang sama. Sila cuba lagi.",
+  rdErr_store_unavailable: "Stor data tidak tersedia sekarang.",
+  rdErr_not_configured: "Ciri ini belum disediakan pada pelayan ini.",
+  rdErr_not_allowed: "Anda tidak dibenarkan melakukan ini.",
+  rdErr_csrf_failed: "Permintaan tidak dapat disemak. Muat semula halaman dan cuba lagi.",
+  rdErr_demo_expired: "Sesi ujian telah tamat. Log masuk semula.",
+  rdErr_demo_full: "Terlalu banyak sesi ujian dibuka. Cuba lagi kemudian.",
+  rdErr_manifest_gone: "Versi data itu tidak lagi tersedia.",
+  rdSrcOnetSkills: "Penanda kemahiran O*NET (iklan kerja AS)", // translation: owner review
+  rdSrcOnetHot: "Teknologi Panas O*NET (iklan kerja AS)", // translation: owner review
+  rdAdminOnetSkillsRow: "Penanda kemahiran O*NET", // translation: owner review
+  rdAdminOnetHotRow: "Teknologi Panas O*NET", // translation: owner review
+  rdAdminOnetReleaseLabel: "Nombor keluaran baharu", // translation: owner review
+  rdAdminOnetReleaseHint: "Dua digit, satu titik, satu digit, contohnya 31.1. Mesti lebih baharu daripada keluaran aktif.", // translation: owner review
+  rdAdminOnetRefresh: "Muat semula", // translation: owner review
+  rdAdminOnetActiveRelease: "Keluaran aktif", // translation: owner review
+  rdAdminOnetActiveWindow: "Tempoh pengiraan aktif", // translation: owner review
+  rdAdminOnetLastCheck: "Semakan terakhir", // translation: owner review
+  rdErr_onet_release_not_newer: "Keluaran O*NET ini tidak lebih baharu daripada yang aktif, jadi tiada apa-apa diambil.", // translation: owner review
+  rdErr_onet_release_not_found: "O*NET tiada fail pangkalan data untuk nombor keluaran ini.", // translation: owner review
+  rdErr_onet_columns: "Jadual kemahiran O*NET tidak mempunyai lajur yang dijangka, jadi ia tidak digunakan.", // translation: owner review
+  rdErr_hottech_layout: "Halaman Teknologi Panas O*NET mempunyai susun atur yang tidak dikenali, jadi ia tidak digunakan.", // translation: owner review
+  // Radar: admin screen
+  rdAdminTitle: "Pentadbir Radar",
+  rdAdminSignIn: "Log masuk",
+  rdAdminKey: "Kunci pentadbir",
+  rdAdminSignOut: "Log keluar",
+  rdAdminSignedIn: "Log masuk sebagai pentadbir · sesi tamat dalam {minutes} min",
+  rdAdminMapTitle: "Pautan bidang ↔ topik AI",
+  rdAdminMapTag: "Semakan pemetaan",
+  rdAdminBreakTitle: "Kemungkinan perubahan struktur",
+  rdAdminBreakTag: "Semakan perubahan struktur",
+  rdAdminIngestTitle: "Status pengambilan data",
+  rdAdminOrphans: "Objek tanpa rujukan",
+  rdAdminCleanUp: "Bersihkan",
+  rdAdminConflicts: "Konflik",
+  rdAdminRefreshTitle: "Muat semula sumber",
+  rdAdminRefreshOpenAlex: "Muat semula OpenAlex",
+  rdAdminRefreshDosm: "Muat semula DOSM",
+  rdAdminHistoryTitle: "Sejarah keputusan",
+  rdAdminExport: "Eksport keputusan yang diluluskan",
+  rdColTime: "Masa (UTC)",
+  rdColSource: "Sumber",
+  rdColOperation: "Operasi",
+  rdColResult: "Hasil",
+  rdColField: "Bidang (peringkat)",
+  rdColTopic: "Topik AI",
+  rdColReason: "Sebab",
+  rdColStatus: "Status",
+  rdColDecide: "Putuskan",
+  rdColQuarter: "Suku tahun",
+  rdColTotalQoq: "Jumlah suku-ke-suku",
+  rdColGroupsSame: "Kumpulan ke arah sama",
+  rdColWhen: "Bila",
+  rdColReviewer: "Penyemak",
+  rdColItem: "Item",
+  rdColDecision: "Keputusan",
+  rdColNote: "Catatan",
+  rdApprove: "Luluskan",
+  rdReject: "Tolak",
+  rdBreakConfirm: "Sahkan perubahan struktur",
+  rdBreakDismiss: "Abaikan bilangan",
+  rdStatusProposed: "Dicadangkan",
+  rdStatusApproved: "Diluluskan",
+  rdStatusRejected: "Ditolak",
+  rdStatusConfirmed: "Disahkan",
+  rdStatusDismissed: "Diabaikan",
+  // Radar: judge Trend Change Test screen
+  rdJudgeTitle: "Ujian Perubahan Trend — panel hakim",
+  rdJudgeTag: "Penguji sahaja · data sintetik",
+  rdJudgeKey: "Kunci hakim",
+  rdScenA: "Senario A — perubahan biasa",
+  rdScenB: "Senario B — perubahan struktur",
+  rdScenC: "Senario C — kemahiran menjadi In Demand", // translation: owner review
+  rdJudgeSeries: "Siri sintetik",
+  rdJudgeManifest: "Manifes sintetik",
+  rdJudgeBaseline: "Nilai asas",
+  rdJudgeLatest: "Nilai terkini",
+  rdJudgeFactor: "Faktor lonjakan, suku terkini",
+  rdJudgeApply: "Guna dan kira semula",
+  rdJudgeReset: "Set semula",
+  rdJudgeDiff: "Laporan sebelum / selepas",
+  rdJudgeBefore: "Sebelum",
+  rdJudgeAfter: "Selepas",
+  rdJudgeNoChange: "Tiada perubahan",
+  // Radar: DOSM rule texts, extra reasons and break review statuses (Task 5; no placeholders, so nothing can show raw)
+  rdRuleDosmRising: "Meningkat: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), pada atau melebihi {materialPp} mata peratus dan {materialRelativePercent}%. {agree} daripada {clean} langkah tahunan yang bersih sepakat.",
+  rdRuleDosmDeclining: "Menurun: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), pada atau melebihi {materialPp} mata peratus dan {materialRelativePercent}% ke bawah. {agree} daripada {clean} langkah tahunan yang bersih sepakat.",
+  rdRuleDosmStable: "Stabil: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}% daripada bahagian asal), di bawah {materialPp} mata peratus dan {materialRelativePercent}% yang diperlukan untuk dianggap perubahan.",
+  rdRuleDosmMixedSteps: "Bercampur: bahagian berubah sebanyak {pp} mata peratus ({relativePercent}%), tetapi hanya {agree} daripada {clean} langkah tahunan yang bersih sepakat tentang arah.",
+  rdRuleDosmMixedVolatility: "Bercampur: bahagian berubah sebanyak {pp} mata peratus, tetapi perubahan tahunan sangat turun naik ({volatility} mata peratus, melebihi {high} mata peratus).",
+  rdRuleDosmMissing: "Bukti tidak mencukupi: ada suku tahun yang diperlukan untuk perbandingan tiada nilai.",
+  rdRuleDosmNewCategory: "Bukti tidak mencukupi: ini ialah kategori pelaporan baharu dengan {quarters} suku tahun dilaporkan, dan sekurang-kurangnya {minQuarters} diperlukan untuk dibandingkan.",
+  rdRuleDosmBreak: "Bukti boleh banding tidak mencukupi: kemungkinan perubahan struktur pada {breakPeriods} menjadikan perbandingan tahun-ke-tahun tidak boleh dipercayai.",
+  rdReason_few_clean_steps: "Terlalu sedikit langkah suku tahun yang bersih untuk menilai arah.", // translation: owner review
+  rdReason_possible_break: "Kemungkinan perubahan struktur menjejaskan perbandingan ini.", // translation: owner review
+  rdBreak_unreviewed: "Belum disemak",
+  rdBreak_confirmed: "Disahkan sebagai perubahan struktur",
+  rdBreak_dismissed_counts: "Diabaikan: bilangan boleh dibandingkan",
+  rdBreak_dismissed_shares: "Diabaikan: bahagian boleh dibandingkan",
+  rdJudgeExpires: "Sesi ujian ini tamat dalam {minutes} min.",
+  rdNewData: "Data baharu tersedia — muat semula",
+  rdReload: "Muat semula",
+  rdEditProfile: "Sunting profil",
+  rdLevel_broad: "bidang luas",
+  rdLevel_narrow: "bidang sempit",
+  rdLevel_detailed: "bidang terperinci",
+  rdApprovedAt: "diluluskan pada peringkat {level}",
+  rdViaField: "Dipautkan kepada bidang anda {field} (diluluskan pada peringkat {level})",
+  rdNextRelease: "keluaran seterusnya {date} (anggaran: setiap suku tahun, dari tarikh penerbitan terakhir)", // translation: owner review
+  rdSourcePolicy: "Polisi penggunaan",
+  rdFieldsLabel: "Bidang pengajian",
+  rdRolesLabel: "Pekerjaan dan peranan",
+  rdInterestsLabel: "Bidang minat",
+  rdInterestsNote: "Disenaraikan, tetapi tidak dipautkan kepada kumpulan pekerjaan dalam Pusingan 1.",
+  rdProfileNote: "Secara lalai halaman ini hanya menunjukkan perkara berkaitan profil anda; \"Lihat semua\" berada di bahagian bawah setiap tab. Ini dikira dalam pelayar anda — tiada maklumat peribadi dihantar ke pelayan.",
+  rdRole_held: "pekerjaan yang pernah disandang",
+  rdRole_interest: "peranan yang diminati",
+  rdRole_job: "pekerjaan",
+  rdFromProfile: "Daripada profil anda",
+  rdCsLink: "Bilangan Sains Komputer",
+  rdSnapshot: "Petikan data",
+  rdGlobalView: "Menunjukkan paparan global: setiap kumpulan dan topik.",
+  rdIceShown: "Bahagian dan bilangan terkini ditunjukkan tanpa arah.",
+  rdContextNote: "Angka DOSM sendiri bagi {period} berbanding {previous}. Ia tidak pernah digunakan untuk mengelaskan kumpulan, pekerjaan atau kemahiran.",
+  rdGroupCol: "Kumpulan utama MASCO",
+  rdEvChange: "Perubahan (tahun ke tahun)",
+  rdTotalAds: "Semua iklan pekerjaan dalam talian",
+  rdNoGroupsMine: "Belum ada pekerjaan atau peranan anda yang sampai ke kumpulan DOSM.",
+  rdNotProduced: "Tidak dihasilkan",
+  rdGroupLevel: "Kumpulan DOSM (peringkat kumpulan)",
+  rdGroupPending: "Belum dipetakan kepada kumpulan DOSM: langkah ISCO-08 → MASCO menunggu sumber rasmi.",
+  rdGroupUnmapped: "Tiada pautan kepada kumpulan DOSM.",
+  rdEvNone: "Tiada",
+  rdB5None: "Tambah bidang pengajian anda untuk melihat pekerjaan dan topik AI yang berkaitan.",
+  rdPathPrefix: "Kod eMASCO: kumpulan utama ialah digit pertamanya (peringkat kumpulan).",
+  rdB6Insufficient: "Kemahiran individu dan pekerjaan terperinci: belum ada angka Malaysia yang disahkan.",
+  rdB6Basis: "Berdasarkan versi data {manifest}. Halaman ini tidak memberi anda skor.",
+  rdCsContext: "Kertas Sains Komputer dalam tempoh yang sama",
+  rdJobsInGroup: "Pekerjaan anda dalam kumpulan ini",
+  rdFormulaShare: "Bahagian = iklan kumpulan ÷ semua iklan × 100. Perubahan = bahagian terkini − bahagian setahun sebelumnya.",
+  rdThreshDosm: "Perubahan dikira apabila sekurang-kurangnya {materialPp} pp dan {materialRelativePercent}% daripada bahagian permulaan. Kemeruapan: Rendah di bawah {low} pp, Tinggi melebihi {high} pp. Bukti kukuh daripada {strong} iklan, sederhana daripada {moderate}. Kategori baharu memerlukan {quarters} suku tahun yang dilaporkan. Tetapan prototaip, bukan piawaian rasmi.",
+  rdThreshOpenAlex: "Meningkat pada {rising}× atau lebih, Menurun pada {declining}× atau kurang. Kemeruapan: Rendah di bawah {low}, Tinggi melebihi {high} mata log. Bukti kukuh daripada {strong} kertas, sederhana daripada {moderate}. Indeks: k = {k}, tempoh {years} tahun. Tetapan prototaip, bukan piawaian rasmi.",
+  rdLogPoints: "mata log",
+  rdLimitDosm: "Iklan pekerjaan dalam talian daripada platform utama sahaja, pada peringkat kumpulan utama: tidak semua pekerjaan dalam satu kumpulan bergerak dengan cara yang sama.",
+  rdLimitOpenAlex: "Mengira kertas penyelidikan yang topik utamanya ialah topik ini. Ia tidak mengukur pekerjaan, pengambilan atau permintaan kemahiran. Sains Komputer secara keseluruhan juga berkembang dalam tempoh yang sama.",
+  rdNarrowTopic: "Topik yang sempit (kira-kira 400–800 kertas setahun): kebanyakan kerja penglihatan komputer berada dalam topik lain, jadi bilangannya sentiasa ditunjukkan.",
+  rdOfficialTitle: "Tajuk rasmi",
+  rdSubfield: "Subbidang",
+  rdDescription: "Penerangan (OpenAlex)",
+  rdEvSteps: "Langkah",
+  rdEvMapping: "Laluan pemetaan",
+  rdEvMethod: "Versi kaedah, tetapan dan pemetaan",
+  rdNotCompared: "Tidak dibandingkan: kedua-dua suku tahun merentasi kemungkinan perubahan struktur.",
+  rdEvChangeWindow: "Perubahan sepanjang tempoh",
+  rdPapersCol: "Kertas penyelidikan (tahun mula → tahun terkini)",
+  // Radar admin and judge screens (Task 20) (translation: owner review)
+  rdAdminLead: "Semak pautan bidang ↔ topik AI dan kemungkinan perubahan struktur, semak pengambilan data dan muat semula sumber.", // translation: owner review
+  rdAdminKeyNote: "Kunci disemak di pelayan dan tidak pernah disimpan dalam pelayar ini. Sesi berlangsung 60 minit.", // translation: owner review
+  rdJudgeKeyNote: "Log masuk dengan kunci juri. Sesi ujian berlangsung 2 jam. Perubahan hanya berlaku pada salinan sintetik anda sendiri.", // translation: owner review
+  rdAdminLabel: "Nama penyemak (pilihan)", // translation: owner review
+  rdAdminReadOnly: "Pelayan ini menyajikan data terbina dalam secara baca sahaja: keputusan, muat semula dan pembersihan tidak tersedia di sini.", // translation: owner review
+  rdAdminMapNote: "Cadangan kekal belum diputuskan sehingga diluluskan. Hanya pautan yang diluluskan mengubah penonjolan pada Radar. Pautan pada bidang luas atau sempit terpakai kepada setiap bidang terperinci di bawahnya; pautan terperinci yang ditolak mengatasinya.", // translation: owner review
+  rdMappingVersion: "Versi pemetaan", // translation: owner review
+  rdNote: "Nota penyemak (wajib untuk setiap keputusan)", // translation: owner review
+  rdNoteRequired: "Nota penyemak diperlukan untuk setiap keputusan. Tiada apa-apa dihantar.", // translation: owner review
+  rdEvidenceLink: "Pautan bukti tambahan (pilihan, https://…)", // translation: owner review
+  rdLinkInvalid: "Pautan bukti mesti alamat web yang bermula dengan https:// atau http://. Tiada apa-apa dihantar.", // translation: owner review
+  rdColId: "ID", // translation: owner review
+  rdRevise: "Semak semula", // translation: owner review
+  rdBreakDismissShares: "Tolak bahagian", // translation: owner review
+  rdBreakAnnotate: "Catat", // translation: owner review
+  rdAdminBreakNote: "Peraturan menandakan suku tahun apabila jumlah iklan kerja berubah {totalPercent}% atau lebih dan sekurang-kurangnya {groupShare}% kumpulan berubah ke arah yang sama sebanyak {groupPercent}% atau lebih. Ia tidak dapat membezakan kejutan sebenar daripada perubahan liputan. Semakan terikat kepada pemerhatian yang tepat dan tidak lagi terpakai jika ia berubah.", // translation: owner review
+  rdObsHash: "Pemerhatian yang menjadi asas tanda", // translation: owner review
+  rdBrkEvRelease: "Halaman keluaran DOSM {period}", // translation: owner review
+  rdBrkEvListing: "Senarai keluaran DOSM {period} (menunjukkan tajuk setiap keluaran)", // translation: owner review
+  rdBrkEvTitle: "Tajuk senarai bagi keluaran yang diimport: “{title}”. Perubahan tajuk antara keluaran ialah bukti, bukan punca.", // translation: owner review
+  rdBrkEvTitles: "Tajuk keluaran dalam senarai DOSM (bukti, bukan punca)", // translation: owner review
+  rdBrkEvNotListed: "Tiada dalam senarai keluaran", // translation: owner review
+  rdBrkEvPublished: "diterbitkan {date}", // translation: owner review
+  rdBreakApplied: "Keputusan disimpan dan diterapkan: versi data baharu {manifest}.", // translation: owner review
+  rdBreakNextRefresh: "Keputusan disimpan. Ia berkuat kuasa pada muat semula seterusnya.", // translation: owner review
+  rdDecided: "Keputusan disimpan.", // translation: owner review
+  rdDecision_approved: "Diluluskan", // translation: owner review
+  rdDecision_rejected: "Ditolak", // translation: owner review
+  rdDecision_revise: "Semak semula (kembali kepada cadangan)", // translation: owner review
+  rdDecision_confirmed: "Disahkan sebagai perubahan struktur", // translation: owner review
+  rdDecision_dismissed_counts: "Ditolak untuk kiraan", // translation: owner review
+  rdDecision_dismissed_shares: "Ditolak untuk bahagian", // translation: owner review
+  rdDecision_annotate: "Nota ditambah", // translation: owner review
+  rdAdminChecks: "Semakan terakhir", // translation: owner review
+  rdAdminLog: "Log terkini", // translation: owner review
+  rdAdminLogNote: "Log hanya menyimpan sumber, operasi, kod ralat, masa dan id. Tidak pernah kunci atau respons penuh.", // translation: owner review
+  rdAdminNoOrphans: "Tiada objek yatim.", // translation: owner review
+  rdAdminCleaned: "Pembersihan membuang {deleted} objek; {refused} disimpan.", // translation: owner review
+  rdAdminRefreshNote: "Membuka Radar tidak pernah mengambil data. Hanya pentadbir memulakan muat semula, paling kerap sekali setiap 5 minit bagi setiap sumber.", // translation: owner review
+  rdRefreshPublished: "{source}: data baharu diterbitkan sebagai versi {manifest}.", // translation: owner review
+  rdRefreshNoChange: "{source}: disemak — tiada data baharu. Versi aktif tidak berubah.", // translation: owner review
+  rdRefreshFailed: "{source}: tiada apa-apa diterbitkan; versi aktif tidak berubah.", // translation: owner review
+  rdNoHistory: "Belum ada keputusan. Sejarah disimpan; keputusan terbaharu diguna pakai.", // translation: owner review
+  rdExportNote: "Pemetaan yang diluluskan dan semua rekod semakan, sebagai JSON untuk disimpan dalam repositori.", // translation: owner review
+  rdSignedOut: "Telah log keluar.", // translation: owner review
+  rdErr_other: "Sesuatu tidak kena. Sila cuba lagi.", // translation: owner review
+  rdErr_bad_request: "Permintaan tidak sah.", // translation: owner review
+  rdErr_not_found: "Item ini tiada dalam data semasa.", // translation: owner review
+  rdErr_too_many_attempts: "Ini telah dicuba terlalu kerap. Sila tunggu beberapa minit dan cuba lagi.", // translation: owner review
+  rdErr_network: "Pelayan tidak dapat dihubungi. Semak sambungan dan cuba lagi.", // translation: owner review
+  rdJudgeScenario: "Senario", // translation: owner review
+  rdJudgeSynthetic: "Data ujian sintetik: setiap nilai adalah rekaan; ini bukan angka DOSM atau OpenAlex.", // translation: owner review
+  rdJudgeEditNote: "Ubah mana-mana kiraan (nombor bulat, sifar atau lebih). Hanya sel yang anda ubah dihantar; pengesahan dijalankan dahulu.", // translation: owner review
+  rdJudgeNoEdit: "Ubah sekurang-kurangnya satu nilai dahulu. Tiada apa-apa dihantar.", // translation: owner review
+  rdJudgeBNote: "Mendarab jumlah dan kumpulan {groups} pada {period} dengan faktor ini.", // translation: owner review
+  rdJudgeCNote: "Menambah {skill} sebagai In Demand untuk {job} dalam set keluaran terkini. Kemahiran ini tidak ditanda untuk pekerjaan ini dalam keluaran sebenar terdahulu atau terkini, jadi ia muncul sebagai baru dalam permintaan.", // translation: owner review
+  rdJudgeKept: "Perubahan ditolak; keadaan terakhir dikekalkan.", // translation: owner review
+  rdJudgeResetDone: "Ditetapkan semula kepada asas sintetik.", // translation: owner review
+  rdJudgeObs: "Pemerhatian yang berubah", // translation: owner review
+  rdJudgeSignals: "Klasifikasi", // translation: owner review
+  rdJudgeBreaksAdded: "Kemungkinan perubahan struktur yang ditambah", // translation: owner review
+  rdJudgePossibleBreak: "Kemungkinan perubahan struktur", // translation: owner review
+  rdJudgeInsufficient: "Perbandingan yang menjadi bukti setanding tidak mencukupi", // translation: owner review
+  rdJudgeAffected: "Terjejas", // translation: owner review
+  rdJudgeGroups: "Kumpulan DOSM (peringkat kumpulan)", // translation: owner review
+  rdJudgeJobs: "Pekerjaan (peringkat kumpulan, melalui kumpulan DOSM)", // translation: owner review
+  rdJudgeFields: "Bidang (pautan yang diluluskan sahaja)", // translation: owner review
+  rdJudgeJobsCount: "{count} pekerjaan — tunjukkan senarai", // translation: owner review
+  rdJudgeSkillsTitle: "Kemahiran", // translation: owner review
+  rdJudgeSkills: "Permintaan kemahiran individu tidak mempunyai bukti yang mencukupi dalam Pusingan 1.", // translation: owner review
+  rdJudgeProd: "Data pengeluaran tidak pernah diubah oleh ujian ini: ia dijalankan pada salinan sintetik anda sendiri.", // translation: owner review
+  rdChange_added: "ditambah", // translation: owner review
+  rdChange_removed: "dibuang", // translation: owner review
+  rdChange_direction: "arah", // translation: owner review
+  rdChange_evidenceSufficiency: "kecukupan bukti", // translation: owner review
+  rdChange_evidenceQuality: "kualiti bukti", // translation: owner review
+  rdChange_values: "nilai", // translation: owner review
+  rdChange_reasons: "sebab", // translation: owner review
+  rdChange_breaks: "perubahan struktur", // translation: owner review
+  rdChange_revisions: "semakan semula", // translation: owner review
+  rdChange_versions: "versi", // translation: owner review
 }

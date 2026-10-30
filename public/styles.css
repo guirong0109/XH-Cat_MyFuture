@@ -116,3 +116,56 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .chip:hover,.chip:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
 .chip.on{background:var(--accent-soft);border-color:var(--accent);cursor:default}
 .chip-x{border:0;background:none;color:inherit;cursor:pointer;padding:0 0 0 4px;font-size:14px}
+/* Future Skills Radar (D22): small additions on the app's own tokens */
+.rd .rd-status{margin:14px 0 8px}
+.rd .rd-src-card h3{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.rd .rd-profile,.rd .rd-sec{margin-top:14px}
+.rd .rd-sec>h2,.rd .rd-profile>h2,.rd-drawer h2{margin-top:0}
+.rd .rd-sources{margin:6px 0 4px}
+.rd .rd-tabs{margin:22px 0 8px}
+.rd .rd-tabs button{flex-direction:column;align-items:flex-start;gap:0;white-space:normal;text-align:left}
+.rd .rd-q{font-size:11.5px;font-weight:400;color:var(--muted)}
+.rd .rd-scope{margin:6px 0 0}
+.rd-kv{display:grid;grid-template-columns:minmax(100px,32%) minmax(0,1fr);gap:6px 14px;margin-top:8px}
+.rd-kv dt{color:var(--muted);font-weight:600}
+.rd-kv dd{min-width:0;overflow-wrap:anywhere}
+.rd-list{list-style:none;display:grid;gap:6px;margin:6px 0}
+.rd-mini,.rd-col{background:var(--surface2);border-radius:12px;padding:12px;min-width:0}
+.rd-three{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.rd-col p{margin:6px 0}
+.rd-scroll{overflow-x:auto;max-width:100%}
+.rd-chart{max-width:560px;margin:10px auto}
+.rd-chart svg{display:block;overflow:visible}
+.rd-controls{margin:6px 0}
+.rd-num{font-weight:600;font-variant-numeric:tabular-nums}
+.rd-src{font-size:11px;white-space:nowrap}
+.rd-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:8px}
+.rd-leg{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px}
+.rd-pick{padding:2px 6px;text-align:left;white-space:normal}
+.rd-subhead{margin-top:8px}
+.rd-srcline{margin-top:10px}
+/* Source links may wrap where they run in a line of text (phone width, spec §15); number-plus-link tags keep nowrap. */
+.rd-srcline .rd-src,.rd-drawer .rd-list .rd-src,.rd-drawer .rd-kv .rd-src{white-space:normal;overflow-wrap:anywhere}
+.rd-context{margin-top:10px}
+.rd code{font-size:12px;overflow-wrap:anywhere}
+.rd g[role=button]{cursor:pointer}
+.rd g[role=button]:focus{outline:2px solid var(--accent);outline-offset:2px}
+.rd-viewall{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);text-align:center}
+.rd-drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);z-index:30;overflow-y:auto;border-radius:0;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.rd-drawer-top{position:sticky;top:-18px;background:var(--surface);padding:4px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.rd-drawer-top .sp{flex:1}
+@media (max-width:560px){.rd-kv{grid-template-columns:minmax(0,1fr)}.rd-kv dd{margin-bottom:6px}}
+/* Radar admin and judge screens (built on the same tokens and classes) */
+.rd-admin .rd-session,.rd-judge .rd-session{margin:10px 0 4px}
+.rd-signin{max-width:420px;margin-top:8px}
+.rd-msg{margin:8px 0}
+.rd-msg:empty{display:none}
+.rd-msg:focus,.rd-sec:focus,.rd h1:focus{outline:2px solid var(--accent);outline-offset:2px}
+.rd-decide{gap:6px}
+.rd-decide .btn[disabled],.rd-sec .btn[disabled]{opacity:.5;cursor:not-allowed}
+.rd-pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow:auto;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;margin:8px 0}
+.rd-grid th,.rd-grid td{padding:6px 4px}
+.rd-cell{width:96px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 6px;text-align:right;font-variant-numeric:tabular-nums}
+.rd-cell:focus,.rd-sec textarea:focus,.rd-sec input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.rd-judge-grid{align-items:start;margin-top:10px}
+.rd-sec h3{margin:14px 0 4px;font-size:14px}

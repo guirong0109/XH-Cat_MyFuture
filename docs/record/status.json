@@ -839,6 +839,11 @@
       "time": "30 Oct",
       "step": "Task 28b",
       "detail": "npm test 242 passed; screenshots of each phase at 1440 px and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "removed the line \"Career foresight for Malaysia\": the product is not for Malaysian users only"
     }
   ]
 }

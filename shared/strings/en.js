@@ -261,7 +261,6 @@ export default {
   // landing page (welcome screen)
   heroLine: "Where could your skills take you in the {em}?",
   heroEm: "AI era",
-  ldKicker: "Career foresight for Malaysia",
   ldNavHow: "How it works",
   ldNavData: "The data",
   ldNavPrinciples: "Principles",

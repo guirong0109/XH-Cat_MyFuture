@@ -261,7 +261,6 @@ export default {
   // landing page (welcome screen)
   heroLine: "在{em}，你的技能能带你走向哪里？",
   heroEm: "AI时代",
-  ldKicker: "面向马来西亚的职业前瞻",
   ldNavHow: "如何运作",
   ldNavData: "数据",
   ldNavPrinciples: "原则",

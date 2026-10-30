@@ -51,7 +51,6 @@ body.landing main{max-width:none;padding:0}
 /* hero */
 .lp-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:end;
   padding:clamp(40px,8vw,104px) 0 clamp(40px,5vw,64px)}
-.lp-kicker{display:flex;align-items:center;gap:10px;font-family:var(--lp-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lp-muted)}
 .lp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lp-pink);box-shadow:0 0 0 0 var(--lp-pink);animation:lp-pulse 2.4s ease-out infinite}
 .lp-display{font-family:var(--lp-serif);font-weight:400;font-size:clamp(50px,8.2vw,116px);line-height:.93;letter-spacing:-.025em;margin:22px 0 26px;text-wrap:balance}
 .lp-display em{font-style:italic;color:var(--lp-pink)}

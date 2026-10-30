@@ -43,7 +43,6 @@ function hero(t) {
   return `
 <section class="lp-hero">
  <div class="lp-hero-copy">
-  <p class="lp-kicker"><i class="lp-dot"></i>${esc(t('ldKicker'))}</p>
   <h1 class="lp-display">${esc(before)}<em>${esc(t('heroEm'))}</em>${esc(after ?? '')}</h1>
   <p class="lp-sub">${esc(t('heroSub'))}</p>
   <div class="lp-cta">

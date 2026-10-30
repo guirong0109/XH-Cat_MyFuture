@@ -112,12 +112,16 @@ function stageCard(t, stage, i) {
   if (stage.live) {
     return `
   <article class="lp-stage lp-stage-live">
-   <div class="lp-stage-top"><span class="lp-num">${n}</span><span class="lp-pill lp-pill-live"><i class="lp-dot"></i>${esc(t('ldLive'))}</span></div>
-   ${quest(t)}
-   <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
-   <p>${esc(t(stage.text))}</p>
-   <ul class="lp-ticks">${['ldS1a', 'ldS1b', 'ldS1c'].map((k) => `<li>${esc(t(k))}</li>`).join('')}</ul>
-   <button class="lp-btn lp-btn-lime" data-go="access">${esc(t('ldBuild'))} <span aria-hidden="true">→</span></button>
+   <div class="lp-live-a">
+    <div class="lp-stage-top"><span class="lp-num">${n}</span><span class="lp-pill lp-pill-live"><i class="lp-dot"></i>${esc(t('ldLive'))}</span></div>
+    ${quest(t)}
+    <h3 class="lp-stage-title">${esc(t(stage.title))}</h3>
+   </div>
+   <div class="lp-live-b">
+    <p>${esc(t(stage.text))}</p>
+    <ul class="lp-ticks">${['ldS1a', 'ldS1b', 'ldS1c'].map((k) => `<li>${esc(t(k))}</li>`).join('')}</ul>
+    <button class="lp-btn lp-btn-lime" data-go="access">${esc(t('ldBuild'))} <span aria-hidden="true">→</span></button>
+   </div>
   </article>`
   }
   return `
@@ -130,7 +134,7 @@ function stageCard(t, stage, i) {
 }
 
 const how = (t) => `
-<section class="lp-section" id="how">
+<section class="lp-section lp-howsec" id="how">
  <header class="lp-head">
   <p class="lp-label">${esc(t('ldHowKicker'))}</p>
   <h2 class="lp-h2">${esc(t('ldHowTitle'))}</h2>

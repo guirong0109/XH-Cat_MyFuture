@@ -84,37 +84,41 @@ body.landing main{max-width:none;padding:0}
    leave the corners notched) and a hard offset shadow that steps out on hover; a 12 × 12 pixel icon on a notched tile in
    the stage's accent and a pixel number (components/pixel.js); the five next modules carry a pixel lock. The live card
    is a dark screen on a pixel grid, with the level path: the player stands on the built block, the rest are locked. */
-.lp-bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-auto-rows:minmax(230px,auto);gap:22px}
-.lp-stage{--edge:var(--lp-ink);grid-column:span 2;display:flex;flex-direction:column;gap:12px;padding:24px;margin:3px;background:var(--lp-paper);
+.lp-howsec{padding-top:clamp(40px,5vw,56px)}
+.lp-howsec .lp-head{margin-bottom:clamp(24px,3vw,36px)}
+.lp-bento{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
+.lp-stage{--edge:var(--lp-ink);display:flex;flex-direction:column;gap:10px;padding:20px;margin:3px;background:var(--lp-paper);
   box-shadow:0 -3px 0 var(--edge),0 3px 0 var(--edge),-3px 0 0 var(--edge),3px 0 0 var(--edge),
     9px 9px 0 color-mix(in srgb,var(--lp-ink) 10%,transparent);
   transition:translate .2s steps(2),box-shadow .2s steps(2)}
 .lp-stage:hover{translate:-3px -3px;box-shadow:0 -3px 0 var(--edge),0 3px 0 var(--edge),-3px 0 0 var(--edge),3px 0 0 var(--edge),
     12px 12px 0 color-mix(in srgb,var(--a,var(--lp-ink)) 55%,transparent)}
-.lp-stage p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+.lp-stage p{font-size:14px;line-height:1.5;color:var(--lp-ink2)}
 .lp-stage-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.lp-stage-icon{display:grid;place-items:center;width:60px;height:60px;background:var(--a);color:var(--on);clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px))}
+.lp-stage-icon{display:grid;place-items:center;width:52px;height:52px;background:var(--a);color:var(--on);clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px))}
 .lp-stage:hover .lp-stage-icon{animation:px-hop .5s steps(2) 2}
 .px{display:block;fill:currentColor}
 .px-icon{width:36px;height:36px}
 .lp-num{color:color-mix(in srgb,var(--lp-ink) 55%,transparent)}
 .lp-num .px-digits{width:auto;height:20px}
-.lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:29px;line-height:1.05;letter-spacing:-.01em}
+.lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:24px;line-height:1.05;letter-spacing:-.01em}
 .lp-pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--lp-mono);font-size:11px;padding:5px 10px;border-radius:99px;white-space:nowrap}
 .lp-pill-next{margin-top:auto;align-self:flex-start;border:1px dashed var(--lp-muted);color:var(--lp-muted)}
-.lp-stage .lp-pill{border-radius:0;padding:6px 10px}
+.lp-stage .lp-pill{border-radius:0;padding:6px 10px;white-space:normal}
 .px-lock{width:10px;height:10px;flex:none}
-.lp-stage-live{--lp-ink:#15130f;--lp-cream:#f5f0e6;--edge:var(--lp-ink);grid-column:span 4;grid-row:span 2;padding:clamp(26px,3.4vw,44px);color:var(--lp-cream);
+.lp-stage-live{--lp-ink:#15130f;--lp-cream:#f5f0e6;--edge:var(--lp-ink);grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px clamp(24px,4vw,56px);align-items:end;padding:clamp(24px,3vw,36px);color:var(--lp-cream);
   background:linear-gradient(color-mix(in srgb,var(--lp-cream) 6%,transparent) 1px,transparent 1px) 0 0/16px 16px,
              linear-gradient(90deg,color-mix(in srgb,var(--lp-cream) 6%,transparent) 1px,transparent 1px) 0 0/16px 16px,
              radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--lp-pink) 42%,transparent),transparent 52%),
              radial-gradient(circle at 0% 100%,color-mix(in srgb,var(--lp-blue) 30%,transparent),transparent 45%),var(--lp-ink)}
 .lp-stage-live .lp-num{color:var(--lp-lime)}
 .lp-stage-live .lp-num .px-digits{height:30px}
-.lp-stage-live .lp-stage-title{font-size:clamp(40px,4.6vw,64px);margin-top:auto}
+.lp-live-a,.lp-live-b{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lp-live-a .lp-stage-top{justify-content:flex-start;align-items:center;gap:16px}
+.lp-stage-live .lp-stage-title{font-size:clamp(34px,3.6vw,52px);margin-top:14px}
 .lp-stage-live .lp-stage-title::after{content:"";display:inline-block;width:.4em;height:.08em;margin-left:.1em;background:var(--lp-lime);
   animation:px-blink 1.1s steps(1) infinite}
-.lp-stage-live p{color:color-mix(in srgb,var(--lp-cream) 80%,transparent);font-size:17px;max-width:46ch}
+.lp-stage-live p{color:color-mix(in srgb,var(--lp-cream) 80%,transparent);font-size:16px;max-width:46ch}
 .lp-pill-live{background:var(--lp-lime);color:var(--lp-on-lime)}
 .lp-pill-live .lp-dot{background:var(--lp-on-lime);box-shadow:none;animation:lp-blink 1.6s ease-in-out infinite}
 .lp-quest{display:flex;align-items:flex-end;padding-top:40px;margin-top:6px}
@@ -258,7 +262,7 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 /* SECOND SECTION: the gap. The three figures side by side, each a heading, its roller counter and a caption, with
    rules between them. A pink bracket under the first two joins them to the calculated gap (drawn in when the section
    comes into view, .in); the sources sit in one footnote. It sits close under the stage strip. */
-.lp-gapsec{padding-top:clamp(40px,5vw,64px)}
+.lp-gapsec{padding:clamp(40px,5vw,64px) 0 clamp(32px,4vw,48px)}
 .lp-gapsec .lp-head{margin-bottom:clamp(20px,3vw,32px)}
 .lp-tally{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
 .lp-tally-col{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
@@ -281,14 +285,15 @@ body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visi
 @media (prefers-reduced-motion:reduce){.lp *,.lp *::before{animation:none!important;transition:none!important}}
 
 @media (max-width:1000px){
-  .lp-stage-live{grid-column:span 6;grid-row:auto}
-  .lp-stage{grid-column:span 3}
+  .lp-bento{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .lp-bento .lp-stage-live{grid-column:span 6;grid-row:auto;grid-template-columns:1fr}
+  .lp-stage{grid-column:span 2}
   .lp-data,.lp-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lp-links{display:none}
   .lp-nav{justify-content:space-between}
 }
 @media (max-width:640px){
-  .lp-stage,.lp-stage-live{grid-column:1/-1}
+  .lp-stage,.lp-bento .lp-stage-live{grid-column:1/-1}
   .lp-bento{grid-auto-rows:auto}
   .lp-data,.lp-principles{grid-template-columns:1fr}
   body.no-intro .lp-atm{grid-template-columns:1fr}

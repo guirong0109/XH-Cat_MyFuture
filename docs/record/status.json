@@ -952,6 +952,16 @@
       "time": "30 Oct",
       "step": "Task 28",
       "detail": "pixel icons, pixel numbers, notched cards with stepped hover, level path with the player on stage 1; npm test 257 passed; checked in Chrome at 1440 and 500 px, light and dark"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works too long; big gap between sections 2 and 3"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "live card one wide low row, the five next stages in one row; space between sections 2 and 3 about 105 px (was about 256); fixed the live card showing half width on mid screens; npm test 257 passed; checked in Chrome at 1440, 820 and 500 px"
     }
   ]
 }

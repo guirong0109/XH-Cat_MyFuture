@@ -135,19 +135,19 @@ body.landing main{max-width:none;padding:0}
 .lp-principle h3{font-family:var(--lp-serif);font-weight:400;font-size:28px;line-height:1.05;margin:10px 0 10px}
 .lp-principle p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
 
-/* who it is for: a stack of paper file folders. The page has the title first; column-reverse puts the back folder (04)
-   at the top and the front folder (title and binder clip) at the bottom. Each folder is a pastel paper band with a
+/* who it is for: under the section title, a stack of paper file folders. The page has folder 01 first; column-reverse
+   puts the back folder (04) at the top and 01 at the bottom. Each folder is a pastel paper band with a
    faint grain; its tab (a rounded trapezoid, drawn by ::before) rises into the folder above at --tab-x, and --z keeps
    the nearer folders on top. A folder slides up a little on hover, like pulling a file. The paper colours stay the same
    in dark mode, as paper would. */
-.lp-files{display:flex;flex-direction:column-reverse;padding-top:48px}
+.lp-files{display:flex;flex-direction:column-reverse;padding-top:44px}
 .lp-folder{--paper:#cdb8e3;position:relative;z-index:var(--z);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;
   align-items:center;padding:26px clamp(20px,3vw,40px) 68px;color:#1e1a14;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.09'/%3E%3C/svg%3E"),var(--paper);
   box-shadow:0 -1px 0 rgba(30,26,20,.28),0 -10px 20px -14px rgba(30,26,20,.4);transition:translate .25s ease}
 .lp-folder:hover{translate:0 -6px}
-.lp-folder:nth-child(2){--paper:#ecd98f}
-.lp-folder:nth-child(3){--paper:#b9cde6}
-.lp-folder:nth-child(4){--paper:#f2c6d4}
+.lp-folder:nth-child(1){--paper:#ecd98f;padding-bottom:32px;border-radius:0 0 18px 18px}
+.lp-folder:nth-child(2){--paper:#b9cde6}
+.lp-folder:nth-child(3){--paper:#f2c6d4}
 .lp-folder:last-child{border-radius:18px 18px 0 0}
 .lp-folder p:not(.lp-folder-tab){font-size:16px;line-height:1.5;color:#3d382f;max-width:60ch}
 .lp-folder-tab{position:absolute;z-index:0;left:var(--tab-x);bottom:calc(100% - 1px);max-width:calc(100% - var(--tab-x) - 16px);
@@ -159,12 +159,6 @@ body.landing main{max-width:none;padding:0}
 .lp-folder .lp-pill-next{margin-top:0;color:#5c5446;border-color:#5c5446}
 .lp-folder .lp-pill-open{background:#1e1a14;color:#f5f0e6}
 .lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
-.lp-folder-front{--paper:#c9dc9a;display:block;text-align:center;padding:72px clamp(20px,4vw,48px) clamp(48px,7vw,88px);border-radius:0 0 24px 24px}
-.lp-folder-front:hover{translate:none}
-.lp-files-title{font:400 clamp(46px,8vw,120px)/.95 var(--lp-serif);letter-spacing:-.02em;color:#4a3020;text-wrap:balance}
-:lang(zh) .lp-files-title{line-height:1.2;letter-spacing:0}
-.lp-clip{position:absolute;left:50%;top:-34px;width:64px;margin-left:-32px;fill:#1e1a14}
-.lp-clip-wire{fill:none;stroke:#1e1a14;stroke-width:4;stroke-linecap:round}
 .lp-who{border-bottom:0}
 
 /* the end of the page: one full-width band (.lp-end) holding the closing call to action and the footer, its content

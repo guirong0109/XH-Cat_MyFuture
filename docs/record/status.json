@@ -1075,6 +1075,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "closing block solid black (glow and grid removed), black in dark mode too; npm test 258 passed; checked in Chrome, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the folder design from the title For people at a turning point"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "title back to a plain section heading above the four audience folders; front folder and binder clip removed; npm test 258 passed; checked in Chrome"
     }
   ]
 }

@@ -140,19 +140,20 @@ describe('footer', () => {
 })
 
 describe('who it is for, as stacked file folders', () => {
-  it('has a folder per audience with a numbered tab, its text and its tag, and the title on the front folder', () => {
+  it('has a folder per audience with a numbered tab, its text and its tag, under a plain section title', () => {
     for (const lang of ['en', 'ms', 'zh']) {
       const html = page(lang)
       const who = html.slice(html.indexOf('<section class="lp-section lp-who"'), html.indexOf('<div class="lp-end">'))
       expect(who.match(/class="lp-folder"/g)).toHaveLength(4)
-      expect(who).toContain('class="lp-folder lp-folder-front"')
+      expect(who).not.toContain('lp-folder-front')
+      expect(who).toContain(`<h2 class="lp-h2">${translate(lang, 'ldWhoTitle')}</h2>`)
       expect(who.indexOf(translate(lang, 'ldWhoTitle'))).toBeLessThan(who.indexOf('class="lp-folder"'))
       for (const [i, [title, text, open]] of [['catA', 'catAText', true], ['catB', 'catBText', true], ['catC', 'catCText', false], ['catD', 'catDText', false]].entries()) {
         expect(who).toContain(`<b>0${i + 1}</b> ${translate(lang, title).replace(/&/g, '&amp;')}`)
         expect(who).toContain(translate(lang, text))
         expect(who).toContain(translate(lang, open ? 'ldOpen' : 'preview'))
       }
-      expect(who).toMatch(/<svg class="lp-clip"[^>]*aria-hidden="true"/)
+      expect(who).not.toContain('lp-clip')
     }
   })
 })

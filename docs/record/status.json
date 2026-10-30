@@ -1095,6 +1095,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "Who it is for back to the plain ruled list (same styles as before the folders); npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer background the same as the page background"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "footer on the page cream instead of paper; npm test 258 passed; checked in Chrome"
     }
   ]
 }

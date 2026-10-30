@@ -148,7 +148,7 @@ body.landing main{max-width:none;padding:0}
    lined up with the page (--edge). The closing block
    is the black top (black in dark mode too); its bottom edge is cut into scallops (a mask) and the footer follows
    straight underneath. */
-.lp-end{--edge:max(clamp(16px,4vw,48px),calc(50vw - 620px + clamp(16px,4vw,48px)));margin:0 calc(50% - 50vw);background:var(--lp-paper)}
+.lp-end{--edge:max(clamp(16px,4vw,48px),calc(50vw - 620px + clamp(16px,4vw,48px)));margin:0 calc(50% - 50vw);background:var(--lp-cream)}
 .lp-close{--lp-cream:#f5f0e6;padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
   background:#000;
   -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,

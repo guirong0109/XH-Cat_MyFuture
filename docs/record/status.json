@@ -861,6 +861,11 @@
       "time": "30 Oct",
       "step": "Task 28c",
       "detail": "npm test 247 passed; roll checked in Chrome at 15% speed (wheels independent, overshoot visible)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "each digit in its own recessed window (not one joined window); separators between windows; npm test 248 passed"
     }
   ]
 }

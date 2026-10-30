@@ -42,6 +42,13 @@ describe('roller counter markup', () => {
     expect(html).toContain(`style="--to:${wheel.to}" data-to="${wheel.to}" data-ms="${wheel.ms}"`)
   })
 
+  it('each digit is its own window; separators sit between the windows, not inside one', () => {
+    const html = odometer('600,000+', 'x')
+    expect(html).not.toContain('odo-window')
+    expect(html.match(/class="odo-wheel"/g)).toHaveLength(6)
+    expect(html).toMatch(/<\/span><\/span><span class="odo-sep">,<\/span><span class="odo-wheel">/)
+  })
+
   it('every number on the landing page is a roller counter', () => {
     const html = welcome({ t: (key, vars) => translate('en', key, vars), state: { lang: 'en' } })
     expect(html.match(/class="odo"/g)).toHaveLength(GUIDE_FACTS.length + DATA_FACTS.length)

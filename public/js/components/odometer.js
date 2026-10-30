@@ -1,4 +1,4 @@
-// Mechanical roller counters for the landing page's numbers. Each digit is a wheel in a recessed window; it rolls
+// Mechanical roller counters for the landing page's numbers. Each digit is a wheel in its own recessed window; it rolls
 // from 0 when first seen, lower digits spin more turns (faster), and it overshoots a little before settling.
 // Without script, or with "reduce motion", the window simply shows the value.
 import { esc } from '../ui.js'
@@ -27,7 +27,7 @@ export function odometer(value, key) {
   const wheels = parts.map((part) => (part.kind === 'sep'
     ? `<span class="odo-sep">${esc(part.char)}</span>`
     : `<span class="odo-wheel"><span class="odo-strip" style="--to:${part.to}" data-to="${part.to}" data-ms="${part.ms}">${part.cells.map((n) => `<i>${n}</i>`).join('')}</span></span>`)).join('')
-  return `<span class="odo" data-odo="${esc(key)}"><span class="lp-sr">${esc(value)}</span><span class="odo-face" aria-hidden="true"><span class="odo-window">${wheels}</span>${suffix ? `<span class="odo-suffix">${esc(suffix)}</span>` : ''}</span></span>`
+  return `<span class="odo" data-odo="${esc(key)}"><span class="lp-sr">${esc(value)}</span><span class="odo-face" aria-hidden="true">${wheels}${suffix ? `<span class="odo-suffix">${esc(suffix)}</span>` : ''}</span></span>`
 }
 
 // Browser only. The app redraws the whole page on any change (a reply from the server, a language change), so each

@@ -257,6 +257,29 @@ describe("refresh('onet-hottech')", () => {
   })
 })
 
+describe('Hot Technologies: same window, changed counts', () => {
+  it('publishes the changed count as one revision; Python stays without a direction', async () => {
+    const { store } = await bundleCopy()
+    const page = { html: HOT_PAGE }
+    const ing = await ingestorOn(store, { 'onet-hottech': hotTech(page) })
+    const first = await ing.refresh('onet-hottech')
+    const firstId = (await readActive(store)).manifest.snapshots['onet-hottech']
+    page.html = HOT_PAGE.replace('data-text="814960">814,960<', 'data-text="900000">900,000<')
+    expect(page.html).not.toBe(HOT_PAGE)
+    const out = await ing.refresh('onet-hottech')
+    expect(first.outcome).toBe('published')
+    expect(out.outcome).toBe('published')
+    const { active, signals } = await activeSignals(store)
+    const snapshotId = active.manifest.snapshots['onet-hottech']
+    expect(snapshotId).not.toBe(firstId)
+    const snapshot = (await getJson(store, KEYS.snapshot('onet-hottech', snapshotId))).value
+    expect(snapshot.meta.revisions).toHaveLength(1)
+    const python = signals.signals.find((s) => s.signalId === 'onet:postings:Python')
+    expect(python.direction).toBeNull()
+    expect(python.reasons).toContain('first_snapshot')
+  })
+})
+
 // ---- admin route ------------------------------------------------------------------------------------------------
 
 const ENV = { RADAR_ADMIN_KEY: 'admin-key-for-tests-0123456789', RADAR_DEMO_KEY: 'demo-key-for-tests-9876543210', RADAR_SESSION_SECRET: 's'.repeat(40) }
@@ -340,5 +363,23 @@ describe('POST /api/admin/radar/refresh/onet-skills and onet-hottech', () => {
     const hot = await call('/api/admin/radar/refresh/onet-hottech', { session })
     expect(hot.status).toBe(200)
     expect(hot.body.result.outcome).toBe('published')
+  })
+
+  it('a not-newer request does not use the 5-minute refresh slot', async () => {
+    const { store, sources } = await start()
+    const session = await login()
+    const ing = createIngestor({ store, sources: { 'onet-skills': fakeOnetSkills() }, references, now: () => NOW, log: () => {} })
+    await ing.refreshOnetRelease('31.0')
+    for (let i = 0; i < 2; i++) {
+      const old = await call('/api/admin/radar/refresh/onet-skills', { session, body: { release: '30.3' } })
+      expect(old.status).toBe(409)
+      expect(old.body.error.code).toBe('onet_release_not_newer')
+    }
+    expect(sources['onet-skills'].calls).toEqual([])
+    const next = await call('/api/admin/radar/refresh/onet-skills', { session, body: { release: '31.1' } })
+    expect(next.status).toBe(200)
+    expect(next.body.result.outcome).toBe('published')
+    const again = await call('/api/admin/radar/refresh/onet-skills', { session, body: { release: '31.2' } })
+    expect(again.status).toBe(429)
   })
 })

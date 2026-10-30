@@ -68,6 +68,20 @@ function newerRelease(release, activeRelease) {
   return next[0] > prev[0] || (next[0] === prev[0] && next[1] > prev[1])
 }
 
+// True when the active onet-skills snapshot is already at this release or a later one (same rule as the ingestor).
+// Read errors answer false: the ingestor then decides and reports them itself.
+export async function onetReleaseNotNewer(store, release) {
+  try {
+    if (!releaseParts(release)) return false
+    const id = (await readActive(store))?.manifest?.snapshots?.['onet-skills']
+    if (!isSafeId(id)) return false
+    const snapshot = (await getJson(store, KEYS.snapshot('onet-skills', id)))?.value
+    return !newerRelease(release, snapshot?.classification?.version ?? null)
+  } catch {
+    return false
+  }
+}
+
 // Hot Technologies (spec 3.2): the page shows one counting window. A new window is added to the earlier ones kept in
 // the active snapshot; the same window replaces its own observations (so changed counts are revisions, and a vanished
 // technology is a removed observation that holds the run, as for every source except onet-skills).

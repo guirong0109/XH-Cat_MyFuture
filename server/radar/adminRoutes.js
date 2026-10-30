@@ -26,6 +26,7 @@ import { originOk, sendAccessError } from './access.js'
 import { demoErrorCode, sendDemoError } from './demoRoutes.js'
 import { KEYS, RADAR_SOURCES, getJson, isSafeId } from './manifest.js'
 import { RadarError } from './service.js'
+import { onetReleaseNotNewer } from './ingest.js'
 import { fieldTopicMappingVersion } from '../../shared/radar/pipeline.js'
 import { dosmLink, releasePageUrl } from './sources/dosm.js'
 import { RELEASE_PATTERN } from './sources/onetSkills.js'
@@ -425,6 +426,8 @@ export function radarAdminRoutes({ radar, access, now = () => new Date(), log = 
     }
     const refreshFn = source === 'onet-skills' ? radar.ingestor?.refreshOnetRelease : radar.ingestor?.refresh
     if (!writable() || typeof refreshFn !== 'function') return fail(response, 'not_configured')
+    // A release that is not newer is refused before it can use the 5-minute slot (same rule as the ingestor).
+    if (source === 'onet-skills' && (await onetReleaseNotNewer(store, release))) return fail(response, 'onet_release_not_newer')
     if (!refreshes.hit(source)) return fail(response, 'too_many_attempts')
     const result = await exclusive(() => (source === 'onet-skills' ? radar.ingestor.refreshOnetRelease(release) : radar.ingestor.refresh(source)))
     if (OK_OUTCOMES.has(result?.outcome)) return response.json({ result })

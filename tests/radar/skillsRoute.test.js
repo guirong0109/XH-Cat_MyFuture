@@ -76,6 +76,25 @@ describe('GET /api/radar/skills', () => {
     expect(r.status).toBe(200)
   })
 
+  it('serves ids with +, # and / when URL-encoded', async () => {
+    await start(service())
+    for (const id of ['onet:indemand:15-1254.00:C++', 'onet:indemand:15-1299.07:C#', 'onet:postings:C#', 'onet:postings:Oracle PL/SQL']) {
+      const r = await get(`/api/radar/signals/${encodeURIComponent(id)}`)
+      expect(r.status, id).toBe(200)
+      expect(r.body.signalId ?? r.body.signal?.signalId, id).toBe(id)
+    }
+  })
+
+  it('the onet-skills source registry names no release; the release comes from the snapshot', async () => {
+    await start(service())
+    const { body } = await get('/api/radar/sources')
+    const src = body.sources.find((x) => x.sourceId === 'onet-skills')
+    expect(src.links.map((l) => l.label).join(' ')).not.toMatch(/\d+\.\d/)
+    expect(src.links.map((l) => l.url).join(' ')).not.toMatch(/db_\d/)
+    expect(src.version).toBeTruthy()
+    expect(src.evidenceLinks.length).toBeGreaterThan(0)
+  })
+
   it('answers 409 manifest_gone for an unknown manifest', async () => {
     await start(service())
     const r = await get('/api/radar/skills?manifest=manifest-nope')

@@ -58,7 +58,6 @@ const SOURCES = [
     publisher: 'O*NET Resource Center (US Department of Labor)',
     links: [
       { label: 'O*NET database', url: 'https://www.onetcenter.org/database.html' },
-      { label: 'O*NET 31.0 database (zip)', url: 'https://www.onetcenter.org/dl_files/database/db_31_0_text.zip' },
     ],
     policy: 'O*NET data is CC BY 4.0. US job ads (Lightcast via O*NET), not Malaysian. Software and technology skills only.',
     measures: 'Hot Technology and In Demand flags per software example and occupation, by O*NET release (Software Skills table).',

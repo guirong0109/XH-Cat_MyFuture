@@ -56,7 +56,7 @@ deployment notes: `docs/radar/deploy.md`; contract for Matching: `docs/radar/con
 
 ```bash
 npm start                                   # #radar serves the bundled data in data/radar/bundle/ (read-only)
-npm test                                    # all tests, Radar included (556)
+npm test                                    # all tests, Radar included (568)
 python -m unittest discover pipeline/tests  # Python pipeline tests, Radar bridge included (11)
 node scripts/radar-bootstrap.mjs            # rebuild the bundle: OpenAlex fetched live (no key), DOSM from the kept workbook
 python pipeline/fetch_radar_bridge.py       # rebuild the O*NET -> MASCO major group bridge from the kept files

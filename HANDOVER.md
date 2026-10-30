@@ -5,7 +5,7 @@ Updated 30 Oct 2026. Branch made from `main` at 928f4a7. Nothing pushed or merge
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
   fixes found on the way.
-- Tests: **556 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
+- Tests: **568 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
   **11 Python tests OK** (`python -m unittest discover pipeline/tests`).
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
@@ -40,7 +40,7 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 556 passed
+npm test                                    # 568 passed
 python -m unittest discover pipeline/tests  # 11 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (fetches OpenAlex live; DOSM from the kept workbook)
 ```

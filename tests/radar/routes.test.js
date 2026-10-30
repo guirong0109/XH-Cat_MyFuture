@@ -378,6 +378,18 @@ describe('public Radar API', () => {
     expect(await store.get(KEYS.active)).toBeNull()
   })
 
+  it('/api/radar/export carries decided field-topic records (approved + rejected), never pending (R26)', async () => {
+    const record = (mappingId, iscedCode, axisId, reviewStatus) => ({ mappingId, iscedCode, axisId, relationship: 'field_related_to_ai_topic', method: 'curated', reviewStatus, mappingVersion: 'radar-field-topics/v1' })
+    const approved = record('m-06-language', '06', 'language', 'approved')
+    const rejected = record('m-0613-language', '0613', 'language', 'rejected')
+    const pending = record('m-07-robotics', '07', 'robotics', 'pending')
+    await start(service({ references: async () => ({ ...references, fieldTopics: [approved, rejected, pending] }) }))
+    const { body } = await get('/api/radar/export')
+    expect(body.references.fieldTopics).toEqual([approved, rejected])
+    expect(effectiveFieldTopics(body.references.fieldTopics, '0613')).toEqual([])
+    expect(effectiveFieldTopics(body.references.fieldTopics, '0612')).toEqual([{ axisId: 'language', mappingId: 'm-06-language', level: 'broad' }])
+  })
+
   it('/api/radar/export returns radar-signal/v1 only, no score fields', async () => {
     await start(service())
     const { status, body } = await get('/api/radar/export')

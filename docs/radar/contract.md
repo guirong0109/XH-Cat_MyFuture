@@ -4,7 +4,9 @@ This is what the Future Skills Radar publishes for other modules, above all the 
 `shared/radar/contract.js` (`buildSignal`, `validateSignal`) inside `shared/radar/pipeline.js` (`runPipeline`). The
 binding definition is spec §10 (`docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`).
 
-`GET /api/radar/export` (a later task) returns the active signals and the reference data they rest on.
+`GET /api/radar/export` returns the active manifest's signals (each passing `validateSignal`) and the reference data
+they rest on: topics, versions, the occupation bridge step statuses and the **decided** field ↔ topic records
+(`reviewStatus` `approved` or `rejected`; pending proposals are never exported).
 
 ## One signal
 
@@ -79,6 +81,11 @@ Arrays are sorted by id and keys keep a fixed order, so the same inputs give an 
   together with `evidenceKind` and `granularity`.
 - The approved field ↔ topic records and the occupation bridge from the references, to say *how* a profile item
   connects to a signal, showing the path.
+- **Field ↔ topic links must be resolved with the `effectiveFieldTopics` rule** (`shared/radar/relevance.js`): a
+  record at a broad (2-digit) or narrow (3-digit) ISCED-F level applies to every field under it, and per axis the most
+  detailed approved or rejected record decides. So a detailed rejection (e.g. `0613` × language) overrides a broader
+  approval (`06` × language) for that field. Never treat an exported record as a link on its own: rejected records
+  are there only to cancel broader approvals.
 
 ## What Matching must not infer
 

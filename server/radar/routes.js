@@ -51,6 +51,8 @@ const SOURCES = [
   },
 ]
 
+// Owner decisions only (approved or rejected); pending proposals never leave the server on public routes.
+const decided = (records) => (records ?? []).filter((m) => m.reviewStatus === 'approved' || m.reviewStatus === 'rejected')
 const envelope = (answer) => ({ manifestId: answer.manifestId, activeManifestId: answer.activeManifestId, devStore: answer.devStore, states: answer.states })
 const signalOf = (view, signalId) => view.signals.signals.find((s) => s.signalId === signalId) ?? null
 
@@ -142,7 +144,7 @@ function referenceData(refs) {
     topics: refs.topics ?? [],
     // Only owner decisions leave the server on public routes (spec §13, D6, ruling R26): approved links, and rejections
     // so the browser can let a detailed rejection override a broader approval. Pending proposals stay with the admin API.
-    fieldTopics: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved' || m.reviewStatus === 'rejected'),
+    fieldTopics: decided(refs.fieldTopics),
     bridge: refs.bridgeFile ?? null,
     fields: (refs.fieldList?.() ?? []).map((f) => ({ code: f.code, title: f.title, jobs: refs.fieldJobs(f.code) })),
     emascoRoles: refs.emascoRoles ?? [],
@@ -226,7 +228,8 @@ export function radarRoutes({ radar }) {
       references: {
         versions: refs.versions ?? {},
         topics: refs.topics ?? [],
-        fieldTopics: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved'),
+        // Decided records only (ruling R26): consumers apply the effectiveFieldTopics rule (shared/radar/relevance.js).
+        fieldTopics: decided(refs.fieldTopics),
         bridgeSteps: refs.bridge?.steps ?? [],
       },
     }

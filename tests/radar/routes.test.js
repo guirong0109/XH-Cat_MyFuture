@@ -13,6 +13,7 @@ import { createRadarService, createRadarServiceFromEnv, radarStoreFromEnv } from
 import { sourceStates } from '../../shared/radar/states.js'
 import { RADAR_CONFIG } from '../../shared/radar/config.js'
 import { FORBIDDEN_KEY_PATTERN, validateSignal } from '../../shared/radar/contract.js'
+import { effectiveFieldTopics } from '../../shared/radar/relevance.js'
 
 const BUNDLE_ACTIVE = 'manifest-20261030T060700.206Z-b09a0a5b'
 const BUNDLE_OLDER = 'manifest-20261030T060700.153Z-fea18e78'
@@ -315,17 +316,20 @@ describe('public Radar API', () => {
     expect(body.emascoRoles.length).toBeGreaterThan(0)
   })
 
-  it('/api/radar/references serves approved field-topic links only (all pending today → empty)', async () => {
+  it('/api/radar/references serves decided field-topic records only, never pending (R26)', async () => {
     await start(service())
     expect(references.fieldTopics.length).toBeGreaterThan(0)
-    expect((await get('/api/radar/references')).body.fieldTopics).toEqual([])
+    expect((await get('/api/radar/references')).body.fieldTopics).toEqual([]) // all pending today
     await new Promise((resolve) => server.close(resolve))
-    const approved = { ...references.fieldTopics[0], reviewStatus: 'approved', reviewedBy: 'owner' }
-    const rejected = { ...references.fieldTopics[1], reviewStatus: 'rejected' }
-    const refs = { ...references, fieldTopics: [approved, rejected, ...references.fieldTopics.slice(2)] }
-    await start(service({ references: async () => refs }))
+    const record = (mappingId, iscedCode, axisId, reviewStatus) => ({ mappingId, iscedCode, axisId, relationship: 'field_related_to_ai_topic', method: 'curated', reviewStatus, mappingVersion: 'radar-field-topics/v1' })
+    const approved = record('m-06-language', '06', 'language', 'approved')
+    const rejected = record('m-0613-language', '0613', 'language', 'rejected')
+    const pending = record('m-07-robotics', '07', 'robotics', 'pending')
+    await start(service({ references: async () => ({ ...references, fieldTopics: [approved, rejected, pending] }) }))
     const { body } = await get('/api/radar/references')
-    expect(body.fieldTopics).toEqual([approved])
+    expect(body.fieldTopics).toEqual([approved, rejected])
+    expect(effectiveFieldTopics(body.fieldTopics, '0613')).toEqual([])
+    expect(effectiveFieldTopics(body.fieldTopics, '0612')).toEqual([{ axisId: 'language', mappingId: 'm-06-language', level: 'broad' }])
   })
 
   it('refresh state comes from the stored ingest log: a new service reports a failed refresh; a recent no_change check keeps OpenAlex current (R23)', async () => {

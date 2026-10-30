@@ -140,8 +140,9 @@ function referenceData(refs) {
   const data = {
     versions: refs.versions ?? {},
     topics: refs.topics ?? [],
-    // Only approved links leave the server on public routes (spec §13, D6); pending and rejected stay with the admin API.
-    fieldTopics: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved'),
+    // Only owner decisions leave the server on public routes (spec §13, D6, ruling R26): approved links, and rejections
+    // so the browser can let a detailed rejection override a broader approval. Pending proposals stay with the admin API.
+    fieldTopics: (refs.fieldTopics ?? []).filter((m) => m.reviewStatus === 'approved' || m.reviewStatus === 'rejected'),
     bridge: refs.bridgeFile ?? null,
     fields: (refs.fieldList?.() ?? []).map((f) => ({ code: f.code, title: f.title, jobs: refs.fieldJobs(f.code) })),
     emascoRoles: refs.emascoRoles ?? [],

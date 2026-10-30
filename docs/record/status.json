@@ -1230,6 +1230,11 @@
       "time": "30 Oct",
       "step": "Matching acceptance T16",
       "detail": "browser check A1-A13 in docs/matching/acceptance.md; docs, sources, tools declaration, handover; 766 tests, pipeline 48 OK; waits on BLS files, SDG approvals, DOSM break review, BM/中文 review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching final review fixes",
+      "detail": "matching reloads after trend, judge or SDG changes with a 'trend data changed' banner; SDG decisions cached 60 s and dropped on each decision; missing chain step worded in EN/BM/中文; small fixes (level names, SDG card error, no-profile SDG tab, links file error); npm test 777 passed"
     }
   ]
 }

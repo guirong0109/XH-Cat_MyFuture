@@ -3,9 +3,9 @@
 Updated 30 Oct 2026. Branch made from `main` at 928f4a7. Nothing pushed.
 
 ## Where things stand
-- **Design done, waiting for the owner's review of the written spec:**
+- **Spec approved by the owner (30 Oct):**
   `docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`. No Radar code yet.
-- Next after spec approval: the implementation plan (writing-plans), then the owner picks how to run it. The plan's
+- Spec approved 30 Oct. Plan written: `docs/superpowers/plans/2026-10-30-future-radar-round1.md` (21 tasks), waiting for review. The plan's
   first screen task is updating `docs/mockup-radar.html` for owner approval.
 
 ## What the Radar is (Round 1)

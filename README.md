@@ -28,8 +28,8 @@
 | GitHub Repository (preliminary round) | https://github.com/guirong0109/XH-Cat_Domain1      |
 | Live Demo                     | https://futures.grong.my                                   |
 | RunPod Endpoint               | None in the final build (see "How We Use RunPod")          |
-| Slide Deck                    | To add                                                     |
-| Demo Video                    | To add                                                     |
+| Slide Deck                    | [submission/SDC2026_XH-Cat_Final_Slides.pptx](submission/SDC2026_XH-Cat_Final_Slides.pptx)                                                 |
+
 
 ---
 

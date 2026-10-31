@@ -42,6 +42,9 @@ import { loadPathwayData } from './pathway/data.js'
 import { once } from './matching/service.js'
 import { createPathwayServiceFromEnv } from './pathway/service.js'
 import { pathwayRoutes } from './pathway/routes.js'
+import { createOrgStore } from './org/store.js'
+import { createOrgService } from './org/service.js'
+import { orgRoutes } from './org/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const DATA_DIR = path.join(ROOT, 'data')
@@ -170,6 +173,20 @@ export function createApp({
   const pathwayLoad = pathwayData ? async () => pathwayData : once(() => pathwayRead(dataDir))
   const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, loadData: pathwayLoad, matching: matchingService, store: radar?.store ?? null, now })
   app.use(pathwayRoutes({ pathway: pathwayService }))
+  // Organisation view (HR and career centres): owner routes. Without D1 they answer 503 accounts_unavailable.
+  // Team answers are never stored.
+  {
+    const orgStore = d1 ? createOrgStore({ d1, now }) : null
+    const orgService = orgStore ? createOrgService({ store: orgStore, matching: matchingService, pathway: pathwayService, log: console.error }) : null
+    let roleCodes = null
+    const loadRoleCodes = () => {
+      roleCodes ??= readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')
+        .then((raw) => new Set(JSON.parse(raw).roles.filter((r) => r.title).map((r) => r.code)))
+        .catch((error) => { roleCodes = null; throw error })
+      return roleCodes
+    }
+    app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadRoleCodes, log: console.error, now }))
+  }
   if (radar) {
     let aiTasksPromise = null
     const aiTasks = () => (aiTasksPromise ??= loadAiTasks(dataDir))

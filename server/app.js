@@ -19,7 +19,7 @@ import { createSemanticFromEnv } from './cv/semantic.js'
 import { createAiReader, providerFromEnv } from './cv/aiRead.js'
 import { createAuth } from './auth.js'
 import { authRoutes } from './routes/auth.js'
-import { createD1FromEnv } from './store/d1.js'
+import { accountsDbFromEnv } from './store/localDb.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -56,7 +56,8 @@ export function createApp({
   dataDir = DATA_DIR,
   fetchImpl = fetch,
   now = () => new Date(),
-  d1 = createD1FromEnv(),
+  // Accounts: Cloudflare D1 when its settings are set, else a SQLite file on this computer with ACCOUNTS_DB=local.
+  d1 = accountsDbFromEnv(process.env, { dataDir }),
   semantic = createSemanticFromEnv(),
   aiProvider = providerFromEnv(process.env),
   onetLive = createOnetLiveFromEnv(),

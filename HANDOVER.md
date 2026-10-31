@@ -201,7 +201,9 @@ scenario comparison.
 ## What is not switched on yet (needs the owner's keys or OK)
 - **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
   "cached".
-- **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them, accounts say "not available" and guests still work
+- **Accounts on this computer (1 Nov 2026):** `ACCOUNTS_DB=local` stores accounts in `data/cache/accounts/accounts.db`
+  (SQLite, git-ignored); the live site uses it. Back it up by copying the file.
+- **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them (and without `ACCOUNTS_DB=local`), accounts say "not available" and guests still work
   fully. The organisation view needs D1 (check Cloudflare's current D1 price and tell the owner first). Local
   trial: `node scripts/serve-local-accounts.mjs` (in-memory stand-ins).
 - **Radar storage and refresh:** a deployed Radar needs R2 settings (`RADAR_STORE`, `R2_*`) and a free OpenAlex key;

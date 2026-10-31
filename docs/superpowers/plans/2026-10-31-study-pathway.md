@@ -212,15 +212,16 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
 **Interfaces:**
 - Consumes: `createMatchingServiceFromEnv(...).role(profile, code, request)` (unchanged); Tasks 3–5.
 - Produces:
-  - `loadPathwayData(dataDir) -> {education, routeIndex, sites, picks, itemKeys, fieldCodes, sources}`; checks
-    `onet/education.tsv` against `onet/manifest.json`, the isced files against `isced/manifest.json`, `pathway/*.json`
+  - `loadPathwayData(dataDir) -> {education, qualifications, routeIndex, sites, picks, itemKeys, fieldCodes, sources}`;
+    `qualifications` = Map eMASCO code → trimmed `qualification` string or null, from `emasco/role_details.json`
+    checked against `emasco/manifest.json` (P14); checks `onet/education.tsv` against `onet/manifest.json`, the isced files against `isced/manifest.json`, `pathway/*.json`
     against `pathway/manifest.json`; throws `PathwayDataError(file, reason)` (same shape as `MatchingDataError`).
     `itemKeys` = every `el:`/`kn:` key in `onet/requirements.tsv`; `fieldCodes` = `fieldsReachingOnet`.
   - `pickHash(pick)` = SHA-256 of `JSON.stringify({id, type, for, site, institution, body, name, link, word})`
     (missing fields as null).
   - `createPathwayService({loadData, matching, store, now, log}) -> {pathway(profile, code, request) -> Answer | null, picksDecided()}`
     (picks decisions cached 60 s like `SDG_TTL_MS`; store failure → no reviews, log `[pathway] reviews unavailable: <code>`).
-  - `Answer = {code, title, onet: {code, title}|null, chain: {path, missingStep}, provisional, reason: string|null,
+  - `Answer = {code, title, qualification: {text: string|null, url}, onet: {code, title}|null, chain: {path, missingStep}, provisional, reason: string|null,
     route: {education, fields: [Field & {programmes, professional, courses, search, mqr: {url, nec}}]}|null,
     steps: {gaps, notAssessed, met} (each Step & {courses, search})|null, sources: [{id, name, url, date, licence}]}`.
     `route` and `steps` null when the chain is broken (`reason: 'chain_broken'`); `steps` null and
@@ -238,11 +239,12 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
 - [ ] **Step 2: Write the failing route tests** (real app on port 0, as `tests/matching/routes.test.js`):
   - full role `2521-03` with a profile that has `onet:kn:2.C.3.a` at `basic` → 200; `steps.gaps[0].key === 'kn:2.C.3.a'`;
     its `points` equal `/api/matching/role`'s `fit.raise` points for that key; the gap has 1 course and 2 search links;
-    `route.education.top[0].category === 6`; `route.fields` codes `['0611', '0613']`, `0611.partial`; `0613` has the
+    `route.education.top[0].category === 6`; `qualification.text` equals the fixture role's `qualification` (`'Degree'`); `route.fields` codes `['0611', '0613']`, `0611.partial`; `0613` has the
     programme, the professional pick and `mqr.nec === '0613'`.
   - the user's `education.records[0].field.code = '0613'` → that field `yours: true`.
   - thin profile (no O\*NET ids) → 200, `route` present, `steps === null`, `reason === 'no_known_skill'`.
-  - broken chain role `2512-01` → 200, `chain.missingStep` set, `route === null`, `steps === null`.
+  - broken chain role `2512-01` → 200, `chain.missingStep` set, `route === null`, `steps === null`, but
+    `qualification` still present (P14).
   - unknown code → 404 `not_found`; non-string code or code over 32 chars → 400.
   - profile never logged: spy on `console.*` and the `log` option; no profile skill name appears.
   - forbidden keys: `keysDeep(answer)` has none matching `/score|weight|rank|opportunit/i`.
@@ -298,8 +300,9 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
     `pwTab`, `pwRemove` (removes the target, keeps progress), `pwStarted`, `pwDone`, `pwClear`.
 
 - [ ] **Step 1: Write the failing screen tests** (render the function with a fixed answer, as
-  `tests/matching/matchScreen.test.js` does): one tab per target with remove; Part 1 shows education top label with
-  percent and "US data"; each field shows "partial link" when partial, "your field" when yours, programmes and
+  `tests/matching/matchScreen.test.js` does): one tab per target with remove; Part 1 shows eMASCO's qualification labelled "eMASCO, Malaysia" first, then "In the US" with the education top label
+  and percent, or "O*NET has no education data for this job" when `education` is null; a broken chain still shows the
+  qualification; each field shows "partial link" when partial, "your field" when yours, programmes and
   professional picks with review labels, "no team pick yet" when none, "More on <site>" links, and the MQR link with
   "choose NEC field 0613" and "code match, not an official table"; Part 2 shows gaps in answer order with
   "your level → level needed" words and points, a "Level not assessed yet" group with a link to the profile skill

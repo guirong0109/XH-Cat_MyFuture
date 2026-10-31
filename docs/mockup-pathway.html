@@ -360,7 +360,7 @@ function renderPathway() {
 
   <div class="card">
     <h3>Usual education level</h3>
-    <div class="edu"><span class="big">${esc(r.emascoQual)}</span><span class="tag t-src">eMASCO, Malaysia</span><span class="tag t-est">proposal: not in the approved spec yet</span></div>
+    <div class="edu"><span class="big">${esc(r.emascoQual)}</span><span class="tag t-src">eMASCO, Malaysia</span></div>
     <p class="tiny muted" style="margin:2px 0 10px">The qualification eMASCO lists for MASCO ${r.masco} (${ext('https://emasco.mohr.gov.my/masco/' + r.masco, 'eMASCO page')}).</p>
     ${r.edu ? `<div class="row"><b>In the US:</b> ${esc(r.edu.rows[0][0])}, ${r.edu.rows[0][1]}% of workers in this job who were asked <span class="tag t-src">sourced · US data</span></div>
     <details><summary>All education levels (US)</summary>

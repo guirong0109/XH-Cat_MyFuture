@@ -50,6 +50,7 @@ so instead of guessing.
 | P10 | First fill (changed by P13) | **All** fields and skills, not a demo subset: at least one named course for each of the 68 O\*NET skill and knowledge items, from the sites of P12 (e-LATiH first, then the others); for each field of study that reaches O\*NET (118 of 124), at least one accredited Malaysian programme and, where the field has one, its Malaysian professional body. Roughly 300–500 links, each opened in a browser. Where no real one is found, the screen shows "no team pick yet" plus the search links |
 | P11 | Diagram | Claude drafts `docs/architecture-pathway.html`; the owner approves it |
 | P12 | More sites (owner, 31 Oct, after the first spec) | Not only e-LATiH and MQA. Four groups: global course sites, tech-company learning, Malaysian platforms, professional bodies. Sites whose search can be linked (checked in a browser) get a "More on <site>" search link on every skill step; the others give named team picks only. No link is invented: every site and pick is real and opened in a browser before it is added |
+| P14 | Malaysian qualification (owner, 31 Oct, after the mockup) | The usual education level shows eMASCO's own qualification for the role first (e.g. "Bachelor's degree or equivalent", already in `data/emasco/role_details.json`, 1,785 of 1,814 roles), labelled "eMASCO, Malaysia"; O\*NET's US percentages follow as "In the US". O\*NET 31.0 has no education rows for about 115 jobs (e.g. Accountants and Auditors), so this keeps the line filled. It needs no O\*NET job, so it shows even when the code chain is broken |
 | P13 | All fields (owner, 31 Oct) | Python and accounting were examples only. Every field of study gets "More on <site>" search links too (the field name as search word), as every skill does, and the first fill (P10) covers all fields and all skills |
 
 ## 3. What the course sites allow (checked 31 Oct 2026)
@@ -101,6 +102,7 @@ Nothing is invented: a missing value stays missing and the screen says so.
 | `data/onet/education.tsv` (new) | Per O\*NET job: the "Required Level of Education" (element 2.D.1, scale RL) percentage for each of the 12 categories, with the category names and the Recommend Suppress flag | *Education.txt* and *Education Categories.txt* from the O\*NET 31.0 zip (31.0 split the older *Education, Training, and Experience* file) already recorded (same SHA-256), via `pipeline/fetch_onet.py 31.0` | CC BY 4.0. US survey data, labelled so on screen. Suppressed rows are not shown and the screen says so |
 | `data/pathway/sites.json` (new) | The course sites of section 3: id, name, group (malaysian / global / tech / professional), home page, terms page, search link with `<q>` or null, date the search link was checked, hosts its course pages use | Written by the FutureReady team; each search link opened in a browser | Only sites in this file can appear. Links must be `https` |
 | `data/pathway/picks.json` (new) | Team picks: `courses` (per O\*NET item key or ISCED-F field code; any site in `sites.json`), `programmes` (per ISCED-F field code; kind `accredited` with institution and MQR reference number, or kind `professional` with the body's name), `searchWords` (per O\*NET item key and per ISCED-F field code). Each pick: id, site id or institution, name, link, date checked | Written by the FutureReady team; each link opened in a browser before it is added | Team draft (P9). Links must be `https`; a course link's host must be one of its site's hosts (e-LATiH links also start `/courses-details/`); a programme link may be on any institution or body's own site |
+| `data/emasco/role_details.json` (reused) | eMASCO qualification per role (P14), display only | As recorded (eMASCO crawl, 23 Oct 2026) | Checked against `emasco/manifest.json` |
 | `data/radar/occupation-bridge.json` (reused) | eMASCO → O\*NET code chain | As recorded | Through matching |
 | `data/isced/cip_onet.tsv`, `isced_cip.tsv`, `fields.tsv` (reused) | O\*NET job ↔ CIP, CIP ↔ ISCED-F (partial links marked `*`), ISCED-F names | As recorded | Read backwards here |
 
@@ -131,9 +133,11 @@ its first three steps.
 
 For the same O\*NET job:
 
-- **Usual education level**: the category with the highest RL percentage, shown with its percentage (wording like
-  "Bachelor's degree, <N>% of US workers asked", N from the file), and the full list folded. Ties: both shown. No row or all suppressed: "O\*NET has
-  no education data for this job".
+- **Usual education level** (P14): first eMASCO's qualification for the role (`qualification` in
+  `emasco/role_details.json`), labelled "eMASCO, Malaysia" with the role's eMASCO link; an empty qualification shows
+  "eMASCO lists no qualification for this role". Then "In the US": the O\*NET category with the highest RL percentage,
+  with its percentage (wording like "Bachelor's degree, <N>% of US workers asked", N from the file), and the full list
+  folded (0% rows left out). Ties: both shown. No row or all suppressed: "O\*NET has no education data for this job".
 - **Fields of study**: every CIP programme linked to the job in `cip_onet.tsv`, then every ISCED-F field linked to those
   CIP codes in `isced_cip.tsv`; a field reached only through partial links is labelled "partial link". Fields are
   listed by ISCED-F code, each with the CIP programmes that reach it (folded). The user's own field of study is
@@ -185,7 +189,7 @@ The CIP crosswalk and ISCED table are 2020 / 2016 editions; the screen names bot
 ## 9. Errors
 
 One error shape `{error:{code, message, retryable}}`, as matching. Unknown role → 404 "not found". Broken chain →
-"not available" with the missing step; neither part is shown. Thin profile → the study route still shows; Part 2 says
+"not available" with the missing step; only the eMASCO qualification (P14) is shown. Thin profile → the study route still shows; Part 2 says
 what matching says. No education row, no field, no pick → the messages in sections 6 and 7. Bad picks file at start
 → start-up error naming the file. The page never crashes.
 

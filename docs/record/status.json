@@ -474,7 +474,7 @@
         },
         {
           "title": "Brainstorming",
-          "sub": "13 decisions with you (P1-P13)",
+          "sub": "14 decisions with you (P1-P14)",
           "status": "done"
         },
         {
@@ -599,7 +599,8 @@
     "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page",
     "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
     "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
-    "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)"
+    "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
+    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken"
   ],
   "log": [
     {
@@ -1336,6 +1337,11 @@
       "time": "31 Oct",
       "step": "Study Pathway mockup with the real state (your request)",
       "detail": "real O*NET education levels (O*NET 31.0 renamed the file to Education.txt; spec and plan fixed), 34 courses and 6 programme/body pages opened in the browser; only the profile is a sample; eMASCO qualification shown as a proposal"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway P14: eMASCO qualification (your decision)",
+      "detail": "spec, plan, diagram and mockup updated; the mockup's 'proposal' label removed"
     }
   ]
 }

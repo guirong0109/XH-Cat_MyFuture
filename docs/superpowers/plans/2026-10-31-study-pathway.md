@@ -30,8 +30,9 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
 - Only name, link and date checked are stored for any pick. No descriptions, prices or durations.
 - Every link is `https`. A course link's host must be one of its site's `hosts`; e-LATiH course links start
   `/courses-details/`. No invented link: every site, pick and search link is opened in a browser before it is added.
-- Every list and number on screen shows its source and date. Team picks show "team draft, not yet reviewed" or
-  "team draft, approved by owner on <date>"; rejected picks are hidden.
+- Every list and number on screen shows its source and date. On `#pathway` a pick not yet reviewed shows no review
+  label (P15: no "team draft" word in the first build); an approved pick shows "approved by owner on <date>";
+  rejected picks are hidden. `#admin` still shows "not yet reviewed" for undecided picks.
 - New data: entry in `data/SOURCES.md` (where from, date, licence) and a SHA-256 in a manifest.
 - EN / BM / 中文 strings for every new text; BM and 中文 marked "translation: owner review" in `data/SOURCES.md`'s
   strings note as matching did. `tests/i18n.test.js` requires every key in all three.
@@ -48,7 +49,7 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
 3. **Search words with special characters** ("C++", "Customer and Personal Service", "Food Production" with spaces,
    "Ç"): each search link is the template with `encodeURIComponent(word)` in place of `<q>`, nothing else changed.
    Test in Task 5.
-4. **Review store unreachable**: picks still show, all as "not yet reviewed"; the log line carries the error code only.
+4. **Review store unreachable**: picks still show, all with `approvedAt: null` (no label on screen, P15); the log line carries the error code only.
    Test in Task 6.
 5. **A pick for an item or field not in the data** (typo in `for`): the server refuses to start and names the pick id,
    instead of silently never showing it. Test in Task 5 (`checkPicks`) and Task 6 (start-up).

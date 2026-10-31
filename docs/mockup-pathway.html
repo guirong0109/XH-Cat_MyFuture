@@ -302,7 +302,8 @@ const TODAY = '31 Oct 2026'
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 const word = (n) => (n <= 2 ? 'basic' : n <= 4 ? 'good' : 'expert')
 const ext = (url, text) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)} ↗</a>`
-const review = (p) => (p.approved ? `<span class="tag t-ok">approved by owner on ${p.approved}</span>` : '<span class="tag t-self">team draft · not yet reviewed</span>')
+const review = (p) => (p.approved ? `<span class="tag t-ok">approved by owner on ${p.approved}</span>` : '')
+const adminReview = (p) => (p.approved ? review(p) : '<span class="tag t-self">not yet reviewed</span>')
 const more = (q) => `<div class="more"><span class="muted">More on</span>${SITES.map((s) => `<a href="${s.q}${encodeURIComponent(q)}" target="_blank" rel="noopener">${s.name} ↗</a>`).join('')}</div>`
 const courseList = (list) => (list && list.length
   ? `<ul class="picks">${list.map((p) => `<li><span class="site">${esc(p.site)}</span>${ext(p.url, p.name)} ${review(p)} <span class="tiny muted">checked ${TODAY}</span></li>`).join('')}</ul>`
@@ -442,7 +443,7 @@ function allPicks() {
 function renderAdmin() {
   const all = allPicks()
   document.getElementById('adm').innerHTML = `<p class="small muted">${all.length} picks · ${all.filter((x) => x.p.approved).length} approved · newest first</p>` + all.map((x, i) => `<div class="admrow">
-    <div><span class="tag t-none">${x.what}</span> <b>${esc(x.p.name)}</b><div class="tiny muted">${esc(x.site)} · for ${esc(x.forLabel)} · checked ${TODAY} · ${ext(x.p.url, 'open link')}</div>${review(x.p)}</div>
+    <div><span class="tag t-none">${x.what}</span> <b>${esc(x.p.name)}</b><div class="tiny muted">${esc(x.site)} · for ${esc(x.forLabel)} · checked ${TODAY} · ${ext(x.p.url, 'open link')}</div>${adminReview(x.p)}</div>
     <div class="row"><button class="btn sm pri" type="button" data-appr="${i}">Approve</button><button class="btn sm" type="button" data-rev="${i}">Revise</button><button class="btn sm" type="button" disabled title="Reject asks for a note in the real build">Reject</button></div>
   </div>`).join('')
 }

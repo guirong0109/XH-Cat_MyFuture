@@ -474,7 +474,7 @@
         },
         {
           "title": "Brainstorming",
-          "sub": "14 decisions with you (P1-P14)",
+          "sub": "15 decisions with you (P1-P15)",
           "status": "done"
         },
         {
@@ -489,8 +489,13 @@
         },
         {
           "title": "Mockup",
-          "sub": "real state: 34 courses, 3 programmes, 3 bodies, all opened; waiting for your review",
-          "status": "stop"
+          "sub": "approved by you (real state)",
+          "status": "done"
+        },
+        {
+          "title": "Build T1-T10",
+          "sub": "subagent-driven, one reviewer per task",
+          "status": "doing"
         }
       ]
     }
@@ -537,7 +542,6 @@
     "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
   ],
   "waiting": [
-    "Study Pathway: review the mockup docs/mockup-pathway.html before the build starts",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -600,7 +604,8 @@
     "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
     "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
     "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
-    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken"
+    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken",
+    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged"
   ],
   "log": [
     {
@@ -1342,6 +1347,11 @@
       "time": "31 Oct",
       "step": "Study Pathway P14: eMASCO qualification (your decision)",
       "detail": "spec, plan, diagram and mockup updated; the mockup's 'proposal' label removed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: mockup approved, build started (your decision)",
+      "detail": "P15 recorded; subagent-driven build of the 10 plan tasks begins"
     }
   ]
 }

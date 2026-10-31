@@ -54,7 +54,26 @@ Controller check at http://cv.localhost:3260, no `CV_LLM_KEY`, synthetic CV "Ain
 - The ready receipt showed "AI reading was not available this time; please check carefully."
 - The form opened with the rules items tagged "From your CV · please check" and the CV quote.
 - The only console error was `/api/auth/me` 503 (accounts are off, expected).
-- Not yet seen in a browser: the "Found by AI" tags, "filled in by AI" lines and "AI read this as" lines. They need the owner's key.
+- With the key (same evening) see the next section.
+
+## DeepSeek CV reading with the owner's key (31 Oct)
+
+Accuracy check: `node --env-file=.env scripts/eval-cv.mjs --ai`, model `deepseek-flash`, results in `docs/eval-results.md`.
+- 10 of 11 synthetic CVs read by the AI (the scanned CV fails before reading, as expected).
+- Skills recall 0.971 → 1 (the AI found the skill the rules missed in the mixed-language CV); studies and jobs stay at 1.
+- Certificates precision 1 → 0.75: the AI added one wrong certificate. The profile does not ask for certificates, so the
+  browser drops them (`dropNotAsked`); no user sees it.
+- Wrong-item rate 0.05 → 0.065. The injection CV stayed clean.
+- Latency: median about 2.7 s per CV with the AI (rules alone 4 ms).
+- Cost: 4,308 input and 6,426 output tokens, about **$0.009** for the whole run at peak price.
+
+Browser check at http://cv.localhost:3260 with the key, synthetic CV "Hafiz Bin Rahman":
+- No fallback line; the answer had `extractor.layers` with `ai` and `model: deepseek-flash`.
+- The AI added the skill "SQL" (shown "? SQL · not in skill list · Found by AI — check it") and the project
+  "a mobile app for campus parking" (card tagged "Found by AI — check it"). Rules items kept "From your CV".
+- The education card showed "Qualification — AI read this as: Bachelor of Computer Science. Check it." This is a false
+  flag: the rules reader stores the label "Bachelor degree" for the same degree. Follow-up: do not flag a qualification
+  when `levelOf` of the AI text gives the same level.
 
 ## Languages and screen sizes
 
@@ -67,4 +86,3 @@ Controller check at http://cv.localhost:3260, no `CV_LLM_KEY`, synthetic CV "Ain
 - **Live O\*NET Web Services:** needs the owner's free key (`ONET_API_KEY`). The client is tested with a fake server.
 - **Accounts on Cloudflare D1 and R2:** tested with the in-memory stand-ins. The local accounts server ran sign-up, save, load, version, and delete my data.
 - **L3 semantic match with a real model:** the owner chose not to create a RunPod endpoint for now.
-- **DeepSeek with a real key:** the accuracy check (`eval-cv.mjs --ai`, 11 CVs, under $0.50) and the "Found by AI" tags in a browser are waiting for the owner's DeepSeek key and cost OK. Everything else about the AI step is tested with a fake DeepSeek.

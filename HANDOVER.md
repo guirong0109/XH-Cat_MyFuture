@@ -104,9 +104,12 @@ Each item below says what you will see and what to do.
    - **Cause:** there is no `ONET_API_KEY`, so the warning is `no_api_key`.
    - **Do:** the owner registers a free key at https://services.onetcenter.org and sets `ONET_API_KEY`.
    - API base `https://api-v2.onetcenter.org`, `X-API-Key` header, path `/online/search?keyword=`.
-4. **P1 — DeepSeek accuracy check not run; no key yet, so CVs are read by the rules only.**
-   - **Cause:** no `CV_LLM_KEY`. The upload shows "AI reading was not available this time; please check carefully".
-   - **Do:** the owner puts `CV_LLM_KEY` in `.env` and says yes to the cost (11 CVs, under $0.50). Then run
+4. **P1 — DeepSeek is on (owner key in `.env`, 31 Oct); accuracy check done, model choice and one false flag left.**
+   - **Done 31 Oct:** `eval-cv.mjs --ai` on `deepseek-flash` cost about $0.009 (results in `docs/eval-results.md` and
+     `docs/acceptance.md`); "Found by AI" tags seen in the browser.
+   - **Left:** the qualification "AI read this as" flag fires whenever the rules label ("Bachelor degree") differs
+     from the CV wording; skip it when `levelOf` gives the same level. The owner may also try `deepseek-v4-pro`.
+   - **How to re-run:** with `CV_LLM_KEY` in `.env` (ask first, it is paid), run
      `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai` (rules-only against rules + DeepSeek: precision,
      recall, F1, wrong-item rate, latency, tokens, cost at peak price). The owner then picks `deepseek-flash`
      (default) or `deepseek-v4-pro`. Also upload one synthetic CV in the browser to see the "Found by AI" tags.

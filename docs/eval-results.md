@@ -17,22 +17,22 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 - Skills linked to an O*NET id: **28 of 36** found skills (the rest stay "not in our list yet" for the user).
 - Skill levels set by extraction, other than Good for a skill used in a job or project: **0** (must be 0).
 - Failure rate (a CV not handled as expected): **0 of 11**. The scanned CV is expected to fail with `scanned_no_ocr`.
-- Latency per CV (build + read + extract, in-process): median **3 ms**, slowest 6 ms.
+- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 7 ms.
 
 ## Per CV
 
 | CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |
 |---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 6 |
+| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 7 |
 | ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 5 |
 | zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 4 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 5 |
 | two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
 | no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
-| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 3 |
+| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 4 |
 | injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
 | multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 3 |
+| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 4 |
 | scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | 1 |
 
 ## What was found where it differs from the labels
@@ -41,3 +41,32 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 - **ms-pdf · skills** — expected: SQL, Microsoft Excel, Python · found: SQL, Microsoft Excel, Python, Oracle Database
 - **mixed-pdf · skills** — expected: Microsoft Excel, Bookkeeping, Komunikasi, QuickBooks Online · found: Microsoft Excel, Bookkeeping, Komunikasi
 - **duplicates-pdf · skills** — expected: Python, Microsoft Excel · found: Python, Microsoft Excel, MS Excel
+
+## Rules only vs rules + DeepSeek
+
+Model `deepseek-flash` · 2026-10-31 · 10 of 11 CVs read by the AI (the rest are listed below). Both sides cover the same 10 CVs. Source: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`.
+
+| Field | Rules P | Rules R | Rules F1 | Rules + AI P | Rules + AI R | Rules + AI F1 |
+|---|---|---|---|---|---|---|
+| skills | 0.917 | 0.971 | 0.943 | 0.919 | 1 | 0.958 |
+| qualifications | 1 | 1 | 1 | 1 | 1 | 1 |
+| jobs | 1 | 1 | 1 | 1 | 1 | 1 |
+| certifications | 1 | 1 | 1 | 0.75 | 1 | 0.857 |
+
+- Wrong-item rate: rules only **0.05** · rules + AI **0.065**
+- Latency per CV: rules only median **4 ms** · rules + AI median **2669.5 ms** (rules and AI run together)
+- Tokens and cost (AI reads that succeeded): 4308 input and 6426 output tokens, about **$0.0090** at peak price (cache miss; $0.3 in / $1.2 out per 1M tokens)
+
+| CV | AI result | Rules F1 (skills / jobs) | Rules + AI F1 (skills / jobs) | ms rules + AI (run together) |
+|---|---|---|---|---|
+| en-pdf | read | 0.889 / 1 | 0.889 / 1 | 5127 |
+| ms-pdf | read | 0.857 / 1 | 0.857 / 1 | 1850 |
+| zh-docx | read | 1 / 1 | 1 / 1 | 2895 |
+| mixed-pdf | read | 0.857 / 1 | 1 / 1 | 9064 |
+| two-degrees-pdf | read | 1 / 1 | 1 / 1 | 2569 |
+| no-job-docx | read | 1 / — | 1 / — | 2432 |
+| project-only-pdf | read | 1 / — | 1 / — | 2770 |
+| injection-pdf | read | 1 / 1 | 1 / 1 | 1596 |
+| multi-job-pdf | read | 1 / 1 | 1 / 1 | 1927 |
+| duplicates-pdf | read | 0.8 / — | 0.8 / — | 6126 |
+| scanned-pdf | not read: rules step failed | — | — | — |

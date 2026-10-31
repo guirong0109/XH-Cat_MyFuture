@@ -48,8 +48,10 @@ export function heatmap(groups, people, view) {
       continue
     }
     for (const r of s.rows) {
-      const c = (cells[p.groupId][r.key] ??= { needing: 0, met: 0, below: 0, missing: 0, notAssessed: 0, levelsShort: 0 })
+      const c = (cells[p.groupId][r.key] ??= { needing: 0, met: 0, below: 0, missing: 0, notAssessed: 0, levelsShort: 0, neededMax: 0, people: [] })
       c.needing += 1
+      c.neededMax = Math.max(c.neededMax, r.needed ?? 0)
+      c.people.push({ personId: p.id, status: r.status, you: r.you ?? null, needed: r.needed ?? null, gap: r.gap ?? 0 })
       if (r.status === 'met') c.met += 1
       else if (r.status === 'below') c.below += 1
       else if (r.status === 'missing') c.missing += 1
@@ -64,7 +66,8 @@ export function heatmap(groups, people, view) {
   for (const g of Object.values(cells)) {
     for (const [key, c] of Object.entries(g)) {
       const levelsShort = round(c.levelsShort, 2)
-      g[key] = { ...c, levelsShort, averageGap: round(levelsShort / c.needing, 1), provisional: c.notAssessed > 0 }
+      const { people: who, neededMax, ...counts } = c
+      g[key] = { ...counts, levelsShort, averageGap: round(levelsShort / c.needing, 1), provisional: c.notAssessed > 0, neededMax, people: who }
     }
   }
   const columns = order([...cols.values()].map((c) => ({ ...c, levelsShort: round(c.levelsShort, 2) })))

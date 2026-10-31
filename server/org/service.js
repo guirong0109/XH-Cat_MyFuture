@@ -4,6 +4,8 @@ import { OrgError } from './store.js'
 import { bandCounts, heatmap, moved, planSteps, sliceOf, teamSdg } from '../../shared/org/team.js'
 
 const STEP_GROUPS = ['gaps', 'notAssessed', 'met']
+const usable = (s) => s != null && s.available && Array.isArray(s.rows)
+const codeOf = (error) => error?.code ?? error?.name ?? 'error'
 
 export function profileOf(skills) {
   return {
@@ -59,7 +61,13 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
     }))
 
     const map = heatmap(groups, people, effective)
-    const { leftOut, ...heat } = map
+    const { leftOut: chainLeftOut, ...heat } = map
+    // an hr person with no current role has nothing to compare in the current view: counted, with its reason
+    const noCurrent = effective === 'current'
+      ? people.filter((p) => p.current === null && groups.some((g) => g.id === p.groupId))
+        .map((p) => ({ personId: p.id, groupId: p.groupId, reason: 'no_current_role', missingStep: null }))
+      : []
+    const leftOut = [...chainLeftOut, ...noCurrent]
 
     // role titles come from matching's role answers of the people (null when no one has that role)
     const titles = new Map()
@@ -69,23 +77,41 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
     const sdg = {}
     let sources = null
     const pathways = new Map()
+    // a failed pathway answer counts as no answer: the plan keeps its steps without picks or search links
     const pathwayOf = async (person, code) => {
       const id = `${person.id}|${code}`
-      if (!pathways.has(id)) pathways.set(id, Promise.resolve(pathway.pathway(profileOf(person.skills), code, request)))
+      if (!pathways.has(id)) {
+        pathways.set(id, Promise.resolve()
+          .then(() => pathway.pathway(profileOf(person.skills), code, request))
+          .catch((error) => { log(`[org] pathway failed: ${codeOf(error)}`); return null }))
+      }
       const answer = await pathways.get(id)
       if (sources === null && Array.isArray(answer?.sources)) sources = answer.sources
       return answer
     }
 
     for (const g of groups) {
-      const members = roster.filter((p) => p.groupId === g.id)
-      const roleCode = effective === 'target' ? g.targetCode ?? null : commonCode(members.map((p) => p.currentCode))
-      const steps = roleCode ? planSteps(g.id, people, effective) : []
+      const members = people.filter((p) => p.groupId === g.id)
+      let roleCode
+      let noRole = null
+      let planPeople
+      if (effective === 'target') {
+        roleCode = g.targetCode ?? null
+        planPeople = members
+        if (!roleCode) noRole = 'no_target'
+      } else {
+        // the most common current code among people with a Skill Match; a broken chain is never the plan role
+        roleCode = commonCode(members.filter((p) => usable(p.current)).map((p) => p.current.code))
+        planPeople = roleCode ? members.filter((p) => p.current?.code === roleCode) : []
+        if (!roleCode) noRole = members.some((p) => p.current) ? 'none_available' : 'no_current_role'
+      }
+      const steps = roleCode ? planSteps(g.id, planPeople, effective) : []
       const statuses = roleCode ? await store.planSteps(org.id, g.id, roleCode) : new Map()
       const found = new Map()
-      for (const m of members) {
-        if (!roleCode || found.size >= steps.length) break
-        const answer = await pathwayOf(m, roleCode)
+      const byId = new Map(roster.map((p) => [p.id, p]))
+      for (const m of planPeople) {
+        if (!roleCode || steps.every((s) => found.has(s.key))) break
+        const answer = await pathwayOf(byId.get(m.id), roleCode)
         for (const grp of STEP_GROUPS) {
           for (const s of answer?.steps?.[grp] ?? []) if (!found.has(s.key)) found.set(s.key, s)
         }
@@ -93,6 +119,8 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
       plans[g.id] = {
         roleCode,
         roleTitle: titleOf(roleCode),
+        noRole,
+        counted: planPeople.filter((p) => usable(effective === 'target' ? p.target : p.current)).length,
         steps: steps.map((s) => ({
           ...s,
           status: statuses.get(s.key) ?? 'planned',
@@ -100,7 +128,7 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
           search: found.get(s.key)?.search ?? [],
         })),
       }
-      sdg[g.id] = teamSdg(g.id, people, effective, steps.map((s) => s.key))
+      sdg[g.id] = teamSdg(g.id, planPeople, effective, steps.map((s) => s.key))
     }
 
     // the sources are always shown: if no plan needed a pathway answer, ask once for the list
@@ -111,6 +139,19 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
         await pathwayOf(p, code)
         break
       }
+    }
+
+    // matching's own dated sources (AI, SDG, eMASCO, O*NET) and the job-ad data date, for the Outlook and SDG tabs
+    let outlookSources = []
+    try {
+      const listed = await matching.list(profileOf([]), request)
+      outlookSources = Array.isArray(listed?.sources) ? [...listed.sources] : []
+      const radar = listed?.radar
+      if (radar?.state === 'data') {
+        outlookSources.push({ id: 'dosm', name: `DOSM online job vacancies (MASCO major group)${radar.observationPeriod ? `, ${radar.observationPeriod}` : ''}`, url: null, date: radar.publishedAt ?? null })
+      }
+    } catch (error) {
+      log(`[org] sources failed: ${codeOf(error)}`)
     }
 
     return {
@@ -129,6 +170,7 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
       sdg,
       leftOut,
       sources: sources ?? [],
+      outlookSources,
     }
   }
 

@@ -364,7 +364,7 @@ describe('strings', () => {
   for (const type of ['hr', 'centre']) for (const w of ['dept', 'depts', 'people', 'staff', 'plan', 'person', 'addgroup', 'type']) built.push(`og_${w}_${type}`)
   for (const s of ['planned', 'in_progress', 'done']) built.push(`ogStatus_${s}`)
   for (const n of [1, 2, 3, 4]) built.push(`ogBand${n}`)
-  for (const r of ['chain_broken', 'unknown_role', 'no_known_skill']) built.push(`ogReason_${r}`)
+  for (const r of ['chain_broken', 'unknown_role', 'no_known_skill', 'no_current_role']) built.push(`ogReason_${r}`)
   for (const c of ['other', 'network', 'not_signed_in', 'exists', 'group_exists', 'group_has_people', 'unknown_role', 'preview_expired', 'too_large', 'bad_header', 'not_utf8', 'not_csv', 'bad_request']) built.push(`ogErr_${c}`)
   for (const tab of ['setup', 'heat', 'outlook']) built.push(`ogTab_${tab}`)
 
@@ -495,5 +495,82 @@ describe('actions', () => {
     await a.actions.orgEnsure()
     expect(st.org.status).toBe('none')
     expect(st.org.tab).toBe('setup')
+  })
+})
+
+describe('final review fixes on the owner screens', () => {
+  const OUTLOOK_SOURCES = [
+    { id: 'aei', name: 'Anthropic Economic Index', url: 'https://www.anthropic.com/economic-index', date: '2026-09-15' },
+    { id: 'ilo', name: 'ILO Working Paper 140', url: 'https://www.ilo.org/wp140', date: '2026-10-01' },
+    { id: 'dosm', name: 'DOSM online job vacancies (MASCO major group), 2026-Q2', url: null, date: '2026-10-20' },
+    { id: 'sdg-targets', name: 'UN Statistics Division SDG API', url: 'https://unstats.un.org', date: '2026-10-30' },
+    { id: 'sdg-links', name: 'SDG links (FutureReady team draft)', url: null, date: null },
+  ]
+
+  it('1: the plan says for which role and how many of the group it counts', () => {
+    const team = makeTeam()
+    team.plans.g1.counted = 1
+    const html = text(planView(t, makeOrg({ tab: 'plan', team })))
+    expect(html).toContain('For Accountant · 2411-01: 1 of 2 people in this group.')
+  })
+
+  it('1: no available plan role in the current view is said in words', () => {
+    const team = makeTeam()
+    team.plans.g2 = { roleCode: null, noRole: 'none_available', steps: [], counted: 0 }
+    const html = text(planView(t, makeOrg({ tab: 'plan', planGroup: 'g2', team })))
+    expect(html).toContain(t('ogPlanNoAvailable'))
+  })
+
+  it('1 and 5: the cell panel names every role present, lists the people, and says the needed level', () => {
+    const team = makeTeam()
+    team.people[1].current = slice('2411-02', 64, { title: 'Auditor' })
+    team.heatmap.cells.g1[KN] = {
+      ...team.heatmap.cells.g1[KN], neededMax: 6.5,
+      people: [
+        { personId: 'p1', status: 'below', you: 4, needed: 5.8, gap: 1.8 },
+        { personId: 'p2', status: 'missing', you: 0, needed: 6.5, gap: 6.5 },
+      ],
+    }
+    const html = text(heatView(t, makeOrg({ team, sel: { groupId: 'g1', key: KN } })))
+    expect(html).toContain('Accountant · 2411-01, Auditor · 2411-02')
+    expect(html).toContain('Aisyah R.')
+    expect(html).toContain('you good → needed level 5.8')
+    expect(html).toContain('Staff 02')
+    expect(html).toContain('you not listed → needed level 6.5')
+    expect(html).toContain('Needed level 6.5 of 7')
+    expect(html).toContain('(expert still leaves a gap)')
+    // counts unchanged
+    expect(html).toContain('Missing 1')
+  })
+
+  it('5: the cell panel escapes display names', () => {
+    const team = makeTeam()
+    team.people[0].displayName = '<img src=x>'
+    team.heatmap.cells.g1[KN] = { ...team.heatmap.cells.g1[KN], neededMax: 4, people: [{ personId: 'p1', status: 'below', you: 2, needed: 4, gap: 2 }] }
+    expect(heatView(t, makeOrg({ team, sel: { groupId: 'g1', key: KN } }))).not.toContain('<img src=x>')
+  })
+
+  it('2: the Outlook and SDG parts show the dated AI, job-ad and SDG sources', () => {
+    const html = text(outlookView(t, makeOrg({ tab: 'outlook', team: makeTeam({ outlookSources: OUTLOOK_SOURCES }) }))).replace(/ ,/g, ',')
+    expect(html).toContain('Anthropic Economic Index, 2026-09-15')
+    expect(html).toContain('ILO Working Paper 140, 2026-10-01')
+    expect(html).toContain('DOSM online job vacancies (MASCO major group), 2026-Q2, 2026-10-20')
+    expect(html).toContain('UN Statistics Division SDG API, 2026-10-30')
+    expect(html).toContain('SDG links (FutureReady team draft)')
+  })
+
+  it('12: a person with no current role is listed with its reason', () => {
+    const team = makeTeam()
+    team.people.push({ id: 'p4', groupId: 'g2', displayName: 'Shared Sam', source: 'shared', current: null, target: null })
+    team.leftOut.push({ personId: 'p4', groupId: 'g2', reason: 'no_current_role', missingStep: null })
+    const html = text(peopleView(t, makeOrg({ tab: 'people', team })))
+    expect(html).toContain(t('ogReason_no_current_role', { name: 'Shared Sam' }))
+  })
+
+  it('13: a step with no pick and no search links says only "no team pick yet"', () => {
+    const team = makeTeam()
+    team.plans.g1.steps[1].search = []
+    const html = text(planView(t, makeOrg({ tab: 'plan', team })))
+    expect(html).toContain(t('ogNoPickNoLinks'))
   })
 })

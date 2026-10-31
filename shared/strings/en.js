@@ -1385,4 +1385,13 @@ export default {
   shErr_not_found: "That profile was not found. Choose another.",
   shRole: "Role: {role}",
   shNoRole: "No role set",
+  ogPlanCounted: "For {code}: {count} of {total} people in this group.",
+  ogPlanNoAvailable: "No one in this group has a current role with a Skill Match (the code chain is broken or no skill is known), so there is no plan role yet.",
+  ogCellRoles: "Roles in this cell",
+  ogCellPeople: "Who",
+  ogCellPerson: "{name}: {status} · you {you} → needed level {needed}",
+  ogCellNotListed: "not listed",
+  ogCellNeeded: "Needed level {level} of 7",
+  ogReason_no_current_role: "Not counted in this view: {name} has no current role, so there is nothing to compare against.",
+  ogNoPickNoLinks: "No team pick yet.",
 }

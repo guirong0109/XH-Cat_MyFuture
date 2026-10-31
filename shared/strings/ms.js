@@ -1386,4 +1386,13 @@ export default {
   shErr_not_found: "Profil itu tidak ditemui. Pilih yang lain.", // translation: owner review
   shRole: "Peranan: {role}", // translation: owner review
   shNoRole: "Tiada peranan ditetapkan", // translation: owner review
+  ogPlanCounted: "Untuk {code}: {count} daripada {total} orang dalam kumpulan ini.", // translation: owner review
+  ogPlanNoAvailable: "Tiada sesiapa dalam kumpulan ini mempunyai peranan semasa dengan Padanan Kemahiran (rantaian kod terputus atau tiada kemahiran diketahui), jadi belum ada peranan pelan.", // translation: owner review
+  ogCellRoles: "Peranan dalam sel ini", // translation: owner review
+  ogCellPeople: "Siapa", // translation: owner review
+  ogCellPerson: "{name}: {status} · anda {you} → tahap diperlukan {needed}", // translation: owner review
+  ogCellNotListed: "tidak disenaraikan", // translation: owner review
+  ogCellNeeded: "Tahap diperlukan {level} daripada 7", // translation: owner review
+  ogReason_no_current_role: "Tidak dikira dalam paparan ini: {name} tiada peranan semasa, jadi tiada apa untuk dibandingkan.", // translation: owner review
+  ogNoPickNoLinks: "Belum ada pilihan pasukan.", // translation: owner review
 }

@@ -1386,4 +1386,13 @@ export default {
   shErr_not_found: "找不到该档案，请选择其他档案。", // translation: owner review
   shRole: "职位：{role}", // translation: owner review
   shNoRole: "未设置职位", // translation: owner review
+  ogPlanCounted: "针对 {code}：本组 {total} 人中的 {count} 人。", // translation: owner review
+  ogPlanNoAvailable: "本组没有人的当前职位有技能匹配（代码链断开或没有已知技能），因此暂无计划职位。", // translation: owner review
+  ogCellRoles: "此格中的职位", // translation: owner review
+  ogCellPeople: "人员", // translation: owner review
+  ogCellPerson: "{name}：{status} · 您 {you} → 所需级别 {needed}", // translation: owner review
+  ogCellNotListed: "未列出", // translation: owner review
+  ogCellNeeded: "所需级别 {level}（满分 7）", // translation: owner review
+  ogReason_no_current_role: "此视图不计入：{name} 没有当前职位，因此无从比较。", // translation: owner review
+  ogNoPickNoLinks: "团队暂无推荐。", // translation: owner review
 }

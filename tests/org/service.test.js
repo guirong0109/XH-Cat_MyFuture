@@ -193,11 +193,11 @@ describe('team answer', () => {
     expect(t.people.find((p) => p.target?.available).target.title).toBe(t.plans[group.id].roleTitle)
     const c = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
     expect(c.plans[group.id].roleCode).toBe(FIXTURE.fullRole)
-    // tie: one on 2512-01, one on 2521-03 -> the lowest code
+    // one on 2512-01 (broken chain), one on 2521-03: only people with a Skill Match count, so 2521-03 (final fix 1)
     const tie = await setup()
     const g = await roster(tie.store, tie.org, [THREE[0], THREE[2]])
     const answer = await tie.service.team('u1', { view: 'current', scenario: 'moderate' }, null)
-    expect(answer.plans[g.id].roleCode).toBe(FIXTURE.brokenRole)
+    expect(answer.plans[g.id].roleCode).toBe(FIXTURE.fullRole)
   })
 
   it('plan steps carry status (default planned), courses and search from the first person who has the key', async () => {
@@ -228,5 +228,137 @@ describe('team answer', () => {
     const logged = JSON.stringify(log.mock.calls)
     for (const name of NAMES) expect(logged).not.toContain(name)
     expect(logged).not.toContain('el:2.A.1.a')
+  })
+})
+
+// ---- final review fixes: a stub matching with two available roles and one broken chain
+const ROW = (key, needed = 4) => ({ key, name: key, needed, you: 0, status: 'missing', gap: needed })
+function fakeMatching({ listFails = false } = {}) {
+  const roles = {
+    '1111-01': { title: 'Role A', rows: [ROW('el:A')] },
+    '2222-01': { title: 'Role B', rows: [ROW('el:B')] },
+    '3333-01': { title: 'Role C', broken: true },
+  }
+  const sdgFor = (code) => ({ pathPreview: { goals: [{ goal: 4, links: [{ via: { kind: 'role', code }, target: code === '1111-01' ? '4.4' : '8.2', reason: 'r' }] }] } })
+  return {
+    matching: {
+      role: async (profile, code) => {
+        const r = roles[code]
+        if (!r) return null
+        return {
+          code, title: r.title, chain: { missingStep: r.broken ? { id: 'soc2010_to_isco08' } : null },
+          fit: r.broken ? null : { percent: 0, provisional: false, rows: r.rows },
+          outlook: { jobAds: null, ai: { moderate: { available: true }, rapid: { available: true } } },
+          sdg: r.broken ? { pathPreview: { goals: [] } } : sdgFor(code),
+        }
+      },
+      list: async () => {
+        if (listFails) throw Object.assign(new Error('list down'), { code: 'data_error' })
+        return {
+          sources: [
+            { id: 'aei', name: 'Anthropic Economic Index', date: '2026-09-15' },
+            { id: 'ilo', name: 'ILO Working Paper 140', date: '2026-10-01' },
+            { id: 'sdg-links', name: 'SDG links (team draft)', date: null },
+          ],
+          radar: { state: 'data', publishedAt: '2026-10-20', observationPeriod: '2026-Q2' },
+        }
+      },
+    },
+  }
+}
+const P = (name, currentCode, group = 'Ops') => ({ name, group, currentCode, skills: GOOD })
+
+describe('final review fixes: current-view plan, sources, no current role, pathway failure', () => {
+  it('1: the current-view plan and SDG use only people on the plan role; the screen count is k of n', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    const group = await roster(store, org, [P('A1', '1111-01'), P('A2', '1111-01'), P('B1', '2222-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    const plan = answer.plans[group.id]
+    expect(plan.roleCode).toBe('1111-01')
+    expect(plan.steps.map((s) => s.key)).toEqual(['el:A'])
+    expect(plan.counted).toBe(2)
+    expect(answer.sdg[group.id].goals.flatMap((g) => g.links.map((l) => l.target))).toEqual(['4.4'])
+    // the heatmap still has every role
+    expect(Object.keys(answer.heatmap.cells[group.id]).sort()).toEqual(['el:A', 'el:B'])
+  })
+
+  it('1: when the most common code is a broken chain, the most common AVAILABLE code is the plan role', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    const group = await roster(store, org, [P('C1', '3333-01'), P('C2', '3333-01'), P('B1', '2222-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.plans[group.id]).toMatchObject({ roleCode: '2222-01', counted: 1 })
+  })
+
+  it('1: no available person -> no plan role, with the reason none_available', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    const group = await roster(store, org, [P('C1', '3333-01'), P('C2', '3333-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.plans[group.id]).toMatchObject({ roleCode: null, noRole: 'none_available', steps: [] })
+  })
+
+  it('1: courses are looked up until every step key is found, not until the count matches', async () => {
+    const { store, org, service, pathway } = await setup({ matchingOverride: fakeMatching() })
+    // the first answer has a step that is not in the plan: the second person must still be asked
+    pathway.pathway.mockImplementationOnce(async (profile, code) => ({ code, steps: { gaps: [{ key: 'el:Z', courses: [{ title: 'z' }], search: [] }], notAssessed: [], met: [] }, sources: [] }))
+    const group = await roster(store, org, [P('A1', '1111-01'), P('A2', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.plans[group.id].steps[0].courses).toEqual([expect.objectContaining({ title: 'course el:A' })])
+  })
+
+  it('2: the dated AI, job-ad and SDG sources of matching travel as outlookSources', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    await roster(store, org, [P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    const ids = answer.outlookSources.map((s) => s.id)
+    expect(ids).toEqual(expect.arrayContaining(['aei', 'ilo', 'sdg-links', 'dosm']))
+    expect(answer.outlookSources.find((s) => s.id === 'aei').date).toBe('2026-09-15')
+    expect(answer.outlookSources.find((s) => s.id === 'dosm')).toMatchObject({ date: '2026-10-20' })
+  })
+
+  it('2: real matching -> outlookSources has the Anthropic Economic Index, ILO and SDG sources', async () => {
+    const { store, org, service } = await setup()
+    await roster(store, org, THREE)
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    for (const id of ['aei', 'ilo', 'sdg-targets', 'sdg-links']) expect(answer.outlookSources.map((s) => s.id)).toContain(id)
+  })
+
+  it('2: a failing list call leaves outlookSources empty and logs the code only', async () => {
+    const log = vi.fn()
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching({ listFails: true }), log })
+    await roster(store, org, [P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.outlookSources).toEqual([])
+    expect(log).toHaveBeenCalledWith('[org] sources failed: data_error')
+  })
+
+  it('12: an hr person with no current role is left out of the current view with no_current_role', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    const group = await roster(store, org, [P('A1', '1111-01'), P('N1', null)])
+    const people = await store.people(org.id)
+    const none = people.find((p) => p.displayName === 'N1')
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.leftOut).toEqual([{ personId: none.id, groupId: group.id, reason: 'no_current_role', missingStep: null }])
+    const target = await service.team('u1', { view: 'target', scenario: 'moderate' }, null)
+    expect(target.leftOut.some((l) => l.reason === 'no_current_role')).toBe(false)
+  })
+
+  it('13: a pathway failure keeps the team answer: no pick, no search links, code-only log', async () => {
+    const log = vi.fn()
+    const { store, org, service, pathway } = await setup({ matchingOverride: fakeMatching(), log })
+    pathway.pathway.mockImplementation(async () => { throw Object.assign(new Error(`down ${NAMES[0]}`), { code: 'pathway_data' }) })
+    const group = await roster(store, org, [P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.plans[group.id].steps).toEqual([expect.objectContaining({ key: 'el:A', courses: [], search: [] })])
+    expect(log).toHaveBeenCalledWith('[org] pathway failed: pathway_data')
+    expect(JSON.stringify(log.mock.calls)).not.toContain(NAMES[0])
+  })
+})
+
+describe('final review fix 1: ties among available codes', () => {
+  it('one person on each of two available roles -> the lowest code', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    const group = await roster(store, org, [P('B1', '2222-01'), P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.plans[group.id]).toMatchObject({ roleCode: '1111-01', counted: 1 })
   })
 })

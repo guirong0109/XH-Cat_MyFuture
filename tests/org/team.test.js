@@ -17,7 +17,22 @@ describe('heatmap', () => {
 
   it('counts a cell', () => {
     const h = heatmap(groups, [p1, p2], 'current')
-    expect(h.cells.A['kn:x']).toEqual({ needing: 2, met: 0, below: 1, missing: 0, notAssessed: 1, levelsShort: 2, averageGap: 1, provisional: true })
+    expect(h.cells.A['kn:x']).toEqual({
+      needing: 2, met: 0, below: 1, missing: 0, notAssessed: 1, levelsShort: 2, averageGap: 1, provisional: true,
+      neededMax: 4,
+      people: [
+        { personId: 'p1', status: 'below', you: 2, needed: 4, gap: 2 },
+        { personId: 'p2', status: 'not_assessed', you: 4, needed: 4, gap: 0 },
+      ],
+    })
+  })
+  it('a cell holding two roles keeps each person with their own needed level, neededMax the highest (final fix 5)', () => {
+    const a = person('a', 'A', slice([row('kn:x', 3.5, 2, 'below')], { code: 'R1' }))
+    const b = person('b', 'A', slice([row('kn:x', 6.5, 6, 'below')], { code: 'R2' }))
+    const cell = heatmap(groups, [a, b], 'current').cells.A['kn:x']
+    expect(cell.neededMax).toBe(6.5)
+    expect(cell.people.map((x) => [x.personId, x.needed])).toEqual([['a', 3.5], ['b', 6.5]])
+    expect(cell.needing).toBe(2)
   })
   it('no cell where nobody needs the key', () => {
     const h = heatmap(groups, [p1, p2], 'current')

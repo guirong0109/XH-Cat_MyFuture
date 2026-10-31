@@ -61,3 +61,11 @@ export function afterGetStarted(resumeTo) {
 export function screenToSave(screen, resumeTo) {
   return resumeTo && START.includes(screen) ? resumeTo : screen
 }
+
+// "Start a new exploration" and "Reset": a blank state that keeps the language and the sign-in answer. The sign-in
+// check runs once when the page loads, so dropping the answer left the account box on "Checking your account…".
+export function startOver(state, blank) {
+  const next = { ...blank, lang: state.lang }
+  if (state.account) next.account = state.account
+  return next
+}

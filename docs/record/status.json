@@ -2925,6 +2925,11 @@
       "time": "1 Nov",
       "step": "README and submission folder in the SDC template layout",
       "detail": "Owner's request: the README now follows the SDC Hackathon Submission Template (team, links, overview, structure, how to run, how we use Replit / RunPod, checklist); the earlier README moved to docs/project-details.md. New submission/ folder: Preliminary, Final report, Tech Declaration, Replit and RunPod proof of use (preliminary round, repository XH-Cat_Domain1). The template's Python placeholder files were not added (owner chose). Slide deck and demo video links say 'To add'."
+    },
+    {
+      "time": "1 Nov",
+      "step": "Fix: account box stuck on \"Checking your account…\"; live AI CV reading checked",
+      "detail": "Owner's report. 'Start a new exploration' and 'Reset' made a blank state without the sign-in answer; the check runs once at page load, so the account box waited forever. New startOver() in shared/guestStore.js keeps the language and the sign-in answer (tests/startOver.test.js, RED then GREEN); checked in the browser on localhost:3400. AI CV reading on futures.grong.my checked with made-up CVs: layers include 'ai', model deepseek-flash; a free-text CV got 9 skills and 1 job from DeepSeek. This computer's network DNS still sends futures.grong.my to the old address 103.7.9.22 (certificate error); public DNS gives Cloudflare."
     }
   ]
 }

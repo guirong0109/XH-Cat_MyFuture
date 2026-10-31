@@ -2,7 +2,7 @@
 // Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-field-pick, data-aiuse;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
-import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
+import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startOver, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
 import { aiAskStep } from '/shared/aiTasks.js'
 import { addRecord, confirmProfile, declineUnanswered, isUntouched, mergeCareerFields, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
@@ -764,7 +764,7 @@ const actions = {
     if (!confirm(t('backNewConfirm'))) return
     resumeTo = null
     orgView.clearJoin()
-    state = { ...fresh(), lang: state.lang }
+    state = startOver(state, fresh())
     go('access')
   },
   theme: () => {
@@ -777,7 +777,7 @@ const actions = {
     store.clear()
     orgView.clearJoin()
     resumeTo = null
-    state = { ...fresh(), lang: state.lang }
+    state = startOver(state, fresh())
     go('welcome')
   },
   section: (i) => { state.section = Number(i); showSection(); persist(); render(); window.scrollTo(0, 0) },

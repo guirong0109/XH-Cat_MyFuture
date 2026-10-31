@@ -24,7 +24,7 @@ rules and how to work here.
 - Skill trends from O\*NET are built on top (spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`, D23–D27;
   see `HANDOVER.md` "Skill trends").
 - Charts that follow the confirmed profile are built (spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
-  D28-D33; `HANDOVER.md` "Profile charts"). 748 Vitest tests and 14 Python tests pass.
+  D28-D33; `HANDOVER.md` "Profile charts"). 751 Vitest tests and 14 Python tests pass.
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
@@ -74,7 +74,7 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 748 passed (vitest.config.js skips helper worktrees)
+npm test                                           # expect 751 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 14 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder

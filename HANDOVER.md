@@ -9,7 +9,7 @@ Updated 31 Oct 2026 (charts that follow the profile added). Branch made from `ma
   D23–D27; plan `docs/superpowers/plans/2026-10-30-radar-skill-trends.md`). See "Skill trends" below.
 - **Charts that follow your profile are built** (31 Oct 2026, spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
   D28-D33; plan `docs/superpowers/plans/2026-10-31-radar-profile-charts.md`). See "Profile charts" below.
-- Tests: **748 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
+- Tests: **751 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
   **14 Python tests OK** (`python -m unittest discover pipeline/tests`; the bridge script test copied from `main` is among them). Round 1 alone was 568; skill trends took it to 647.
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
@@ -44,7 +44,7 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 748 passed
+npm test                                    # 751 passed
 python -m unittest discover pipeline/tests  # 14 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook); on the committed bundle it skips O*NET releases already active; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each

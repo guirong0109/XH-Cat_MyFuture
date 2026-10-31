@@ -1149,6 +1149,11 @@
       "time": "31 Oct",
       "step": "Profile charts final review fixes",
       "detail": "AI job switch becomes a drop-down above 4 jobs; B2 column wording follows D29; docs corrected (BLS done, copied-file wording, browser-check scope); ISCO and ILO messages split; bar labels keep the T prefix; confirmed-but-empty profile gets the add-to-profile hint; unavailable texts name their sources; tasks.tsv hash-checked; plain error reasons; npm test 748 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts phone fix",
+      "detail": "owner OK: the AI job drop-down, the list rows and long job-name links stay inside the card at 375 px (field 0413, 104 jobs; checked in the browser, no sideways scroll on either tab); npm test 751 passed"
     }
   ]
 }

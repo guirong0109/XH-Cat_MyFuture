@@ -850,6 +850,26 @@ describe('AI Impact card', () => {
     expect(five).toContain('<select id="rd-ai-job"')
     expect(five).not.toContain('data-act="aiJob"')
   })
+
+  it('the job drop-down stays inside the card on a phone (long job titles)', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    const rule = css.match(/\.rd-tools select\{[^}]*\}/)?.[0] ?? ''
+    expect(rule).toMatch(/max-width:100%/)
+    expect(rule).toMatch(/min-width:0/)
+    expect(rule).toMatch(/text-overflow:ellipsis/)
+  })
+
+  it('on a phone the count and source column of a list row moves under the row text', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    const phone = [...css.matchAll(/@media \(max-width:560px\)\{([\s\S]*?\}\s*)\}/g)].map((m) => m[1]).find((b) => b.includes('.rd-rank-list')) ?? ''
+    expect(phone).toMatch(/\.rd-rank-list \.rd-row\{grid-template-columns:2\.4em minmax\(0,1fr\)\}/)
+    expect(phone).toMatch(/\.rd-rank-list \.rd-rc\{grid-column:2;white-space:normal\}/)
+  })
+
+  it('long job-name links in the list rows and card notes may wrap on a phone', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    expect(css).toMatch(/\.rd-rank-list \.rd-src,\s*\.rd-note \.rd-src\{white-space:normal;overflow-wrap:anywhere\}/)
+  })
   it('app wiring: the drop-down change calls the aiJob action', () => {
     const app = readFileSync('public/js/app.js', 'utf8')
     expect(app).toContain("hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)")

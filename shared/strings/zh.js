@@ -885,7 +885,7 @@ export default {
   mtGoToPage: "跳到第几页", // translation: owner review
   mtGo: "前往", // translation: owner review
   mtHideDetail: "隐藏前景和详情", // translation: owner review
-  mtAiCardModerate: "在观察到的使用中，AI 完成任务的占 {pct}%", // translation: owner review
+  mtAiTouchModerate: "在此工作 {pct}% 的任务中观察到 AI 使用", // translation: owner review
   mtAiCardRapid: "生成式 AI 暴露度 {pct}% · ILO 第 {group} 组（共 4 组）", // translation: owner review
   mtAiCardRapidWord: "生成式 AI 暴露度 {pct}% · ILO：{word}", // translation: owner review
   mtIlo_minimal: "极低暴露", // translation: owner review
@@ -1176,7 +1176,7 @@ export default {
   pwLinksOnly: "仅链接", // translation: owner review
   // Using AI (M17) (translation: owner review)
   secAi: "使用人工智能", // translation: owner review
-  aiUseIntro: "四个关于你如何使用人工智能的简短问题。答案会把你的人工智能能力加入总体匹配。", // translation: owner review
+  aiUseIntro: "四个关于您如何使用人工智能的简短问题。答案会把您的 AI 知识加入综合匹配。", // translation: owner review
   aiDim_mindset: "以人为本的思维", // translation: owner review
   aiDim_ethics: "人工智能伦理", // translation: owner review
   aiDim_apply: "人工智能技术与应用", // translation: owner review
@@ -1187,7 +1187,7 @@ export default {
   aiQ_design: "我曾用人工智能搭建或设置过东西（提示流程、模型、自动化）", // translation: owner review
   aiYes: "是", // translation: owner review
   aiNo: "否", // translation: owner review
-  aiKnowHowLine: "你的人工智能能力：{percent}%（已回答 {answered} 题，其中 {yes} 题为“是”）", // translation: owner review
-  aiKnowHowNone: "你的人工智能能力：尚未回答任何问题", // translation: owner review
-  aiUseSource: "问题依据联合国教科文组织学生人工智能能力框架（2024）的四个部分 · 你的答案只留在此浏览器中", // translation: owner review
+  aiKnowHowLine: "您的 AI 知识：{percent}%（已回答 {answered} 题，其中 {yes} 题为“是”）", // translation: owner review
+  aiKnowHowNone: "您的 AI 知识：尚未回答任何问题", // translation: owner review
+  aiUseSource: "问题依据联合国教科文组织学生人工智能能力框架（2024）的四个部分 · 您的答案只留在此浏览器中", // translation: owner review
 }

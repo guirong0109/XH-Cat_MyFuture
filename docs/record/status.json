@@ -1874,6 +1874,11 @@
       "time": "31 Oct",
       "step": "M17 task 5: browser check, diagram and handover",
       "detail": "browser check rows M1-M12 in docs/matching/acceptance.md (all pass; Moderate two-numbers note open); M17 path added to the diagram; HANDOVER.md, CLAUDE.md and SOURCES.md updated; npm test 1126 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 final review fixes",
+      "detail": "Moderate AI block shows one number (AI touch, bar and text agree); isUntouched counts AI answers; AI_SECTION constant and mAskAi test; zh/ms terms made consistent; diagram arrow and boundary; handover docs updated; npx vitest run --maxWorkers=3 1129 passed; pipeline 49 OK"
     }
   ]
 }

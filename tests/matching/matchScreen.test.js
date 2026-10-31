@@ -603,6 +603,15 @@ describe('Owner UI round (31 Oct)', () => {
       expect(failed).toContain('data-act="mDetail"')
     })
 
+    it('the "Ask the AI questions" button opens the form on the AI section', () => {
+      const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+      const at = app.indexOf('  mAskAi: ')
+      const body = app.slice(at, app.indexOf('\n', at))
+      expect(body).toContain('state.section = AI_SECTION')
+      expect(body).toContain("go('form')")
+      expect(app).toMatch(/const AI_SECTION = 5/)
+    })
+
     it('the page passes the open state per role code; CSS puts the boxes side by side from 760 px', () => {
       const html = view({ details: { [FIXTURE.fullRole]: d() }, open: { [FIXTURE.fullRole]: true } })
       expect(html).toContain('class="mt-outgrid"')
@@ -618,13 +627,21 @@ describe('Owner UI round (31 Oct)', () => {
   describe('4. AI on the closed card', () => {
     it('Moderate: the AEI automation % with a bar, labelled estimate with its source', () => {
       const line = aiLine(card(FIXTURE.fullRole))
-      expect(text(line)).toContain('AI does the task in 30% of observed use')
+      expect(text(line)).toContain("AI use seen on 66.7% of this job's tasks")
+      expect(text(line)).not.toContain('30%')
+      expect(line).toContain('mt-aibar')
       expect(text(line)).toContain(t('mtEstimate'))
       expect(text(line)).toContain('Anthropic Economic Index')
       expect(line).toContain('style="width:66.7%"') // M17: the bar shows the AI touch (observed share), not the automation share
       // M17: now in the right column, after the Skill Match
       const html = card(FIXTURE.fullRole)
       expect(html.indexOf('class="mt-aicard"')).toBeGreaterThan(html.indexOf('class="mt-side"'))
+    })
+
+    it('Moderate: the bar width and the number in the text are the same value', () => {
+      const line = aiLine(card(FIXTURE.fullRole))
+      const num = /AI use seen on ([\d.]+)%/.exec(text(line))[1]
+      expect(line).toContain(`style="width:${num}%"`)
     })
 
     it('Rapid: GenAI exposure % and the ILO group; minimal / not exposed in words, bar still shown', () => {

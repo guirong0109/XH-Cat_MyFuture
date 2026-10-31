@@ -885,7 +885,7 @@ export default {
   mtGoToPage: "Pergi ke halaman", // translation: owner review
   mtGo: "Pergi", // translation: owner review
   mtHideDetail: "Sembunyikan prospek dan butiran", // translation: owner review
-  mtAiCardModerate: "AI melakukan tugas dalam {pct}% penggunaan yang diperhatikan", // translation: owner review
+  mtAiTouchModerate: "Penggunaan AI dilihat pada {pct}% tugas pekerjaan ini", // translation: owner review
   mtAiCardRapid: "Pendedahan GenAI {pct}% · kumpulan ILO {group} daripada 4", // translation: owner review
   mtAiCardRapidWord: "Pendedahan GenAI {pct}% · ILO: {word}", // translation: owner review
   mtIlo_minimal: "pendedahan minimum", // translation: owner review
@@ -1176,7 +1176,7 @@ export default {
   pwLinksOnly: "pautan sahaja", // translation: owner review
   // Using AI (M17) (translation: owner review)
   secAi: "Menggunakan AI", // translation: owner review
-  aiUseIntro: "Empat soalan ringkas tentang cara anda menggunakan AI. Jawapan menambah kemahiran AI anda kepada Padanan keseluruhan.", // translation: owner review
+  aiUseIntro: "Empat soalan ringkas tentang cara anda menggunakan AI. Jawapan menambah pengetahuan AI anda kepada Padanan keseluruhan.", // translation: owner review
   aiDim_mindset: "Pemikiran berpusatkan manusia", // translation: owner review
   aiDim_ethics: "Etika AI", // translation: owner review
   aiDim_apply: "Teknik dan aplikasi AI", // translation: owner review
@@ -1187,7 +1187,7 @@ export default {
   aiQ_design: "Saya pernah membina atau menyediakan sesuatu dengan AI (aliran prompt, model, automasi)", // translation: owner review
   aiYes: "Ya", // translation: owner review
   aiNo: "Tidak", // translation: owner review
-  aiKnowHowLine: "Kemahiran AI anda: {percent}% ({yes} Ya daripada {answered} dijawab)", // translation: owner review
-  aiKnowHowNone: "Kemahiran AI anda: belum ada soalan dijawab", // translation: owner review
+  aiKnowHowLine: "Pengetahuan AI anda: {percent}% ({yes} Ya daripada {answered} dijawab)", // translation: owner review
+  aiKnowHowNone: "Pengetahuan AI anda: belum ada soalan dijawab", // translation: owner review
   aiUseSource: "Soalan berdasarkan empat bahagian kerangka kompetensi AI UNESCO untuk pelajar (2024) · jawapan anda kekal dalam pelayar ini", // translation: owner review
 }

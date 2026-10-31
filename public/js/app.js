@@ -59,6 +59,7 @@ const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/se
 const SEARCH_DELAY_MS = 250
 const SKILLS_SECTION = 2
 const PREFERENCES_SECTION = 4
+const AI_SECTION = 5
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
@@ -470,7 +471,7 @@ const matchActions = {
     persist()
     render()
   },
-  mAskAi: () => { state.section = 5; persist(); go('form') },
+  mAskAi: () => { state.section = AI_SECTION; persist(); go('form') },
   mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
 }
 

@@ -1,19 +1,19 @@
 # HANDOVER — `claude/career-matching` (detailed)
 
-Updated 2026-10-30 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a
+Updated 2026-10-31 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a
 short version of this file;
 on merge, put only the important points there and do not overwrite it with this one.
 
 ## State
-- **All 16 plan tasks are built and reviewed** (1126 Vitest tests, 48 pipeline tests). A **final whole-branch review is
+- **All 16 plan tasks are built and reviewed** (1129 Vitest tests, 49 pipeline tests). A **final whole-branch review is
   next**, then the owner decides on merge. Nothing is pushed or merged.
 - A1-A12 checked in the browser on real data (`docs/matching/acceptance.md`); A13 (percentages, chart, what would
   raise it, scenario moves, judge test) by tests only until the BLS files exist.
 - Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; plan: `docs/superpowers/plans/2026-10-30-career-matching.md`;
   diagram: `docs/architecture-matching.html`.
 
-- **M17 Overall match (31 Oct, built and checked in the browser, `docs/matching/acceptance.md`):** `Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch`, in `shared/matching/overall.js`. AI touch = Anthropic observed task share (Moderate) / ILO exposure score (Rapid). AI know-how = Yes answers divided by answered, from four yes/no profile questions (`aiUse`) based on the UNESCO AI competency framework for students (2024, https://doi.org/10.54675/JKJB9835, CC BY-SA 3.0 IGO). It never changes the Skill Match or the bands; with no AI data Overall = Skill Match. Cards show Skill Match, AI touch and Overall; bands sort by Overall.
-- Open for the final review: under Moderate the AI block shows two percentages (touch 69% and "54.9% of observed use").
+- **M17 Overall match (31 Oct, built and checked in the browser, `docs/matching/acceptance.md`):** `Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch`, in `shared/matching/overall.js`. AI touch = Anthropic observed task share (Moderate) / ILO exposure score (Rapid). AI know-how = Yes answers divided by answered, from four yes/no profile questions (`aiUse`) based on the UNESCO AI competency framework for students (2024, https://doi.org/10.54675/JKJB9835, CC BY-SA 3.0 IGO). It never changes the Skill Match or the bands; with no AI data Overall = Skill Match. Cards show Skill Match, AI touch and Overall; inside each band, roles sort by Overall, else Skill Match, then title; band membership never changes.
+- Fixed in the final review: under Moderate the AI block now shows one number: the big AI touch %, with "AI use seen on X% of this job's tasks" and a bar at the same X; the automation share stays in the open panel.
 
 ### Works today
 Role list (1812 titled eMASCO roles), card text, DOSM job-ad evidence at group level, "not available" messages that
@@ -21,8 +21,7 @@ name the missing step, SDG tags, `#sdg` path tab, owner review of SDG links in `
 (tested with a fixture).
 Owner UI round (31 Oct): a one-line banner grouped by (from group, to group) with no role names; each band list shows
 10 roles per page (`‹ 1 … N ›` and a "Go to page" box; paging, not a cap); "Show / Hide outlook and details" with Job
-ads, AI and Software as three boxes (side by side from 760 px) and "Why this match" as its own fold; an AI line with a
-bar on every closed card (Moderate: AEI automation %; Rapid: ILO GenAI exposure % and group); all SDG team drafts
+ads, AI and Software as three boxes (side by side from 760 px) and "Why this match" as its own fold; the AI touch (big %, one line with its source, purple bar) in the right column of every closed card (Moderate: AEI observed task share; Rapid: ILO GenAI exposure % and group); all SDG team drafts
 shown at once with a link to the goal's UN page (M16).
 
 ### Waits on the owner
@@ -103,7 +102,7 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 ## Commands
 ```bash
 npm test                                      # 1126 passed
-python -m unittest discover pipeline/tests    # 48 OK
+python -m unittest discover pipeline/tests    # 49 OK
 npm start                                     # http://localhost:3200, tabs #match and #sdg
 python pipeline/fetch_radar_bridge.py         # after the BLS files are saved
 ```

@@ -885,7 +885,7 @@ export default {
   mtGoToPage: "Go to page",
   mtGo: "Go",
   mtHideDetail: "Hide outlook and details",
-  mtAiCardModerate: "AI does the task in {pct}% of observed use",
+  mtAiTouchModerate: "AI use seen on {pct}% of this job's tasks",
   mtAiCardRapid: "GenAI exposure {pct}% · ILO group {group} of 4",
   mtAiCardRapidWord: "GenAI exposure {pct}% · ILO: {word}",
   mtIlo_minimal: "minimal exposure",

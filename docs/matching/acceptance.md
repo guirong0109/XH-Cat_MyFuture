@@ -76,9 +76,6 @@ before M17, so no `aiUse` at first). Nothing was pushed or merged.
 | M11 | Console: no script errors; only the expected 503 from `/api/auth/me` (accounts are not set up locally) | PASS |
 | M12 | UNESCO dimension names against UNESCO's official page https://www.unesco.org/en/articles/ai-competency-framework-students (31 Oct 2026): A human-centred mindset, Ethics of AI, AI techniques and applications, AI system design | MATCH |
 
-Open note (for the final review, not fixed): under Moderate the AI block shows "AI touches this job 69%" and right
-under it the older line "AI does the task in 54.9% of observed use" (the automation share used for band 2). Two
-different percentages in one small box can read as a contradiction. Under Rapid both numbers are the same ILO value
-(60% and 60%), so it reads fine.
+Closed note (final review, fixed): under Moderate the AI block showed two different percentages (touch 69% and the automation share 54.9%). Now the line under the big percentage reads "AI use seen on X% of this job's tasks" with the bar at the same X, then the source; the automation share stays in the open panel. Under Rapid both numbers were already the same ILO value.
 
 Test count after M17: 1126 passed (`npm test`).

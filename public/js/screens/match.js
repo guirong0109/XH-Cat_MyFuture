@@ -231,8 +231,8 @@ function aiCard(t, role, scenario, barPct = null) {
     return wrap(`${est} ${esc(line)}${src('mtAiCardSrcRapid')}${shownBar === null ? '' : bar(shownBar)}`)
   }
   const a = role.ai?.moderate
-  if (a?.available && isNum(a.automationPct)) {
-    return wrap(`${est} ${esc(t('mtAiCardModerate', { pct: a.automationPct }))}${src('mtAiCardSrcModerate')}${bar(barPct ?? a.automationPct)}`)
+  if (a?.available && isNum(barPct)) {
+    return wrap(`${est} ${esc(t('mtAiTouchModerate', { pct: fmt1(barPct) }))}${src('mtAiCardSrcModerate')}${bar(barPct)}`)
   }
   // The chain stops before O*NET: no job to look up. It reaches O*NET but the index has no data: no observed data.
   const none = role.unavailable?.missingStep ? t('mtNotAvailableTag') : t('mtNoObserved')

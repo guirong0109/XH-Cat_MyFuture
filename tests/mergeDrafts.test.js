@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mergeDrafts } from '../server/cv/mergeDrafts.js'
+import { levelOf } from '../server/cv/patterns.js'
 import { emptyProfile, makeSkill, validateProfile } from '../shared/profileSchema.js'
 
 const rulesEx = (evidence) => ({ method: 'rules', evidence, confidence: 0.8, extractorVersion: 'rules-1', kind: 'explicit' })
@@ -76,7 +77,8 @@ describe('mergeDrafts', () => {
     const merged = mergeDrafts(result(build((p) => { p.education.records = [r] })), build((p) => { p.education.records = [a] }))
     const e = merged.profile.education.records[0]
     expect(e.qualification).toBe('Bachelor of Science')
-    expect(e.level).not.toBe('diploma')
+    expect(e.level).toBe(levelOf('Bachelor of Science'))
+    expect(e.level).toBe('bachelor')
   })
 
   it('projects: description filled, certifications matched or appended', () => {
@@ -134,7 +136,8 @@ describe('mergeDrafts', () => {
 
   it('does not mutate its inputs and the result validates', () => {
     const a = makeSkill({ name: 'Excel', canonicalId: 'onet:xl', source: 'cv_ai', extraction: aiEx('Excel'), usedIn: [{ kind: 'job', title: 'IT Support Exec' }] })
-    const rules = result(build((p) => { p.employment.records = [rulesJob] }))
+    const rs = makeSkill({ name: 'Excel', canonicalId: 'onet:xl', source: 'cv_rules', extraction: rulesEx('Excel') })
+    const rules = result(build((p) => { p.employment.records = [rulesJob]; p.skills = [rs] }))
     const ai = build((p) => { p.employment.records = [aiJob('IT Support Exec')]; p.skills = [a] })
     const rulesCopy = structuredClone(rules)
     const aiCopy = structuredClone(ai)
@@ -142,5 +145,72 @@ describe('mergeDrafts', () => {
     expect(rules).toEqual(rulesCopy)
     expect(ai).toEqual(aiCopy)
     expect(validateProfile(merged.profile).ok).toBe(true)
+    expect(merged.profile.skills[0].usedIn).toEqual([{ kind: 'job', title: 'IT Support Executive' }])
+  })
+
+  it('a short quote inside a longer word does not match (Intern vs International)', () => {
+    const r = job('International Sales Manager', 'Foo', rulesEx('International Sales Manager at Foo'))
+    const a = job('Intern', '', aiEx('Intern'))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [r] })), build((p) => { p.employment.records = [a] }))
+    expect(merged.profile.employment.records.map((j) => j.jobTitle)).toEqual(['International Sales Manager', 'Intern'])
+    expect(merged.uncertain).toEqual([])
+  })
+
+  it('a short but equal main field still matches', () => {
+    const r = job('Intern', '', rulesEx('Intern, 2022'))
+    const a = job('Intern', 'Acme', aiEx('Intern'))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [r] })), build((p) => { p.employment.records = [a] }))
+    expect(merged.profile.employment.records).toHaveLength(1)
+    expect(merged.profile.employment.records[0].employer).toBe('Acme')
+  })
+
+  it('evidence under 8 characters on word boundaries does not match by evidence', () => {
+    const r = job('Clerk', '', rulesEx('Admin Clerk at Foo'))
+    const a = job('Admin', '', aiEx('Admin'))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [r] })), build((p) => { p.employment.records = [a] }))
+    expect(merged.profile.employment.records).toHaveLength(2)
+  })
+
+  it('evidence on word boundaries works for Chinese and Malay text', () => {
+    const r = job('', '', rulesEx('Pembantu Tadbir di Syarikat ABC 2020'))
+    const a = job('Pembantu Tadbir', 'Syarikat ABC', aiEx('Pembantu Tadbir di Syarikat ABC'))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [r] })), build((p) => { p.employment.records = [a] }))
+    expect(merged.profile.employment.records).toHaveLength(1)
+    expect(merged.profile.employment.records[0].jobTitle).toBe('Pembantu Tadbir')
+  })
+
+  it('first match wins and a rules record is matched at most once', () => {
+    const a1 = job('IT Support Executive', 'Acme Sdn Bhd', aiEx('IT Support Executive at Acme Sdn Bhd'))
+    const a2 = job('IT Support Exec', 'Other', aiEx('IT Support Executive at Acme'))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [rulesJob] })), build((p) => { p.employment.records = [a1, a2] }))
+    const jobs = merged.profile.employment.records
+    expect(jobs).toHaveLength(2)
+    expect(jobs[0].employer).toBe('Acme Sdn Bhd')
+    expect(jobs[1].jobTitle).toBe('IT Support Exec')
+    expect(jobs[1].extraction.method).toBe('ai')
+    expect(merged.uncertain).toEqual([])
+  })
+
+  it('empty evidence never matches by evidence', () => {
+    const r = job('Barista', '', rulesEx(''))
+    const a = job('Cashier', '', aiEx(''))
+    const merged = mergeDrafts(result(build((p) => { p.employment.records = [r] })), build((p) => { p.employment.records = [a] }))
+    expect(merged.profile.employment.records).toHaveLength(2)
+  })
+
+  it('the uncertain path uses the index of the record in the list', () => {
+    const r0 = job('Barista', 'Cafe', rulesEx('Barista at Cafe 2019'))
+    const merged = mergeDrafts(
+      result(build((p) => { p.employment.records = [r0, rulesJob] })),
+      build((p) => { p.employment.records = [aiJob('IT Support Exec')] }),
+    )
+    expect(merged.uncertain).toContainEqual({ path: 'employment.records.1.jobTitle', reason: 'ai_differs', aiValue: 'IT Support Exec' })
+  })
+
+  it('skills with different ids and equal names stay separate', () => {
+    const r = makeSkill({ name: 'Design', canonicalId: 'onet:a', source: 'cv_rules', extraction: rulesEx('Design') })
+    const a = makeSkill({ name: 'Design', canonicalId: 'onet:b', source: 'cv_ai', extraction: aiEx('Design') })
+    const merged = mergeDrafts(result(build((p) => { p.skills = [r] })), build((p) => { p.skills = [a] }))
+    expect(merged.profile.skills.map((s) => s.canonicalId)).toEqual(['onet:a', 'onet:b'])
   })
 })

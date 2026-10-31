@@ -6,10 +6,25 @@ import { levelOf } from './patterns.js'
 
 const norm = (text) => String(text ?? '').toLowerCase().replace(/\s+/g, ' ').trim()
 
+const ALNUM = /[\p{L}\p{N}]/u
+const MIN_EVIDENCE = 8
+
+// The shorter quote (at least 8 characters) must sit inside the longer one on word boundaries.
+function evidenceFits(a, b) {
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a]
+  if (short.length < MIN_EVIDENCE) return false
+  for (let at = long.indexOf(short); at >= 0; at = long.indexOf(short, at + 1)) {
+    const before = long[at - 1]
+    const after = long[at + short.length]
+    if ((before === undefined || !ALNUM.test(before)) && (after === undefined || !ALNUM.test(after))) return true
+  }
+  return false
+}
+
 const sameRecord = (rules, ai, main) => {
   const a = norm(rules.extraction?.evidence)
   const b = norm(ai.extraction?.evidence)
-  if (a && b && (a.includes(b) || b.includes(a))) return true
+  if (evidenceFits(a, b)) return true
   const m = norm(rules[main])
   return Boolean(m) && m === norm(ai[main])
 }
@@ -70,7 +85,8 @@ export function mergeDrafts({ profile, uncertain }, aiProfile) {
   const skills = profile.skills.map((skill) => ({ ...skill, usedIn: [...(skill.usedIn ?? [])] }))
   for (const ai of aiProfile.skills) {
     const aiPlaces = places(ai)
-    const same = skills.find((s) => (s.canonicalId && ai.canonicalId && s.canonicalId === ai.canonicalId) || norm(s.name) === norm(ai.name))
+    // Both identified: the ids decide. Otherwise the names do.
+    const same = skills.find((s) => (s.canonicalId && ai.canonicalId ? s.canonicalId === ai.canonicalId : norm(s.name) === norm(ai.name)))
     if (!same) {
       skills.push({ ...ai, usedIn: aiPlaces })
       continue

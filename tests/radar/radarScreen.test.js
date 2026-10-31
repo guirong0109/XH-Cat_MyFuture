@@ -724,25 +724,30 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
 })
 
 describe('status cards (spec §11.1, §12)', () => {
-  it('the four sources sit as cards in one grid: OpenAlex, DOSM, O*NET skills, Hot Technologies (owner, 31 Oct)', () => {
-    const html = view(ownProfile())
-    const start = html.indexOf('<div class="rd-srcgrid">')
-    expect(start).toBeGreaterThan(-1)
-    const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1])
-    expect(cards).toHaveLength(4)
-    expect(html.indexOf('<article class="rd-srccard')).toBeGreaterThan(start)
-    const names = ['OpenAlex', 'Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot')]
-    names.forEach((name, i) => expect(unesc(cards[i].match(/<h3>([^<]*)<\/h3>/)[1]), name).toContain(name))
-    for (const c of cards) {
+  it('only the source the page shows is listed: one OpenAlex card and OpenAlex alone in View data sources (D48)', () => {
+    for (const radar of [{}, { tab: 'ex' }]) {
+      const html = view(ownProfile(), radar)
+      const start = html.indexOf('<div class="rd-srcgrid">')
+      expect(start).toBeGreaterThan(-1)
+      const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1]).filter((c) => !c.includes('<fieldset>'))
+      expect(cards).toHaveLength(1)
+      const c = cards[0]
+      expect(unesc(c.match(/<h3>([^<]*)<\/h3>/)[1])).toContain('OpenAlex')
       // name with its source link in the head, availability as a tag, the facts as label-value pairs
       expect(c).toMatch(/<header class="rd-srccard-head"><h3>[^<]+<\/h3> <a href="https:\/\//)
       expect(c).toContain('<span class="pill ok" aria-label="Availability: Data available">Data available</span>')
       expect(c).toContain('<dl class="rd-srccard-facts">')
-      expect(c).not.toContain(`<dt>${t('rdDim_availability')}</dt>`)
+      for (const gone of ['Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot'), 'rd-onet-card']) expect(html, gone).not.toContain(gone)
+      const list = html.slice(html.indexOf('<details class="rd-sources">'), html.indexOf('</details>', html.indexOf('<details class="rd-sources">')))
+      const names = [...list.matchAll(/<tr><td><b>([^<]*)<\/b>/g)].map((m) => unesc(m[1]))
+      expect(names).toHaveLength(1)
+      expect(names[0]).toContain('OpenAlex')
     }
-    // the old rule-style blocks are gone
-    expect(html).not.toContain('card rd-src-card')
-    expect(html).not.toContain('rd-kv tiny')
+  })
+
+  it('the admin screen keeps both OpenAlex and DOSM cards (statusCards default)', () => {
+    const html = statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })
+    expect(count(html, /<article class="rd-srccard/g)).toBe(2)
   })
 
   it('a source card is a box in the app look: ink outline, round corners, paper, offset shadow', () => {

@@ -180,9 +180,10 @@ const healthText = (t, st) => st.refreshHealth === 'failed' && st.refreshCode ? 
 
 // statusCards(states, t, {sources, manifestId, ai, occ}): one card per source with its link, observation period,
 // publication date (DOSM), last successful fetch, manifest id and the five answer-state dimensions (spec §11.1, §12).
-export function statusCards(states, t, { sources = [], manifestId = null, ai = null, occ = null } = {}) {
+// ids: which sources get a card; the Radar page lists only OpenAlex (D48), the admin screen both.
+export function statusCards(states, t, { sources = [], manifestId = null, ai = null, occ = null, ids = ['openalex', 'dosm'] } = {}) {
   const signals = { openalex: (ai?.axes ?? []).map((a) => a.signal).filter(Boolean), dosm: (occ?.groups ?? []).map((g) => g.signal).filter(Boolean) }
-  return `<div class="rd-srcgrid">${['openalex', 'dosm'].map((id) => {
+  return `<div class="rd-srcgrid">${ids.map((id) => {
     const st = states?.[id] ?? {}
     const src = sources.find((s) => s.sourceId === id)
     const fresh = id === 'dosm' && st.expectedNextRelease ? `${dim(t, 'Fresh', st.freshness)} · ${t('rdNextRelease', { date: fmtDate(st.expectedNextRelease) })}` : dim(t, 'Fresh', st.freshness)
@@ -947,8 +948,8 @@ export function radarView({ t, state, data }) {
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
   const body = tab === 'ex' ? exploreTab({ t, state, data }) : forYouTab({ t, state, data })
   return `<div class="rd">${head}${banners(t, state, data)}
-    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}${onetSourceCards(data.sources, t, data.states)}</div>
-    ${sourcesList(t, data.sources ?? [])}
+    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ, ids: ['openalex'] })}</div>
+    ${sourcesList(t, (data.sources ?? []).filter((s) => s.sourceId === 'openalex'))}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>
     ${drawer(t, state, data)}</div>`

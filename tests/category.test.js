@@ -26,6 +26,8 @@ describe('the profile opens with "Which describes you best?" as four buttons', (
     expect(picked(html)).toEqual(['student', 'fresh_graduate', 'underemployed', 'unemployed'])
     expect(html).not.toContain('id="f-userCategory"')
     expect(html.indexOf('fCategory')).toBeLessThan(html.indexOf('fEduStatus'))
+    expect(html).toContain('<div class="options" role="radiogroup"')
+    expect(html).not.toContain('class="grid g2" role="radiogroup"')
     for (const lang of ['en', 'ms', 'zh']) {
       const page = study(asUser(null), lang)
       for (const [, label, text] of WHO) {
@@ -38,12 +40,12 @@ describe('the profile opens with "Which describes you best?" as four buttons', (
   it('"Prefer not to say" stays the default and can be chosen again', () => {
     const html = study(asUser(null))
     expect(html).toMatch(/<button class="chip on"[^>]*data-act="choose" data-arg="userCategory\|">preferNot<\/button>/)
-    expect(html).not.toMatch(/class="choice sel"/)
+    expect(html).not.toMatch(/class="option sel"/)
   })
 
   it('the chosen answer is marked, and "Prefer not to say" is off', () => {
     const html = study(asUser('underemployed'))
-    expect(html).toMatch(/class="choice sel" role="radio" aria-checked="true" data-act="choose" data-arg="userCategory\|underemployed"/)
+    expect(html).toMatch(/class="option sel" role="radio" aria-checked="true" title="catUnderText" data-act="choose" data-arg="userCategory\|underemployed"/)
     expect(html).toMatch(/<button class="chip"[^>]*data-arg="userCategory\|">/)
   })
 
@@ -65,5 +67,15 @@ describe('the answer is saved in the profile', () => {
   it('the receipt names the answer', () => {
     expect(profileTable(t, asUser('student'))).toContain('catStudent')
     expect(profileTable(t, asUser('graduate_switcher'))).toContain('optGraduate')
+  })
+})
+
+describe('the buttons are small and sit in one row', () => {
+  it('small buttons with a radio dot, side by side (wrapping only when the screen is too narrow)', async () => {
+    const { readFile } = await import('node:fs/promises')
+    const css = await readFile(new URL('../public/styles.css', import.meta.url), 'utf8')
+    expect(css).toMatch(/^\.options\{display:flex;flex-wrap:wrap/m)
+    expect(css).toMatch(/^\.option\{[^}]*flex:1 1 0;min-width:max-content;padding:10px 16px/m)
+    expect(css).toMatch(/^\.option::before\{[^}]*border-radius:50%/m)
   })
 })

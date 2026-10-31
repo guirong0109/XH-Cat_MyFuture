@@ -253,6 +253,11 @@
           "title": "T28i Who you are moves into the profile",
           "sub": "start: personal / organisation → guest or account → goal → CV · profile opens with 4 buttons",
           "status": "done"
+        },
+        {
+          "title": "T28j Small buttons in one row",
+          "sub": "Which describes you best? · radio dot · explanation on hover",
+          "status": "done"
         }
       ]
     }
@@ -299,7 +304,8 @@
     "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
     "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
     "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
-    "Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)"
+    "Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)",
+    "Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -348,7 +354,8 @@
     "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up",
     "T28g: the one-line explanation under each goal was written by Claude, not given by you - cost: please check or reword it",
     "T28h: 'Working adult' is no longer offered at the start (not in your list) - cost: an employed person who is not underemployed has no matching option; tell me if one should be added",
-    "T28h: the one-line explanation under each option was written by Claude - cost: please check or reword it"
+    "T28h: the one-line explanation under each option was written by Claude - cost: please check or reword it",
+    "T28j: the explanation under each option is hover text now - cost: phones do not show it"
   ],
   "log": [
     {
@@ -955,6 +962,16 @@
       "time": "31 Oct",
       "step": "Task 28i",
       "detail": "tests rewritten first (5 failed), then category.js (organisations only), choiceField in fields.js, form.js, review.js, app.js (goal → source; choose action) and styles.css; npm test 257 passed; clicked through in Chrome at 1440 px and 390 px, light and dark: choosing Underemployed saves it, Prefer not to say clears it"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the buttons are too big; make them small and keep them in the same row"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28j",
+      "detail": "tests first (3 failed), then choiceField in fields.js and the .options / .option styles; npm test 258 passed; checked at 1440 px (one row) and 390 px (two rows), light and dark"
     }
   ]
 }

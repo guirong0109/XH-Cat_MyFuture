@@ -154,30 +154,45 @@ function comparability(t, signals) {
   return parts.length ? parts.join(' · ') : DASH
 }
 
+// One source card (owner, 31 Oct): name and source link at the top, availability as a tag, the facts as label-value
+// pairs, and a note line at the bottom. facts = [[label key, text]]; every text goes through esc().
+function srcCard(t, { name, link, availability, facts, foot, cls = '' }) {
+  const avail = dim(t, 'Avail', availability)
+  const tag = `<span class="pill${availability === 'data' ? ' ok' : ''}" aria-label="${esc(`${t('rdDim_availability')}: ${avail}`)}">${esc(avail)}</span>`
+  return `<article class="rd-srccard${cls}">
+      <header class="rd-srccard-head"><h3>${esc(name)}</h3> ${link ? srcLink(link) : ''}</header>
+      ${tag}
+      <dl class="rd-srccard-facts">${facts.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+      <p class="rd-srccard-foot tiny muted">${foot}</p>
+    </article>`
+}
+
+const healthText = (t, st) => st.refreshHealth === 'failed' && st.refreshCode ? `${dim(t, 'Health', st.refreshHealth)} (${dim(t, 'Err', st.refreshCode)})` : dim(t, 'Health', st.refreshHealth)
+
 // statusCards(states, t, {sources, manifestId, ai, occ}): one card per source with its link, observation period,
 // publication date (DOSM), last successful fetch, manifest id and the five answer-state dimensions (spec §11.1, §12).
 export function statusCards(states, t, { sources = [], manifestId = null, ai = null, occ = null } = {}) {
   const signals = { openalex: (ai?.axes ?? []).map((a) => a.signal).filter(Boolean), dosm: (occ?.groups ?? []).map((g) => g.signal).filter(Boolean) }
-  return `<div class="grid g2 rd-status">${['openalex', 'dosm'].map((id) => {
+  return `<div class="rd-srcgrid">${['openalex', 'dosm'].map((id) => {
     const st = states?.[id] ?? {}
     const src = sources.find((s) => s.sourceId === id)
-    const name = src?.name ?? (id === 'dosm' ? 'DOSM' : 'OpenAlex')
-    const link = (src?.links ?? []).find((l) => safeUrl(l?.url))
-    const health = st.refreshHealth === 'failed' && st.refreshCode ? `${dim(t, 'Health', st.refreshHealth)} (${dim(t, 'Err', st.refreshCode)})` : dim(t, 'Health', st.refreshHealth)
     const fresh = id === 'dosm' && st.expectedNextRelease ? `${dim(t, 'Fresh', st.freshness)} · ${t('rdNextRelease', { date: fmtDate(st.expectedNextRelease) })}` : dim(t, 'Fresh', st.freshness)
-    const rows = [
-      ['rdDim_availability', dim(t, 'Avail', st.availability)],
+    const facts = [
+      ['rdObsPeriod', st.observationPeriod ?? DASH],
+      ...(id === 'dosm' ? [['rdPublished', fmtDate(st.publishedAt)]] : []),
+      ['rdLastFetch', fmtDate(st.lastSuccessAt)],
       ['rdDim_freshness', fresh],
-      ['rdDim_refreshHealth', health],
+      ['rdDim_refreshHealth', healthText(t, st)],
       ['rdDim_servedFrom', dim(t, 'Served', st.servedFrom)],
       ['rdDim_comparability', comparability(t, signals[id])],
     ]
-    return `<div class="card rd-src-card">
-      <h3>${esc(name)} ${link ? srcLink(link) : ''}</h3>
-      <p class="tiny muted">${esc(t('rdObsPeriod'))}: ${esc(st.observationPeriod ?? DASH)}${id === 'dosm' ? ` · ${esc(t('rdPublished'))}: ${esc(fmtDate(st.publishedAt))}` : ''} · ${esc(t('rdLastFetch'))}: ${esc(fmtDate(st.lastSuccessAt))}</p>
-      <p class="tiny muted">${esc(t('rdManifestId'))}: <code>${esc(manifestId ?? DASH)}</code></p>
-      <dl class="rd-kv tiny">${rows.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-    </div>`
+    return srcCard(t, {
+      name: src?.name ?? (id === 'dosm' ? 'DOSM' : 'OpenAlex'),
+      link: (src?.links ?? []).find((l) => safeUrl(l?.url)),
+      availability: st.availability,
+      facts,
+      foot: `${esc(t('rdManifestId'))}: <code>${esc(manifestId ?? DASH)}</code>`,
+    })
   }).join('')}</div>`
 }
 
@@ -187,22 +202,21 @@ export function statusCards(states, t, { sources = [], manifestId = null, ai = n
 export function onetSourceCards(sources, t, states = {}) {
   const cards = (sources ?? []).filter((s) => s?.sourceId === 'onet-skills' || s?.sourceId === 'onet-hottech').map((s) => {
     const skills = s.sourceId === 'onet-skills'
-    const link = (s.links ?? []).find((l) => safeUrl(l?.url))
-    const period = skills ? s.version ?? s.observationPeriod : s.window?.label ?? s.observationPeriod
     const st = states?.[s.sourceId] ?? {}
-    const health = st.refreshHealth === 'failed' && st.refreshCode ? `${dim(t, 'Health', st.refreshHealth)} (${dim(t, 'Err', st.refreshCode)})` : dim(t, 'Health', st.refreshHealth)
-    const rows = [
-      ['rdDim_availability', dim(t, 'Avail', st.availability)],
-      ['rdDim_refreshHealth', health],
-    ]
-    return `<div class="card rd-src-card rd-onet-card">
-      <h3>${esc(t(skills ? 'rdSrcOnetSkills' : 'rdSrcOnetHot'))} ${link ? srcLink(link) : ''}</h3>
-      <p class="tiny muted">${esc(t(skills ? 'rdAdminOnetActiveRelease' : 'rdAdminOnetActiveWindow'))}: ${esc(period ?? DASH)} · ${esc(t('rdEvFetched'))}: ${esc(fmtDate(s.fetchedAt))}</p>
-      <dl class="rd-kv tiny">${rows.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <p class="tiny muted">${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}</p>
-    </div>`
+    return srcCard(t, {
+      name: t(skills ? 'rdSrcOnetSkills' : 'rdSrcOnetHot'),
+      link: (s.links ?? []).find((l) => safeUrl(l?.url)),
+      availability: st.availability,
+      facts: [
+        [skills ? 'rdAdminOnetActiveRelease' : 'rdAdminOnetActiveWindow', (skills ? s.version ?? s.observationPeriod : s.window?.label ?? s.observationPeriod) ?? DASH],
+        ['rdEvFetched', fmtDate(s.fetchedAt)],
+        ['rdDim_refreshHealth', healthText(t, st)],
+      ],
+      foot: `${esc(t('rdSkLabelUs'))} · ${esc(t('rdSkLabelSoftware'))}`,
+      cls: ' rd-onet-card',
+    })
   })
-  return cards.length ? `<div class="grid g2 rd-status rd-onet">${cards.join('')}</div>` : ''
+  return cards.length ? `<div class="rd-srcgrid">${cards.join('')}</div>` : ''
 }
 
 function sourcesList(t, sources) {
@@ -877,8 +891,7 @@ export function radarView({ t, state, data }) {
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
   const body = tab === 'ai' ? aiTab({ t, state, data }) : skillsTab({ t, state, data })
   return `<div class="rd">${head}${banners(t, state, data)}
-    ${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}
-    ${onetSourceCards(data.sources, t, data.states)}
+    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}${onetSourceCards(data.sources, t, data.states)}</div>
     ${sourcesList(t, data.sources ?? [])}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>

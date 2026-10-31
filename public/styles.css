@@ -280,6 +280,17 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .rd-srccard-facts dt{margin-top:6px;font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .rd-srccard-facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .rd-srccard-foot{margin:auto 0 0;padding-top:10px;border-top:1px solid var(--line);width:100%;overflow-wrap:anywhere}
+/* AI usage question (D34-D39): the source-card box, one column, real checkboxes in a fieldset */
+.rd-aiask{margin:16px 0 12px;max-width:760px}
+.rd-aiask fieldset{border:0;padding:0;margin:0;min-width:0;width:100%}
+.rd-aiask legend{padding:0;font-family:var(--serif);font-size:26px;line-height:1.2;color:var(--ink)}
+.rd-aiask-opts{display:grid;gap:10px;margin:14px 0}
+.rd-aiask-opt{display:flex;gap:10px;align-items:flex-start;cursor:pointer;min-width:0}
+.rd-aiask-opt input{margin-top:3px;flex:none;accent-color:var(--ink)}
+.rd-aiask-opt .tiny{display:block;overflow-wrap:anywhere}
+.rd-aiask-none{border-top:1px solid var(--line);padding-top:10px}
+.rd-aiask-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.rd-aiask-line{margin:6px 0 0}
 .rd .rd-sec{margin-top:14px}
 .rd .rd-sec>h2,.rd-drawer h2{margin-top:0}
 .rd .rd-sources{margin:6px 0 4px}

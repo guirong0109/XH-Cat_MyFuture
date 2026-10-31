@@ -1084,6 +1084,35 @@ export default {
   rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
   rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
   rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
+  // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
+  rdAiAskTitle: "Untuk perkara yang manakah anda menggunakan AI?", // translation: owner review
+  rdAiAskSub: "Tandakan semua yang berkaitan. Ini tidak mengubah apa yang ditunjukkan oleh Radar.", // translation: owner review
+  rdAiAskNone: "Saya tidak menggunakan AI untuk mana-mana perkara ini", // translation: owner review
+  rdAiAskSource: "Kategori ditetapkan oleh pasukan FutureReady (31 Okt 2026); bukan daripada kajian luar.", // translation: owner review
+  rdAiAskPrivacy: "Disimpan bersama profil anda: pada peranti ini, dan dalam akaun anda jika anda log masuk dan menyimpannya.", // translation: owner review
+  rdAiAskContinue: "Teruskan", // translation: owner review
+  rdAiAskSkip: "Langkau buat masa ini", // translation: owner review
+  rdAiAskChange: "Tukar jawapan penggunaan AI saya", // translation: owner review
+  rdAiTask_writing: "Penulisan & Dokumentasi", // translation: owner review
+  rdAiTaskEx_writing: "Laporan, e-mel, minit mesyuarat, dokumentasi", // translation: owner review
+  rdAiTask_learning: "Pembelajaran & Penyelidikan", // translation: owner review
+  rdAiTaskEx_learning: "Memahami konsep, tunjuk ajar, mencari hala tuju penyelidikan", // translation: owner review
+  rdAiTask_programming: "Pengaturcaraan & Kerja Teknikal", // translation: owner review
+  rdAiTaskEx_programming: "Menulis kod, nyahpepijat, menerangkan ralat", // translation: owner review
+  rdAiTask_data: "Data & Analitik", // translation: owner review
+  rdAiTaskEx_data: "Formula hamparan, analisis data, carta, pandangan", // translation: owner review
+  rdAiTask_creative: "Kreatif & Reka Bentuk", // translation: owner review
+  rdAiTaskEx_creative: "Imej, pembentangan, bahan pemasaran, video", // translation: owner review
+  rdAiTask_communication: "Komunikasi & Bahasa", // translation: owner review
+  rdAiTaskEx_communication: "Terjemahan, pembacaan pruf, latihan komunikasi", // translation: owner review
+  rdAiTask_planning: "Perancangan & Sokongan Keputusan", // translation: owner review
+  rdAiTaskEx_planning: "Penjadualan, sumbang saran, membandingkan pilihan", // translation: owner review
+  rdAiTask_admin: "Kerja Pentadbiran", // translation: owner review
+  rdAiTaskEx_admin: "Kemasukan data, pemprosesan dokumen, tugas pejabat berulang", // translation: owner review
+  rdAiTask_customer: "Sokongan Pelanggan & Perniagaan", // translation: owner review
+  rdAiTaskEx_customer: "Balasan pelanggan, kandungan jualan, analisis perniagaan", // translation: owner review
+  rdAiTask_automation: "Automasi & Ejen AI", // translation: owner review
+  rdAiTaskEx_automation: "Aliran kerja bersambung, pembantu AI yang menggunakan alat atau API", // translation: owner review
   rdAiNone: "Tiada satu pun daripada {total} tugas O*NET pekerjaan ini muncul dalam data perbualan AI. Tiada carta dilukis.", // translation: owner review
   rdAiLoading: "Memuatkan data tugas AI…", // translation: owner review
   rdAiUnavailable: "Data tugas AI tidak tersedia (sumber: Anthropic Economic Index, ILO WP140).", // translation: owner review

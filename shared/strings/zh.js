@@ -1084,6 +1084,35 @@ export default {
   rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
   rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
   rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
+  // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
+  rdAiAskTitle: "您在以下哪些方面使用 AI？", // translation: owner review
+  rdAiAskSub: "请勾选所有适用项。这不会改变雷达显示的内容。", // translation: owner review
+  rdAiAskNone: "我在以上方面都不使用 AI", // translation: owner review
+  rdAiAskSource: "类别由 FutureReady 团队设定（2026年10月31日）；并非来自外部研究。", // translation: owner review
+  rdAiAskPrivacy: "随您的个人资料保存：保存在此设备上；如果您登录并保存，也会保存在您的账户中。", // translation: owner review
+  rdAiAskContinue: "继续", // translation: owner review
+  rdAiAskSkip: "暂时跳过", // translation: owner review
+  rdAiAskChange: "更改我的 AI 使用答案", // translation: owner review
+  rdAiTask_writing: "写作与文档", // translation: owner review
+  rdAiTaskEx_writing: "报告、电子邮件、会议记录、文档", // translation: owner review
+  rdAiTask_learning: "学习与研究", // translation: owner review
+  rdAiTaskEx_learning: "理解概念、辅导、寻找研究方向", // translation: owner review
+  rdAiTask_programming: "编程与技术工作", // translation: owner review
+  rdAiTaskEx_programming: "编写代码、调试、解释错误", // translation: owner review
+  rdAiTask_data: "数据与分析", // translation: owner review
+  rdAiTaskEx_data: "电子表格公式、数据分析、图表、洞察", // translation: owner review
+  rdAiTask_creative: "创意与设计", // translation: owner review
+  rdAiTaskEx_creative: "图片、演示文稿、营销材料、视频", // translation: owner review
+  rdAiTask_communication: "沟通与语言", // translation: owner review
+  rdAiTaskEx_communication: "翻译、校对、沟通练习", // translation: owner review
+  rdAiTask_planning: "规划与决策支持", // translation: owner review
+  rdAiTaskEx_planning: "日程安排、头脑风暴、比较选项", // translation: owner review
+  rdAiTask_admin: "行政工作", // translation: owner review
+  rdAiTaskEx_admin: "数据录入、文件处理、重复性办公任务", // translation: owner review
+  rdAiTask_customer: "客户与业务支持", // translation: owner review
+  rdAiTaskEx_customer: "客户回复、销售内容、业务分析", // translation: owner review
+  rdAiTask_automation: "自动化与 AI 智能体", // translation: owner review
+  rdAiTaskEx_automation: "互联的工作流程、使用工具或 API 的 AI 助手", // translation: owner review
   rdAiNone: "此工作的 {total} 项 O*NET 任务都没有出现在 AI 对话数据中。不绘制图表。", // translation: owner review
   rdAiLoading: "正在加载 AI 任务数据…", // translation: owner review
   rdAiUnavailable: "AI 任务数据不可用（来源：Anthropic Economic Index、ILO WP140）。", // translation: owner review

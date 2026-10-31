@@ -14,6 +14,7 @@ import { makeBridge } from '../../../shared/radar/bridge.js'
 import { makeChain } from '../../../shared/radar/chain.js'
 import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
 import { profileRadar } from '../components/charts/profileRadar.js'
+import { AI_TASK_IDS, canContinue, needsAsking } from '../../../shared/aiTasks.js'
 
 // ---------- reference data and relevance ----------
 
@@ -874,23 +875,46 @@ function drawer(t, state, data) {
 // data shown would stay out of date. The view choices (tab, mode, hidden lines, View all) and the banner flag stay.
 export const staleRadar = (radar) => ({ ...(radar ?? {}), data: null, open: null, signal: null, newerManifestId: null, gone: false, error: null, loading: false })
 
+// "Which of these do you use AI for?" (D34-D39): the owner's 10 categories as checkboxes, "none of these", the source
+// and privacy lines, Continue (off until something is ticked) and Skip. Ticks not yet saved are in state.radar.aiAsk;
+// otherwise the saved answer is shown. Only known ids are ever drawn, so a saved unknown id is never echoed.
+export function aiTasksQuestion({ t, state }) {
+  const saved = state?.profile?.aiTasks?.status === 'answered' ? state.profile.aiTasks.picked ?? [] : null
+  const draft = ui(state).aiAsk
+  const picked = Array.isArray(draft?.picked) ? draft.picked : saved ?? []
+  const none = typeof draft?.none === 'boolean' ? draft.none : Array.isArray(saved) && saved.length === 0
+  const box = (act, arg, on) => `<input type="checkbox" data-act="${act}"${arg ? ` data-arg="${arg}"` : ''}${on ? ' checked' : ''}>`
+  const opts = AI_TASK_IDS.map((id) => `<label class="rd-aiask-opt">${box('aiAskPick', id, picked.includes(id))} <span>${esc(t(`rdAiTask_${id}`))}<span class="tiny muted">${esc(t(`rdAiTaskEx_${id}`))}</span></span></label>`).join('')
+  return `<article class="rd-srccard rd-aiask"><fieldset><legend>${esc(t('rdAiAskTitle'))}</legend>
+      <p class="small muted">${esc(t('rdAiAskSub'))}</p>
+      <div class="rd-aiask-opts">${opts}
+      <label class="rd-aiask-opt rd-aiask-none">${box('aiAskNone', null, none)} <span>${esc(t('rdAiAskNone'))}</span></label></div>
+      <p class="tiny muted">${esc(t('rdAiAskSource'))}</p>
+      <p class="tiny muted">${esc(t('rdAiAskPrivacy'))}</p>
+      <div class="rd-aiask-btns"><button class="btn" data-act="aiAskContinue"${canContinue({ picked, none }) ? '' : ' disabled'}>${esc(t('rdAiAskContinue'))}</button> <button class="btn ghost" data-act="aiAskSkip">${esc(t('rdAiAskSkip'))}</button></div>
+    </fieldset></article>`
+}
+
 export function radarView({ t, state, data }) {
   const u = ui(state)
   const head = `<h1>${esc(t('rdTitle'))}</h1><p class="lead">${esc(t('rdLead'))}</p><p class="small muted">${esc(t('rdSub'))}</p>`
+  // Asked first (D36): while there is no answer, or the user reopened it, the page shows only the question card.
+  if (needsAsking(state?.profile) || (u.aiAsk?.open && state?.profile)) return `<div class="rd">${head}${banners(t, state, data)}${aiTasksQuestion({ t, state })}</div>`
+  const change = state?.profile?.aiTasks ? `<p class="rd-aiask-line"><button class="btn sm ghost" data-act="aiAskOpen">${esc(t('rdAiAskChange'))}</button></p>` : ''
   if (!data) {
     const body = u.gone
       ? ''
       : u.error
         ? `<div class="banner b-bad"><div>${esc(t('rdUnavailable'))}</div><button class="btn sm" data-act="reloadManifest">${esc(t('rdReload'))}</button></div>`
         : `<p class="muted"><span class="spin"></span> ${esc(t('rdLoading'))}</p>`
-    return `<div class="rd">${head}${banners(t, state, null)}${body}</div>`
+    return `<div class="rd">${head}${change}${banners(t, state, null)}${body}</div>`
   }
   const rel = relevance(state, data)
   const tab = tabOf(state)
   const tabs = [['sk', 'rdTabSK', 'rdTabSKq'], ['ai', 'rdTabAI', 'rdTabAIq']]
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
   const body = tab === 'ai' ? aiTab({ t, state, data }) : skillsTab({ t, state, data })
-  return `<div class="rd">${head}${banners(t, state, data)}
+  return `<div class="rd">${head}${change}${banners(t, state, data)}
     <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}${onetSourceCards(data.sources, t, data.states)}</div>
     ${sourcesList(t, data.sources ?? [])}
     ${tabBar}

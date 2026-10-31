@@ -10,6 +10,7 @@ import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
 import { usageText } from '../../shared/radar/profileCharts.js'
+import { AI_TASK_IDS } from '../../shared/aiTasks.js'
 import { aiTab, keepCaret, onetSourceCards, pageForRow, pageItems, pageOf, parsePageArg, parsePageList, radarView, skillsChartCard, skillsTab, statusCards, withPage } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
@@ -28,8 +29,9 @@ beforeAll(async () => {
 })
 afterAll(() => radar.close())
 
+// The AI usage question is answered (skipped) by default, so these tests see the Radar itself, not the question card.
 const profile = (extra = {}) => ({
-  profileStatus: 'confirmed', education: { records: [] }, employment: { records: [] }, preferences: { careerInterests: [] }, occupationMappings: [], ...extra,
+  profileStatus: 'confirmed', education: { records: [] }, employment: { records: [] }, preferences: { careerInterests: [] }, occupationMappings: [], aiTasks: { status: 'skipped', date: '2026-10-31' }, ...extra,
 })
 const ownProfile = () => profile({
   education: { records: [{ field: { source: 'isced', code: '0613', title: 'Software and applications development and analysis' } }] },
@@ -269,6 +271,99 @@ describe('Radar screen', () => {
       const html = radarView({ t, state: { lang: 'en', profile: prof, radar }, data: bad })
       expect(html).not.toContain('<img')
       expect(html).toContain('&lt;img src=x')
+    }
+  })
+})
+
+describe('AI usage question (D34-D39)', () => {
+  const D = '2026-10-31'
+  const notAsked = () => { const p = profile(); delete p.aiTasks; return p }
+  const card = (html) => html.slice(html.indexOf('<article class="rd-srccard rd-aiask"'), html.indexOf('</article>', html.indexOf('rd-aiask')))
+  const NEW_KEYS = ['rdAiAskTitle', 'rdAiAskSub', 'rdAiAskNone', 'rdAiAskSource', 'rdAiAskPrivacy', 'rdAiAskContinue', 'rdAiAskSkip', 'rdAiAskChange',
+    ...AI_TASK_IDS.flatMap((id) => [`rdAiTask_${id}`, `rdAiTaskEx_${id}`])]
+
+  it('without an answer the page shows only the question card: ten boxes in order, none, source and privacy lines', () => {
+    const html = view(notAsked())
+    expect(html).toContain('rd-aiask')
+    expect(html).not.toContain('role="tablist"')
+    expect(html).not.toContain('rd-srcgrid')
+    const c = card(html)
+    expect([...c.matchAll(/data-act="aiAskPick" data-arg="([a-z]+)"/g)].map((m) => m[1])).toEqual([...AI_TASK_IDS])
+    expect(count(c, /type="checkbox"/g)).toBe(11)
+    expect(c).toContain('data-act="aiAskNone"')
+    expect(c).toContain('<legend>Which of these do you use AI for?</legend>')
+    expect(unesc(c)).toContain('Tick all that apply. This does not change what the Radar shows.')
+    expect(unesc(c)).toContain("I don't use AI for any of these")
+    expect(c).toContain('Categories set by the FutureReady team (31 Oct 2026); not from an outside study.')
+    expect(c).toContain('Kept with your profile: on this device, and in your account if you sign in and save it.')
+    expect(c).toContain('Writing &amp; Documentation')
+    expect(c).toContain('Reports, emails, meeting minutes, documentation')
+    expect(c).toContain('data-act="aiAskSkip"')
+  })
+
+  it('Continue is off until something is ticked; ticks and none are shown checked', () => {
+    expect(card(view(notAsked()))).toMatch(/<button class="btn" data-act="aiAskContinue" disabled>/)
+    const ticked = card(view(notAsked(), { aiAsk: { picked: ['data'], none: false } }))
+    expect(ticked).toMatch(/<button class="btn" data-act="aiAskContinue">/)
+    expect(ticked).toMatch(/data-act="aiAskPick" data-arg="data" checked/)
+    expect(ticked).not.toMatch(/data-act="aiAskPick" data-arg="writing" checked/)
+    const none = card(view(notAsked(), { aiAsk: { picked: [], none: true } }))
+    expect(none).toMatch(/<button class="btn" data-act="aiAskContinue">/)
+    expect(none).toMatch(/data-act="aiAskNone" checked/)
+  })
+
+  it('once skipped or answered: no card, the Radar shows with a "Change my AI use answers" button; reopening shows the saved ticks', () => {
+    for (const aiTasks of [{ status: 'skipped', date: D }, { status: 'answered', picked: ['writing'], date: D }]) {
+      const html = view(profile({ aiTasks }))
+      expect(html).not.toContain('rd-aiask"')
+      expect(html).toContain('role="tablist"')
+      expect(html).toContain('<button class="btn sm ghost" data-act="aiAskOpen">Change my AI use answers</button>')
+    }
+    const reopened = card(view(profile({ aiTasks: { status: 'answered', picked: ['writing'], date: D } }), { aiAsk: { open: true } }))
+    expect(reopened).toMatch(/data-act="aiAskPick" data-arg="writing" checked/)
+    const reopenedNone = card(view(profile({ aiTasks: { status: 'answered', picked: [], date: D } }), { aiAsk: { open: true } }))
+    expect(reopenedNone).toMatch(/data-act="aiAskNone" checked/)
+  })
+
+  it('no profile: the Radar shows, without the card or the change button', () => {
+    const html = view(null)
+    expect(html).not.toContain('rd-aiask')
+    expect(html).not.toContain('data-act="aiAskOpen"')
+    expect(html).toContain('role="tablist"')
+  })
+
+  it('a saved unknown id is never echoed into the page', () => {
+    const html = view(profile({ aiTasks: { status: 'answered', picked: ['<img src=x>'], date: D } }), { aiAsk: { open: true } })
+    expect(html).not.toContain('<img')
+  })
+
+  it('the card works in all three languages; BM and 中文 lines are marked for owner review', () => {
+    for (const lang of ['ms', 'zh']) {
+      for (const key of NEW_KEYS) expect(translate(lang, key), `${lang} ${key}`).not.toBe(key)
+      const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
+      for (const key of NEW_KEYS) expect(lines.find((l) => l.trimStart().startsWith(`${key}:`)), `${lang} ${key}`).toContain('// translation: owner review')
+      const html = radarView({ t: (k, v) => translate(lang, k, v), state: { lang, profile: notAsked(), radar: {} }, data: linked() })
+      expect(html).toContain('rd-aiask')
+    }
+    for (const key of NEW_KEYS) expect(t(key), key).not.toBe(key)
+  })
+
+  it('D37: no Radar request carries the answers', async () => {
+    const calls = []
+    const real = globalThis.fetch
+    globalThis.fetch = (url, init = {}) => { calls.push({ url: String(url), body: init.body }); return real(url, init) }
+    try {
+      await radarApi.load(BUNDLE_ACTIVE, { base })
+      await radarApi.storeInfo({ base })
+      await radarApi.signal('openalex:T10028', BUNDLE_ACTIVE, { base })
+      await radarApi.aiTasks({ base })
+    } finally {
+      globalThis.fetch = real
+    }
+    expect(calls.length).toBeGreaterThan(0)
+    for (const c of calls) {
+      expect(c.body, c.url).toBeUndefined()
+      expect(c.url).not.toMatch(/picked|aiTasks=|writing|programming/)
     }
   })
 })

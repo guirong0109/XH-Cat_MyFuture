@@ -1486,7 +1486,7 @@ export default {
   nwNoField: "Add your study field in your profile to see news for you.",
   nwEditProfile: "Edit profile",
   nwExploreAll: "Explore all fields",
-  nwPublished: "Published {date}",
+  nwPublished: "Published {date}",
   nwChecked: "Checked by DeepSeek ({model}) as news about AI in this field",
   nwDropped: "{n} results dropped as not news.",
 }

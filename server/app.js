@@ -27,6 +27,7 @@ import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
 import { createOccupationLookup } from './occupations/lookup.js'
 import { readFile } from 'node:fs/promises'
 import { createRadarServiceFromEnv } from './radar/service.js'
+import { loadAiTasks } from './radar/aiTasks.js'
 import { radarRoutes } from './radar/routes.js'
 import { createRadarAccess } from './radar/access.js'
 import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
@@ -145,7 +146,9 @@ export function createApp({
       now,
       devStore: Boolean(radar.info?.().devStore),
     }) : null
-    app.use(radarRoutes({ radar }))
+    let aiTasksPromise = null
+    const aiTasks = () => (aiTasksPromise ??= loadAiTasks(dataDir))
+    app.use(radarRoutes({ radar, aiTasks }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))

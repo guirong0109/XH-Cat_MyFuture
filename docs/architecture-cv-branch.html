@@ -39,6 +39,15 @@
     .toolbar-actions button { background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #94a3b8; padding: 0.375rem 0.75rem; border-radius: 0.375rem; font-family: inherit; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .toolbar-actions button:hover { background: rgba(51, 65, 85, 0.8); color: white; border-color: #475569; }
     @media print { body { background: #020617; padding: 1rem; } .toolbar { display: none !important; } }
+
+    .container { max-width: 1640px; }
+    .section-title { margin: 2rem 0 0.75rem; font-size: 1rem; font-weight: 700; color: #e2e8f0; }
+    .section-note { color: #94a3b8; font-size: 0.75rem; margin: -0.25rem 0 0.75rem; line-height: 1.5; }
+    .table-wrap { padding: 0; }
+    table.refs { width: 100%; border-collapse: collapse; font-size: 0.7rem; color: #cbd5e1; }
+    table.refs th { text-align: left; color: #e2e8f0; background: rgba(30, 41, 59, 0.7); padding: 0.55rem; position: sticky; top: 0; }
+    table.refs td { padding: 0.55rem; border-top: 1px solid #1e293b; vertical-align: top; line-height: 1.45; }
+    table.refs td:first-child { color: white; font-weight: 600; white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -56,10 +65,307 @@
           <button class="toolbar-toggle" onclick="this.parentElement.classList.toggle('expanded')" title="Export options" aria-label="Export options">⋯</button>
         </div>
       </div>
-      <p class="subtitle">Branch <code>claude/cv-profile-module</code> · repo <code>C:\Users\guiro\XH_Cat_Final</code> · GitHub <code>guirong0109/XH-Cat_MyFuture</code> · every box shows the real file path on this branch (29 Oct 2026)</p>
+      <p class="subtitle">Branch claude/cv-profile-module · every data source and reference, how each is used, and how they link (updated 30 Oct 2026, HEAD 72be4d8, merged to main as 928f4a7)</p>
     </div>
 
-    <div class="diagram-container">
+    <h2 class="section-title">1 · Where the data comes from, and how it links</h2>
+<p class="section-note">Read left to right: an outside source → the pipeline script that copies it → the file kept in the repo → the server code that reads it (with its API) → the screen that shows it (with its source line) → the field saved in the profile. Nothing is invented on the way; the app copies, joins on codes and counts.</p>
+<div class="diagram-container">
+<svg viewBox="0 0 1610 960" role="img" aria-label="Data lineage: sources, pipeline, data files, server code, screen, profile">
+<defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker>
+<pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/></pattern></defs>
+<rect width="1610" height="960" fill="url(#grid2)"/>
+<text x="20" y="50" fill="#e2e8f0" font-size="10" font-weight="700">1 · SOURCES (outside)</text>
+<text x="310" y="50" fill="#e2e8f0" font-size="10" font-weight="700">2 · PIPELINE</text>
+<text x="525" y="50" fill="#e2e8f0" font-size="10" font-weight="700">3 · DATA IN REPO (data/)</text>
+<text x="830" y="50" fill="#e2e8f0" font-size="10" font-weight="700">4 · SERVER CODE + API</text>
+<text x="1140" y="50" fill="#e2e8f0" font-size="10" font-weight="700">5 · SCREEN (form)</text>
+<text x="1385" y="50" fill="#e2e8f0" font-size="10" font-weight="700">6 · SAVED IN THE PROFILE</text>
+<rect x="510" y="385" width="1090" height="250" rx="12" fill="rgba(251,191,36,0.03)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+<text x="1590" y="400" fill="#fbbf24" font-size="9" text-anchor="end">added 30 Oct (owner requests)</text>
+<path d="M 270 116.0 H 292.7 V 230.0 H 308" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="301.4" y="226.0" fill="#94a3b8" font-size="7.5" text-anchor="middle">zip</text>
+<path d="M 270 370.0 H 285.5 V 470.0 H 308" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 270 470.0 H 298.2 V 470.0 H 308" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 270 563.0 H 290.9 V 470.0 H 308" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="300.5" y="466.0" fill="#94a3b8" font-size="7.5" text-anchor="middle">broad names</text>
+<path d="M 270 673.0 H 283.6 V 673.0 H 308" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 230.0 H 507.7 V 96.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 230.0 H 500.5 V 158.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 230.0 H 513.2 V 220.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 230.0 H 505.9 V 282.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 230.0 H 498.6 V 344.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 470.0 H 511.4 V 423.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 470.0 H 504.1 V 479.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 470.0 H 496.8 V 535.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 470.0 H 509.5 V 591.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 485 673.0 H 502.3 V 666.0 H 523" fill="none" stroke="#fb923c" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 270 793.0 H 507.7 V 786.0 H 523" fill="none" stroke="#fbbf24" stroke-width="1.2" stroke-opacity="0.75" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<text x="516.4" y="782.0" fill="#94a3b8" font-size="7.5" text-anchor="middle">only with a key</text>
+<path d="M 790 158.0 H 812.7 V 160.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 220.0 H 805.5 V 160.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 282.0 H 818.2 V 160.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="824.1" y="156.0" fill="#94a3b8" font-size="7.5" text-anchor="middle">search only</text>
+<path d="M 790 344.0 H 810.9 V 418.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 423.0 H 803.6 V 497.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 479.0 H 816.4 V 497.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 479.0 H 809.1 V 590.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 535.0 H 801.8 V 590.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 158.0 H 814.5 V 590.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 220.0 H 807.3 V 590.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 96.0 H 800.0 V 690.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 666.0 H 812.7 V 690.0 H 828" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 790 786.0 H 805.5 V 690.0 H 828" fill="none" stroke="#475569" stroke-width="1.2" stroke-opacity="0.75" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+<path d="M 1100 160.0 H 1122.7 V 193.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1100 253.0 H 1115.5 V 193.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="1127.7" y="189.0" fill="#94a3b8" font-size="7.5" text-anchor="middle">typed words</text>
+<path d="M 1100 339.0 H 1128.2 V 332.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1100 418.0 H 1120.9 V 418.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1100 497.0 H 1113.6 V 497.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1100 590.0 H 1126.4 V 590.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1100 690.0 H 1119.1 V 690.0 H 1138" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 193.0 H 1367.7 V 206.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 332.0 H 1360.5 V 206.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 590.0 H 1373.2 V 206.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 418.0 H 1365.9 V 418.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 497.0 H 1358.6 V 497.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 1345 690.0 H 1371.4 V 690.0 H 1383" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<path d="M 830 160.0 H 818 V 253.0 H 828" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="815" y="206.5" fill="#94a3b8" font-size="7.5" text-anchor="end" transform="rotate(-90 815 206.5)">catalogue</text>
+<path d="M 830 253.0 H 818 V 339.0 H 828" fill="none" stroke="#34d399" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="815" y="296.0" fill="#94a3b8" font-size="7.5" text-anchor="end" transform="rotate(-90 815 296.0)">matcher</text>
+<path d="M 1140 497.0 H 1128 V 590.0 H 1138" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<text x="1125" y="543.5" fill="#94a3b8" font-size="7.5" text-anchor="end" transform="rotate(-90 1125 543.5)">linked field</text>
+<path d="M 1385 690.0 H 1373 V 793.0 H 1383" fill="none" stroke="#fb7185" stroke-width="1.2" stroke-opacity="0.75" marker-end="url(#ah)"/>
+<rect x="20" y="70" width="250" height="92" rx="6" fill="#0f172a"/>
+<rect x="20" y="70" width="250" height="92" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="145.0" y="87" fill="white" font-size="11" font-weight="600" text-anchor="middle">O*NET 31.0 Database</text>
+<text x="145.0" y="101" fill="#94a3b8" font-size="8.5" text-anchor="middle">U.S. Dept. of Labor (USDOL/ETA)</text>
+<text x="145.0" y="113" fill="#94a3b8" font-size="8.5" text-anchor="middle">db_31_0_text.zip · 11 files used</text>
+<text x="145.0" y="125" fill="#94a3b8" font-size="8.5" text-anchor="middle">downloaded 2026-10-29</text>
+<text x="145.0" y="155" fill="#94a3b8" font-size="8" text-anchor="middle">CC BY 4.0</text>
+<rect x="20" y="330" width="250" height="80" rx="6" fill="#0f172a"/>
+<rect x="20" y="330" width="250" height="80" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="145.0" y="347" fill="white" font-size="11" font-weight="600" text-anchor="middle">O*NET CIP crosswalk</text>
+<text x="145.0" y="361" fill="#94a3b8" font-size="8.5" text-anchor="middle">O*NET Resource Center</text>
+<text x="145.0" y="373" fill="#94a3b8" font-size="8.5" text-anchor="middle">CIP 2020 → O*NET-SOC 2019 (xlsx)</text>
+<text x="145.0" y="403" fill="#94a3b8" font-size="8" text-anchor="middle">CC BY 4.0 · 2026-10-30</text>
+<rect x="20" y="430" width="250" height="80" rx="6" fill="#0f172a"/>
+<rect x="20" y="430" width="250" height="80" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="145.0" y="447" fill="white" font-size="11" font-weight="600" text-anchor="middle">Statistics Canada concordance</text>
+<text x="145.0" y="461" fill="#94a3b8" font-size="8.5" text-anchor="middle">ISCED-F 2013 ↔ CIP Canada 2016 (csv)</text>
+<text x="145.0" y="473" fill="#94a3b8" font-size="8.5" text-anchor="middle">* = partial link</text>
+<text x="145.0" y="503" fill="#94a3b8" font-size="8" text-anchor="middle">Open Licence · 2026-10-30</text>
+<rect x="20" y="530" width="250" height="66" rx="6" fill="#0f172a"/>
+<rect x="20" y="530" width="250" height="66" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="145.0" y="547" fill="white" font-size="11" font-weight="600" text-anchor="middle">UNESCO ISCED-F 2013</text>
+<text x="145.0" y="561" fill="#94a3b8" font-size="8.5" text-anchor="middle">11 broad field names (UIS 2014)</text>
+<text x="145.0" y="589" fill="#94a3b8" font-size="8" text-anchor="middle">typed into fetch_isced.py</text>
+<rect x="20" y="640" width="250" height="66" rx="6" fill="#0f172a"/>
+<rect x="20" y="640" width="250" height="66" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="145.0" y="657" fill="white" font-size="11" font-weight="600" text-anchor="middle">eMASCO · MASCO 2020</text>
+<text x="145.0" y="671" fill="#94a3b8" font-size="8.5" text-anchor="middle">Malaysia MOHR · 1,766 roles</text>
+<text x="145.0" y="699" fill="#94a3b8" font-size="8" text-anchor="middle">crawled 2026-10-23</text>
+<rect x="20" y="760" width="250" height="66" rx="6" fill="#0f172a"/>
+<rect x="20" y="760" width="250" height="66" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+<text x="145.0" y="777" fill="white" font-size="11" font-weight="600" text-anchor="middle">O*NET Web Services (live)</text>
+<text x="145.0" y="791" fill="#94a3b8" font-size="8.5" text-anchor="middle">api-v2.onetcenter.org</text>
+<text x="145.0" y="819" fill="#fbbf24" font-size="8" text-anchor="middle">ONET_API_KEY · NOT SET</text>
+<rect x="310" y="190" width="175" height="80" rx="6" fill="#0f172a"/>
+<rect x="310" y="190" width="175" height="80" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1.5"/>
+<text x="397.5" y="207" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_onet.py</text>
+<text x="397.5" y="221" fill="#94a3b8" font-size="8.5" text-anchor="middle">keeps listed columns</text>
+<text x="397.5" y="233" fill="#94a3b8" font-size="8.5" text-anchor="middle">and one scale per file</text>
+<text x="397.5" y="263" fill="#fb923c" font-size="8" text-anchor="middle">SHA-256 → manifest</text>
+<rect x="310" y="430" width="175" height="80" rx="6" fill="#0f172a"/>
+<rect x="310" y="430" width="175" height="80" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1.5"/>
+<text x="397.5" y="447" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_isced.py</text>
+<text x="397.5" y="461" fill="#94a3b8" font-size="8.5" text-anchor="middle">csv (cp1252) + xlsx</text>
+<text x="397.5" y="473" fill="#94a3b8" font-size="8.5" text-anchor="middle">→ 3 tab files</text>
+<text x="397.5" y="503" fill="#fb923c" font-size="8" text-anchor="middle">SHA-256 → manifest</text>
+<rect x="310" y="640" width="175" height="66" rx="6" fill="#0f172a"/>
+<rect x="310" y="640" width="175" height="66" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1.5"/>
+<text x="397.5" y="657" fill="white" font-size="11" font-weight="600" text-anchor="middle">copied once</text>
+<text x="397.5" y="671" fill="#94a3b8" font-size="8.5" text-anchor="middle">data only, no code</text>
+<rect x="525" y="70" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="70" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="87" fill="white" font-size="11" font-weight="600" text-anchor="middle">onet/occupations · job_titles</text>
+<text x="657.5" y="101" fill="#94a3b8" font-size="8.5" text-anchor="middle">1,016 jobs · 54,269 titles</text>
+<rect x="525" y="132" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="132" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="149" fill="white" font-size="11" font-weight="600" text-anchor="middle">onet/skills.tsv</text>
+<text x="657.5" y="163" fill="#94a3b8" font-size="8.5" text-anchor="middle">35 basic skills × jobs (IM 1–5)</text>
+<rect x="525" y="194" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="194" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="211" fill="white" font-size="11" font-weight="600" text-anchor="middle">onet/software.tsv</text>
+<text x="657.5" y="225" fill="#94a3b8" font-size="8.5" text-anchor="middle">8,753 software names × jobs</text>
+<rect x="525" y="256" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="256" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="273" fill="white" font-size="11" font-weight="600" text-anchor="middle">onet/knowledge · styles · activities</text>
+<text x="657.5" y="287" fill="#94a3b8" font-size="8.5" text-anchor="middle">33 (IM) · 21 (WI −3..3) · 2,085 activities</text>
+<rect x="525" y="318" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="318" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="335" fill="white" font-size="11" font-weight="600" text-anchor="middle">onet/interest_areas.tsv</text>
+<text x="657.5" y="349" fill="#94a3b8" font-size="8.5" text-anchor="middle">41 areas × 891 jobs (OI 1–7, AI/Expert)</text>
+<rect x="525" y="400" width="265" height="46" rx="6" fill="#0f172a"/>
+<rect x="525" y="400" width="265" height="46" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="417" fill="white" font-size="11" font-weight="600" text-anchor="middle">isced/fields.tsv</text>
+<text x="657.5" y="431" fill="#94a3b8" font-size="8.5" text-anchor="middle">124 fields + broad field</text>
+<rect x="525" y="456" width="265" height="46" rx="6" fill="#0f172a"/>
+<rect x="525" y="456" width="265" height="46" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="473" fill="white" font-size="11" font-weight="600" text-anchor="middle">isced/isced_cip.tsv</text>
+<text x="657.5" y="487" fill="#94a3b8" font-size="8.5" text-anchor="middle">1,809 field ↔ programme links</text>
+<rect x="525" y="512" width="265" height="46" rx="6" fill="#0f172a"/>
+<rect x="525" y="512" width="265" height="46" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="529" fill="white" font-size="11" font-weight="600" text-anchor="middle">isced/cip_onet.tsv</text>
+<text x="657.5" y="543" fill="#94a3b8" font-size="8.5" text-anchor="middle">8,501 programme → job links</text>
+<rect x="525" y="568" width="265" height="46" rx="6" fill="#0f172a"/>
+<rect x="525" y="568" width="265" height="46" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="585" fill="white" font-size="11" font-weight="600" text-anchor="middle">isced/source/ (originals)</text>
+<text x="657.5" y="599" fill="#94a3b8" font-size="8.5" text-anchor="middle">the csv + xlsx as downloaded</text>
+<rect x="525" y="640" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="640" width="265" height="52" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="657.5" y="657" fill="white" font-size="11" font-weight="600" text-anchor="middle">emasco/occupations.json</text>
+<text x="657.5" y="671" fill="#94a3b8" font-size="8.5" text-anchor="middle">code · title · URL</text>
+<rect x="525" y="760" width="265" height="52" rx="6" fill="#0f172a"/>
+<rect x="525" y="760" width="265" height="52" rx="6" fill="rgba(30, 41, 59, 0.3)" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="657.5" y="777" fill="white" font-size="11" font-weight="600" text-anchor="middle">cache/onet/&lt;sha1&gt;.json</text>
+<text x="657.5" y="791" fill="#94a3b8" font-size="8.5" text-anchor="middle">live answers · empty (no key)</text>
+<rect x="830" y="120" width="270" height="80" rx="6" fill="#0f172a"/>
+<rect x="830" y="120" width="270" height="80" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="137" fill="white" font-size="11" font-weight="600" text-anchor="middle">skills/onetSkills.js</text>
+<text x="965.0" y="151" fill="#94a3b8" font-size="8.5" text-anchor="middle">entries: skills + software</text>
+<text x="965.0" y="163" fill="#94a3b8" font-size="8.5" text-anchor="middle">more: knowledge, styles, activities</text>
+<text x="965.0" y="193" fill="#34d399" font-size="8" text-anchor="middle">GET /api/skills/search</text>
+<rect x="830" y="220" width="270" height="66" rx="6" fill="#0f172a"/>
+<rect x="830" y="220" width="270" height="66" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="237" fill="white" font-size="11" font-weight="600" text-anchor="middle">skills/normalize.js</text>
+<text x="965.0" y="251" fill="#94a3b8" font-size="8.5" text-anchor="middle">exact → word → candidates</text>
+<text x="965.0" y="279" fill="#34d399" font-size="8" text-anchor="middle">POST /api/skills/normalize</text>
+<rect x="830" y="306" width="270" height="66" rx="6" fill="#0f172a"/>
+<rect x="830" y="306" width="270" height="66" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="323" fill="white" font-size="11" font-weight="600" text-anchor="middle">cv/extract.js (L2)</text>
+<text x="965.0" y="337" fill="#94a3b8" font-size="8.5" text-anchor="middle">software names + Skills section</text>
+<text x="965.0" y="365" fill="#34d399" font-size="8" text-anchor="middle">POST /api/cv/extract</text>
+<rect x="830" y="392" width="270" height="52" rx="6" fill="#0f172a"/>
+<rect x="830" y="392" width="270" height="52" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="409" fill="white" font-size="11" font-weight="600" text-anchor="middle">interests/interestAreas.js</text>
+<text x="965.0" y="423" fill="#94a3b8" font-size="8.5" text-anchor="middle">hash-checked list of 41</text>
+<text x="965.0" y="437" fill="#34d399" font-size="8" text-anchor="middle">GET /api/interests</text>
+<rect x="830" y="464" width="270" height="66" rx="6" fill="#0f172a"/>
+<rect x="830" y="464" width="270" height="66" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="481" fill="white" font-size="11" font-weight="600" text-anchor="middle">fields/isced.js</text>
+<text x="965.0" y="495" fill="#94a3b8" font-size="8.5" text-anchor="middle">field names + programme names</text>
+<text x="965.0" y="523" fill="#34d399" font-size="8" text-anchor="middle">GET /api/fields/search</text>
+<rect x="830" y="550" width="270" height="80" rx="6" fill="#0f172a"/>
+<rect x="830" y="550" width="270" height="80" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="567" fill="white" font-size="11" font-weight="600" text-anchor="middle">fields/fieldSkills.js</text>
+<text x="965.0" y="581" fill="#94a3b8" font-size="8.5" text-anchor="middle">field → CIP → jobs → skills</text>
+<text x="965.0" y="593" fill="#94a3b8" font-size="8.5" text-anchor="middle">&#x27;typical of the field&#x27; rule</text>
+<text x="965.0" y="623" fill="#34d399" font-size="8" text-anchor="middle">GET /api/fields/:code/skills</text>
+<rect x="830" y="650" width="270" height="80" rx="6" fill="#0f172a"/>
+<rect x="830" y="650" width="270" height="80" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+<text x="965.0" y="667" fill="white" font-size="11" font-weight="600" text-anchor="middle">occupations/ onetSnapshot + lookup</text>
+<text x="965.0" y="681" fill="#94a3b8" font-size="8.5" text-anchor="middle">live → cached → eMASCO → failed</text>
+<text x="965.0" y="693" fill="#94a3b8" font-size="8.5" text-anchor="middle">(onetLive.js + cache.js)</text>
+<text x="965.0" y="723" fill="#34d399" font-size="8" text-anchor="middle">GET /api/occupations/search</text>
+<rect x="1140" y="306" width="205" height="52" rx="6" fill="#0f172a"/>
+<rect x="1140" y="306" width="205" height="52" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="323" fill="white" font-size="11" font-weight="600" text-anchor="middle">Upload CV (Case A)</text>
+<text x="1242.5" y="337" fill="#94a3b8" font-size="8.5" text-anchor="middle">skills found in the CV</text>
+<rect x="1140" y="160" width="205" height="66" rx="6" fill="#0f172a"/>
+<rect x="1140" y="160" width="205" height="66" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="177" fill="white" font-size="11" font-weight="600" text-anchor="middle">Skills search</text>
+<text x="1242.5" y="191" fill="#94a3b8" font-size="8.5" text-anchor="middle">pick, or &#x27;add as I wrote it&#x27;</text>
+<text x="1242.5" y="219" fill="#22d3ee" font-size="8" text-anchor="middle">source: O*NET 31.0</text>
+<rect x="1140" y="392" width="205" height="52" rx="6" fill="#0f172a"/>
+<rect x="1140" y="392" width="205" height="52" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="409" fill="white" font-size="11" font-weight="600" text-anchor="middle">Career interests dropdown</text>
+<text x="1242.5" y="423" fill="#94a3b8" font-size="8.5" text-anchor="middle">several · chips with ×</text>
+<rect x="1140" y="464" width="205" height="66" rx="6" fill="#0f172a"/>
+<rect x="1140" y="464" width="205" height="66" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="481" fill="white" font-size="11" font-weight="600" text-anchor="middle">Field of study search</text>
+<text x="1242.5" y="495" fill="#94a3b8" font-size="8.5" text-anchor="middle">shows matched programme</text>
+<text x="1242.5" y="523" fill="#22d3ee" font-size="8" text-anchor="middle">source: ISCED-F · StatCan</text>
+<rect x="1140" y="550" width="205" height="80" rx="6" fill="#0f172a"/>
+<rect x="1140" y="550" width="205" height="80" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="567" fill="white" font-size="11" font-weight="600" text-anchor="middle">Suggested skill chips</text>
+<text x="1242.5" y="581" fill="#94a3b8" font-size="8.5" text-anchor="middle">one click adds</text>
+<text x="1242.5" y="593" fill="#94a3b8" font-size="8.5" text-anchor="middle">reason on hover</text>
+<text x="1242.5" y="623" fill="#22d3ee" font-size="8" text-anchor="middle">source: O*NET via CIP</text>
+<rect x="1140" y="650" width="205" height="80" rx="6" fill="#0f172a"/>
+<rect x="1140" y="650" width="205" height="80" rx="6" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="1242.5" y="667" fill="white" font-size="11" font-weight="600" text-anchor="middle">Roles of interest search</text>
+<text x="1242.5" y="681" fill="#94a3b8" font-size="8.5" text-anchor="middle">+ job title → occupation</text>
+<text x="1242.5" y="693" fill="#94a3b8" font-size="8.5" text-anchor="middle">state · version · date</text>
+<text x="1242.5" y="723" fill="#22d3ee" font-size="8" text-anchor="middle">source: O*NET / eMASCO</text>
+<rect x="1385" y="160" width="205" height="92" rx="6" fill="#0f172a"/>
+<rect x="1385" y="160" width="205" height="92" rx="6" fill="rgba(136, 19, 55, 0.25)" stroke="#fb7185" stroke-width="1.5"/>
+<text x="1487.5" y="177" fill="white" font-size="11" font-weight="600" text-anchor="middle">skills[ ]</text>
+<text x="1487.5" y="191" fill="#94a3b8" font-size="8.5" text-anchor="middle">canonicalId onet:tech · el ·</text>
+<text x="1487.5" y="203" fill="#94a3b8" font-size="8.5" text-anchor="middle">ws · kn · dwa</text>
+<text x="1487.5" y="215" fill="#94a3b8" font-size="8.5" text-anchor="middle">suggestedFrom {isced code}</text>
+<text x="1487.5" y="245" fill="#fb7185" font-size="8" text-anchor="middle">proficiency: user only</text>
+<rect x="1385" y="392" width="205" height="52" rx="6" fill="#0f172a"/>
+<rect x="1385" y="392" width="205" height="52" rx="6" fill="rgba(136, 19, 55, 0.25)" stroke="#fb7185" stroke-width="1.5"/>
+<text x="1487.5" y="409" fill="white" font-size="11" font-weight="600" text-anchor="middle">preferences.careerInterests</text>
+<text x="1487.5" y="423" fill="#94a3b8" font-size="8.5" text-anchor="middle">{source:onet, id onet:ia:…}</text>
+<rect x="1385" y="464" width="205" height="66" rx="6" fill="#0f172a"/>
+<rect x="1385" y="464" width="205" height="66" rx="6" fill="rgba(136, 19, 55, 0.25)" stroke="#fb7185" stroke-width="1.5"/>
+<text x="1487.5" y="481" fill="white" font-size="11" font-weight="600" text-anchor="middle">education.records[].field</text>
+<text x="1487.5" y="495" fill="#94a3b8" font-size="8.5" text-anchor="middle">{source:isced, code, title,</text>
+<text x="1487.5" y="507" fill="#94a3b8" font-size="8.5" text-anchor="middle">version}</text>
+<rect x="1385" y="650" width="205" height="80" rx="6" fill="#0f172a"/>
+<rect x="1385" y="650" width="205" height="80" rx="6" fill="rgba(136, 19, 55, 0.25)" stroke="#fb7185" stroke-width="1.5"/>
+<text x="1487.5" y="667" fill="white" font-size="11" font-weight="600" text-anchor="middle">occupation + mappings</text>
+<text x="1487.5" y="681" fill="#94a3b8" font-size="8.5" text-anchor="middle">{source: onet | emasco,</text>
+<text x="1487.5" y="693" fill="#94a3b8" font-size="8.5" text-anchor="middle">code, version, fetchedAt}</text>
+<rect x="1385" y="760" width="205" height="66" rx="6" fill="#0f172a"/>
+<rect x="1385" y="760" width="205" height="66" rx="6" fill="rgba(30, 41, 59, 0.3)" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="1487.5" y="777" fill="white" font-size="11" font-weight="600" text-anchor="middle">Matching module (not built)</text>
+<text x="1487.5" y="791" fill="#94a3b8" font-size="8.5" text-anchor="middle">reads 6 + the bridge files</text>
+<text x="1487.5" y="819" fill="#475569" font-size="8" text-anchor="middle">no old scoring</text>
+<text x="525" y="840" fill="#a78bfa" font-size="8.5">Every data file is checked against its manifest.json SHA-256 before use (onetSkills.js reads skills/software without the check).</text>
+<text x="20" y="880" fill="white" font-size="10" font-weight="600">Legend</text>
+<rect x="20" y="892" width="16" height="10" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1"/>
+<text x="42" y="901" fill="#94a3b8" font-size="8.5">outside source</text>
+<rect x="220" y="892" width="16" height="10" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+<text x="242" y="901" fill="#94a3b8" font-size="8.5">outside live service</text>
+<rect x="420" y="892" width="16" height="10" rx="2" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1"/>
+<text x="442" y="901" fill="#94a3b8" font-size="8.5">pipeline script</text>
+<rect x="620" y="892" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+<text x="642" y="901" fill="#94a3b8" font-size="8.5">data file in repo</text>
+<rect x="20" y="912" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1"/>
+<text x="42" y="921" fill="#94a3b8" font-size="8.5">server code + API</text>
+<rect x="220" y="912" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+<text x="242" y="921" fill="#94a3b8" font-size="8.5">screen</text>
+<rect x="420" y="912" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.25)" stroke="#fb7185" stroke-width="1"/>
+<text x="442" y="921" fill="#94a3b8" font-size="8.5">saved profile field</text>
+<rect x="620" y="912" width="16" height="10" rx="2" fill="rgba(30, 41, 59, 0.3)" stroke="#475569" stroke-width="1"/>
+<text x="642" y="921" fill="#94a3b8" font-size="8.5">off / not built</text>
+<line x1="840" y1="897" x2="870" y2="897" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,4"/>
+<text x="876" y="900" fill="#94a3b8" font-size="8.5">only when switched on</text>
+<text x="840" y="921" fill="#94a3b8" font-size="8.5">Arrow colour = where the link starts. Left-side arrows link boxes in one column.</text>
+</svg>
+</div>
+<h2 class="section-title">2 · Every reference and source</h2>
+<p class="section-note">Full rows, dates and checksums: data/SOURCES.md. Every list on screen names its source (owner rule).</p>
+<div class="diagram-container table-wrap"><table class="refs">
+<thead><tr><th>Reference / source</th><th>Published by</th><th>Version · date</th><th>Licence</th><th>In this repo</th><th>How the app uses it</th><th>How it links</th></tr></thead>
+<tbody><tr><td>O*NET 31.0 Database</td><td>U.S. Dept. of Labor, ETA (onetcenter.org)</td><td>31.0 · zip downloaded 2026-10-29</td><td>CC BY 4.0</td><td>data/onet/*.tsv + manifest.json (from Occupation Data, Job Titles, Sample of Reported Titles, Essential + Transferable Skills, Software Skills, Knowledge, Work Styles, Specific Interest Areas, Tasks to DWAs, GWAs to IWAs to DWAs)</td><td>Skill search and matching (skills + software), search-only lists (knowledge, work styles, work activities), job titles for roles, interest areas for the career-interests dropdown, job lists for suggestions</td><td>Jobs are the shared key: O*NET-SOC codes join skills, software, interest areas and the CIP crosswalk</td></tr>
+<tr><td>O*NET CIP crosswalk</td><td>O*NET Resource Center</td><td>CIP 2020 → O*NET-SOC 2019 · updated 07/2024 · downloaded 2026-10-30</td><td>CC BY 4.0</td><td>data/isced/cip_onet.tsv; original data/isced/source/Education_CIP_to_ONET_SOC.xlsx</td><td>Second half of the field-of-study bridge: programme → jobs. Used for skill suggestions; stored for matching</td><td>CIP code ← Statistics Canada table; O*NET-SOC code → O*NET 31.0 jobs</td></tr>
+<tr><td>Statistics Canada concordance</td><td>Statistics Canada</td><td>ISCED-F 2013 ↔ CIP Canada 2016 · downloaded 2026-10-30</td><td>Statistics Canada Open Licence</td><td>data/isced/fields.tsv, isced_cip.tsv; original data/isced/source/isced-f-2013-cip2016-eng.csv</td><td>The 124 field-of-study names users pick from; programme names that make &#x27;computer science&#x27; find 0613; first half of the bridge</td><td>ISCED-F code → CIP code (joined on equal codes with the O*NET crosswalk; 118 of 124 fields reach O*NET)</td></tr>
+<tr><td>UNESCO ISCED-F 2013</td><td>UNESCO Institute for Statistics</td><td>2013 classification, field descriptions 2014/2015</td><td>UNESCO publication</td><td>11 broad-field names typed into pipeline/fetch_isced.py</td><td>Broad field shown under each field of study</td><td>Groups the 124 Statistics Canada fields by their first 2 digits</td></tr>
+<tr><td>Malaysia NEC 2020</td><td>Ministry of Higher Education / MQA</td><td>effective 1 Jan 2022</td><td>reference only</td><td>nothing stored</td><td>The reason ISCED-F was chosen: Malaysia&#x27;s education code is built on it</td><td>Explains why ISCED-F fits Malaysian courses</td></tr>
+<tr><td>eMASCO (MASCO 2020)</td><td>Ministry of Human Resources, Malaysia</td><td>English pages crawled 2026-10-23</td><td>public government reference</td><td>data/emasco/occupations.json (code, title, URL; copied once as data)</td><td>Malaysian roles listed beside O*NET in role search; fallback when the O*NET snapshot cannot be used</td><td>Matched to the user&#x27;s words by title only; never merged with O*NET codes</td></tr>
+<tr><td>O*NET Web Services (live)</td><td>O*NET Resource Center</td><td>api-v2</td><td>free key needed</td><td>data/cache/onet/&lt;sha1&gt;.json (git-ignored, empty)</td><td>Step 1 of the role lookup; not used yet (ONET_API_KEY not set)</td><td>Same O*NET-SOC codes as the 31.0 snapshot</td></tr>
+<tr><td>O*NET Scales Reference</td><td>O*NET (inside the 31.0 zip)</td><td>31.0</td><td>CC BY 4.0</td><td>not stored</td><td>Meaning of each kept scale: IM importance 1–5, WI work-style impact −3..3, OI interest 1–7</td><td>Explains the numbers in skills, knowledge, work_styles, interest_areas</td></tr>
+<tr><td>Statistics Canada &#x27;How to read&#x27; page</td><td>Statistics Canada</td><td>CIP 2016 – ISCED-F 2013</td><td>reference only</td><td>partial flag in isced_cip.tsv</td><td>Meaning of &#x27;*&#x27; (partial link) kept as partial = Y</td><td>Partial links are still used for suggestions and shown honestly</td></tr>
+<tr><td>Owner&#x27;s architecture diagram + spec</td><td>project owner</td><td>docs/superpowers/specs/2026-10-29-cv-profile-module-design.md</td><td>project</td><td>docs/</td><td>What to build; nothing beyond it without the owner&#x27;s OK</td><td>Every owner decision above is recorded in the spec and the build record</td></tr>
+<tr><td>Synthetic test sets</td><td>this project (invented)</td><td>testing/eval-cvs.json · testing/model-eval-set.json</td><td>project</td><td>testing/</td><td>CV evaluation (11 CVs) and the L3 model check (61 wordings)</td><td>Checked against O*NET 31.0 ids; no personal data</td></tr></tbody></table></div>
+<h2 class="section-title">3 · Code layers (browser · shared · server · data · outside services · git)</h2>
+<p class="section-note">The whole module by file. Labels updated on 30 Oct; the field-of-study, interest-area and suggestion routes are drawn in full in diagram 1.</p>
+<div class="diagram-container">
       <svg viewBox="0 0 1400 1560" font-family="JetBrains Mono, monospace">
         <defs>
           <marker id="a-slate" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/></marker>
@@ -94,7 +400,7 @@
         <path d="M 700 750 L 712 750 L 712 660 L 728 660" fill="none" stroke="#34d399" stroke-width="1.2" marker-end="url(#a-emerald)"/>
         <!-- normalize / onetSkills -> data/onet -->
         <path d="M 910 618 L 950 618 L 950 262 L 978 262" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#a-violet)"/>
-        <text x="954" y="440" fill="#a78bfa" font-size="8" transform="rotate(-90 954 440)">skill catalogue (8,788 names)</text>
+        <text x="954" y="440" fill="#a78bfa" font-size="8" transform="rotate(-90 954 440)">skill catalogue (8,788) + 2,139 search-only</text>
         <!-- lookup -> snapshot / emasco / cache -->
         <path d="M 910 880 L 962 880 L 962 280 L 978 280" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a-violet)"/>
         <path d="M 962 360 L 978 360" fill="none" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#a-violet)"/>
@@ -139,7 +445,7 @@
         <text x="960" y="156" fill="#22d3ee" font-size="7" text-anchor="middle">88b8ae0 (PR #1 head)</text>
         <path d="M 960 135 Q 1010 135 1052 82" fill="none" stroke="#fb923c" stroke-width="1.5" marker-end="url(#a-amber)"/>
         <circle cx="1290" cy="135" r="7" fill="#22d3ee" stroke="#22d3ee" stroke-width="2"/>
-        <text x="1290" y="156" fill="#22d3ee" font-size="7" text-anchor="middle" font-weight="600">0c996c1 HEAD · detailed HANDOVER/CLAUDE</text>
+        <text x="1290" y="156" fill="#22d3ee" font-size="7" text-anchor="middle" font-weight="600">72be4d8 HEAD · 30 Oct · merged 928f4a7</text>
 
         <!-- ============================ BROWSER REGION (public/) ============================ -->
         <rect x="20" y="190" width="430" height="900" rx="12" fill="rgba(34,211,238,0.03)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="8,4"/>
@@ -180,7 +486,7 @@
         <rect x="245" y="435" width="185" height="270" rx="6" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
         <text x="337" y="455" fill="white" font-size="11" font-weight="600" text-anchor="middle">public/js/components/</text>
         <text x="257" y="478" fill="#94a3b8" font-size="8">fields.js</text>
-        <text x="265" y="490" fill="#64748b" font-size="7">stateField · listField · records</text>
+        <text x="265" y="490" fill="#64748b" font-size="7">Prefer-not dropdowns · searchPicker</text>
         <text x="257" y="512" fill="#94a3b8" font-size="8">occupationPicker.js</text>
         <text x="265" y="524" fill="#64748b" font-size="7">state line · candidates · link</text>
         <text x="257" y="546" fill="#94a3b8" font-size="8">accountBox.js</text>
@@ -374,7 +680,7 @@
         <rect x="980" y="225" width="390" height="70" rx="6" fill="#0f172a"/>
         <rect x="980" y="225" width="390" height="70" rx="6" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
         <text x="1175" y="244" fill="white" font-size="10" font-weight="600" text-anchor="middle">data/onet/ · O*NET 31.0 (CC BY 4.0)</text>
-        <text x="1175" y="259" fill="#94a3b8" font-size="7.5" text-anchor="middle">occupations.tsv (1,016) · job_titles.tsv · skills.tsv · software.tsv</text>
+        <text x="1175" y="259" fill="#94a3b8" font-size="7.5" text-anchor="middle">occupations · titles · skills · software · +4 lists (diagram 1)</text>
         <text x="1175" y="272" fill="#94a3b8" font-size="7.5" text-anchor="middle">manifest.json: version, URL, date, SHA-256 per file</text>
         <text x="1175" y="286" fill="#a78bfa" font-size="7" text-anchor="middle">LF line endings kept by .gitattributes · refresh: python pipeline/fetch_onet.py 31.0</text>
         <rect x="980" y="315" width="390" height="56" rx="6" fill="#0f172a"/>
@@ -530,38 +836,38 @@
 
     <div class="cards">
       <div class="card">
-        <div class="card-header"><div class="card-dot cyan"></div><h3>Case A · one CV upload, end to end</h3></div>
+        <div class="card-header"><div class="card-dot violet"></div><h3>How the sources link, in one line each</h3></div>
         <ul>
-          <li>• <code>public/js/screens/upload.js</code> → <code>cvApi.uploadCv()</code> sends the raw file to <code>POST /api/cv/extract</code> with <code>X-Interface-Language</code></li>
-          <li>• <code>server/routes/cv.js</code>: <code>validateFile</code> → <code>readText</code> → <code>detectLanguage</code> → <code>extractProfile</code> (L1, L2, L4; L3 skipped)</li>
-          <li>• Skills go through <code>server/skills/normalize.js</code> against <code>data/onet</code>; a temporary copy goes to R2 only when R2 is set</li>
-          <li>• Answer <code>{status, extractionId, language, profile (draft), uncertain, extractor, warnings}</code> → <code>mergeDraft</code> into the form</li>
-          <li>• Review (Unverified, quotes) → Confirm → <code>POST /api/profiles/validate</code> → summary; with an account also <code>POST/PATCH /api/profiles</code></li>
+          <li>• <b>O*NET-SOC job codes</b> join skills, software, knowledge, work styles, activities and interest areas</li>
+          <li>• <b>Field of study → jobs:</b> ISCED-F code → CIP code (Statistics Canada) → O*NET-SOC (O*NET crosswalk); equal codes only, 118/124 fields</li>
+          <li>• <b>Suggested skills:</b> those jobs → what they list more often than all jobs (software ≥ 2 jobs; skills above the all-jobs average)</li>
+          <li>• <b>Roles:</b> O*NET snapshot (job titles) beside eMASCO titles; live O*NET first once a key exists</li>
+          <li>• <b>Profile ids keep their source:</b> onet:tech/el/ws/kn/dwa/ia · isced:code · onet|emasco occupation code</li>
         </ul>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-dot amber"></div><h3>What is on and what is waiting</h3></div>
         <ul>
-          <li>• ON: upload, form, review, summary, O*NET 31.0 snapshot, eMASCO, guest saving, three languages</li>
+          <li>• ON: upload, form with search pickers, review, summary, O*NET 31.0, ISCED-F + CIP bridge, eMASCO, guest saving, 3 languages</li>
           <li>• WAITING (owner keys): <code>ONET_API_KEY</code>, <code>D1_*</code>, <code>R2_*</code></li>
           <li>• OFF (owner choice): L3 RunPod embeddings, AI re-read provider (RunPod chat / Claude)</li>
-          <li>• Spec limits only: sign-in 10 per 15 min; AI re-read 3 per upload, 20 per hour</li>
-          <li>• Next module (not started): matching. It uses the confirmed profile JSON. No old scoring</li>
+          <li>• Stored for matching, not used yet: isced_cip + cip_onet bridge, interest-area values (1–7), work-style values</li>
+          <li>• Next module: matching. It reads the saved profile (column 6). No old scoring</li>
         </ul>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-dot emerald"></div><h3>Where the CV branch lives · commands</h3></div>
         <ul>
-          <li>• Local: <code>C:\Users\guiro\XH_Cat_Final</code> on branch <code>claude/cv-profile-module</code> (HEAD <code>0c996c1</code>)</li>
-          <li>• GitHub: <code>origin/claude/cv-profile-module</code>; merged into <code>main</code> by PR #1 (<code>301c10e</code>)</li>
-          <li>• <code>git checkout claude/cv-profile-module &amp;&amp; npm install &amp;&amp; npm test</code> → 179 passed</li>
-          <li>• <code>npm start</code> → http://localhost:3200 · <code>node scripts/serve-local-accounts.mjs</code> → :3100</li>
-          <li>• Start a new session by reading <code>HANDOVER.md</code> then <code>CLAUDE.md</code> on this branch</li>
+          <li>• Branch <code>claude/cv-profile-module</code> (HEAD <code>72be4d8</code>), merged into <code>main</code> as <code>928f4a7</code>, both on GitHub</li>
+          <li>• Folders: <code>XH_Cat_Final-cv</code> (this branch) · <code>XH_Cat_Final-main</code> (main)</li>
+          <li>• <code>npm install &amp;&amp; npm test</code> → 232 passed · <code>python -m unittest discover pipeline/tests</code> → 8 OK</li>
+          <li>• Data: <code>python pipeline/fetch_onet.py 31.0</code> · <code>python pipeline/fetch_isced.py</code> · sources in <code>data/SOURCES.md</code></li>
+          <li>• <code>npm start</code> → http://localhost:3200</li>
         </ul>
       </div>
     </div>
 
-    <p class="footer">FutureReady MY · CV extraction and structured profile module · branch claude/cv-profile-module · generated 2026-10-29</p>
+    <p class="footer">FutureReady MY · CV extraction and structured profile module · branch claude/cv-profile-module · updated 2026-10-30</p>
   </div>
 
   <script>

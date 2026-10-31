@@ -1,0 +1,61 @@
+name,group,current_role_code,skill,level
+Staff 01,Finance,2411-01,Mathematics,expert
+Staff 01,Finance,2411-01,Critical Thinking,good
+Staff 01,Finance,2411-01,Management of Financial Resources,expert
+Staff 01,Finance,2411-01,Reading Comprehension,good
+Staff 01,Finance,2411-01,Economics and Accounting,expert
+Staff 02,Finance,2411-01,Mathematics,good
+Staff 02,Finance,2411-01,Critical Thinking,basic
+Staff 02,Finance,2411-01,Management of Financial Resources,good
+Staff 02,Finance,2411-01,Economics and Accounting,good
+Staff 02,Finance,2411-01,Active Listening,not assessed
+Staff 03,Finance,3313-01,Mathematics,good
+Staff 03,Finance,3313-01,Judgment and Decision Making,good
+Staff 03,Finance,3313-01,Management of Financial Resources,expert
+Staff 03,Finance,3313-01,Economics and Accounting,basic
+Staff 03,Finance,3313-01,Monitoring,good
+Staff 04,Finance,1211-01,Management of Financial Resources,expert
+Staff 04,Finance,1211-01,Management of Personnel Resources,good
+Staff 04,Finance,1211-01,Judgment and Decision Making,expert
+Staff 04,Finance,1211-01,Administration and Management,expert
+Staff 04,Finance,1211-01,Economics and Accounting,good
+Staff 05,Customer Service,1222-04,Service Orientation,expert
+Staff 05,Customer Service,1222-04,Active Listening,expert
+Staff 05,Customer Service,1222-04,Management of Personnel Resources,good
+Staff 05,Customer Service,1222-04,Customer and Personal Service,expert
+Staff 05,Customer Service,1222-04,Excel wizardry,good
+Staff 06,Customer Service,4222-01,Service Orientation,good
+Staff 06,Customer Service,4222-01,Speaking,good
+Staff 06,Customer Service,4222-01,Active Listening,good
+Staff 06,Customer Service,4222-01,Customer and Personal Service,good
+Staff 06,Customer Service,4222-01,Writing,basic
+Staff 07,Customer Service,4222-01,Service Orientation,basic
+Staff 07,Customer Service,4222-01,Speaking,good
+Staff 07,Customer Service,4222-01,Active Listening,not assessed
+Staff 07,Customer Service,4222-01,Customer and Personal Service,not assessed
+Staff 07,Customer Service,4222-01,Reading Comprehension,good
+Staff 08,Customer Service,4222-01,Service Orientation,good
+Staff 08,Customer Service,4222-01,Negotiation,basic
+Staff 08,Customer Service,4222-01,Customer and Personal Service,basic
+Staff 08,Customer Service,4222-01,Social Perceptiveness,good
+Staff 08,Customer Service,4222-01,Time Management,good
+Staff 09,Operations,1324-03,Negotiation,expert
+Staff 09,Operations,1324-03,Management of Material Resources,good
+Staff 09,Operations,1324-03,Operations Analysis,good
+Staff 09,Operations,1324-03,Judgment and Decision Making,good
+Staff 09,Operations,1324-03,Transportation,basic
+Staff 10,Operations,4322-03,Coordination,good
+Staff 10,Operations,4322-03,Time Management,good
+Staff 10,Operations,4322-03,Operations Analysis,basic
+Staff 10,Operations,4322-03,Management of Material Resources,basic
+Staff 10,Operations,4322-03,Administration and Management,not assessed
+Staff 11,Operations,4323-17,Coordination,basic
+Staff 11,Operations,4323-17,Time Management,expert
+Staff 11,Operations,4323-17,Active Listening,good
+Staff 11,Operations,4323-17,Transportation,good
+Staff 11,Operations,4323-17,Monitoring,good
+Staff 12,Operations,2182-03,Management of Material Resources,good
+Staff 12,Operations,2182-03,Coordination,good
+Staff 12,Operations,2182-03,Time Management,good
+Staff 12,Operations,2182-03,Production and Processing,good
+Staff 12,Operations,2182-03,Operations Monitoring,basic

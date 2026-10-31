@@ -3,4 +3,4 @@ node_modules/
 data/cache/
 .superpowers/
 .claude/
-pipeline/__pycache__/
+__pycache__/

@@ -66,6 +66,15 @@ describe('field of study search (ISCED-F 2013)', () => {
     })
   })
 
+  it('GET /api/fields lists every field with its broad area, source, version and date, in code order', async () => {
+    const response = await fetch(`${base}/api/fields`)
+    expect(response.status).toBe(200)
+    const body = await response.json()
+    expect(body).toMatchObject({ source: 'isced', version: 'ISCED-F 2013', downloadedAt: '2026-10-30' })
+    expect(body.fields.map((f) => f.code)).toEqual(['0588', '0613', '0912', '0913', '1013'])
+    expect(body.fields[3]).toEqual({ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' })
+  })
+
   it('GET /api/fields/search needs 2 to 100 characters', async () => {
     const response = await fetch(`${base}/api/fields/search?q=n`)
     expect(response.status).toBe(400)

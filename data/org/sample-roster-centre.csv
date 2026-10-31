@@ -1,0 +1,62 @@
+name,group,current_role_code,skill,level
+Student 01,Business Studies,,Mathematics,expert
+Student 01,Business Studies,,Critical Thinking,good
+Student 01,Business Studies,,Economics and Accounting,basic
+Student 01,Business Studies,,Management of Financial Resources,good
+Student 01,Business Studies,,Reading Comprehension,not assessed
+Student 02,Business Studies,,Mathematics,good
+Student 02,Business Studies,,Critical Thinking,basic
+Student 02,Business Studies,,Economics and Accounting,good
+Student 02,Business Studies,,Management of Financial Resources,not assessed
+Student 02,Business Studies,,Reading Comprehension,expert
+Student 02,Business Studies,,Excel wizardry,good
+Student 03,Business Studies,,Mathematics,basic
+Student 03,Business Studies,,Critical Thinking,good
+Student 03,Business Studies,,Economics and Accounting,not assessed
+Student 03,Business Studies,,Management of Financial Resources,expert
+Student 03,Business Studies,,Reading Comprehension,good
+Student 04,Business Studies,,Mathematics,good
+Student 04,Business Studies,,Critical Thinking,not assessed
+Student 04,Business Studies,,Economics and Accounting,expert
+Student 04,Business Studies,,Management of Financial Resources,good
+Student 04,Business Studies,,Reading Comprehension,basic
+Student 05,Customer Service,,Service Orientation,expert
+Student 05,Customer Service,,Active Listening,good
+Student 05,Customer Service,,Customer and Personal Service,basic
+Student 05,Customer Service,,Speaking,good
+Student 05,Customer Service,,Social Perceptiveness,not assessed
+Student 06,Customer Service,,Service Orientation,good
+Student 06,Customer Service,,Active Listening,basic
+Student 06,Customer Service,,Customer and Personal Service,good
+Student 06,Customer Service,,Speaking,not assessed
+Student 06,Customer Service,,Social Perceptiveness,expert
+Student 07,Customer Service,,Service Orientation,basic
+Student 07,Customer Service,,Active Listening,good
+Student 07,Customer Service,,Customer and Personal Service,not assessed
+Student 07,Customer Service,,Speaking,expert
+Student 07,Customer Service,,Social Perceptiveness,good
+Student 08,Customer Service,,Service Orientation,good
+Student 08,Customer Service,,Active Listening,not assessed
+Student 08,Customer Service,,Customer and Personal Service,expert
+Student 08,Customer Service,,Speaking,good
+Student 08,Customer Service,,Social Perceptiveness,basic
+Student 09,Logistics,,Transportation,expert
+Student 09,Logistics,,Coordination,good
+Student 09,Logistics,,Operations Monitoring,basic
+Student 09,Logistics,,Management of Material Resources,good
+Student 09,Logistics,,Time Management,not assessed
+Student 10,Logistics,,Transportation,good
+Student 10,Logistics,,Coordination,basic
+Student 10,Logistics,,Operations Monitoring,good
+Student 10,Logistics,,Management of Material Resources,not assessed
+Student 10,Logistics,,Time Management,expert
+Student 11,Logistics,,Transportation,basic
+Student 11,Logistics,,Coordination,good
+Student 11,Logistics,,Operations Monitoring,not assessed
+Student 11,Logistics,,Management of Material Resources,expert
+Student 11,Logistics,,Time Management,good
+Student 12,Logistics,,Transportation,good
+Student 12,Logistics,,Coordination,not assessed
+Student 12,Logistics,,Operations Monitoring,expert
+Student 12,Logistics,,Management of Material Resources,good
+Student 12,Logistics,,Time Management,basic

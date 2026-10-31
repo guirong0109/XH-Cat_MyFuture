@@ -1,5 +1,5 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level, data-aiuse;
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-field-pick, data-aiuse;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
@@ -9,11 +9,15 @@ import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
 import access from './screens/access.js'
+import goal from './screens/goal.js'
 import category from './screens/category.js'
 import org from './screens/org.js'
+import orgShare from './screens/orgShare.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
+import { confirmGroup, groupsOf, linkSkill, placeOf, renamePlace, unlinkPlace, unlinkSkill } from './screens/skillGroups.js'
+import { prechooseFields } from './cvPrechoose.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -32,6 +36,8 @@ import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
+import * as orgApi from './orgApi.js'
+import { consumeJoinHash, createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
@@ -39,7 +45,7 @@ import { linkedFields } from './components/fieldSuggestions.js'
 import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
-const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
+const SCREENS = { welcome, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
 // Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
 const ALIAS = { roadmap: 'pathway' }
@@ -47,8 +53,8 @@ const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
-  'education.records': { qualification: '', fieldOfStudy: '', institution: '', year: '' },
-  'employment.records': { jobTitle: '', employer: '', period: '' },
+  'education.records': { level: '', qualification: '', fieldOfStudy: '', institution: '', year: '' },
+  'employment.records': { jobTitle: '', years: null },
   certifications: { name: '', issuer: '', year: '' },
   training: { name: '', year: '' },
   projects: { title: '', description: '' },
@@ -57,11 +63,12 @@ const NEW_RECORD = {
 // Search picker endpoints by kind (skills: O*NET catalogue; roles: O*NET and eMASCO; field of study: ISCED-F 2013).
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
-const SKILLS_SECTION = 2
-const PREFERENCES_SECTION = 4
-const AI_SECTION = 5
+const STUDY_SECTION = 0
+const SKILLS_SECTION = SECTIONS.indexOf('secSkills')
+const PREFERENCES_SECTION = SECTIONS.indexOf('secPrefs')
+const AI_SECTION = SECTIONS.indexOf('secAi')
 
-const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
+const fresh = () => ({ screen: 'welcome', lang: 'en', use: null, access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
 let theme = loadTheme(safeLocalStorage())
 let state = fresh()
@@ -72,20 +79,38 @@ let cvFile = null
 // The CV draft as it came from the server: the compare view locks what the user changed since. Memory only.
 let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
+// After guest or account: personal users are asked their goal first; organisations go to "Who are you?".
+// The ISCED-F field search (field names and the CIP programmes linked to them); null when it is not available.
+const searchFields = async (words) => {
+  const out = await api('GET', `/api/fields/search?q=${encodeURIComponent(words)}`)
+  return out.ok ? out.data : null
+}
+
+const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
 function showSection() {
   if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
+  if (state.screen === 'form' && state.section === STUDY_SECTION) loadFields()
   if (state.screen === 'form' && state.section === SKILLS_SECTION) loadSuggestions()
   if (state.screen === 'form' && state.section === PREFERENCES_SECTION) loadInterests()
+}
+
+// The ISCED-F 2013 fields of study for the dropdown, fetched once (again after a failure).
+async function loadFields() {
+  if (state.fields && !state.fields.failed) return
+  state.fields = { loading: true }
+  const out = await api('GET', '/api/fields')
+  state.fields = out.ok ? out.data : { failed: true }
+  if (state.screen === 'form' && state.section === STUDY_SECTION) render()
 }
 
 // The O*NET interest areas for "Career interests and fields", fetched once (again after a failure).
@@ -114,6 +139,7 @@ function go(screen) {
   if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
+  if (screen !== 'access') state.accessNote = null
   showSection()
   state.message = null
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
@@ -629,13 +655,22 @@ const actions = {
     window.scrollTo(0, 0)
     render()
   },
-  guest: () => { state.access = 'guest'; go('category') },
+  use: (kind) => { state.use = kind; go('access') },
+  // An organisation needs an account: no guest way in.
+  guest: () => { if (state.use === 'org') return go('access'); state.access = 'guest'; go(afterAccess()) },
+  // The goal from the start of the journey is the profile's career goal (the form can change it).
+  goal: (value) => {
+    state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
+    state.profile = setField(state.profile, 'preferences.careerGoal', val(value))
+    go('source')
+  },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
   acLogout: async () => {
     await accountApi.logout()
     // A shared computer must not show the next person this account's profile.
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
     cvFile = null
     cvDraft = null
@@ -658,25 +693,40 @@ const actions = {
       return render()
     }
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
+  // "Who are you?" is for organisations (C, D): their tools need an account.
   category: (k) => {
     state.category = k
-    if (k === 'A' || k === 'B') {
-      state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
-      state.profile = setField(state.profile, 'userCategory', val(k === 'A' ? 'working_adult' : 'graduate_switcher'))
-    }
-    go(k === 'C' || k === 'D' ? 'org' : 'source')
+    const entry = orgEntry(state)
+    state.accessNote = entry.note
+    go(entry.screen)
   },
   resume: () => {
     const to = resumeTo ?? 'source'
     resumeTo = null
     go(to)
   },
+  // A field answered with buttons ("path|value"); an empty value is "prefer not to say".
+  choose: (arg) => {
+    const [path, value] = arg.split('|')
+    update(setField(state.profile, path, value ? val(value) : DECLINED))
+  },
+  // Skill level toggle bar: "<skill index>|<level>", an empty level = not assessed yet.
+  level: (arg) => {
+    const [index, value] = arg.split('|')
+    const level = value || null
+    const skills = state.profile.skills.map((skill, i) => (i !== Number(index) ? skill : {
+      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
+    }))
+    update({ ...state.profile, skills })
+  },
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
     resumeTo = null
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang }
     go('access')
   },
@@ -688,31 +738,61 @@ const actions = {
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    orgView.clearJoin()
     resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
   section: (i) => { state.section = Number(i); showSection(); persist(); render(); window.scrollTo(0, 0) },
-  addRec: (listPath) => update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] })),
+  addRec: (listPath) => {
+    // A new project opens in its card's Edit view, where its title is typed.
+    if (listPath === 'projects') state.groupEdit = `project|${state.profile.projects.length}`
+    update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] }))
+  },
   delRec: (arg) => {
     const [listPath, i] = arg.split('|')
-    update(removeRecord(state.profile, listPath, Number(i)))
+    let profile = removeRecord(state.profile, listPath, Number(i))
+    // The skills of a removed job or project go to Others (unless another one has the same title).
+    const kind = { 'employment.records': 'job', projects: 'project' }[listPath]
+    if (kind) {
+      const title = kind === 'job' ? state.profile.employment.records[Number(i)]?.jobTitle : state.profile.projects[Number(i)]?.title
+      const stays = groupsOf(profile).some((g) => g.kind === kind && g.title.trim().toLowerCase() === String(title ?? '').trim().toLowerCase())
+      if (!stays) profile = unlinkPlace(profile, kind, title ?? '')
+      state.groupEdit = null
+      state.groupAdd = null
+    }
+    update(profile)
+  },
+  // Skills and proficiency cards: "Looks right", "Confirm all", Edit, "+ add skill", and taking a skill out of a card.
+  groupOk: (key) => update(confirmGroup(state.profile, key)),
+  groupOkAll: () => update(groupsOf(state.profile).filter((g) => g.needsCheck).reduce((profile, g) => confirmGroup(profile, g.key), state.profile)),
+  groupEdit: (key) => { state.groupEdit = state.groupEdit === key ? null : key; render() },
+  otherFold: () => { state.otherOpen = !state.otherOpen; render() },
+  groupAdd: (key) => {
+    state.groupAdd = state.groupAdd === key ? null : key
+    render()
+    document.querySelector(`[data-search="skill|gskill|${key}"]`)?.focus()
+  },
+  unlinkSkill: (arg) => {
+    const [i, ...key] = arg.split('|')
+    const place = placeOf(state.profile, key.join('|'))
+    if (place) update(unlinkSkill(state.profile, Number(i), place))
   },
   review: (arg) => {
     const [path, on] = arg.split('|')
     update(markForReview(state.profile, path, on === 'on'))
   },
   // A skill in the user's own words: normalised by the server (O*NET id, candidates to pick, or unknown).
-  addSkill: async (typed) => {
+  // place: the job or project card it was added in ({ kind, title }), or null for Others.
+  addSkill: async (typed, place = null) => {
     const text = String(typed ?? '').trim()
     if (!text) return
     const out = await api('POST', '/api/skills/normalize', { texts: [text] })
     // Without the server the skill is kept as typed (unknown), never guessed.
     const found = out.ok ? out.data.skills[0] : { name: text, canonicalId: null, category: null, originalText: text, candidates: [] }
-    const key = (found.canonicalId ?? found.name).toLowerCase()
-    if (state.profile.skills.some((s) => (s.canonicalId ?? s.name).toLowerCase() === key)) return render()
-    const skill = { ...makeSkill({ ...found, source: 'user_input' }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
-    update({ ...state.profile, skills: [...state.profile.skills, skill] })
+    const profile = linkSkill(state.profile, found, place)
+    if (profile === state.profile) return render()
+    update(profile)
   },
   // A choice from a search picker ("<key>|<index>").
   pick: (arg) => {
@@ -723,9 +803,13 @@ const actions = {
     const chosen = pick?.result?.candidates?.[index]
     if (!chosen) return
     state.pick = { ...state.pick, [key]: null }
-    if (key === 'skill') {
-      if (state.profile.skills.some((s) => s.canonicalId === chosen.id)) return render()
-      return update({ ...state.profile, skills: [...state.profile.skills, makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' })] })
+    if (key === 'skill' || key.startsWith('gskill|')) {
+      const place = key === 'skill' ? null : placeOf(state.profile, key.slice('gskill|'.length))
+      state.groupAdd = null
+      // A skill added to Other skills opens the fold, so the user sees it.
+      if (!place) state.otherOpen = true
+      const profile = linkSkill(state.profile, { name: chosen.name, canonicalId: chosen.id, category: chosen.category }, place)
+      return profile === state.profile ? render() : update(profile)
     }
     if (key === 'interest') {
       state.occ = { ...(state.occ ?? {}), interest: { ...pick.result, term: pick.term } }
@@ -741,7 +825,14 @@ const actions = {
     const term = state.pick?.[key]?.term?.trim()
     state.pick = { ...state.pick, [key]: null }
     if (!term) return render()
-    if (key === 'skill') return actions.addSkill(term)
+    if (key === 'skill') {
+      state.otherOpen = true
+      return actions.addSkill(term)
+    }
+    if (key.startsWith('gskill|')) {
+      state.groupAdd = null
+      return actions.addSkill(term, placeOf(state.profile, key.slice('gskill|'.length)))
+    }
     const i = Number(key.split('|')[1])
     update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
   },
@@ -769,7 +860,7 @@ const actions = {
     })
     update({ ...state.profile, skills })
   },
-  editSkills: () => { state.section = 2; go('form') },
+  editSkills: () => { state.section = SKILLS_SECTION; go('form') },
   occFind: async (key) => {
     const term = state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
     if (term.length < 2) return
@@ -824,8 +915,11 @@ const actions = {
       return render()
     }
     // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
-    state.profile = mergeDraft(state.profile, out.data.profile)
-    cvDraft = out.data.profile
+    // Certificates, training and projects found in the CV are left out: the profile does not ask for them.
+    // The field of study is prechosen from the CV words, for the user to check (owner, 31 Oct).
+    const draft = await prechooseFields(dropNotAsked(out.data.profile), searchFields)
+    state.profile = mergeDraft(state.profile, draft)
+    cvDraft = draft
     state.cvSession = true
     state.ai = null
     state.extractionId = out.data.extractionId
@@ -849,7 +943,8 @@ const actions = {
       return render()
     }
     // What the user changed since the CV draft is locked: the AI never overwrites it.
-    const rows = diffProfiles(state.profile, out.data.suggested, userEditedPaths(cvDraft, state.profile))
+    const suggested = await prechooseFields(dropNotAsked(out.data.suggested), searchFields)
+    const rows = diffProfiles(state.profile, suggested, userEditedPaths(cvDraft, state.profile))
     state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
     render()
   },
@@ -876,7 +971,10 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions, matchActions, pathwayActions)
+// Organisation view (HR and career centres): its actions live in orgActions.js; the proxy keeps them on the current state.
+const orgState = new Proxy({}, { get: (_, key) => state[key], set: (_, key, value) => { state[key] = value; return true } })
+const orgView = createOrgActions({ state: orgState, render, api: orgApi, t, go })
+Object.assign(actions, adminActions, matchActions, pathwayActions, orgView.actions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -902,9 +1000,9 @@ async function accountCall(kind) {
     state.profile = mergeCareerFields(latest.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
-    return go('summary')
+    return go(orgView.joinPending() ? 'share' : 'summary')
   }
-  go('category')
+  go(orgView.joinPending() ? 'share' : afterAccess())
 }
 
 // After Confirm: always on this device; also in the account when signed in.
@@ -951,17 +1049,24 @@ function onChange(target) {
   if (d.list) return update(setField(state.profile, d.list, target.value.split(',').map((s) => s.trim()).filter(Boolean)))
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
-    return update(setField(state.profile, `${listPath}.${i}.${key}`, target.value))
+    let profile = state.profile
+    // The first job is on screen before it exists: typing in it creates it.
+    if (listPath === 'employment.records' && Number(i) >= profile.employment.records.length) profile = addRecord(profile, listPath, { ...NEW_RECORD[listPath] })
+    // A job or project renamed keeps the skills listed under it.
+    if (listPath === 'employment.records' && key === 'jobTitle') profile = renamePlace(profile, 'job', profile.employment.records[Number(i)]?.jobTitle ?? '', target.value)
+    if (listPath === 'projects' && key === 'title') profile = renamePlace(profile, 'project', profile.projects[Number(i)]?.title ?? '', target.value)
+    return update(setField(profile, `${listPath}.${i}.${key}`, key === 'years' ? toYears(target.value) : target.value))
   }
   if (d.aiuse !== undefined) {
     return update({ ...state.profile, aiUse: { ...readAiUse(state.profile), [d.aiuse]: target.value || null } })
   }
-  if (d.level !== undefined) {
-    const level = target.value || null
-    const skills = state.profile.skills.map((skill, i) => (i !== Number(d.level) ? skill : {
-      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
-    }))
-    return update({ ...state.profile, skills })
+  // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.
+  if (d.fieldPick !== undefined) {
+    const i = Number(d.fieldPick)
+    const chosen = state.fields?.fields?.find((f) => f.code === target.value)
+    if (!chosen) return update(setField(state.profile, `education.records.${i}.field`, null))
+    const field = { source: 'isced', code: chosen.code, title: chosen.title, version: state.fields.version, via: 'list' }
+    return update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, chosen.title), `education.records.${i}.field`, field))
   }
 }
 
@@ -1068,6 +1173,8 @@ function render() {
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
   if (screen === 'pathway') ensurePathway()
+  if (screen === 'org') actions.orgEnsure()
+  if (screen === 'share') actions.shareEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
@@ -1131,6 +1238,7 @@ document.addEventListener('change', (event) => {
   if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
+  if (orgView.onChange(event.target)) return
   onChange(event.target)
 })
 // Search pickers: search while typing, after a short pause; only the list is redrawn, so typing goes on.
@@ -1217,7 +1325,10 @@ if (previous) {
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
 if (resumeChoice(previous) === 'ask') resumeTo = screenOf(previous.screen)
-state.screen = screenOf(startScreen(previous, location.hash))
+// A join link (#join=<token>) is read once, kept in memory only and removed from the address bar at once.
+const joinToken = consumeJoinHash(location, history)
+if (joinToken) orgView.startJoin(joinToken)
+state.screen = joinToken ? 'share' : screenOf(startScreen(previous, location.hash))
 // #roadmap opens #pathway: the address shows the new name.
 if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()

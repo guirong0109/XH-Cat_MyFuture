@@ -1,7 +1,7 @@
-# Technical and Tools Declaration — CV extraction and structured profile module, Future Skills Radar
+# Technical and Tools Declaration — CV extraction and structured profile module, Future Skills Radar, Organisation view
 
 Every outside tool, data set, model and service these modules use or can use, and its status (CV module 29 Oct 2026;
-Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026; Career matching, branch `claude/career-matching`, 30 Oct 2026).
+Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026; Career matching, branch `claude/career-matching`, 30 Oct 2026; Organisation view for HR and career centres, branch `hr-branch`, 31 Oct 2026).
 
 ## Data
 
@@ -23,6 +23,7 @@ Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026; Career m
 | ILO Working Paper 140, "Generative AI and Jobs: A 2025 update" (Gmyrek et al., 20 May 2025): GenAI exposure scores per ISCO-08 occupation (427), file from the lead author's repository `pgmyrek/2025_GenAI_scores_ISCO08` | Radar AI Impact: each job's exposure gradient (D31). Never a score of the user | Copied unchanged from `main` d4286d6 on 2026-10-31 (no merge, D32); SHA-256 of `data/ai/ilo_wp140.tsv` in `data/ai/manifest.json` and `data/radar/copied-from-main.json`; the 2.6 MB original is not kept. No AI model involved | CC BY 4.0 | In use (bundled) |
 | Anthropic Economic Index, Hugging Face dataset `Anthropic/EconomicIndex`, release 2026-06-26 (claude.ai usage per O\*NET task, May 2026 slice) | Radar AI Impact: how much AI is observed in use for the tasks of the user's job (D31) | Copied unchanged from `main` d4286d6 on 2026-10-31; SHA-256 in `data/ai/manifest.json`; the 219 MB original is not kept. Only published counts are read; no AI model involved | CC-BY (data) | In use (bundled) |
 | Synthetic Radar base (`data/radar/demo/base.json`) | Judge Trend Change Test only (Scenarios A, B and C; C changes one In Demand flag) | written by the team, labelled synthetic on screen | — | In use; every value fictional |
+| Synthetic rosters for the organisation view (`data/org/`: sample HR roster, sample career-centre roster, empty template) | Organisation view: sample people for the roster upload, tests and the browser check | written by the team, 31 Oct 2026 (SHA-256 in `data/org/manifest.json`) | — | In use; every person is made up |
 | Synthetic CVs and labelled terms (`testing/`) | Tests, extraction evaluation, Model Eval | written by the team | — | In use; no real CVs |
 
 ## Models and AI services
@@ -64,6 +65,8 @@ Rules for every AI path:
 | RunPod MCP tools | Read-only price and stock checks (no resources were created) |
 
 ## Not used
+
+- The organisation view (HR and career centres, `hr-branch`) adds no outside API, model or data set. It reuses the data and services already declared above (O\*NET, eMASCO, the code chain, Radar, ILO, Anthropic, UN SDG, study pathway picks) and the existing Cloudflare D1 accounts. Its synthetic rosters in `data/org/` are written by the team. It uses no language model.
 
 - No scoring or matching method from the team's earlier project. The Radar produces no score, weight or ranking.
 - Career matching uses no language model. Skill Match is arithmetic on published O\*NET levels; the AI scenarios read

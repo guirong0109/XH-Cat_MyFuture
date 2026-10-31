@@ -269,9 +269,9 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 /* ---- Screens added on main (career matching, Radar, Study pathway, organisation view, ...), carried over in the
    merge of claude/cv-profile-module. They use the same tokens, so they follow the cream and ink look. ---- */
 /* Future Skills Radar (D22): small additions on the app's own tokens */
-/* Source cards (owner, 31 Oct): boxes in the app look, four across on a wide screen, one on a phone.
-   A grid inside a grid passes its cards up, so the page shows one grid of four. */
-.rd-srcgrid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin:16px 0 12px}
+/* Source cards (owner, 31 Oct): boxes in the app look, two by two (OpenAlex and DOSM, then the two O*NET sources),
+   one column on a phone. A grid inside a grid passes its cards up, so the page shows one grid of four. */
+.rd-srcgrid{display:grid;gap:18px;grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0 12px}
 .rd-srcgrid .rd-srcgrid{display:contents}
 .rd-srccard{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;padding:16px 18px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink)}
 .rd-srccard-head{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%}
@@ -316,6 +316,7 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .rd-drawer-top{position:sticky;top:-18px;background:var(--surface);padding:4px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--line)}
 .rd-drawer-top .sp{flex:1}
 @media (max-width:560px){.rd-kv{grid-template-columns:minmax(0,1fr)}.rd-kv dd{margin-bottom:6px}}
+@media (max-width:640px){.rd-srcgrid{grid-template-columns:minmax(0,1fr)}}
 /* Radar admin and judge screens (built on the same tokens and classes) */
 .rd-admin .rd-session,.rd-judge .rd-session{margin:10px 0 4px}
 .rd-signin{max-width:420px;margin-top:8px}

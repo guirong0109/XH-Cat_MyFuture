@@ -2,7 +2,7 @@
 // Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
-import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
+import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
 import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
@@ -18,13 +18,15 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
-import radarScreen, { staleRadar } from './screens/radar.js'
+import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
 import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
 import sdgScreen from './screens/sdgTab.js'
 import * as matchApi from './matchApi.js'
+import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
+import * as pathwayApi from './pathwayApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -33,9 +35,14 @@ import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
+import { shouldPlayIntro } from './intro/timeline.js'
+import { armOdometers } from './components/odometer.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
-const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
+const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
+// Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
+const ALIAS = { roadmap: 'pathway' }
+const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
@@ -68,7 +75,8 @@ function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
-  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -100,6 +108,8 @@ async function loadSuggestions() {
 }
 
 function go(screen) {
+  // Get started on the landing page: a saved session is offered first (Welcome back).
+  if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
   showSection()
@@ -114,7 +124,7 @@ function go(screen) {
 // The screen keeps the manifest id it loaded and sends it on every follow-up call (spec §6.5, Review Focus 4).
 const radarUi = () => (state.radar ??= {})
 function setRadar(patch) {
-  state.radar = { ...radarUi(), ...patch }
+  state.radar = { ...radarUi(), openDrop: false, ...patch }
   render()
 }
 // Each load gets a number; a load that ends after a newer one started (or after the data went stale) is dropped.
@@ -144,9 +154,17 @@ async function openEvidence(kind, id, signalId) {
   setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
   document.getElementById('radarDrawer')?.focus()
 }
+// The AI task data is static reference data (no manifest, no profile): fetched once, when the AI tab is first shown.
+async function loadAiTasks() {
+  state.radar = { ...radarUi(), aiTasks: { loading: true } }
+  const out = await radarApi.aiTasks()
+  state.radar = { ...radarUi(), aiTasks: out.ok ? { ok: true, data: out.data } : { ok: false, code: out.code } }
+  if (state.screen === 'radar') render()
+}
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+  if (r.tab === 'ai' && !r.aiTasks) loadAiTasks()
 }
 // After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
 // changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
@@ -175,13 +193,16 @@ function adminFailed(name, out) {
 }
 // Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
 async function reloadAdmin(patch = {}, focus = null) {
-  const [pub, status, mappings, breaks, sdgLinks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks()])
+  const [pub, status, mappings, breaks, sdgLinks, picks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks(), adminApi.pathwayPicks()])
   const failed = [status, mappings, breaks].find((out) => !out.ok)
   if (failed) return adminFailed('status', failed)
   // A failed SDG link list fails only the SDG card (the rest of the admin screen still shows), unless the session is gone.
   if (!sdgLinks.ok && !adminApi.session()) return adminFailed('status', sdgLinks)
   const sdg = sdgLinks.ok ? { sdgLinks: sdgLinks.data, sdgLinksError: null } : { sdgLinks: null, sdgLinksError: sdgLinks.code ?? 'network' }
-  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg } }, focus)
+  // Likewise a failed pathway pick list fails only the pathway card.
+  if (!picks.ok && !adminApi.session()) return adminFailed('status', picks)
+  const pathwayPicks = picks.ok ? { pathwayPicks: picks.data, pathwayPicksError: null } : { pathwayPicks: null, pathwayPicksError: picks.code ?? 'network' }
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg, ...pathwayPicks } }, focus)
 }
 async function loadJudge() {
   state.radarAdmin = { ...adminUi(), loading: true }
@@ -267,6 +288,19 @@ const adminActions = {
     // The SDG tags in matching change (not the bands): fetch the list again, with no trend banner.
     matchStale(false)
     reloadAdmin({ notes: { ...notes, sdg: '' }, ...adminMsg('sdg', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-sdg')
+  },
+  admPick: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admPickNote')
+    const notes = { ...adminUi().notes, pick: note }
+    const out = await adminApi.decidePathwayPick({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('pick', out)
+      return setAdmin({ notes, ...adminMsg('pick', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admPickNote' : 'admMsg-pick')
+    }
+    // The pathway answers carry the picks' review labels: fetch them again.
+    pathwayFor = null
+    reloadAdmin({ notes: { ...notes, pick: '' }, ...adminMsg('pick', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-pick')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')
@@ -438,6 +472,82 @@ const matchActions = {
   mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
 }
 
+// ---------- Study pathway (#pathway) ----------
+// The profile is sent to the pathway API for each target's answer (never stored there). The answers are fetched again
+// when the profile changes; only targets, the active one and the progress are saved (pathwayToSave).
+const pathwayUi = () => {
+  state.pathway = { ...pathwayToSave(state.pathway), answers: state.pathway?.answers ?? {} }
+  return state.pathway
+}
+let pathwayFor = null
+let pathwayRun = 0
+async function loadPathway(code) {
+  const run = pathwayRun
+  state.pathway.answers = { ...state.pathway.answers, [code]: { loading: true } }
+  const out = await pathwayApi.get(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== pathwayRun) return
+  state.pathway.answers = { ...state.pathway.answers, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (state.screen === 'pathway') render()
+}
+function ensurePathway() {
+  const p = pathwayUi()
+  if (!state.profile) return
+  if (pathwayFor !== state.profile) {
+    pathwayFor = state.profile
+    pathwayRun += 1
+    p.answers = {}
+  }
+  for (const { code } of p.targets) if (!p.answers[code]) loadPathway(code)
+}
+// The local date (YYYY-MM-DD): in Malaysia (UTC+8) a toggle before 08:00 is still today.
+const today = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function setProgress(key, value) {
+  if (typeof key !== 'string' || !key) return
+  const p = pathwayUi()
+  const progress = { ...p.progress }
+  if (value) progress[key] = { state: value, at: today() }
+  else delete progress[key]
+  state.pathway = { ...p, progress }
+  persist()
+  render()
+}
+const pathwayActions = {
+  // From a #match card: add the role (if not yet a target), make it active, open #pathway.
+  pwPlan: (code) => {
+    if (typeof code !== 'string' || !code) return
+    const p = pathwayUi()
+    const title = state.match?.data?.roles?.find((r) => r.code === code)?.title ?? code
+    const targets = p.targets.some((x) => x.code === code) ? p.targets : [...p.targets, { code, title, addedAt: today() }]
+    state.pathway = { ...p, targets, active: code }
+    go('pathway')
+  },
+  // A target tab; on a failed answer it asks again.
+  pwTab: (code) => {
+    const p = pathwayUi()
+    if (!p.targets.some((x) => x.code === code)) return
+    const answers = { ...p.answers }
+    if (answers[code]?.error) delete answers[code]
+    state.pathway = { ...p, active: code, answers }
+    persist()
+    render()
+  },
+  // Removes the target only: the progress is per skill and stays.
+  pwRemove: (code) => {
+    const p = pathwayUi()
+    const targets = p.targets.filter((x) => x.code !== code)
+    const { [code]: _gone, ...answers } = p.answers
+    state.pathway = { ...p, targets, answers, active: activeOf({ targets, active: p.active === code ? null : p.active }) }
+    persist()
+    render()
+  },
+  pwStarted: (key) => setProgress(key, 'started'),
+  pwDone: (key) => setProgress(key, 'done'),
+  pwClear: (key) => setProgress(key, null),
+}
+
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
 function update(profile) {
   state.profile = { ...profile, profileStatus: 'draft' }
@@ -448,9 +558,39 @@ function update(profile) {
 
 const actions = {
   // Radar: Skills & Careers is the first tab and opens by default (D21).
-  radarTab: (tab) => setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null }),
+  radarTab: (tab) => {
+    setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })
+    if (tab === 'ai' && !radarUi().aiTasks) loadAiTasks()
+  },
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),
+  // Skills card: how many corners, and a corner or list number picked (highlights its row and scrolls to it).
+  skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
+  // AI tasks card: which job, how many corners, and a corner picked (highlights its row and scrolls to it).
+  aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null, pages: withPage(radarUi().pages, 'ai', 1) }),
+  aiCorners: (n) => setRadar({ corners: { sk: 8, ...radarUi().corners, ai: n === 'all' ? 'all' : [8, 16].includes(Number(n)) ? Number(n) : 8 } }),
+  // A corner opens the page of its row (10 rows a page; the list is whole again for the skills list), then highlights it.
+  aiCorner: (n) => {
+    setRadar({ aiHl: Number(n), pages: withPage(radarUi().pages, 'ai', pageForRow(n)) })
+    document.getElementById(`rd-ai-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
+  skCorner: (n) => {
+    setRadar({ hl: Number(n), q: '', pages: withPage(radarUi().pages, 'sk', pageForRow(n)) })
+    document.getElementById(`rd-sk-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
+  // A page of a long list: "<list>:<page>" (list = sk | ai | skDrop). The screen shows the last page when past it.
+  rdPage: (arg) => {
+    const got = parsePageArg(arg)
+    if (!got) return
+    setRadar({ pages: withPage(radarUi().pages, got.list, got.page), openDrop: got.list === 'skDrop' })
+    document.querySelector(`.rd-pager [data-arg^="${got.list}:"][aria-current="page"]`)?.focus()
+  },
+  // The "Go to page" box of one list.
+  rdPageGo: (list) => {
+    if (!parsePageList(list)) return
+    const page = Number.parseInt(document.getElementById(`rdGo-${list}`)?.value ?? '', 10)
+    if (Number.isFinite(page) && page >= 1) actions.rdPage(`${list}:${Math.min(page, 999999)}`)
+  },
   radarLine: (axisId) => {
     const hidden = new Set(radarUi().hidden ?? [])
     if (hidden.has(axisId)) hidden.delete(axisId)
@@ -477,6 +617,15 @@ const actions = {
     render()
   },
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
+  // Landing page links scroll within the page (a #hash would be read as a screen).
+  scrollTo: (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+  // Start the ATM again from the waiting machine, at the top of the page.
+  replayIntro: () => {
+    stage?.dispose()
+    stage = null
+    window.scrollTo(0, 0)
+    render()
+  },
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
@@ -517,9 +666,14 @@ const actions = {
     }
     go(k === 'C' || k === 'D' ? 'org' : 'source')
   },
-  resume: () => go(resumeTo ?? 'source'),
+  resume: () => {
+    const to = resumeTo ?? 'source'
+    resumeTo = null
+    go(to)
+  },
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
+    resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('access')
   },
@@ -531,6 +685,7 @@ const actions = {
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
@@ -718,7 +873,7 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions, matchActions)
+Object.assign(actions, adminActions, matchActions, pathwayActions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -804,6 +959,94 @@ function onChange(target) {
   }
 }
 
+// The ATM stage, the landing page's first section (three.js, loaded only here). The ATM waits for a click, then
+// prints the question section on a receipt that stays pinned; the section's headline and buttons then rise in beside
+// it (the section carries the step as data-phase). The page is redrawn on every change, so the stage element lives on
+// and is moved into each new drawing; a language change rebuilds it at the same step. With "reduce motion", without
+// WebGL, or if three.js fails to load, the section shows the headline beside an HTML receipt instead (body.no-intro).
+let stage = null
+let stageAllowed = null
+function canShowStage() {
+  if (stageAllowed === null) {
+    let webgl = false
+    try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
+    stageAllowed = shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })
+  }
+  return stageAllowed
+}
+
+function placeStage() {
+  const slot = document.querySelector('.lp-atm-canvas')
+  if (!slot) return
+  if (!canShowStage()) return document.body.classList.add('no-intro')
+  if (stage && stage.lang !== state.lang) {
+    const pinned = !['arrive', 'idle'].includes(stage.el.dataset.phase)
+    stage.dispose()
+    stage = null
+    return buildStage(slot, pinned)
+  }
+  if (!stage) return buildStage(slot, false)
+  slot.append(stage.el)
+  setPhase(stage.el, stage.el.dataset.phase)
+}
+
+const setPhase = (el, phase) => {
+  el.dataset.phase = phase
+  const section = el.closest('.lp-atm')
+  if (section) section.dataset.phase = phase
+}
+
+function buildStage(slot, pinned) {
+  const el = document.createElement('div')
+  el.className = 'atm-stage'
+  el.innerHTML = `<button class="atm-cta">${esc(t('introPress'))} <span aria-hidden="true">↵</span></button>`
+    + `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
+    + `<button class="atm-replay">↺ ${esc(t('introReplay'))}</button>`
+  slot.append(el)
+  setPhase(el, pinned ? 'pinned' : 'arrive')
+  const current = { el, lang: state.lang, controls: null, wantPrint: false }
+  current.dispose = () => { current.controls?.dispose(); el.remove() }
+  stage = current
+  el.addEventListener('click', (event) => {
+    const button = event.target.closest('button')
+    if (button?.classList.contains('atm-skip')) return current.controls?.skip()
+    if (button?.classList.contains('atm-replay')) return actions.replayIntro()
+    if (!['arrive', 'idle'].includes(el.dataset.phase)) return
+    if (current.controls) current.controls.print()
+    else current.wantPrint = true
+  })
+  import('./intro/atmIntro.js')
+    .then((intro) => intro.mountStage({ t, host: el, pinned, onPhase: (phase) => setPhase(el, phase) }))
+    .then((controls) => {
+      if (stage !== current) return controls.dispose()
+      current.controls = controls
+      if (current.wantPrint) controls.print()
+    })
+    .catch(() => {
+      stageAllowed = false
+      current.dispose()
+      if (stage === current) stage = null
+      document.body.classList.add('no-intro')
+    })
+}
+
+// The gap section (second section) animates its bars when it first comes into view.
+let gapSeen = false
+let gapWatch = null
+function watchGap() {
+  const section = document.getElementById('gap')
+  gapWatch?.disconnect()
+  if (!section) return
+  if (gapSeen) return section.classList.add('in')
+  gapWatch = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return
+    gapSeen = true
+    section.classList.add('in')
+    gapWatch.disconnect()
+  }, { threshold: 0.3 })
+  gapWatch.observe(section)
+}
+
 function render() {
   // A profile screen opened directly (link, reload) still gets a profile to work on.
   if (NEEDS_PROFILE.includes(state.screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
@@ -818,13 +1061,18 @@ function render() {
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
+  if (screen === 'pathway') ensurePathway()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
   else if (screen === 'sdg') view = sdgScreen({ t, state })
+  else if (screen === 'pathway') view = pathwayScreen({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
-  else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  const page = view !== undefined || NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome
+  if (view === undefined) view = page ? page({ t, state }) : nextModule({ t, state, screen })
+  // The landing page brings its own navigation and full-width layout; its first section is the ATM stage.
+  document.body.classList.toggle('landing', page === welcome)
   // A re-render while the key box is being filled (e.g. a late /api/health answer) keeps what was typed and the focus;
   // the key is carried over from the old box to the new one only, never through the state.
   const typing = ['admKey', 'admLabel'].map((id) => document.getElementById(id)).filter((box) => box?.value)
@@ -842,6 +1090,11 @@ function render() {
   if (focus) {
     state.radarAdmin.focus = null
     document.getElementById(focus)?.focus()
+  }
+  if (page === welcome) {
+    placeStage()
+    watchGap()
+    armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
   }
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
@@ -870,6 +1123,7 @@ document.addEventListener('submit', (event) => {
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
   if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
+  if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })
@@ -894,6 +1148,13 @@ async function runSearch(kind, key, term) {
   show()
 }
 document.addEventListener('input', (event) => {
+  // Radar skills card: the search box filters the list as you type; focus and caret come back after the redraw.
+  if (event.target.hasAttribute?.('data-radar-search')) {
+    if (event.isComposing) return // wait for compositionend (pinyin and other input methods)
+    const pos = event.target.selectionStart ?? event.target.value.length
+    setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
+    return keepCaret(pos)
+  }
   const search = event.target.dataset?.search
   if (!search) return
   const [kind, ...rest] = search.split('|')
@@ -901,6 +1162,11 @@ document.addEventListener('input', (event) => {
   state.pick ??= {}
   clearTimeout(searchTimers[key])
   searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
+})
+document.addEventListener('compositionend', (event) => {
+  if (!event.target.hasAttribute?.('data-radar-search')) return
+  setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
+  keepCaret(event.target.selectionStart ?? event.target.value.length)
 })
 document.addEventListener('keydown', (event) => {
   // Radar: chart points are keyboard buttons (role="button"); Escape closes the evidence panel.
@@ -928,7 +1194,12 @@ document.addEventListener('drop', (event) => {
   const file = event.dataTransfer?.files?.[0]
   if (file) actions.cvFile(file)
 })
-window.addEventListener('popstate', () => { state.screen = location.hash.slice(1) || 'welcome'; render() })
+window.addEventListener('popstate', () => {
+  state.screen = screenOf(location.hash.slice(1) || 'welcome')
+  // #roadmap opens #pathway: the address shows the new name.
+  if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
+  render()
+})
 
 // Boot: a saved guest session past the start screens gets the "Welcome back" choice.
 const previous = store.load()
@@ -939,12 +1210,10 @@ if (previous) {
 }
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
-if (resumeChoice(previous) === 'ask') {
-  resumeTo = previous.screen
-  state.screen = 'returning'
-} else if (location.hash) {
-  state.screen = location.hash.slice(1)
-}
+if (resumeChoice(previous) === 'ask') resumeTo = screenOf(previous.screen)
+state.screen = screenOf(startScreen(previous, location.hash))
+// #roadmap opens #pathway: the address shows the new name.
+if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()
 // Who is signed in (the session cookie is HttpOnly, so ask the server).
 // Which optional services the server has (e.g. whether a temporary CV copy is kept).

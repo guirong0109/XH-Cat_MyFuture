@@ -42,7 +42,9 @@ whole-branch review is next. Do not touch main's files; the owner decides on mer
 
 ## Commands
 ```bash
-npm install && npm test     # expect 766 passed
+npm install && npm test     # expect 1088 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 48 OK
+python -m unittest discover pipeline/tests   # expect 49 OK
 ```
+
+Main's Study Pathway and Radar chart work came in on 31 Oct 2026 (merge of `origin/main`).

@@ -8,6 +8,7 @@
 // GET /api/radar/ai/topics      the six axes: yearly series, momentum, signals; the Computer Science reference series
 // GET /api/radar/occupations    DOSM groups: counts, shares, signals; total; breaks; context indicator (context_only)
 // GET /api/radar/skills        O*NET software skills: changes per job, new Hot Technologies, US posting counts
+// GET /api/radar/ai-tasks       static AI task data: Anthropic Economic Index tasks, ILO WP140 scores (no manifest)
 // GET /api/radar/references     topics, field-topic records, occupation bridge, ISCED-F fields with O*NET jobs
 // GET /api/radar/signals/:id    one signal with its full evidence
 // GET /api/radar/export         radar-signal/v1 signals of the active manifest + references for Matching
@@ -194,7 +195,7 @@ function skills(view, refs = null) {
   for (const o of hotSnap?.observations ?? []) {
     if (typeof o.value !== 'number') continue
     if (o.entityId === '__total__') total = o.value
-    else rows.push({ technology: o.entityId, postings: o.value })
+    else rows.push({ technology: o.entityId, skillId: `onet:tech:${nameKey(o.entityId)}`, postings: o.value })
   }
   rows.sort((a, b) => b.postings - a.postings || (a.technology < b.technology ? -1 : a.technology > b.technology ? 1 : 0))
   const sourceLinks = []
@@ -206,7 +207,7 @@ function skills(view, refs = null) {
     changes: perJob,
     hot: { added: (changes?.hot?.added ?? []).map(hotItem), dropped: (changes?.hot?.dropped ?? []).map(hotItem) },
     // firstSnapshot: the posting signals hold one counting window, so they show no direction yet (D24).
-    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows, firstSnapshot: firstPostingSnapshot(view) } : null,
+    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows, previous: null, firstSnapshot: firstPostingSnapshot(view) } : null,
     labels: { usPostings: true, softwareOnly: true },
     sourceLinks,
     fetchedAt: skillSnap?.fetchedAt ?? hotSnap?.fetchedAt ?? null,
@@ -238,12 +239,14 @@ function referenceData(refs) {
     bridge: refs.bridgeFile ?? null,
     fields: (refs.fieldList?.() ?? []).map((f) => ({ code: f.code, title: f.title, jobs: refs.fieldJobs(f.code) })),
     emascoRoles: refs.emascoRoles ?? [],
+    // The eMASCO to O*NET code chain starts with this step; the profile charts need it built.
+    emascoChain: (refs.bridgeFile?.steps ?? []).some((s) => s.id === 'masco2020_unit_to_isco08' && s.status === 'built'),
   }
   referencesCache.set(refs, data)
   return data
 }
 
-export function radarRoutes({ radar }) {
+export function radarRoutes({ radar, aiTasks = null }) {
   const router = express.Router()
 
   // Each handler gets the answer for the asked (or active) manifest; Radar errors use the app's error shape.
@@ -297,6 +300,15 @@ export function radarRoutes({ radar }) {
   })))
 
   router.get('/api/radar/ai/topics', handle(async ({ view }) => aiTopics(view, await refsOrUnavailable())))
+
+  // Static reference data: no manifest, no query parameters. A loader failure answers "unavailable" (the screen says so).
+  router.get('/api/radar/ai-tasks', async (request, response) => {
+    try {
+      response.json(aiTasks ? await aiTasks() : { state: 'unavailable', reason: 'AI task data files are missing' })
+    } catch (error) {
+      response.json({ state: 'unavailable', reason: 'AI task data failed its check' })
+    }
+  })
 
   router.get('/api/radar/occupations', handle(({ view }) => occupations(view)))
 

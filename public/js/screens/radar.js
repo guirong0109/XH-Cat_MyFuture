@@ -11,6 +11,9 @@ import { DASH, finite, fmt, fmtSigned } from '../components/charts/format.js'
 import { evidencePanel, fmtDate, fmtInt, fmtPct, fmtSignedPct, numLink, safeUrl, signalLink, srcLink, statusTag } from '../components/evidencePanel.js'
 import { relevantItems } from '../../../shared/radar/relevance.js'
 import { makeBridge } from '../../../shared/radar/bridge.js'
+import { makeChain } from '../../../shared/radar/chain.js'
+import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
+import { profileRadar } from '../components/charts/profileRadar.js'
 
 // ---------- reference data and relevance ----------
 
@@ -24,6 +27,7 @@ function refsFor(r) {
     topics: r.topics ?? [],
     fieldTopics: r.fieldTopics ?? [],
     bridge: makeBridge(r.bridge),
+    chain: makeChain(r.bridge),
     fieldName: (code) => fields.get(code)?.title ?? null,
     fieldJobs: (code) => fields.get(code)?.jobs ?? [],
     onetTitle: (code) => onetTitles.get(code) ?? null,
@@ -100,7 +104,7 @@ const LEVEL_KEYS = { broad: 'rdLevel_broad', narrow: 'rdLevel_narrow', detailed:
 
 function viewAll(t, state, tab) {
   const on = viewAllOn(state, tab)
-  return `<div class="rd-viewall"><button class="btn" data-act="viewAll" data-arg="${tab}" aria-pressed="${on}">${esc(t(on ? 'rdViewMine' : 'rdViewAll'))}</button>
+  return `<div class="rd-viewall"><button class="btn" data-act="viewAll" data-arg="${tab}" aria-pressed="${on}">${esc(t(on ? 'rdViewMine' : tab === 'ai' ? 'rdTopicsViewAll' : 'rdViewAll'))}</button>
   <div class="tiny muted">${esc(t(tab === 'ai' ? 'rdViewAllAi' : 'rdViewAllSk'))}</div></div>`
 }
 
@@ -247,18 +251,18 @@ export function aiTab({ t, state, data }) {
   const allAxes = data.ai?.axes ?? []
   const ai = data.ai ?? {}
 
-  // A2: all six axes (global evidence); the user's linked axes highlighted (approved links only).
-  const chartAxes = allAxes.map((a) => {
+  // A2: the user's linked topics (approved links only); all six with View all or without a link (global evidence).
+  const chartAxes = sc.axes.map((a) => {
     const cur = momentumOf(a, mode)?.current
     return { axisId: a.axisId, label: axisLabel(a, t, lang), value: finite(cur?.value), state: cur?.state ?? 'invalid', capped: Boolean(cur?.capped), ratio: finite(cur?.ratio), smallCounts: Boolean(cur?.smallCounts), highlighted: sc.ownAxes.has(a.axisId) }
   })
-  const comparison = allAxes.map((a) => finite(momentumOf(a, mode)?.comparison?.value))
+  const comparison = sc.axes.map((a) => finite(momentumOf(a, mode)?.comparison?.value))
   const validCount = chartAxes.filter((a) => a.value !== null).length
-  const win = allAxes.map((a) => momentumOf(a, mode)?.current).find((c) => c?.baselineYear)
-  const cmpWin = allAxes.map((a) => momentumOf(a, mode)?.comparison).find((c) => c?.baselineYear)
+  const win = sc.axes.map((a) => momentumOf(a, mode)?.current).find((c) => c?.baselineYear)
+  const cmpWin = sc.axes.map((a) => momentumOf(a, mode)?.comparison).find((c) => c?.baselineYear)
   const winText = (w) => (w ? `${w.baselineYear} → ${w.recentYear}` : DASH)
 
-  const rows = allAxes.map((a) => {
+  const rows = sc.axes.map((a) => {
     const cur = momentumOf(a, mode)?.current
     const link = axisLink(a)
     const index = finite(cur?.value) !== null
@@ -273,12 +277,13 @@ export function aiTab({ t, state, data }) {
 
   const a2 = `<div class="card rd-sec" data-sec="A2">
     <h2>${esc(t('rdA2Title'))} ${tag('est', t('rdTagResearch'))}</h2>
+    ${sc.mine ? `<p class="small"><b>${esc(t('rdTopicsOwn'))}</b></p>` : ''}
     <p class="tiny muted">${esc(t('rdTooltip'))}</p>
     <div class="row rd-controls"><span class="seg" role="group" aria-label="${esc(t('rdMomentum'))}">
       <button class="${mode === 'count' ? 'on' : ''}" data-act="radarMode" data-arg="count" aria-pressed="${mode === 'count'}">${esc(t('rdMetricCount'))}</button><button class="${mode === 'share' ? 'on' : ''}" data-act="radarMode" data-arg="share" aria-pressed="${mode === 'share'}">${esc(t('rdMetricShare'))}</button>
     </span>
     <span class="tiny muted">${esc(t('rdWindowSelected'))}: ${esc(winText(win))} · ${esc(t('rdWindowCompare'))}: ${esc(winText(cmpWin))}</span></div>
-    ${validCount < 3 ? `<p class="small muted">${esc(t('rdFewAxes'))}</p>` : ''}
+    ${validCount < 3 ? `<p class="small muted">${esc(t(sc.mine && sc.axes.length < 3 ? 'rdFewOwnAxes' : 'rdFewAxes'))}</p>` : ''}
     <div class="rd-chart">${radarChart({ axes: chartAxes, comparison, t })}</div>
     <p class="tiny muted">${esc(t('rdPointHollow'))}</p>
     ${rel ? fieldLinks(t, rel) : ''}
@@ -319,7 +324,8 @@ export function aiTab({ t, state, data }) {
   }
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
-  return `${sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  const globalNote = sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''
+  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -430,6 +436,279 @@ function onetColumn({ t, state, data, rel, lang }) {
     ${heading ? `<p class="small"><b>${esc(heading)}</b></p>` : ''}
     ${own.length ? '' : hint(t)}
     ${jobs}${hot}${postings}${srcline}</div><!--col-->`
+}
+
+// ---------- Skills card: the skills the user's jobs ask for (profile charts spec D28-D30) ----------
+// Worked out here in the browser from the confirmed profile and the public skills answer; nothing is sent.
+// The list number is shown, never stored; the numbers are US job-ad counts (O*NET Hot Technologies), not a score.
+
+const CORNER_CHOICES = [8, 16, 30, 'all']
+const SK_SCALE = { kind: 'log', min: 10000, max: 5000000 }
+const SK_RINGS = [{ value: 10000, label: '10k' }, { value: 100000, label: '100k' }, { value: 1000000, label: '1M' }]
+const HOT_URL = 'https://www.onetonline.org/search/hot_tech/'
+const summaryLink = (j) => srcLink({ label: j.title ? `${j.title} (${j.code})` : j.code, url: `https://www.onetonline.org/link/summary/${encodeURIComponent(j.code)}` })
+
+// ---------- pages for the long numbered lists: 10 rows a page ----------
+const PAGE_SIZE = 10
+const ONET_DB_URL = 'https://www.onetcenter.org/database.html'
+
+// The page to show: 1 when not set or not a number, the last page when past it.
+export function pageOf(page, count, size = PAGE_SIZE) {
+  const last = Math.max(1, Math.ceil(count / size))
+  const p = Number.parseInt(page, 10)
+  return Number.isFinite(p) ? Math.min(Math.max(p, 1), last) : 1
+}
+// The page that holds list row n (1-based).
+export const pageForRow = (n, size = PAGE_SIZE) => Math.max(1, Math.ceil(Number(n) / size) || 1)
+// "<list>:<page>" from a page button; null when it is not one.
+export function parsePageArg(arg) {
+  const m = /^(sk|ai|skDrop):(\d{1,6})$/.exec(String(arg ?? ''))
+  return m ? { list: m[1], page: Math.max(1, Number(m[2])) } : null
+}
+// The list name of a Go to page form; null when it is not one.
+export const parsePageList = (list) => (/^(sk|ai|skDrop)$/.test(String(list ?? '')) ? String(list) : null)
+// The pages object with one list moved to a page (the others kept).
+export const withPage = (pages, list, page) => ({ ...(pages ?? {}), [list]: page })
+// The page numbers to show: first, last, current +-1, with '…' where pages are skipped.
+export function pageItems(current, last) {
+  const nums = [...new Set([1, current - 1, current, current + 1, last])].filter((n) => n >= 1 && n <= last).sort((a, b) => a - b)
+  const out = []
+  for (const n of nums) {
+    if (out.length && n - out[out.length - 1] > 1) out.push('…')
+    out.push(n)
+  }
+  return out
+}
+// ‹ 1 … 4 5 6 … N ›, the rows shown, then a small "Go to page" box. list = sk | ai | skDrop.
+function pager(t, list, current, count) {
+  const last = Math.max(1, Math.ceil(count / PAGE_SIZE))
+  const btn = (page, label, aria, extra = '') => `<button type="button" class="btn sm rd-pg" data-act="rdPage" data-arg="${esc(`${list}:${page}`)}" aria-label="${esc(aria)}"${extra}>${esc(label)}</button>`
+  const off = (label, aria) => `<button type="button" class="btn sm rd-pg" aria-label="${esc(aria)}" disabled>${esc(label)}</button>`
+  const prev = current > 1 ? btn(current - 1, '‹', t('rdPrevPage')) : off('‹', t('rdPrevPage'))
+  const next = current < last ? btn(current + 1, '›', t('rdNextPage')) : off('›', t('rdNextPage'))
+  const nums = pageItems(current, last).map((n) => (n === '…' ? '<span class="rd-gap-dots" aria-hidden="true">…</span>' : btn(n, String(n), t('rdPageN', { page: n }), n === current ? ' aria-current="page"' : ''))).join('')
+  const id = `rdGo-${list}`
+  const from = (current - 1) * PAGE_SIZE + 1
+  const to = Math.min(current * PAGE_SIZE, count)
+  return `<div class="rd-pagerow"><nav class="rd-pager" aria-label="${esc(t('rdPages'))}">${prev}${nums}${next}</nav>
+    <span class="tiny muted">${esc(t('rdShowingRows', { from, to, n: count }))}</span>
+    <form class="rd-goto" data-form="rdPageGo" data-arg="${esc(list)}" novalidate><label class="tiny muted" for="${esc(id)}">${esc(t('rdGoToPage'))}</label>
+      <input id="${esc(id)}" class="rd-goin" type="number" inputmode="numeric" min="1" max="${last}" step="1" value="${current}"><button type="submit" class="btn sm">${esc(t('rdGo'))}</button></form></div>`
+}
+// One page of rows plus its page bar (none when the list fits one page).
+function paged(t, list, rows, page) {
+  const current = pageOf(page, rows.length)
+  const slice = rows.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
+  return { slice, bar: rows.length > PAGE_SIZE ? pager(t, list, current, rows.length) : '' }
+}
+
+// How a job reached the profile, when it is not the user's own O*NET role: "eMASCO 2512-02", "ISCED-F 0613".
+function viaText(job) {
+  const parts = (job.via ?? []).map((v) => (v.kind === 'chain' ? `eMASCO ${v.from.code}` : v.kind === 'field' ? `ISCED-F ${v.from.code}` : null))
+  return [...new Set(parts.filter(Boolean))].join(', ')
+}
+const fromLine = (t, jobs) => `${esc(t('rdSkFrom'))}: ${jobs.map((j) => `${summaryLink(j)}${viaText(j) ? ` <span class="tiny">(${esc(viaText(j))})</span>` : ''}`).join(' · ')}`
+
+// The code chain of each eMASCO role that reached O*NET jobs, every step with its official source.
+function chainPaths(t, jobs) {
+  const roles = new Map()
+  for (const j of jobs) for (const v of j.via) if (v.kind === 'chain' && !roles.has(v.from.code)) roles.set(v.from.code, v)
+  if (!roles.size) return ''
+  const step = (st) => `${esc(st.from.system)} <code>${esc(st.from.codes.join(', '))}</code> → ${esc(st.to.system)} <code>${esc(st.to.codes.join(', '))}</code>${st.label ? ` <span>(${esc(st.label)})</span>` : ''}${st.source ? ` ${srcLink({ label: st.source.name.split(/[,:]/)[0], url: st.source.url })}` : ''}`
+  // One fold per role: a one-line summary (code, step count), the steps with their sources inside, and the last official source beside it.
+  const lines = [...roles.values()].map((v) => {
+    const last = [...v.path].reverse().find((st) => st.source)
+    const beside = last ? ` ${srcLink({ label: last.source.name.split(/[,:]/)[0], url: last.source.url })}` : ''
+    return `<div class="rd-path tiny muted"><details class="rd-fold"><summary>${esc(t('rdChainFold', { code: v.from.code, n: v.path.length }))}</summary><b>${esc(t('rdChainPath'))}</b> · eMASCO ${esc(v.from.code)}: ${v.path.map(step).join(' · ')}</details>${beside}</div>`
+  })
+  return `${lines.join('')}<p class="tiny muted">${esc(t('rdChainSameUnit'))}</p>`
+}
+
+// "Not available for eMASCO {code}" notes: the step where the chain stops, worded from its kind in the user's
+// language (the English reason stays as a tooltip), with that step's official source link.
+function chainNotes(t, data, broken) {
+  const stepWords = (m) => {
+    const key = `rdChainStop_${m.kind}`
+    const text = t(key, { system: m.from?.system ?? '', codes: (m.from?.codes ?? []).join(', ') })
+    return text === key ? m.reason : text
+  }
+  const stopLink = (m) => {
+    const url = (data.refs?.bridge?.steps ?? []).find((x) => x.id === m.id)?.source?.url
+    return url ? ` ${srcLink({ label: t('rdEvSource'), url })}` : ''
+  }
+  return broken.map((b) => `<div class="rd-note small" title="${esc(b.missingStep.reason ?? '')}">${esc(t('rdChainBroken', { code: b.code, step: stepWords(b.missingStep) }))}${stopLink(b.missingStep)}</div>`).join('')
+}
+
+export function skillsChartCard({ t, state, data }) {
+  const head = `<h2>${esc(t('rdSkChartTitle'))} ${tag('src', t('rdSkChartTag'))}</h2>`
+  const wrapCard = (body) => `<div class="card rd-sec" data-sec="SK">${head}${body}</div>`
+  const rel = relevance(state, data)
+  if (!rel) return wrapCard(state?.profile?.profileStatus === 'confirmed' ? hint(t) : `<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  const sk = data.skills
+  if (!sk || sk.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdSkUnavailable'))} ${srcLink({ label: 'O*NET', url: 'https://www.onetcenter.org/database.html' })}</p>`)
+
+  const refs = refsFor(data.refs)
+  const onetTitle = (code) => refs.onetTitle(code) ?? sk.changes?.[code]?.title ?? null
+  const { jobs, broken } = profileJobs(rel, { chain: refs.chain, onetTitle })
+  const sc = skillCorners(jobs, sk)
+  const u = ui(state)
+  const year = sc.window?.year ?? DASH
+  const releaseId = sc.release?.current?.id ?? DASH
+  const hotLink = (sk.sourceLinks ?? []).find((l) => /hot_tech/.test(l?.url ?? '')) ?? { label: 'O*NET Hot Technologies', url: HOT_URL }
+
+  const notes = chainNotes(t, data, broken)
+  const noJobs = !jobs.length && !broken.length ? hint(t) : ''
+
+  // Numbered by US job ads; no-count skills come last. The list number is the corner number.
+  const numbered = sc.items.map((it, i) => ({ ...it, n: i + 1 }))
+  // Jobs without in-demand software: one plain note for one job, one fold line for more. "No chart is drawn" only when nothing is.
+  const nNone = sc.noSkills.length
+  const noCorners = !numbered.length
+  let none = ''
+  if (nNone === 1) {
+    const [j] = sc.noSkills
+    const text = noCorners ? t('rdSkNone', { job: '\u0001', release: releaseId }) : `${t('rdSkNoneOne', { job: '\u0001', release: releaseId })} ${t('rdSkNoneSome1')}`
+    none = `<div class="rd-note small">${esc(text).replace('\u0001', summaryLink(j))}</div>`
+  } else if (nNone > 1) {
+    none = `<div class="rd-note small"><details class="rd-fold"><summary>${esc(t('rdSkNoneFold', { n: nNone, release: releaseId }))}</summary><ul class="rd-list small">${sc.noSkills.map((j) => `<li>${summaryLink(j)}</li>`).join('')}</ul></details>
+      ${srcLink({ label: 'O*NET', url: ONET_DB_URL })} ${esc(noCorners ? t('rdSkNoChart') : t('rdSkNoneSome'))}</div>`
+  }
+  const withCount = numbered.filter((it) => it.postings !== null)
+  let chart = ''
+  if (withCount.length) {
+    const choice = CORNER_CHOICES.includes(u.corners?.sk) ? u.corners.sk : 8
+    const k = choice === 'all' ? withCount.length : Math.min(choice, withCount.length)
+    const items = withCount.slice(0, k).map((it) => {
+      const count = fmtInt(it.postings)
+      return {
+        id: String(it.n),
+        label: it.example,
+        value: it.postings,
+        previous: it.previousPostings,
+        hollow: it.isNew,
+        valueText: `${count} ${t('rdSkAds')}`,
+        aria: `${t('rdSkAria', { n: it.n, name: it.example, count, year })}${it.isNew ? `, ${t('rdSkNew', { release: releaseId })}` : ''}`,
+      }
+    })
+    const seg = CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="skCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: withCount.length }) : String(c))}</button>`).join('')
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span></div>
+      <div class="rd-chart">${profileRadar({ items, scale: SK_SCALE, rings: SK_RINGS, act: 'skCorner', label: `${t('rdSkChartTitle')} · ${year}`, colour: 'accent', t })}</div>
+      <p class="tiny muted rd-legend-line">${esc(t('rdSkLegend', { year }))}</p>
+      ${sc.firstSnapshot ? `<p class="tiny muted rd-legend-line">${esc(t('rdSkOneYear'))}</p>` : ''}`
+  }
+
+  let list = ''
+  if (numbered.length) {
+    const q = String(u.q ?? '')
+    const shown = filterItems(numbered, q)
+    const row = (it) => {
+      const count = it.postings === null ? `<span class="tiny muted">${esc(t('rdSkNoCount'))}</span>` : `${numLink(fmtInt(it.postings), hotLink)} <span class="tiny muted">${esc(t('rdSkAds'))} · ${esc(year)}</span>`
+      return `<li id="rd-sk-${it.n}" class="rd-row${u.hl === it.n ? ' hl' : ''}"><span class="rd-rn">${it.n}</span>
+        <span><b>${esc(it.example)}</b>${it.isNew ? ` <span class="rd-newmark">${esc(t('rdSkNew', { release: releaseId }))}</span>` : ''}<div class="tiny muted">${fromLine(t, it.jobs)}</div></span>
+        <span class="rd-rc small">${count}</span></li>`
+    }
+    const pg = paged(t, 'sk', shown, u.pages?.sk)
+    list = `<div class="rd-tools"><input id="rd-sk-q" type="search" data-radar-search="sk" value="${esc(q)}" placeholder="${esc(t('rdSkSearch', { n: numbered.length }))}" aria-label="${esc(t('rdSkSearch', { n: numbered.length }))}"><span class="tiny muted">${esc(t('rdSkShown', { shown: shown.length, n: numbered.length, year }))}</span></div>
+      <ul class="rd-rank-list">${pg.slice.map(row).join('') || `<li class="rd-row"><span></span><span class="small muted">${esc(t('rdSkNoMatch'))}</span><span></span></li>`}</ul>${pg.bar}`
+  }
+
+  // The fold is open right after one of its pages was chosen (openDrop); any other action lets it be closed.
+  const dpg = paged(t, 'skDrop', sc.dropped, u.pages?.skDrop)
+  const dropped = sc.dropped.length
+    ? `<details class="rd-fold"${u.openDrop ? ' open' : ''}><summary class="small">${esc(t('rdSkDroppedFold', { n: sc.dropped.length, previous: sc.release?.previous?.id ?? DASH, current: releaseId }))}</summary>
+      <ul class="rd-rank-list">${dpg.slice.map((d) => `<li class="rd-row"><span class="rd-rn">–</span><span>${esc(d.example)}<div class="tiny muted">${fromLine(t, d.jobs)}</div></span><span></span></li>`).join('')}</ul>${dpg.bar}</details>`
+    : ''
+
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · O*NET ${esc(releaseId)}${sc.release?.current?.month ? ` (${esc(sc.release.current.month)})` : ''} · ${esc(sc.window?.label ?? DASH)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))} · ${esc(t('rdSkLicence'))} · ${esc(t('rdSkSource'))}</p>`
+
+  return wrapCard(`${notes}${chainPaths(t, jobs)}${none}${noJobs}${chart}${list}${dropped}${src}`)
+}
+
+// ---------- AI tasks card: how AI is used in the tasks of the user's jobs (profile charts spec D31-D32) ----------
+// Worked out here in the browser from the confirmed profile and the public AI task answer; nothing is sent.
+// The numbers are shares of observed AI conversations (Anthropic Economic Index), not a forecast and not a score.
+
+const AI_CORNER_CHOICES = [8, 16, 'all']
+const AI_SCALE = { kind: 'linear', min: 0, max: 100 }
+const AI_RINGS = [{ value: 25, label: '25%' }, { value: 50, label: '50%', dashed: true }, { value: 75, label: '75%' }, { value: 100, label: '100%' }]
+const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
+const ILO_URL = 'https://doi.org/10.54394/HETP0387'
+const JOB_SWITCH_MAX = 4 // more jobs than this (a field brings many) go in a drop-down, not a row of buttons
+
+export function aiTasksCard({ t, state, data }) {
+  const wrapCard = (body) => `<div class="card rd-sec" data-sec="AI"><h2>${esc(t('rdAiChartTitle'))} ${tag('est', t('rdAiChartTag'))}</h2>${body}</div>`
+  const rel = relevance(state, data)
+  if (!rel) return wrapCard(state?.profile?.profileStatus === 'confirmed' ? hint(t) : `<div class="hint">${esc(t('rdAiConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  const u = ui(state)
+  const got = u.aiTasks
+  if (!got || got.loading) return wrapCard(`<p class="small muted"><span class="spin"></span> ${esc(t('rdAiLoading'))}</p>`)
+  const ai = got.ok ? got.data : null
+  if (!ai || ai.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdAiUnavailable'))} ${srcLink({ label: 'Anthropic Economic Index', url: AEI_URL })} ${srcLink({ label: 'ILO WP140', url: ILO_URL })}</p>`)
+
+  const refs = refsFor(data.refs)
+  const { jobs, broken } = profileJobs(rel, { chain: refs.chain, onetTitle: refs.onetTitle })
+  const notes = chainNotes(t, data, broken)
+  if (!jobs.length) return wrapCard(`${notes}${broken.length ? '' : hint(t)}`)
+
+  const idx = Number.isInteger(u.aiJob) && u.aiJob >= 0 && u.aiJob < jobs.length ? u.aiJob : 0
+  const job = jobs[idx]
+  const jobName = job.title ?? job.code
+  const switchBar = jobs.length > JOB_SWITCH_MAX
+    ? `<div class="rd-tools"><label class="small muted" for="rd-ai-job">${esc(t('rdJob'))}</label><select id="rd-ai-job" data-radar-aijob>${jobs.map((j, i) => `<option value="${i}"${i === idx ? ' selected' : ''}>${esc(`${j.title ?? j.code} (${j.code})`)}</option>`).join('')}</select></div>`
+    : jobs.length > 1
+      ? `<div class="rd-tools"><span class="small muted">${esc(t('rdJob'))}</span><span class="seg" role="group" aria-label="${esc(t('rdJob'))}">${jobs.map((j, i) => `<button class="${i === idx ? 'on' : ''}" data-act="aiJob" data-arg="${i}" aria-pressed="${i === idx}">${esc(j.title ?? j.code)}</button>`).join('')}</span></div>`
+      : ''
+  const jobLine = `<p class="small">${summaryLink(job)}${viaText(job) ? ` <span class="tiny">(${esc(viaText(job))})</span>` : ''}</p>`
+
+  const { items, total, ilo, iscos } = taskCorners(job, ai, { iscoOf: refs.bridge.iscoOf })
+  const link = (pattern) => (ai.sourceLinks ?? []).find((l) => pattern.test(l?.url ?? ''))
+  const iloLink = link(/doi\.org/) ?? { label: 'ILO WP140', url: 'https://doi.org/10.54394/HETP0387' }
+  const aeiLink = link(/huggingface\.co\/datasets\/Anthropic\/EconomicIndex$/) ?? { label: 'Anthropic Economic Index', url: AEI_URL }
+  const gradient = (g) => { const key = `rdAiGrad_${g}`; const text = t(key); return text === key ? g : text }
+  const exposure = ilo.length
+    ? ilo.map((r) => `<p class="small">${esc(t('rdAiExposure', { job: jobName, gradient: gradient(r.gradient), isco: r.isco, title: r.title, mean: r.mean.toFixed(2) }))} ${srcLink(iloLink)}</p>`).join('')
+    : iscos.length
+      ? `<p class="small">${esc(`${jobName}: ${t('rdAiNoIloRow', { isco: iscos.join(', ') })}`)} ${srcLink(iloLink)}</p>`
+      : `<p class="small">${esc(`${jobName}: ${t('rdAiNoIsco')}`)} ${srcLink(iloLink)}</p>`
+
+  const release = `${ai.release ?? DASH} · ${ai.dataPeriod ?? DASH}`
+  let chart = ''
+  let list = ''
+  if (!items.length) {
+    chart = `<div class="rd-note small">${esc(t('rdAiNone', { total }))}</div>`
+  } else {
+    const numbered = items.map((it, i) => ({ ...it, n: i + 1 }))
+    const choice = AI_CORNER_CHOICES.includes(u.corners?.ai) ? u.corners.ai : 8
+    const k = choice === 'all' ? numbered.length : Math.min(choice, numbered.length)
+    const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) ?? t('rdAiUnder') })
+    const points = numbered.slice(0, k).map((it) => ({
+      id: String(it.n),
+      label: it.text,
+      value: it.automation,
+      valueText: `${it.automation}%`,
+      aria: `T${it.n}. ${it.text}: ${rowText(it)}`,
+    }))
+    const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span>
+      <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
+      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, prefix: 'T', t })}</div>
+      <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
+    const pg = paged(t, 'ai', numbered, u.pages?.ai)
+    list = `<ul class="rd-rank-list">${pg.slice.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">T${it.n}</span>
+      <span>${esc(it.text)}<div class="tiny muted">${esc(rowText(it))}</div></span>
+      <span class="rd-rc tiny muted">${esc(release)} ${srcLink(aeiLink)}</span></li>`).join('')}</ul>${pg.bar}`
+  }
+
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(ai.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(release)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(ai.fetchedAt))} · ${esc(t('rdAiLicence'))} · ${esc(t('rdAiSource'))}</p>`
+  return wrapCard(`${notes}${chainPaths(t, jobs)}${switchBar}${jobLine}${exposure}${chart}${list}${src}`)
+}
+
+// After a render the search box is a new element: put the focus and the caret back where the user was typing.
+export function keepCaret(pos, doc = document) {
+  const box = doc.querySelector('[data-radar-search]')
+  if (!box) return
+  box.focus()
+  box.setSelectionRange(pos, pos)
 }
 
 export function skillsTab({ t, state, data }) {
@@ -543,7 +822,7 @@ export function skillsTab({ t, state, data }) {
     <div class="row" style="margin-top:10px"><button class="btn pri" data-go="match">${esc(t('rdB6Next'))}</button></div>
   </div>`
 
-  return `${sc.mine ? '' : `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>`}${b1}${b2}${b5}${b6}${viewAll(t, state, 'sk')}`
+  return `${sc.mine ? '' : `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>`}${skillsChartCard({ t, state, data })}${b1}${b2}${b5}${b6}${viewAll(t, state, 'sk')}`
 }
 
 // ---------- evidence drawer ----------

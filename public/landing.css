@@ -1,0 +1,317 @@
+/* Landing page ("Editorial Dopamine"): cream canvas, serif headlines, one saturated accent per figure.
+   The future is loud (accents, big type); the evidence is quiet (white cards, mono source lines). */
+:root{
+  --lp-cream:#f5f0e6;--lp-paper:#fffdf8;--lp-ink:#15130f;--lp-ink2:#3d382f;--lp-muted:#6f6758;--lp-line:#e3dbca;
+  --lp-pink:#f0186d;--lp-blue:#2b3cff;--lp-lime:#c6f135;--lp-on-lime:#15130f;
+  --lp-serif:"Instrument Serif","Noto Serif SC","Songti SC","STSong",Georgia,serif;
+  --lp-sans:"Geist",system-ui,-apple-system,"Segoe UI","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --lp-mono:"Geist Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --lp-cream:#12110e;--lp-paper:#1b1915;--lp-ink:#f3eee3;--lp-ink2:#d3ccbd;--lp-muted:#a1988a;--lp-line:#302c25;
+  --lp-pink:#ff5596;--lp-blue:#8090ff;}}
+:root[data-theme="dark"]{
+  --lp-cream:#12110e;--lp-paper:#1b1915;--lp-ink:#f3eee3;--lp-ink2:#d3ccbd;--lp-muted:#a1988a;--lp-line:#302c25;
+  --lp-pink:#ff5596;--lp-blue:#8090ff;}
+
+body.landing{background:var(--lp-cream);color:var(--lp-ink);font-family:var(--lp-sans);overflow-x:clip}
+body.landing .top{display:none}
+body.landing main{max-width:none;padding:0}
+/* --edge: where the page's content starts, for full-width bands (nav, footer) that keep their content lined up */
+.lp{--edge:max(clamp(16px,4vw,48px),calc(50vw - 620px + clamp(16px,4vw,48px)));max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+.lp button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.lp :focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px;border-radius:8px}
+.lp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lp-muted{color:var(--lp-muted)}
+
+/* navigation */
+.lp-nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:20px;margin:0 calc(50% - 50vw);padding:14px var(--edge);
+  background:color-mix(in srgb,var(--lp-cream) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--lp-line)}
+.lp-brand{font-family:var(--lp-serif);font-size:26px;line-height:1;letter-spacing:-.01em;white-space:nowrap}
+.lp-brand span{font-family:var(--lp-sans);font-size:10.5px;font-weight:600;letter-spacing:.08em;vertical-align:5px;margin-left:3px;
+  padding:3px 6px;border-radius:5px;background:var(--lp-ink);color:var(--lp-cream)}
+.lp-links{display:flex;gap:4px;flex:1;justify-content:center}
+.lp-links button{padding:8px 12px;font-size:14px;color:var(--lp-muted);border-radius:99px}
+.lp-links button:hover{color:var(--lp-ink);background:var(--lp-paper)}
+.lp-lang{display:inline-flex;border:1px solid var(--lp-line);border-radius:99px;padding:3px;background:var(--lp-paper)}
+.lp-lang button{font-family:var(--lp-mono);font-size:11.5px;padding:5px 10px;border-radius:99px;color:var(--lp-muted)}
+.lp-lang button.on{background:var(--lp-ink);color:var(--lp-cream)}
+
+/* buttons */
+.lp .lp-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:99px;font-size:15px;font-weight:500;
+  border:1px solid transparent;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.lp .lp-btn:hover{transform:translateY(-1px)}
+.lp .lp-btn-sm{padding:9px 16px;font-size:14px}
+.lp .lp-btn-ink{background:var(--lp-ink);color:var(--lp-cream)}
+.lp .lp-btn-line{border-color:var(--lp-ink2);color:var(--lp-ink)}
+.lp .lp-btn-line:hover{background:var(--lp-paper)}
+.lp .lp-btn-lime{background:var(--lp-lime);color:var(--lp-on-lime)}
+.lp .lp-btn-ghost{border-color:color-mix(in srgb,var(--lp-cream) 40%,transparent);color:var(--lp-cream)}
+
+/* headline type (first section) */
+.lp-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lp-pink);box-shadow:0 0 0 0 var(--lp-pink);animation:lp-pulse 2.4s ease-out infinite}
+.lp-display{font-family:var(--lp-serif);font-weight:400;font-size:clamp(50px,8.2vw,116px);line-height:.93;letter-spacing:-.025em;margin:22px 0 26px;text-wrap:balance}
+.lp-display em{font-style:italic;color:var(--lp-pink)}
+.lp-display-sm{font-size:clamp(44px,7vw,96px);margin:0 0 20px}
+:lang(zh) .lp-display{font-size:clamp(40px,6.2vw,86px);line-height:1.14;letter-spacing:0}
+:lang(zh) .lp-display em{font-style:normal}
+.lp-sub{font-size:19px;line-height:1.55;color:var(--lp-ink2);max-width:46ch}
+.lp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.lp-note{margin-top:16px;font-size:13px;color:var(--lp-muted)}
+
+/* sources and the "calculated" tag on figures */
+.lp-src{display:block;margin-top:auto;font-family:var(--lp-mono);font-size:11px;line-height:1.5;color:var(--lp-muted)}
+.lp-src b{font-weight:500;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;padding:1px 6px;border:1px solid currentColor;border-radius:99px}
+.lp-tag{font-family:var(--lp-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border:1px dashed currentColor;border-radius:99px;margin-right:4px}
+
+/* sections */
+.lp-section{padding:clamp(64px,9vw,128px) 0;border-bottom:1px solid var(--lp-line);scroll-margin-top:72px}
+.lp-head{max-width:780px;margin-bottom:clamp(32px,4vw,52px)}
+.lp-label{font-family:var(--lp-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lp-muted)}
+.lp-label::before{content:"";display:inline-block;width:28px;height:1px;background:currentColor;vertical-align:middle;margin-right:10px}
+.lp-h2{font-family:var(--lp-serif);font-weight:400;font-size:clamp(38px,5vw,66px);line-height:1;letter-spacing:-.02em;margin:16px 0;text-wrap:balance}
+:lang(zh) .lp-h2{line-height:1.2;letter-spacing:0}
+.lp-lead{font-size:18px;line-height:1.55;color:var(--lp-ink2);max-width:58ch}
+
+
+/* how it works, in the black-and-white look of the second section: the working stage as a white card with a six-cell
+   gauge of the stages built, then the stages still to come as a line of text (.lp-next). Hairline rules between the
+   rows (each row draws its top rule; the grid clips the outer ones); no colour. */
+.lp-howsec{padding-top:clamp(40px,5vw,56px)}
+.lp-howsec .lp-head{margin-bottom:clamp(24px,3vw,36px)}
+.lp-bento{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:hidden;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
+.lp-stage{display:flex;flex-direction:column;gap:12px;padding:clamp(20px,2.4vw,28px) clamp(16px,1.8vw,24px);margin:-1px 0 0 -1px;
+  border-top:1px solid var(--lp-line);border-left:1px solid var(--lp-line);transition:background .2s ease}
+.lp-stage:hover{background:color-mix(in srgb,var(--lp-paper) 70%,transparent)}
+.lp-stage p{font-size:14px;line-height:1.5;color:var(--lp-ink2)}
+.lp-stage-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lp-num{font-family:var(--lp-serif);font-size:26px;line-height:1;letter-spacing:-.02em}
+.lp-stage-title{font-family:var(--lp-serif);font-weight:400;font-size:24px;line-height:1.05;letter-spacing:-.01em}
+.lp-pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--lp-mono);font-size:11px;padding:5px 10px;border-radius:99px;white-space:nowrap}
+.lp-pill-next{margin-top:auto;align-self:flex-start;border:1px dashed var(--lp-muted);color:var(--lp-muted)}
+.lp-stage .lp-pill{white-space:normal;text-wrap:balance;border-radius:14px}
+.lp-stage-live{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px clamp(24px,4vw,56px);align-items:end;
+  padding:clamp(24px,3vw,36px) clamp(16px,1.8vw,24px);background:var(--lp-paper)}
+.lp-stage-live:hover{background:var(--lp-paper)}
+.lp-stage-live .lp-num{font-size:56px}
+.lp-live-a,.lp-live-b{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lp-live-a .lp-stage-top{justify-content:flex-start;gap:16px}
+.lp-stage-live .lp-stage-title{font-size:clamp(34px,3.6vw,52px);margin-top:10px}
+.lp-stage-live p{font-size:16px;max-width:46ch}
+.lp-pill-live{background:var(--lp-ink);color:var(--lp-cream)}
+.lp-pill-live .lp-dot{background:var(--lp-cream);box-shadow:none;animation:lp-blink 1.6s ease-in-out infinite}
+.lp-quest{display:flex;gap:6px;margin-top:10px}
+.lp-quest-step{width:34px;height:12px;border:1px solid var(--lp-ink);border-radius:2px}
+.lp-quest-step.on{background:var(--lp-ink)}
+.lp-stage-live .lp-quest-note{font:500 11.5px var(--lp-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--lp-muted)}
+.lp-ticks{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.lp-ticks li{font-size:13px;padding:6px 12px;border:1px solid var(--lp-line);border-radius:99px;color:var(--lp-ink2)}
+.lp-ticks li::before{content:"✓ ";color:var(--lp-ink)}
+.lp-stage-live .lp-btn{align-self:flex-start}
+/* the stages still to come: one line of text under the white card, number and short name only */
+.lp-next{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin:-1px 0 0 -1px;
+  padding:18px clamp(16px,1.8vw,24px);border-top:1px solid var(--lp-line)}
+.lp-next-label{font:500 11px var(--lp-mono);padding:5px 10px;border:1px dashed var(--lp-muted);border-radius:99px;color:var(--lp-muted);white-space:nowrap}
+.lp-next ol{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0;padding:0;
+  font:400 12px var(--lp-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--lp-ink2)}
+.lp-next b{font-weight:500;color:var(--lp-muted);margin-right:8px}
+.lp-next li+li::before{content:"→";margin-right:14px;color:var(--lp-muted)}
+
+/* the data: quiet. No cards: thin rules between the counts, like the second section (each count draws its top and
+   left rule; the grid clips the outer ones, so the rules stay right when the columns wrap) */
+.lp-data{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
+.lp-datum{display:flex;flex-direction:column;gap:8px;padding:24px clamp(16px,2vw,28px);margin:-1px 0 0 -1px;
+  border-top:1px solid var(--lp-line);border-left:1px solid var(--lp-line)}
+.lp-datum-n{font-family:var(--lp-serif);font-size:clamp(50px,5vw,72px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums lining-nums}
+.lp-datum-label{font-size:15px;line-height:1.4;color:var(--lp-ink2)}
+.lp-meter{height:6px;border-radius:99px;background:var(--lp-line);overflow:hidden;margin-top:6px}
+.lp-meter i{display:block;height:100%;background:var(--lp-blue);border-radius:99px}
+.lp-meter-note{font-size:12.5px;color:var(--lp-muted)}
+.lp-mono{margin-top:auto;padding-top:14px;border-top:1px dashed var(--lp-line);font-family:var(--lp-mono);font-size:11px;line-height:1.55;color:var(--lp-muted)}
+.lp-foot-note{margin-top:22px;font-size:13px;color:var(--lp-muted)}
+
+/* principles */
+.lp-principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,36px)}
+.lp-principle{border-top:2px solid var(--lp-ink);padding-top:18px}
+.lp-pnum{font-family:var(--lp-mono);font-size:12px;color:var(--lp-muted)}
+.lp-principle h3{font-family:var(--lp-serif);font-weight:400;font-size:28px;line-height:1.05;margin:10px 0 10px}
+.lp-principle p{font-size:15px;line-height:1.55;color:var(--lp-ink2)}
+
+/* who it is for */
+.lp-list{list-style:none;border-top:1px solid var(--lp-line)}
+.lp-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:24px 0;border-bottom:1px solid var(--lp-line)}
+.lp-list h3{font-family:var(--lp-serif);font-weight:400;font-size:clamp(26px,3vw,36px);line-height:1.1}
+.lp-list p{font-size:15px;color:var(--lp-ink2);margin-top:6px;max-width:62ch}
+.lp-list .lp-pill-next{margin-top:0}
+.lp-pill-open{background:var(--lp-ink);color:var(--lp-cream)}
+.lp-who{border-bottom:0}
+
+/* the end of the page: one full-width band (.lp-end) holding the closing call to action and the footer, its content
+   lined up with the page (--edge). The closing block
+   is the black top (black in dark mode too); its bottom edge is cut into triangles (a mask) and the footer follows
+   straight underneath. */
+.lp-end{margin:0 calc(50% - 50vw);background:var(--lp-cream)}
+.lp-close{--lp-cream:#f5f0e6;padding:clamp(40px,8vw,104px) var(--edge) calc(clamp(40px,8vw,104px) + 14px);color:var(--lp-cream);
+  background:#000;
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
+    conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom left/28px 14px repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - 14px) no-repeat,
+    conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) bottom left/28px 14px repeat-x}
+.lp-close p{font-size:18px;line-height:1.55;max-width:50ch;color:color-mix(in srgb,var(--lp-cream) 78%,transparent)}
+
+/* footer, under the closing block's wavy edge: the about line top right, a large wordmark with the ATM mascot bottom
+   left, the language switch bottom right, then the small print */
+.lp-footer{position:relative;font-size:13px;line-height:1.6;color:var(--lp-muted)}
+.lp-footer-body{display:grid;gap:clamp(20px,3vw,32px);padding:clamp(24px,3vw,36px) var(--edge) clamp(20px,2.4vw,28px)}
+.lp-footer-about{justify-self:end;max-width:44ch;text-align:right;font-size:15px;line-height:1.45;font-weight:600;color:var(--lp-ink)}
+.lp-footer-base{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:.22em;font-size:clamp(50px,12.5vw,184px)}
+.lp-footer-base .lp-row{font-size:13px}
+.lp-wordmark{display:flex;align-items:flex-end;gap:.06em;font-family:var(--lp-serif);font-size:clamp(50px,12.5vw,184px);line-height:.8;
+  letter-spacing:-.04em;color:var(--lp-ink);white-space:nowrap}
+.lp-mascot{flex:none;width:.62em;height:auto;margin-bottom:-.04em;fill:var(--lp-paper);stroke:var(--lp-ink);stroke-width:3;
+  stroke-linecap:round;stroke-linejoin:round}
+.lp-mascot .lp-mascot-ink{fill:var(--lp-ink);stroke:none}
+.lp-mascot .lp-mascot-eye{fill:var(--lp-paper);stroke:none}
+.lp-mascot .lp-mascot-smile{fill:none;stroke:var(--lp-paper)}
+.lp-mascot-arm{transform-origin:100px 70px;transition:rotate .3s ease}
+.lp-wordmark:hover .lp-mascot-arm{rotate:-14deg}
+.lp-footer-fine{padding-top:14px;border-top:1px dashed var(--lp-line);font-size:12px}
+.lp-footer-fine p{max-width:110ch}
+.lp-footer-fine p+p{margin-top:6px}
+
+/* mechanical roller counters: each digit a drum in its own tile (odometer.js rolls them). The tile is shaded dark at
+   the top and bottom and light in the middle, so the digit reads as sitting inside a turning drum; a faint seam
+   crosses the middle. One cell is 1.45em tall (CELL_EM in odometer.js). */
+.lp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.odo{display:inline-block;line-height:1}
+.odo-face{display:inline-flex;align-items:center;gap:.12em;font-family:var(--lp-sans);font-weight:600;letter-spacing:0;color:var(--lp-ink)}
+.odo-wheel{position:relative;display:block;width:.88em;height:1.45em;overflow:hidden;text-align:center;border-radius:.13em;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--lp-ink) 9%,var(--lp-paper)),var(--lp-paper) 40%,var(--lp-paper) 60%,
+    color-mix(in srgb,var(--lp-ink) 9%,var(--lp-paper)));
+  border:1px solid color-mix(in srgb,var(--lp-ink) 10%,transparent);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 .05em .12em rgba(40,30,10,.16),0 .01em .02em rgba(40,30,10,.14)}
+.odo-wheel::before,.odo-wheel::after{content:"";position:absolute;pointer-events:none;z-index:1}
+.odo-wheel::before{left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.07);box-shadow:0 1px 0 rgba(255,255,255,.3)}
+.odo-wheel::after{inset:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(70,50,20,.3),rgba(70,50,20,.07) 20%,rgba(0,0,0,0) 38%,rgba(0,0,0,0) 62%,rgba(70,50,20,.07) 80%,rgba(70,50,20,.3));
+  box-shadow:inset 0 .06em .08em rgba(0,0,0,.14),inset 0 -.06em .08em rgba(0,0,0,.14)}
+.odo-strip{display:block;transform:translateY(calc(var(--to) * -1.45em));will-change:transform}
+.odo-strip i{display:block;height:1.45em;line-height:1.45em;font-style:normal;font-variant-numeric:tabular-nums lining-nums}
+.odo.armed .odo-strip{transform:translateY(0)}
+.odo-sep{display:block;height:1.45em;line-height:1.45em;margin:0 -.02em}
+.odo-suffix{align-self:flex-end;margin:0 0 .62em .12em;font-size:.6em;line-height:1}
+.lp-datum-n .odo{font-size:.66em}
+
+/* FIRST SECTION. The three.js ATM fills it; once the receipt is pinned (data-phase from app.js) the headline and
+   buttons rise in beside it: left on wide screens (receipt on the right), below the receipt on narrow ones.
+   The HTML receipt is read out to screen readers, and shown when the 3D intro does not play (body.no-intro). */
+.lp-atm{position:relative;margin:0 calc(50% - 50vw);border-bottom:1px solid var(--lp-line)}
+.lp-atm-canvas{position:relative;height:calc(100svh - 65px);min-height:540px}
+.lp-atm-copy{position:relative;z-index:2;padding:8px clamp(16px,4vw,48px) clamp(48px,8vw,80px)}
+.lp-atm-copy .lp-display{font-size:clamp(44px,5.8vw,92px);margin-top:0}
+:lang(zh) .lp-atm-copy .lp-display{font-size:clamp(36px,4.6vw,72px)}
+.lp-atm-copy>*{animation:lp-rise .8s cubic-bezier(.2,.7,.2,1) both}
+.lp-atm-copy>:nth-child(2){animation-delay:.1s}.lp-atm-copy>:nth-child(3){animation-delay:.2s}.lp-atm-copy>:nth-child(4){animation-delay:.3s}
+body:not(.no-intro) .lp-atm:not([data-phase=pinned]) .lp-atm-copy{display:none}
+@media (min-aspect-ratio:115/100){
+  body:not(.no-intro) .lp-atm-canvas{position:absolute;inset:0;height:auto;min-height:0}
+  body:not(.no-intro) .lp-atm{height:calc(100svh - 65px);min-height:540px}
+  body:not(.no-intro) .lp-atm-copy{position:absolute;top:50%;translate:0 -50%;padding:0;
+    left:max(clamp(16px,4vw,48px),calc(50% - 620px + clamp(16px,4vw,48px)));width:min(46%,600px)}
+}
+.lp-receipt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* no 3D intro: the headline beside an HTML receipt with the same story */
+body.no-intro .lp-atm{margin:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,5vw,72px);align-items:center;
+  padding:clamp(40px,7vw,96px) 0}
+body.no-intro .lp-atm-canvas{display:none}
+body.no-intro .lp-atm-copy{padding:0}
+body.no-intro .lp-receipt{position:relative;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;justify-self:center;
+  max-width:400px;padding:30px 30px 22px;background:#fbf8f0;color:#1e1a14;rotate:-1.2deg;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 18px 40px -18px rgba(40,30,10,.35);
+  mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/12px 100%}
+.lp-receipt p,.lp-receipt blockquote{margin:0}
+.lp-receipt-brand{font:600 18px var(--lp-mono);text-align:center;letter-spacing:.04em}
+.lp-receipt-title{font:500 12px var(--lp-mono);text-transform:uppercase;margin-top:6px!important;padding-bottom:12px;border-bottom:1px dashed rgba(30,26,20,.4)}
+.lp-receipt-label{font:500 11px var(--lp-mono);text-transform:uppercase;color:var(--lp-pink);margin-top:14px!important}
+.lp-receipt-quote{font:400 30px/1.05 var(--lp-serif);margin-top:8px!important;text-wrap:balance}
+.lp-receipt-quote::before{content:"“";color:var(--lp-pink);margin-left:-.45em;margin-right:.05em}
+:lang(zh) .lp-receipt-quote{line-height:1.3}
+.lp-receipt-body{font:400 12.5px/1.6 var(--lp-mono);margin-top:14px!important;padding-bottom:12px;border-bottom:1px dashed rgba(30,26,20,.4)}
+.lp-receipt-note{font:400 10px var(--lp-mono);color:rgba(30,26,20,.5);margin-top:10px!important}
+.lp-receipt-code{height:44px;margin:16px 0 14px;
+  background:repeating-linear-gradient(90deg,#1e1a14 0 2px,#0000 2px 5px,#1e1a14 5px 6px,#0000 6px 9px,#1e1a14 9px 12px,#0000 12px 14px)}
+
+/* the stage's buttons, one set per step */
+.atm-stage{position:absolute;inset:0}
+.atm-stage[data-phase=arrive],.atm-stage[data-phase=idle]{cursor:pointer}
+.atm-stage canvas{display:block;width:100%;height:100%}
+.atm-stage>button.atm-cta,.atm-stage>button.atm-skip,.atm-stage>button.atm-replay{position:absolute;z-index:1;display:none;cursor:pointer}
+.atm-stage[data-phase=arrive] .atm-cta,.atm-stage[data-phase=idle] .atm-cta,
+.atm-stage[data-phase=print] .atm-skip,.atm-stage[data-phase=tear] .atm-skip,.atm-stage[data-phase=fly] .atm-skip,
+.atm-stage[data-phase=pinned] .atm-replay{display:inline-flex;align-items:center;gap:8px}
+.atm-stage .atm-cta,.atm-stage .atm-replay{left:50%;translate:-50% 0;width:max-content;bottom:clamp(16px,4vh,40px);
+  font:500 15px var(--lp-sans);padding:13px 22px;border-radius:99px;border:0;background:var(--lp-ink);color:var(--lp-cream);
+  animation:lp-rise .5s cubic-bezier(.2,.7,.2,1) both,atm-nudge 2.4s ease-in-out .6s infinite}
+.atm-stage .atm-replay{font:500 12.5px var(--lp-mono);padding:10px 16px;background:var(--lp-paper);color:var(--lp-ink);border:1px solid var(--lp-line);
+  animation:lp-rise .5s cubic-bezier(.2,.7,.2,1) .3s both}
+@media (min-aspect-ratio:115/100){.atm-stage .atm-replay{left:70%}}
+.atm-stage .atm-skip{right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);font-family:var(--lp-mono);font-size:12.5px;
+  padding:10px 16px;border-radius:99px;border:1px solid var(--lp-line);background:var(--lp-paper);color:var(--lp-ink)}
+.atm-skip:hover,.atm-replay:hover{border-color:var(--lp-ink2)}
+.atm-stage button:focus-visible{outline:2px solid var(--lp-blue);outline-offset:3px}
+@keyframes atm-nudge{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--lp-ink) 12%,transparent)}}
+
+/* SECOND SECTION: the gap. The three figures side by side, each a heading, its roller counter and a caption, with
+   rules between them. A pink bracket under the first two joins them to the calculated gap (drawn in when the section
+   comes into view, .in); the sources sit in one footnote. It sits close under the first section. */
+.lp-gapsec{padding:clamp(40px,5vw,64px) 0 clamp(32px,4vw,48px)}
+.lp-gapsec .lp-head{margin-bottom:clamp(20px,3vw,32px)}
+.lp-tally{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);border-top:1px solid var(--lp-line);border-bottom:1px solid var(--lp-line)}
+.lp-tally-col{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;
+  padding:clamp(22px,3vw,32px) clamp(12px,2vw,28px) clamp(18px,2.4vw,26px)}
+.lp-tally-col+.lp-tally-col{border-left:1px solid var(--lp-line)}
+.lp-tally-head{display:flex;align-items:center;gap:12px;width:100%;font:500 11.5px var(--lp-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--lp-ink2)}
+.lp-tally-head::before,.lp-tally-head::after{content:"";flex:1;min-width:12px;height:1px;background:var(--lp-line)}
+.lp-tally-n{font-size:clamp(28px,3.6vw,52px);padding:4px 0}
+.lp-tally-cap{font-size:14px;line-height:1.45;color:var(--lp-muted);max-width:28ch}
+.lp-gapnote{grid-column:1/3;position:relative;margin:0 25%;padding:18px 0 20px;text-align:center;font-size:13px;line-height:1.5;color:var(--lp-ink2)}
+.lp-gapnote .lp-tag{color:var(--lp-muted)}
+.lp-gapnote::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;border:1.5px solid var(--lp-pink);border-top:0;
+  border-radius:0 0 6px 6px;transition:scale .8s cubic-bezier(.2,.7,.2,1) .8s}
+.lp-gapsec:not(.in) .lp-gapnote::before{scale:0 1}
+.lp-tally-src{display:grid;gap:6px;padding-top:16px}
+
+@keyframes lp-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes lp-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lp-pink) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
+@keyframes lp-blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.lp *,.lp *::before{animation:none!important;transition:none!important}}
+
+@media (max-width:1000px){
+  .lp-bento{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .lp-bento .lp-stage-live{grid-column:span 6;grid-row:auto;grid-template-columns:1fr}
+  .lp-stage{grid-column:span 2}
+  .lp-data,.lp-principles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-links{display:none}
+  .lp-nav{justify-content:space-between}
+}
+@media (max-width:640px){
+  .lp-stage,.lp-bento .lp-stage-live{grid-column:1/-1}
+  .lp-bento{grid-auto-rows:auto}
+  .lp-data,.lp-principles{grid-template-columns:1fr}
+  body.no-intro .lp-atm{grid-template-columns:1fr}
+  .lp-tally{grid-template-columns:1fr}
+  .lp-tally-n{font-size:44px}
+  .lp-tally-col+.lp-tally-col{border-left:0;border-top:1px solid var(--lp-line)}
+  .lp-tally-col:nth-of-type(3){order:1;border-top:1px solid var(--lp-line)}
+  .lp-gapnote{grid-column:auto;margin:0;padding-top:0}
+  .lp-gapnote::before{display:none}
+  .lp-list li{grid-template-columns:1fr;gap:10px}
+  .lp-list .lp-pill{justify-self:start}
+  .lp-footer-about{justify-self:start;text-align:left}
+  .lp-sub,.lp-lead{font-size:17px}
+}
+@media (max-width:480px){
+  .lp-nav .lp-btn{display:none}
+}

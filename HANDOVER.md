@@ -115,3 +115,5 @@ python pipeline/fetch_radar_bridge.py         # after the BLS files are saved
 | Pipeline scripts | `pipeline/fetch_emasco.py`, `import_emasco_details.py`, `fetch_ilo.py`, `fetch_aei.py`, `fetch_sdg_targets.py`, `fetch_radar_bridge.py` |
 | Tests | `tests/matching/`, `pipeline/tests/` |
 | Docs | `docs/matching/acceptance.md`, `data/SOURCES.md`, `docs/tools-declaration.md`, `docs/build-record.html` |
+
+Main's Study Pathway and Radar chart work came in on 31 Oct 2026 (merge of `origin/main`).

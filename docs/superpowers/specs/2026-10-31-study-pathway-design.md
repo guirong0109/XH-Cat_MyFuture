@@ -26,6 +26,8 @@ A user picks one or more roles from career matching and, for each, sees a study 
   OpenLearning, MDEC, …), each a link to the course page, and "More on …" links that open each searchable site's own
   search for that skill (e.g. Python → Python courses on e-LATiH, Coursera, edX, Microsoft Learn, …).
 
+This holds for **every** skill and **every** field of study, not only the examples (P13).
+
 The user marks steps "started" or "done" (self-reported).
 
 Success: a judge picks a role, sees exact named courses, clicks one and lands on that course's page; every list names
@@ -45,9 +47,10 @@ so instead of guessing.
 | P7 | "Not assessed yet" skills | Own group "Level not assessed yet", with courses and a link to set the level; the pathway is marked provisional. Nothing is locked |
 | P8 | Approach | A: new pathway service (`shared/pathway/`, `server/pathway/`, `POST /api/pathway`) that reuses matching's role answer; matching's files are not changed except the card button |
 | P9 | Team picks review | Same as SDG links (M16): shown now, labelled "team draft, not yet reviewed"; approved in `#admin` → "approved by owner on <date>"; rejected → hidden |
-| P10 | First fill | Courses for the 68 O\*NET skill and knowledge items wherever a real course is found by hand on the sites of P12 (e-LATiH first, then the others); a few programmes for each field of study reached by the roles of the browser check (those roles are listed in `docs/pathway/acceptance.md` before the fill). Everything else shows "no team pick yet" plus the search link |
+| P10 | First fill (changed by P13) | **All** fields and skills, not a demo subset: at least one named course for each of the 68 O\*NET skill and knowledge items, from the sites of P12 (e-LATiH first, then the others); for each field of study that reaches O\*NET (118 of 124), at least one accredited Malaysian programme and, where the field has one, its Malaysian professional body. Roughly 300–500 links, each opened in a browser. Where no real one is found, the screen shows "no team pick yet" plus the search links |
 | P11 | Diagram | Claude drafts `docs/architecture-pathway.html`; the owner approves it |
 | P12 | More sites (owner, 31 Oct, after the first spec) | Not only e-LATiH and MQA. Four groups: global course sites, tech-company learning, Malaysian platforms, professional bodies. Sites whose search can be linked (checked in a browser) get a "More on <site>" search link on every skill step; the others give named team picks only. No link is invented: every site and pick is real and opened in a browser before it is added |
+| P13 | All fields (owner, 31 Oct) | Python and accounting were examples only. Every field of study gets "More on <site>" search links too (the field name as search word), as every skill does, and the first fill (P10) covers all fields and all skills |
 
 ## 3. What the course sites allow (checked 31 Oct 2026)
 
@@ -97,12 +100,13 @@ Nothing is invented: a missing value stays missing and the screen says so.
 |---|---|---|---|
 | `data/onet/education.tsv` (new) | Per O\*NET job: the "Required Level of Education" (element 2.D.1, scale RL) percentage for each of the 12 categories, with the category names and the Recommend Suppress flag | *Education, Training, and Experience.txt* and *Education, Training, and Experience Categories.txt* from the O\*NET 31.0 zip already recorded (same SHA-256), via `pipeline/fetch_onet.py 31.0` | CC BY 4.0. US survey data, labelled so on screen. Suppressed rows are not shown and the screen says so |
 | `data/pathway/sites.json` (new) | The course sites of section 3: id, name, group (malaysian / global / tech / professional), home page, terms page, search link with `<q>` or null, date the search link was checked, hosts its course pages use | Written by the FutureReady team; each search link opened in a browser | Only sites in this file can appear. Links must be `https` |
-| `data/pathway/picks.json` (new) | Team picks: `courses` (per O\*NET item key; any site in `sites.json`), `programmes` (per ISCED-F field code; kind `accredited` with institution and MQR reference number, or kind `professional` with the body's name), `searchWords` (per O\*NET item key). Each pick: id, site id or institution, name, link, date checked | Written by the FutureReady team; each link opened in a browser before it is added | Team draft (P9). Links must be `https`; a course link's host must be one of its site's hosts (e-LATiH links also start `/courses-details/`); a programme link may be on any institution or body's own site |
+| `data/pathway/picks.json` (new) | Team picks: `courses` (per O\*NET item key or ISCED-F field code; any site in `sites.json`), `programmes` (per ISCED-F field code; kind `accredited` with institution and MQR reference number, or kind `professional` with the body's name), `searchWords` (per O\*NET item key and per ISCED-F field code). Each pick: id, site id or institution, name, link, date checked | Written by the FutureReady team; each link opened in a browser before it is added | Team draft (P9). Links must be `https`; a course link's host must be one of its site's hosts (e-LATiH links also start `/courses-details/`); a programme link may be on any institution or body's own site |
 | `data/radar/occupation-bridge.json` (reused) | eMASCO → O\*NET code chain | As recorded | Through matching |
 | `data/isced/cip_onet.tsv`, `isced_cip.tsv`, `fields.tsv` (reused) | O\*NET job ↔ CIP, CIP ↔ ISCED-F (partial links marked `*`), ISCED-F names | As recorded | Read backwards here |
 
-A search word defaults to the O\*NET item name; the team sets another only where the name finds little on the sites
-(e.g. "Active Listening" → "listening skills"). One word serves every searchable site. A search word is a team draft
+A search word defaults to the O\*NET item name, or for a field to the ISCED-F field name; the team sets another only
+where the name finds little on the sites (e.g. "Active Listening" → "listening skills"; "Accounting and taxation" →
+"accounting"). One word serves every searchable site. A search word is a team draft
 too and is reviewed with the picks.
 
 ## 5. Skills to build (`shared/pathway/steps.js`, pure)
@@ -140,6 +144,8 @@ For the same O\*NET job:
 - **Professional qualifications**: under each field, its shown team picks of kind `professional` (body, qualification
   name, link to the body's page, date checked, review label), e.g. MIA or ACCA under accounting. None: the line is
   left out.
+- **Courses for the field** (P13): under each field, its shown team course picks for that field code, then one
+  "More on <site>" link per searchable site, searching for the field's search word (section 4).
 
 The CIP crosswalk and ISCED table are 2020 / 2016 editions; the screen names both, as the profile form does.
 
@@ -197,7 +203,9 @@ Test first (Vitest) for each unit; a Python unit test for the `fetch_onet.py` ch
   field; education top category, tie, none, suppressed.
 - `picks.js`: valid files; each bad case (http, unknown site, host not the site's, wrong e-LATiH path, search link
   without or with two `<q>`, duplicate id, missing date); review statuses; search links for every searchable site, in
-  order, with encoding (e.g. "C++").
+  order, with encoding (e.g. "C++"); a field's search word falls back to its ISCED-F name.
+- Data check: every one of the 68 O\*NET items and every field that reaches O\*NET has either a pick or is listed in
+  the fill report `docs/pathway/fill-report.md` as "none found" with the sites searched and the date (P10).
 - Routes: real app on a random port; profile never logged; forbidden keys absent; unknown code; broken chain; admin
   key required for the picks review.
 - Browser check on `127.0.0.2:3200` (desktop and 360 px): plan a pathway from `#match`, two targets, open a team pick

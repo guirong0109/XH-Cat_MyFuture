@@ -105,49 +105,52 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
 .sdg{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:6px;color:#fff;font-weight:800;font-size:13px}
 .view{display:none}.view.on{display:block}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
+.hide{display:none!important}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:12px;font-size:13.5px;z-index:20;max-width:calc(100% - 32px);box-shadow:var(--shadow);opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.iconbtn{border:0;background:none;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px}
+.iconbtn:hover{color:var(--bad)}
+tr.sel td{background:var(--accent-soft)}
 </style>
 </head>
 <body>
-<div class="mockbar">MOCKUP for review · role titles, codes and O*NET skill names and needed levels are real · every person, count, gap, band, course and SDG link is <b>sample data</b>, not a calculation</div>
+<div class="mockbar" data-t="mockbar">MOCKUP for review · role titles, codes and O*NET skill names and needed levels are real · every person, count, gap, band, course and SDG link is sample data, not a calculation</div>
 <div class="top">
   <div class="brand">FutureReady <span>MY</span></div>
-  <span class="tag t-src">Organisation · HR</span>
+  <span class="tag t-src" id="orgTag">Organisation · HR</span>
   <div class="sp"></div>
   <div class="seg" role="group" aria-label="Organisation type">
-    <button class="on" data-type="hr">HR / L&amp;D</button><button data-type="centre">Career centre</button>
+    <button class="on" data-type="hr">HR / L&amp;D</button><button data-type="centre" data-t="centreShort">Career centre</button>
   </div>
-  <select class="input" style="width:auto" aria-label="Language"><option>EN</option><option>BM</option><option>中文</option></select>
+  <select class="input" style="width:auto" aria-label="Language" id="lang"><option value="en">EN</option><option value="ms">BM</option><option value="zh">中文</option></select>
   <button class="btn sm" id="theme">Dark</button>
 </div>
 <main>
-  <div class="tabs" role="tablist">
-    <button class="on" data-v="setup"><span class="n">1</span>Setup</button>
+  <div class="tabs" role="tablist" id="tabs">
+    <button class="on" data-v="setup"><span class="n">1</span><span data-t="tSetup">Setup</span></button>
     <button data-v="people"><span class="n">2</span><span data-w="People">People</span></button>
-    <button data-v="heat"><span class="n">3</span>Heatmap</button>
+    <button data-v="heat"><span class="n">3</span><span data-t="tHeat">Heatmap</span></button>
     <button data-v="plan"><span class="n">4</span><span data-w="Team plan">Team plan</span></button>
-    <button data-v="outlook"><span class="n">5</span>Outlook &amp; SDG</button>
+    <button data-v="outlook"><span class="n">5</span><span data-t="tOutlook">Outlook &amp; SDG</span></button>
   </div>
 
   <!-- 1 SETUP -->
   <section class="view on" id="v-setup">
-    <h1>Set up your organisation</h1>
-    <p class="lead">One account manages one organisation. This helps plan training. It does not make hiring decisions.</p>
+    <h1 data-t="hSetup">Set up your organisation</h1>
+    <p class="lead" data-t="leadSetup">One account manages one organisation. This helps plan training. It does not make hiring decisions.</p>
     <div class="grid g2" style="align-items:start">
       <div class="card stack">
         <div class="field"><label for="on">Organisation name</label><input class="input" id="on" value="Sample Logistics Sdn Bhd"></div>
         <div class="field"><label>Type</label><div class="seg"><button class="on" data-type="hr">HR / L&amp;D manager</button><button data-type="centre">TVET / university career centre</button></div></div>
         <span class="tiny muted">Type changes the words (department ↔ programme, staff ↔ student). Career centres have no current role: gaps are against the target role only.</span>
+        <button class="btn pri" id="saveOrg">Save workspace</button>
       </div>
       <div class="card stack">
         <h3><span data-w="Departments">Departments</span> and target roles</h3>
         <div class="table-wrap"><table>
-          <thead><tr><th data-w="Department">Department</th><th>Target role (optional)</th></tr></thead>
-          <tbody>
-            <tr><td data-g="0">Finance</td><td>Data Analyst <span class="muted tiny">eMASCO 2524-02</span></td></tr>
-            <tr><td data-g="1">Customer Service</td><td><span class="muted">None set</span></td></tr>
-            <tr><td data-g="2">Operations</td><td>Supply Chain and Logistics Management Manager <span class="muted tiny">1214-04</span></td></tr>
-          </tbody></table></div>
-        <div class="row"><input class="input" style="flex:1;min-width:140px" placeholder="Add a department"><button class="btn sm">Add</button></div>
+          <thead><tr><th data-w="Department">Department</th><th>Target role (optional)</th><th></th></tr></thead>
+          <tbody id="groupRows"></tbody></table></div>
+        <form class="row" id="addGroup"><input class="input" id="newGroup" style="flex:1;min-width:140px" placeholder="Add a department" required><button class="btn sm" type="submit">Add</button></form>
         <div class="src"><b>Source:</b> target roles from eMASCO (MOHR), crawled 23 Oct 2026</div>
       </div>
     </div>
@@ -161,30 +164,36 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
       <div class="card stack">
         <h3>Upload a roster (CSV)</h3>
         <div class="banner b-warn"><b>Use synthetic (made-up) people only.</b></div>
-        <div class="row"><button class="btn">Choose file…</button><a href="#" class="small">Download template</a><a href="#" class="small">Use the sample roster</a></div>
-        <div class="card" style="background:var(--surface2);box-shadow:none">
-          <b class="small">Preview: sample-roster-hr.csv</b> <span class="tag t-none">nothing saved yet</span>
+        <input type="file" id="file" accept=".csv" class="hide">
+        <div class="row"><button class="btn" id="chooseFile">Choose file…</button><a href="#" class="small" id="tmpl">Download template</a><a href="#" class="small" id="sample">Use the sample roster</a></div>
+        <div class="card hide" id="preview" style="background:var(--surface2);box-shadow:none">
+          <b class="small">Preview: <span id="fname">sample-roster-hr.csv</span></b> <span class="tag t-none">nothing saved yet</span>
           <dl class="kv" style="margin-top:8px"><dt>Rows accepted</dt><dd>58</dd><dt>Rows rejected</dt><dd>2: "Row 14: role code 9999-99 is not in eMASCO" · "Row 31: level 'very good' is not basic / good / expert / not assessed"</dd><dt>Not recognised, not counted</dt><dd>"Excel wizardry" (row 22)</dd></dl>
-          <div class="row" style="margin-top:8px"><button class="btn pri sm">Import 58 rows</button><button class="btn sm">Cancel</button></div>
+          <div class="row" style="margin-top:8px"><button class="btn pri sm" id="import">Import 58 rows</button><button class="btn sm" id="cancelImport">Cancel</button></div>
         </div>
       </div>
       <div class="card stack">
         <h3>Join link</h3>
-        <div class="grid g2"><div class="field"><label data-w="Department">Department</label><select class="input"><option>Finance</option><option>Customer Service</option><option>Operations</option></select></div>
-        <div class="field hr-only"><label>Current role</label><select class="input"><option>Accountant · 2411-01</option></select></div></div>
-        <button class="btn">Make a join link</button>
-        <div class="banner b-info"><div><b>Copy this link now, it is shown once.</b><br><span class="tiny" style="word-break:break-all">https://futureready.example/#join=Q3x…k9</span><br><span class="tiny muted">Single use · expires in 7 days · the app sends no email</span></div></div>
+        <div class="grid g2"><div class="field"><label data-w="Department">Department</label><select class="input groupSelect" id="inviteGroup"></select></div>
+        <div class="field hr-only"><label>Current role</label><select class="input"><option>Accountant · 2411-01</option><option>Customer Service Manager · 1222-04</option><option>Store Executive · 2182-03</option></select></div></div>
+        <button class="btn" id="makeLink">Make a join link</button>
+        <div class="banner b-info hide" id="linkBox"><div><b>Copy this link now, it is shown once.</b><br><span class="tiny" style="word-break:break-all" id="linkText"></span><br><span class="tiny muted">Single use · expires in 7 days · the app sends no email</span><div class="row" style="margin-top:6px"><button class="btn sm" id="copyLink">Copy link</button><button class="btn sm" id="asEmployee">See what the employee sees</button></div></div></div>
       </div>
     </div>
-    <h2><span data-w="Staff">Staff</span> <span class="muted small">12 people · 1 left out of the sums</span></h2>
+    <div class="card stack hide" id="employeeView" style="margin-top:14px;border-color:var(--accent)">
+      <span class="tag t-src" style="align-self:flex-start">Employee's screen</span>
+      <h3>Share my skills with <span class="orgName">Sample Logistics Sdn Bhd</span></h3>
+      <p class="small">HR will see exactly this, and nothing else (no CV, no matches, no pathways):</p>
+      <div class="table-wrap"><table><thead><tr><th>Skill or knowledge (O*NET)</th><th>Level</th></tr></thead><tbody>
+        <tr><td>Economics and Accounting</td><td>good</td></tr><tr><td>Mathematics</td><td>good</td></tr><tr><td>Computers and Electronics</td><td>basic</td></tr><tr><td>Critical Thinking</td><td>not assessed yet</td></tr></tbody></table></div>
+      <p class="tiny muted">Not shared: "Team leadership" (not an O*NET skill or knowledge item).</p>
+      <div class="field" style="max-width:320px"><label for="dn">Name HR will see</label><input class="input" id="dn" value="Aisyah R."></div>
+      <div class="row"><button class="btn pri" id="doShare">Share my skills</button><button class="btn" id="closeEmp">Not now</button></div>
+    </div>
+    <h2><span data-w="Staff">Staff</span> <span class="muted small" id="peopleCount"></span></h2>
     <div class="card"><div class="table-wrap"><table>
-      <thead><tr><th>Name</th><th data-w="Department">Department</th><th class="hr-only">Current role</th><th class="num hr-only">Skill Match now</th><th class="num">Skill Match target</th><th>Source</th></tr></thead>
-      <tbody>
-        <tr><td>Aisyah R. <span class="tag t-self">provisional</span></td><td>Finance</td><td class="hr-only">Accountant</td><td class="num hr-only">71%</td><td class="num">48%</td><td><span class="tag t-src">shared by the employee</span><div class="tiny muted">31 Oct 2026</div></td></tr>
-        <tr><td>Staff 02</td><td>Finance</td><td class="hr-only">Accountant</td><td class="num hr-only">64%</td><td class="num">41%</td><td><span class="tag t-none">entered by HR</span></td></tr>
-        <tr><td>Staff 03</td><td>Customer Service</td><td class="hr-only">Customer Service Manager</td><td class="num hr-only">58%</td><td class="num muted">no target</td><td><span class="tag t-none">entered by HR</span></td></tr>
-        <tr><td>Staff 04</td><td>Operations</td><td class="hr-only">Store Executive</td><td class="num hr-only" colspan="1"><span class="tag t-bad">not available</span></td><td class="num">39%</td><td><span class="tag t-none">entered by HR</span></td></tr>
-      </tbody></table></div>
+      <thead><tr><th>Name</th><th data-w="Department">Department</th><th class="hr-only">Current role</th><th class="num hr-only">Skill Match now</th><th class="num">Skill Match target</th><th>Source</th><th></th></tr></thead>
+      <tbody id="peopleRows"></tbody></table></div>
       <p class="note">"Not available": Store Executive (2182-03) stops at the step "MASCO → ISCO-08: no same 4-digit code". Left out of the current-role sums, never guessed. HR sees only shared skills and levels, never a CV, matches or pathways.</p>
       <div class="src"><b>Source:</b> Skill Match from career matching (O*NET 31.0 skills and knowledge, importance ≥ 3.0) · code chain eMASCO → ISCO-08 → SOC → O*NET</div>
     </div>
@@ -192,128 +201,213 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
 
   <!-- 3 HEATMAP -->
   <section class="view" id="v-heat">
-    <h1>Skill-gap heatmap</h1>
+    <h1 data-t="hHeat">Skill-gap heatmap</h1>
     <p class="lead">Each cell: how many people whose role needs this item are short of the needed level, and the average levels short. Columns: most people short first.</p>
     <div class="card row" style="justify-content:space-between">
-      <div class="row"><span class="small muted">Compare against</span><div class="seg"><button class="on hr-only">Current role</button><button>Target role</button></div></div>
+      <div class="row"><span class="small muted">Compare against</span><div class="seg" id="roleKind"><button class="on hr-only" data-k="current">Current role</button><button data-k="target">Target role</button></div></div>
       <div class="legend"><span><i class="c0"></i>No one short</span><span><i class="c1"></i>Under 1 level</span><span><i class="c2"></i>1 to 2</span><span><i class="c3"></i>2 or more</span><span><i style="border:1px dashed var(--line)"></i>Not needed</span></div>
     </div>
     <div class="grid side" style="margin-top:14px;align-items:start">
-      <div class="card"><div class="table-wrap"><table class="heat">
-        <thead><tr><th></th><th>Economics and Accounting</th><th>Computers and Electronics</th><th>Mathematics (knowledge)</th><th>Customer and Personal Service</th><th>Critical Thinking</th><th>Writing</th></tr></thead>
-        <tbody>
-          <tr><th class="rh" data-g="0">Finance<br><small class="muted">5 people</small></th>
-            <td class="c2 sel" data-cell="fin-econ"><b>4 of 5</b><small>avg 1.4 short</small></td><td class="c1"><b>3 of 5</b><small>0.8</small></td><td class="c1"><b>2 of 5</b><small>0.6</small></td><td class="c1"><b>2 of 5</b><small>0.5 · provisional</small></td><td class="c0"><b>0 of 5</b><small>0.0</small></td><td class="c1"><b>1 of 5</b><small>0.3</small></td></tr>
-          <tr><th class="rh" data-g="1">Customer Service<br><small class="muted">4 people</small></th>
-            <td class="blank">not needed</td><td class="c2"><b>3 of 4</b><small>1.2</small></td><td class="c1"><b>2 of 4</b><small>0.7</small></td><td class="c1"><b>1 of 4</b><small>0.4</small></td><td class="c1"><b>2 of 4</b><small>0.6</small></td><td class="c1"><b>1 of 4</b><small>0.2</small></td></tr>
-          <tr><th class="rh" data-g="2">Operations<br><small class="muted">3 people · 1 left out</small></th>
-            <td class="c3"><b>2 of 2</b><small>2.3</small></td><td class="c2"><b>2 of 2</b><small>1.6</small></td><td class="c1"><b>1 of 2</b><small>0.9</small></td><td class="c0"><b>0 of 2</b><small>0.0</small></td><td class="c1"><b>1 of 2</b><small>0.5</small></td><td class="blank">not needed</td></tr>
-        </tbody></table></div>
-        <div class="row" style="justify-content:space-between;margin-top:8px"><span class="tiny muted">Columns 1–6 of 21</span><div class="row"><button class="btn sm">‹</button><button class="btn sm">›</button></div></div>
+      <div class="card"><div class="table-wrap"><table class="heat" id="heat"></table></div>
+        <div class="row" style="justify-content:space-between;margin-top:8px"><span class="tiny muted" id="colInfo"></span><div class="row"><button class="btn sm" id="prevCols" aria-label="Previous columns">‹</button><button class="btn sm" id="nextCols" aria-label="Next columns">›</button></div></div>
       </div>
-      <div class="card stack">
-        <span class="tiny muted">Selected cell</span>
-        <h3>Finance · Economics and Accounting</h3>
-        <dl class="kv"><dt>Role</dt><dd>Accountant (2411-01) → O*NET Accountants and Auditors (13-2011.00)</dd><dt>Needed level</dt><dd>5.8 of 7 (expert still leaves a gap)</dd><dt>Levels short</dt><dd>7.0 in total · 1.4 on average</dd></dl>
-        <div><div class="bar"><i style="width:20%;background:var(--ok)"></i><i style="width:40%;background:var(--self)"></i><i style="width:20%;background:var(--bad)"></i><i style="width:20%;background:var(--est)"></i></div>
-        <div class="legend"><span><i style="background:var(--ok)"></i>Met 1</span><span><i style="background:var(--self)"></i>Below 2</span><span><i style="background:var(--bad)"></i>Missing 1</span><span><i style="background:var(--est)"></i>Not assessed 1</span></div></div>
-        <div class="banner b-warn tiny">1 person has this "not assessed yet": counted as meeting the level, so this cell is provisional (same rule as career matching).</div>
-        <button class="btn pri">Make a team plan for Finance</button>
-        <div class="src"><b>Source:</b> O*NET 31.0 Skills and Knowledge (CC BY 4.0) · levels from shared skills and the HR roster</div>
-      </div>
+      <div class="card stack" id="cellPanel"></div>
     </div>
   </section>
 
   <!-- 4 PLAN -->
   <section class="view" id="v-plan">
-    <h1>Team plan</h1>
+    <h1 data-w="Team plan">Team plan</h1>
     <div class="card row">
-      <div class="field"><label data-w="Department">Department</label><select class="input"><option>Finance</option></select></div>
-      <div class="field"><label>Role</label><select class="input"><option>Target: Data Analyst (2524-02)</option><option class="hr-only">Current: Accountant (2411-01)</option></select></div>
+      <div class="field"><label data-w="Department">Department</label><select class="input groupSelect" id="planGroup"></select></div>
+      <div class="field"><label>Role</label><select class="input" id="planRole"></select></div>
       <span class="tag t-self" style="align-self:flex-end;margin-bottom:6px">progress is self-reported</span>
     </div>
     <div class="grid side" style="margin-top:14px;align-items:start">
-      <div class="card">
-        <ol class="steps">
-          <li><div class="row" style="justify-content:space-between"><h3>Computers and Electronics</h3><select class="input" style="width:auto;padding:3px 8px"><option>Planned</option><option>In progress</option><option>Done</option></select></div>
-            <p class="small">5 people short (2 missing, 3 below) · 9.5 levels short · good → expert</p>
-            <div class="links"><a href="#">e-LATiH · (team pick)</a><a href="#">Microsoft Learn · (team pick)</a></div>
-            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a><a href="#">Microsoft Learn</a><a href="#">Google Skills</a></div>
-            <p class="tiny muted">Time: see each course page.</p></li>
-          <li><div class="row" style="justify-content:space-between"><h3>Mathematics (knowledge)</h3><select class="input" style="width:auto;padding:3px 8px"><option>In progress</option></select></div>
-            <p class="small">4 people short (0 missing, 4 below) · 5.2 levels short · good → expert</p>
-            <div class="links"><a href="#">Khan Academy · (team pick)</a></div>
-            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a><a href="#">Khan Academy</a></div></li>
-          <li><div class="row" style="justify-content:space-between"><h3>Active Learning</h3><select class="input" style="width:auto;padding:3px 8px"><option>Planned</option></select></div>
-            <p class="small">3 people short (3 missing) · 6.6 levels short · → good</p>
-            <div class="banner b-info tiny">No team pick yet. Use the search links below.</div>
-            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a></div></li>
-        </ol>
+      <div class="card"><ol class="steps" id="steps"></ol>
         <p class="note">Order: most people short first, then most levels short. No hours are shown: no data file in the app has a sourced course duration.</p>
       </div>
-      <div class="card stack">
-        <h3>For whom</h3>
-        <p class="small">Finance, 5 people, against <b>Data Analyst</b> (eMASCO 2524-02 → O*NET Data Scientists 15-2051.00).</p>
-        <dl class="kv"><dt>Steps</dt><dd>9 skills with gaps</dd><dt>Planned</dt><dd>7</dd><dt>In progress</dt><dd>2</dd><dt>Done</dt><dd>0</dd></dl>
-        <div class="src"><b>Sources:</b> gaps from career matching (O*NET 31.0) · courses from the study pathway's team picks, each opened in a browser, with site and date checked · search links open each site's own search</div>
-      </div>
+      <div class="card stack" id="planSide"></div>
     </div>
   </section>
 
   <!-- 5 OUTLOOK & SDG -->
   <section class="view" id="v-outlook">
-    <h1>Outlook and SDG</h1>
+    <h1 data-t="hOutlook">Outlook and SDG</h1>
     <div class="card row" style="justify-content:space-between">
       <div class="row"><span class="small muted">AI adoption scenario</span><div class="seg" id="scen"><button class="on" data-s="m">Moderate AI</button><button data-s="r">Rapid AI</button></div></div>
       <span class="tag t-est">ESTIMATES</span>
     </div>
     <div class="banner b-est small">Scenarios change only these counts. They never change anyone's gaps, the heatmap or the plan order.</div>
-    <div class="grid g3">
-      <div class="card"><h3 data-g="0">Finance</h3><span class="tiny muted hr-only">by current role</span>
-        <div class="band"><div class="b1"><b data-m="2" data-r="1">2</b>1 · growing, AI helps</div><div class="b2"><b data-m="1" data-r="3">1</b>2 · AI may change much</div><div class="b3"><b>0</b>3 · fewer ads</div><div><b data-m="2" data-r="1">2</b>4 · not enough evidence</div></div></div>
-      <div class="card"><h3 data-g="1">Customer Service</h3><span class="tiny muted hr-only">by current role</span>
-        <div class="band"><div class="b1"><b>0</b>1</div><div class="b2"><b data-m="1" data-r="4">1</b>2</div><div class="b3"><b>0</b>3</div><div><b data-m="3" data-r="0">3</b>4</div></div></div>
-      <div class="card"><h3 data-g="2">Operations</h3><span class="tiny muted hr-only">by current role · 1 left out</span>
-        <div class="band"><div class="b1"><b>0</b>1</div><div class="b2"><b>0</b>2</div><div class="b3"><b>0</b>3</div><div><b>2</b>4</div></div></div>
-    </div>
+    <div class="grid g3" id="bands"></div>
     <div class="card" style="margin-top:14px"><h3>Moved between Moderate and Rapid</h3>
-      <p class="small">Customer Service: 3 people, band 4 → 2 (Customer Service Manager: ILO GenAI exposure gradient high in Rapid). Finance: 2 people, band 4 → 2.</p>
+      <p class="small" id="moved"></p>
       <div class="src"><b>Sources:</b> Moderate = Anthropic Economic Index (release 2026-06-26, May 2026 slice) · Rapid = ILO WP140 GenAI exposure · job ads = DOSM online vacancies by MASCO major group, "group level, not this job" · each with its date</div>
     </div>
     <h2>SDG contribution of the plan <span class="tag t-none">potential, not measured</span></h2>
     <div class="card">
-      <p class="small">Finance's planned skills (target Data Analyst) touch <b>5 links</b> across 3 goals. A count of links with reasons, never a score.</p>
-      <div class="stack" style="margin-top:10px">
-        <div class="row"><span class="sdg" style="background:#C5192D">4</span><div class="small"><b>2 links</b> · 4.4 "Computers and Electronics: ICT skill named in target 4.4" <span class="tag t-none">team draft, not yet reviewed</span></div></div>
-        <div class="row"><span class="sdg" style="background:#A21942">8</span><div class="small"><b>2 links</b> · 8.2 "Data analysis raises productivity" <span class="tag t-ok">approved by owner on 31 Oct 2026</span></div></div>
-        <div class="row"><span class="sdg" style="background:#FD6925">9</span><div class="small"><b>1 link</b> · 9.5 "Builds local technical capacity" <span class="tag t-none">team draft, not yet reviewed</span></div></div>
-      </div>
+      <div class="row"><label class="small muted" for="sdgGroup">For</label><select class="input groupSelect" id="sdgGroup" style="width:auto"></select></div>
+      <p class="small" id="sdgLine" style="margin-top:8px"></p>
+      <div class="stack" style="margin-top:10px" id="sdgLinks"></div>
       <div class="src"><b>Source:</b> SDG links (team drafts per MASCO sub-major group and O*NET item, M16) · UN SDG targets API · goal pages sdgs.un.org</div>
     </div>
   </section>
 </main>
+<div class="toast" id="toast" role="status"></div>
 <script>
-const W={hr:{'People':'People','Staff':'Staff','Departments':'Departments','Department':'Department','Team plan':'Team plan',g:['Finance','Customer Service','Operations']},
-  centre:{'People':'Students','Staff':'Students','Departments':'Programmes','Department':'Programme','Team plan':'Cohort plan',g:['Diploma in Accounting','Diploma in Logistics','Certificate in Retail']}}
-let type='hr'
-function applyType(){
-  document.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('on',b.dataset.type===type))
-  document.querySelectorAll('[data-w]').forEach(el=>{el.textContent=W[type][el.dataset.w]??el.dataset.w})
-  document.querySelectorAll('[data-g]').forEach(el=>{const n=el.querySelector('small');el.firstChild.textContent=W[type].g[+el.dataset.g];if(n&&el.tagName==='TH'){}})
-  document.querySelectorAll('.hr-only').forEach(el=>el.style.display=type==='hr'?'':'none')
-  document.querySelector('.top .t-src').textContent=type==='hr'?'Organisation · HR':'Organisation · Career centre'
+// MOCKUP data: real role titles, codes and O*NET names; every person and number below is sample data.
+const ROLES={'2411-01':'Accountant','2524-02':'Data Analyst','1222-04':'Customer Service Manager','2182-03':'Store Executive','1214-04':'Supply Chain and Logistics Management Manager',none:'None set'}
+const ONET={'2411-01':'Accountants and Auditors (13-2011.00)','2524-02':'Data Scientists (15-2051.00)','1222-04':'Customer Service Representatives (43-4051.00)','1214-04':'Logisticians (13-1081.00)'}
+const NAMES={hr:['Finance','Customer Service','Operations'],centre:['Diploma in Accounting','Diploma in Logistics','Certificate in Retail']}
+let groups=[{target:'2524-02',size:5},{target:'none',size:4},{target:'1214-04',size:3}]
+let people=[
+  {n:'Aisyah R.',g:0,cur:'2411-01',now:71,tgt:48,src:'shared',date:'31 Oct 2026',prov:true},
+  {n:'Staff 02',g:0,cur:'2411-01',now:64,tgt:41,src:'roster'},
+  {n:'Staff 03',g:1,cur:'1222-04',now:58,tgt:null,src:'roster'},
+  {n:'Staff 04',g:2,cur:'2182-03',now:'na',tgt:39,src:'roster'}]
+let total=12
+// Columns: [O*NET item, needed level]; cells per group per column page: [short, needing, avg, provisional] or null (not needed)
+const COLS=[['Economics and Accounting',5.8],['Computers and Electronics',5.8],['Mathematics (knowledge)',4.7],['Customer and Personal Service',4.2],['Critical Thinking',3.5],['Writing',3.8],
+  ['Complex Problem Solving',3.5],['Active Listening',3.6],['Judgment and Decision Making',3.5],['Administration and Management',4.3],['Speaking',3.8],['Active Learning',4.4]]
+const CELLS={current:[
+  [[4,5,1.4,1],[3,5,.8],[2,5,.6],[2,5,.5,1],[0,5,0],[1,5,.3],[2,5,.5],[1,5,.2],[1,5,.4],[3,5,.9],[0,5,0],null],
+  [null,[3,4,1.2],[2,4,.7],[1,4,.4],[2,4,.6],[1,4,.2],[1,4,.3],[0,4,0],[1,4,.3],[2,4,.8],[1,4,.2],null],
+  [[2,2,2.3],[2,2,1.6],[1,2,.9],[0,2,0],[1,2,.5],null,[1,2,.6],[1,2,.4],[1,2,.7],[2,2,1.5],[0,2,0],null]],
+ target:[
+  [[2,5,.7],[5,5,1.9,1],[4,5,1.3],null,[3,5,.9],[2,5,.5],[3,5,1.0],[1,5,.3],[2,5,.6],null,[1,5,.2],[3,5,2.2]],
+  [null,null,null,null,null,null,null,null,null,null,null,null],
+  [null,[3,3,1.4],[2,3,1.1],[2,3,.8],[1,3,.6],null,[2,3,.9],[1,3,.4],[2,3,1.0],[3,3,2.1],[1,3,.3],null]]}
+const STATUS=[['Met',2,1],['Below',2,1],['Missing',1,0],['Not assessed',1,0]]
+const PICKS={'Computers and Electronics':['e-LATiH','Microsoft Learn'],'Mathematics (knowledge)':['Khan Academy'],'Economics and Accounting':['e-LATiH','edX'],'Critical Thinking':['Coursera'],'Administration and Management':['e-LATiH']}
+const SEARCH=['e-LATiH','Coursera','edX','Khan Academy','Microsoft Learn','Google Skills']
+const BANDS=[{m:[2,1,0,2],r:[1,3,0,1]},{m:[0,1,0,3],r:[0,4,0,0]},{m:[0,0,0,2],r:[0,1,0,1]}]
+const SDG=[[[4,'#C5192D',2,'4.4 "Computers and Electronics: ICT skill named in target 4.4"','draft'],[8,'#A21942',2,'8.2 "Data analysis raises productivity"','ok'],[9,'#FD6925',1,'9.5 "Builds local technical capacity"','draft']],
+  [[8,'#A21942',1,'8.5 "Service work is a large source of decent jobs"','draft']],
+  [[9,'#FD6925',2,'9.1 "Reliable logistics supports resilient infrastructure"','draft'],[12,'#BF8B2E',1,'12.3 "Better planning reduces food and product loss"','ok']]]
+const W={hr:{'People':'People','Staff':'Staff','Departments':'Departments','Department':'Department','Team plan':'Team plan',person:'staff'},
+  centre:{'People':'Students','Staff':'Students','Departments':'Programmes','Department':'Programme','Team plan':'Cohort plan',person:'students'}}
+const T={ms:{mockbar:'MOCKUP untuk semakan · tajuk peranan, kod dan nama kemahiran O*NET adalah sebenar · setiap orang dan nombor ialah data contoh',tSetup:'Persediaan',tHeat:'Peta haba',tOutlook:'Tinjauan & SDG',hSetup:'Sediakan organisasi anda',leadSetup:'Satu akaun mengurus satu organisasi. Ini membantu merancang latihan. Ia tidak membuat keputusan pengambilan pekerja.',hHeat:'Peta haba jurang kemahiran',hOutlook:'Tinjauan dan SDG',centreShort:'Pusat kerjaya'},
+  zh:{mockbar:'评审用模型 · 职位名称、代码和 O*NET 技能名称为真实数据 · 所有人员和数字均为示例数据',tSetup:'设置',tHeat:'热力图',tOutlook:'前景与 SDG',hSetup:'设置你的机构',leadSetup:'一个账户管理一个机构。本工具帮助规划培训，不做招聘决定。',hHeat:'技能差距热力图',hOutlook:'前景与 SDG',centreShort:'就业中心'}}
+const EN={};document.querySelectorAll('[data-t]').forEach(el=>EN[el.dataset.t]=el.textContent)
+let type='hr',kind='current',page=0,sel={g:0,c:0},scen='m'
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)]
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))
+const gname=i=>groups[i].name??NAMES[type][i]??('Group '+(i+1))
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)}
+function go(v){$$('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));window.scrollTo(0,0)}
+function cellClass(c){return !c?'blank':c[0]===0?'c0':c[2]<1?'c1':c[2]<2?'c2':'c3'}
+
+function renderGroups(){
+  $('#groupRows').innerHTML=groups.map((g,i)=>`<tr><td>${esc(gname(i))}</td><td><select class="input tgt" data-i="${i}" style="padding:4px 8px">${Object.entries(ROLES).filter(([k])=>k!=='2182-03').map(([k,n])=>`<option value="${k}" ${g.target===k?'selected':''}>${esc(n)}${k!=='none'?' · '+k:''}</option>`).join('')}</select></td><td><button class="iconbtn" data-rm="${i}" aria-label="Remove">✕</button></td></tr>`).join('')
+  $$('.groupSelect').forEach(s=>{const v=s.value;s.innerHTML=groups.map((g,i)=>`<option value="${i}">${esc(gname(i))}</option>`).join('');if(v!==''&&+v<groups.length)s.value=v})
 }
-document.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{type=b.dataset.type;applyType()})
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b))
-  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v))
+function renderPeople(){
+  const W1=W[type]
+  $('#peopleCount').textContent=`${total} ${W1.person} · 1 left out of the sums`
+  $('#peopleRows').innerHTML=people.map((p,i)=>`<tr><td>${esc(p.n)} ${p.prov?'<span class="tag t-self">provisional</span>':''}</td><td>${esc(gname(p.g))}</td><td class="hr-only">${esc(ROLES[p.cur])}</td><td class="num hr-only">${p.now==='na'?'<span class="tag t-bad">not available</span>':p.now+'%'}</td><td class="num">${p.tgt==null?'<span class="muted">no target</span>':p.tgt+'%'}</td><td>${p.src==='shared'?`<span class="tag t-src">shared by the employee</span><div class="tiny muted">${p.date}</div>`:'<span class="tag t-none">entered by HR</span>'}</td><td><button class="iconbtn" data-rmp="${i}" aria-label="Remove ${esc(p.n)}">✕</button></td></tr>`).join('')
+  hrOnly()
+}
+function renderHeat(){
+  const k=type==='centre'?'target':kind, cols=COLS.slice(page*6,page*6+6)
+  $('#heat').innerHTML=`<thead><tr><th></th>${cols.map(c=>`<th>${esc(c[0])}</th>`).join('')}</tr></thead><tbody>${groups.slice(0,3).map((g,gi)=>`<tr><th class="rh">${esc(gname(gi))}<br><small class="muted">${g.size} people${gi===2&&k==='current'?' · 1 left out':''}</small></th>${cols.map((c,ci)=>{const col=page*6+ci,v=CELLS[k][gi][col];return v?`<td class="${cellClass(v)} ${sel.g===gi&&sel.c===col?'sel':''}" data-g="${gi}" data-c="${col}" tabindex="0"><b>${v[0]} of ${v[1]}</b><small>avg ${v[2].toFixed(1)} short${v[3]?' · provisional':''}</small></td>`:`<td class="blank">${k==='target'&&groups[gi].target==='none'?'no target role':'not needed'}</td>`}).join('')}</tr>`).join('')}</tbody>`
+  $('#colInfo').textContent=`Columns ${page*6+1}–${page*6+6} of ${COLS.length} (sample has 12; real data pages through all)`
+  $('#prevCols').disabled=page===0;$('#nextCols').disabled=page===1
+  renderPanel()
+}
+function renderPanel(){
+  const k=type==='centre'?'target':kind, v=CELLS[k][sel.g]?.[sel.c], c=COLS[sel.c], code=k==='current'?(sel.g===0?'2411-01':sel.g===1?'1222-04':'2182-03'):groups[sel.g].target
+  if(!v){$('#cellPanel').innerHTML='<span class="tiny muted">Selected cell</span><p class="small">Click a coloured cell to see who is short and why.</p>';return}
+  const n=v[1],met=n-v[0]-(v[3]?1:0),miss=Math.min(1,v[0]),below=v[0]-miss,na=v[3]?1:0,pc=x=>x/n*100
+  $('#cellPanel').innerHTML=`<span class="tiny muted">Selected cell</span><h3>${esc(gname(sel.g))} · ${esc(c[0])}</h3>
+   <dl class="kv"><dt>Role</dt><dd>${esc(ROLES[code]??'')} (${code}) → O*NET ${esc(ONET[code]??'Logisticians (13-1081.00)')}</dd><dt>Needed level</dt><dd>${c[1]} of 7${c[1]>6?' (expert still leaves a gap)':''}</dd><dt>Levels short</dt><dd>${(v[2]*n).toFixed(1)} in total · ${v[2].toFixed(1)} on average</dd></dl>
+   <div><div class="bar"><i style="width:${pc(met)}%;background:var(--ok)"></i><i style="width:${pc(below)}%;background:var(--self)"></i><i style="width:${pc(miss)}%;background:var(--bad)"></i><i style="width:${pc(na)}%;background:var(--est)"></i></div>
+   <div class="legend"><span><i style="background:var(--ok)"></i>Met ${met}</span><span><i style="background:var(--self)"></i>Below ${below}</span><span><i style="background:var(--bad)"></i>Missing ${miss}</span><span><i style="background:var(--est)"></i>Not assessed ${na}</span></div></div>
+   ${na?'<div class="banner b-warn tiny">1 person has this "not assessed yet": counted as meeting the level, so this cell is provisional (same rule as career matching).</div>':''}
+   <button class="btn pri" id="toPlan">Make a team plan for ${esc(gname(sel.g))}</button>
+   <div class="src"><b>Source:</b> O*NET 31.0 Skills and Knowledge (CC BY 4.0) · levels from shared skills and the HR roster</div>`
+  $('#toPlan').onclick=()=>{$('#planGroup').value=sel.g;renderPlanRoles();$('#planRole').value=type==='centre'?'target':kind;renderPlan();go('plan')}
+}
+function renderPlanRoles(){
+  const g=+$('#planGroup').value||0, cur=g===0?'2411-01':g===1?'1222-04':'2182-03', t=groups[g].target
+  $('#planRole').innerHTML=(t!=='none'?`<option value="target">Target: ${esc(ROLES[t])} (${t})</option>`:'')+(type==='hr'?`<option value="current">Current: ${esc(ROLES[cur])} (${cur})</option>`:'')
+  if(!$('#planRole').innerHTML)$('#planRole').innerHTML='<option value="">Choose a target role in Setup</option>'
+}
+function renderPlan(){
+  const g=+$('#planGroup').value||0, k=$('#planRole').value
+  if(!k){$('#steps').innerHTML='<li style="padding-left:0"><div class="banner b-info">Choose a target role for this group in Setup to see gaps.</div></li>';$('#planSide').innerHTML='';return}
+  const rows=CELLS[k][g].map((v,i)=>v&&v[0]>0?{c:COLS[i],v}:null).filter(Boolean).sort((a,b)=>b.v[0]-a.v[0]||b.v[2]*b.v[1]-a.v[2]*a.v[1])
+  $('#steps').innerHTML=rows.map((r,i)=>{const miss=Math.min(1,r.v[0]),p=PICKS[r.c[0]]
+    return `<li><div class="row" style="justify-content:space-between"><h3>${esc(r.c[0])}</h3><select class="input stat" style="width:auto;padding:3px 8px" aria-label="Status of ${esc(r.c[0])}"><option>Planned</option><option>In progress</option><option>Done</option></select></div>
+     <p class="small">${r.v[0]} people short (${miss} missing, ${r.v[0]-miss} below) · ${(r.v[2]*r.v[1]).toFixed(1)} levels short · ${r.c[1]>4?'good → expert':'basic → good'}${r.c[1]>6?' (expert still leaves a gap)':''}</p>
+     ${p?`<div class="links">${p.map(s=>`<a href="#" data-course="${esc(s)}">${esc(s)} · (team pick)</a>`).join('')}</div>`:'<div class="banner b-info tiny">No team pick yet. Use the search links below.</div>'}
+     <div class="links"><span class="tiny muted">More on:</span>${SEARCH.map(s=>`<a href="#" data-search="${esc(s)}" data-q="${esc(r.c[0])}">${esc(s)}</a>`).join('')}</div>
+     <p class="tiny muted">Time: see each course page.</p></li>`}).join('')||'<li style="padding-left:0"><p class="small">No one in this group is short for this role.</p></li>'
+  const role=k==='target'?groups[g].target:(g===0?'2411-01':g===1?'1222-04':'2182-03')
+  $('#planSide').innerHTML=`<h3>For whom</h3><p class="small">${esc(gname(g))}, ${groups[g].size} people, against <b>${esc(ROLES[role])}</b> (eMASCO ${role}${ONET[role]?' → O*NET '+esc(ONET[role]):''}).</p>
+   <dl class="kv" id="progress"></dl>
+   <button class="btn" id="savePlan">Save plan</button>
+   <div class="src"><b>Sources:</b> gaps from career matching (O*NET 31.0) · courses from the study pathway's team picks, each opened in a browser, with site and date checked · search links open each site's own search</div>`
+  countProgress()
+}
+function countProgress(){const s=$$('#steps .stat').map(x=>x.value);const c=v=>s.filter(x=>x===v).length
+  if($('#progress'))$('#progress').innerHTML=`<dt>Steps</dt><dd>${s.length} skills with gaps</dd><dt>Planned</dt><dd>${c('Planned')}</dd><dt>In progress</dt><dd>${c('In progress')}</dd><dt>Done</dt><dd>${c('Done')}</dd>`}
+function renderOutlook(){
+  $('#bands').innerHTML=groups.slice(0,3).map((g,i)=>{const b=BANDS[i][scen];return `<div class="card"><h3>${esc(gname(i))}</h3><span class="tiny muted">${type==='hr'?'by current role':'by target role'}${i===2&&type==='hr'?' · 1 left out':''}</span>
+    <div class="band"><div class="b1"><b>${b[0]}</b>1 · growing, AI helps</div><div class="b2"><b>${b[1]}</b>2 · AI may change much</div><div class="b3"><b>${b[2]}</b>3 · fewer ads</div><div><b>${b[3]}</b>4 · not enough evidence</div></div></div>`}).join('')
+  $('#moved').textContent=`${gname(1)}: 3 people, band 4 → 2 (Customer Service Manager: ILO GenAI exposure high in Rapid). ${gname(0)}: 2 people, band 4 → 2. ${gname(2)}: 1 person, band 4 → 2.`
+  const g=+$('#sdgGroup').value||0, L=SDG[g]??[]
+  $('#sdgLine').innerHTML=L.length?`Planned skills for ${esc(gname(g))} touch <b>${L.reduce((a,x)=>a+x[2],0)} links</b> across ${L.length} goal${L.length>1?'s':''}. A count of links with reasons, never a score.`:'No SDG links for this group yet.'
+  $('#sdgLinks').innerHTML=L.map(x=>`<div class="row"><a class="sdg" style="background:${x[1]};text-decoration:none" href="https://sdgs.un.org/goals/goal${x[0]}" target="_blank" rel="noopener" aria-label="UN goal ${x[0]}">${x[0]}</a><div class="small"><b>${x[2]} link${x[2]>1?'s':''}</b> · ${esc(x[3])} ${x[4]==='ok'?'<span class="tag t-ok">approved by owner on 31 Oct 2026</span>':'<span class="tag t-none">team draft, not yet reviewed</span>'}</div></div>`).join('')
+}
+function hrOnly(){$$('.hr-only').forEach(el=>el.classList.toggle('hide',type!=='hr'))}
+function applyType(){
+  $$('[data-type]').forEach(b=>b.classList.toggle('on',b.dataset.type===type))
+  $$('[data-w]').forEach(el=>{el.textContent=W[type][el.dataset.w]??el.dataset.w})
+  $('#orgTag').textContent=type==='hr'?'Organisation · HR':'Organisation · Career centre'
+  $('#newGroup').placeholder=type==='hr'?'Add a department':'Add a programme'
+  if(type==='centre')kind='target'
+  $$('#roleKind button').forEach(b=>b.classList.toggle('on',b.dataset.k===kind))
+  renderGroups();renderPeople();renderHeat();renderPlanRoles();renderPlan();renderOutlook();hrOnly()
+}
+function applyLang(l){$$('[data-t]').forEach(el=>{el.textContent=(T[l]&&T[l][el.dataset.t])||EN[el.dataset.t]});if(l!=='en')toast('Mockup: only headings are translated here; the app has full EN / BM / 中文 strings')}
+
+// events
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,td[data-g]');if(!t)return
+  if(t.dataset.type){type=t.dataset.type;applyType();return}
+  if(t.dataset.v){go(t.dataset.v);return}
+  if(t.matches('td[data-g]')){sel={g:+t.dataset.g,c:+t.dataset.c};renderHeat();return}
+  if(t.dataset.k){if(type==='centre'&&t.dataset.k==='current')return;kind=t.dataset.k;$$('#roleKind button').forEach(b=>b.classList.toggle('on',b===t));renderHeat();return}
+  if(t.dataset.s){scen=t.dataset.s;$$('#scen button').forEach(b=>b.classList.toggle('on',b===t));renderOutlook();return}
+  if(t.dataset.rm!=null){const i=+t.dataset.rm;if(people.some(p=>p.g===i)){toast('Move or remove the people in this group first');return}groups.splice(i,1);renderGroups();return}
+  if(t.dataset.rmp!=null){const p=people.splice(+t.dataset.rmp,1)[0];total--;renderPeople();toast(`${p.n} removed from the organisation`);return}
+  if(t.dataset.course){e.preventDefault();toast(`Mockup: opens the ${t.dataset.course} course page in a new tab`);return}
+  if(t.dataset.search){e.preventDefault();toast(`Mockup: opens ${t.dataset.search}'s own search for "${t.dataset.q}"`);return}
+  if(t.tagName==='A'&&t.getAttribute('href')==='#'){e.preventDefault()}
 })
-document.querySelectorAll('#scen button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#scen button').forEach(x=>x.classList.toggle('on',x===b))
-  document.querySelectorAll('[data-m]').forEach(el=>el.textContent=b.dataset.s==='m'?el.dataset.m:el.dataset.r)
-})
-const th=document.getElementById('theme')
-const isDark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches
+$('#addGroup').addEventListener('submit',e=>{e.preventDefault();const n=$('#newGroup').value.trim();if(!n)return;groups.push({name:n,target:'none',size:0});$('#newGroup').value='';renderGroups();toast(`${n} added`)})
+$('#groupRows').addEventListener('change',e=>{if(e.target.matches('.tgt')){groups[+e.target.dataset.i].target=e.target.value;renderHeat();renderPlanRoles();renderPlan();toast(`Target role set: ${ROLES[e.target.value]}`)}})
+$('#saveOrg').onclick=()=>{$$('.orgName').forEach(el=>el.textContent=$('#on').value);toast('Workspace saved (mockup: nothing is stored)')}
+$('#chooseFile').onclick=()=>$('#file').click()
+$('#file').onchange=()=>{const f=$('#file').files[0];if(!f)return;$('#fname').textContent=f.name;$('#preview').classList.remove('hide');toast('Mockup: the preview shows sample results, the file is not read')}
+$('#sample').onclick=()=>{$('#fname').textContent=type==='hr'?'sample-roster-hr.csv':'sample-roster-centre.csv';$('#preview').classList.remove('hide')}
+$('#tmpl').onclick=()=>toast('Mockup: roster-template.csv would download (name, group, current_role_code, skill, level)')
+$('#import').onclick=()=>{$('#preview').classList.add('hide');total+=8;people.push({n:'Staff 05',g:1,cur:'1222-04',now:62,tgt:null,src:'roster'},{n:'Staff 06',g:2,cur:'2182-03',now:'na',tgt:44,src:'roster'});renderPeople();toast('58 rows imported (sample)')}
+$('#cancelImport').onclick=()=>{$('#preview').classList.add('hide');toast('Nothing saved')}
+$('#makeLink').onclick=()=>{const tok=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(36).padStart(2,'0')).join('').slice(0,22);$('#linkText').textContent=`https://futureready.example/#join=${tok}`;$('#linkBox').classList.remove('hide')}
+$('#copyLink').onclick=async()=>{try{await navigator.clipboard.writeText($('#linkText').textContent);toast('Link copied')}catch{toast('Select the link and copy it')}}
+$('#asEmployee').onclick=()=>{$('#employeeView').classList.remove('hide');$('#employeeView').scrollIntoView({behavior:'smooth',block:'start'})}
+$('#closeEmp').onclick=()=>$('#employeeView').classList.add('hide')
+$('#doShare').onclick=()=>{const n=$('#dn').value.trim()||'Employee';const g=+$('#inviteGroup').value||0;people.unshift({n,g,cur:'2411-01',now:69,tgt:groups[g].target!=='none'?46:null,src:'shared',date:'31 Oct 2026',prov:true});total++;$('#employeeView').classList.add('hide');$('#linkBox').classList.add('hide');renderPeople();toast(`${n} shared their skills (the link is now used)`)}
+$('#prevCols').onclick=()=>{page=0;renderHeat()}
+$('#nextCols').onclick=()=>{page=1;renderHeat()}
+$('#planGroup').onchange=()=>{renderPlanRoles();renderPlan()}
+$('#planRole').onchange=renderPlan
+$('#steps').addEventListener('change',e=>{if(e.target.matches('.stat'))countProgress()})
+document.addEventListener('click',e=>{if(e.target.id==='savePlan')toast('Plan saved (mockup: nothing is stored)')})
+$('#sdgGroup').onchange=renderOutlook
+$('#lang').onchange=e=>applyLang(e.target.value)
+const th=$('#theme'),isDark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches
 th.textContent=isDark()?'Light':'Dark'
 th.onclick=()=>{const d=isDark();document.documentElement.dataset.theme=d?'light':'dark';th.textContent=d?'Dark':'Light'}
 applyType()

@@ -1266,6 +1266,11 @@
       "time": "30 Oct",
       "step": "Software asked box (your request)",
       "detail": "count line, 8 chips (yours first, then in demand), the rest behind '+ N more' / 'Show fewer'; npm test 803 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Overall match designed (M17, your request)",
+      "detail": "role count checked: all 1,812 eMASCO roles already shown (live eMASCO matches); mockup docs/mockup-overall-match.html approved; spec section 5a written: 4 UNESCO-based AI questions, Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch; waiting for your spec review"
     }
   ]
 }

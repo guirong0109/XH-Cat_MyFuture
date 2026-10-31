@@ -2689,6 +2689,11 @@
       "time": "31 Oct",
       "step": "News: browser check and branch docs",
       "detail": "C1-C7 pass in the browser on futures.localhost:3270 (no key: news off) and :3271 (scripts/news-local.mjs, fake search, no DeepSeek call); BM strings and 375 px checked; docs/news/acceptance.md. HANDOVER.md and CLAUDE.md now describe claude/compare-futures. Real run waits on the owner (key and OK on about US$1.80 a month). npm test 1505 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: final review fixes",
+      "detail": "Opus whole-branch review: 1 Critical, 3 Important fixed, each with a test that failed first. The search count and last run now live in memory too (store write failures cannot reset them); each search is written down before it is made; an unreadable store means no search; a failed run waits 3 hours and the timer never crashes the server. 5 minor notes deferred for the owner. npm test 1510 passed"
     }
   ]
 }

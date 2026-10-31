@@ -49,13 +49,14 @@ const make = (o = {}) => {
 }
 
 describe('news service: a run', () => {
-  it('searches each field once with its query, merges, marks ok or no_results, writes once', async () => {
+  it('searches each field once with its query, merges, marks ok or no_results, writes before each search and at the end', async () => {
     const store = memoryStore()
     const search = fakeSearch()
     const { service } = make({ store, search })
     expect(await service.runNow()).toEqual({ searched: 10, stopped: null })
     expect(search.queries).toEqual(FIELDS.map((f) => buildQuery(f.words, T0)))
-    expect(store.writes).toBe(1)
+    // Once before each search (the count survives a restart mid-run) and once at the end.
+    expect(store.writes).toBe(11)
     expect(store.state.lastRunAt).toBe(T0.toISOString())
     expect(store.state.fields['06']).toMatchObject({ query: buildQuery(FIELDS[5].words, T0), searchedAt: T0.toISOString(), lastAttemptAt: T0.toISOString(), lastOutcome: 'ok', lastError: null })
     expect(store.state.fields['06'].items).toEqual([{ title: 'News for 06', url: 'https://e.com/06', site: 'E', date: '2026-10-30T00:00:00Z', snippet: 's', foundAt: T0.toISOString() }])
@@ -228,7 +229,7 @@ describe('news service: snapshot', () => {
 })
 
 describe('news store on R2', () => {
-  it('reads and writes news/latest.json as JSON; a failed read is null', async () => {
+  it('reads and writes news/latest.json as JSON; R2 down is an error, not an empty store', async () => {
     const objects = new Map()
     const r2 = { async get(key) { return objects.has(key) ? { buffer: objects.get(key) } : null }, async put(key, buffer, type) { expect(type).toBe('application/json'); objects.set(key, buffer) } }
     const store = createR2NewsStore(r2)
@@ -237,7 +238,74 @@ describe('news store on R2', () => {
     expect([...objects.keys()]).toEqual(['news/latest.json'])
     expect(await store.read()).toEqual({ lastRunAt: 'x', searches: [], fields: {} })
     const down = createR2NewsStore({ async get() { throw new Error('down') } })
-    expect(await down.read()).toBeNull()
+    await expect(down.read()).rejects.toThrow()
+  })
+})
+
+describe('news store on a file', () => {
+  it('a missing or corrupt file reads as empty; a file that cannot be read is an error', async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'news-file-'))
+    expect(await createFileNewsStore(path.join(dir, 'none.json')).read()).toBeNull()
+    writeFileSync(path.join(dir, 'bad.json'), '{not json')
+    expect(await createFileNewsStore(path.join(dir, 'bad.json')).read()).toBeNull()
+    await expect(createFileNewsStore(dir).read()).rejects.toThrow()
+  })
+})
+
+describe('news service: the search count does not depend on the store (final review)', () => {
+  it('store writes failing while reads work: page views cannot pass 10 searches per 3 hours or 80 per 24 hours', async () => {
+    const old = { lastRunAt: new Date(T0.getTime() - 4 * HOUR).toISOString(), searches: [], fields: {} }
+    const store = { async read() { return structuredClone(old) }, async write() { throw new Error('disk full') } }
+    const search = fakeSearch()
+    const { service, clock: c } = make({ store, search })
+    for (let i = 0; i < 50; i++) {
+      await service.snapshot()
+      await service.wakeIfDue()
+      c.move(60 * 1000)
+    }
+    expect(search.queries).toHaveLength(10)
+    for (let i = 0; i < 24 * 6; i++) {
+      await service.snapshot()
+      await service.wakeIfDue()
+      c.move(10 * 60 * 1000)
+    }
+    // About 25 hours: at most one run per 3 hours (9 runs), never 80 inside one 24-hour window.
+    expect(search.queries.length).toBeLessThanOrEqual(MAX_PER_DAY + MAX_PER_RUN)
+  })
+
+  it('each search is counted in the store before it is made', async () => {
+    const store = memoryStore()
+    const seen = []
+    const search = { async search() { seen.push(store.state?.searches?.length ?? 0); return [] } }
+    const { service } = make({ store, search })
+    await service.runNow()
+    expect(seen).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+  })
+
+  it('a store that cannot be read: no search is made, the reply still has 10 empty lists', async () => {
+    const store = { async read() { throw new Error('R2 down') }, async write() {} }
+    const search = fakeSearch()
+    const { service, logs } = make({ store, search })
+    expect(await service.runNow()).toEqual({ searched: 0, stopped: 'store_unavailable' })
+    await service.start()
+    await service.wakeIfDue()
+    expect(search.queries).toHaveLength(0)
+    expect(logs.some((l) => l.includes('store_unavailable'))).toBe(true)
+    const reply = await service.snapshot()
+    expect(reply.fields).toHaveLength(10)
+    expect(reply.fields.every((f) => f.items.length === 0)).toBe(true)
+  })
+
+  it('a run that throws plans the next one 3 hours on and the timer never rejects', async () => {
+    let loads = 0
+    const { service, timers: tm, logs } = make({ options: { loadFields: async () => { loads++; throw new Error('manifest mismatch') } } })
+    await service.start().catch(() => {})
+    const next = tm.planned.at(-1)
+    expect(next.ms).toBe(REFRESH_MS)
+    await expect(next.fn()).resolves.not.toThrow()
+    expect(tm.planned.at(-1).ms).toBe(REFRESH_MS)
+    expect(loads).toBe(2)
+    expect(logs.some((l) => l.includes('run failed'))).toBe(true)
   })
 })
 

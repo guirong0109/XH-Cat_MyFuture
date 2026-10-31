@@ -12,8 +12,8 @@ Updated 2026-10-31. Sub-branch of `claude/career-matching` (from `d82267e`). Not
   have a title, a web link and a publish date in the last 30 days, removes repeats, merges with the kept list and
   keeps the newest 25. A failed field keeps its last list with a "Couldn't refresh" note. Caps: 10 searches per run,
   80 per 24 hours. Lists are kept in R2 (`news/latest.json`) or `data/cache/news/latest.json`.
-- **State:** all 6 plan tasks built, 1505 Vitest tests pass, C1-C7 checked in the browser with a fake search
-  (`docs/news/acceptance.md`). The whole-branch review is next.
+- **State:** all 6 plan tasks built, 1510 Vitest tests pass, C1-C7 checked in the browser with a fake search
+  (`docs/news/acceptance.md`). Final whole-branch review done (opus), its Critical and Important findings fixed.
 - **Waits on the owner:** the DeepSeek key (`DEEPSEEK_API_KEY` in the server's secret settings) and the OK on the cost
   (US$0.75 per 1,000 successful searches, about US$1.80 a month; billing from 1 Nov 2026). Then one real run and C1-C3
   again on real data. Also the BM / 中文 strings (marked "translation: owner review") and the search words per field

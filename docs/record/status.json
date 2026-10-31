@@ -494,8 +494,8 @@
         },
         {
           "title": "Build T1-T10",
-          "sub": "subagent-driven, one reviewer per task",
-          "status": "doing"
+          "sub": "10 tasks built, each reviewed; browser check passed",
+          "status": "done"
         }
       ]
     }
@@ -548,7 +548,8 @@
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
     "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
-    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
+    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check",
+    "Study Pathway: review the team picks in #admin; final whole-branch review next"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1352,6 +1353,21 @@
       "time": "31 Oct",
       "step": "Study Pathway: mockup approved, build started (your decision)",
       "detail": "P15 recorded; subagent-driven build of the 10 plan tasks begins"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T1 O*NET education data, T2 course sites, T3 steps, T4 study route, T5 picks rules, T6 /api/pathway (1 fix round: bad picks file now stops start-up); 879 tests pass"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T7 admin review of picks, T8 Study pathway screen (each 1 fix round); 913 tests pass; T9 fill started"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway Task 10: browser check, handover, build record",
+      "detail": "T9 fill done (68/68 skills with courses, 99 of 118 fields with an accredited programme). Browser check: 18 pass, admin and dark mode not run (docs/pathway/acceptance.md). 920 tests pass, pipeline 49 OK. Final whole-branch review next"
     }
   ]
 }

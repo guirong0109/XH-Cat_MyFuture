@@ -1,125 +1,91 @@
-# HANDOVER — `main` (important points only)
+# HANDOVER — `claude/study-pathway` (detailed)
 
-Updated 2026-10-31. Every feature branch has a detailed `HANDOVER.md` and `CLAUDE.md`. Read those for the work in
-that branch. This file keeps only what matters across the whole project.
+Updated 2026-10-31 (all 10 plan tasks built). Branch from `main` at `6ac16f4`. `main` keeps a short version of this
+file; on merge, put only the important points there and do not overwrite it with this one.
+
+## State
+- **All 10 plan tasks are built and reviewed** (920 Vitest tests, 49 pipeline tests). A **final whole-branch review is
+  next**, then the owner decides on merge. Nothing is pushed or merged.
+- Browser check done by the controller on 31 Oct: 18 checks pass, admin and dark mode not run
+  (`docs/pathway/acceptance.md`).
+- Spec: `docs/superpowers/specs/2026-10-31-study-pathway-design.md`; plan: `docs/superpowers/plans/2026-10-31-study-pathway.md`;
+  diagram: `docs/architecture-pathway.html`; approved mockup: `docs/mockup-pathway.html`; fill report:
+  `docs/pathway/fill-report.md`.
 
 ## Goal
-FutureReady MY is a career-planning app for Malaysia, built for the Domain 1 finalist round. A user builds a
-**confirmed, structured profile** (from a CV or a form). Later modules use it: matching, learning roadmap, SDG and
-scenario comparison.
+For each role the user saves as a target (from `#match`), one screen `#pathway` in two parts:
+1. **Study route**: usual education level (eMASCO's own qualification first, then O\*NET's US percentages), fields of
+   study that reach the role, accredited Malaysian programmes and professional bodies, courses to start with.
+2. **Skills to build**: the role's skill gaps, biggest gap first, each with named courses and "More on <site>" search
+   links. "Started" and "Done" are self-reported and never change the Skill Match.
 
-## Modules on `main`
-| Module | Branch (detailed docs there) | Merged | State |
-|---|---|---|---|
-| CV extraction and structured profile | `claude/cv-profile-module` | PR #1, `301c10e`, 2026-10-29 | Done; 179 tests pass; final review fixed |
-| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; checked in the browser |
-| Fix: skill search finds everyday skills | `claude/cv-profile-module` | merged 2026-10-30 | Done; 232 tests pass; CV eval unchanged |
-| Light mode by default, switch to dark | `main` | 2026-10-30 | Done |
-| Future Skills Radar Round 1 + skill trends from O\*NET | `claude/future-radar` | merged 2026-10-30 | Done; 651 tests pass; whole-branch reviews fixed |
-| Career matching, AI scenarios and SDG links | `claude/career-matching` | merged 2026-10-31 | Done; 803 tests pass; checked in the browser |
-| Learning roadmap and the rest of the journey | not started | — | Next |
+## What was built
+- **Data** (`data/pathway/`): `sites.json` (10 course sites), `picks.json` (125 courses, 135 programmes, 2 search
+  words), `manifest.json` (hashes). O\*NET education rows (`education.tsv`, from the O\*NET 31.0 Education files) come
+  from `pipeline/fetch_onet.py`. Sources are in `data/SOURCES.md`.
+- **`shared/pathway/`** (pure): `steps.js` (skill steps from matching's gap points), `route.js` (study route, fields,
+  education), `picks.js` (pick rules, hash, review status, coverage).
+- **`server/pathway/`**: `service.js`, `routes.js` (`POST /api/pathway`), `data.js` (loader; a bad picks file stops
+  start-up), `adminRoutes.js` (owner review of picks).
+- **Screen**: `public/js/screens/pathway.js` and `pathwayParts.js`; "Plan my study pathway" button on `#match`
+  cards; `#roadmap` opens `#pathway`. Targets and progress are stored in the browser only.
+- **Admin review**: picks section in `#admin` (approve / reject with a note), same pattern as the SDG links.
 
-## Future Skills Radar (since 2026-10-30)
-- **Screen `#radar`**, two tabs: Skills & Careers (first) and AI Impact. By default it shows only what relates to
-  the user's confirmed profile, worked out in the browser; "View all" sits at the bottom. Every number links to its
-  source and date. Admin `#admin` and judge test `#judge` use server keys (`RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`,
-  `RADAR_SESSION_SECRET`); keys never reach the browser.
-- **Sources:** OpenAlex (AI research papers per topic), DOSM (Malaysian online job ads by MASCO major group),
-  O\*NET skill flags (which software skills US job ads ask for, compared between releases) and O\*NET Hot
-  Technologies (US job-ad counts, yearly snapshots).
-- **No scores, weights or rankings.** The Radar publishes `radar-signal/v1` for the later matching module
-  (`docs/radar/contract.md`); `GET /api/radar/export` is its input.
-- **Owner decides:** field ↔ AI topic links (16 proposals, pending until approved in `#admin`) and possible DOSM
-  structural breaks (4, incl. 2025 Q3, which blocks most group comparisons until reviewed or until 2026 Q3).
+## Owner decisions (spec §2)
+| # | Decision |
+|---|---|
+| P1 | Both a formal study route and short courses for the remaining skill gaps, on one screen in two parts |
+| P2 | Study route = field of study + usual education level and Malaysian programmes |
+| P3 | Team-picked named courses and programmes (name, link, date checked only) and a live search link per skill |
+| P4 | Skill steps: biggest gap first, using matching's own gap points; no new maths |
+| P5 | "Started" / "done" per step, self-reported, saved in the browser; never changes the Skill Match |
+| P6 | Several saved targets, chosen from `#match`; no limit |
+| P7 | "Not assessed yet" skills get their own group with courses and a link to set the level; pathway marked provisional |
+| P8 | New pathway service (`shared/pathway/`, `server/pathway/`, `POST /api/pathway`) reusing matching's role answer; matching files unchanged except the card button |
+| P9 | Picks reviewed like SDG links (M16): shown now; approved in `#admin` shows "approved by owner on <date>"; rejected is hidden |
+| P10 | First fill covers all skills and fields (changed by P13) |
+| P11 | Claude drafts `docs/architecture-pathway.html`; owner approves |
+| P12 | More sites than e-LATiH and MQA: global, tech-company, Malaysian and professional bodies; a "More on" link only where the site search was checked in a browser; no invented link |
+| P13 | All 68 items and all fields get picks and "More on" links; Python and accounting were only examples |
+| P14 | The usual education level shows eMASCO's qualification for the role first ("eMASCO, Malaysia"), then O\*NET's US percentages ("In the US"); shows even when the code chain is broken |
+| P15 | No "team draft" word on `#pathway`; an unreviewed pick shows no review label; an approved pick shows its date. `#admin` still says "not yet reviewed" |
 
-## Profile form since 2026-10-30 (owner requests)
-- **Search as you type:** skills (O\*NET), roles of interest (O\*NET + eMASCO) and field of study (UNESCO
-  ISCED-F 2013). Nothing is linked silently.
-- **"Prefer not to say" is the default** of every optional field (a dropdown, no checkbox). Skill level starts on
-  "Not assessed yet".
-- **Field of study → O\*NET** through official tables only: ISCED-F → CIP (Statistics Canada) → O\*NET jobs (O\*NET
-  crosswalk). 118 of 124 fields reach O\*NET. Originals are kept in `data/isced/source/`.
-- **Skills suggested from the field of study:** "typical of the field" (more common in its jobs than overall).
-  They are click-to-add chips, never added automatically. This is not matching and gives no score.
-- **"Career interests and fields"** is one list: the 41 O\*NET interest areas, several allowed.
-  `preferredCareerFields` is gone; old profiles are converted.
-- **Skill search covers more than software.** It also searches O\*NET work styles (e.g. Leadership Orientation),
-  knowledge areas and work activities, with general skills before software products. These lists are for search
-  only, so CV reading is unchanged. O\*NET's wording is needed: "Cooperation", not "teamwork".
-- **Every list shows its source on screen.** The owner calls this highly important; keep it for anything new.
-- **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
-  and not used yet.
+## Data counts
+- **Courses:** 68 of 68 skill and knowledge items have at least one course pick (125 courses).
+- **Fields:** 99 of 118 fields that reach O\*NET have an accredited Malaysian programme. The other 19 are in
+  `docs/pathway/fill-report.md` with the sites searched.
+- **Programme picks:** 135, including professional bodies.
+- **Sites:** 10: 6 have a checked search link ("More on <site>"); 4 give named picks only.
 
-## Open points for the owner
-- **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
-  (1.76 against 1.60). Adding a minimum gap is the owner's call.
-- **Field-of-study names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search
-  in English.
-- **The reason for a suggested skill is hover text,** so phones don't show it. Revisit at the visual redesign.
-- **Radar:** review the 16 field ↔ topic proposals and 4 possible breaks; review BM and 中文 Radar wording (marked
-  "translation: owner review"); decide a "rising" rule for Hot Technology counts when the 2026 window appears;
-  accept or trim ~10.8 MB of bundled O\*NET snapshots; find an official source that MASCO 2020 major groups match
-  ISCO-08.
-- **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
-  approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
-  OK for a new package).
-
-## Career matching (since 2026-10-31, details: branch `claude/career-matching`)
-- **Screen `#match`** lists eMASCO roles (pages of 10) with a Skill Match chart, an outlook under two AI scenarios
-  and SDG tags; screen `#sdg` shows the SDG links. Design: `docs/superpowers/specs/2026-10-30-career-matching-design.md`
-  and `docs/architecture-matching.html`.
-- **Skill Match** = Σ min(you, needed) ÷ Σ needed over O\*NET skills + knowledge with importance ≥ 3.0. Levels: basic
-  2, good 4, expert 6; "Not assessed yet" meets the level and marks the result provisional. No language model.
-- **Official code chain only:** eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O\*NET (`data/radar/occupation-bridge.json`,
-  BLS crosswalks kept in `data/radar/source/`). MASCO → ISCO uses the same 4-digit code where ISCO has it, labelled
-  "code match, not an official table". A broken chain says "not available" and names the missing step. 1261 of
-  1812 roles have a Skill Match; Malaysian-only groups (e.g. 1121) stay unavailable.
-- **Scenarios:** Moderate AI = Anthropic Economic Index observed use; Rapid AI = ILO WP140 exposure. Trends and
-  scenarios set the outlook and one of four bands, never the Skill Match.
-- **SDG:** team drafts shown with a UN goal link; rejected links hidden; approved links dated. The path contribution
-  is a count of links with reasons, never a score.
-- The profile sent to `/api/matching` is never stored or logged. Forbidden keys: score, weight, rank, opportunit.
-
-## Next module: learning roadmap (not started)
-It can reuse the confirmed profile and the matching result (`skillMatch`, gaps per O\*NET element).
-
-**No scoring method from the old project.**
-
-## What is not switched on yet (needs the owner's keys or OK)
-- **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
-  "cached".
-- **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them, accounts say "not available" and guests still work
-  fully.
-- **Radar storage and refresh:** a deployed Radar needs R2 settings (`RADAR_STORE`, `R2_*`) and a free OpenAlex key;
-  `RADAR_STORE=memory` is for local trials only and forgets everything on restart. See `docs/radar/deploy.md`. No
-  host chosen yet (owner's price decision).
-- **RunPod endpoints:** L3 skill matching and the AI re-read. Ask the owner to approve the price first. There is no
-  Claude key either (`CV_LLM_BACKUP_KEY`).
+## How MQR was queried
+The Malaysian Qualifications Register (www2.mqa.gov.my/mqr) has no link interface. The team posted its search form
+by script with every form field and the session cookie (programme code, name and institution empty, NEC field set,
+all modes, levels and states). Diplomas and certificates count as accredited programmes. Each programme name is the
+linked institution page's main heading, minus a leading code. Details are in the fill report.
 
 ## Commands
 ```bash
-npm install
-npm test          # expect 803 passed
-npm start         # http://localhost:3200, reads .env if present (copy .env.example)
-python -m unittest discover pipeline/tests   # expect 48 OK
-python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain
-node scripts/radar-bootstrap.mjs             # rebuild the bundled Radar data (see docs/radar/deploy.md)
-python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas)
-python pipeline/fetch_isced.py               # rebuild data/isced (fields of study + CIP bridge)
+npm install && npm test     # expect 920 passed
+npm start                   # http://localhost:3200
+python -m unittest discover pipeline/tests   # expect 49 OK
 ```
-Every data file, its source, date and licence: `data/SOURCES.md`.
 
-## Rules that apply to every branch
-- **Branches:** one branch per feature. Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md`. On every merge
-  to `main`, put only the important points into these two files.
-- Follow the owner's architecture diagrams exactly. Add nothing they do not state, such as extra limits.
-- Use no scoring method from the previous project. Don't use the `C:/Users/guiro/XH-Cat_Domain1` folder as a
-  template.
-- Ask the owner before anything paid, and before merge, push, PR or force-push.
+## Open points for the owner
+- **Review all team picks in `#admin`.** Nothing is approved yet. The weaker course fits are listed in the build
+  ledger (for example items 2.B.3.c, 2.C.4.g and 2.C.10).
+- **BM / 中文 wording** of the new strings (marked "translation: owner review").
+- **NEC-vs-ISCED code hint (Finding A):** the MQA hint "choose NEC field <code>" uses the ISCED code, which differs
+  for some fields (0611 is NEC 0614, 0712 is NEC 0717). To be fixed in the final review.
+- **Professional bodies not linked:** law, architecture and town planning, veterinary, social work (recorded in the
+  fill report).
+- **60 earlier accredited picks have no MQA ref** though some pages print one; decide whether to fill (final review).
+- **Licence permission** from MQA and HRD Corp is optional; only name, link and date are kept.
 
-## Repository
-- `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
-- Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`)
-  and `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`). `main` is also checked out as a worktree at
-  `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
-- Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.
+## Not switched on
+- Admin needs the server keys as before (`RADAR_ADMIN_KEY`, `RADAR_SESSION_SECRET`). Without them `#admin` is not
+  available, so the pick review cannot be used until they are set.
+- Dark mode was not inspected by eye. Nothing is pushed.
+
+## Earlier work on `main`
+Profile, CV, Radar and Career matching are described in `main`'s short `HANDOVER.md`; the detailed versions are on
+their own branches.

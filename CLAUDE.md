@@ -1,50 +1,55 @@
-# CLAUDE.md — `main`
+# CLAUDE.md — `claude/study-pathway` (detailed)
 
-Read `HANDOVER.md` here first. Then switch to the feature branch you work on: its `HANDOVER.md` and `CLAUDE.md`
-are detailed.
+Read `HANDOVER.md` here first, then the spec `docs/superpowers/specs/2026-10-31-study-pathway-design.md`, the diagram
+`docs/architecture-pathway.html` and the mockup `docs/mockup-pathway.html`. They are approved and bind the build: add
+nothing they do not state. All 10 plan tasks are built; the final whole-branch review is next. Do not touch main's
+files; the owner decides on merge.
 
-## Rules
-- **One branch per feature.** Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md` about its feature. `main`
-  keeps short versions with only the important points. On every merge to `main`, update main's two files. Don't
-  overwrite them with a branch's detailed version.
+## Rules (from `main`, all still apply)
+- **One branch per feature.** This branch keeps the detailed `HANDOVER.md` and `CLAUDE.md`. On merge to `main`, update
+  main's two short files with only the important points; don't overwrite them with these.
 - **Follow the owner's architecture diagram exactly.** Add nothing it does not state.
 - **Use no scoring or matching method from the previous project.** Don't use `C:/Users/guiro/XH-Cat_Domain1` as a
-  template; read its diagrams only.
+  template.
 - **Ask the owner before:** anything paid (state the price), merge, push, PR, and above all force-push.
-- **Test first** (Vitest). Run `npm test` before every commit. Commit messages use the form `feat:`, `fix:` or
-  `docs:`, with no attribution lines.
+- **Test first** (Vitest). Run `npm test` before every commit. Commit messages: `feat:`, `fix:` or `docs:`, with no
+  attribution lines.
 - **Record every step** in the build record (`docs/record/status.json` → `python docs/record/build_record.py`).
-- **Show the source of every list and suggestion on screen** (owner: "highly important").
-- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`); the owner clicks in the same
-  Browser pane, and each address keeps its own saved progress.
-- **New data needs a source:** record it in `data/SOURCES.md` (where from, date, licence), check it against a
-  manifest hash, and keep the downloaded original when it is small.
+- **Show the source of every list, number and suggestion on screen** (owner: "highly important").
+- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`, or a `localhost` name such as
+  `pathway.localhost:3241` in the launcher); each address keeps its own saved progress.
+- **New data needs a source:** `data/SOURCES.md` (where from, date, licence), a manifest hash, and the original kept
+  when it is small.
 - **Use plain words** with the owner.
 
+## Pathway-specific rules
+- Gap points are matching's own formula (Σ min(you, needed) ÷ Σ needed; levels basic 2, good 4, expert 6). No new
+  maths. Progress ("Started" / "Done") is self-reported and never changes the Skill Match.
+- Only name, link and date checked are stored for a pick (plus institution, MQA ref and professional body where they
+  apply). No invented link: every site and pick was opened in a browser before it was added.
+- Pick names are the linked page's main heading verbatim, minus a leading code (`<code> - `, ` : `, ` | `, ` – `).
+- P14: the usual education level shows eMASCO's qualification first ("eMASCO, Malaysia"), then O\*NET's US
+  percentages ("In the US"). It shows even when the code chain is broken.
+- P15: no "team draft" word on `#pathway`. An unreviewed pick has no review label; an approved pick shows "approved by
+  owner on <date>"; a rejected pick is hidden. `#admin` keeps "not yet reviewed".
+- Picks are reviewed in `#admin`; never approve or reject on the owner's behalf.
+- The profile sent to `/api/pathway` is never stored or logged. Targets and progress live in the browser only.
+- The pathway uses no language model. Its forbidden keys are score, weight, rank, opportunit; the Skill Match key is
+  `skillMatch`.
+- eMASCO → O\*NET only through the official chain (`data/radar/occupation-bridge.json`). A broken chain shows the
+  missing step, never a guess.
+- Code: `shared/pathway/`, `server/pathway/`, `public/js/screens/pathway.js` and `pathwayParts.js`, data in
+  `data/pathway/`, tests in `tests/pathway/`. Browser results: `docs/pathway/acceptance.md`; unfilled fields:
+  `docs/pathway/fill-report.md`.
+
 ## Working here
-- `main` is checked out as a worktree at `C:\Users\guiro\XH_Cat_Final-main`. Merge to `main` there:
-  `git checkout main` fails in `C:\Users\guiro\XH_Cat_Final`. Chain git steps with `&&`, so that a failed step stops
-  the rest.
+- Folder `C:\Users\guiro\XH_Cat_Final-pathway` is the worktree for this branch. `main` is the worktree
+  `C:\Users\guiro\XH_Cat_Final-main`; merge there. Chain git steps with `&&`, so a failed step stops the rest.
 - Bash heredocs break on apostrophes here. Write helper scripts with the Write tool and run them with python.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 803 passed
+npm install && npm test     # expect 920 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 48 OK
+python -m unittest discover pipeline/tests   # expect 49 OK
 ```
-
-## Future Skills Radar (details: branch `claude/future-radar`)
-- Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.
-- Output contract `radar-signal/v1` (`docs/radar/contract.md`): never add score, weight, rank or match fields.
-- Field ↔ topic links and structural breaks are the owner's decisions; never approve them on the owner's behalf.
-- Admin and judge keys live only in server env; never print, log or commit them.
-
-## Career matching (details: branch `claude/career-matching`)
-- Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.
-- Skill Match = Σ min(you, needed) ÷ Σ needed (O\*NET skills + knowledge, importance ≥ 3.0); the owner's example
-  12.05 / 9.2 / 76% is a test. Trends and AI scenarios never change it. No language model.
-- eMASCO → O\*NET only through `data/radar/occupation-bridge.json`; a broken chain shows "not available" with the
-  missing step, never a guess.
-- Only show SDG links as the owner decided (M16: team drafts labelled, rejected hidden); never approve on the
-  owner's behalf. The profile sent to `/api/matching` is never stored or logged.

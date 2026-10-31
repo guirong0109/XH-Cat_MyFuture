@@ -43,7 +43,7 @@ export function profileTable(t, profile) {
   const records = (items, show) => (items.length ? items.map((r) => `<div>${esc(show(r))} ${recordTags(t, r)}</div>`).join('') : tag('unv', t('none')))
   return `<table>
     ${field('userCategory', 'fCategory')}
-    ${field('education.educationStatus', 'fEduStatus')}
+    ${get(profile, 'education.educationStatus')?.state === 'value' ? field('education.educationStatus', 'fEduStatus') : ''}
     ${field('education.highestQualification', 'fHighest')}
     ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${field('employment.status', 'fEmpStatus')}

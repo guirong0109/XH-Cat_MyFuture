@@ -10,7 +10,7 @@ import { GOALS } from './goal.js'
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
-  ['userCategory', 'education.educationStatus', 'education.highestQualification'],
+  ['userCategory', 'education.highestQualification'],
   ['employment.status', 'employment.yearsOfExperience'],
   [],
   [],
@@ -74,7 +74,6 @@ function study(ctx) {
   const { t } = ctx
   return [
     choiceField({ ...ctx, path: 'userCategory', label: t('fCategory'), options: withOld(WHO, OLD_CATEGORIES, ctx.profile.userCategory) }),
-    field(ctx, { path: 'education.educationStatus', label: t('fEduStatus'), options: [['studying', 'optStudying'], ['graduated', 'optGraduated'], ['not_studying', 'optNotStudying']] }),
     field(ctx, { path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
     recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation'), custom: { fieldOfStudy: (record, i) => fieldOfStudy(ctx, record, i) } }),
   ].join('')

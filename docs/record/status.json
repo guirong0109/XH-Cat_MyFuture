@@ -258,6 +258,11 @@
           "title": "T28j Small buttons in one row",
           "sub": "Which describes you best? · radio dot · explanation on hover",
           "status": "done"
+        },
+        {
+          "title": "T28k No 'Current education status'",
+          "sub": "removed from the form and the receipt",
+          "status": "done"
         }
       ]
     }
@@ -305,7 +310,8 @@
     "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
     "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
     "Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)",
-    "Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)"
+    "Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)",
+    "Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -972,6 +978,16 @@
       "time": "31 Oct",
       "step": "Task 28j",
       "detail": "tests first (3 failed), then choiceField in fields.js and the .options / .option styles; npm test 258 passed; checked at 1440 px (one row) and 390 px (two rows), light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove Current education status"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28k",
+      "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 260 passed; checked in Chrome"
     }
   ]
 }

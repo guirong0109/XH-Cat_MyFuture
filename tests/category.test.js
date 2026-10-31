@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import category from '../public/js/screens/category.js'
-import form, { WHO } from '../public/js/screens/form.js'
+import form, { SECTION_FIELDS, WHO } from '../public/js/screens/form.js'
 import { profileTable } from '../public/js/screens/review.js'
 import { DECLINED, emptyProfile, val, validateProfile } from '../shared/profileSchema.js'
 import { setField } from '../shared/profileState.js'
@@ -25,7 +25,7 @@ describe('the profile opens with "Which describes you best?" as four buttons', (
     const html = study(asUser(null))
     expect(picked(html)).toEqual(['student', 'fresh_graduate', 'underemployed', 'unemployed'])
     expect(html).not.toContain('id="f-userCategory"')
-    expect(html.indexOf('fCategory')).toBeLessThan(html.indexOf('fEduStatus'))
+    expect(html.indexOf('fCategory')).toBeLessThan(html.indexOf('fHighest'))
     expect(html).toContain('<div class="options" role="radiogroup"')
     expect(html).not.toContain('class="grid g2" role="radiogroup"')
     for (const lang of ['en', 'ms', 'zh']) {
@@ -77,5 +77,21 @@ describe('the buttons are small and sit in one row', () => {
     expect(css).toMatch(/^\.options\{display:flex;flex-wrap:wrap/m)
     expect(css).toMatch(/^\.option\{[^}]*flex:1 1 0;min-width:max-content;padding:10px 16px/m)
     expect(css).toMatch(/^\.option::before\{[^}]*border-radius:50%/m)
+  })
+})
+
+describe('no "Current education status" question', () => {
+  it('the form does not ask it, and opening the section does not answer it for the user', () => {
+    const html = study(asUser(null))
+    expect(html).not.toContain('fEduStatus')
+    expect(html).not.toContain('education.educationStatus')
+    expect(SECTION_FIELDS.flat()).not.toContain('education.educationStatus')
+  })
+
+  it('the receipt leaves it out, unless a profile saved earlier has an answer', () => {
+    expect(profileTable(t, emptyProfile())).not.toContain('fEduStatus')
+    const old = setField(emptyProfile(), 'education.educationStatus', val('graduated'))
+    expect(profileTable(t, old)).toContain('fEduStatus')
+    expect(profileTable(t, old)).toContain('optGraduated')
   })
 })

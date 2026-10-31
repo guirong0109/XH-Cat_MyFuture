@@ -323,6 +323,11 @@
           "title": "T28w Used in a job or project = Good",
           "sub": "level set automatically, tagged 'From your projects' · Other skills folded",
           "status": "done"
+        },
+        {
+          "title": "T28x After the CV: only 'Edit in the form'",
+          "sub": "no Review and confirm or Upload another file on the CV result",
+          "status": "done"
         }
       ]
     }
@@ -383,7 +388,8 @@
     "Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)",
     "Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
     "Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
-    "Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)"
+    "Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)",
+    "Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1185,6 +1191,11 @@
       "time": "31 Oct",
       "step": "Task 28w",
       "detail": "tests first (9 failed), then shared/profileSchema.js (from_projects status, levelFromUse, the CV-level check allows only Good for a used skill), server/cv/extract.js and reextract.js (levelFromUse after merging), scripts/eval-cv.mjs (counts only other levels), skillGroups.js (Good on linking, back on unlinking, tag, Other skills fold), review.js (receipt tag), app.js (fold opens when a skill is added to Others), styles.css, wording in en/ms/zh; npm test 314 passed; eval-cv 0 failures, 0 other levels; in Chrome every project skill showed Good with the tag and Other skills was folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28x",
+      "detail": "your request: after uploading a CV, leave only Edit in the form, because the extraction is never correct; test first (1 failed), then upload.js; npm test 315 passed; in Chrome the CV result shows one button, Edit in the form"
     }
   ]
 }

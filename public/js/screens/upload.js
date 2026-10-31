@@ -48,7 +48,8 @@ function ready(t, state) {
       <tr><th>${esc(t('cvRowLanguage'))}</th><td>${esc(cvLanguage)}</td></tr>
     </table>
     <p class="tiny muted">${esc(t('cvCheckNote'))}</p>
-    <div class="row" style="margin-top:12px">${btn(t('cvToReview'), { go: 'review', kind: 'pri' })}${btn(t('cvToForm'), { go: 'form' })}${btn(t('cvAnother'), { act: 'cvReset' })}</div>
+    <!-- Owner, 31 Oct: the CV reading is never fully correct, so the only way on is to edit it in the form. -->
+    <div class="row" style="margin-top:12px">${btn(t('cvToForm'), { go: 'form', kind: 'pri' })}</div>
   </div></div>`
 }
 

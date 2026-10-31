@@ -72,6 +72,15 @@ describe('Radar screen', () => {
     expect(html).not.toContain(t('rdA2Title'))
   })
 
+  it('has no "Your profile" card, with or without a profile (owner, 31 Oct)', () => {
+    for (const prof of [ownProfile(), profile(), null]) {
+      const html = view(prof)
+      expect(html).not.toContain('rd-profile')
+      expect(html).not.toContain('<h2>Your profile</h2>')
+      expect(html).not.toContain('nothing personal is sent to the server')
+    }
+  })
+
   it('default shows only the profile own fields; View all is the last element of each tab', () => {
     const sk = skillsTab(ctx(ownProfile()))
     const b1 = section(sk, 'B1')
@@ -256,7 +265,7 @@ describe('Radar screen', () => {
       occupationMappings: [{ kind: 'interest', term: evil, chosen: { source: 'emasco', code: '2512-01', title: evil } }],
       preferences: { careerInterests: [evil] },
     })
-    for (const radar of [{}, { tab: 'ai' }, { open: { kind: 'group', id: '2' } }, { open: { kind: 'axis', id: 'language' } }, { all: { sk: true, ai: true } }]) {
+    for (const radar of [{}, { tab: 'ai', open: { kind: 'axis', id: 'language' } }, { open: { kind: 'group', id: '2' } }, { open: { kind: 'axis', id: 'language' } }, { all: { sk: true, ai: true } }]) {
       const html = radarView({ t, state: { lang: 'en', profile: prof, radar }, data: bad })
       expect(html).not.toContain('<img')
       expect(html).toContain('&lt;img src=x')

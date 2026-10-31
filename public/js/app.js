@@ -19,6 +19,7 @@ import upload from './screens/upload.js'
 import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
 import { confirmGroup, groupsOf, linkSkill, placeOf, renamePlace, unlinkPlace, unlinkSkill } from './screens/skillGroups.js'
 import { prechooseFields } from './cvPrechoose.js'
+import { dropSuggestion, keepSuggestion } from './cvSuggest.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -897,6 +898,8 @@ const actions = {
     })
     update({ ...state.profile, skills })
   },
+  keepAi: (i) => update(keepSuggestion(state.profile, i)),
+  dropAi: (i) => update(dropSuggestion(state.profile, i)),
   editSkills: () => { state.section = SKILLS_SECTION; go('form') },
   occFind: async (key) => {
     const term = state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''

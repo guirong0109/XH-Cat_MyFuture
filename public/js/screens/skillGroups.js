@@ -97,9 +97,18 @@ function picker({ t, state }, key, label) {
 function chip(t, skill) {
   const ai = skill.source === 'cv_ai' ? ` <small class="ai-tag">${esc(t('tagFromAi'))}</small>` : ''
   if (!skill.canonicalId) return `<span class="sk unk" title="${esc(t('skillUnknown'))}">? ${esc(skill.name)} <small>${esc(t('notInList'))}</small>${ai}</span>`
-  const written = skill.originalText && norm(skill.originalText) !== norm(skill.name) ? ` <small>${esc(t('fromText', { text: skill.originalText }))}</small>` : ''
+  const different = skill.originalText && norm(skill.originalText) !== norm(skill.name)
+  const written = different && skill.match === 'short_form' ? '' : different ? ` <small>${esc(t('fromText', { text: skill.originalText }))}</small>` : ''
+  if (different && skill.match === 'short_form') return `<span class="sk ok">✓ ${esc(skill.originalText)} → ${esc(skill.name)} (O*NET)${skill.proficiency ? ` <em>${esc(t(skill.proficiency))}</em>` : ''}${ai}</span>`
   const level = skill.proficiency ? ` <em>${esc(t(skill.proficiency))}</em>` : ''
   return `<span class="sk ok">✓ ${esc(skill.name)}${written}${level}${ai}</span>`
+}
+
+// The AI's O*NET suggestion for a CV skill: what it is, the words it comes from, where the list is from, Keep / Remove.
+function suggestion(t, skill, i) {
+  const s = skill.aiSuggestion
+  if (!s) return ''
+  return `<div class="tiny ai-suggest"><span>${esc(t('aiSuggests', { name: s.name, evidence: s.evidence }))}</span> <span class="muted">${esc(t('aiSuggestSource'))}</span> <button class="btn sm" data-act="keepAi" data-arg="${i}">${esc(t('keep'))}</button> <button class="btn sm ghost" data-act="dropAi" data-arg="${i}">${esc(t('remove'))}</button></div>`
 }
 
 // One skill in a card's Edit view: its level, the standard term to pick when it is unclear, and how to take it out.
@@ -114,7 +123,7 @@ function editRow(t, group, { skill, i }) {
   const out = group.kind === 'other'
     ? `<button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button>`
     : `<button class="btn sm ghost" style="color:var(--bad)" data-act="unlinkSkill" data-arg="${i}|${group.key}">${esc(t('removeHere'))}</button>`
-  return `<div class="sk-row"><div class="sk-name"><b>${esc(skill.name)}</b> ${source}${suggested}${pick}</div>
+  return `<div class="sk-row"><div class="sk-name"><b>${esc(skill.name)}</b> ${source}${suggested}${suggestion(t, skill, i)}${pick}</div>
     ${levelBar(t, skill, i)} ${levelTag} ${reviewToggle(t, `skills.${i}`, skill)} ${out}</div>`
 }
 
@@ -155,7 +164,8 @@ function card(ctx, group) {
   // Skills added from a field-of-study suggestion say where the suggestion came from (once per field).
   const fields = new Map(group.skills.filter(({ skill }) => skill.suggestedFrom).map(({ skill }) => [skill.suggestedFrom.code, skill.suggestedFrom]))
   const sources = [...fields.values()].map((from) => `<p class="tiny muted">${esc(t('suggestFrom', { field: from.title, source: `O*NET ${from.onetVersion ?? ''}`.trim() }))}</p>`).join('')
-  const body = `${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${sources}${editing ? editView(t, group) : ''}`
+  const suggestions = group.skills.map(({ skill, i }) => suggestion(t, skill, i)).join('')
+  const body = `${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${suggestions}${sources}${editing ? editView(t, group) : ''}`
   if (!isOther) return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${actions}</div>
     ${sub ? `<p class="grp-sub">${esc(sub)}</p>` : ''}${quote}${body}${search}</section>`
   // Other skills: the search and the suggestions stay open; the skills themselves are folded until "Show".

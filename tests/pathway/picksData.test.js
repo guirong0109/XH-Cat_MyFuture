@@ -31,6 +31,11 @@ describe('Study Pathway team picks data', async () => {
     expect(missing.filter((k) => k.startsWith('el:') || k.startsWith('kn:'))).toEqual([])
   })
 
+  it('every field of study has an accredited programme or is in the fill report', () => {
+    const { missing } = coverage(data.picks, data.itemKeys, data.fieldCodes, reportedKeys())
+    expect(missing).toEqual([])
+  })
+
   it('every pick was checked on a real date, not after today', () => {
     const today = new Date().toISOString().slice(0, 10)
     for (const p of data.picks) {

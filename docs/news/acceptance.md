@@ -41,3 +41,29 @@ Seen on real data, for the owner (not failures of the spec's rules):
   relevance check, which the owner chose not to use (decision N4).
 - **Near-repeats from copy sites**: the same CNBC story appears under a slightly different headline on another site
   ("… | News"), so the repeat rule does not catch it.
+
+These two led to **Amendment 1** (N9 relevance check, near-repeat rule, N10 "English articles only").
+
+## Amendment 1 (31 Oct 2026)
+
+**Local, fake search and fake check** (`scripts/news-local.mjs`, `http://futures.localhost:3271`): every field gets an
+"arXiv" listing, an "Assignment" page and a copy of story 1 ending in " | Copy Site"; in run 2 field 03's check fails.
+
+| # | Check | Result |
+|---|---|---|
+| C9 | Check failing: no unchecked item, last list with the note | Pass: Social sciences shows only its 3 run-1 stories and "Couldn't refresh at …"; no run-2 item |
+| — | Lines on screen | Pass: "Kept: English articles only; …" and "Checked by DeepSeek (deepseek-flash) as news about AI in this field · 2 results dropped as not news." |
+| — | Junk and copies | Pass: no "arXiv", "Assignment" or "Copy Site" item in any field; field 01 dropped 2 |
+
+**Real run** (owner's key, `http://futures.localhost:3272`, 22:10 MYT). The saved news from the first run was kept
+(backup `data/cache/news/latest-before-amendment-1.json`, git-ignored) and its last-run time moved back 4 hours, so
+the server refreshed at once and also checked the first run's items. One refresh: **10 searches and 10 checks**
+(about US$0.02 in all); the server was stopped right after.
+
+| # | Check | Result |
+|---|---|---|
+| C8 | Junk gone, copies once, lines shown | Pass: no arXiv, Filo, conference-alert, open-access directory, Zenodo or journal page is left in any field; the construction-sites story shows once (the copy saved first, on AntiScam Hub, stayed rather than CNBC's); both lines show |
+
+Per field after the check (items shown, results dropped): 01 25/7 · 02 20/34 · 03 25/17 · 04 25/17 · 05 6/51 ·
+06 25/12 · 07 20/28 · 08 25/23 · 09 23/24 · 10 25/14. Most common reasons: `paper`, `other`, `job`, `event`.
+Natural sciences (05) keeps only 6 items: its search results are mostly papers, job ads and events.

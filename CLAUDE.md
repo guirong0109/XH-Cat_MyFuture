@@ -2,21 +2,25 @@
 
 Sub-branch of `claude/career-matching` (from `d82267e`). Read `HANDOVER.md` here first, then the spec
 `docs/superpowers/specs/2026-10-31-compare-futures-news-design.md`, the diagram `docs/architecture-compare-futures.html`
-and the plan `docs/superpowers/plans/2026-10-31-compare-futures-news.md`. All three are approved and bind the build: add
-nothing they do not state. All 6 plan tasks are built; the real DeepSeek run waits on the owner. Do not touch main's
+and the plans `docs/superpowers/plans/2026-10-31-compare-futures-news.md` and `…-amendment-1.md`. All are approved and
+bind the build: add nothing they do not state. Both plans are built and checked with real runs. Do not touch main's
 files; the owner decides on merge (into `claude/career-matching` first).
 
 ## Compare futures: AI news rules
-- DeepSeek **Search** API only (`POST https://api.deepseek.com/v1/tools/search`), no DeepSeek chat model. **Paid**:
-  US$0.75 per 1,000 successful searches, about US$1.80 a month. Key in `DEEPSEEK_API_KEY` only (server secrets); never
-  in the repo, the browser, a URL, a log or a reply. No real search without the owner's OK.
-- 10 ISCED-F broad fields (`data/news/fields.json`, manifest hash), one search per field every 3 hours. Caps: 10
-  searches per run, 80 per 24 hours, kept in the store.
-- Usable = title, http(s) link, publish date within 30 days; repeats removed; newest 25 per field.
+- DeepSeek **Search** API (`POST https://api.deepseek.com/v1/tools/search`) plus, since Amendment 1 (N9), the chat
+  model **`deepseek-flash`** for the relevance check only (keep / drop; it writes nothing shown on screen). **Paid**:
+  search US$0.75 per 1,000 successful searches; check about US$2-4 a month; total about US$4-6 a month. Key in
+  `DEEPSEEK_API_KEY` only (server secrets; local `.env` for testing); never in the repo, the browser, a URL, a log or a
+  reply. No real run without the owner's OK.
+- 10 ISCED-F broad fields (`data/news/fields.json`, manifest hash), one search and at most one check per field every 3
+  hours. Caps for each: 10 per run, 80 per 24 hours, counted in memory and in the store before each request.
+- Usable = English (lang:en, said on screen), title, http(s) link, publish date within 30 days; repeats removed (also
+  a headline ending in a site name); kept only if the check lists it; newest 25 per field. A failed check adds nothing.
 - For you is picked in the browser from `education.records[].field.code`; no profile data reaches the server or DeepSeek.
 - News never changes the Skill Match, the Overall match, the bands, the Radar or the SDG parts.
 - Code: `shared/news/rules.js`, `server/news/`, `public/js/screens/futures.js`, `public/js/newsApi.js`. Tests:
-  `tests/news/`. Browser results: `docs/news/acceptance.md`. Local check with a fake search: `scripts/news-local.mjs`.
+  `tests/news/`. Browser results: `docs/news/acceptance.md`. Local check with a fake search and check:
+  `scripts/news-local.mjs`.
 
 ## Base branch: `claude/career-matching`
 Its spec `docs/superpowers/specs/2026-10-30-career-matching-design.md` and diagram `docs/architecture-matching.html`

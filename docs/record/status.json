@@ -2729,6 +2729,11 @@
       "time": "31 Oct",
       "step": "News A1: screen lines",
       "detail": "public/js/screens/futures.js: rules line says English articles only (N10); check line 'Checked by DeepSeek (model) as news about AI in this field' with the dropped count when above 0 (N9); strings nwRules, nwChecked, nwDropped in en/ms/zh (ms, zh: translation owner review) (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: local check, real run and docs",
+      "detail": "C9 and the two lines pass with a fake search and check (scripts/news-local.mjs); real run with the owner key: 10 searches + 10 checks (about US$0.02), C8 pass (first-run junk gone, copies once); SOURCES.md chat model row, .env.example, acceptance.md, HANDOVER.md, CLAUDE.md. Pipeline 49 OK (      Tests  1556 passed (1556))"
     }
   ]
 }

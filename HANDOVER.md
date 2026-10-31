@@ -12,18 +12,24 @@ Updated 2026-10-31. Sub-branch of `claude/career-matching` (from `d82267e`). Not
   have a title, a web link and a publish date in the last 30 days, removes repeats, merges with the kept list and
   keeps the newest 25. A failed field keeps its last list with a "Couldn't refresh" note. Caps: 10 searches per run,
   80 per 24 hours. Lists are kept in R2 (`news/latest.json`) or `data/cache/news/latest.json`.
-- **State:** all 6 plan tasks built, 1510 Vitest tests pass, C1-C7 checked in the browser with a fake search
-  (`docs/news/acceptance.md`). Final whole-branch review done (opus), its Critical and Important findings fixed.
-  **Real run done 31 Oct 2026** with the owner's key (local `.env`, git-ignored, launch entry `futures-real`): 10
-  searches, all 10 fields `ok` with 25 items, C1-C3 pass on real data.
-- **Waits on the owner:** whether to filter non-news pages (arXiv listings, homework sites, conference alerts) and
-  near-repeats from copy sites, seen in the real run (today they pass the rules; spec N4 = rule checks only). The BM /
-  中文 strings (marked "translation: owner review") and the search words per field (`data/news/fields.json`, team
-  draft). For a deployed server, the key goes in the host's secret settings, never in the repo.
-- **Docs:** spec `docs/superpowers/specs/2026-10-31-compare-futures-news-design.md`, diagram
-  `docs/architecture-compare-futures.html`, plan `docs/superpowers/plans/2026-10-31-compare-futures-news.md`.
+- **Amendment 1 (31 Oct, owner):** each field's new results go to a **relevance check** by DeepSeek's chat model
+  `deepseek-flash` (`server/news/relevance.js`): only news or feature articles about AI in the field are kept; anything
+  not clearly kept is dropped; a failed check adds nothing. Checks have their own caps (10 per run, 80 per 24 hours).
+  Headlines ending in a site name (" | News") count as repeats. Every list says "English articles only" and "Checked
+  by DeepSeek (deepseek-flash) … · N results dropped as not news". Extra cost about US$2-4 a month (ceiling about
+  US$6.50); total with the search about US$4-6 a month. The model writes nothing shown on screen.
+- **State:** base plan (6 tasks) and Amendment 1 plan (5 tasks) built; Vitest passes; C1-C9 checked in the browser
+  (`docs/news/acceptance.md`). Real runs with the owner's key (local `.env`, git-ignored, launch entry
+  `futures-real`): first run 10 searches; Amendment 1 run 10 searches + 10 checks, the junk pages and copies are gone.
+  The base branch review (opus) is done and its findings fixed; the Amendment 1 whole-branch review is next.
+- **Waits on the owner:** the BM / 中文 strings (marked "translation: owner review") and the search words per field
+  (`data/news/fields.json`, team draft; Natural sciences keeps only 6 items because its results are mostly papers,
+  job ads and events). For a deployed server, the key goes in the host's secret settings, never in the repo.
+- **Docs:** spec `docs/superpowers/specs/2026-10-31-compare-futures-news-design.md` (with Amendment 1), diagram
+  `docs/architecture-compare-futures.html`, plans `docs/superpowers/plans/2026-10-31-compare-futures-news.md` and
+  `docs/superpowers/plans/2026-10-31-compare-futures-news-amendment-1.md`.
 - **Run locally:** `npm start` (news is off without the key); `PORT=3271 node scripts/news-local.mjs` shows the screen
-  with a fake search (no DeepSeek call). Launch entries `futures-off` and `futures-local` (`http://futures.localhost:3270`
+  with a fake search and a fake check (no DeepSeek call). Launch entries `futures-off` and `futures-local` (`http://futures.localhost:3270`
   and `:3271`).
 
 ---

@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 232 passed
+npm test                                          # Vitest, expect 238 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -76,5 +76,9 @@ Browser pane launch configs (`.claude/launch.json`):
   Write tool and run them with python.
 - **Commits:** small, one per task or fix. Messages use the form `feat:`, `fix:` or `docs:`. Don't add attribution
   lines.
+- **Look (31 Oct, owner request):** the screens use the landing page's design language, all in `public/styles.css`:
+  cream page, Instrument Serif headlines, Geist body, Geist Mono labels, thin rules instead of boxes. The CV drop
+  zone is an ATM (`.drop.atm`); the CV reading, the draft, Review and Your profile are receipts (`.slot` > `.receipt`).
+  Keep one rule per class (`tests/appLook.test.js`) and check light, dark and phone width after any CSS change.
 - **Build record:** after each task, update `docs/record/status.json` and regenerate `docs/build-record.html`.
   The owner wants every step recorded.

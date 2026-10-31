@@ -63,7 +63,7 @@ export function profileTable(t, profile) {
 export default ({ t, state }) => {
   const message = state.message ? `<div class="banner b-warn"><div>${esc(state.message)}</div></div>` : ''
   return `<h1>${esc(t('review'))}</h1><p class="lead">${esc(t('reviewLead'))}</p>${message}
-  <div class="card" style="overflow-x:auto">${profileTable(t, state.profile)}</div>
+  <div class="receipt" style="overflow-x:auto">${profileTable(t, state.profile)}</div>
   ${improveWithAi({ t, state })}
   <div class="row" style="margin-top:14px">
     <button class="btn" data-go="form">${esc(t('edit'))}</button>

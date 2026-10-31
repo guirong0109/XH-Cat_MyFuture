@@ -13,12 +13,12 @@ function progress(t, step) {
     if (step === 0) return i === 0 ? 'now' : 'todo'
     return SERVER_STEPS.includes(name) ? 'now' : 'done'
   }
-  return `<div class="card"><ol class="steps">${STEPS.map((name, i) => {
+  return `<div class="slot"><div class="receipt"><ol class="steps">${STEPS.map((name, i) => {
     const s = state(name, i)
     const mark = s === 'done' ? '✓' : s === 'now' ? '<span class="spin"></span>' : '·'
     return `<li class="${s}"><span class="mark">${mark}</span> ${esc(t(`cvStep_${name}`))}</li>`
   }).join('')}</ol>
-  ${step === 1 ? `<p class="tiny muted">${esc(t('cvServerNote'))}</p>` : ''}</div>`
+  ${step === 1 ? `<p class="tiny muted">${esc(t('cvServerNote'))}</p>` : ''}</div></div>`
 }
 
 function failure(t, cv) {
@@ -40,7 +40,7 @@ function ready(t, state) {
   const list = (items) => (items.length ? items.map(esc).join(', ') : `<span class="muted">${esc(t('cvNothing'))}</span>`)
   const cvLanguage = LANGS.includes(state.cv.language) ? t(`langName_${state.cv.language}`) : t(`cvLang_${state.cv.language}`)
   return `${languagePrompt(t, state)}
-  <div class="card"><h3>✓ ${esc(t('cvStep_ready'))} ${tag('unv', t('cvUnverified'))}</h3>
+  <div class="slot"><div class="receipt"><h3>✓ ${esc(t('cvStep_ready'))} ${tag('unv', t('cvUnverified'))}</h3>
     <table>
       <tr><th>${esc(t('cvRowEducation'))}</th><td>${list(p.education.records.map((r) => [r.qualification, r.fieldOfStudy].filter(Boolean).join(' · ')))}</td></tr>
       <tr><th>${esc(t('cvRowJobs'))}</th><td>${list(p.employment.records.map((r) => [r.jobTitle, r.employer].filter(Boolean).join(' · ')))}</td></tr>
@@ -49,7 +49,7 @@ function ready(t, state) {
     </table>
     <p class="tiny muted">${esc(t('cvCheckNote'))}</p>
     <div class="row" style="margin-top:12px">${btn(t('cvToReview'), { go: 'review', kind: 'pri' })}${btn(t('cvToForm'), { go: 'form' })}${btn(t('cvAnother'), { act: 'cvReset' })}</div>
-  </div>`
+  </div></div>`
 }
 
 export default ({ t, state }) => {
@@ -59,7 +59,7 @@ export default ({ t, state }) => {
   else if (cv.phase === 'error') body = failure(t, cv)
   else if (cv.phase === 'ready') body = ready(t, state)
   else {
-    body = `<div class="drop" id="cvDrop"><div class="big" style="font-size:36px">⇪</div><p style="margin:8px 0">${esc(t('cvDrag'))}</p>
+    body = `<div class="drop atm" id="cvDrop"><div class="big" style="font-size:36px">⇪</div><p style="margin:8px 0">${esc(t('cvDrag'))}</p>
       <label class="btn pri" for="cvFile">${esc(t('cvChoose'))}</label>
       <input id="cvFile" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
       <p class="tiny muted" style="margin-top:10px">${esc(t('cvLimits'))}</p></div>

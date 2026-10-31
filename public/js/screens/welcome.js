@@ -13,9 +13,9 @@ export default ({ t, state }) => `
   </div>
   <div class="row">${btn(`${t('start')} →`, { go: 'access', kind: 'pri' })}${btn(t('signin'), { go: 'access' })}</div>
  </div>
- <div class="card">
+ <div class="slot"><div class="receipt">
   <div class="tiny muted" style="margin-bottom:6px">${esc(t('atmNote'))}</div>
   <h3>${esc(t('atmTitle'))}</h3>
   <p class="small muted" style="margin:6px 0 12px">${esc(t('atmBody'))}</p>
- </div>
+ </div></div>
 </div>`

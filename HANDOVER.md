@@ -65,6 +65,7 @@ that failed first. The branch was merged into `main` via PR #1
 | Pipeline | `pipeline/fetch_onet.py`, `pipeline/fetch_isced.py`, `pipeline/tests/test_fetch_onet.py`, `pipeline/tests/test_fetch_isced.py` |
 | Evaluation | `scripts/eval-cv.mjs`, `testing/eval-cvs.json` (11 synthetic CVs), `docs/eval-results.md` |
 | Docs | `README.md` (run, settings, owner setup), `docs/acceptance.md`, `docs/tools-declaration.md`, `docs/build-record.html` (step-by-step build record, generated), `docs/architecture-cv-branch.html` (diagram of this branch: every file by layer, git history, service status) |
+| Look (31 Oct, owner request) | `public/styles.css` (landing page design language: cream, serif, mono, thin rules), fonts in `public/index.html`, receipt / ATM classes in `welcome.js`, `upload.js`, `review.js`, `summary.js`; checks in `tests/appLook.test.js`. No roller counters yet: these screens have no real counts |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
 
 ---

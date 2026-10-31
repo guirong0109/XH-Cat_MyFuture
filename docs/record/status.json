@@ -1,5 +1,5 @@
 {
-  "updated": "30 Oct 2026",
+  "updated": "31 Oct 2026",
   "groups": [
     {
       "id": "S0",
@@ -204,6 +204,17 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 9",
+      "name": "Interface redesign (your request)",
+      "tasks": [
+        {
+          "title": "T28 The landing page look on the CV screens",
+          "sub": "cream page · serif headlines · mono labels · thin rules · ATM drop zone · receipts",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -239,7 +250,8 @@
     "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
-    "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels"
+    "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels",
+    "Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -282,7 +294,8 @@
     "T25: interest areas come from the same O*NET 31.0 zip (Specific Interest Areas.txt, occupational-interest scale); the other O*NET files are unchanged byte for byte — cost: none",
     "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list",
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
-    "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')"
+    "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
+    "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet"
   ],
   "log": [
     {
@@ -794,6 +807,16 @@
       "time": "30 Oct",
       "step": "Task 27",
       "detail": "architecture diagram updated with the architecture-diagram skill; every label checked to fit in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "design the interface of the CV branch in the landing page look; don't touch the backend"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "6 tests first (failed), then styles.css rewritten and 4 screens given receipt / ATM classes; npm test 238 passed; checked in headless Chrome at 1440 px and 390 px, light and dark, no sideways scroll"
     }
   ]
 }

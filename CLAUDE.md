@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1744 passed
+npm install && npm test     # expect 1752 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -105,6 +105,14 @@ python -m unittest discover pipeline/tests   # expect 49 OK
   The CV reader uses the same DeepSeek account under `CV_LLM_KEY`; set both names to use both features.
 - Usable: English only (said on screen), title, http(s) link, date within 30 days, repeats removed, kept by the check,
   newest 25 per field. No profile data reaches the server or DeepSeek. News never changes matching, Radar or SDG.
+
+## Accounts on this computer (details: branch `claude/local-accounts`)
+- Owner (1 Nov 2026): host on this computer, no Cloudflare R2 / D1. `ACCOUNTS_DB=local` keeps accounts, sessions,
+  saved profiles and organisations in a SQLite file (`server/store/localDb.js`, Node's built-in `node:sqlite`, same
+  `query` / `migrate` interface as D1); default `data/cache/accounts/accounts.db` (git-ignored), `ACCOUNTS_DB_FILE`
+  moves it. Tables are created on first use (`IF NOT EXISTS`, never touches data). D1 settings, if ever set, win.
+- The file holds real accounts (emails, salted password hashes, profiles): never commit, log or send it; the owner
+  backs it up by copying it. Claude never creates real accounts on the live site; test with a throw-away file.
 
 ## Live site: https://futures.grong.my (since 31 Oct 2026)
 - **main is served live** from the owner's computer through the Cloudflare Tunnel `compare-futures` (config

@@ -2885,6 +2885,11 @@
       "time": "1 Nov",
       "step": "Merge claude/cv-profile-module: final review fixes for CV skills that reach Skill Match",
       "detail": "Short-form label shown; O*NET knowledge areas link by exact name only; AI \"Mathematics\" suggestion gives the skill; Other-skills suggestions visible; null AI fields tolerated; no project split inside a date. Whole-branch review: 0 Critical, 4 Important, all fixed and re-checked."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Accounts on this computer (ACCOUNTS_DB=local)",
+      "detail": "Owner: host on this computer, no Cloudflare R2 / D1. server/store/localDb.js: SQLite file through node:sqlite with D1's query / migrate interface; ACCOUNTS_DB=local turns it on (default data/cache/accounts/accounts.db, git-ignored; ACCOUNTS_DB_FILE moves it); tables created on first use; D1 settings win. Tests first (8): file survives reopen, D1-like answers and errors, env choice, createApp health accounts on, sign-up then restart then sign-in, no plain-text passwords. Browser check on accounts.localhost:3310 with a throw-away database: sign-up 201, signed in, account still there after a server restart, wrong password 401 (      Tests  1748 passed (1748))"
     }
   ]
 }

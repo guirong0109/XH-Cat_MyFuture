@@ -255,8 +255,8 @@ function banners(t, state, data) {
 // ---------- AI Impact tab ----------
 
 export function aiTab({ t, state, data }) {
-  const { a2, a1, a5, globalNote } = researchCards({ t, state, data })
-  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  const { ac, a2, a1, a5, globalNote } = researchCards({ t, state, data })
+  return `${aiTasksCard({ t, state, data })}${globalNote}${ac}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
 }
 
 // The research cards: A2 (momentum by topic), A1 (papers per year) and A5 (signals for the user's field). all: every
@@ -311,6 +311,29 @@ function researchCards({ t, state, data, all = false }) {
     <p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: OpenAlex ${srcLink({ label: 'openalex.org', url: 'https://openalex.org' })} ${csLink(ai) ? srcLink({ label: t('rdCsLink'), url: csLink(ai).url }) : ''} · ${esc(t('rdSnapshot'))} <code>${esc(ai.snapshotId ?? DASH)}</code> · ${esc(t('rdEvFetched'))} ${esc(fmtDate(ai.fetchedAt))}</p>
   </div>`
 
+  // AC: the conclusion above A2 (owner, 1 Nov 2026): the 3 fastest-rising and the 3 slowest topics by the same index,
+  // each with its paper counts and OpenAlex link. A topic is in one list only.
+  const ranked = sc.axes.filter((a) => finite(momentumOf(a, mode)?.current?.value) !== null)
+    .sort((x, y) => momentumOf(y, mode).current.value - momentumOf(x, mode).current.value)
+  const upN = Math.min(3, Math.ceil(ranked.length / 2))
+  const downN = Math.min(3, ranked.length - upN)
+  const conItem = (a) => {
+    const cur = momentumOf(a, mode).current
+    const B = cur.baselineYear ? seriesValue(a, cur.baselineYear) : null
+    const R = cur.recentYear ? seriesValue(a, cur.recentYear) : null
+    const text = t('rdConItem', { index: fmt(cur.value, 0), from: fmtInt(B), to: fmtInt(R) })
+    return `<li><button class="btn sm ghost rd-pick" data-act="axis" data-arg="${esc(a.axisId)}" aria-label="${esc(`${t('rdEvOpen')}: ${axisLabel(a, t, lang)}`)}">${esc(axisLabel(a, t, lang))}</button> ${numLink(text, axisLink(a))}</li>`
+  }
+  const conCol = (cls, title, list) => `<div class="rd-con-col ${cls}"><p class="small"><b>${esc(title)}</b></p><ul class="rd-con-list">${list.map(conItem).join('')}</ul></div>`
+  const ac = `<div class="card rd-sec" data-sec="AC">
+    <h2>${esc(t('rdConTitle'))} ${tag('est', t('rdTagResearch'))}</h2>
+    ${ranked.length < 2
+      ? `<p class="small muted">${esc(t('rdConFew'))}</p>`
+      : `<div class="rd-con">${conCol('rise', t('rdConUp'), ranked.slice(0, upN))}${conCol('fall', t('rdConDown'), ranked.slice(-downN).reverse())}</div>`}
+    <p class="tiny muted">${esc(t('rdConNote'))}</p>
+    <p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: OpenAlex ${srcLink({ label: 'openalex.org', url: 'https://openalex.org' })} · ${esc(t('rdWindowSelected'))}: ${esc(winText(win))}</p>
+  </div>`
+
   // A1: yearly paper counts for the shown axes, with legend toggles.
   const series = sc.axes.map((a) => ({ id: a.axisId, label: axisLabel(a, t, lang), points: (a.series ?? []).map((p) => ({ year: p.year, value: p.value })) }))
   const legend = sc.axes.map((a) => {
@@ -344,7 +367,7 @@ function researchCards({ t, state, data, all = false }) {
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
   const globalNote = sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''
-  return { a2, a1, a5, globalNote }
+  return { ac, a2, a1, a5, globalNote }
 }
 
 // For You (D44): the AI usage question until it is answered or skipped (or reopened); then the Change button, the AI
@@ -360,8 +383,8 @@ export function forYouTab({ t, state, data }) {
 
 // Explore all trends (D45): research momentum and papers per year for all six topics; no View all.
 export function exploreTab({ t, state, data }) {
-  const { a2, a1 } = researchCards({ t, state, data, all: true })
-  return `${a2}${a1}${newsSection({ t, state, tab: 'all' })}`
+  const { ac, a2, a1 } = researchCards({ t, state, data, all: true })
+  return `${ac}${a2}${a1}${newsSection({ t, state, tab: 'all' })}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -664,7 +687,6 @@ export function skillsChartCard({ t, state, data }) {
 // Worked out here in the browser from the confirmed profile and the public AI task answer; nothing is sent.
 // The numbers are shares of observed AI conversations (Anthropic Economic Index), not a forecast and not a score.
 
-const AI_CORNER_CHOICES = [8, 16, 'all']
 const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
 const ILO_URL = 'https://doi.org/10.54394/HETP0387'
 const JOB_SWITCH_MAX = 4 // more jobs than this (a field brings many) go in a drop-down, not a row of buttons
@@ -712,10 +734,8 @@ export function aiTasksCard({ t, state, data }) {
     chart = `<div class="rd-note small">${esc(t('rdAiNone', { total }))}</div>`
   } else {
     const numbered = items.map((it, i) => ({ ...it, n: i + 1 }))
-    const choice = AI_CORNER_CHOICES.includes(u.corners?.ai) ? u.corners.ai : 8
-    const k = choice === 'all' ? numbered.length : Math.min(choice, numbered.length)
     const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) ?? t('rdAiUnder') })
-    const points = numbered.slice(0, k).map((it) => ({
+    const points = numbered.map((it) => ({
       id: String(it.n),
       n: it.n,
       text: it.text,
@@ -723,9 +743,7 @@ export function aiTasksCard({ t, state, data }) {
       usage: it.usage,
       aria: `T${it.n}. ${it.text}: ${rowText(it)}`,
     }))
-    const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
-    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdAiDots'))}</span><span class="seg" role="group" aria-label="${esc(t('rdAiDots'))}">${seg}</span>
-      <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
+    chart = `<div class="rd-tools"><span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
       <div class="rd-chart">${taskScatter({ items: points, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, t })}</div>
       <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
     const pg = paged(t, 'ai', numbered, u.pages?.ai)

@@ -320,6 +320,12 @@ export default {
   // Radar: section titles and columns
   rdA1Title: "Research papers per year",
   rdA1Metric: "Research papers per year (OpenAlex)",
+  rdConTitle: "Conclusion: where AI research is moving",
+  rdConUp: "Rising fastest",
+  rdConDown: "Growing slowest or falling",
+  rdConItem: "index {index} · {from} → {to} papers",
+  rdConNote: "Ranked by the Research Momentum Index below (50 = same as before). It counts research papers on each AI topic; it does not measure jobs, hiring or skills demand.",
+  rdConFew: "Fewer than 2 topics have a momentum index, so there is no conclusion yet.",
   rdA2Title: "Research momentum by AI topic",
   rdA5Title: "What the research signals say for you",
   rdA5Note: "Research signals are about research papers, not about jobs.",
@@ -1068,7 +1074,6 @@ export default {
   rdAiScHelps: "AI mostly helps",
   rdAiScDoes: "AI mostly does the task",
   rdAiScUnder: "under 0.01%",
-  rdAiDots: "Tasks shown",
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "Which of these do you use AI for?",
   rdAiAskSub: "Tick all that apply. This does not change what the Radar shows.",

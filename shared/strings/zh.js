@@ -320,6 +320,12 @@ export default {
   // Radar: section titles and columns
   rdA1Title: "每年研究论文数",
   rdA1Metric: "每年研究论文数（OpenAlex）",
+  rdConTitle: "结论：人工智能研究的走向", // translation: owner review
+  rdConUp: "增长最快", // translation: owner review
+  rdConDown: "增长最慢或下降", // translation: owner review
+  rdConItem: "指数 {index} · {from} → {to} 篇论文", // translation: owner review
+  rdConNote: "按下方的研究势头指数排序（50 = 和之前一样）。它只统计每个人工智能主题的研究论文，不衡量工作、招聘或技能需求。", // translation: owner review
+  rdConFew: "有势头指数的主题少于 2 个，所以暂时没有结论。", // translation: owner review
   rdA2Title: "按人工智能主题的研究势头",
   rdA5Title: "研究信号对您意味着什么",
   rdA5Note: "研究信号反映的是研究论文，而不是工作。",
@@ -1069,7 +1075,6 @@ export default {
   rdAiScHelps: "AI 主要是协助", // translation: owner review
   rdAiScDoes: "AI 主要是完成任务", // translation: owner review
   rdAiScUnder: "低于 0.01%", // translation: owner review
-  rdAiDots: "显示的任务", // translation: owner review
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "您在以下哪些方面使用 AI？", // translation: owner review
   rdAiAskSub: "请勾选所有适用项。这不会改变雷达显示的内容。", // translation: owner review

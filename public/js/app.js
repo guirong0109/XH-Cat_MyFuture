@@ -635,7 +635,6 @@ const actions = {
   skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
   // AI tasks card: which job, how many corners, and a corner picked (highlights its row and scrolls to it).
   aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null, pages: withPage(radarUi().pages, 'ai', 1) }),
-  aiCorners: (n) => setRadar({ corners: { sk: 8, ...radarUi().corners, ai: n === 'all' ? 'all' : [8, 16].includes(Number(n)) ? Number(n) : 8 } }),
   // A corner opens the page of its row (10 rows a page; the list is whole again for the skills list), then highlights it.
   aiCorner: (n) => {
     setRadar({ aiHl: Number(n), pages: withPage(radarUi().pages, 'ai', pageForRow(n)) })

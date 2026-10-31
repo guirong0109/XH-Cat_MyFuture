@@ -316,6 +316,12 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .rd-pick{padding:2px 6px;text-align:left;white-space:normal}
 .rd-subhead{margin-top:8px}
 .rd-srcline{margin-top:10px}
+.rd-con{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:8px 0}
+.rd-con-col{background:rgba(128,128,128,.08);border-radius:8px;padding:12px 14px}
+.rd-con-col.rise b{color:var(--ok)}
+.rd-con-col.fall b{color:var(--bad)}
+.rd-con-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rd-con-list li{overflow-wrap:anywhere}
 /* Source links may wrap where they run in a line of text (phone width, spec §15); number-plus-link tags keep nowrap. */
 .rd-srcline .rd-src,.rd-drawer .rd-list .rd-src,.rd-drawer .rd-kv .rd-src{white-space:normal;overflow-wrap:anywhere}
 .rd-context{margin-top:10px}

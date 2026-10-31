@@ -394,14 +394,55 @@ describe('two tabs (D43-D47)', () => {
     const html = view(p)
     expect(html).toMatch(/aria-selected="true"[^>]*data-arg="ex"/)
     expect(html).toMatch(/aria-selected="false"[^>]*data-arg="fy"/)
-    expect(secs(html)).toEqual(['A2', 'A1'])
+    expect(secs(html)).toEqual(['AC', 'A2', 'A1'])
     expect(html).not.toContain('rd-aiask')
     expect(view(p, { tab: 'fy' })).toContain('rd-aiask')
   })
 
   it('Explore opens straight away even before the question is answered', () => {
     const p = profile(); delete p.aiTasks
-    expect(secs(view(p, { tab: 'ex' }))).toEqual(['A2', 'A1'])
+    expect(secs(view(p, { tab: 'ex' }))).toEqual(['AC', 'A2', 'A1'])
+  })
+
+  // Owner, 1 Nov: a conclusion card above Research momentum by AI topic, from the same OpenAlex numbers (no samples).
+  describe('conclusion card', () => {
+    const mom = (a, mode) => a.momentum?.[mode === 'share' ? 'share' : 'counts']?.current
+    const ranked = (axes, mode) => axes.filter((a) => Number.isFinite(mom(a, mode)?.value)).sort((x, y) => mom(y, mode).value - mom(x, mode).value)
+    const topics = (html) => [...html.matchAll(/data-act="axis" data-arg="([a-z_]+)"/g)].map((m) => m[1])
+    const half = (html, cls) => (html.match(new RegExp(`<div class="rd-con-col ${cls}">[\\s\\S]*?</ul>`)) ?? [''])[0]
+
+    it('lists the 3 fastest-rising topics first to last and the 3 slowest, lowest first, from the momentum index', () => {
+      const html = section(panel(view(ownProfile(), { tab: 'ex' })), 'AC')
+      const r = ranked(data.ai.axes, 'count')
+      expect(r.length).toBeGreaterThanOrEqual(6)
+      expect(unesc(html)).toContain(t('rdConTitle'))
+      expect(topics(half(html, 'rise'))).toEqual(r.slice(0, 3).map((a) => a.axisId))
+      expect(topics(half(html, 'fall'))).toEqual(r.slice(-3).reverse().map((a) => a.axisId))
+      const top = r[0]
+      const cur = mom(top, 'count')
+      const at = (y) => top.series.find((p) => p.year === y).value
+      expect(unesc(half(html, 'rise'))).toContain(t('rdConItem', { index: Math.round(cur.value), from: at(cur.baselineYear).toLocaleString('en-US'), to: at(cur.recentYear).toLocaleString('en-US') }))
+    })
+    it('every number has its OpenAlex link, the window and source are said, and it says it is not about jobs', () => {
+      const html = section(panel(view(ownProfile(), { tab: 'ex' })), 'AC')
+      expectNumbersLinked(html)
+      expect(html).toContain('https://openalex.org')
+      expect(unesc(html)).toContain(t('rdConNote'))
+      expect(t('rdConNote')).toMatch(/not .*jobs/i)
+      expect(unesc(html)).not.toMatch(/placeholder|sample/i)
+      for (const lang of ['ms', 'zh']) for (const k of ['rdConTitle', 'rdConUp', 'rdConDown', 'rdConItem', 'rdConNote', 'rdConFew']) expect(translate(lang, k)).not.toBe(k)
+    })
+    it('follows the Share switch like the momentum card', () => {
+      const html = section(panel(view(ownProfile(), { tab: 'ex', mode: 'share' })), 'AC')
+      expect(topics(half(html, 'rise'))[0]).toBe(ranked(data.ai.axes, 'share')[0].axisId)
+    })
+    it('with fewer than 2 topics with an index it says so and lists nothing (Review Focus)', () => {
+      const none = { ...linked(), ai: { ...data.ai, axes: data.ai.axes.map((a, i) => (i ? { ...a, momentum: null } : a)) } }
+      const html = section(panel(view(ownProfile(), { tab: 'ex' }, none)), 'AC')
+      expect(unesc(html)).toContain(t('rdConFew'))
+      expect(html).not.toContain('rd-con-col')
+      expect(html).not.toMatch(/\bnull\b|NaN|undefined/)
+    })
   })
 
   it('answered: For You shows the Change button, the AI tasks card and research signals for you, in that order, nothing else', () => {
@@ -1042,11 +1083,11 @@ describe('AI Impact card', () => {
     expect(unesc(html)).toContain(t('rdAiChartTitle'))
     expect(html).toContain(t('rdAiChartTag'))
   })
-  it('developer and accountant get 8 corners each, different tasks; the accountant list has 11 rows', () => {
+  it('developer and accountant show every task as a dot (8 and 11), different tasks; the accountant list has 11 rows', () => {
     const d = card(tab(dev()))
     const a = card(tab(acc()))
     expect(corners(d)).toHaveLength(8)
-    expect(corners(a)).toHaveLength(8)
+    expect(corners(a)).toHaveLength(11)
     expect(aiRows(d)).toHaveLength(8)
     expect(aiRows(a)).toHaveLength(10)
     expect(aiRows(card(tab(acc(), { pages: { ai: 2 } })))).toHaveLength(1)
@@ -1059,11 +1100,11 @@ describe('AI Impact card', () => {
     expect(d).toContain(t('rdAiShown', { n: 8, total: 17 }))
     expect(a).toContain(t('rdAiShown', { n: 11, total: 30 }))
   })
-  it('corner switch: 16 and all follow the available tasks', () => {
-    for (const n of [8, 16, 'all']) expect(card(tab(acc()))).toContain(`data-act="aiCorners" data-arg="${n}"`)
-    expect(corners(card(tab(acc(), { corners: { ai: 'all' } })))).toHaveLength(11)
-    expect(corners(card(tab(acc(), { corners: { ai: 16 } })))).toHaveLength(11)
-    expect(card(tab(acc(), { corners: { ai: 'all' } }))).toContain(t('rdCornersAll', { n: 11 }))
+  it('owner, 1 Nov: no "Tasks shown" switch; all tasks are drawn, whatever the old saved choice', () => {
+    const html = card(tab(acc()))
+    expect(html).not.toContain('data-act="aiCorners"')
+    expect(html).not.toContain(t('rdAiDots'))
+    expect(corners(card(tab(acc(), { corners: { ai: 8 } })))).toHaveLength(11)
   })
   it('the developer shows Gradient 3, ISCO 2512 and the ILO DOI link', () => {
     const html = card(tab(dev()))
@@ -1090,18 +1131,15 @@ describe('AI Impact card', () => {
     expect(corners(html)).toHaveLength(1)
   })
 
-  it('the scatter dots carry the task text and numbers, the corner switch picks how many, and the legend explains both axes', () => {
-    const html = card(tab(acc(), { corners: { ai: 'all' } }))
+  it('the scatter dots carry the task text and numbers, and the legend explains both axes', () => {
+    const html = card(tab(acc()))
     const dots = [...html.matchAll(/<g role="button" tabindex="0" data-act="aiCorner" data-arg="(\d+)" aria-label="([^"]*)"/g)]
     expect(dots).toHaveLength(11)
     expect(unesc(dots[0][2])).toMatch(/^T1\. .+: AI does it [\d.]+% · AI helps [\d.]+% · /)
     expect(unesc(html)).toContain(t('rdAiLegend'))
     expect(t('rdAiLegend')).toContain('Not a score')
     expect(unesc(html)).toContain(t('rdAiScHelps'))
-    // a scatter has dots, not corners: the switch says how many tasks are shown
-    expect(html).toContain(`<span class="small muted">${t('rdAiDots')}</span>`)
     expect(html).not.toContain(`<span class="small muted">${t('rdCorners')}</span>`)
-    for (const lang of ['ms', 'zh']) expect(translate(lang, 'rdAiDots')).not.toBe('rdAiDots')
   })
 
   it('two jobs show a switch with 2 buttons; a stale job index falls back to job 0', () => {
@@ -1262,27 +1300,24 @@ describe('AI Impact card', () => {
       expect(out, lang).not.toContain('under 0.01')
     }
   })
-  it('state made by the aiJob, aiCorners and aiCorner actions has no score, weight, rank, match or opportunity key', () => {
+  it('state made by the aiJob and aiCorner actions has no score, weight, rank, match or opportunity key', () => {
     const app = readFileSync('public/js/app.js', 'utf8')
-    const src = ['aiJob', 'aiCorners'].map((n) => app.split(/\r?\n/).find((l) => l.startsWith('  ' + n + ': ')).slice(n.length + 4).replace(/,$/, ''))
+    const src = app.split(/\r?\n/).find((l) => l.startsWith('  aiJob: ')).slice('aiJob'.length + 4).replace(/,$/, '')
     let st = { tab: 'ai' }
     const radarUi = () => st
     const setRadar = (patch) => { st = { ...st, ...patch } }
-    const [job, corn] = src.map((x) => new Function('radarUi', 'setRadar', 'withPage', `return ${x}`)(radarUi, setRadar, withPage))
+    const job = new Function('radarUi', 'setRadar', 'withPage', `return ${src}`)(radarUi, setRadar, withPage)
     job('1')
-    corn('16')
-    corn('all')
-    corn('99')
     st = { ...st, aiTasks: { ok: true, data: { state: 'data' } }, aiHl: 3 }
     const keysOf = (o) => (o && typeof o === 'object' ? Object.keys(o).flatMap((k) => [k, ...keysOf(o[k])]) : [])
     expect(st.aiJob).toBe(1)
-    expect(st.corners.ai).toBe(8)
     expect(keysOf(st).filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
-    expect(keysOf(st).length).toBeGreaterThan(5)
+    expect(keysOf(st).length).toBeGreaterThan(3)
   })
-  it('app wiring: the three actions and loadAiTasks exist, the state keys are plain, and Radar state is still not persisted', () => {
+  it('app wiring: the two actions and loadAiTasks exist, the state keys are plain, and Radar state is still not persisted', () => {
     const app = readFileSync('public/js/app.js', 'utf8')
-    for (const name of ['aiJob', 'aiCorners', 'aiCorner']) expect(app).toMatch(new RegExp(`\n  ${name}: `))
+    for (const name of ['aiJob', 'aiCorner']) expect(app).toMatch(new RegExp(`\n  ${name}: `))
+    expect(app).not.toMatch(/\n  aiCorners: /)
     expect(app).toContain('async function loadAiTasks()')
     expect(app).toContain('radar: null')
     const keys = [...app.matchAll(/(aiTasks|aiJob|aiHl)/g)].map((m) => m[1])

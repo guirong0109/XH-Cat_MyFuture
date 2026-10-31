@@ -320,6 +320,12 @@ export default {
   // Radar: section titles and columns
   rdA1Title: "Kertas penyelidikan setahun",
   rdA1Metric: "Kertas penyelidikan setahun (OpenAlex)",
+  rdConTitle: "Kesimpulan: ke mana arah penyelidikan AI", // translation: owner review
+  rdConUp: "Meningkat paling pantas", // translation: owner review
+  rdConDown: "Paling perlahan atau menurun", // translation: owner review
+  rdConItem: "indeks {index} · {from} → {to} kertas", // translation: owner review
+  rdConNote: "Disusun mengikut Indeks Momentum Penyelidikan di bawah (50 = sama seperti sebelum ini). Ia mengira kertas penyelidikan bagi setiap topik AI; ia tidak mengukur pekerjaan, pengambilan pekerja atau permintaan kemahiran.", // translation: owner review
+  rdConFew: "Kurang daripada 2 topik mempunyai indeks momentum, jadi belum ada kesimpulan.", // translation: owner review
   rdA2Title: "Momentum penyelidikan mengikut topik AI",
   rdA5Title: "Apa kata isyarat penyelidikan untuk anda",
   rdA5Note: "Isyarat penyelidikan adalah tentang kertas penyelidikan, bukan tentang pekerjaan.",
@@ -1069,7 +1075,6 @@ export default {
   rdAiScHelps: "AI kebanyakannya membantu", // translation: owner review
   rdAiScDoes: "AI kebanyakannya melakukan tugas itu", // translation: owner review
   rdAiScUnder: "bawah 0.01%", // translation: owner review
-  rdAiDots: "Tugas yang ditunjukkan", // translation: owner review
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "Untuk perkara yang manakah anda menggunakan AI?", // translation: owner review
   rdAiAskSub: "Tandakan semua yang berkaitan. Ini tidak mengubah apa yang ditunjukkan oleh Radar.", // translation: owner review

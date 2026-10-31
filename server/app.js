@@ -186,6 +186,13 @@ export function createApp({
         .catch((error) => { roleCodes = null; throw error })
       return roleCodes
     }
+    let roleTitles = null
+    const loadRoleTitles = () => {
+      roleTitles ??= readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')
+        .then((raw) => new Map(JSON.parse(raw).roles.filter((r) => r.title).map((r) => [r.code, r.title])))
+        .catch((error) => { roleTitles = null; throw error })
+      return roleTitles
+    }
     app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadCatalogue, loadRoleCodes, dataDir, log: console.error, now }))
     // Own saved profile only (another user's id reads as missing). Returns the skills list or null.
     const loadProfileSkills = async (userId, profileId) => {
@@ -198,7 +205,7 @@ export function createApp({
         return []
       }
     }
-    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, log: console.error, now }))
+    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, loadRoleTitles, log: console.error, now }))
   }
   if (radar) {
     let aiTasksPromise = null

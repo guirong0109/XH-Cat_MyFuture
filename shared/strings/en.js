@@ -1381,4 +1381,6 @@ export default {
   shErr_no_share: "You are not sharing with any organisation.",
   shErr_too_many_attempts: "Too many attempts. Try again in a few minutes.",
   shErr_not_found: "That profile was not found. Choose another.",
+  shRole: "Role: {role}",
+  shNoRole: "No role set",
 }

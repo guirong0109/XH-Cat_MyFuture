@@ -1382,4 +1382,6 @@ export default {
   shErr_no_share: "您目前没有与任何机构分享。", // translation: owner review
   shErr_too_many_attempts: "尝试次数过多，请几分钟后再试。", // translation: owner review
   shErr_not_found: "找不到该档案，请选择其他档案。", // translation: owner review
+  shRole: "职位：{role}", // translation: owner review
+  shNoRole: "未设置职位", // translation: owner review
 }

@@ -19,7 +19,7 @@ const WILL_SHARE = ['skill names and levels', 'group', 'role', 'display name']
 
 const text = (value) => (typeof value === 'string' && value.trim() && value.trim().length <= MAX_NAME ? value.trim() : null)
 
-export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = null, log = () => {}, now = () => new Date() }) {
+export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = null, loadRoleTitles = null, log = () => {}, now = () => new Date() }) {
   const router = express.Router()
   const requireUser = makeRequireUser(auth)
   const joins = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
@@ -28,6 +28,14 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
   const bad = (response, message = 'Check the values sent.') => sendError(response, 400, 'bad_request', message)
   const tooMany = (response) => sendError(response, 429, 'too_many_attempts', 'Too many attempts. Try again in a few minutes.', true)
   const expired = (response) => sendError(response, 410, 'link_expired', EXPIRED)
+
+  // the role HR will see: its eMASCO title, or null when the link sets none (or the title is not known)
+  const roleOf = async (code) => {
+    if (!code) return { currentCode: null, currentTitle: null }
+    let title = null
+    try { title = loadRoleTitles ? (await loadRoleTitles()).get(code) ?? null : null } catch { /* the code is still shown */ }
+    return { currentCode: code, currentTitle: title }
+  }
 
   const guard = (handler) => async (request, response) => {
     try {
@@ -69,7 +77,7 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
     const invite = await store.inviteOf(token)
     if (!invite || invite.usedAt || invite.expiresAt <= now().toISOString()) return expired(response)
     if (invite.ownerId === request.user.id) return sendError(response, 409, 'own_organisation', 'This is your own organisation, so there is nothing to join.')
-    return response.json({ orgName: invite.orgName, groupName: invite.groupName, willShare: WILL_SHARE })
+    return response.json({ orgName: invite.orgName, groupName: invite.groupName, ...(await roleOf(invite.currentCode)), willShare: WILL_SHARE })
   }))
 
   router.put('/api/org/share', requireUser, jsonBody('4kb'), guard(async (request, response) => {
@@ -103,7 +111,10 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
   }))
 
   router.get('/api/org/share', requireUser, guard(async (request, response) => {
-    return response.json(await store.shareOf(request.user.id))
+    const mine = await store.shareOf(request.user.id)
+    if (!mine) return response.json(null)
+    const { currentCode, ...rest } = mine
+    return response.json({ ...rest, ...(await roleOf(currentCode)) })
   }))
 
   router.delete('/api/org/share', requireUser, guard(async (request, response) => {

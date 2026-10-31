@@ -36,6 +36,13 @@ function chooser(t, s) {
   return `<div class="field" style="max-width:320px"><label for="shProfile">${esc(t('shProfile'))}</label><select class="input" id="shProfile">${options}</select></div>`
 }
 
+// "Role: <title> · <code>" (HR sees the role the link sets), or "No role set".
+function roleLine(t, who) {
+  const code = who?.currentCode
+  if (!code) return `<p class="small">${esc(t('shNoRole'))}</p>`
+  return `<p class="small">${esc(t('shRole', { role: who.currentTitle ? `${who.currentTitle} · ${code}` : code }))}</p>`
+}
+
 export default function shareScreen(t, s) {
   if (!s || s.status === 'loading') return wrap(`<p class="muted"><span class="spin"></span> ${esc(t('ogLoading'))}</p>`)
   if (s.status === 'off') return wrap(banner('b-info', t('ogOff')))
@@ -55,7 +62,7 @@ export default function shareScreen(t, s) {
   const shared = arr(preview?.shared)
   const list = preview
     ? shared.length
-      ? `<p class="small">${esc(t('shSees', { org }))}</p>${skillTable(t, shared)}${notShared(t, arr(preview.notShared))}
+      ? `<p class="small">${esc(t('shSees', { org }))}</p>${roleLine(t, s.join ?? existing)}${skillTable(t, shared)}${notShared(t, arr(preview.notShared))}
          <div class="og-src"><b>${esc(t('ogSource'))}</b> ${esc(t('shSrc', { date: day(arr(s.profiles).find((p) => p.id === s.profileId)?.updatedAt) }))}</div>`
         : `<div class="banner b-info"><div>${esc(t('shNoSkills'))}</div></div>${notShared(t, arr(preview.notShared))}`
     : arr(s.profiles).length ? `<p class="muted"><span class="spin"></span> ${esc(t('shChecking'))}</p>` : ''

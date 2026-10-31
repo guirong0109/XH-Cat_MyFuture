@@ -184,7 +184,7 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
 
   async function sharedPerson(userId) {
     const { rows } = await d1.query(
-      `SELECT p.id, p.display_name, g.name AS group_name, o.name AS org_name FROM org_people p
+      `SELECT p.id, p.display_name, p.current_code, g.name AS group_name, o.name AS org_name FROM org_people p
          JOIN org_groups g ON g.id = p.group_id JOIN orgs o ON o.id = p.org_id
         WHERE p.user_id = ? AND p.source = 'shared' ORDER BY p.added_at DESC, p.id LIMIT 1`,
       [userId],
@@ -226,7 +226,7 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
     if (!person) return null
     const { rows } = await d1.query('SELECT item_key, level FROM org_skills WHERE person_id = ? ORDER BY item_key', [person.id])
     return {
-      orgName: person.org_name, groupName: person.group_name, displayName: person.display_name,
+      orgName: person.org_name, groupName: person.group_name, displayName: person.display_name, currentCode: person.current_code ?? null,
       skills: rows.map((r) => ({ key: r.item_key, level: r.level })),
     }
   }

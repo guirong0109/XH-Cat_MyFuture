@@ -116,7 +116,7 @@ describe('store: invites and shares', () => {
     expect(await store.shareOf('emp')).toBeNull()
     const { token } = await store.createInvite(org.id, { groupId: group.id })
     await store.share('emp', { token, displayName: 'Aini', skills })
-    expect(await store.shareOf('emp')).toEqual({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini', skills })
+    expect(await store.shareOf('emp')).toEqual({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini', currentCode: null, skills })
     await store.stopSharing('emp')
     expect(await store.shareOf('emp')).toBeNull()
     expect((await d1.query('SELECT COUNT(*) AS c FROM org_skills')).rows[0].c).toBe(0)
@@ -207,7 +207,7 @@ describe('routes', () => {
     const emp = await newUser()
     const join = await call('POST', '/api/org/join', { token: invite.body.token }, emp.cookie)
     expect(join.status).toBe(200)
-    expect(join.body).toEqual({ orgName: 'Synthetic Co', groupName: 'Ops', willShare: ['skill names and levels', 'group', 'role', 'display name'] })
+    expect(join.body).toEqual({ orgName: 'Synthetic Co', groupName: 'Ops', currentCode: ROLE_A, currentTitle: 'Fixture Database Designer', willShare: ['skill names and levels', 'group', 'role', 'display name'] })
     const profileId = await saveProfile(emp)
     const put = await call('PUT', '/api/org/share', { token: invite.body.token, displayName: 'Aini Synth', profileId }, emp.cookie)
     expect(put.status).toBe(200)
@@ -221,7 +221,7 @@ describe('routes', () => {
     expect(person).toMatchObject({ source: 'shared', currentCode: ROLE_A })
     expect(person.skills).toEqual([{ key: 'el:2.A.1.a', level: 'good' }, { key: 'kn:2.C.1.b', level: 'not_assessed' }])
     const mine = await call('GET', '/api/org/share', null, emp.cookie)
-    expect(mine.body).toMatchObject({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini Synth' })
+    expect(mine.body).toMatchObject({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini Synth', currentCode: ROLE_A, currentTitle: 'Fixture Database Designer' })
   })
 
   it('dryRun answers the same lists, saves nothing and does not use the link', async () => {

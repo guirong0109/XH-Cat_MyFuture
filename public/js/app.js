@@ -637,6 +637,7 @@ const actions = {
     await accountApi.logout()
     // A shared computer must not show the next person this account's profile.
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
     cvFile = null
     cvDraft = null
@@ -659,6 +660,7 @@ const actions = {
       return render()
     }
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
@@ -684,6 +686,7 @@ const actions = {
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
     resumeTo = null
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang }
     go('access')
   },
@@ -695,6 +698,7 @@ const actions = {
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    orgView.clearJoin()
     resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')

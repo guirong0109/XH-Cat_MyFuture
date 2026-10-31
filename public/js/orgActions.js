@@ -469,5 +469,7 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     return false
   }
 
-  return { actions, onChange, startJoin: (token) => { joinToken = token }, joinPending: () => Boolean(joinToken) }
+  return { actions, onChange, startJoin: (token) => { joinToken = token },
+    // sign-out or reset: the pending link and everything on the share screen are forgotten
+    clearJoin: () => { joinToken = null; previewRun++; state.share = null }, joinPending: () => Boolean(joinToken) }
 }

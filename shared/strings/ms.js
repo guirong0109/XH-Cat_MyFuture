@@ -1382,4 +1382,6 @@ export default {
   shErr_no_share: "Anda tidak berkongsi dengan mana-mana organisasi.", // translation: owner review
   shErr_too_many_attempts: "Terlalu banyak percubaan. Cuba lagi dalam beberapa minit.", // translation: owner review
   shErr_not_found: "Profil itu tidak ditemui. Pilih yang lain.", // translation: owner review
+  shRole: "Peranan: {role}", // translation: owner review
+  shNoRole: "Tiada peranan ditetapkan", // translation: owner review
 }

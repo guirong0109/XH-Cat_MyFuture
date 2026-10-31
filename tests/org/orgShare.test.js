@@ -76,6 +76,13 @@ describe('share screen', () => {
     expect(html).toContain('2026-10-30')
   })
 
+  it('shows the role HR will see: title and code, or No role set', () => {
+    const withRole = shareScreen(t, base({ join: { orgName: 'Sample Logistics', groupName: 'Finance', currentCode: '2411-01', currentTitle: 'Accountant <i>' } }))
+    expect(withRole).toContain('Role: Accountant &lt;i&gt; · 2411-01')
+    expect(shareScreen(t, base())).toContain('No role set')
+    expect(shareScreen(t, base({ join: { orgName: 'X', groupName: 'Y', currentCode: '2411-01', currentTitle: null } }))).toContain('Role: 2411-01')
+  })
+
   it('first share: Share my skills, no Update or Stop', () => {
     const html = shareScreen(t, base())
     expect(html).toContain('data-act="shareDo"')
@@ -195,6 +202,15 @@ describe('share actions', () => {
     expect(s.go).toHaveBeenCalledWith('access')
     expect(s.api.joinOrg).not.toHaveBeenCalled()
     expect(s.joinPending()).toBe(true)
+  })
+
+  it('sign-out forgets the pending link and the share screen', async () => {
+    const s = setup()
+    await s.actions.shareEnsure()
+    expect(s.joinPending()).toBe(true)
+    s.clearJoin()
+    expect(s.joinPending()).toBe(false)
+    expect(s.state.share).toBeNull()
   })
 
   it('account state not known yet: does nothing', async () => {

@@ -1018,10 +1018,10 @@
       "id": "p-0613-2",
       "field": "0613",
       "kind": "accredited",
-      "name": "Bachelor of Computer Science (Software Engineering) with Honours",
+      "name": "Bachelor in Software Engineering with Honors",
       "institution": "Universiti Teknologi Malaysia (UTM)",
-      "mqrRef": null,
-      "link": "https://comp.utm.my/secjh/",
+      "mqrRef": "MQA/SWA0770",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-in-software-engineering-with-honours/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1112,13 +1112,13 @@
       "checkedAt": "2026-10-31"
     },
     {
-      "id": "p-0114-2",
+      "id": "p-0114-3",
       "field": "0114",
       "kind": "accredited",
       "name": "Bachelor of Education (Teaching English as a Second Language) with Honours",
-      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
-      "mqrRef": null,
-      "link": "https://fbk.upsi.edu.my/?p=13199",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0779",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-education-teaching-english-as-a-second-language-with-honours/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1345,20 +1345,20 @@
       "id": "p-0416-1",
       "field": "0416",
       "kind": "accredited",
-      "name": "Bachelor of Entrepreneurship (Retailing) with Honours",
+      "name": "BACHELOR OF ENTREPRENEURSHIP (RETAILING) WITH HONOURS",
       "institution": "Universiti Malaysia Kelantan (UMK)",
       "mqrRef": null,
-      "link": "https://fkp.umk.edu.my/undergraduate.cfm",
+      "link": "https://fkp.umk.edu.my/program-details.cfm?ref=64&name=BACHELOR-OF-ENTREPRENEURSHIP-(RETAILING)-WITH-HONOURS",
       "checkedAt": "2026-10-31"
     },
     {
       "id": "p-0421-1",
       "field": "0421",
       "kind": "accredited",
-      "name": "Bachelor of Laws",
+      "name": "BACHELOR OF LAWS",
       "institution": "Universiti Malaya (UM)",
       "mqrRef": null,
-      "link": "https://law.um.edu.my/llb",
+      "link": "https://study.um.edu.my/bachelor-of-laws",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1425,9 +1425,9 @@
       "id": "p-0531-2",
       "field": "0531",
       "kind": "professional",
-      "name": "Registered chemist (Chemists Act 1975)",
+      "name": "Introduction & Membership Registry",
       "body": "Institut Kimia Malaysia (IKM)",
-      "link": "https://ikm.org.my/about-ikm/power-and-privileges/",
+      "link": "https://ikm.org.my/memberships-examination/introduction-membership-registry/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1464,10 +1464,10 @@
       "id": "p-0541-2",
       "field": "0541",
       "kind": "accredited",
-      "name": "Bachelor of Science in Mathematics with Honours",
+      "name": "BACHELOR OF SCIENCE IN MATHEMATICS WITH HONOURS",
       "institution": "Universiti Sains Malaysia (USM)",
       "mqrRef": null,
-      "link": "https://admission.usm.my/index.php/alternative-senior-citizen/bachelor-of-science-in-mathematics-with-honours",
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=589&catid=63",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1486,8 +1486,8 @@
       "kind": "accredited",
       "name": "Bachelor of Computer Science (Computer Networks & Security) with Honours",
       "institution": "Universiti Teknologi Malaysia (UTM)",
-      "mqrRef": null,
-      "link": "https://comp.utm.my/secrh/",
+      "mqrRef": "MQA/SWA0771",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-computer-science-computer-networks-security-with-honours/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1561,10 +1561,10 @@
       "id": "p-0714-2",
       "field": "0714",
       "kind": "accredited",
-      "name": "Bachelor of Engineering (Electrical-Mechatronics)",
+      "name": "Bachelor of Engineering (Electrical - Mechatronics) with Honours",
       "institution": "Universiti Teknologi Malaysia (UTM)",
-      "mqrRef": null,
-      "link": "https://fke.utm.my/undergraduate/bachelor-of-engineering-electrical-mechatronics-skem/",
+      "mqrRef": "MQA/FA11081",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-engineering-electrical-mechatronics-with-honours/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1582,8 +1582,8 @@
       "kind": "accredited",
       "name": "Bachelor of Mechanical Engineering with Honours",
       "institution": "Universiti Teknologi Malaysia (UTM)",
-      "mqrRef": null,
-      "link": "https://mech.utm.my/ug-programme/",
+      "mqrRef": "MQA/FA11087",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-mechanical-engineering-with-honours/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1700,7 +1700,7 @@
       "name": "Bachelor of Science in Quantity Surveying with Honours",
       "institution": "Universiti Sains Malaysia (USM)",
       "mqrRef": null,
-      "link": "https://admission.usm.my/index.php/alternative-second-channel/us6526001-sarjana-muda-sains-perumahan-bangunan-dan-perancangan-kepujian-ukur-bahan-2",
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6526001-bachelor-of-science-housing-building-and-planning-honours-quantity-surveying",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1736,10 +1736,10 @@
       "id": "p-0821-1",
       "field": "0821",
       "kind": "accredited",
-      "name": "Program Bacelor Sains Perhutanan Dengan Kepujian",
-      "institution": "Universiti Putra Malaysia (UPM)",
-      "mqrRef": null,
-      "link": "https://forenv.upm.edu.my/department/department_of_forestry_science_and_biodiversity/introduction-1188",
+      "name": "International Tropical Forestry",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": "MQA/FA10940",
+      "link": "https://www.ums.edu.my/fpt/index.php/what-we-offer/undergraduate/uh6623001-international-tropical-forestry",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1776,9 +1776,9 @@
       "id": "p-0911-2",
       "field": "0911",
       "kind": "professional",
-      "name": "Registration with the Malaysian Dental Council (Malaysian Health Care Practitioners' System)",
+      "name": "Registration As Dental Surgeon",
       "body": "Malaysian Dental Council",
-      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "link": "https://hq.moh.gov.my/ohp/mdc/index.php/?id=22",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1814,9 +1814,9 @@
       "id": "p-0913-2",
       "field": "0913",
       "kind": "professional",
-      "name": "Registration with the Malaysia Nursing Board (MNB)",
-      "body": "Malaysia Nursing Board (MNB)",
-      "link": "https://hq.moh.gov.my/nursing/en/faq/",
+      "name": "Registration and Annual Practicing Certificate (APC)",
+      "body": "Nursing Board Malaysia",
+      "link": "https://hq.moh.gov.my/nursing/en/about-us/units-function-introduction/registration-apc/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1953,26 +1953,6 @@
       "name": "Safety and Health Officer",
       "body": "Department of Occupational Safety and Health (DOSH)",
       "link": "https://dosh.gov.my/en/semakan/pegawai-keselamatan-dan-kesihatan/",
-      "checkedAt": "2026-10-31"
-    },
-    {
-      "id": "p-1031-1",
-      "field": "1031",
-      "kind": "accredited",
-      "name": "Ijazah Sarjana Muda Pengurusan Pertahanan dan Keselamatan",
-      "institution": "Universiti Pertahanan Nasional Malaysia (UPNM)",
-      "mqrRef": null,
-      "link": "https://ppap.upnm.edu.my/senarai-program/",
-      "checkedAt": "2026-10-31"
-    },
-    {
-      "id": "p-1032-1",
-      "field": "1032",
-      "kind": "accredited",
-      "name": "Ijazah Sarjana Muda Sains (Kepujian) Kepolisan, Keselamatan Global dan Perisikan",
-      "institution": "Universiti Pertahanan Nasional Malaysia (UPNM)",
-      "mqrRef": null,
-      "link": "https://ppap.upnm.edu.my/senarai-program/",
       "checkedAt": "2026-10-31"
     },
     {

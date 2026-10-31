@@ -214,7 +214,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1740 passed
+npm test          # expect 1743 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

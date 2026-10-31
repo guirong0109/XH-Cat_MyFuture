@@ -2664,6 +2664,11 @@
       "time": "31 Oct",
       "step": "News: field list and rules",
       "detail": "data/news/fields.json (10 ISCED-F broad fields with search words, manifest hash, SOURCES.md entry for it and for DeepSeek Search); shared/news/rules.js (query, usable check, repeats, merge, top 25, For-you fields); server/news/fields.js loader. npm test 1454 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: DeepSeek Search client",
+      "detail": "server/news/deepseek.js: POST /v1/tools/search with count 50, one retry after 30 s for network, timeout, 408, 429, 5xx; error codes only, never the key. Tested with a fake fetch, no real search. npm test 1468 passed"
     }
   ]
 }

@@ -947,11 +947,12 @@ export function radarView({ t, state, data }) {
   const tabs = [['fy', 'rdTabFY', 'rdTabFYq'], ['ex', 'rdTabEX', 'rdTabEXq']]
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
   const body = tab === 'ex' ? exploreTab({ t, state, data }) : forYouTab({ t, state, data })
+  // The source the page uses sits at the bottom, below the tabs (owner, 31 Oct).
   return `<div class="rd">${head}${banners(t, state, data)}
-    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ, ids: ['openalex'] })}</div>
-    ${sourcesList(t, (data.sources ?? []).filter((s) => s.sourceId === 'openalex'))}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>
+    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ, ids: ['openalex'] })}</div>
+    ${sourcesList(t, (data.sources ?? []).filter((s) => s.sourceId === 'openalex'))}
     ${drawer(t, state, data)}</div>`
 }
 

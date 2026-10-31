@@ -2669,6 +2669,11 @@
       "time": "31 Oct",
       "step": "Radar two tabs: For You and Explore all trends",
       "detail": "Your request. Spec D43-D48 approved; built test first: For You (questions, AI tasks scatter, research signals for you), Explore all trends (research momentum, papers per year, all six topics), Explore first for career switchers, five sections and three source cards off the page. npm test 1483 passed; checked in the browser at 1280 and 375 px and in dark mode"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar: OpenAlex source card moved to the bottom",
+      "detail": "Your request. The OpenAlex card and View data sources now sit below the For You / Explore all trends panel. Test first; npm test 1484 passed; checked in the browser"
     }
   ]
 }

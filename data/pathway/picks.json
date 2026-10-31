@@ -1711,6 +1711,56 @@
       "body": "Board of Engineers Malaysia (BEM)",
       "link": "https://bem.org.my/Landing/register",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0811-1",
+      "field": "0811",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE AGROTECHNOLOGY (CROP SCIENCE) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36130",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0812-1",
+      "field": "0812",
+      "kind": "accredited",
+      "name": "AT234 : BACHELOR OF SCIENCE IN HORTICULTURE TECHNOLOGY (HONOURS)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fpa.uitm.edu.my/index.php/en/bachelor-degree/at234-bachelor-of-science-in-horticulture-technology-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0821-1",
+      "field": "0821",
+      "kind": "accredited",
+      "name": "Program Bacelor Sains Perhutanan Dengan Kepujian",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": null,
+      "link": "https://forenv.upm.edu.my/department/department_of_forestry_science_and_biodiversity/introduction-1188",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0831-1",
+      "field": "0831",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN AQUACULTURE WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36118",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0841-1",
+      "field": "0841",
+      "kind": "accredited",
+      "name": "Doctor of Veterinary Medicine",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": null,
+      "link": "https://fpv.umk.edu.my/program-details.cfm?ref=301&name=Doctor-of-Veterinary-Medicine",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

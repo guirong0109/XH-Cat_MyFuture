@@ -45,3 +45,5 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0729 | Manufacturing and processing not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
 | field:0788 | Inter-disciplinary programmes and qualifications involving engineering, manufacturing and construction | general web search | 2026-10-31 | no such programme found |
 | field:0799 | Engineering, manufacturing and construction not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0810 | Agriculture not further defined | general web search (agriculture programmes Malaysia), UPM/UiTM faculty lists | 2026-10-31 | residual category; fitting programmes sit in 0811-0831 |
+| field:0819 | Agriculture not elsewhere classified | general web search, UPM/UiTM agriculture faculty lists | 2026-10-31 | no programme clearly in it |

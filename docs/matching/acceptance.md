@@ -55,3 +55,30 @@ Date: 30 Oct 2026 · Branch `claude/career-matching` at `a7f2c33` (before this d
 | U3 | Show / Hide outlook and details | PASS. The button turns to "Hide outlook and details"; Job ads, AI in this job and Software asked sit in three columns at desktop width and stack at phone width (375 px, no sideways scroll); "Why this match?" is its own fold; source lines kept. |
 | U4 | AI on the closed card | PASS. Moderate: "estimate AI does the task in 60.9% of observed use (Anthropic Economic Index)" with a bar; Rapid: "estimate GenAI exposure 57% · ILO group 3 of 4 (ILO WP140)" with a bar. |
 | U5 | SDG tags (M16) | PASS. Cards show "SDG 9 team draft, not yet reviewed" with a link to https://sdgs.un.org/goals/goal9; `#sdg` lists every shown link (e.g. SDG 4, 6 links), each goal row links to its UN page, and the source line names the UN SDG site. |
+
+## M17 Overall match, browser check 31 Oct 2026 (http://matching.localhost:3220, branch at 88be866)
+
+Done by the controller, not by the person who wrote the docs. Profile: the saved guest test profile (8 skills, saved
+before M17, so no `aiUse` at first). Nothing was pushed or merged.
+
+| # | Check | Result |
+|---|---|---|
+| M1 | A profile saved before M17 opens `#match` without errors; every card shows "Answer 4 short AI questions to see your overall match." and the "Answer AI questions" button | PASS |
+| M2 | The left column has no purple AI line any more; the right column reads Skill Match, then AI touches this job, then Overall match | PASS |
+| M3 | "Answer AI questions" opens the profile on section 6 "Using AI" | PASS |
+| M4 | Section 6 shows four questions with the UNESCO dimension names, all "Prefer not to say" by default, "Your AI know-how: no question answered yet" and the UNESCO source line | PASS |
+| M5 | Answering Yes, Yes, Yes, No saves `aiUse` in the browser store and shows "Your AI know-how: 75% (3 Yes of 4 answered)" | PASS |
+| M6 | The answers survive a page reload | PASS |
+| M7 | Rapid AI, role 2513-02 (Web Developers): Skill Match 34%, AI touches 60% (ILO exposure 60%), Overall 59%; the sum reads "34% skills x 0.40 + 75% AI know-how x 0.60 = 59%" (58.6 rounds to 59) | PASS |
+| M8 | Switch to Moderate AI, same role: Skill Match stays 34%; AI touches 69%; Overall 62%; the sum reads "34% skills x 0.31 + 75% AI know-how x 0.69 = 62%" (62.29 rounds to 62) | PASS |
+| M9 | A role with no AI data in the scenario says "No AI data for this job in this scenario, so Overall = Skill Match." and Overall equals Skill Match (20%) | PASS |
+| M10 | Phone width 375 px: page width 375, nothing in the right column wider than the screen, the three blocks are readable | PASS |
+| M11 | Console: no script errors; only the expected 503 from `/api/auth/me` (accounts are not set up locally) | PASS |
+| M12 | UNESCO dimension names against UNESCO's official page https://www.unesco.org/en/articles/ai-competency-framework-students (31 Oct 2026): A human-centred mindset, Ethics of AI, AI techniques and applications, AI system design | MATCH |
+
+Open note (for the final review, not fixed): under Moderate the AI block shows "AI touches this job 69%" and right
+under it the older line "AI does the task in 54.9% of observed use" (the automation share used for band 2). Two
+different percentages in one small box can read as a contradiction. Under Rapid both numbers are the same ILO value
+(60% and 60%), so it reads fine.
+
+Test count after M17: 1126 passed (`npm test`).

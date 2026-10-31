@@ -5,12 +5,15 @@ short version of this file;
 on merge, put only the important points there and do not overwrite it with this one.
 
 ## State
-- **All 16 plan tasks are built and reviewed** (766 Vitest tests, 48 pipeline tests). A **final whole-branch review is
+- **All 16 plan tasks are built and reviewed** (1126 Vitest tests, 48 pipeline tests). A **final whole-branch review is
   next**, then the owner decides on merge. Nothing is pushed or merged.
 - A1-A12 checked in the browser on real data (`docs/matching/acceptance.md`); A13 (percentages, chart, what would
   raise it, scenario moves, judge test) by tests only until the BLS files exist.
 - Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; plan: `docs/superpowers/plans/2026-10-30-career-matching.md`;
   diagram: `docs/architecture-matching.html`.
+
+- **M17 Overall match (31 Oct, built and checked in the browser, `docs/matching/acceptance.md`):** `Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch`, in `shared/matching/overall.js`. AI touch = Anthropic observed task share (Moderate) / ILO exposure score (Rapid). AI know-how = Yes answers divided by answered, from four yes/no profile questions (`aiUse`) based on the UNESCO AI competency framework for students (2024, https://doi.org/10.54675/JKJB9835, CC BY-SA 3.0 IGO). It never changes the Skill Match or the bands; with no AI data Overall = Skill Match. Cards show Skill Match, AI touch and Overall; bands sort by Overall.
+- Open for the final review: under Moderate the AI block shows two percentages (touch 69% and "54.9% of observed use").
 
 ### Works today
 Role list (1812 titled eMASCO roles), card text, DOSM job-ad evidence at group level, "not available" messages that
@@ -99,7 +102,7 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 
 ## Commands
 ```bash
-npm test                                      # 766 passed
+npm test                                      # 1126 passed
 python -m unittest discover pipeline/tests    # 48 OK
 npm start                                     # http://localhost:3200, tabs #match and #sdg
 python pipeline/fetch_radar_bridge.py         # after the BLS files are saved

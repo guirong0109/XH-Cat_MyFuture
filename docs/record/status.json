@@ -1869,6 +1869,11 @@
       "time": "31 Oct",
       "step": "M17 task 4: card shows AI touch and Overall match",
       "detail": "Role card right column: Skill Match, then AI touches this job (purple bar, moved from the left), then Overall match with the sum written out; Answer AI questions button opens the form on the Using AI section; bands sort by Overall, then Skill Match; 8 new tests, npm test 1126 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 5: browser check, diagram and handover",
+      "detail": "browser check rows M1-M12 in docs/matching/acceptance.md (all pass; Moderate two-numbers note open); M17 path added to the diagram; HANDOVER.md, CLAUDE.md and SOURCES.md updated; npm test 1126 passed"
     }
   ]
 }

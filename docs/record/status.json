@@ -919,7 +919,8 @@
     "T28: the section 2 column headings in BM and 中文 (ldTally1–3)",
     "T28: the stages-built line in BM and 中文 (ldBuilt)",
     "Profile charts: review the Bahasa Melayu and 中文 lines marked 'translation: owner review'; decide on the eMASCO same-4-digit-group limit; decide the 'Your profile' card hint that now contradicts the new cards; the dashed earlier-year line appears only after a second yearly Hot Technologies snapshot",
-    "DeepSeek on a deployed server: set CV_LLM_KEY there (paid per use); check Malaysia PDPA before real CVs"
+    "DeepSeek on a deployed server: set CV_LLM_KEY there (paid per use); check Malaysia PDPA before real CVs",
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -2704,6 +2705,111 @@
       "time": "31 Oct",
       "step": "Merge claude/future-radar: AI usage question, AI tasks scatter, two tabs",
       "detail": "Your OK. Radar question before For You (10 owner categories), AI tasks scatter, tabs For You / Explore all trends, only the OpenAlex source on the page. Conflicts: public/js/app.js (kept main imports, added aiTasks), docs (kept main short files, both build logs). npm test 1535 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge main into career-matching",
+      "detail": "Owner asked for main's new CV screen design on this branch. No conflicts; this branch keeps its detailed HANDOVER.md and CLAUDE.md. npm test 1425 passed (one earlier run had a reextract test time out under load; it passes alone and on the rerun); checked in the browser: new access screen, Career matching screen, /api/matching answers"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Compare futures: AI news design written",
+      "detail": "New branch claude/compare-futures from career-matching (d82267e). Owner approved the design in chat: DeepSeek Search API every 3 hours, 10 ISCED-F broad study fields, rule checks only, up to 25 items per field, For you from the profile in the browser, Explore all. Spec docs/superpowers/specs/2026-10-31-compare-futures-news-design.md and diagram docs/architecture-compare-futures.html wait for owner review. Cost about US$1.80 a month; no real search until the owner gives the key and the OK."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Compare futures: spec and diagram approved, build plan written",
+      "detail": "Owner approved the spec and the diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news.md: 6 tasks (field list and rules, DeepSeek client, refresh service with caps, GET /api/news, #futures screen, browser check and branch docs). Waits on the owner: plan review and the choice of how to build it."
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: field list and rules",
+      "detail": "data/news/fields.json (10 ISCED-F broad fields with search words, manifest hash, SOURCES.md entry for it and for DeepSeek Search); shared/news/rules.js (query, usable check, repeats, merge, top 25, For-you fields); server/news/fields.js loader. npm test 1454 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: DeepSeek Search client",
+      "detail": "server/news/deepseek.js: POST /v1/tools/search with count 50, one retry after 30 s for network, timeout, 408, 429, 5xx; error codes only, never the key. Tested with a fake fetch, no real search. npm test 1468 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: store and refresh service",
+      "detail": "server/news/store.js (R2 news/latest.json or local data/cache/news/latest.json; unreadable reads as empty) and server/news/service.js (3-hour timer, run at start when due, late request wakes it, one run at a time, caps 10 per run and 80 per 24 h kept in the store, failed field keeps its last list, 401/402 stop the run, snapshot per spec 7 with the age rule applied). Fake search only. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: GET /api/news and refresh start",
+      "detail": "server/news/routes.js (no input, no user data, wakes a late refresh, 503 news_unavailable on failure); createApp option news (default from env, never started there); server/index.js starts the 3-hour refresh after listen. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Compare futures screen",
+      "detail": "public/js/screens/futures.js (For you from the profile study fields in the browser, Explore all with a 10-field picker, source line with query, updated and next refresh in MYT and the rules, failed-refresh note, empty, off, loading, retry; DeepSeek text escaped, http(s) links only), public/js/newsApi.js, app.js wiring (news never saved), 19 nw strings in en/ms/zh (ms and zh: translation owner review). npm test 1505 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: browser check and branch docs",
+      "detail": "C1-C7 pass in the browser on futures.localhost:3270 (no key: news off) and :3271 (scripts/news-local.mjs, fake search, no DeepSeek call); BM strings and 375 px checked; docs/news/acceptance.md. HANDOVER.md and CLAUDE.md now describe claude/compare-futures. Real run waits on the owner (key and OK on about US$1.80 a month). npm test 1505 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: final review fixes",
+      "detail": "Opus whole-branch review: 1 Critical, 3 Important fixed, each with a test that failed first. The search count and last run now live in memory too (store write failures cannot reset them); each search is written down before it is made; an unreadable store means no search; a failed run waits 3 hours and the timer never crashes the server. 5 minor notes deferred for the owner. npm test 1510 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: first real DeepSeek run",
+      "detail": "Owner key in local .env (git-ignored). One refresh: 10 searches (at most US$0.0075), all 10 fields ok with 25 items, oldest item 3.9 days, 21-25 sites per field; C1-C3 pass on real data; server stopped after. Seen: day-level dates in UTC+8, some non-news pages and near-repeats pass the rules (owner to decide). docs/news/acceptance.md"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 spec and diagram",
+      "detail": "Owner approved in chat: N9 relevance check by DeepSeek deepseek-flash (thinking off, JSON, one request per field per run, new items only, not clearly kept = dropped; check fails = no new items), near-repeats by headline without a trailing site name, N10 English articles only on screen. Extra cost about US$2-4 a month, ceiling about US$6.50. Spec and diagram updated; waiting for owner review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 build plan",
+      "detail": "Owner approved the amended spec and diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news-amendment-1.md: 5 tasks (headline site-name rule, relevance check client, service integration with its own caps, screen lines, local and real run with docs)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: site-name repeat rule",
+      "detail": "shared/news/rules.js: headlines compared without a trailing site name (after | - – —, at most 40 characters); newItems(kept, found, runAt) gives only new found items for the relevance check (      Tests  1517 passed (1517))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: relevance check client",
+      "detail": "server/news/relevance.js: deepseek-flash, thinking off, JSON mode, temperature 0, max_tokens 1000; fixed prompt with field title and numbered headline, site, snippet (no links); only whole-number ids in keep are kept, reasons counted; blank or wrong answer retried once like network, timeout, 408, 429, 5xx; fake fetch only (      Tests  1539 passed (1539))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: relevance check in the refresh",
+      "detail": "server/news/service.js: each field's new items (plus items kept before Amendment 1) go to the check once; kept ones marked checked, dropped and dropReasons recorded; no new item means no check; a failed check adds nothing (check_<code>), 401/402 stop the run; checks capped 10 per run and 80 per 24 h (memory and store, before each request, stop before searching a field with no check left); reply shows checked items only with checkedBy and dropped (      Tests  1550 passed (1550))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: screen lines",
+      "detail": "public/js/screens/futures.js: rules line says English articles only (N10); check line 'Checked by DeepSeek (model) as news about AI in this field' with the dropped count when above 0 (N9); strings nwRules, nwChecked, nwDropped in en/ms/zh (ms, zh: translation owner review) (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: local check, real run and docs",
+      "detail": "C9 and the two lines pass with a fake search and check (scripts/news-local.mjs); real run with the owner key: 10 searches + 10 checks (about US$0.02), C8 pass (first-run junk gone, copies once); SOURCES.md chat model row, .env.example, acceptance.md, HANDOVER.md, CLAUDE.md. Pipeline 49 OK (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: final review fixes",
+      "detail": "Opus review of Amendment 1: no Critical; 2 Important fixed with tests that failed first: the site-name rule no longer merges different articles (no digits in the ending, at least 4 words left), and a check sends at most 50 items, new results first. 5 minor notes deferred for the owner (      Tests  1563 passed (1563))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Owner hosting procedure recorded",
+      "detail": "CLAUDE.md: the news refreshes every 3 hours on every host (owner); Cloudflare Tunnel procedure for futures.grong.my (owner steps 1-3, Claude step 4 after the owner's yes); owner asked to push to main (      Tests  1563 passed (1563))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/compare-futures into main",
+      "detail": "Owner asked to push to main. Compare futures AI news (DeepSeek Search every 3 hours, relevance check, English only) merged; conflicts resolved: app.js save keeps main's fields plus news: null (main removed state.ai); SOURCES.md keeps both DeepSeek sections; status.json merged as data; main's short CLAUDE.md and HANDOVER.md get the key points (3-hour refresh rule, CV_LLM_KEY vs DEEPSEEK_API_KEY, Cloudflare plan). Main removed tempStore, so createApp's news fallback no longer passes it. npm test 1673 passed, pipeline 49 OK. Browser check of main not run: the per-folder server limit was reached and the owner's news server stays running"
     }
   ]
 }

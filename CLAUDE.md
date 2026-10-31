@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1535 passed
+npm install && npm test     # expect 1673 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -92,3 +92,18 @@ python -m unittest discover pipeline/tests   # expect 49 OK
   counts. No hours, no language model, forbidden keys as above.
 - HR sees only shared skills (O\*NET key + level), group, role and name. Join tokens: hash only, single use, 7 days.
   Never log names, skills or tokens; never store team results. Rosters: made-up people only.
+
+## Compare futures: AI news (details: branch `claude/compare-futures`)
+- Code in `shared/news/rules.js`, `server/news/` (deepseek, relevance, service, store, routes), `public/js/screens/futures.js`,
+  `public/js/newsApi.js`; data `data/news/fields.json` (10 ISCED-F broad fields, manifest hash). Screen `#futures`:
+  For you (profile study fields, picked in the browser) and Explore all.
+- **The news refreshes every 3 hours (owner). Keep it that way on every host.** The timer runs in the server
+  (`news.start()` in `server/index.js`); after a host sleeps, the first visit past the due time refreshes.
+- DeepSeek Search finds the news; DeepSeek `deepseek-flash` only keeps or drops each new result (news about AI in the
+  field) and writes nothing shown. **Paid**, about US$4-6 a month; caps 10 searches and 10 checks per run, 80 of each
+  per 24 hours, counted in memory and in the store. `DEEPSEEK_API_KEY` turns it on (server secrets / local `.env`).
+  The CV reader uses the same DeepSeek account under `CV_LLM_KEY`; set both names to use both features.
+- Usable: English only (said on screen), title, http(s) link, date within 30 days, repeats removed, kept by the check,
+  newest 25 per field. No profile data reaches the server or DeepSeek. News never changes matching, Radar or SDG.
+- Owner's hosting plan: Cloudflare Tunnel from the owner's computer at `futures.grong.my`; the procedure (owner steps
+  1-3, Claude creates the tunnel only after the owner's yes) is in the branch `CLAUDE.md`.

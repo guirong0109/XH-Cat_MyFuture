@@ -65,6 +65,14 @@ Refresh ISCED-F and its CIP bridge: `python pipeline/fetch_isced.py` (downloads 
 |---|---|---|---|---|
 | DeepSeek API, models `deepseek-flash` (DeepSeek-V4.1-Flash-1017) and `deepseek-v4-pro` (DeepSeek-V4-Pro-0813) | Pricing: https://api-docs.deepseek.com/quick_start/pricing. Privacy policy: https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html | 2026-10-31 | Data is stored on servers in China. Flash costs about $0.004 per CV at peak price | Reads every uploaded CV next to the rules reader (`server/cv/aiRead.js`). CV reading only. Used with synthetic data so far; check Malaysia's PDPA cross-border rules before real users. Off until the owner sets `CV_LLM_KEY` |
 
+## AI news (Compare futures)
+
+| File | What it is | Source | Date | Licence / notes |
+|---|---|---|---|---|
+| `news/fields.json` | The 10 ISCED-F 2013 broad study fields (01-10) with the words searched for each field's AI news | Titles as in `isced/fields.tsv` (UNESCO UIS ISCED-F 2013); search words written by the FutureReady team | written 2026-10-31 | Team draft; the owner may change the words (then update the hash in `news/manifest.json`) |
+| News lists (`cache/news/latest.json` or R2 `news/latest.json`, not in git) | Up to 25 AI news items per field: title, link, site, publish date and DeepSeek's short display snippet, refreshed every 3 hours | DeepSeek Search API, `POST https://api.deepseek.com/v1/tools/search` (docs https://api-docs.deepseek.com/guides/search/ and https://api-docs.deepseek.com/api/search/, read 2026-10-31) | each refresh | Paid: US$0.75 per 1,000 successful searches (billing from 1 Nov 2026, 00:00 Beijing time). DeepSeek's Search pages state no rule on storing or showing results; ask the owner if that matters. Only the five display fields are kept, never the article text, and every item links to the original |
+| Relevance check (Amendment 1, N9; no file of its own: a `checked` flag and per-field `dropped` / `dropReasons` in the same news store) | Which new results are news or feature articles about AI in the field; the others are dropped | DeepSeek chat model `deepseek-flash` (thinking off, JSON output), `POST https://api.deepseek.com/chat/completions` (docs https://api-docs.deepseek.com/quick_start/pricing/ , https://api-docs.deepseek.com/guides/json_mode , read 2026-10-31) | each refresh | Paid: US$0.30 per 1M input tokens and US$1.20 per 1M output tokens at peak (01:00-04:00 and 06:00-10:00 UTC on weekdays), half off-peak. Sent: the field title and each new result's headline, site and snippet (never a link, never profile data). The model writes nothing shown on screen; its reasons are counted only |
+
 ## Test and evaluation sets (synthetic)
 
 | File | What it is |

@@ -32,6 +32,8 @@ import sdgScreen from './screens/sdgTab.js'
 import * as matchApi from './matchApi.js'
 import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
 import * as pathwayApi from './pathwayApi.js'
+import { futuresView } from './screens/futures.js'
+import * as newsApi from './newsApi.js'
 import { readAiUse } from '/shared/matching/overall.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
@@ -91,7 +93,7 @@ function persist() {
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, news: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -541,6 +543,26 @@ function setProgress(key, value) {
   persist()
   render()
 }
+// Compare futures → AI news: the same lists for every visitor, loaded once (again after a failure). Never saved.
+const newsUi = () => (state.news ??= { tab: 'you', field: null, data: null, loading: false, failed: false })
+async function loadNews() {
+  const n = newsUi()
+  n.loading = true
+  n.failed = false
+  const out = await newsApi.load()
+  state.news = { ...newsUi(), loading: false, data: out.ok ? out.data : null, failed: !out.ok }
+  if (state.screen === 'futures') render()
+}
+function ensureNews() {
+  const n = newsUi()
+  if (!n.data && !n.loading && !n.failed) loadNews()
+}
+const newsActions = {
+  newsTab: (tab) => { state.news = { ...newsUi(), tab: tab === 'all' ? 'all' : 'you' }; render() },
+  newsField: (code) => { state.news = { ...newsUi(), tab: 'all', field: String(code ?? '') }; render() },
+  newsRetry: () => loadNews(),
+}
+
 const pathwayActions = {
   // From a #match card: add the role (if not yet a target), make it active, open #pathway.
   pwPlan: (code) => {
@@ -964,7 +986,7 @@ const actions = {
 // Organisation view (HR and career centres): its actions live in orgActions.js; the proxy keeps them on the current state.
 const orgState = new Proxy({}, { get: (_, key) => state[key], set: (_, key, value) => { state[key] = value; return true } })
 const orgView = createOrgActions({ state: orgState, render, api: orgApi, t, go })
-Object.assign(actions, adminActions, matchActions, pathwayActions, orgView.actions)
+Object.assign(actions, adminActions, matchActions, pathwayActions, newsActions, orgView.actions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -1163,6 +1185,7 @@ function render() {
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
   if (screen === 'pathway') ensurePathway()
+  if (screen === 'futures') ensureNews()
   if (screen === 'org') actions.orgEnsure()
   if (screen === 'share') actions.shareEnsure()
   let view
@@ -1170,6 +1193,7 @@ function render() {
   else if (screen === 'match') view = matchScreen({ t, state })
   else if (screen === 'sdg') view = sdgScreen({ t, state })
   else if (screen === 'pathway') view = pathwayScreen({ t, state })
+  else if (screen === 'futures') view = futuresView({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
   const page = view !== undefined || NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome

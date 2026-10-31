@@ -1483,4 +1483,26 @@ export default {
   shSrcHeld: "apa yang dipegang {org} sekarang, daripada perkongsian terakhir anda", // translation: owner review
   shAfterUpdate: "Selepas Kemas Kini, {org} akan melihat:", // translation: owner review
   shMoves: "Berkongsi dengan {org} menghentikan perkongsian anda dengan {other}.", // translation: owner review
+  // Compare futures: AI news (translation: owner review)
+  nwTitle: "Berita AI", // translation: owner review
+  nwLead: "Berita terkini tentang AI dalam setiap bidang pengajian, ditemui oleh DeepSeek Search dan disemak dengan peraturan mudah.", // translation: owner review
+  nwTabYou: "Untuk anda", // translation: owner review
+  nwTabAll: "Teroka semua", // translation: owner review
+  nwPick: "Bidang", // translation: owner review
+  nwYourField: "bidang anda", // translation: owner review
+  nwSource: "Ditemui oleh DeepSeek Search untuk “{query}” · dikemas kini {updated} · muat semula seterusnya sekitar {next}", // translation: owner review
+  nwRules: "Disimpan: artikel bahasa Inggeris sahaja; tajuk, pautan dan tarikh terbit dalam {days} hari lepas; ulangan dibuang; {max} terbaharu.", // translation: owner review
+  nwNever: "belum lagi", // translation: owner review
+  nwFailed: "Tidak dapat dimuat semula pada {time}; menunjukkan senarai dari {from}.", // translation: owner review
+  nwEmpty: "Belum ada berita ditemui untuk bidang ini.", // translation: owner review
+  nwOff: "Berita dimatikan: tiada kunci DeepSeek ditetapkan pada pelayan ini.", // translation: owner review
+  nwLoadFailed: "Berita tidak dapat dimuatkan.", // translation: owner review
+  nwRetry: "Cuba lagi", // translation: owner review
+  nwLoading: "Memuatkan berita…", // translation: owner review
+  nwNoField: "Tambah bidang pengajian anda dalam profil untuk melihat berita untuk anda.", // translation: owner review
+  nwEditProfile: "Sunting profil", // translation: owner review
+  nwExploreAll: "Teroka semua bidang", // translation: owner review
+  nwPublished: "Diterbitkan {date}", // translation: owner review
+  nwChecked: "Disemak oleh DeepSeek ({model}) sebagai berita tentang AI dalam bidang ini", // translation: owner review
+  nwDropped: "{n} hasil dibuang kerana bukan berita.", // translation: owner review
 }

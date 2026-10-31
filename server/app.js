@@ -45,6 +45,8 @@ import { createOrgStore } from './org/store.js'
 import { createOrgService } from './org/service.js'
 import { orgRoutes } from './org/routes.js'
 import { shareRoutes } from './org/shareRoutes.js'
+import { createNewsServiceFromEnv } from './news/service.js'
+import { newsRoutes } from './news/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const DATA_DIR = path.join(ROOT, 'data')
@@ -74,6 +76,8 @@ export function createApp({
   pathwayData = null,
   // The read behind the one pathway loader (a test counts its calls); default loadPathwayData.
   pathwayRead = loadPathwayData,
+  // AI news (Compare futures): on with DEEPSEEK_API_KEY; its 3-hour timer is started by server/index.js, never here.
+  news = undefined,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -223,6 +227,7 @@ export function createApp({
     app.use(pathwayAdminRoutes({ radar, access: radarAccess, now, dataDir, loadData: pathwayLoad, onDecision: () => pathwayService?.picksDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
+  app.use(newsRoutes({ news: news !== undefined ? news : createNewsServiceFromEnv({ dataDir, fetchImpl, now }) }))
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))

@@ -26,7 +26,17 @@ scenario comparison.
 | Radar: "Your profile" card removed; source details as four cards (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1429 tests pass; checked in the browser |
 | DeepSeek reads every CV next to the rules reader (merged draft, "Found by AI" tags; consent re-read removed) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1481 tests pass after the merge; whole-branch review fixed; checked with the owner's key and real CV |
 | Radar: AI usage question (10 owner categories), AI tasks scatter, two tabs For You / Explore all trends (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1535 tests pass after the merge; whole-branch reviews fixed; checked in the browser |
-| SDG contribution page and Compare futures | not started | — | Next |
+| Compare futures: AI news per study field (DeepSeek Search every 3 hours, DeepSeek relevance check, English only) | `claude/compare-futures` | merged 2026-10-31 | Done; 1673 tests pass after the merge; whole-branch reviews fixed; checked with the owner's key |
+| SDG contribution page | not started | — | Next |
+
+## Compare futures: AI news (since 2026-10-31)
+- **Screen `#futures` → AI news:** For you (the profile's study fields) and Explore all (10 ISCED-F broad fields),
+  up to 25 items each with link, site, date and snippet; every list names DeepSeek Search, the query, the update
+  time, the next refresh, "English articles only" and how many results the check dropped.
+- **Refreshes every 3 hours (owner rule).** Paid DeepSeek: about US$4-6 a month, hard caps 80 searches and 80
+  checks a day. Key `DEEPSEEK_API_KEY` (the CV reader uses `CV_LLM_KEY`).
+- **Waits on the owner:** BM / 中文 wording, the search words per field (Natural sciences keeps few items), and the
+  Cloudflare Tunnel set-up for `futures.grong.my` (procedure in the branch `CLAUDE.md`).
 
 ## Future Skills Radar (since 2026-10-30)
 - **Screen `#radar`**, two tabs since 31 Oct (D43-D48): **For You** (first; the AI usage question until answered or
@@ -218,7 +228,7 @@ Every data file, its source, date and licence: `data/SOURCES.md`.
 ## Repository
 - `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
 - Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`),
-  `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`), `claude/study-pathway` (worktree
+  `claude/career-matching`, `claude/compare-futures` (in `C:\Users\guiro\XH_Cat_Final`), `claude/study-pathway` (worktree
   `C:\Users\guiro\XH_Cat_Final-pathway`) and `hr-branch` (worktree `C:\Users\guiro\XH_Cat_Final-hr`). `main` is also checked out as a worktree at
   `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
 - Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.

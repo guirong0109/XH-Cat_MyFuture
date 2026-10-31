@@ -57,7 +57,7 @@ export default {
   langPrompt: 'Your CV appears to be written in {cv}. Would you like to continue in {ui} or switch to {cv}?',
   keepLang: 'Keep my current language', switchLang: 'Switch to {cv}',
   langName_en: 'English', langName_ms: 'Bahasa Melayu', langName_zh: 'Chinese',
-  secStudy: "Study and Experience",
+  secStudy: "Education",
   secWork: "Employment Background",
   secSkills: "Skills and Proficiency",
   secCerts: "Certifications and Projects",

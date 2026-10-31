@@ -278,6 +278,11 @@
           "title": "T28n No certificates, training or projects",
           "sub": "profile has 4 sections · CV finds for them left out",
           "status": "done"
+        },
+        {
+          "title": "T28o First section renamed Education",
+          "sub": "EN Education · BM Pendidikan · 中文 教育",
+          "status": "done"
         }
       ]
     }
@@ -329,7 +334,8 @@
     "Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)",
     "Task 28l: your request - 'Highest qualification' and 'Add a qualification' asked the same thing; they are now one list. Each qualification starts with a level dropdown (SPM … PhD); once chosen, Field of study appears as a dropdown of all 124 UNESCO ISCED-F 2013 fields grouped by broad area (your choice), with Institution and Year. The highest qualification is worked out from the list and shown under it. Words from a CV stay visible ('As written: …') until the user picks. New read-only server route GET /api/fields sends the whole list (your OK); nothing else in the backend changed (Tests 269 passed)",
     "Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
-    "Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)"
+    "Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)",
+    "Task 28o: your request - the first profile section '01 Study and experience' is now '01 Education' (BM Pendidikan, 中文 教育) (Tests 272 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1051,6 +1057,16 @@
       "time": "31 Oct",
       "step": "Task 28n",
       "detail": "3 tests first (failed), then form.js (sections, dropNotAsked), app.js (CV draft and AI re-read), review.js; npm test 271 passed; a synthetic CV with a certificate and a project uploaded in Chrome: server read 1 + 1, profile kept 0 + 0 and all 4 skills"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "rename 01 Study and experience to 01 Education"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28o",
+      "detail": "test first (failed), then the three wording files; npm test 272 passed"
     }
   ]
 }

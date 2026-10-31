@@ -41,3 +41,12 @@ describe('no certificates, training or projects in the profile', () => {
     for (const key of ['certName', 'trainingName', 'projTitle']) expect(old).toContain(key)
   })
 })
+
+describe('section names', () => {
+  it('the first section is called Education', async () => {
+    const { t: translate } = await import('../shared/i18n.js')
+    expect(translate('en', 'secStudy')).toBe('Education')
+    expect(translate('ms', 'secStudy')).toBe('Pendidikan')
+    expect(translate('zh', 'secStudy')).toBe('教育')
+  })
+})

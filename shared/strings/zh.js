@@ -57,7 +57,7 @@ export default {
   langPrompt: '你的简历似乎是用{cv}写的。你想继续使用{ui}，还是切换到{cv}？',
   keepLang: '保留我当前的语言', switchLang: '切换到{cv}',
   langName_en: '英文', langName_ms: '马来文', langName_zh: '中文',
-  secStudy: "学历与经验",
+  secStudy: "教育",
   secWork: "工作背景",
   secSkills: "技能与熟练度",
   secCerts: "证书与项目",

@@ -223,7 +223,9 @@ describe('taskCorners (real Anthropic Economic Index data)', () => {
     expect(r.ilo.map((x) => x.isco)).toEqual(['2411', '2512'])
   })
   it('usageText', () => {
-    expect(usageText(0)).toBe('under 0.01')
+    expect(usageText(0)).toBeNull()
+    expect(usageText(0.007)).toBeNull()
+    expect(usageText(0.01)).toBe('0.01')
     expect(usageText(0.2)).toBe('0.20')
   })
   it('unavailable data gives empty output', () => {

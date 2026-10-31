@@ -9,6 +9,7 @@ import { createMemoryStore } from '../../server/radar/store/memory.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
+import { usageText } from '../../shared/radar/profileCharts.js'
 import { aiTab, keepCaret, onetSourceCards, radarView, skillsChartCard, skillsTab, statusCards } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
@@ -821,7 +822,7 @@ describe('AI Impact card', () => {
     expect(card(off)).toContain(t('rdAiUnavailable'))
   })
   it('a draft profile is asked to confirm first; an eMASCO role with a broken chain shows its stop', () => {
-    expect(card(tab({ ...dev(), profileStatus: 'draft' }))).toContain(t('rdConfirmFirst'))
+    expect(unesc(card(tab({ ...dev(), profileStatus: 'draft' })))).toContain(t('rdAiConfirmFirst'))
     const broken = card(tab(profile({ occupationMappings: [{ term: 'x', kind: 'job', chosen: { source: 'emasco', code: '1121-01', title: 'Chief Executive' } }] })))
     expect(unesc(broken)).toContain('Not available for eMASCO 1121-01: the code chain stops at')
     expect(broken).not.toContain('data-act="aiCorner"')
@@ -865,6 +866,57 @@ describe('AI Impact card', () => {
     const none = tab(ownProfile(), {}, data)
     expect(axes(none)).toHaveLength(6)
     expect(none).toContain(t('rdGlobalView'))
+    // The global note belongs to the topic card: after the AI tasks card, before the topic card.
+    expect(none.indexOf(t('rdGlobalView'))).toBeGreaterThan(none.indexOf(t('rdAiSource')))
+    expect(none.indexOf(t('rdGlobalView'))).toBeLessThan(none.indexOf('data-sec="A2"'))
+  })
+  it('few-topics note: own view names the field link, the all-topics view keeps the valid-index reason', () => {
+    expect(section(tab(ownProfile()), 'A2')).toContain(t('rdFewOwnAxes'))
+    expect(section(tab(ownProfile()), 'A2')).not.toContain(t('rdFewAxes'))
+    const withAll = section(tab(ownProfile(), { all: { ai: true } }), 'A2')
+    expect(withAll).not.toContain(t('rdFewOwnAxes'))
+    const six = { ...data, ai: { ...data.ai, axes: data.ai.axes.map((a) => ({ ...a, momentum: { counts: { current: { state: 'invalid' } }, share: { current: { state: 'invalid' } } } })) } }
+    const few = section(tab(ownProfile(), { all: { ai: true } }, { ...linked(), ai: six.ai }), 'A2')
+    expect(few).toContain(t('rdFewAxes'))
+    expect(few).not.toContain(t('rdFewOwnAxes'))
+  })
+  it('T-prefix on corners and list rows; licences on the source line; usage text in the user language', () => {
+    const html = card(tab(dev()))
+    expect(html).toMatch(/>T1 /)
+    expect(html).toContain('<span class="rd-rn">T1</span>')
+    expect(html).toContain('aria-label="T1. ')
+    expect(html).toContain(t('rdAiLicence'))
+    expect(html).toContain('CC-BY')
+    expect(html).toContain('CC BY 4.0')
+    expect(aiRows(html)[0]).toContain(`${usageText(ai.tasks.find((x) => x.automation === 69.12 && x.code === '15-1252.00').usage)}% of all`)
+    const low = { ...ai, tasks: ai.tasks.map((x) => (x.code === '15-1252.00' ? { ...x, usage: 0.004 } : x)) }
+    const lowHtml = card(tab(dev(), { aiTasks: { ok: true, data: low } }))
+    expect(lowHtml).toContain(`${t('rdAiUnder')}% of all conversations`)
+    expect(lowHtml).not.toContain('under 0.01 %')
+    for (const lang of ['ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const out = aiTab({ t: tl, state: { lang, profile: dev(), radar: { aiTasks: { ok: true, data: low } } }, data: linked() })
+      expect(out, lang).toContain(tl('rdAiUnder'))
+      expect(out, lang).not.toContain('under 0.01')
+    }
+  })
+  it('state made by the aiJob, aiCorners and aiCorner actions has no score, weight, rank, match or opportunity key', () => {
+    const app = readFileSync('public/js/app.js', 'utf8')
+    const src = ['aiJob', 'aiCorners'].map((n) => app.split(/\r?\n/).find((l) => l.startsWith('  ' + n + ': ')).slice(n.length + 4).replace(/,$/, ''))
+    let st = { tab: 'ai' }
+    const radarUi = () => st
+    const setRadar = (patch) => { st = { ...st, ...patch } }
+    const [job, corn] = src.map((x) => new Function('radarUi', 'setRadar', `return ${x}`)(radarUi, setRadar))
+    job('1')
+    corn('16')
+    corn('all')
+    corn('99')
+    st = { ...st, aiTasks: { ok: true, data: { state: 'data' } }, aiHl: 3 }
+    const keysOf = (o) => (o && typeof o === 'object' ? Object.keys(o).flatMap((k) => [k, ...keysOf(o[k])]) : [])
+    expect(st.aiJob).toBe(1)
+    expect(st.corners.ai).toBe(8)
+    expect(keysOf(st).filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
+    expect(keysOf(st).length).toBeGreaterThan(5)
   })
   it('app wiring: the three actions and loadAiTasks exist, the state keys are plain, and Radar state is still not persisted', () => {
     const app = readFileSync('public/js/app.js', 'utf8')
@@ -876,7 +928,7 @@ describe('AI Impact card', () => {
     expect(keys.filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
   })
   it('every new string exists in en, ms and zh with the review comment', () => {
-    const keys = ['rdAiChartTitle', 'rdAiChartTag', 'rdAiExposure', 'rdAiGrad_G4', 'rdAiGrad_G3', 'rdAiGrad_G2', 'rdAiGrad_G1', 'rdAiGrad_minimal', 'rdAiGrad_not_exposed', 'rdAiNoIsco', 'rdAiShown', 'rdAiRow', 'rdAiLegend', 'rdAiNone', 'rdAiLoading', 'rdAiUnavailable', 'rdAiSource', 'rdJob', 'rdTopicsOwn', 'rdTopicsViewAll']
+    const keys = ['rdAiChartTitle', 'rdAiChartTag', 'rdAiExposure', 'rdAiGrad_G4', 'rdAiGrad_G3', 'rdAiGrad_G2', 'rdAiGrad_G1', 'rdAiGrad_minimal', 'rdAiGrad_not_exposed', 'rdAiNoIsco', 'rdAiShown', 'rdAiRow', 'rdAiLegend', 'rdAiNone', 'rdAiLoading', 'rdAiUnavailable', 'rdAiSource', 'rdAiLicence', 'rdFewOwnAxes', 'rdAiConfirmFirst', 'rdAiUnder', 'rdJob', 'rdTopicsOwn', 'rdTopicsViewAll']
     for (const lang of ['en', 'ms', 'zh']) {
       const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
       for (const key of keys) {

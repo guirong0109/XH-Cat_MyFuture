@@ -75,7 +75,7 @@ function barFallback(items, scale, act, label, c) {
   return `<svg class="rd-bars" viewBox="0 0 ${W} ${h}" width="100%" role="group" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg">${g}</svg>`
 }
 
-export function profileRadar({ items = [], scale, rings = [], act, label = '', colour = 'accent', numbersOnlyAbove = 16, t } = {}) {
+export function profileRadar({ items = [], scale, rings = [], act, label = '', colour = 'accent', numbersOnlyAbove = 16, prefix = '', t } = {}) {
   const c = colour === 'est' ? 'var(--est)' : 'var(--accent)'
   const n = items.length
   if (n < 3) return barFallback(items, scale, act, label, c)
@@ -107,7 +107,7 @@ export function profileRadar({ items = [], scale, rings = [], act, label = '', c
     const ly = CY + (R + 16) * Math.sin(ang)
     const cos = Math.cos(ang)
     const anchor = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle'
-    const lines = full ? wrap(`${i + 1} ${it.label}`) : [String(i + 1)]
+    const lines = full ? wrap(`${prefix}${i + 1} ${it.label}`) : [`${prefix}${i + 1}`]
     const y0 = ly + 3 - ((lines.length - 1) * 12) / 2 * (Math.sin(ang) < -0.3 ? 2 : Math.sin(ang) > 0.3 ? 0 : 1)
     g += `<g ${attrs(it, act)}>`
     g += `<text x="${p1(lx)}" y="${p1(y0)}" text-anchor="${anchor}" style="fill:var(--ink);font-size:10px">`

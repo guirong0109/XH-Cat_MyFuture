@@ -741,4 +741,8 @@ export default {
   rdJob: "Job",
   rdTopicsOwn: "AI research topics linked to your field",
   rdTopicsViewAll: "View all six topics",
+  rdAiLicence: "Anthropic Economic Index: CC-BY · ILO WP140: CC BY 4.0",
+  rdFewOwnAxes: "Your field links to fewer than 3 topics, so bars are shown.",
+  rdAiConfirmFirst: "Confirm your profile to see how AI is used in your jobs' tasks.",
+  rdAiUnder: "under 0.01",
 }

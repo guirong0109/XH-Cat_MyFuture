@@ -741,4 +741,8 @@ export default {
   rdJob: "工作", // translation: owner review
   rdTopicsOwn: "与您的领域相关的 AI 研究主题", // translation: owner review
   rdTopicsViewAll: "查看全部六个主题", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index：CC-BY · ILO WP140：CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "您的领域关联的主题少于 3 个，因此显示为条形图。", // translation: owner review
+  rdAiConfirmFirst: "请确认您的个人资料，以查看 AI 如何用于您工作中的任务。", // translation: owner review
+  rdAiUnder: "低于 0.01", // translation: owner review
 }

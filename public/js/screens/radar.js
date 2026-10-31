@@ -283,7 +283,7 @@ export function aiTab({ t, state, data }) {
       <button class="${mode === 'count' ? 'on' : ''}" data-act="radarMode" data-arg="count" aria-pressed="${mode === 'count'}">${esc(t('rdMetricCount'))}</button><button class="${mode === 'share' ? 'on' : ''}" data-act="radarMode" data-arg="share" aria-pressed="${mode === 'share'}">${esc(t('rdMetricShare'))}</button>
     </span>
     <span class="tiny muted">${esc(t('rdWindowSelected'))}: ${esc(winText(win))} · ${esc(t('rdWindowCompare'))}: ${esc(winText(cmpWin))}</span></div>
-    ${validCount < 3 ? `<p class="small muted">${esc(t('rdFewAxes'))}</p>` : ''}
+    ${validCount < 3 ? `<p class="small muted">${esc(t(sc.mine && sc.axes.length < 3 ? 'rdFewOwnAxes' : 'rdFewAxes'))}</p>` : ''}
     <div class="rd-chart">${radarChart({ axes: chartAxes, comparison, t })}</div>
     <p class="tiny muted">${esc(t('rdPointHollow'))}</p>
     ${rel ? fieldLinks(t, rel) : ''}
@@ -324,7 +324,8 @@ export function aiTab({ t, state, data }) {
   }
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
-  return `${sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''}${aiTasksCard({ t, state, data })}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  const globalNote = sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''
+  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -564,7 +565,7 @@ const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
 export function aiTasksCard({ t, state, data }) {
   const wrapCard = (body) => `<div class="card rd-sec" data-sec="AI"><h2>${esc(t('rdAiChartTitle'))} ${tag('est', t('rdAiChartTag'))}</h2>${body}</div>`
   const rel = relevance(state, data)
-  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdAiConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
   const u = ui(state)
   const got = u.aiTasks
   if (!got || got.loading) return wrapCard(`<p class="small muted"><span class="spin"></span> ${esc(t('rdAiLoading'))}</p>`)
@@ -602,25 +603,25 @@ export function aiTasksCard({ t, state, data }) {
     const numbered = items.map((it, i) => ({ ...it, n: i + 1 }))
     const choice = AI_CORNER_CHOICES.includes(u.corners?.ai) ? u.corners.ai : 8
     const k = choice === 'all' ? numbered.length : Math.min(choice, numbered.length)
-    const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) })
+    const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) ?? t('rdAiUnder') })
     const points = numbered.slice(0, k).map((it) => ({
       id: String(it.n),
       label: it.text,
       value: it.automation,
       valueText: `${it.automation}%`,
-      aria: `${it.n}. ${it.text}: ${rowText(it)}`,
+      aria: `T${it.n}. ${it.text}: ${rowText(it)}`,
     }))
     const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
     chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span>
       <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
-      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, t })}</div>
+      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, prefix: 'T', t })}</div>
       <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
-    list = `<ul class="rd-rank-list">${numbered.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">${it.n}</span>
+    list = `<ul class="rd-rank-list">${numbered.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">T${it.n}</span>
       <span>${esc(it.text)}<div class="tiny muted">${esc(rowText(it))}</div></span>
       <span class="rd-rc tiny muted">${esc(release)} ${srcLink(aeiLink)}</span></li>`).join('')}</ul>`
   }
 
-  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(ai.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(release)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(ai.fetchedAt))} · ${esc(t('rdAiSource'))}</p>`
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(ai.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(release)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(ai.fetchedAt))} · ${esc(t('rdAiLicence'))} · ${esc(t('rdAiSource'))}</p>`
   return wrapCard(`${notes}${chainPaths(t, jobs)}${switchBar}${jobLine}${exposure}${chart}${list}${src}`)
 }
 

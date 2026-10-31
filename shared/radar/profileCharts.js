@@ -105,5 +105,5 @@ export function taskCorners(job, aiTasks, { iscoOf }) {
 }
 
 export function usageText(usage) {
-  return usage < 0.005 ? 'under 0.01' : usage.toFixed(2)
+  return usage < 0.01 ? null : usage.toFixed(2)
 }

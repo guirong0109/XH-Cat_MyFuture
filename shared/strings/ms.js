@@ -741,4 +741,8 @@ export default {
   rdJob: "Pekerjaan", // translation: owner review
   rdTopicsOwn: "Topik penyelidikan AI yang dipautkan kepada bidang anda", // translation: owner review
   rdTopicsViewAll: "Lihat kesemua enam topik", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index: CC-BY · ILO WP140: CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "Bidang anda dipautkan kepada kurang daripada 3 topik, jadi bar dipaparkan.", // translation: owner review
+  rdAiConfirmFirst: "Sahkan profil anda untuk melihat bagaimana AI digunakan dalam tugas pekerjaan anda.", // translation: owner review
+  rdAiUnder: "kurang daripada 0.01", // translation: owner review
 }

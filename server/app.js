@@ -36,6 +36,8 @@ import { loadRadarReferences } from './radar/references.js'
 import { matchingAdminRoutes } from './matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from './matching/service.js'
 import { matchingRoutes } from './matching/routes.js'
+import { createPathwayServiceFromEnv } from './pathway/service.js'
+import { pathwayRoutes } from './pathway/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -59,6 +61,8 @@ export function createApp({
   radarDemo = undefined,
   // Career matching: data from dataDir (loaded once on first use), Radar signals (or a judge's demo session).
   matching = undefined,
+  // Study pathway: data from dataDir (loaded once on first use), matching's role answer, pick decisions in the Radar store.
+  pathway = undefined,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -152,6 +156,9 @@ export function createApp({
   // The profile sent here is used for the answer and dropped: never stored, never logged.
   const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
   app.use(matchingRoutes({ matching: matchingService }))
+  // The pathway reuses matching's role answer, so its numbers are matching's; the profile is never stored or logged.
+  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, matching: matchingService, store: radar?.store ?? null, now })
+  app.use(pathwayRoutes({ pathway: pathwayService }))
   if (radar) {
     app.use(radarRoutes({ radar }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))

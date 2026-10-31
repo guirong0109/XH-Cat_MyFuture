@@ -77,9 +77,10 @@ export function createPathwayService({ loadData, matching, store = null, now = (
   }
 
   async function pathway(profile, code, request) {
-    const data = await loadData()
+    // The role first: an unknown code is 404 even when the pathway data cannot be read.
     const role = await matching.role(profile, code, request)
     if (!role) return null
+    const data = await loadData()
     const broken = Boolean(role.chain?.missingStep) || !arr(role.jobs).length
     const job = broken ? null : role.fit ? { code: role.fit.onetCode, title: role.fit.onetTitle } : { code: role.jobs[0].code, title: role.jobs[0].title }
     const shown = broken ? [] : await picksShown(data)
@@ -103,9 +104,11 @@ export function createPathwayService({ loadData, matching, store = null, now = (
   return { pathway, picksDecided }
 }
 
-// The app's pathway service: data from dataDir (loaded once), matching's role answer, the Radar review store.
+// The app's pathway service: data from dataDir (loaded once), or the data the start-up check already loaded
+// (server/index.js), matching's role answer, the Radar review store.
 // No matching service -> no pathway service (the route answers 503 not_configured).
-export function createPathwayServiceFromEnv({ dataDir, matching, store = null, now = () => new Date(), log } = {}) {
+export function createPathwayServiceFromEnv({ dataDir, data = null, matching, store = null, now = () => new Date(), log } = {}) {
   if (!matching) return null
-  return createPathwayService({ loadData: once(() => loadPathwayData(dataDir)), matching, store, now, ...(log ? { log } : {}) })
+  const loadData = data ? async () => data : once(() => loadPathwayData(dataDir))
+  return createPathwayService({ loadData, matching, store, now, ...(log ? { log } : {}) })
 }

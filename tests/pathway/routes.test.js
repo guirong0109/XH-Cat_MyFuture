@@ -11,7 +11,7 @@ import { loadRadarReferences } from '../../server/radar/references.js'
 import { recordReview } from '../../server/radar/reviews.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import { createPathwayServiceFromEnv } from '../../server/pathway/service.js'
-import { PathwayDataError, loadPathwayData, pickHash } from '../../server/pathway/data.js'
+import { PathwayDataError, checkPathwayData, loadPathwayData, pickHash } from '../../server/pathway/data.js'
 import { FIXTURE, fixtureReferences } from '../helpers/matchingFixture.js'
 import { PATHWAY, PICKS, makePathwayFixture } from '../helpers/pathwayFixture.js'
 
@@ -285,6 +285,43 @@ describe('loadPathwayData', () => {
       expect(error).toBeInstanceOf(PathwayDataError)
       expect(error.file).toBe('pathway/picks.json')
       expect(error.message).toContain('c-bad-for')
+    } finally {
+      await bad.cleanup()
+    }
+  })
+
+  it('start-up check (server/index.js): a picks file with an unknown for gives one error line naming picks.json and the pick id', async () => {
+    const bad = await makePathwayFixture({ picks: { ...PICKS, courses: [{ ...PICKS.courses[0], id: 'c-bad-for', for: 'kn:9.9.9' }] } })
+    try {
+      const check = await checkPathwayData(bad.dir)
+      expect(check.data).toBeNull()
+      expect(check.error).toMatch(/^\[pathway\] start-up stopped: /)
+      expect(check.error).toContain('pathway/picks.json')
+      expect(check.error).toContain('c-bad-for')
+      expect(check.error).toContain('kn:9.9.9')
+      expect(check.error).not.toContain('\n')
+    } finally {
+      await bad.cleanup()
+    }
+  })
+
+  it('start-up check on good data gives the loaded data, which the service then uses without reading files again', async () => {
+    const check = await checkPathwayData(fixture.dir)
+    expect(check.error).toBeNull()
+    expect(check.data.picks).toHaveLength(3)
+    const matching = createMatchingServiceFromEnv({ dataDir: fixture.dir, radar: null, references: fixtureReferences, now, log: () => {} })
+    const service = createPathwayServiceFromEnv({ dataDir: `${fixture.dir}/does-not-exist`, data: check.data, matching, now, log: () => {} })
+    const answer = await service.pathway(FULL, FIXTURE.fullRole, null)
+    expect(answer.route.fields.map((f) => f.code)).toEqual(['0611', '0613'])
+  })
+
+  it('an unknown code answers 404 even when the pathway data cannot be read', async () => {
+    const bad = await makePathwayFixture({ picks: { ...PICKS, courses: [{ ...PICKS.courses[0], id: 'c-bad-for', for: 'kn:9.9.9' }] } })
+    try {
+      vi.spyOn(console, 'error').mockImplementation(() => {})
+      await start({ dataDir: bad.dir })
+      expect((await post('/api/pathway', { profile: FULL, code: '0000-00' })).status).toBe(404)
+      expect((await post('/api/pathway', { profile: FULL, code: FIXTURE.fullRole })).status).toBe(503)
     } finally {
       await bad.cleanup()
     }

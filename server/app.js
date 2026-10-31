@@ -40,10 +40,11 @@ import { createPathwayServiceFromEnv } from './pathway/service.js'
 import { pathwayRoutes } from './pathway/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+export const DATA_DIR = path.join(ROOT, 'data')
 
 // Later tasks add their routes here. extraRoutes is a test hook only.
 export function createApp({
-  dataDir = path.join(ROOT, 'data'),
+  dataDir = DATA_DIR,
   fetchImpl = fetch,
   now = () => new Date(),
   d1 = createD1FromEnv(),
@@ -63,6 +64,8 @@ export function createApp({
   matching = undefined,
   // Study pathway: data from dataDir (loaded once on first use), matching's role answer, pick decisions in the Radar store.
   pathway = undefined,
+  // Pathway data already loaded by the start-up check (server/index.js), so it is not read twice; null = load on first use.
+  pathwayData = null,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -157,7 +160,7 @@ export function createApp({
   const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
   app.use(matchingRoutes({ matching: matchingService }))
   // The pathway reuses matching's role answer, so its numbers are matching's; the profile is never stored or logged.
-  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, matching: matchingService, store: radar?.store ?? null, now })
+  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, data: pathwayData, matching: matchingService, store: radar?.store ?? null, now })
   app.use(pathwayRoutes({ pathway: pathwayService }))
   if (radar) {
     app.use(radarRoutes({ radar }))

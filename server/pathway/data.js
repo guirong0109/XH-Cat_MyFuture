@@ -119,3 +119,14 @@ export async function loadPathwayData(dataDir) {
 
   return { education, qualifications, routeIndex, sites, picks, itemKeys, fieldCodes, sources }
 }
+
+// The start-up check (server/index.js): the loaded data, or one error line naming the file and the bad entry (spec §7,
+// §9: a bad picks file stops the server at start-up). Never throws.
+export async function checkPathwayData(dataDir) {
+  try {
+    return { data: await loadPathwayData(dataDir), error: null }
+  } catch (error) {
+    const message = String(error?.message ?? error?.name ?? 'Error').replace(/\s+/g, ' ')
+    return { data: null, error: `[pathway] start-up stopped: ${message}` }
+  }
+}

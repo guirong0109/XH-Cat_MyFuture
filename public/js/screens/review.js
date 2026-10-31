@@ -1,5 +1,4 @@
 // Case C: everything the user entered or the CV suggested, with its label, then Confirm.
-import { improveWithAi } from '../components/improveWithAi.js'
 import { esc, tag } from '../ui.js'
 import { GOALS } from './goal.js'
 import { WHO, levelLabel } from './form.js'
@@ -69,7 +68,6 @@ export default ({ t, state }) => {
   const message = state.message ? `<div class="banner b-warn"><div>${esc(state.message)}</div></div>` : ''
   return `<h1>${esc(t('review'))}</h1><p class="lead">${esc(t('reviewLead'))}</p>${message}
   <div class="receipt" style="overflow-x:auto">${profileTable(t, state.profile)}</div>
-  ${improveWithAi({ t, state })}
   <div class="row" style="margin-top:14px">
     <button class="btn" data-go="form">${esc(t('edit'))}</button>
     <button class="btn pri" data-act="confirm">${esc(t('confirmBtn'))}</button>

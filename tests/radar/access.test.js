@@ -110,7 +110,7 @@ let origin
 async function start({ env = ENV, now = clock() } = {}) {
   const radar = createRadarService({ store: null, bundleStore, references: async () => ({}), ingestor: null, now })
   const radarAccess = createRadarAccess({ env, now })
-  server = createApp({ radar, radarAccess, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   origin = base

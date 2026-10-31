@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1429 passed
+npm install && npm test     # expect 1481 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -45,6 +45,10 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - Skills are grouped under the job or project they were used in (`skills[].usedIn`, `skillGroups.js`); a skill used in
   a job or project starts at Good, `proficiencyStatus: 'from_projects'` (owner rule; matching reads this level).
 - After a CV: only "Edit in the form"; qualification level and field of study are prechosen for the user to check.
+- **DeepSeek reads every CV (31 Oct)** next to the rules reader (`server/cv/aiRead.js`, `mergeDrafts.js`); rules win, the
+  AI fills blanks and adds missed items, tagged "Found by AI — check it". `CV_LLM_KEY` turns it on (paid; ask before
+  paid runs). Thinking off, 40 s AI / 45 s upload limits. CV text and AI replies are never logged; tests pass
+  `aiProvider: null`. The old consent "AI re-read", compare view, Claude backup and R2 CV copy are gone.
 
 ## Future Skills Radar (details: branch `claude/future-radar`)
 - Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.

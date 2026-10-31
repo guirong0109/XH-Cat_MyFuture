@@ -59,6 +59,12 @@ Refresh O\*NET: `python pipeline/fetch_onet.py <version>` (see the script's head
 Refresh the Radar skill flags: admin "Refresh O\*NET skills" with a release number (e.g. `31.1`), or `node scripts/radar-bootstrap.mjs` (set `ONET_ZIP_DIR` to a folder holding `db_30_2.zip`, `db_30_3.zip`, `db_31_0.zip` to read local copies instead of downloading 13 MB each; the recorded URL stays the official one and the hash is of the bytes read). The Hot Technologies page: admin "Refresh Hot Technologies".
 Refresh ISCED-F and its CIP bridge: `python pipeline/fetch_isced.py` (downloads again), or rebuild from the kept originals: `python pipeline/fetch_isced.py data/isced/source/isced-f-2013-cip2016-eng.csv data/isced/source/Education_CIP_to_ONET_SOC.xlsx`. The concordance uses CIP Canada 2016 and the O\*NET crosswalk CIP 2020; a CIP code is matched only when both tables use the same code, so 6 fields (e.g. 9999 Field unknown) have no O\*NET link.
 
+## AI service (CV reading)
+
+| Item | Source | Checked | Terms | Use |
+|---|---|---|---|---|
+| DeepSeek API, models `deepseek-flash` (DeepSeek-V4.1-Flash-1017) and `deepseek-v4-pro` (DeepSeek-V4-Pro-0813) | Pricing: https://api-docs.deepseek.com/quick_start/pricing. Privacy policy: https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html | 2026-10-31 | Data is stored on servers in China. Flash costs about $0.004 per CV at peak price | Reads every uploaded CV next to the rules reader (`server/cv/aiRead.js`). CV reading only. Used with synthetic data so far; check Malaysia's PDPA cross-border rules before real users. Off until the owner sets `CV_LLM_KEY` |
+
 ## Test and evaluation sets (synthetic)
 
 | File | What it is |

@@ -32,7 +32,7 @@ beforeAll(async () => {
 let server
 let base
 async function start(radar, extra = {}) {
-  server = createApp({ radar, d1: null, tempStore: null, llmProviders: [], onetLive: null, ...extra }).listen(0)
+  server = createApp({ radar, d1: null, aiProvider: null, onetLive: null, ...extra }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
 }

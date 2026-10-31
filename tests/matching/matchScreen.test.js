@@ -60,7 +60,7 @@ beforeAll(async () => {
   }
   const radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now, log: () => {} })
   const matching = createMatchingServiceFromEnv({ dataDir: fixture.dir, radar, demo: null, access: null, references: fixtureReferences, now, log: () => {} })
-  server = createApp({ radar, radarDemo: null, matching, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarDemo: null, matching, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   const out = await matchApi.list(FULL, { base })

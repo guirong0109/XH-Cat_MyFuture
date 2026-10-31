@@ -63,7 +63,7 @@ async function start({ store = createMemoryStore(), now = clock(), writable = tr
   const ingestor = writable ? createIngestor({ store, sources, loadReferences: () => radar.references(), now, log: () => {} }) : null
   radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor, now, log: () => {} })
   const radarAccess = createRadarAccess({ env: ENV, now })
-  server = createApp({ radar, radarAccess, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   return { store, now, sources, radar }

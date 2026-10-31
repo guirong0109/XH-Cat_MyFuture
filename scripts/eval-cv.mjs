@@ -2,11 +2,15 @@
 // testing/eval-cvs.json as a real PDF or DOCX, runs the same steps as POST /api/cv/extract in-process, and writes
 // measured precision, recall and F1 per field, the wrong-item rate, the failure rate and the latency to
 // docs/eval-results.md. No targets are claimed.  Run: node scripts/eval-cv.mjs
+// With --ai it also runs each CV through rules + DeepSeek and compares (paid; needs CV_LLM_KEY):
+//   node --env-file-if-exists=.env scripts/eval-cv.mjs --ai
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { createAiReader, providerFromEnv } from '../server/cv/aiRead.js'
 import { detectLanguage } from '../server/cv/detectLanguage.js'
 import { EXTRACTOR_VERSION, extractProfile } from '../server/cv/extract.js'
+import { mergeDrafts } from '../server/cv/mergeDrafts.js'
 import { readText } from '../server/cv/readText.js'
 import { validateFile } from '../server/cv/validateFile.js'
 import { createNormalizer } from '../server/skills/normalize.js'
@@ -17,6 +21,20 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FIELDS = ['skills', 'qualifications', 'jobs', 'certifications']
 const round = (n) => Math.round(n * 1000) / 1000
 const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
+
+// Peak price, cache miss, USD per 1M tokens (spec §3, dated 31 Oct 2026).
+export const DEEPSEEK_PRICES = { 'deepseek-flash': { input: 0.30, output: 1.20 }, 'deepseek-v4-pro': { input: 1.32, output: 3.96 } }
+export const costOf = (usage, price) => (usage.input * price.input + usage.output * price.output) / 1e6
+
+export const checkAiSettings = (env) => (env.CV_LLM_KEY ? null : "CV_LLM_KEY is not set; the AI check needs the owner's DeepSeek key.")
+
+export function costLine(usage, model) {
+  const price = DEEPSEEK_PRICES[model]
+  const tokens = `${usage.input} input and ${usage.output} output tokens`
+  return price
+    ? `${tokens}, about **$${costOf(usage, price).toFixed(4)}** at peak price (cache miss; $${price.input} in / $${price.output} out per 1M tokens)`
+    : `${tokens}; the price is unknown for model \`${model}\` (not in the price table), so no cost is shown`
+}
 
 const rates = ({ tp, fp, fn }) => {
   const precision = tp + fp ? round(tp / (tp + fp)) : null
@@ -57,17 +75,26 @@ async function extractCase(entry, catalogue, normalizer) {
   const read = await readText(buffer, checked.type)
   if (!read.ok) return { error: read.code }
   const { language } = detectLanguage(read.lines)
-  const { profile, warnings } = await extractProfile({ lines: read.lines, language, interfaceLanguage: 'en', catalogue, normalizer })
-  return { profile, language, warnings }
+  const { profile, uncertain, warnings } = await extractProfile({ lines: read.lines, language, interfaceLanguage: 'en', catalogue, normalizer })
+  return { profile, uncertain, language, warnings, lines: read.lines }
 }
 
 const median = (values) => {
+  if (!values.length) return null
   const sorted = [...values].sort((a, b) => a - b)
   const mid = Math.floor(sorted.length / 2)
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
 }
 
 async function main() {
+  const useAi = process.argv.includes('--ai')
+  if (useAi) {
+    const problem = checkAiSettings(process.env)
+    if (problem) {
+      console.error(problem)
+      process.exit(1)
+    }
+  }
   const set = JSON.parse(await readFile(path.join(ROOT, 'testing', 'eval-cvs.json'), 'utf8'))
   const catalogue = await loadSkillCatalogue(path.join(ROOT, 'data', 'onet'))
   const normalizer = createNormalizer({ catalogue })
@@ -85,6 +112,34 @@ async function main() {
     const levels = out.profile ? out.profile.skills.filter((s) => s.proficiency !== null && s.proficiencyStatus !== 'from_projects').length : 0
     const withId = out.profile ? out.profile.skills.filter((s) => s.canonicalId).length : 0
     results.push({ entry, out, ms, handled, found, scores, levels, withId })
+  }
+
+  // --ai: the same CVs through rules + DeepSeek (the upload route's merge). Rules errors skip the AI.
+  let ai = null
+  if (useAi) {
+    const provider = providerFromEnv(process.env)
+    const reader = createAiReader({ provider, normalizer })
+    const usage = { input: 0, output: 0 }
+    for (const r of results) {
+      if (r.out.error) {
+        r.ai = { skipped: 'rules step failed' }
+        continue
+      }
+      const started = performance.now()
+      const answer = await reader.read({ cvText: r.out.lines.join('\n'), ip: 'eval', interfaceLanguage: 'en' })
+      const aiMs = Math.round(performance.now() - started)
+      if (answer.status !== 'ok') {
+        r.ai = { skipped: answer.reason ?? 'unknown' }
+        continue
+      }
+      usage.input += answer.usage.input
+      usage.output += answer.usage.output
+      const merged = mergeDrafts({ profile: r.out.profile, uncertain: r.out.uncertain }, answer.profile)
+      const foundAi = foundFields(merged.profile)
+      // Production runs both readers together, so the wait is the slower of the two.
+      r.ai = { ms: Math.max(r.ms, aiMs), found: foundAi, scores: Object.fromEntries(FIELDS.map((f) => [f, scoreField(r.entry.expected[f], foundAi[f])])) }
+    }
+    ai = { provider, usage, ran: results.filter((r) => r.ai.scores) }
   }
 
   const totals = Object.fromEntries(FIELDS.map((f) => [f, sumScores(results.map((r) => r.scores[f]))]))
@@ -123,8 +178,35 @@ async function main() {
     ...results.flatMap((r) => FIELDS.filter((f) => r.scores[f].fp || r.scores[f].fn).map((f) => `- **${r.entry.id} · ${f}** — expected: ${r.entry.expected[f].join(', ') || '(none)'} · found: ${r.found[f].join(', ') || '(none)'}`)),
     '',
   ]
+  if (ai) {
+    const aiTotals = Object.fromEntries(FIELDS.map((f) => [f, sumScores(ai.ran.map((r) => r.ai.scores[f]))]))
+    // rules-only numbers over the same CVs the AI read, so the two columns are comparable
+    const baseTotals = Object.fromEntries(FIELDS.map((f) => [f, sumScores(ai.ran.map((r) => r.scores[f]))]))
+    const wrong = (t) => round(FIELDS.reduce((n, f) => n + t[f].fp, 0) / Math.max(1, FIELDS.reduce((n, f) => n + t[f].tp + t[f].fp, 0)))
+    const cells = (t) => `${cell(t.precision)} | ${cell(t.recall)} | ${cell(t.f1)}`
+    lines.push(
+      '## Rules only vs rules + DeepSeek',
+      '',
+      `Model \`${ai.provider.model}\` · ${date} · ${ai.ran.length} of ${set.cases.length} CVs read by the AI (the rest are listed below). Both sides cover the same ${ai.ran.length} CVs. Source: \`node --env-file-if-exists=.env scripts/eval-cv.mjs --ai\`.`,
+      '',
+      '| Field | Rules P | Rules R | Rules F1 | Rules + AI P | Rules + AI R | Rules + AI F1 |',
+      '|---|---|---|---|---|---|---|',
+      ...FIELDS.map((f) => `| ${f} | ${cells(baseTotals[f])} | ${cells(aiTotals[f])} |`),
+      '',
+      `- Wrong-item rate: rules only **${wrong(baseTotals)}** · rules + AI **${wrong(aiTotals)}**`,
+      `- Latency per CV: rules only median **${median(ai.ran.map((r) => r.ms))} ms** · rules + AI median **${median(ai.ran.map((r) => r.ai.ms))} ms** (rules and AI run together)`,
+      `- Tokens and cost (AI reads that succeeded): ${costLine(ai.usage, ai.provider.model)}`,
+      '',
+      '| CV | AI result | Rules F1 (skills / jobs) | Rules + AI F1 (skills / jobs) | ms rules + AI (run together) |',
+      '|---|---|---|---|---|',
+      ...results.map((r) => (r.ai.scores
+        ? `| ${r.entry.id} | read | ${cell(r.scores.skills.f1)} / ${cell(r.scores.jobs.f1)} | ${cell(r.ai.scores.skills.f1)} / ${cell(r.ai.scores.jobs.f1)} | ${r.ai.ms} |`
+        : `| ${r.entry.id} | not read: ${r.ai.skipped} | — | — | — |`)),
+      '',
+    )
+  }
   await writeFile(path.join(ROOT, 'docs', 'eval-results.md'), lines.join('\n'))
-  console.log(`docs/eval-results.md written · ${set.cases.length} CVs · failures ${failures.length}`)
+  console.log(`docs/eval-results.md written · ${set.cases.length} CVs · failures ${failures.length}${ai ? ` · AI ${ai.ran.length} read · ${costLine(ai.usage, ai.provider.model).replaceAll('**', '')}` : ''}`)
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) await main()

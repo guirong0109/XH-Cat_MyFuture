@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { DECLINED, emptyProfile, makeSkill, val } from '../shared/profileSchema.js'
 import {
-  addRecord, applyAccepted, confirmProfile, diffProfiles, isUntouched, markForReview, mergeDraft, minimizeForGuest,
-  removeRecord, setField, userEditedPaths,
+  addRecord, confirmProfile, isUntouched, markForReview, mergeDraft, minimizeForGuest,
+  removeRecord, setField,
 } from '../shared/profileState.js'
 
 const cvSkill = (name, canonicalId = `onet:tech:${name.toLowerCase()}`, extra = {}) => ({ ...makeSkill({ name, canonicalId, source: 'cv_rules' }), ...extra })
@@ -53,7 +53,7 @@ describe('form helpers', () => {
   })
 })
 
-describe('CV draft and AI compare', () => {
+describe('CV draft', () => {
   const original = () => {
     const p = emptyProfile({ inputMethod: 'cv' })
     p.employment.status = val('employed')
@@ -61,14 +61,6 @@ describe('CV draft and AI compare', () => {
     p.skills = [cvSkill('SQL'), cvSkill('Python', 'onet:tech:python', { category: 'app' })]
     return p
   }
-  const suggested = () => {
-    const p = original()
-    p.employment.yearsOfExperience = val(3)
-    p.preferences.careerGoal = val('first_job')
-    p.skills = [cvSkill('SQL'), cvSkill('Python', 'onet:tech:python', { category: 'dev' }), cvSkill('Excel')]
-    return p
-  }
-
   it('mergeDraft: an empty form takes the draft; typed values win', () => {
     const draft = original()
     expect(mergeDraft(emptyProfile(), draft)).toEqual(draft)
@@ -80,33 +72,19 @@ describe('CV draft and AI compare', () => {
     expect(out.inputMethod).toBe('cv')
   })
 
-  it('diff marks new, changed, conflict and same', () => {
-    const rows = diffProfiles(original(), suggested(), new Set())
-    const kind = (path) => rows.find((row) => row.path === path)?.kind
-    expect(kind('employment.status')).toBe('same')
-    expect(kind('employment.yearsOfExperience')).toBe('conflict')
-    expect(kind('preferences.careerGoal')).toBe('new')
-    expect(kind('skills#onet:tech:excel')).toBe('new')
-    expect(kind('skills#onet:tech:python')).toBe('changed')
-    expect(kind('skills#onet:tech:sql')).toBe('same')
-  })
-
-  it('locked rows are never applied', () => {
-    const rows = diffProfiles(original(), suggested(), new Set(['employment.yearsOfExperience']))
-    const out = applyAccepted(original(), rows, new Set(rows.map((row) => row.path)))
-    expect(out.employment.yearsOfExperience).toEqual(val(2))
-    expect(out.preferences.careerGoal).toEqual(val('first_job'))
-    expect(out.skills.map((s) => s.name)).toEqual(['SQL', 'Python', 'Excel'])
-  })
-
-  it('userEditedPaths lists what changed after the draft', () => {
-    const draft = original()
-    const now = JSON.parse(JSON.stringify(draft))
-    now.employment.yearsOfExperience = val(4)
-    now.skills[1] = { ...now.skills[1], proficiency: 'good', proficiencyStatus: 'self_reported' }
-    now.skills.push({ ...cvSkill('Excel'), source: 'user_input' })
-    expect([...userEditedPaths(draft, now)].sort()).toEqual(['employment.yearsOfExperience', 'skills#onet:tech:excel', 'skills#onet:tech:python'])
-    expect([...userEditedPaths(null, setField(emptyProfile(), 'employment.status', val('employed')))]).toEqual(['employment.status'])
+  it('mergeDraft: repeated draft items the user does not have are all added; own items untouched', () => {
+    const current = setField(emptyProfile(), 'employment.status', val('employed'))
+    current.education.records = [{ qualification: 'Degree', fieldOfStudy: 'IT', userConfirmed: true }]
+    const draft = emptyProfile({ inputMethod: 'cv' })
+    draft.education.records = [
+      { qualification: '', fieldOfStudy: '', institution: 'A', userConfirmed: false },
+      { qualification: '', fieldOfStudy: '', institution: 'B', userConfirmed: false },
+    ]
+    const out = mergeDraft(current, draft)
+    expect(out.education.records).toHaveLength(3)
+    expect(out.education.records[0]).toEqual({ qualification: 'Degree', fieldOfStudy: 'IT', userConfirmed: true })
+    expect(out.education.records.slice(1).map((r) => r.institution)).toEqual(['A', 'B'])
+    expect(out.education.records.slice(1).every((r) => r.userConfirmed === false)).toBe(true)
   })
 
   it('minimizeForGuest removes CV quotes and raw text', () => {
@@ -115,29 +93,5 @@ describe('CV draft and AI compare', () => {
     expect(out.skills[0].extraction).toEqual({ method: 'dictionary', confidence: 1 })
     expect(out.rawText).toBeUndefined()
     expect(p.skills[0].extraction.evidence).toBe('Built SQL reports at Acme')
-  })
-
-  it("accepting every row still keeps the user's own edits", () => {
-    const draft = emptyProfile({ inputMethod: 'cv' })
-    draft.education.records = [{ qualification: 'Diploma', fieldOfStudy: 'IT', institution: 'Poli', year: '2021', userConfirmed: false }]
-    draft.skills = [cvSkill('Python')]
-    // the user fixed the institution, set a level on Python and typed a career goal
-    let current = setField(draft, 'education.records.0.institution', 'Politeknik Ungku Omar')
-    current = { ...current, skills: [{ ...current.skills[0], userConfirmed: true, proficiency: 'good', proficiencyStatus: 'self_reported' }] }
-    current = setField(current, 'preferences.careerGoal', val('change'))
-    // the AI suggests different values for both, plus one new certificate
-    const suggested = emptyProfile({ inputMethod: 'cv' })
-    suggested.education.records = [{ qualification: 'Diploma', fieldOfStudy: 'IT', institution: 'Ungku Omar Polytechnic', year: '', userConfirmed: false }]
-    suggested.skills = [{ ...makeSkill({ name: 'Python', originalText: 'python3', canonicalId: 'onet:tech:python', source: 'cv_ai' }) }]
-    suggested.certifications = [{ name: 'Google Data Analytics', issuer: '', year: '', userConfirmed: false }]
-    suggested.preferences.careerGoal = val('first_job')
-
-    const rows = diffProfiles(current, suggested, userEditedPaths(draft, current))
-    const out = applyAccepted(current, rows, new Set(rows.map((row) => row.path)))
-    expect(out.education.records[0].institution).toBe('Politeknik Ungku Omar')
-    expect(out.skills[0]).toMatchObject({ proficiency: 'good', proficiencyStatus: 'self_reported', originalText: 'Python' })
-    expect(out.preferences.careerGoal).toEqual(val('change'))
-    expect(out.certifications.map((c) => c.name)).toEqual(['Google Data Analytics'])
-    expect(rows.filter((row) => row.locked).map((row) => row.path).sort()).toEqual(['education.records#diploma|it', 'preferences.careerGoal', 'skills#onet:tech:python'])
   })
 })

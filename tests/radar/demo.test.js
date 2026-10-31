@@ -42,7 +42,7 @@ afterEach(async () => {
 async function start({ store = createMemoryStore(), now = clock(), writable = true } = {}) {
   const radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
   const radarAccess = createRadarAccess({ env: ENV, now })
-  server = createApp({ radar, radarAccess, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   if (writable) await radar.answer() // seeds prod/ from the bundle, as on first public use

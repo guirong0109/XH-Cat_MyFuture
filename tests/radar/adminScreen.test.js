@@ -69,7 +69,7 @@ beforeAll(async () => {
   const now = () => NOW
   const ingestor = createIngestor({ store, sources: { openalex: failingSource('openalex_rate_limited'), dosm: failingSource('dosm_dataset_missing') }, references, now, log: () => {} })
   const radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor, now, devStore: true, log: () => {} })
-  server = createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   await radar.answer()

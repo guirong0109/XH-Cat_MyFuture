@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../server/app.js'
 import { hashPassword, verifyPassword } from '../server/auth.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
-import { createFakeD1, createFakeTempStore } from './helpers/fakeStores.js'
+import { createFakeD1 } from './helpers/fakeStores.js'
 
 let dir
 beforeAll(async () => {
@@ -19,9 +19,8 @@ afterAll(() => rm(dir, { recursive: true, force: true }))
 async function start({ withD1 = true, at = '2026-10-29T10:00:00Z', trustProxy = false } = {}) {
   const d1 = withD1 ? createFakeD1() : null
   if (d1) await d1.migrate()
-  const tempStore = createFakeTempStore()
   const clock = { now: new Date(at) }
-  const server = createApp({ dataDir: dir, onetLive: null, d1, tempStore, now: () => clock.now, trustProxy }).listen(0)
+  const server = createApp({ dataDir: dir, onetLive: null, d1, now: () => clock.now, trustProxy }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   const base = `http://127.0.0.1:${server.address().port}`
   const call = (method, url, body, cookie, from = null) => fetch(base + url, {
@@ -29,7 +28,7 @@ async function start({ withD1 = true, at = '2026-10-29T10:00:00Z', trustProxy = 
     headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(cookie ? { Cookie: cookie } : {}), ...(from ? { 'X-Forwarded-For': from } : {}) },
     body: body ? JSON.stringify(body) : undefined,
   })
-  return { d1, tempStore, clock, call, close: () => new Promise((resolve) => server.close(resolve)) }
+  return { d1, clock, call, close: () => new Promise((resolve) => server.close(resolve)) }
 }
 const cookieOf = (response) => response.headers.get('set-cookie')?.split(';')[0]
 const USER = { email: 'aina@example.com', password: 'correct horse 42', language: 'ms' }
@@ -137,20 +136,18 @@ describe('account routes', () => {
     }
   })
 
-  it('delete me removes the user, sessions, profiles and the temporary CV named in a saved profile', async () => {
+  it('delete me removes the user, sessions and profiles', async () => {
     const app = await start()
     try {
       const response = await app.call('POST', '/api/auth/signup', USER)
       const cookie = cookieOf(response)
       const { user } = await response.json()
-      await app.tempStore.put('cv-temp/ext-1', Buffer.from('pdf'), 'application/pdf')
       await app.d1.query('INSERT INTO profiles (id, user_id, version, status, json, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
         ['p1', user.id, 1, 'confirmed', JSON.stringify({ dataProvenance: { extractionId: 'ext-1' } }), 't'])
       const deleted = await app.call('DELETE', '/api/auth/me', null, cookie)
       expect(deleted.status).toBe(200)
       expect(await deleted.json()).toEqual({ deleted: true })
       for (const table of ['users', 'sessions', 'profiles']) expect((await app.d1.query(`SELECT COUNT(*) AS n FROM ${table}`)).rows[0].n).toBe(0)
-      expect(await app.tempStore.get('cv-temp/ext-1')).toBe(null)
       expect((await app.call('GET', '/api/auth/me', null, cookie)).status).toBe(401)
     } finally {
       await app.close()

@@ -4,7 +4,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
-import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
+import { addRecord, confirmProfile, declineUnanswered, isUntouched, mergeCareerFields, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
@@ -39,7 +39,6 @@ import * as accountApi from './accountApi.js'
 import * as orgApi from './orgApi.js'
 import { consumeJoinHash, createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
-import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
 import { shouldPlayIntro } from './intro/timeline.js'
@@ -76,8 +75,6 @@ let resumeTo = null
 let saved = false
 // The chosen CV file stays in memory only (for Retry); it is never saved in the browser.
 let cvFile = null
-// The CV draft as it came from the server: the compare view locks what the user changed since. Memory only.
-let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
 // After guest or account: personal users are asked their goal first; organisations go to "Who are you?".
 // The ISCED-F field search (field names and the CIP programmes linked to them); null when it is not available.
@@ -93,7 +90,7 @@ function persist() {
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -673,7 +670,6 @@ const actions = {
     orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
     cvFile = null
-    cvDraft = null
     go('welcome')
   },
   // After a version conflict: take the account's newer copy (it replaces the changes on this device).
@@ -919,11 +915,9 @@ const actions = {
     // The field of study is prechosen from the CV words, for the user to check (owner, 31 Oct).
     const draft = await prechooseFields(dropNotAsked(out.data.profile), searchFields)
     state.profile = mergeDraft(state.profile, draft)
-    cvDraft = draft
     state.cvSession = true
-    state.ai = null
     state.extractionId = out.data.extractionId
-    state.cv = { phase: 'ready', language: out.data.language, langAnswered: false }
+    state.cv = { phase: 'ready', language: out.data.language, langAnswered: false, warnings: out.data.warnings ?? [] }
     persist()
     render()
   },
@@ -931,29 +925,6 @@ const actions = {
   cvReset: () => { cvFile = null; state.cv = null; render() },
   cvKeepLang: () => { state.cv.langAnswered = true; persist(); render() },
   cvSwitchLang: (lang) => { state.cv.langAnswered = true; actions.lang(lang) },
-  aiOpen: () => { state.ai = { phase: 'consent' }; render() },
-  aiClose: () => { state.ai = null; render() },
-  aiRun: async () => {
-    if (!document.getElementById('aiConsent')?.checked) return
-    state.ai = { phase: 'busy' }
-    render()
-    const out = await api('POST', '/api/cv/reextract', { extractionId: state.extractionId, consent: true, interfaceLanguage: state.lang })
-    if (!out.ok) {
-      state.ai = { phase: 'error', reason: out.reason ?? out.code }
-      return render()
-    }
-    // What the user changed since the CV draft is locked: the AI never overwrites it.
-    const suggested = await prechooseFields(dropNotAsked(out.data.suggested), searchFields)
-    const rows = diffProfiles(state.profile, suggested, userEditedPaths(cvDraft, state.profile))
-    state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
-    render()
-  },
-  aiAccept: () => {
-    const rows = visibleRows(state.ai)
-    const ticked = new Set([...document.querySelectorAll('[data-ai-row]:checked')].map((box) => rows[Number(box.dataset.aiRow)].path))
-    state.ai = null
-    update(applyAccepted(state.profile, rows, ticked))
-  },
   confirm: async () => {
     // Case C: the server normalises skills against O*NET and checks every field; nothing is saved here.
     const out = await api('POST', '/api/profiles/validate', { profile: state.profile })

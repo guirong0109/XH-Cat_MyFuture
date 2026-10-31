@@ -31,15 +31,14 @@ Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026; Career m
 | Item | Use | Status |
 |---|---|---|
 | Embedding model `BAAI/bge-m3` on a RunPod serverless endpoint (OpenAI-compatible `/embeddings`) | L3 semantic match of CV wordings to O\*NET skill names, above a cutoff chosen by Model Eval | Code and Model Eval ready. **No endpoint created**: the owner chose to skip L3 for now, so extractions report `semantic_unavailable` |
-| Chat model (proposed `Qwen/Qwen2.5-7B-Instruct`) on a RunPod serverless endpoint (OpenAI-compatible chat) | "Improve extraction with AI", first provider; consent required | Code ready. **Not created** (owner's choice) |
-| Claude API, model `claude-opus-5-5` (Anthropic), raw HTTPS, `anthropic-version: 2026-10-21` | "Improve extraction with AI", backup provider; consent required | Code ready. **No key set** (owner's choice) |
+| DeepSeek API (`https://api.deepseek.com/chat/completions`, OpenAI-compatible chat), model `deepseek-flash` (or `deepseek-v4-pro`) | Reads every uploaded CV next to the rules reader; the user checks everything before it is saved. The upload screen says so | Built and checked with the owner's key (31 Oct): thinking off, 40 s limit, about $0.0034 for 10 synthetic CVs; without `CV_LLM_KEY` the rules reader works alone. Data is stored in China: fine for synthetic data, check Malaysia's PDPA before real users |
 
 Rules for every AI path:
 - the CV is sent as data inside `<cv>` tags;
 - every item must quote the CV word for word or it is dropped;
 - levels, skill ids and occupation codes never come from a model;
-- suggestions change nothing until the user ticks them, and stay Unverified until Confirm;
-- CV text and model replies are never logged;
+- AI items are tagged "Found by AI" and stay Unverified until the user confirms;
+- CV text and model replies are never logged; the user is told on the upload screen that DeepSeek reads the CV;
 - CVs are never used as training data.
 
 ## Infrastructure and libraries
@@ -55,7 +54,7 @@ Rules for every AI path:
 | Python 3 (standard library) | `pipeline/fetch_onet.py` O\*NET refresh and its tests | In use |
 | Cloudflare D1 (REST query API) | Accounts, sessions, saved profiles | Code ready; needs the owner's D1 settings. Tested with `node:sqlite` and the real `migrations.sql` |
 | Cloudflare R2 (same client, plus `ListObjectsV2` and conditional `If-Match` / `If-None-Match: *` writes) | Radar state: immutable snapshots, manifests, signals, owner reviews and ingestion log under `prod/`; judge sessions under `demo/<session>/`; `prod/active.json` switched only by conditional write | Code ready, tested with a fake; needs the owner's R2 settings (free allowance) and the real-R2 check. Without R2 the Radar serves its bundled data read-only |
-| Cloudflare R2 (S3-compatible API, Signature V4) | Temporary CV copy `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule | Code ready; needs the owner's R2 settings |
+| Cloudflare R2 (S3-compatible API, Signature V4) | Code in `server/store/r2.js` stays, but the CV flow no longer uses it (the temporary CV copy was removed on 31 Oct) | Not used by the CV flow (the Radar uses R2, row above) |
 
 ## Development tools
 

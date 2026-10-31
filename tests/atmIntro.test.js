@@ -76,7 +76,7 @@ describe('three.js from our own server', () => {
 
   it('serves the three.js module and its add-ons (works offline, no CDN)', async () => {
     directory = await mkdtemp(path.join(tmpdir(), 'three-'))
-    server = createApp({ dataDir: directory, d1: null, tempStore: null, llmProviders: [] }).listen(0)
+    server = createApp({ dataDir: directory, d1: null, aiProvider: null }).listen(0)
     await new Promise((resolve) => server.once('listening', resolve))
     const base = `http://127.0.0.1:${server.address().port}`
     for (const file of ['/vendor/three/build/three.module.js', '/vendor/three/addons/geometries/RoundedBoxGeometry.js']) {

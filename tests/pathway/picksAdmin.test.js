@@ -65,7 +65,7 @@ async function start({ store = createMemoryStore(), writable = true, onDecision,
   const radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
   const calls = { decided: 0 }
   const pathway = { pathway: async () => null, picksDecided: () => { calls.decided += 1; onDecision?.() } }
-  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), dataDir: dir, ...(withService ? { pathway } : {}), ...appOptions, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }))
+  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), dataDir: dir, ...(withService ? { pathway } : {}), ...appOptions, d1: null, aiProvider: null, onetLive: null, now }))
   return { store, calls }
 }
 

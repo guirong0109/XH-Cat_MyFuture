@@ -40,7 +40,7 @@ const publicUser = (row) => ({ id: row.id, email: row.email, language: row.langu
 // Checked against when the email is unknown, so both failures take the same time.
 const DUMMY = hashPassword('dummy password', '00000000000000000000000000000000')
 
-export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
+export function createAuth({ d1, now = () => new Date() }) {
   // Sign-in limit per address (spec §10: 10 per 15 minutes).
   const signIns = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
   const countAttempt = (address) => {
@@ -94,19 +94,8 @@ export function createAuth({ d1, tempStore = null, now = () => new Date() }) {
     if (token) await d1.query('DELETE FROM sessions WHERE token_hash = ?', [tokenHash(token)])
   }
 
-  // Everything about the user goes: temporary CV files named in their profiles, then the user (sessions and
-  // profiles follow by ON DELETE CASCADE).
+  // Everything about the user goes (sessions and profiles follow by ON DELETE CASCADE).
   async function deleteMe(userId) {
-    const { rows } = await d1.query('SELECT json FROM profiles WHERE user_id = ?', [userId])
-    if (tempStore) {
-      for (const { json } of rows) {
-        let extractionId = null
-        try {
-          extractionId = JSON.parse(json)?.dataProvenance?.extractionId ?? null
-        } catch {}
-        if (extractionId) await tempStore.delete(`cv-temp/${extractionId}`).catch(() => {})
-      }
-    }
     await d1.query('DELETE FROM users WHERE id = ?', [userId])
     return { deleted: true }
   }

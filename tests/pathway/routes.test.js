@@ -71,7 +71,7 @@ async function start({ store = createMemoryStore(), pathwayStore, log = () => {}
   const radarAccess = createRadarAccess({ env: ENV, now })
   const matching = createMatchingServiceFromEnv({ dataDir, radar, demo: null, access: radarAccess, references: fixtureReferences, now, log: () => {} })
   const pathway = createPathwayServiceFromEnv({ dataDir, matching, store: pathwayStore !== undefined ? pathwayStore : store, now, log })
-  server = createApp({ radar, radarAccess, radarDemo: null, matching, pathway, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess, radarDemo: null, matching, pathway, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   return { store, pathway }

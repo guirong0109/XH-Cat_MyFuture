@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
-import { scoreField, sumScores } from '../scripts/eval-cv.mjs'
+import { DEEPSEEK_PRICES, checkAiSettings, costLine, costOf, scoreField, sumScores } from '../scripts/eval-cv.mjs'
 
 describe('CV extraction evaluation', () => {
   it('precision and recall on a fixed tiny case', () => {
@@ -20,5 +20,22 @@ describe('CV extraction evaluation', () => {
     const tags = set.cases.flatMap((c) => c.tags)
     for (const tag of ['en', 'ms', 'zh', 'mixed', 'two_degrees', 'no_job', 'project_only', 'injection', 'docx', 'scanned']) expect(tags, tag).toContain(tag)
     expect(set.cases.length).toBeGreaterThanOrEqual(10)
+  })
+
+  it('costOf prices tokens per million; the table holds the spec prices', () => {
+    expect(costOf({ input: 5000, output: 2000 }, DEEPSEEK_PRICES['deepseek-flash'])).toBeCloseTo(0.0039, 4)
+    expect(DEEPSEEK_PRICES['deepseek-v4-pro']).toEqual({ input: 1.32, output: 3.96 })
+  })
+
+  it('--ai without a key gives the exact message; with a key gives null', () => {
+    expect(checkAiSettings({})).toBe("CV_LLM_KEY is not set; the AI check needs the owner's DeepSeek key.")
+    expect(checkAiSettings({ CV_LLM_KEY: 'k' })).toBeNull()
+  })
+
+  it('costLine shows the cost for a known model and says the price is unknown otherwise', () => {
+    expect(costLine({ input: 5000, output: 2000 }, 'deepseek-flash')).toContain('0.0039')
+    const unknown = costLine({ input: 5000, output: 2000 }, 'mystery')
+    expect(unknown).toContain('5000')
+    expect(unknown).toContain('price is unknown')
   })
 })

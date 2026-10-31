@@ -95,10 +95,11 @@ function picker({ t, state }, key, label) {
 
 // A skill chip: ✓ for a skill in the O*NET list (with the CV's own words when they differ), ? for one that is not.
 function chip(t, skill) {
-  if (!skill.canonicalId) return `<span class="sk unk" title="${esc(t('skillUnknown'))}">? ${esc(skill.name)} <small>${esc(t('notInList'))}</small></span>`
+  const ai = skill.source === 'cv_ai' ? ` <small class="ai-tag">${esc(t('tagFromAi'))}</small>` : ''
+  if (!skill.canonicalId) return `<span class="sk unk" title="${esc(t('skillUnknown'))}">? ${esc(skill.name)} <small>${esc(t('notInList'))}</small>${ai}</span>`
   const written = skill.originalText && norm(skill.originalText) !== norm(skill.name) ? ` <small>${esc(t('fromText', { text: skill.originalText }))}</small>` : ''
   const level = skill.proficiency ? ` <em>${esc(t(skill.proficiency))}</em>` : ''
-  return `<span class="sk ok">✓ ${esc(skill.name)}${written}${level}</span>`
+  return `<span class="sk ok">✓ ${esc(skill.name)}${written}${level}${ai}</span>`
 }
 
 // One skill in a card's Edit view: its level, the standard term to pick when it is unclear, and how to take it out.
@@ -138,7 +139,7 @@ function card(ctx, group) {
   const isOther = group.kind === 'other'
   const heading = isOther
     ? `<h3>${esc(t('grpOther'))}</h3>`
-    : `<span class="kind">${esc(t(group.kind === 'job' ? 'grpJob' : 'grpProject'))}</span><h3>${esc([group.title, record.employer].filter(Boolean).join(' · ') || '…')}</h3>`
+    : `<span class="kind">${esc(t(group.kind === 'job' ? 'grpJob' : 'grpProject'))}</span><h3>${esc([group.title, record.employer].filter(Boolean).join(' · ') || '…')}</h3>${record.extraction?.method === 'ai' ? ` <small class="ai-tag">${esc(t('tagFromAi'))}</small>` : ''}`
   const status = group.needsCheck
     ? `<button class="btn pri sm" data-act="groupOk" data-arg="${group.key}">${esc(t('looksRight'))}</button>`
     : group.fromCv ? tag('ok', `✓ ${t('grpConfirmed')}`) : ''

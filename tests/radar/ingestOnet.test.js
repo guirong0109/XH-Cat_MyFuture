@@ -297,7 +297,7 @@ async function start() {
   let radar = null
   const ingestor = createIngestor({ store, sources, loadReferences: () => radar.references(), now, log: () => {} })
   radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor, now, log: () => {} })
-  server = createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   return { store, sources }

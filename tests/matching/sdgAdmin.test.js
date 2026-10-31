@@ -53,7 +53,7 @@ async function listen(app) {
 
 async function start({ store = createMemoryStore(), writable = true } = {}) {
   const radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
-  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, tempStore: null, llmProviders: [], onetLive: null, now }))
+  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), d1: null, aiProvider: null, onetLive: null, now }))
   return { store }
 }
 

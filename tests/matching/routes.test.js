@@ -77,7 +77,7 @@ async function start({ store = createMemoryStore(), radarOverride = null, demoOv
   const radarAccess = createRadarAccess({ env: ENV, now })
   const demo = demoOverride !== undefined ? demoOverride : createDemoService({ store, base: BASE, references: async () => references, now })
   const matching = createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, references: fixtureReferences, now, log })
-  server = createApp({ ...(appDataDir ? { dataDir: appDataDir } : {}), radar, radarAccess, radarDemo: demo, matching, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+  server = createApp({ ...(appDataDir ? { dataDir: appDataDir } : {}), radar, radarAccess, radarDemo: demo, matching, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
   return { store, radar, demo }

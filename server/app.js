@@ -16,11 +16,10 @@ import { loadInterestAreas } from './interests/interestAreas.js'
 import { interestRoutes } from './routes/interests.js'
 import { cvRoutes } from './routes/cv.js'
 import { createSemanticFromEnv } from './cv/semantic.js'
-import { createReextractor, providersFromEnv } from './cv/reextract.js'
+import { createAiReader, providerFromEnv } from './cv/aiRead.js'
 import { createAuth } from './auth.js'
 import { authRoutes } from './routes/auth.js'
 import { createD1FromEnv } from './store/d1.js'
-import { createR2FromEnv } from './store/r2.js'
 import { createOnetLiveFromEnv } from './occupations/onetLive.js'
 import { createCache } from './occupations/cache.js'
 import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
@@ -56,9 +55,8 @@ export function createApp({
   fetchImpl = fetch,
   now = () => new Date(),
   d1 = createD1FromEnv(),
-  tempStore = createR2FromEnv(),
   semantic = createSemanticFromEnv(),
-  llmProviders = providersFromEnv(),
+  aiProvider = providerFromEnv(process.env),
   onetLive = createOnetLiveFromEnv(),
   // Behind a reverse proxy set TRUST_PROXY (e.g. 1 = one proxy hop) so the sign-in and AI limits count each visitor.
   trustProxy = process.env.TRUST_PROXY ? (Number.isFinite(Number(process.env.TRUST_PROXY)) ? Number(process.env.TRUST_PROXY) : process.env.TRUST_PROXY) : false,
@@ -81,13 +79,13 @@ export function createApp({
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', trustProxy)
-  app.locals.config = { dataDir, fetchImpl, now, d1, tempStore, semantic, llmProviders, onetLive, radar }
+  app.locals.config = { dataDir, fetchImpl, now, d1, semantic, aiProvider, onetLive, radar }
 
   // Which optional services this server has, so the screens can say what is kept where.
-  app.get('/api/health', (request, response) => response.json({ ok: true, features: { accounts: Boolean(d1), tempCopy: Boolean(tempStore), ai: llmProviders.length > 0 } }))
+  app.get('/api/health', (request, response) => response.json({ ok: true, features: { accounts: Boolean(d1), ai: Boolean(aiProvider) } }))
 
   // Accounts only with D1; guests work fully without it.
-  const auth = d1 ? createAuth({ d1, tempStore, now }) : null
+  const auth = d1 ? createAuth({ d1, now }) : null
   app.locals.auth = auth
   app.use(authRoutes({ auth }))
 
@@ -112,16 +110,16 @@ export function createApp({
     loadCatalogue().then((catalogue) => semantic.match(['warm-up'], catalogue.entries)).catch((error) => console.error('[semantic] warm-up failed:', error?.kind ?? error?.name ?? 'Error'))
   }
   app.use(skillRoutes({ loadNormalizer, loadCatalogue }))
-  app.use(profileRoutes({ loadNormalizer, auth, d1, tempStore, now }))
-  // AI re-extraction: needs a provider (RunPod or Claude) and the temporary CV copy (R2).
-  let reextractor = null
-  const reextract = {
-    run: async (args) => {
-      reextractor ??= createReextractor({ tempStore, providers: llmProviders, fetchImpl, normalizer: await loadNormalizer(), now })
-      return reextractor.run(args)
-    },
-  }
-  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, tempStore, reextractor: reextract, now }))
+  app.use(profileRoutes({ loadNormalizer, auth, d1, now }))
+  // DeepSeek reads every upload next to the rules reader; it needs CV_LLM_KEY. Built on first use, with the normalizer.
+  let aiReader = null
+  const lazyAiReader = aiProvider
+    ? { read: async (args) => {
+      aiReader ??= createAiReader({ provider: aiProvider, fetchImpl, normalizer: await loadNormalizer(), now })
+      return aiReader.read(args)
+    } }
+    : null
+  app.use(cvRoutes({ loadCatalogue, loadNormalizer, semantic, cutoff, aiReader: lazyAiReader, now }))
 
   const lookup = createOccupationLookup({
     live: onetLive,

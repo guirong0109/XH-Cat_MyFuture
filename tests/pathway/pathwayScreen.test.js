@@ -387,7 +387,7 @@ describe('pathwayApi and the screen on a real answer', () => {
     const radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now, log: () => {} })
     const matching = createMatchingServiceFromEnv({ dataDir: fixture.dir, radar, demo: null, access: null, references: fixtureReferences, now, log: () => {} })
     const pathway = createPathwayServiceFromEnv({ dataDir: fixture.dir, matching, store, now, log: () => {} })
-    server = createApp({ radar, radarDemo: null, matching, pathway, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
+    server = createApp({ radar, radarDemo: null, matching, pathway, d1: null, aiProvider: null, onetLive: null, now }).listen(0)
     await new Promise((resolve) => server.once('listening', resolve))
     base = `http://127.0.0.1:${server.address().port}`
   })

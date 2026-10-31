@@ -24,9 +24,9 @@ afterEach(async () => {
 
 describe('server skeleton', () => {
   it('GET /api/health says which optional services this server has (all off by default)', async () => {
-    await start({ d1: null, tempStore: null, llmProviders: [] })
+    await start({ d1: null, aiProvider: null })
     const response = await fetch(`${base}/api/health`)
-    expect(await response.json()).toEqual({ ok: true, features: { accounts: false, tempCopy: false, ai: false } })
+    expect(await response.json()).toEqual({ ok: true, features: { accounts: false, ai: false } })
   })
 
   it('GET / serves index.html', async () => {

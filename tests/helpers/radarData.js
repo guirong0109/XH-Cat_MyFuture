@@ -9,7 +9,7 @@ import * as radarApi from '../../public/js/radarApi.js'
 export async function startRadar() {
   const references = await loadRadarReferences('data')
   const radar = createRadarService({ store: null, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now: () => new Date('2026-10-31T00:00:00Z') })
-  const server = createApp({ radar, d1: null, tempStore: null, llmProviders: [], onetLive: null }).listen(0)
+  const server = createApp({ radar, d1: null, aiProvider: null, onetLive: null }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   const base = `http://127.0.0.1:${server.address().port}`
   const out = await radarApi.load(undefined, { base })

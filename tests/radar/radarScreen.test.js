@@ -331,7 +331,7 @@ describe('development store banner (spec §7)', () => {
     const references = await loadRadarReferences('data')
     const store = createMemoryStore()
     const radar = createRadarService({ store, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now: () => new Date('2026-10-31T00:00:00Z'), devStore: true, log: () => {} })
-    const dev = createApp({ radar, d1: null, tempStore: null, llmProviders: [], onetLive: null }).listen(0)
+    const dev = createApp({ radar, d1: null, aiProvider: null, onetLive: null }).listen(0)
     await new Promise((resolve) => dev.once('listening', resolve))
     try {
       const devBase = `http://127.0.0.1:${dev.address().port}`

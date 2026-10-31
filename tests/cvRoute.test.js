@@ -4,22 +4,31 @@ import path from 'node:path'
 import express from 'express'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../server/app.js'
-import { cvRoutes } from '../server/routes/cv.js'
-import { validateProfile } from '../shared/profileSchema.js'
+import { UPLOAD_TIMEOUT_MS, cvRoutes } from '../server/routes/cv.js'
+import { AI_TIMEOUT_MS } from '../server/cv/aiRead.js'
+import { readText } from '../server/cv/readText.js'
+import { emptyProfile, validateProfile } from '../shared/profileSchema.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
+import { createFakeTempStore } from './helpers/fakeStores.js'
 import { DOC_BYTES, PNG_BYTES, SAMPLE_LINES, makeDocx, makePdf } from './helpers/cvFixtures.js'
+
+describe('CV upload time limits (owner, 31 Oct: DeepSeek needs more than 15 s for a real CV)', () => {
+  it('the upload waits up to 45 s and the AI up to 40 s', () => {
+    expect(UPLOAD_TIMEOUT_MS).toBe(45000)
+    expect(AI_TIMEOUT_MS).toBe(40000)
+  })
+})
 
 let dir
 let server
 let base
-const stored = []
-const tempStore = { put: async (key, buffer, contentType) => stored.push({ key, size: buffer.length, contentType }) }
+const tempStore = createFakeTempStore()
 
 beforeAll(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'cvroute-'))
   await mkdir(path.join(dir, 'onet'))
   await writeCatalogue(path.join(dir, 'onet'))
-  server = createApp({ dataDir: dir, onetLive: null, tempStore, llmProviders: [] }).listen(0)
+  server = createApp({ dataDir: dir, onetLive: null, tempStore, aiProvider: null }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
 })
@@ -38,7 +47,7 @@ describe('POST /api/cv/extract', () => {
     const response = await upload(makePdf(SAMPLE_LINES))
     expect(response.status).toBe(200)
     const body = await response.json()
-    expect(body).toMatchObject({ status: 'ok', language: expect.any(String), extractor: { version: 'cv-1.0', layers: ['L1', 'L2', 'L4'] }, warnings: ['semantic_unavailable'] })
+    expect(body).toMatchObject({ status: 'ok', language: expect.any(String), extractor: { version: 'cv-1.0', layers: ['L1', 'L2', 'L4'] }, warnings: ['semantic_unavailable', 'ai_unavailable'] })
     expect(body.extractionId).toMatch(/^[0-9a-f-]{36}$/)
     expect(body.profile).toMatchObject({ profileStatus: 'draft', inputMethod: 'cv' })
     expect(body.profile.skills.map((s) => s.canonicalId)).toContain('onet:tech:python')
@@ -58,9 +67,9 @@ describe('POST /api/cv/extract', () => {
     expect(profile.cvLanguage).toBe(language)
   })
 
-  it('stores the file as cv-temp/<extractionId> when temporary storage is configured', async () => {
-    const { extractionId } = await (await upload(makePdf(SAMPLE_LINES))).json()
-    expect(stored).toContainEqual({ key: `cv-temp/${extractionId}`, size: expect.any(Number), contentType: PDF })
+  it('keeps no copy of the file: the store stays empty after an upload', async () => {
+    await upload(makePdf(SAMPLE_LINES))
+    expect(tempStore.files.size).toBe(0)
   })
 
   it.each([
@@ -94,14 +103,9 @@ describe('POST /api/cv/extract', () => {
     }
   })
 
-  it('re-extraction: no consent → 400 consent_required; no provider → 503 ai_unavailable not_configured', async () => {
-    const post = (body) => fetch(`${base}/api/cv/reextract`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    const noConsent = await post({ extractionId: '0b1e9a3c-1111-4222-8333-944455556666', consent: false })
-    expect(noConsent.status).toBe(400)
-    expect((await noConsent.json()).error.code).toBe('consent_required')
-    const off = await post({ extractionId: '0b1e9a3c-1111-4222-8333-944455556666', consent: true })
-    expect(off.status).toBe(503)
-    expect(await off.json()).toEqual({ error: { code: 'ai_unavailable', message: expect.any(String), retryable: false }, reason: 'not_configured' })
+  it('POST /api/cv/reextract no longer exists → 404', async () => {
+    const response = await fetch(`${base}/api/cv/reextract`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+    expect(response.status).toBe(404)
   })
 
   it('an extraction slower than the time limit → 504 timeout, retryable', async () => {
@@ -116,5 +120,108 @@ describe('POST /api/cv/extract', () => {
     } finally {
       await new Promise((resolve) => slow.close(resolve))
     }
+  })
+
+  describe('with the AI reader', () => {
+    const AI_JOB = { jobTitle: 'Barista', employer: 'Kopi Corner', evidence: 'Barista at Kopi Corner' }
+    const aiProfile = () => {
+      const profile = emptyProfile({ inputMethod: 'cv', interfaceLanguage: 'en' })
+      profile.employment.records = [{ ...AI_JOB, employer: 'Kopi Corner', extraction: { method: 'ai', evidence: AI_JOB.evidence } }]
+      return profile
+    }
+    const serve = async (aiReader, extra = {}) => {
+      const { loadSkillCatalogue } = await import('../server/skills/onetSkills.js')
+      const { createNormalizer } = await import('../server/skills/normalize.js')
+      const catalogue = await loadSkillCatalogue(path.join(dir, 'onet'))
+      const normalizer = createNormalizer({ catalogue })
+      const app = express()
+      app.use(cvRoutes({ loadCatalogue: async () => catalogue, loadNormalizer: async () => normalizer, aiReader, ...extra }))
+      const srv = app.listen(0)
+      await new Promise((resolve) => srv.once('listening', resolve))
+      const run = (body, type, lang) => upload(body, type, lang, `http://127.0.0.1:${srv.address().port}`)
+      return { run, close: () => new Promise((resolve) => srv.close(resolve)) }
+    }
+
+    it('merged draft: the AI-only job is in the answer, layers has ai, model is set, no ai warning', async () => {
+      const aiReader = { read: async () => ({ status: 'ok', model: 'deepseek-flash', dropped: 0, usage: {}, profile: aiProfile() }) }
+      const s = await serve(aiReader)
+      try {
+        const body = await (await s.run(makePdf(SAMPLE_LINES), PDF, 'en')).json()
+        expect(body.extractor.layers).toContain('ai')
+        expect(body.extractor.model).toBe('deepseek-flash')
+        expect(body.warnings.filter((w) => w.startsWith('ai_'))).toEqual([])
+        expect(body.profile.employment.records.map((r) => r.jobTitle)).toContain('Barista')
+      } finally { await s.close() }
+    })
+
+    it('no aiReader → rules only with ai_unavailable', async () => {
+      const s = await serve(null)
+      try {
+        const response = await s.run(makePdf(SAMPLE_LINES), PDF, 'en')
+        expect(response.status).toBe(200)
+        const body = await response.json()
+        expect(body.warnings).toContain('ai_unavailable')
+        expect(body.extractor.layers).not.toContain('ai')
+        expect(body.extractor.model).toBeUndefined()
+      } finally { await s.close() }
+    })
+
+    it('skipped ai_limit → warning ai_limit', async () => {
+      const s = await serve({ read: async () => ({ status: 'skipped', reason: 'ai_limit' }) })
+      try {
+        const body = await (await s.run(makePdf(SAMPLE_LINES), PDF, 'en')).json()
+        expect(body.warnings).toContain('ai_limit')
+        expect(body.extractor.layers).not.toContain('ai')
+      } finally { await s.close() }
+    })
+
+    it('slow AI → the rules draft comes back before the upload limit, with ai_unavailable', async () => {
+      const s = await serve({ read: () => new Promise(() => {}) }, { timeoutMs: 3000, aiTimeoutMs: 100 })
+      try {
+        const response = await s.run(makePdf(SAMPLE_LINES), PDF, 'en')
+        expect(response.status).toBe(200)
+        expect((await response.json()).warnings).toContain('ai_unavailable')
+      } finally { await s.close() }
+    })
+
+    it('AI limit larger than the upload limit → still 200 with the rules draft, not 504', async () => {
+      const s = await serve({ read: () => new Promise(() => {}) }, { timeoutMs: 2000, aiTimeoutMs: 10000 })
+      try {
+        const response = await s.run(makePdf(SAMPLE_LINES), PDF, 'en')
+        expect(response.status).toBe(200)
+        expect((await response.json()).warnings).toContain('ai_unavailable')
+      } finally { await s.close() }
+    })
+
+    it('the AI reader throws → 200 with the rules draft and ai_unavailable; no CV text is logged', async () => {
+      const spies = ['log', 'info', 'warn', 'error', 'debug'].map((name) => vi.spyOn(console, name))
+      const s = await serve({ read: async () => { throw new Error('boom') } })
+      try {
+        const response = await s.run(makePdf(['Secret Person Zulkifli', ...SAMPLE_LINES]), PDF, 'en')
+        expect(response.status).toBe(200)
+        const body = await response.json()
+        expect(body.status).toBe('ok')
+        expect(body.warnings).toContain('ai_unavailable')
+        expect(body.extractor.layers).not.toContain('ai')
+        expect(validateProfile(body.profile).ok).toBe(true)
+        const printed = spies.flatMap((spy) => spy.mock.calls.flat()).map((arg) => (arg instanceof Error ? `${arg.message}\n${arg.stack}` : String(arg))).join('\n')
+        expect(printed).not.toContain('Zulkifli')
+      } finally {
+        spies.forEach((spy) => spy.mockRestore())
+        await s.close()
+      }
+    })
+
+    it('the AI gets the same lines and the network address', async () => {
+      const seen = []
+      const s = await serve({ read: async (args) => { seen.push(args); return { status: 'skipped', reason: 'ai_unavailable' } } })
+      try {
+        await s.run(makePdf(SAMPLE_LINES), PDF, 'ms')
+        expect(seen).toHaveLength(1)
+        expect(seen[0].cvText).toBe((await readText(makePdf(SAMPLE_LINES), 'pdf')).lines.join(String.fromCharCode(10)))
+        expect(seen[0].ip).toEqual(expect.any(String))
+        expect(seen[0].interfaceLanguage).toBe('ms')
+      } finally { await s.close() }
+    })
   })
 })

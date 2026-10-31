@@ -755,6 +755,7 @@ async function runSearch(kind, key, term) {
 document.addEventListener('input', (event) => {
   // Radar skills card: the search box filters the list as you type; focus and caret come back after the redraw.
   if (event.target.hasAttribute?.('data-radar-search')) {
+    if (event.isComposing) return // wait for compositionend (pinyin and other input methods)
     const pos = event.target.selectionStart ?? event.target.value.length
     setRadar({ q: event.target.value })
     return keepCaret(pos)
@@ -766,6 +767,11 @@ document.addEventListener('input', (event) => {
   state.pick ??= {}
   clearTimeout(searchTimers[key])
   searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
+})
+document.addEventListener('compositionend', (event) => {
+  if (!event.target.hasAttribute?.('data-radar-search')) return
+  setRadar({ q: event.target.value })
+  keepCaret(event.target.selectionStart ?? event.target.value.length)
 })
 document.addEventListener('keydown', (event) => {
   // Radar: chart points are keyboard buttons (role="button"); Escape closes the evidence panel.

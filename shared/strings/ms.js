@@ -716,4 +716,9 @@ export default {
   rdChainSameUnit: "Peranan eMASCO dalam kumpulan 4 digit yang sama berkongsi satu pautan O*NET, jadi menunjukkan kemahiran yang sama.", // translation: owner review
   rdSkAds: "iklan", // translation: owner review
   rdSkAria: "{n}. {name}: {count} iklan kerja AS pada {year}", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} tiada pautan dalam jadual rasmi seterusnya", // translation: owner review
+  rdChainStop_pending: "{system} {codes}: jadual rasmi seterusnya belum dibina", // translation: owner review
+  rdChainStop_invalid: "{codes} bukan kod unit MASCO 4 digit", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}: pekerjaan O*NET yang dipautkan tiada data kemahiran", // translation: owner review
+  rdSkLicence: "Data O*NET ialah CC BY 4.0 · iklan kerja AS (Lightcast melalui O*NET)", // translation: owner review
 }

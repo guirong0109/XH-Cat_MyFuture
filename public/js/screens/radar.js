@@ -480,7 +480,17 @@ export function skillsChartCard({ t, state, data }) {
   const releaseId = sc.release?.current?.id ?? DASH
   const hotLink = (sk.sourceLinks ?? []).find((l) => /hot_tech/.test(l?.url ?? '')) ?? { label: 'O*NET Hot Technologies', url: HOT_URL }
 
-  const notes = broken.map((b) => `<div class="rd-note small">${esc(t('rdChainBroken', { code: b.code, step: b.missingStep.reason }))}</div>`).join('')
+  // The step where the chain stops, worded from its kind in the user's language; the English reason stays as a tooltip.
+  const stepWords = (m) => {
+    const key = `rdChainStop_${m.kind}`
+    const text = t(key, { system: m.from?.system ?? '', codes: (m.from?.codes ?? []).join(', ') })
+    return text === key ? m.reason : text
+  }
+  const stopLink = (m) => {
+    const url = (data.refs?.bridge?.steps ?? []).find((x) => x.id === m.id)?.source?.url
+    return url ? ` ${srcLink({ label: t('rdEvSource'), url })}` : ''
+  }
+  const notes = broken.map((b) => `<div class="rd-note small" title="${esc(b.missingStep.reason ?? '')}">${esc(t('rdChainBroken', { code: b.code, step: stepWords(b.missingStep) }))}${stopLink(b.missingStep)}</div>`).join('')
   const none = sc.noSkills.length
     ? `<div class="rd-note small">${esc(t('rdSkNone', { job: '\u0001', release: releaseId })).replace('\u0001', sc.noSkills.map(summaryLink).join(', '))}</div>`
     : ''
@@ -517,7 +527,7 @@ export function skillsChartCard({ t, state, data }) {
     const q = String(u.q ?? '')
     const shown = filterItems(numbered, q)
     const row = (it) => {
-      const count = it.postings === null ? `<span class="tiny muted">${esc(t('rdSkNoCount'))}</span>` : `${numLink(fmtInt(it.postings), hotLink)} <span class="tiny muted">${esc(t('rdSkAds'))}</span>`
+      const count = it.postings === null ? `<span class="tiny muted">${esc(t('rdSkNoCount'))}</span>` : `${numLink(fmtInt(it.postings), hotLink)} <span class="tiny muted">${esc(t('rdSkAds'))} · ${esc(year)}</span>`
       return `<li id="rd-sk-${it.n}" class="rd-row${u.hl === it.n ? ' hl' : ''}"><span class="rd-rn">${it.n}</span>
         <span><b>${esc(it.example)}</b>${it.isNew ? ` <span class="rd-newmark">${esc(t('rdSkNew', { release: releaseId }))}</span>` : ''}<div class="tiny muted">${fromLine(t, it.jobs)}</div></span>
         <span class="rd-rc small">${count}</span></li>`
@@ -531,7 +541,7 @@ export function skillsChartCard({ t, state, data }) {
       <ul class="rd-rank-list">${sc.dropped.map((d) => `<li class="rd-row"><span class="rd-rn">–</span><span>${esc(d.example)}<div class="tiny muted">${fromLine(t, d.jobs)}</div></span><span></span></li>`).join('')}</ul></details>`
     : ''
 
-  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · O*NET ${esc(releaseId)}${sc.release?.current?.month ? ` (${esc(sc.release.current.month)})` : ''} · ${esc(sc.window?.label ?? DASH)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))} · ${esc(t('rdSkSource'))}</p>`
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · O*NET ${esc(releaseId)}${sc.release?.current?.month ? ` (${esc(sc.release.current.month)})` : ''} · ${esc(sc.window?.label ?? DASH)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))} · ${esc(t('rdSkLicence'))} · ${esc(t('rdSkSource'))}</p>`
 
   return wrapCard(`${notes}${chainPaths(t, jobs)}${none}${noJobs}${chart}${list}${dropped}${src}`)
 }

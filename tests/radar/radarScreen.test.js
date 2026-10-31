@@ -658,6 +658,9 @@ describe('Skills card on Skills & Careers', () => {
     expect(html).toContain(`${t('rdSkFrom')}:`)
     expect(html).toContain('https://www.onetonline.org/link/summary/15-1252.00')
     expect(html).toContain(t('rdSkNoCount'))
+    expect(rows(html)[0]).toContain('2025')
+    expect(html).toContain('CC BY 4.0')
+    expect(html).toContain('Lightcast via O*NET')
     expect(rows(html)[0]).toMatch(/<a href="https:\/\/www\.onetonline\.org\/search\/hot_tech\/"/)
   })
   it('the nurse (no in-demand software) gets the explanation with the O*NET summary link and no chart', () => {
@@ -671,7 +674,14 @@ describe('Skills card on Skills & Careers', () => {
   it('eMASCO 1121-01 shows the chain stop and no guessed job', () => {
     const html = card(job('emasco', '1121-01', 'Chief Executive'))
     expect(unesc(html)).toContain('Not available for eMASCO 1121-01: the code chain stops at')
-    expect(unesc(html)).toContain('MASCO unit 1121')
+    expect(unesc(html)).toContain('MASCO 2020 1121 has no link in the next official table')
+    expect(html).toContain('https://jtksm.gov.my/sites/default/files/2022-12/MASCO_2020_BI_Edaran.pdf')
+    for (const lang of ['ms', 'zh']) {
+      const tl = (key, vars) => translate(lang, key, vars)
+      const out = skillsChartCard({ t: tl, state: { lang, profile: job('emasco', '1121-01', 'Chief Executive'), radar: {} }, data: linked() })
+      expect(unesc(out), lang).toContain(tl('rdChainStop_no_row', { system: 'MASCO 2020', codes: '1121' }))
+      expect(out, lang).not.toContain('has no link in the next official table')
+    }
     expect(html).not.toContain('<polygon')
     expect(html).not.toContain('data-act="skCorner"')
   })
@@ -720,7 +730,7 @@ describe('Skills card on Skills & Careers', () => {
     expect(() => keepCaret(2, { querySelector: () => null })).not.toThrow()
   })
   it('every new string exists in en, ms and zh with the review comment', () => {
-    const keys = ['rdSkChartTitle', 'rdSkChartTag', 'rdCorners', 'rdCornersAll', 'rdSkSearch', 'rdSkShown', 'rdSkFrom', 'rdSkNew', 'rdSkNoCount', 'rdSkNoMatch', 'rdSkDroppedFold', 'rdSkNone', 'rdChainBroken', 'rdChainPath', 'rdSkOneYear', 'rdSkLegend', 'rdSkSource', 'rdConfirmFirst', 'rdChainSameUnit', 'rdSkAds', 'rdSkAria']
+    const keys = ['rdSkChartTitle', 'rdSkChartTag', 'rdCorners', 'rdCornersAll', 'rdSkSearch', 'rdSkShown', 'rdSkFrom', 'rdSkNew', 'rdSkNoCount', 'rdSkNoMatch', 'rdSkDroppedFold', 'rdSkNone', 'rdChainBroken', 'rdChainPath', 'rdSkOneYear', 'rdSkLegend', 'rdSkSource', 'rdConfirmFirst', 'rdChainSameUnit', 'rdSkAds', 'rdSkAria', 'rdSkLicence', 'rdChainStop_no_row', 'rdChainStop_pending', 'rdChainStop_invalid', 'rdChainStop_no_onet_data']
     for (const lang of ['en', 'ms', 'zh']) {
       const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
       for (const key of keys) {

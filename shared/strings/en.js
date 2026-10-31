@@ -716,4 +716,9 @@ export default {
   rdChainSameUnit: "eMASCO roles in the same 4-digit group share one O*NET link, so they show the same skills.",
   rdSkAds: "ads",
   rdSkAria: "{n}. {name}: {count} US job ads in {year}",
+  rdChainStop_no_row: "{system} {codes} has no link in the next official table",
+  rdChainStop_pending: "{system} {codes}: the next official table is not built yet",
+  rdChainStop_invalid: "{codes} is not a 4-digit MASCO unit code",
+  rdChainStop_no_onet_data: "{system} {codes}: the linked O*NET jobs have no skill data",
+  rdSkLicence: "O*NET data is CC BY 4.0 · US job ads (Lightcast via O*NET)",
 }

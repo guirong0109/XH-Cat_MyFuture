@@ -716,4 +716,9 @@ export default {
   rdChainSameUnit: "同一 4 位数组别的 eMASCO 职位共用一个 O*NET 链接，因此显示相同的技能。", // translation: owner review
   rdSkAds: "则广告", // translation: owner review
   rdSkAria: "{n}. {name}：{year} 年 {count} 则美国招聘广告", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} 在下一份官方对照表中没有对应项", // translation: owner review
+  rdChainStop_pending: "{system} {codes}：下一份官方对照表尚未建立", // translation: owner review
+  rdChainStop_invalid: "{codes} 不是 4 位数的 MASCO 单位代码", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}：所链接的 O*NET 职业没有技能数据", // translation: owner review
+  rdSkLicence: "O*NET 数据为 CC BY 4.0 · 美国招聘广告（Lightcast，经由 O*NET）", // translation: owner review
 }

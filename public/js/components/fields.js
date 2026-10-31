@@ -43,13 +43,20 @@ export function listField({ profile, path, label }) {
   return `<div class="field"><label for="${id}">${esc(label)}</label><input id="${id}" data-list="${path}" value="${esc((get(profile, path) ?? []).join(', '))}"></div>`
 }
 
+// The form label of each field the AI can fill in or read differently (projects use their own labels).
+const FIELD_LABELS = { jobTitle: 'jobTitle', employer: 'employer', qualification: 'qualification', fieldOfStudy: 'fieldOfStudy', institution: 'institution', title: 'projTitle', description: 'projDesc', name: 'certName' }
+const fieldLabel = (t, field) => (Object.hasOwn(FIELD_LABELS, field) ? t(FIELD_LABELS[field]) : field)
+
 export function cvNote(t, record) {
   if (!record.extraction) return ''
   const quote = record.extraction.evidence ? `: “${esc(record.extraction.evidence)}”` : ''
   const label = record.extraction.method === 'ai' ? 'tagFromAi' : 'tagFromCv'
+  const line = (text) => `<div class="tiny" style="color:var(--self)">${esc(text)}</div>`
+  // A field the AI filled in where the rules left it empty: shown so the user checks it.
+  const filled = (record.extraction.aiFilled ?? []).map((field) => line(t('aiFilledField', { field: fieldLabel(t, field) }))).join('')
   // A field the AI read differently from the rules: the rules value stays, the AI value is shown to check.
-  const differs = Object.values(record.extraction.aiDiffers ?? {}).map((text) => `<div class="tiny" style="color:var(--self)">${esc(t('aiReadAs', { text }))}</div>`).join('')
-  return `<div class="tiny" style="color:var(--self)">${esc(t(label))}${quote}</div>${differs}`
+  const differs = Object.entries(record.extraction.aiDiffers ?? {}).map(([field, text]) => line(t('aiReadAs', { field: fieldLabel(t, field), text }))).join('')
+  return `<div class="tiny" style="color:var(--self)">${esc(t(label))}${quote}</div>${filled}${differs}`
 }
 
 export function reviewToggle(t, path, record) {

@@ -24,7 +24,7 @@ All CVs are synthetic. No real personal data was used.
 | Duplicate skill names | Normalised without duplication | **Pass, one known gap** | Browser: "Python, python" → one Python. Gap: "MS Excel" next to "Microsoft Excel" stays a second, unknown skill, because the L3 match that would catch it is off (eval: `duplicates-pdf`) |
 | Unknown skill | Kept for review, no invented id | **Pass** | Browser: "Underwater welding" / 编织 → "not in our list yet — kept, not used for matching", `canonicalId: null` |
 | Incorrect extraction | User can edit or remove | **Pass** | Form: every record can be edited or removed, and any field can be marked for later review. Browser: institution edited after the CV draft |
-| AI reading of the CV | AI never overrides the rules or the user; the user checks everything | **Pass (tests, no key)** | Rules win; the AI fills empty fields and adds missed items, tagged "Found by AI"; a different AI value shows "AI read this as … Check it." Fake DeepSeek in `aiRead`, `mergeDrafts` and route tests. Without a key: rules only plus the ready-receipt line. The re-read button and compare view no longer exist |
+| AI reading of the CV | AI never overrides the rules or the user; the user checks everything | **Pass (tests, no key)** | Rules win; the AI fills empty fields and adds missed items, tagged "Found by AI"; a field the AI filled in shows "<field>: filled in by AI — check it."; a different AI value shows "<field> — AI read this as … Check it." Fake DeepSeek in `aiRead`, `mergeDrafts` and route tests. Without a key: rules only plus the ready-receipt line. The re-read button and compare view no longer exist |
 | No CV | Manual entry works on its own | **Pass** | Browser Test 2 below |
 | No previous employment | Education- or project-based profile possible | **Pass** | Browser Test 2: employment "Prefer not to say" plus a project. Eval: `no-job-docx`, `project-only-pdf` |
 | Missing proficiency | Provisional, not false confidence | **Pass** | Every extracted skill shows "Level not assessed" (`proficiency: null`). Eval: 0 levels set by extraction |
@@ -54,7 +54,7 @@ Controller check at http://cv.localhost:3260, no `CV_LLM_KEY`, synthetic CV "Ain
 - The ready receipt showed "AI reading was not available this time; please check carefully."
 - The form opened with the rules items tagged "From your CV · please check" and the CV quote.
 - The only console error was `/api/auth/me` 503 (accounts are off, expected).
-- Not yet seen in a browser: the "Found by AI" tags and "AI read this as" lines. They need the owner's key.
+- Not yet seen in a browser: the "Found by AI" tags, "filled in by AI" lines and "AI read this as" lines. They need the owner's key.
 
 ## Languages and screen sizes
 

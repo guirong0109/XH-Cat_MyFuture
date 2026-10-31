@@ -1,5 +1,5 @@
 // Checks an uploaded roster CSV (spec section 5) and returns a preview; nothing is stored here.
-import { parseCsv, RosterError } from './csv.js'
+import { parseCsvLines, RosterError } from './csv.js'
 
 export { RosterError }
 
@@ -18,8 +18,8 @@ export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSki
   }
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1)
 
-  const rows = parseCsv(text)
-  const head = (rows[0] || []).map((h) => h.trim().toLowerCase())
+  const rows = parseCsvLines(text)
+  const head = (rows[0] ? rows[0].cells : []).map((h) => h.trim().toLowerCase())
   if (head.length !== HEADER.length || HEADER.some((h, i) => head[i] !== h)) {
     throw new RosterError('bad_header')
   }
@@ -33,8 +33,8 @@ export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSki
   let accepted = 0
 
   for (let i = 1; i < rows.length; i++) {
-    const row = i + 1
-    const [name, group, code, skillText, levelText] = [0, 1, 2, 3, 4].map((k) => (rows[i][k] || '').trim())
+    const row = rows[i].line
+    const [name, group, code, skillText, levelText] = [0, 1, 2, 3, 4].map((k) => (rows[i].cells[k] || '').trim())
     const reject = (reason) => rejected.push({ row, reason })
 
     if (!name) { reject('name is empty'); continue }
@@ -45,7 +45,7 @@ export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSki
       ? 'not_assessed'
       : levelText.toLowerCase()
     const noSkill = !skillText && !levelText
-    if (!noSkill && !(level in LEVEL_RANK)) {
+    if (!noSkill && !Object.hasOwn(LEVEL_RANK, level)) {
       reject(`level '${levelText}' is not basic / good / expert / not assessed`)
       continue
     }

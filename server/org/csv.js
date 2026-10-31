@@ -7,8 +7,11 @@ export class RosterError extends Error {
   }
 }
 
-export function parseCsv(text) {
+// Like parseCsv, but each row also carries the file line where it starts (first line = 1).
+export function parseCsvLines(text) {
   const rows = []
+  let line = 1
+  let startLine = 1
   let row = []
   let field = ''
   let inQuotes = false
@@ -20,13 +23,15 @@ export function parseCsv(text) {
   }
   const endRow = () => {
     endField()
-    rows.push(row)
+    rows.push({ cells: row, line: startLine })
     row = []
     touched = false
   }
 
   for (let i = 0; i < text.length; i++) {
     const c = text[i]
+    if (!touched && c !== '\n' && c !== '\r') startLine = line
+    if (c === '\n') line++
     if (inQuotes) {
       if (c === '"') {
         if (text[i + 1] === '"') { field += '"'; i++ } else inQuotes = false
@@ -42,4 +47,8 @@ export function parseCsv(text) {
   if (inQuotes) throw new RosterError('not_csv', 'unclosed quote')
   if (touched) endRow()
   return rows
+}
+
+export function parseCsv(text) {
+  return parseCsvLines(text).map((r) => r.cells)
 }

@@ -128,6 +128,22 @@ describe('checkRoster', () => {
     ])
   })
 
+  it('rejects inherited property names as levels', async () => {
+    const r = await run(`${HEADER}\nLi,Sales,2411,Mathematics,toString`)
+    expect(r.rejected).toEqual([{ row: 2, reason: "level 'toString' is not basic / good / expert / not assessed" }])
+    expect(r.accepted).toBe(0)
+  })
+
+  it('reports file line numbers after a blank line', async () => {
+    const r = await run(`${HEADER}\nAa,Sales,2411,Mathematics,good\n\n,Sales,2411,Mathematics,good`)
+    expect(r.rejected).toEqual([{ row: 4, reason: 'name is empty' }])
+  })
+
+  it('reports file line numbers after a quoted newline', async () => {
+    const r = await run(`${HEADER}\n"Bb\nx",Sales,2411,Mathematics,good\n,Sales,2411,Mathematics,good`)
+    expect(r.rejected).toEqual([{ row: 4, reason: 'name is empty' }])
+  })
+
   it('accepts a centre row with an empty code', async () => {
     const r = await run(`${HEADER}\nKai,Cohort,,Mathematics,good`, { type: 'centre' })
     expect(r.people[0].currentCode).toBeNull()

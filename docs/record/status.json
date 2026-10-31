@@ -520,12 +520,12 @@
         },
         {
           "title": "O5 Diagram",
-          "sub": "docs/architecture-org.html, waiting for owner approval",
-          "status": "stop"
+          "sub": "docs/architecture-org.html, approved by owner 31 Oct",
+          "status": "done"
         },
         {
           "title": "O6 Build",
-          "sub": "after study pathway is merged into main",
+          "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (12 tasks); starts after study pathway is merged into main",
           "status": "todo"
         }
       ]
@@ -1674,6 +1674,11 @@
       "time": "31 Oct",
       "step": "Organisation view: spec approved, diagram drafted (hr-branch)",
       "detail": "Owner approved the spec; mockup buttons all work; architecture diagram drafted for approval. npm test 833 passed; diagram checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: diagram approved, plan written (hr-branch)",
+      "detail": "Owner approved the architecture diagram; implementation plan written (Tasks 0-12, career centre last). npm test 833 passed"
     }
   ]
 }

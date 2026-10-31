@@ -16,7 +16,7 @@ prototype "FutureReady Navigator" (`docs/hr/guide-check.md`); the career matchin
 numbers, its "below target × 1.3" estimate, its "employees needing reskilling (3 yrs)" figure and its invented
 scenario multipliers are not used.
 
-Architecture diagram: `docs/architecture-org.html` (Claude drafts it; the owner approves it; it then binds the build).
+Architecture diagram: `docs/architecture-org.html`, approved by the owner on 31 Oct 2026; it binds the build.
 Mockup: `docs/mockup-org.html` (real role titles and O\*NET names; every person and number is sample data).
 
 ## 1. Goal and success

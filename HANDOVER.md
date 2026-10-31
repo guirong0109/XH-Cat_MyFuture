@@ -1,6 +1,6 @@
 # HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 31 Oct 2026 (`main` merged in; "Your profile" card removed; source details as cards). Branch made from `main` at 928f4a7. Nothing pushed or merged.
+Updated 31 Oct 2026 (`main` merged in; "Your profile" card removed; source details as cards; AI usage question and AI tasks scatter). Branch made from `main` at 928f4a7. Nothing pushed or merged.
 
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
@@ -126,6 +126,27 @@ Both Radar charts now follow the user's **confirmed** profile (nothing from the 
 - **eMASCO limit:** the chain works at the 4-digit unit, so all eMASCO roles in one unit show the same chart (the screen says so).
 - ~~"Your profile" card hint~~: settled on 31 Oct 2026, the whole card is removed (your request).
 - The dashed earlier-year line appears only once a second yearly Hot Technologies snapshot is served (today: "One year so far").
+
+## AI usage question and AI tasks scatter (D34-D42), added 31 Oct 2026
+Spec `docs/superpowers/specs/2026-10-31-radar-ai-usage-questions-design.md`; plan
+`docs/superpowers/plans/2026-10-31-radar-ai-usage-questions.md`; browser check in `docs/radar/acceptance.md` (last section).
+- **Question first (D34-D39):** before the Radar shows, "Which of these do you use AI for?" with your 10 categories as
+  checkboxes, "I don't use AI for any of these", Continue and "Skip for now". The list is labelled as your own (not from
+  an outside study). After either button the card does not come back; "Change my AI use answers" under the title reopens it.
+- **Only recorded (D37):** kept in the profile as `aiTasks` (`shared/aiTasks.js`, checked by `shared/profileSchema.js`);
+  it changes nothing on the Radar or in Matching and goes into no Radar request. Saving it keeps a confirmed profile
+  confirmed (D38). Kept on this device, and in the account when a signed-in user saves the profile.
+- **AI tasks scatter (D40-D42):** "How AI is used in your job's tasks" is a scatter, not a spider web. Across: share of
+  the task's AI conversations where AI does it (dashed line at 50 %); up: how often the task appears in all AI
+  conversations (log scale, a band for under 0.01 %). No judgement words; dots at their real values.
+  Component `public/js/components/charts/taskScatter.js`.
+- Also fixed: Radar list rows stack up to 760 px wide (they squeezed the text to one letter per line between 560 and 760 px).
+
+### Open points for you (AI usage question and scatter)
+- Review the new BM and 中文 lines marked `// translation: owner review`.
+- The existing "Using AI" questions say "your answers stay in this browser", which is not quite true for a signed-in
+  user who saves the profile. Your call whether to reword them.
+- Overlapping dots (N7) and small chart labels on a phone (N8): see `docs/radar/acceptance.md`.
 
 ## Still needed from you (spec §17)
 1. **BLS crosswalk files** (SOC 2010 ↔ 2018; ISCO-08 ↔ SOC 2010): done. They are copied into `data/radar/source/` and both

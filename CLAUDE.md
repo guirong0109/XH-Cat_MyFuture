@@ -30,6 +30,11 @@ rules and how to work here.
 - The four source blocks (OpenAlex, DOSM, O*NET skill flags, Hot Technologies) are cards in the app look (owner, 31 Oct 2026):
   `.rd-srccard` (ink outline, 14px corners, paper, 4px offset shadow), two by two, one column at 640px or less.
   Availability is the tag at the top (green when data is available), named "Availability" for screen readers.
+- **AI usage question (D34-D39):** the Radar asks "Which of these do you use AI for?" first (owner's 10 categories,
+  `shared/aiTasks.js`, ids fixed). Stored as `profile.aiTasks`; only recorded, changes nothing, in no Radar request.
+  Save it without `update()` so a confirmed profile stays confirmed.
+- **AI tasks scatter (D40-D42):** the AI tasks chart is `taskScatter` (across = AI does the task %, up = usage share on a
+  log scale, band under 0.01 %); no jitter, no safe/risky words. The skills chart stays a spider web (`profileRadar`).
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 

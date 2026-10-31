@@ -2659,6 +2659,11 @@
       "time": "31 Oct",
       "step": "Radar source details as cards",
       "detail": "Your request. OpenAlex, DOSM and the two O*NET sources are four cards in the app look, two by two, one column on a phone; availability is a tag; nothing left out; test first (50564d6, bad5173). npm test 1429 passed; checked in the browser at 1280 px, 375 px and in dark mode"
+    },
+    {
+      "time": "31 Oct",
+      "step": "AI usage question and AI tasks scatter",
+      "detail": "Your request. Spec D34-D42 and plan approved; built test first in 6 tasks: the question before the Radar (10 owner categories, Continue / Skip / Change, kept in the profile, profile stays confirmed) and the AI tasks chart as a scatter. Also fixed list rows squeezing text between 560 and 760 px. Checked in the browser at 1280, 588 and 360 px and in dark mode"
     }
   ]
 }

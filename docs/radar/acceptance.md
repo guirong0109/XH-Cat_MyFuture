@@ -133,3 +133,32 @@ Interactions:
 - **P4** - The eMASCO code chain works at the 4-digit unit, so every eMASCO role in one unit gives the same chart. The
   screen says so. Limit set by the official tables (D29).
 - Not checked in the browser: BM and 中文 on the Skills card, the Accountant AI card, and a real keyboard Enter on a corner.
+
+## AI usage question and AI tasks scatter (D34-D42), 31 Oct 2026
+
+Checked on http://127.0.0.2:3210 (an address nobody else uses), server `radar-trial`, a test profile set up in that
+browser only: confirmed, one O\*NET job (Software Developers 15-1252.00), no AI usage answer yet.
+
+| # | Check | Result |
+|---|---|---|
+| Q1 | Opening the Radar without an answer shows only the question card (header and banner stay; no tabs, no source cards) | Pass |
+| Q2 | 10 categories in the owner's order with examples, "none of these", source line and privacy line | Pass |
+| Q3 | Continue is off with nothing ticked; one click on a box or on its label ticks it once; Continue then turns on | Pass |
+| Q4 | "None of these" clears the ticks; a tick clears "none" | Pass |
+| Q5 | Continue saves `{status:'answered', picked:['data'], date}`; the profile stays **confirmed** and the charts show | Pass |
+| Q6 | After a reload the card does not come back; "Change my AI use answers" sits under the title | Pass |
+| Q7 | Change reopens with the saved tick; a new tick then Skip keeps the earlier answer (`['data']`) | Pass |
+| Q8 | No Radar request carries the answers: every request is a GET with only the manifest id | Pass |
+| S1 | AI Impact draws the scatter (no spider web): 8 dots, switch "Tasks shown" 8 / 16 / All, dashed 50 % line, log ticks, "under 0.01 %" band, both side labels | Pass |
+| S2 | Enter on a focused dot highlights its list row | Pass |
+| S3 | 1280 px, 588 px and 360 px: no sideways scroll; the card fits at 360 px (16 px gutters) | Pass |
+| S4 | Dark mode: card and scatter follow the theme | Pass |
+| F2 | Found here: between about 560 and 760 px the list rows squeezed the task text to one letter per line (already so before today) | Fixed: rows stack up to 760 px (43e1691) |
+
+Notes for the owner:
+- **N7** - Dots at the same place overlap and their labels can touch (here T5 and T6, both near 45 % and 0.01 %). The spec
+  keeps real values with no jitter (D42); the list under the chart holds every value.
+- **N8** - At 360 px the scatter is shrunk to fit, so its small labels are hard to read; the list under it is readable.
+- Console errors: only `/api/auth/me` 503 (accounts are not set up on this local server). None from the Radar.
+- Not checked by hand: BM and 中文 on the card (covered by tests), a screen reader.
+

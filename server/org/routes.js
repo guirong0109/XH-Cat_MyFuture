@@ -2,6 +2,8 @@
 // the one the user owns, so another owner's ids answer 404. Previews are kept in memory only (15 minutes) and are
 // never logged. Logs carry codes only, never names, skills or the CSV.
 import { randomUUID } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import express from 'express'
 import { jsonBody, sendError } from '../errors.js'
 import { makeRequireUser } from '../routes/auth.js'
@@ -18,7 +20,7 @@ const MAX_NAME = 80
 
 const text = (value) => (typeof value === 'string' && value.trim() && value.trim().length <= MAX_NAME ? value.trim() : null)
 
-export function orgRoutes({ auth, store, service, loadNormalizer, loadRoleCodes, log = () => {}, now = () => new Date() }) {
+export function orgRoutes({ auth, store, service, loadNormalizer, loadRoleCodes, dataDir, log = () => {}, now = () => new Date() }) {
   const router = express.Router()
   const requireUser = makeRequireUser(auth)
   const previews = new Map() // previewId -> { ownerId, preview, expires }
@@ -159,6 +161,15 @@ export function orgRoutes({ auth, store, service, loadNormalizer, loadRoleCodes,
     if (!held || held.ownerId !== request.user.id) return sendError(response, 410, 'preview_expired', 'This preview has expired. Check the file again.')
     previews.delete(id)
     return response.json(await store.importPeople(org.id, held.preview))
+  }))
+
+  // ---- sample roster: made-up people, read from data/org (hash in manifest.json); only the HR sample exists so far
+  const SAMPLES = { hr: 'sample-roster-hr.csv' }
+  router.get('/api/org/roster/sample', requireUser, guard(async (request, response) => {
+    const file = Object.hasOwn(SAMPLES, request.query.type) ? SAMPLES[request.query.type] : null
+    if (!file) return sendError(response, 404, 'not_found', 'There is no sample roster for this type.')
+    const csv = await readFile(path.join(dataDir, 'org', file), 'utf8')
+    return response.type('text/csv').send(csv)
   }))
 
   // ---- people: only group and current role can change; skills are never edited here

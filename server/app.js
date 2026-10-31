@@ -186,7 +186,7 @@ export function createApp({
         .catch((error) => { roleCodes = null; throw error })
       return roleCodes
     }
-    app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadRoleCodes, log: console.error, now }))
+    app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadRoleCodes, dataDir, log: console.error, now }))
     // Own saved profile only (another user's id reads as missing). Returns the skills list or null.
     const loadProfileSkills = async (userId, profileId) => {
       const { rows } = await d1.query('SELECT json FROM profiles WHERE id = ? AND user_id = ?', [profileId, userId])

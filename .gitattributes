@@ -11,3 +11,5 @@ pipeline/fetch_radar_bridge.py text eol=lf
 shared/radar/chain.js text eol=lf
 tests/radar/chain.test.js text eol=lf
 pipeline/tests/test_radar_bridge.py text eol=lf
+data/org/*.csv text eol=lf
+data/org/*.json text eol=lf

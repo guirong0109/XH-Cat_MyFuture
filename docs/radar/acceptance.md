@@ -162,3 +162,21 @@ Notes for the owner:
 - Console errors: only `/api/auth/me` 503 (accounts are not set up on this local server). None from the Radar.
 - Not checked by hand: BM and 中文 on the card (covered by tests), a screen reader.
 
+## Two tabs: For You and Explore all trends (D43-D48), 31 Oct 2026
+
+Checked on http://127.0.0.2:3210, test profile in that browser only (confirmed, Software Developers 15-1252.00).
+
+| # | Check | Result |
+|---|---|---|
+| T1 | Two tabs, For You first; with no answer For You shows only the question card | Pass |
+| T2 | Explore all trends opens straight away before the question is answered: Research momentum, then Research papers per year | Pass |
+| T3 | After Continue For You shows the AI tasks scatter (loaded without clicking a tab) and "What the research signals say for you"; the profile stays confirmed | Pass |
+| T4 | Goal "Switch career": the Radar opens on Explore all trends | Pass |
+| T5 | Explore shows all six topics, no "View all"; a topic opens its evidence panel | Pass |
+| T6 | One source card (OpenAlex); the removed sections are not on the page | Pass |
+| T7 | 1280 px and 375 px: no sideways scroll; dark mode follows the theme | Pass |
+
+Note for the owner:
+- **N9** - With one source card left, it sits on the left half of the two-column grid at desktop width. Say if you want
+  it full width.
+

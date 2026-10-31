@@ -1,6 +1,6 @@
 # HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 31 Oct 2026 (`main` merged in; "Your profile" card removed; source details as cards; AI usage question and AI tasks scatter). Branch made from `main` at 928f4a7. Nothing pushed or merged.
+Updated 31 Oct 2026 (`main` merged in; "Your profile" card removed; source details as cards; AI usage question and AI tasks scatter; two tabs For You and Explore all trends). Branch made from `main` at 928f4a7. Nothing pushed or merged.
 
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
@@ -52,7 +52,7 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 1429 passed
+npm test                                    # 1483 passed
 python -m unittest discover pipeline/tests  # 49 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook); on the committed bundle it skips O*NET releases already active; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each
@@ -141,6 +141,18 @@ Spec `docs/superpowers/specs/2026-10-31-radar-ai-usage-questions-design.md`; pla
   conversations (log scale, a band for under 0.01 %). No judgement words; dots at their real values.
   Component `public/js/components/charts/taskScatter.js`.
 - Also fixed: Radar list rows stack up to 760 px wide (they squeezed the text to one letter per line between 560 and 760 px).
+
+### Two tabs (D43-D48), added 31 Oct 2026
+Spec §10 of the same file; plan `docs/superpowers/plans/2026-10-31-radar-two-tabs.md`; browser check in
+`docs/radar/acceptance.md` (last section).
+- **For You** (first tab): the 10 questions until answered or skipped; then the Change button, the AI tasks scatter and
+  "What the research signals say for you". **Explore all trends:** research momentum by AI topic and research papers per
+  year, all six topics, no View all.
+- **Which opens first:** Explore all trends for the goal "Switch career", For You for everyone else.
+- **Removed from the page** (code, data and routes kept): Skills your jobs ask for, Malaysian job ads (DOSM), Rising and
+  declining skills, Your fields of study, What this means for you. Only the OpenAlex source card and source row stay;
+  the admin screen keeps all its cards.
+- With one card left it sits on the left half at desktop width (N9).
 
 ### Open points for you (AI usage question and scatter)
 - Review the new BM and 中文 lines marked `// translation: owner review`.

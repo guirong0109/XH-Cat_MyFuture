@@ -2664,6 +2664,11 @@
       "time": "31 Oct",
       "step": "AI usage question and AI tasks scatter",
       "detail": "Your request. Spec D34-D42 and plan approved; built test first in 6 tasks: the question before the Radar (10 owner categories, Continue / Skip / Change, kept in the profile, profile stays confirmed) and the AI tasks chart as a scatter. Also fixed list rows squeezing text between 560 and 760 px. Checked in the browser at 1280, 588 and 360 px and in dark mode"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar two tabs: For You and Explore all trends",
+      "detail": "Your request. Spec D43-D48 approved; built test first: For You (questions, AI tasks scatter, research signals for you), Explore all trends (research momentum, papers per year, all six topics), Explore first for career switchers, five sections and three source cards off the page. npm test 1483 passed; checked in the browser at 1280 and 375 px and in dark mode"
     }
   ]
 }

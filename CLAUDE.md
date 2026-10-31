@@ -24,7 +24,7 @@ rules and how to work here.
 - Skill trends from O\*NET are built on top (spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`, D23–D27;
   see `HANDOVER.md` "Skill trends").
 - Charts that follow the confirmed profile are built (spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
-  D28-D33; `HANDOVER.md` "Profile charts"). 1429 Vitest tests and 49 Python tests pass (after the 31 Oct merge of `main`).
+  D28-D33; `HANDOVER.md` "Profile charts"). 1483 Vitest tests and 49 Python tests pass.
 - `main` was merged into this branch on 31 Oct 2026 (7f6763e); this branch kept its own detailed `HANDOVER.md` and `CLAUDE.md`.
 - The "Your profile" card is removed from the Radar page (owner, 31 Oct 2026). Do not bring it back.
 - The four source blocks (OpenAlex, DOSM, O*NET skill flags, Hot Technologies) are cards in the app look (owner, 31 Oct 2026):
@@ -35,6 +35,10 @@ rules and how to work here.
   Save it without `update()` so a confirmed profile stays confirmed.
 - **AI tasks scatter (D40-D42):** the AI tasks chart is `taskScatter` (across = AI does the task %, up = usage share on a
   log scale, band under 0.01 %); no jitter, no safe/risky words. The skills chart stays a spider web (`profileRadar`).
+- **Two tabs (D43-D48):** For You (`fy`: question card, then AI tasks scatter and A5) and Explore all trends (`ex`: A2 and
+  A1, all six topics, no View all). `radarTabOf` opens `ex` for the goal `switch_career`, else `fy`. Sections SK, B1, B2,
+  B5, B6 are off the page (code kept; `skillsTab`/`aiTab` are no longer called by `radarView`). Only the OpenAlex
+  source is listed on the page.
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
@@ -84,7 +88,7 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 1429 passed (vitest.config.js skips helper worktrees)
+npm test                                           # expect 1483 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 49 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder

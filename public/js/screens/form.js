@@ -174,7 +174,8 @@ export default ({ t, state }) => {
   <div class="card">${BODIES[section]({ t, profile, state })}</div>
   <div class="row" style="margin-top:14px">
     ${section > 0 ? `<button class="btn" data-act="section" data-arg="${section - 1}">${esc(t('back'))}</button>` : ''}
-    ${section < SECTIONS.length - 1 ? `<button class="btn" data-act="section" data-arg="${section + 1}">${esc(t('next'))}</button>` : ''}
-    <button class="btn pri" data-go="review">${esc(t('goReview'))} →</button>
+    ${section < SECTIONS.length - 1
+    ? `<button class="btn pri" data-act="section" data-arg="${section + 1}">${esc(t('next'))} →</button>`
+    : `<button class="btn pri" data-go="review">${esc(t('goReview'))} →</button>`}
   </div>`
 }

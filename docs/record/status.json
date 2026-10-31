@@ -303,6 +303,11 @@
           "title": "T28s Interests: one question",
           "sub": "only Career interests and fields · goal asked at the start only",
           "status": "done"
+        },
+        {
+          "title": "T28t Review and confirm on Interests only",
+          "sub": "sections 1-3 move on with Next · Review and confirm on the last section",
+          "status": "done"
         }
       ]
     }
@@ -359,7 +364,8 @@
     "Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)",
     "Task 28q: your request - Employment background opens with a first job ready: Job title, then Years of work experience for that job as a number box with up/down arrows (0-60, always visible). '+ Add a job' adds more. Nothing else is asked (your choice): no employer, period, industries or overall years; a CV may still fill those and the receipt then shows them. The 'Find the standard occupation' button under a job title stays (it links the job for matching). The receipt shows each job with its years (Tests 282 passed)",
     "Task 28r: your request - the last profile section 'Career preferences' is now '04 Interests' (BM Minat, 中文 兴趣). Only the name changed; the questions inside are the same (Tests 283 passed)",
-    "Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)"
+    "Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)",
+    "Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1126,6 +1132,11 @@
       "time": "31 Oct",
       "step": "Task 28s",
       "detail": "your request: in Interests keep only Career interests and fields; tests first (3 failed), then form.js (prefs is the interest field only; SECTION_FIELDS[3] empty) and review.js (location and hours only when saved earlier); npm test 285 passed; in Chrome tab 04 shows only Career interests and fields"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28t",
+      "detail": "your request: Review and confirm only on Interests; test first (1 failed), then form.js (last section shows Review and confirm, the others Next as the main button); npm test 286 passed; in Chrome sections 1-3 show Back | Next, section 4 Back | Review and confirm, which opens the receipt"
     }
   ]
 }

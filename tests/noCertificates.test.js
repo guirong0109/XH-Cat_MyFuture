@@ -78,6 +78,18 @@ describe('Interests asks only "Career interests and fields"', () => {
   })
 })
 
+describe('Review and confirm', () => {
+  it('shows only on the last section, Interests; the others move on with Next', () => {
+    const last = SECTIONS.length - 1
+    for (let section = 0; section < last; section += 1) {
+      expect(page(section)).not.toContain('data-go="review"')
+      expect(page(section)).toContain(`data-act="section" data-arg="${section + 1}"`)
+    }
+    expect(SECTIONS[last]).toBe('secPrefs')
+    expect(page(last)).toContain('data-go="review"')
+  })
+})
+
 describe('no "Current employment status" question', () => {
   it('Employment background does not ask it, and opening the section does not answer it for the user', () => {
     const html = page(1)

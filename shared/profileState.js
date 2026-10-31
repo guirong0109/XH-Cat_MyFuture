@@ -72,6 +72,7 @@ export function mergeDraft(current, draft) {
   for (const [listPath, keyOf] of Object.entries(LIST_KEYS)) {
     const list = get(out, listPath) ?? []
     const have = new Set(list.map(keyOf))
+    // Repeated items inside the draft (same key twice) are all kept; only items the user already has are skipped.
     const added = (get(draft, listPath) ?? []).filter((record) => !have.has(keyOf(record)))
     if (added.length) out = setPath(out, listPath, [...list, ...clone(added)])
   }

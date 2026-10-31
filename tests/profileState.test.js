@@ -65,6 +65,21 @@ describe('CV draft', () => {
     expect(out.inputMethod).toBe('cv')
   })
 
+  it('mergeDraft: repeated draft items the user does not have are all added; own items untouched', () => {
+    const current = setField(emptyProfile(), 'employment.status', val('employed'))
+    current.education.records = [{ qualification: 'Degree', fieldOfStudy: 'IT', userConfirmed: true }]
+    const draft = emptyProfile({ inputMethod: 'cv' })
+    draft.education.records = [
+      { qualification: '', fieldOfStudy: '', institution: 'A', userConfirmed: false },
+      { qualification: '', fieldOfStudy: '', institution: 'B', userConfirmed: false },
+    ]
+    const out = mergeDraft(current, draft)
+    expect(out.education.records).toHaveLength(3)
+    expect(out.education.records[0]).toEqual({ qualification: 'Degree', fieldOfStudy: 'IT', userConfirmed: true })
+    expect(out.education.records.slice(1).map((r) => r.institution)).toEqual(['A', 'B'])
+    expect(out.education.records.slice(1).every((r) => r.userConfirmed === false)).toBe(true)
+  })
+
   it('minimizeForGuest removes CV quotes and raw text', () => {
     const p = { ...emptyProfile(), skills: [cvSkill('SQL', 'onet:tech:sql', { extraction: { method: 'dictionary', evidence: 'Built SQL reports at Acme', confidence: 1 } })], rawText: 'whole cv' }
     const out = minimizeForGuest(p)

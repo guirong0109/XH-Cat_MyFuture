@@ -1,7 +1,1079 @@
 {
   "schemaVersion": "pathway-picks/v1",
   "status": "team draft",
-  "courses": [],
-  "programmes": [],
-  "searchWords": []
+  "courses": [
+    {
+      "id": "c-el-2-B-4-g-1",
+      "for": "el:2.B.4.g",
+      "site": "coursera",
+      "name": "Introduction to Systems Analysis",
+      "link": "https://www.coursera.org/learn/introduction-to-systems-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-g-2",
+      "for": "el:2.B.4.g",
+      "site": "coursera",
+      "name": "IT Systems Design and Analysis",
+      "link": "https://www.coursera.org/learn/it-systems-design-and-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-h-1",
+      "for": "el:2.B.4.h",
+      "site": "elatih",
+      "name": "Importance Of Static Testing in Achieving A High Roi",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/importance-of-static-testing-in-achieving-a-high-roi",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-h-2",
+      "for": "el:2.B.4.h",
+      "site": "coursera",
+      "name": "Introduction to Software Testing",
+      "link": "https://www.coursera.org/learn/introduction-software-testing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-b-1",
+      "for": "el:2.B.3.b",
+      "site": "coursera",
+      "name": "Software Architecture",
+      "link": "https://www.coursera.org/learn/software-architecture",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-a-1",
+      "for": "kn:2.C.4.a",
+      "site": "elatih",
+      "name": "Basic Statistics For Practical Time Series Analysis",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-statistics-for-practical-time-series-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-a-2",
+      "for": "kn:2.C.4.a",
+      "site": "coursera",
+      "name": "Mathematics for Computer Science",
+      "link": "https://www.coursera.org/learn/mathematics-for-computer-science",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-e-1",
+      "for": "el:2.A.1.e",
+      "site": "elatih",
+      "name": "Basic Statistics For Practical Time Series Analysis",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-statistics-for-practical-time-series-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-a-1",
+      "for": "kn:2.C.3.a",
+      "site": "elatih",
+      "name": "Working with Computers and Devices with Microsoft",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/working-with-computers-and-devices-with-microsoft",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-a-2",
+      "for": "kn:2.C.3.a",
+      "site": "elatih",
+      "name": "Basics of Network Addresses",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-network-addresses",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-a-1",
+      "for": "el:2.A.1.a",
+      "site": "elatih",
+      "name": "Improving Your English Through Reading And Writing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/improving-your-english-through-reading-and-writing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-a-1",
+      "for": "el:2.A.2.a",
+      "site": "elatih",
+      "name": "Critical Thinking Skills for Professionals",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/critical-thinking-skills-for-professionals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-a-2",
+      "for": "el:2.A.2.a",
+      "site": "coursera",
+      "name": "Critical Thinking Skills for University Success",
+      "link": "https://www.coursera.org/learn/critical-thinking-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-b-1",
+      "for": "el:2.B.1.b",
+      "site": "elatih",
+      "name": "Building High Performing Teams",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/building-high-performing-teams",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-b-2",
+      "for": "el:2.B.1.b",
+      "site": "elatih",
+      "name": "Collaboration: Let's Win Together",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/collaboration-let-s-win-together",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-e-1",
+      "for": "kn:2.C.1.e",
+      "site": "elatih",
+      "name": "Introduction To Customer Service",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-customer-service",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-e-2",
+      "for": "kn:2.C.1.e",
+      "site": "elatih",
+      "name": "Customer Service Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/customer-service-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-f-1",
+      "for": "el:2.B.1.f",
+      "site": "elatih",
+      "name": "Customer Service Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/customer-service-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-b-1",
+      "for": "el:2.A.2.b",
+      "site": "elatih",
+      "name": "Learning How to Learn",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/learning-how-to-learn-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-b-2",
+      "for": "el:2.A.2.b",
+      "site": "coursera",
+      "name": "Learning How to Learn: Powerful mental tools to help you master tough subjects",
+      "link": "https://www.coursera.org/learn/learning-how-to-learn",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-c-1",
+      "for": "kn:2.C.1.c",
+      "site": "elatih",
+      "name": "Introduction to Fundamental Accounting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-fundamental-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-c-2",
+      "for": "kn:2.C.1.c",
+      "site": "coursera",
+      "name": "Introduction to Financial Accounting",
+      "link": "https://www.coursera.org/learn/wharton-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-c-1",
+      "for": "el:2.A.1.c",
+      "site": "elatih",
+      "name": "English for Business Writing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/english-for-business-writing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-c-2",
+      "for": "el:2.A.1.c",
+      "site": "elatih",
+      "name": "Better Business Writing in English",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/better-business-writing-in-english",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-b-1",
+      "for": "el:2.A.1.b",
+      "site": "elatih",
+      "name": "Listening Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/listening-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-b-2",
+      "for": "el:2.A.1.b",
+      "site": "elatih",
+      "name": "Power Of Effective Listening",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/power-of-effective-listening",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-b-1",
+      "for": "kn:2.C.8.b",
+      "site": "elatih",
+      "name": "Contract Drafting 101 (Contract Law)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/contract-drafting-101-contract-law",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-a-1",
+      "for": "kn:2.C.1.a",
+      "site": "elatih",
+      "name": "Basics of Project Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-project-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-a-1",
+      "for": "el:2.B.1.a",
+      "site": "elatih",
+      "name": "Emotional Intelligence at Work",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/emotional-intelligence-at-work",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-b-1",
+      "for": "kn:2.C.1.b",
+      "site": "elatih",
+      "name": "Microsoft Office Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/microsoft-office-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-b-2",
+      "for": "kn:2.C.1.b",
+      "site": "elatih",
+      "name": "Top Practical Advanced Excel Functions for Office Admin",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/top-practical-advanced-excel-functions-for-office-admin",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-c-1",
+      "for": "el:2.B.1.c",
+      "site": "elatih",
+      "name": "Using The Art Of Persuasion",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/using-the-art-of-persuasion",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-1",
+      "for": "field:0613",
+      "site": "elatih",
+      "name": "Basic of Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-of-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-2",
+      "for": "field:0613",
+      "site": "elatih",
+      "name": "Python - Basics to Brilliance in HD",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/python-basics-to-brilliance-in-hd",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-3",
+      "for": "field:0613",
+      "site": "coursera",
+      "name": "Programming for Everybody (Getting Started with Python)",
+      "link": "https://www.coursera.org/learn/python",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0411-1",
+      "for": "field:0411",
+      "site": "elatih",
+      "name": "Introduction to Fundamental Accounting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-fundamental-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0411-2",
+      "for": "field:0411",
+      "site": "elatih",
+      "name": "Understanding Corporate Tax in Malaysia",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-corporate-tax-in-malaysia",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-d-1",
+      "for": "el:2.A.1.d",
+      "site": "elatih",
+      "name": "Professionalizing Your Public Speaking Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/professionalizing-your-public-speaking-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-d-2",
+      "for": "el:2.A.1.d",
+      "site": "elatih",
+      "name": "Effective Presentation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/effective-presentation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-f-1",
+      "for": "el:2.A.1.f",
+      "site": "coursera",
+      "name": "Science Literacy",
+      "link": "https://www.coursera.org/learn/science-literacy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-c-1",
+      "for": "el:2.A.2.c",
+      "site": "elatih",
+      "name": "Study Skills for University Success",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/study-skills-for-university-success",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-c-2",
+      "for": "el:2.A.2.c",
+      "site": "coursera",
+      "name": "Learning How to Learn: Powerful mental tools to help you master tough subjects",
+      "link": "https://www.coursera.org/learn/learning-how-to-learn",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-d-1",
+      "for": "el:2.A.2.d",
+      "site": "elatih",
+      "name": "Performance Management for Leaders",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/performance-management-for-leaders",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-d-1",
+      "for": "el:2.B.1.d",
+      "site": "elatih",
+      "name": "Build Your Powerful Negotiation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/build-your-powerful-negotiation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-d-2",
+      "for": "el:2.B.1.d",
+      "site": "elatih",
+      "name": "Basic Productive Negotiation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-productive-negotiation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-e-1",
+      "for": "el:2.B.1.e",
+      "site": "elatih",
+      "name": "Train The Trainer - How To Train Yourself And Others",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/train-the-trainer-how-to-train-yourself-and-others",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-e-2",
+      "for": "el:2.B.1.e",
+      "site": "elatih",
+      "name": "Mastering The Art of Teaching",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mastering-the-art-of-teaching",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-2-i-1",
+      "for": "el:2.B.2.i",
+      "site": "elatih",
+      "name": "Solution Focused Problem Solving",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/solution-focused-problem-solving",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-2-i-2",
+      "for": "el:2.B.2.i",
+      "site": "elatih",
+      "name": "Problem Solving through Creative Thinking",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/problem-solving-through-creative-thinking",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-a-1",
+      "for": "el:2.B.3.a",
+      "site": "elatih",
+      "name": "Business Process Improvement Techniques",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/business-process-improvement-techniques",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-a-2",
+      "for": "el:2.B.3.a",
+      "site": "coursera",
+      "name": "Operations and Process Management",
+      "link": "https://www.coursera.org/learn/illinois-tech-operations-process-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-d-1",
+      "for": "el:2.B.3.d",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-d-2",
+      "for": "el:2.B.3.d",
+      "site": "coursera",
+      "name": "Technical Support Fundamentals",
+      "link": "https://www.coursera.org/learn/technical-support-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-e-1",
+      "for": "el:2.B.3.e",
+      "site": "elatih",
+      "name": "Basic of Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-of-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-e-2",
+      "for": "el:2.B.3.e",
+      "site": "elatih",
+      "name": "Understanding C++ Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-c-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-g-1",
+      "for": "el:2.B.3.g",
+      "site": "coursera",
+      "name": "Production & Operations: Apply, Analyze & Optimize",
+      "link": "https://www.coursera.org/learn/production-operations-apply-analyze-optimize",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-g-2",
+      "for": "el:2.B.3.g",
+      "site": "elatih",
+      "name": "Lean Series: Elevating Operational Effectiveness & Efficiency",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/lean-series-elevating-operational-effectiveness-efficiency",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-h-1",
+      "for": "el:2.B.3.h",
+      "site": "coursera",
+      "name": "Sensor Manufacturing and Process Control",
+      "link": "https://www.coursera.org/learn/sensor-manufacturing-process-control",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-j-1",
+      "for": "el:2.B.3.j",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-j-2",
+      "for": "el:2.B.3.j",
+      "site": "coursera",
+      "name": "Heavy Manufacturing Process and System",
+      "link": "https://www.coursera.org/learn/heavy-manufacturing-process-and-system",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-k-1",
+      "for": "el:2.B.3.k",
+      "site": "coursera",
+      "name": "Technical Support Fundamentals",
+      "link": "https://www.coursera.org/learn/technical-support-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-k-2",
+      "for": "el:2.B.3.k",
+      "site": "coursera",
+      "name": "Dell Technologies Technical Support for Hardware",
+      "link": "https://www.coursera.org/learn/dell-hardware-tech-support",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-l-1",
+      "for": "el:2.B.3.l",
+      "site": "coursera",
+      "name": "Samsung Mobile Repair Essentials",
+      "link": "https://www.coursera.org/learn/samsung-mobile-repair-essentials",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-l-2",
+      "for": "el:2.B.3.l",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-m-1",
+      "for": "el:2.B.3.m",
+      "site": "elatih",
+      "name": "Understanding Quality Management and Continuous Improvement",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-quality-management-and-continuous-improvement",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-m-2",
+      "for": "el:2.B.3.m",
+      "site": "elatih",
+      "name": "Certified Lean Six Sigma White Belt Practitioner",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/certified-lean-six-sigma-white-belt-practitioner",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-e-1",
+      "for": "el:2.B.4.e",
+      "site": "elatih",
+      "name": "Decision Making Techniques",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/decision-making-techniques-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-e-2",
+      "for": "el:2.B.4.e",
+      "site": "elatih",
+      "name": "16 Ways to Master Decision Making Skills at your Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/16-ways-to-master-decision-making-skills-at-your-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-a-1",
+      "for": "el:2.B.5.a",
+      "site": "elatih",
+      "name": "Time Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/time-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-a-2",
+      "for": "el:2.B.5.a",
+      "site": "elatih",
+      "name": "Time Management for Better Productivity",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/time-management-for-better-productivity",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-b-1",
+      "for": "el:2.B.5.b",
+      "site": "elatih",
+      "name": "Shaping Your Financial Management Strategies",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/shaping-your-financial-management-strategies",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-b-2",
+      "for": "el:2.B.5.b",
+      "site": "elatih",
+      "name": "Budgeting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/budgeting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-c-1",
+      "for": "el:2.B.5.c",
+      "site": "elatih",
+      "name": "Supply Chain Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/supply-chain-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-c-2",
+      "for": "el:2.B.5.c",
+      "site": "coursera",
+      "name": "Supply Chain Operations",
+      "link": "https://www.coursera.org/learn/operations",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-d-1",
+      "for": "el:2.B.5.d",
+      "site": "elatih",
+      "name": "[Human Resource Management Course] Human Resource Management in a Contemporary Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-management-course-human-resource-management-in-a-contemporary-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-d-2",
+      "for": "el:2.B.5.d",
+      "site": "elatih",
+      "name": "Performance Management for Leaders",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/performance-management-for-leaders",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-d-1",
+      "for": "kn:2.C.1.d",
+      "site": "elatih",
+      "name": "The Ultimate Digital Marketing (Beginners)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/the-ultimate-digital-marketing-beginners",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-d-2",
+      "for": "kn:2.C.1.d",
+      "site": "elatih",
+      "name": "Increasing Your Sales No Matter What You Are Selling",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/increasing-your-sales-no-matter-what-you-are-selling",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-f-1",
+      "for": "kn:2.C.1.f",
+      "site": "elatih",
+      "name": "[Human Resource Management Course] Human Resource Management in a Contemporary Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-management-course-human-resource-management-in-a-contemporary-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-f-2",
+      "for": "kn:2.C.1.f",
+      "site": "elatih",
+      "name": "[Human Resource Course] Contemporary Skills to Master Human Resources Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-course-contemporary-skills-to-master-human-resources-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-10-1",
+      "for": "kn:2.C.10",
+      "site": "coursera",
+      "name": "Supply Chain Logistics",
+      "link": "https://www.coursera.org/learn/supply-chain-logistics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-10-2",
+      "for": "kn:2.C.10",
+      "site": "elatih",
+      "name": "Supply Chain Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/supply-chain-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-a-1",
+      "for": "kn:2.C.2.a",
+      "site": "elatih",
+      "name": "The Missing Link to Manufacturing Success",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/the-missing-link-to-manufacturing-success",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-a-2",
+      "for": "kn:2.C.2.a",
+      "site": "coursera",
+      "name": "Heavy Manufacturing Process and System",
+      "link": "https://www.coursera.org/learn/heavy-manufacturing-process-and-system",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-b-1",
+      "for": "kn:2.C.2.b",
+      "site": "elatih",
+      "name": "Food Safety Hazards",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/food-safety-hazards",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-b-2",
+      "for": "kn:2.C.2.b",
+      "site": "elatih",
+      "name": "Food Handling and Hygiene (Interactive)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/food-handling-and-hygiene-interactive",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-b-1",
+      "for": "kn:2.C.3.b",
+      "site": "coursera",
+      "name": "Introduction to Engineering Mechanics",
+      "link": "https://www.coursera.org/learn/engineering-mechanics-statics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-b-2",
+      "for": "kn:2.C.3.b",
+      "site": "coursera",
+      "name": "Systems Engineering Fundamentals",
+      "link": "https://www.coursera.org/learn/systems-engineering-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-c-1",
+      "for": "kn:2.C.3.c",
+      "site": "coursera",
+      "name": "Introduction to Engineering Design",
+      "link": "https://www.coursera.org/learn/introduction-to-engineering-design",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-c-2",
+      "for": "kn:2.C.3.c",
+      "site": "elatih",
+      "name": "Architecture Pen Drawing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/architecture-pen-drawing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-d-1",
+      "for": "kn:2.C.3.d",
+      "site": "coursera",
+      "name": "Construction Project Management",
+      "link": "https://www.coursera.org/learn/construction-project-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-d-2",
+      "for": "kn:2.C.3.d",
+      "site": "coursera",
+      "name": "Sustainable Construction Management",
+      "link": "https://www.coursera.org/learn/sustainable-construction-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-e-1",
+      "for": "kn:2.C.3.e",
+      "site": "elatih",
+      "name": "[Mechanical Engineer Course] Innovations in Renewable Energy Technologies",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mechanical-engineer-course-innovations-in-renewable-energy-technologies",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-e-2",
+      "for": "kn:2.C.3.e",
+      "site": "coursera",
+      "name": "Introduction to Engineering Mechanics",
+      "link": "https://www.coursera.org/learn/engineering-mechanics-statics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-e-1",
+      "for": "kn:2.C.4.e",
+      "site": "elatih",
+      "name": "Basics of Psychology",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-psychology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-f-1",
+      "for": "kn:2.C.4.f",
+      "site": "coursera",
+      "name": "Sociological Perspectives, Culture and Research",
+      "link": "https://www.coursera.org/learn/sociological-perspectives-culture-and-research",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-f-2",
+      "for": "kn:2.C.4.f",
+      "site": "coursera",
+      "name": "Classical Sociological Theory",
+      "link": "https://www.coursera.org/learn/classical-sociological-theory",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-a-1",
+      "for": "kn:2.C.5.a",
+      "site": "coursera",
+      "name": "Introductory Human Physiology",
+      "link": "https://www.coursera.org/learn/physiology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-b-1",
+      "for": "kn:2.C.5.b",
+      "site": "coursera",
+      "name": "Psychological First Aid",
+      "link": "https://www.coursera.org/learn/psychological-first-aid",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-b-2",
+      "for": "kn:2.C.5.b",
+      "site": "coursera",
+      "name": "Evidence-Based Psychotherapy",
+      "link": "https://www.coursera.org/learn/evidence-based-psychotherapy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-6-1",
+      "for": "kn:2.C.6",
+      "site": "elatih",
+      "name": "Train The Trainer - How To Train Yourself And Others",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/train-the-trainer-how-to-train-yourself-and-others",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-6-2",
+      "for": "kn:2.C.6",
+      "site": "elatih",
+      "name": "Mastering The Art of Teaching",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mastering-the-art-of-teaching",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-a-1",
+      "for": "kn:2.C.7.a",
+      "site": "elatih",
+      "name": "Understanding English Grammar",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-english-grammar",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-a-2",
+      "for": "kn:2.C.7.a",
+      "site": "elatih",
+      "name": "Speak English Professionally",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/speak-english-professionally",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-b-1",
+      "for": "kn:2.C.7.b",
+      "site": "elatih",
+      "name": "Mandarin Chinese 1",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mandarin-chinese-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-b-2",
+      "for": "kn:2.C.7.b",
+      "site": "elatih",
+      "name": "Learn Chinese Mandarin",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/learn-chinese-mandarin",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-c-1",
+      "for": "kn:2.C.7.c",
+      "site": "elatih",
+      "name": "Appreciating Painting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/appreciating-painting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-c-2",
+      "for": "kn:2.C.7.c",
+      "site": "elatih",
+      "name": "Architecture Pen Drawing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/architecture-pen-drawing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-e-1",
+      "for": "kn:2.C.7.e",
+      "site": "coursera",
+      "name": "Introduction to Philosophy",
+      "link": "https://www.coursera.org/learn/philosophy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-a-1",
+      "for": "kn:2.C.8.a",
+      "site": "elatih",
+      "name": "Fire Safety Awareness (Interactive)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/fire-safety-awareness-interactive",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-a-2",
+      "for": "kn:2.C.8.a",
+      "site": "elatih",
+      "name": "Workplace Safety for Employees",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/workplace-safety-for-employees",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-a-1",
+      "for": "kn:2.C.9.a",
+      "site": "coursera",
+      "name": "Wireless Communications for Everybody",
+      "link": "https://www.coursera.org/learn/wireless-communications",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-a-2",
+      "for": "kn:2.C.9.a",
+      "site": "coursera",
+      "name": "Point-to-Point Wireless Telecommunication Links",
+      "link": "https://www.coursera.org/learn/point-to-point-wireless-telecommunication-links",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-b-1",
+      "for": "kn:2.C.9.b",
+      "site": "elatih",
+      "name": "Creating Quality Journalism",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/creating-quality-journalism",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-b-2",
+      "for": "kn:2.C.9.b",
+      "site": "elatih",
+      "name": "Video Editing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/video-editing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-b-1",
+      "for": "kn:2.C.4.b",
+      "site": "khan",
+      "name": "Physics archive",
+      "link": "https://www.khanacademy.org/science/physics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-c-1",
+      "for": "kn:2.C.4.c",
+      "site": "khan",
+      "name": "Chemistry archive",
+      "link": "https://www.khanacademy.org/science/chemistry",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-d-1",
+      "for": "kn:2.C.4.d",
+      "site": "khan",
+      "name": "Biology archive",
+      "link": "https://www.khanacademy.org/science/biology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-a-2",
+      "for": "kn:2.C.5.a",
+      "site": "khan",
+      "name": "Health and medicine",
+      "link": "https://www.khanacademy.org/science/health-and-medicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-d-1",
+      "for": "kn:2.C.7.d",
+      "site": "khan",
+      "name": "World history",
+      "link": "https://www.khanacademy.org/humanities/world-history",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-g-1",
+      "for": "kn:2.C.4.g",
+      "site": "coursera",
+      "name": "Geographic Information Systems (GIS)",
+      "link": "https://www.coursera.org/specializations/gis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-g-2",
+      "for": "kn:2.C.4.g",
+      "site": "coursera",
+      "name": "Intro to the Arctic",
+      "link": "https://www.coursera.org/learn/intro-to-the-arctic",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-e-2",
+      "for": "kn:2.C.4.e",
+      "site": "coursera",
+      "name": "Introduction to Psychology",
+      "link": "https://www.coursera.org/learn/introduction-psychology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-c-1",
+      "for": "el:2.B.3.c",
+      "site": "coursera",
+      "name": "Mechanization in Construction",
+      "link": "https://www.coursera.org/specializations/mechanization-in-construction",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-c-2",
+      "for": "el:2.B.3.c",
+      "site": "coursera",
+      "name": "Construction Equipment Maintenance & Safety",
+      "link": "https://www.coursera.org/learn/construction-equipment-maintenance--safety",
+      "checkedAt": "2026-10-31"
+    }
+  ],
+  "programmes": [
+    {
+      "id": "p-0613-1",
+      "field": "0613",
+      "kind": "accredited",
+      "name": "Bachelor of Computer Science with Honours (Software Engineering)",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://fki.ums.edu.my/index.php/what-we-offer/undergraduate/uh6481001",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0613-2",
+      "field": "0613",
+      "kind": "accredited",
+      "name": "Bachelor of Computer Science (Software Engineering) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://comp.utm.my/secjh/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0613-3",
+      "field": "0613",
+      "kind": "professional",
+      "name": "Professional Technologist (Ts.), ICT technology field",
+      "body": "Malaysia Board of Technologists (MBOT)",
+      "link": "https://www.mbot.org.my/registration/professional-technologists",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-1",
+      "field": "0411",
+      "kind": "accredited",
+      "name": "Bachelor of Accounting with Honours",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://www.ums.edu.my/fpep/index.php/what-we-offer/undergraduates/uh6344001-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-2",
+      "field": "0411",
+      "kind": "professional",
+      "name": "Chartered Accountant, C.A.(M)",
+      "body": "Malaysian Institute of Accountants (MIA)",
+      "link": "https://mia.org.my/how-to-become-a-c-a-m/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-3",
+      "field": "0411",
+      "kind": "professional",
+      "name": "The ACCA Qualification",
+      "body": "ACCA (Malaysia)",
+      "link": "https://www.accaglobal.com/my/en/qualifications/glance/acca.html",
+      "checkedAt": "2026-10-31"
+    }
+  ],
+  "searchWords": [
+    {
+      "id": "w-el-2-A-2-c",
+      "for": "el:2.A.2.c",
+      "word": "study skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "w-el-2-A-2-d",
+      "for": "el:2.A.2.d",
+      "word": "performance management",
+      "checkedAt": "2026-10-31"
+    }
+  ]
 }

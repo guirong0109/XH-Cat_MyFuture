@@ -411,9 +411,26 @@ describe('news service: relevance check (Amendment 1)', () => {
     const relevance = dropListings()
     const { service } = make({ store, search: threeEach(), relevance, options: only06 })
     await service.runNow()
-    expect(relevance.sent[0].items.map((x) => x.title)).toEqual(['Story 7 for 06', 'Story 1 for 06', 'Story 2 for 06', 'Listing page 06'])
+    expect(relevance.sent[0].items.map((x) => x.title)).toEqual(['Story 1 for 06', 'Story 2 for 06', 'Listing page 06', 'Story 7 for 06'])
     const seven = store.state.fields['06'].items.find((x) => x.title === 'Story 7 for 06')
     expect(seven).toMatchObject({ checked: true, foundAt: '2026-10-29T00:00:00.000Z' })
+  })
+
+  it('sends at most 50 items to one check, new results first, so the answer fits (final review)', async () => {
+    const legacy = Array.from({ length: 30 }, (_, i) => ({ ...item('06', 100 + i, { title: `Old story ${i}` }), foundAt: 'x' }))
+    const store = storeWith({ '06': record(legacy) })
+    const relevance = passAll()
+    const search = { async search() { return Array.from({ length: 40 }, (_, i) => item('06', i, { title: `New story ${i}` })) } }
+    const { service } = make({ store, search, relevance, options: only06 })
+    await service.runNow()
+    const sent = relevance.sent[0].items.map((x) => x.title)
+    expect(sent).toHaveLength(50)
+    expect(sent.slice(0, 40).every((t) => t.startsWith('New story'))).toBe(true)
+    expect(sent.slice(40).every((t) => t.startsWith('Old story'))).toBe(true)
+    const f = store.state.fields['06']
+    expect(f.dropped).toBe(0)
+    // Kept items were all sent and kept; old ones not sent stay unchecked (never shown).
+    expect(f.items.filter((x) => x.checked).every((x) => sent.includes(x.title))).toBe(true)
   })
 
   it('a failed check adds nothing, marks the field check_<code> and the others go on', async () => {

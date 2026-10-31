@@ -90,10 +90,12 @@ manifest hash like the other data files.
 **Repeats** are dropped: two items are the same if their addresses match (lower-case host, path without a trailing
 slash, `utm_*` parameters removed) or their headlines match (lower case, spaces and punctuation collapsed; since
 Amendment 1 also without a trailing site name: the text after the last ` | `, ` - `, ` – ` or ` — ` when that text is
-at most 40 characters). The earlier kept item wins.
+at most 40 characters, has no digits, and what is left has at least 4 words and is longer than it — final review, so
+"Opinion | …", "Interview - …" and "… - Part 2" are not cut). The earlier kept item wins.
 
 **Relevance check (N9)**, after the rules and the repeat check, on the new items only (items already kept and marked
-`checked` are not sent again; items kept before Amendment 1 are sent once with the new ones):
+`checked` are not sent again; items kept before Amendment 1 are sent once with the new ones; at most 50 items per
+request, new results first — final review, so the answer fits in `max_tokens`):
 
 - Request: `POST https://api.deepseek.com/chat/completions`, `model: "deepseek-flash"`, `thinking: { "type": "disabled" }`,
   `response_format: { "type": "json_object" }`, `temperature: 0`, `max_tokens: 1000`, same key and same retry rule as

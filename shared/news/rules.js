@@ -50,9 +50,17 @@ const linkKey = (value) => {
   return `${url.hostname.toLowerCase()}${url.pathname.replace(/\/+$/, '')}${query}`
 }
 // A trailing site name (Amendment 1): the text after the last " | ", " - ", " – " or " — ", at most 40 characters.
-const SITE_ENDING = /\s+[|\-–—]\s+[^|\-–—]{1,40}$/u
+// Final review: only when it looks like a site name and not part of the headline: no digits in it ("Part 2",
+// "Episode 13"), and what is left has at least 4 words and is longer ("Opinion | …" and "Interview - …" stay whole).
+const SITE_ENDING = /^(.*\S)\s+[|\-–—]\s+([^|\-–—]{1,40})$/u
+const withoutSiteName = (title) => {
+  const m = SITE_ENDING.exec(title)
+  if (!m) return title
+  const [, left, ending] = m
+  return !/\d/.test(ending) && left.trim().split(/\s+/).length >= 4 && left.length > ending.length ? left : title
+}
 // Same headline: without a trailing site name; lower case, punctuation, symbols and spaces collapsed.
-const headlineKey = (title) => title.replace(SITE_ENDING, '').toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, ' ').trim()
+const headlineKey = (title) => withoutSiteName(title).toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, ' ').trim()
 
 // Walks items in order and keeps the first of each repeat (same link or same headline); seen carries the keys.
 function firstOfEach(items, runAt, seen = { links: new Set(), headlines: new Set() }) {

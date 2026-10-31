@@ -92,8 +92,19 @@ describe('news rules', () => {
       expect(two('Big news', 'Big news - ' + 'x'.repeat(41))).toHaveLength(2)
     })
 
-    it('a short ending after " - " is read as a site name (the 40-character rule, accepted)', () => {
-      expect(two('Rust', 'Rust - the language')).toHaveLength(1)
+    it('a short headline before the separator is not a site-name ending (final review)', () => {
+      expect(two('Rust', 'Rust - the language')).toHaveLength(2)
+    })
+
+    it.each([
+      ['Opinion | Why AI will change the law', 'Opinion | Teachers should embrace AI tutors'],
+      ['Interview - Jane Doe', 'Interview - John Smith'],
+      ['AI in schools: 5 things to know - Part 1', 'AI in schools: 5 things to know - Part 2'],
+      ['Live updates - OpenAI DevDay', 'Live updates - Google I/O'],
+      ['AI - The future of farming', 'AI - What it means for nurses'],
+      ['Podcast | Episode 12: AI and jobs', 'Podcast | Episode 13: AI and jobs'],
+    ])('different articles "%s" and "%s" are both kept (final review)', (a, b) => {
+      expect(two(a, b)).toHaveLength(2)
     })
   })
 

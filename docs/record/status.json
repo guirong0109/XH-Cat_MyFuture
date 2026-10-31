@@ -2734,6 +2734,11 @@
       "time": "31 Oct",
       "step": "News A1: local check, real run and docs",
       "detail": "C9 and the two lines pass with a fake search and check (scripts/news-local.mjs); real run with the owner key: 10 searches + 10 checks (about US$0.02), C8 pass (first-run junk gone, copies once); SOURCES.md chat model row, .env.example, acceptance.md, HANDOVER.md, CLAUDE.md. Pipeline 49 OK (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: final review fixes",
+      "detail": "Opus review of Amendment 1: no Critical; 2 Important fixed with tests that failed first: the site-name rule no longer merges different articles (no digits in the ending, at least 4 words left), and a check sends at most 50 items, new results first. 5 minor notes deferred for the owner (      Tests  1563 passed (1563))"
     }
   ]
 }

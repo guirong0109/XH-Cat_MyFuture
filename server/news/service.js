@@ -18,6 +18,7 @@ export const MAX_PER_RUN = 10
 export const MAX_PER_DAY = 80
 export const MAX_CHECKS_PER_RUN = 10
 export const MAX_CHECKS_PER_DAY = 80
+export const MAX_CHECK_ITEMS = 50
 
 const DAY_MS = 24 * 60 * 60 * 1000
 // A bad key or no credit: every other field would fail the same way, so the run stops.
@@ -145,10 +146,13 @@ export function createNewsService({ enabled, loadFields, store, search, relevanc
         continue
       }
       // To the check: items kept before Amendment 1 (never checked) and the new found items; checked ones stay as they are.
+      // At most 50 items per check, new results first (final review): a longer list could cut the answer off at
+      // max_tokens and leave the field failing; old unchecked items are never shown, so leaving some out costs nothing.
       const checkedKept = kept.filter((item) => item.checked === true)
-      const oldUnchecked = newItems(checkedKept, kept.filter((item) => item.checked !== true), runAt)
-      const fresh = newItems([...checkedKept, ...oldUnchecked], found, runAt)
-      const candidates = [...oldUnchecked, ...fresh]
+      const oldAll = newItems(checkedKept, kept.filter((item) => item.checked !== true), runAt)
+      const fresh = newItems([...checkedKept, ...oldAll], found, runAt).slice(0, MAX_CHECK_ITEMS)
+      const oldUnchecked = oldAll.slice(0, MAX_CHECK_ITEMS - fresh.length)
+      const candidates = [...fresh, ...oldUnchecked]
       if (!candidates.length) {
         state.fields[field.code] = { query, items: mergeItems(checkedKept, [], runAt), searchedAt: stamp, lastAttemptAt: stamp, lastOutcome: 'no_results', lastError: null, dropped: 0, dropReasons: {} }
         continue
@@ -172,8 +176,8 @@ export function createNewsService({ enabled, loadFields, store, search, relevanc
       }
       const keep = new Set(answer.keep)
       const passed = (list, offset) => list.filter((_, i) => keep.has(i + offset)).map((item) => ({ ...item, checked: true }))
-      const keptOld = passed(oldUnchecked, 0)
-      const keptNew = passed(fresh, oldUnchecked.length)
+      const keptNew = passed(fresh, 0)
+      const keptOld = passed(oldUnchecked, fresh.length)
       state.fields[field.code] = {
         query,
         items: mergeItems([...checkedKept, ...keptOld], keptNew, runAt),

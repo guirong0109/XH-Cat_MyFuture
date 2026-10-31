@@ -101,7 +101,7 @@ SDG (no study plan) · SDG team draft, owner approves · career interests not us
 
 ## Commands
 ```bash
-npm test                                      # 1126 passed
+npm test                                      # 1129 passed
 python -m unittest discover pipeline/tests    # 49 OK
 npm start                                     # http://localhost:3200, tabs #match and #sdg
 python pipeline/fetch_radar_bridge.py         # after the BLS files are saved

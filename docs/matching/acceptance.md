@@ -78,4 +78,6 @@ before M17, so no `aiUse` at first). Nothing was pushed or merged.
 
 Closed note (final review, fixed): under Moderate the AI block showed two different percentages (touch 69% and the automation share 54.9%). Now the line under the big percentage reads "AI use seen on X% of this job's tasks" with the bar at the same X, then the source; the automation share stays in the open panel. Under Rapid both numbers were already the same ILO value.
 
-Test count after M17: 1126 passed (`npm test`).
+Browser re-check after the fix (controller, 31 Oct 2026, a649ccc): Moderate, role 2513-02 shows "AI touches this job 69%", "AI use seen on 69.0% of this job’s tasks (Anthropic Economic Index)", bar width 69%; Overall 62% with sum 34% × 0.31 + 75% × 0.69 = 62%. Pass.
+
+Test count after M17: 1129 passed (`npx vitest run --maxWorkers=3`).

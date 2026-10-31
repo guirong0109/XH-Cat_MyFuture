@@ -1,5 +1,5 @@
 {
-  "updated": "31 Oct 2026",
+  "updated": "1 Nov 2026",
   "groups": [
     {
       "id": "S0",
@@ -2920,6 +2920,11 @@
       "time": "31 Oct",
       "step": "Live: AI CV reading on, dry run of CV and news",
       "detail": "The CV error was AI reading off on the live server (no CV_LLM_KEY); the owner added the same DeepSeek key as CV_LLM_KEY. Owner-asked dry run on futures.grong.my: CV upload 200 in 2 s with the AI step, no ai_unavailable warning; news refresh run at once (backup latest-before-dry-run.json): all 10 fields ok, 17 new items, 10 searches and 10 checks (about US$0.03), next refresh 05:04 MYT; server log clean"
+    },
+    {
+      "time": "1 Nov",
+      "step": "README and submission folder in the SDC template layout",
+      "detail": "Owner's request: the README now follows the SDC Hackathon Submission Template (team, links, overview, structure, how to run, how we use Replit / RunPod, checklist); the earlier README moved to docs/project-details.md. New submission/ folder: Preliminary, Final report, Tech Declaration, Replit and RunPod proof of use (preliminary round, repository XH-Cat_Domain1). The template's Python placeholder files were not added (owner chose). Slide deck and demo video links say 'To add'."
     }
   ]
 }

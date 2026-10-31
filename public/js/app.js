@@ -1,5 +1,5 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level, data-aiuse;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
@@ -27,6 +27,7 @@ import sdgScreen from './screens/sdgTab.js'
 import * as matchApi from './matchApi.js'
 import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
 import * as pathwayApi from './pathwayApi.js'
+import { readAiUse } from '/shared/matching/overall.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -949,6 +950,9 @@ function onChange(target) {
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
     return update(setField(state.profile, `${listPath}.${i}.${key}`, target.value))
+  }
+  if (d.aiuse !== undefined) {
+    return update({ ...state.profile, aiUse: { ...readAiUse(state.profile), [d.aiuse]: target.value || null } })
   }
   if (d.level !== undefined) {
     const level = target.value || null

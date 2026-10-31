@@ -1854,6 +1854,11 @@
       "time": "31 Oct",
       "step": "M17 task 1: Overall match maths",
       "detail": "shared/matching/overall.js (readAiUse, aiKnowHow, overallMatch, sortValue); 17 new tests, npm test 1105 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 2: profile asks four AI questions",
+      "detail": "sixth profile card Using AI with four UNESCO-based yes/no drop-downs saved as profile.aiUse; schema checks it; EN/BM/zh strings; SOURCES.md row; npm test 1112 passed"
     }
   ]
 }

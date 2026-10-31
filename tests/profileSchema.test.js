@@ -83,3 +83,15 @@ describe('profile schema', () => {
     expect(hasUsableSkill(p)).toBe(true)
   })
 })
+
+describe('aiUse (M17)', () => {
+  it('a new profile has aiUse all null', () => expect(emptyProfile().aiUse).toEqual({ mindset: null, ethics: null, apply: null, design: null }))
+  it('accepts a profile without aiUse (saved before M17)', () => { const p = emptyProfile(); delete p.aiUse; expect(validateProfile(p).ok).toBe(true) })
+  it('rejects a bad aiUse value', () => {
+    const p = { ...emptyProfile(), aiUse: { mindset: 'maybe', ethics: null, apply: null, design: null } }
+    expect(validateProfile(p).errors).toContainEqual({ path: 'aiUse.mindset', code: 'bad_enum' })
+  })
+  it('rejects an aiUse that is not a plain object', () => {
+    for (const bad of ['yes', ['yes'], 5]) expect(validateProfile({ ...emptyProfile(), aiUse: bad }).errors).toContainEqual({ path: 'aiUse', code: 'bad_type' })
+  })
+})

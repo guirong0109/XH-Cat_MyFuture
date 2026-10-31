@@ -1168,4 +1168,20 @@ export default {
   pwSrc_picks: "Kursus, program, badan", // translation: owner review
   pwSrc_site: "Pautan “Lagi di” (carian laman itu sendiri)", // translation: owner review
   pwLinksOnly: "pautan sahaja", // translation: owner review
+  // Using AI (M17) (translation: owner review)
+  secAi: "Menggunakan AI", // translation: owner review
+  aiUseIntro: "Empat soalan ringkas tentang cara anda menggunakan AI. Jawapan menambah kemahiran AI anda kepada Padanan keseluruhan.", // translation: owner review
+  aiDim_mindset: "Pemikiran berpusatkan manusia", // translation: owner review
+  aiDim_ethics: "Etika AI", // translation: owner review
+  aiDim_apply: "Teknik dan aplikasi AI", // translation: owner review
+  aiDim_design: "Reka bentuk sistem AI", // translation: owner review
+  aiQ_mindset: "Saya tentukan bila hendak guna AI dan bila tidak, dan saya kekal bertanggungjawab atas hasilnya", // translation: owner review
+  aiQ_ethics: "Saya semak jawapan AI untuk kesilapan dan bias, dan jauhkan data peribadi daripada alat AI", // translation: owner review
+  aiQ_apply: "Saya guna alat AI (cth. ChatGPT, Copilot) untuk kerja atau tugasan belajar sebenar", // translation: owner review
+  aiQ_design: "Saya pernah membina atau menyediakan sesuatu dengan AI (aliran prompt, model, automasi)", // translation: owner review
+  aiYes: "Ya", // translation: owner review
+  aiNo: "Tidak", // translation: owner review
+  aiKnowHowLine: "Kemahiran AI anda: {percent}% ({yes} Ya daripada {answered} dijawab)", // translation: owner review
+  aiKnowHowNone: "Kemahiran AI anda: belum ada soalan dijawab", // translation: owner review
+  aiUseSource: "Soalan berdasarkan empat bahagian kerangka kompetensi AI UNESCO untuk pelajar (2024) · jawapan anda kekal dalam pelayar ini", // translation: owner review
 }

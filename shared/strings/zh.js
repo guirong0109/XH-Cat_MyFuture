@@ -1168,4 +1168,20 @@ export default {
   pwSrc_picks: "课程、学位课程、专业机构", // translation: owner review
   pwSrc_site: "“更多”链接（该网站自己的搜索）", // translation: owner review
   pwLinksOnly: "仅链接", // translation: owner review
+  // Using AI (M17) (translation: owner review)
+  secAi: "使用人工智能", // translation: owner review
+  aiUseIntro: "四个关于你如何使用人工智能的简短问题。答案会把你的人工智能能力加入总体匹配。", // translation: owner review
+  aiDim_mindset: "以人为本的思维", // translation: owner review
+  aiDim_ethics: "人工智能伦理", // translation: owner review
+  aiDim_apply: "人工智能技术与应用", // translation: owner review
+  aiDim_design: "人工智能系统设计", // translation: owner review
+  aiQ_mindset: "我自己决定何时使用人工智能、何时不用，并对结果负责", // translation: owner review
+  aiQ_ethics: "我会检查人工智能回答中的错误和偏见，并且不把私人数据交给人工智能工具", // translation: owner review
+  aiQ_apply: "我在真实的工作或学习任务中使用人工智能工具（如 ChatGPT、Copilot）", // translation: owner review
+  aiQ_design: "我曾用人工智能搭建或设置过东西（提示流程、模型、自动化）", // translation: owner review
+  aiYes: "是", // translation: owner review
+  aiNo: "否", // translation: owner review
+  aiKnowHowLine: "你的人工智能能力：{percent}%（已回答 {answered} 题，其中 {yes} 题为“是”）", // translation: owner review
+  aiKnowHowNone: "你的人工智能能力：尚未回答任何问题", // translation: owner review
+  aiUseSource: "问题依据联合国教科文组织学生人工智能能力框架（2024）的四个部分 · 你的答案只留在此浏览器中", // translation: owner review
 }

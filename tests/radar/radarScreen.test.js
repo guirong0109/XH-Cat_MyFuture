@@ -1036,9 +1036,9 @@ describe('AI Impact card', () => {
     expect(rule).toMatch(/text-overflow:ellipsis/)
   })
 
-  it('on a phone the count and source column of a list row moves under the row text', () => {
+  it('up to 760 px wide the count and source column of a list row moves under the row text (one letter per line at 588 px before)', () => {
     const css = readFileSync('public/styles.css', 'utf8')
-    const phone = [...css.matchAll(/@media \(max-width:560px\)\{([\s\S]*?\}\s*)\}/g)].map((m) => m[1]).find((b) => b.includes('.rd-rank-list')) ?? ''
+    const phone = [...css.matchAll(/@media \(max-width:760px\)\{([\s\S]*?\}\s*)\}/g)].map((m) => m[1]).find((b) => b.includes('.rd-rank-list')) ?? ''
     expect(phone).toMatch(/\.rd-rank-list \.rd-row\{grid-template-columns:2\.4em minmax\(0,1fr\)\}/)
     expect(phone).toMatch(/\.rd-rank-list \.rd-rc\{grid-column:2;white-space:normal\}/)
   })

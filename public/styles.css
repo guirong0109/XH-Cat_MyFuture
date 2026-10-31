@@ -468,7 +468,7 @@ a.tag.mt-sdg:hover{text-decoration:underline}
 .rd-rank-list .rd-row.hl{background:var(--accent-soft)}
 .rd-rn{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
 .rd-rc{font-variant-numeric:tabular-nums;white-space:nowrap}
-@media (max-width:560px){.rd-rank-list .rd-row{grid-template-columns:2.4em minmax(0,1fr)}
+@media (max-width:760px){.rd-rank-list .rd-row{grid-template-columns:2.4em minmax(0,1fr)}
   .rd-rank-list .rd-rc{grid-column:2;white-space:normal}
 }
 .rd-newmark{font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--ok-soft);color:var(--ok);white-space:nowrap}

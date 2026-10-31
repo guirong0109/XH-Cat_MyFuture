@@ -2,7 +2,7 @@
 export default {
   welcome: 'Welcome', returning: 'Returning guest', access: 'Guest or account', category: 'Who are you?', org: 'HR & TVET (preview)',
   source: 'CV or manual', upload: 'Upload CV', form: 'Your profile', review: 'Confirm profile', summary: 'Your profile summary',
-  radar: 'Future Skills Radar', match: 'Career matching', pathway: 'Study pathway', futures: 'Compare futures',
+  radar: 'Future Skills Radar', match: 'Career matching', pathway: 'Study pathway',
   heroSub: 'Start with who you are today: your studies, work and skills, from your CV or a short form.',
   themeToDark: 'Dark mode', themeToLight: 'Light mode',
   langNote: 'The interface stays in this language. It only changes when you choose another one.',
@@ -962,8 +962,6 @@ export default {
   ldS3D: "Ranked future roles with a score you can take apart: why this score, and what would raise it.",
   ldS4T: "Follow a pathway",
   ldS4D: "An ordered learning plan with time estimates and real free or low-cost courses.",
-  ldS6T: "Compare futures",
-  ldS6D: "Switch between at least two AI scenarios and see how the advice changes, labelled as estimates.",
   ldS1a: "PDF or Word CV",
   ldS1b: "Or a short form",
   ldS1c: "You confirm every skill",
@@ -1479,11 +1477,10 @@ export default {
   shSrcHeld: "what {org} holds now, from your last share",
   shAfterUpdate: "After Update, {org} will see:",
   shMoves: "Sharing with {org} stops your sharing with {other}.",
-  // Compare futures: AI news
-  nwTitle: "AI news",
+  // AI news (in the Future Skills Radar since 1 Nov 2026)
+  nwTitleYou: "AI news for you",
+  nwTitleAll: "AI news by field",
   nwLead: "The latest news about AI in each study field, found by DeepSeek Search and checked by simple rules.",
-  nwTabYou: "For you",
-  nwTabAll: "Explore all",
   nwPick: "Field",
   nwYourField: "your field",
   nwSource: "Found by DeepSeek Search for “{query}” · updated {updated} · next refresh about {next}",

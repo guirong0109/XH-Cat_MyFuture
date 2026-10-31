@@ -30,8 +30,9 @@ scenario comparison.
 | Compare futures: AI news per study field (DeepSeek Search every 3 hours, DeepSeek relevance check, English only) | `claude/compare-futures` | merged 2026-10-31 | Done; 1673 tests pass after the merge; whole-branch reviews fixed; checked with the owner's key |
 | Proficiency check tab and SDG contribution section | `main` | removed 2026-11-01 (owner) | Gone; SDG tags and filter stay on Career matching, SDG review stays in `#admin`; `#sdg` opens Career matching; 1748 tests pass |
 
-## Compare futures: AI news (since 2026-10-31)
-- **Screen `#futures` → AI news:** For you (the profile's study fields) and Explore all (10 ISCED-F broad fields),
+## AI news (since 2026-10-31; in the Future Skills Radar since 2026-11-01)
+- **In the Radar's tabs (owner, 1 Nov; the Compare futures tab is gone):** For You ends with the news for the profile's
+  study fields, Explore all trends with a picker of the 10 ISCED-F broad fields,
   up to 25 items each with link, site, date and snippet; every list names DeepSeek Search, the query, the update
   time, the next refresh, "English articles only" and how many results the check dropped.
 - **Refreshes every 3 hours (owner rule).** Paid DeepSeek: about US$4-6 a month, hard caps 80 searches and 80

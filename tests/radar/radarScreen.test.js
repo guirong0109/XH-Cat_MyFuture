@@ -1477,3 +1477,29 @@ describe('Pages and folds on the Radar charts', () => {
     expect(app).not.toMatch(/pages:[^\n]*(score|weight|rank|opportunit)/i)
   })
 })
+
+// Owner, 1 Nov 2026: the AI news moved from Compare futures into the Radar: For You shows the news for the user's own
+// study fields, Explore all trends the news of any field.
+describe('AI news inside the Radar tabs', () => {
+  const news = { field: null, loading: false, failed: false, data: { enabled: true, source: 'DeepSeek Search', refreshEveryHours: 3, nextRunAt: '2026-10-31T09:00:00.000Z', rules: { maxItems: 25, maxAgeDays: 30, language: 'en' }, checkedBy: 'deepseek-flash', fields: [{ code: '06', title: 'Information and Communication Technologies (ICTs)', query: 'q', searchedAt: '2026-10-31T06:00:00.000Z', lastAttemptAt: '2026-10-31T06:00:00.000Z', lastOutcome: 'ok', dropped: 0, items: [{ title: 'ICT story', url: 'https://e.com/1', site: 'E', date: '2026-10-30T00:00:00Z', snippet: 's' }] }, { code: '01', title: 'Education', query: 'q', searchedAt: null, lastAttemptAt: null, lastOutcome: null, dropped: 0, items: [] }] } }
+  const withField = (p) => ({ ...p, education: { ...(p.education ?? {}), records: [{ field: { code: '0613', title: 'Software' } }] } })
+  const page = (prof, tab) => radarView({ t, state: { lang: 'en', profile: prof, radar: tab ? { tab } : {}, news }, data: linked() })
+
+  it('For You ends with the news for the user\'s field', () => {
+    const html = page(withField(ownProfile()), 'fy')
+    expect(html).toContain(t('nwTitleYou'))
+    expect(html).toContain('ICT story')
+    expect(html).not.toContain('data-act="newsField"')
+  })
+
+  it('Explore all trends ends with the field picker and one field\'s news', () => {
+    const html = page(withField(ownProfile()), 'ex')
+    expect(html).toContain(t('nwTitleAll'))
+    expect(html).toContain('data-act="newsField"')
+  })
+
+  it('the news shows in For You even while the AI usage question is asked', () => {
+    const html = page(withField({ ...ownProfile(), aiTasks: undefined }), 'fy')
+    expect(html).toContain(t('nwTitleYou'))
+  })
+})

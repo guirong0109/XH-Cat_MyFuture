@@ -1,9 +1,10 @@
-// Compare futures → AI news (#futures), spec docs/superpowers/specs/2026-10-31-compare-futures-news-design.md §8.
+// AI news (spec docs/superpowers/specs/2026-10-31-compare-futures-news-design.md §8), shown in the Future Skills Radar's
+// tabs since 1 Nov 2026 (owner; it was the Compare futures tab).
 // For you: the lists of the profile's broad study fields (picked here, in the browser). Explore all: any of the 10.
 // Every list says where it came from, when it was searched, when the next refresh is due and which rules kept it.
 // DeepSeek text is always escaped; links only for http(s) addresses.
 import { esc } from '../ui.js'
-import { safeUrl } from '../components/evidencePanel.js'
+import { safeUrl } from './evidencePanel.js'
 import { forYouFields } from '/shared/news/rules.js'
 
 const MYT_MS = 8 * 60 * 60 * 1000
@@ -36,9 +37,11 @@ function list(t, data, field) {
   return `<section class="nw-list"><h2>${esc(field.title)}</h2>${source}${failed}${items}</section>`
 }
 
-export function futuresView({ t, state }) {
+// The news section of a Radar tab (owner, 1 Nov 2026: moved from Compare futures). tab 'you' (For You): the lists of
+// the profile's broad study fields; tab 'all' (Explore all trends): a picker of the 10 fields and one list.
+export function newsSection({ t, state, tab = 'you' }) {
   const news = state?.news ?? {}
-  const head = `<h1>${esc(t('futures'))}</h1><h2>${esc(t('nwTitle'))}</h2><p class="lead">${esc(t('nwLead'))}</p>`
+  const head = `<h2 class="nw-h2">${esc(t(tab === 'all' ? 'nwTitleAll' : 'nwTitleYou'))}</h2><p class="small muted">${esc(t('nwLead'))}</p>`
   const data = news.data
   if (!data) {
     const body = news.failed
@@ -49,19 +52,16 @@ export function futuresView({ t, state }) {
   if (!data.enabled) return `<div class="nw">${head}<div class="banner"><div>${esc(t('nwOff'))}</div></div></div>`
   const fields = data.fields ?? []
   const mine = forYouFields(state?.profile, fields.map((f) => f.code))
-  const tab = news.tab === 'all' ? 'all' : 'you'
-  const tabs = [['you', 'nwTabYou'], ['all', 'nwTabAll']]
-    .map(([id, label]) => `<button type="button" class="${tab === id ? 'on' : ''}" data-act="newsTab" data-arg="${id}" aria-pressed="${tab === id}">${esc(t(label))}</button>`).join('')
   let body
-  if (tab === 'you') {
+  if (tab !== 'all') {
     body = mine.length
       ? mine.map((code) => list(t, data, fields.find((f) => f.code === code))).join('')
-      : `<div class="card"><p>${esc(t('nwNoField'))}</p><div class="row"><button class="btn pri" type="button" data-go="form">${esc(t('nwEditProfile'))}</button> <button class="btn" type="button" data-act="newsTab" data-arg="all">${esc(t('nwExploreAll'))}</button></div></div>`
+      : `<div class="card"><p>${esc(t('nwNoField'))}</p><div class="row"><button class="btn pri" type="button" data-go="form">${esc(t('nwEditProfile'))}</button> <button class="btn" type="button" data-act="radarTab" data-arg="ex">${esc(t('nwExploreAll'))}</button></div></div>`
   } else {
     const chosen = fields.find((f) => f.code === news.field) ?? fields.find((f) => f.code === mine[0]) ?? fields[0]
     const picker = fields
       .map((f) => `<button type="button" class="${f === chosen ? 'on' : ''}" data-act="newsField" data-arg="${esc(f.code)}" aria-pressed="${f === chosen}">${esc(f.title)}${mine.includes(f.code) ? `<small>${esc(t('nwYourField'))}</small>` : ''}</button>`).join('')
     body = `<div class="tiny muted">${esc(t('nwPick'))}</div><div class="mt-seg" role="group" aria-label="${esc(t('nwPick'))}">${picker}</div>${chosen ? list(t, data, chosen) : ''}`
   }
-  return `<div class="nw">${head}<div class="mt-seg" role="group" aria-label="${esc(t('nwTitle'))}">${tabs}</div>${body}</div>`
+  return `<div class="nw">${head}${body}</div>`
 }

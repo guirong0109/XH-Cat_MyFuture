@@ -364,8 +364,12 @@ describe('Career matching card and app wiring', () => {
     const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
     // Owner, 1 Nov 2026: the "Proficiency check" tab (assess) and the "SDG contribution" section (#sdg) are removed;
     // an old #sdg link opens Career matching, where the SDG tags stay.
-    expect(app).toMatch(/const NEXT = \['radar', 'match', 'pathway', 'futures'\]/)
+    // Owner, 1 Nov 2026: the AI news moved into the Radar; the Compare futures tab is removed and #futures opens #radar.
+    expect(app).toMatch(/const NEXT = \['radar', 'match', 'pathway'\]/)
     expect(app).toMatch(/sdg: 'match'/)
+    expect(app).toMatch(/futures: 'radar'/)
+    expect(app).not.toMatch(/futuresView/)
+    for (const table of [en, ms, zh]) for (const key of ['futures', 'ldS6T', 'ldS6D', 'nwTabYou', 'nwTabAll']) expect(table[key]).toBeUndefined()
     expect(app).not.toMatch(/sdgTab/)
     for (const table of [en, ms, zh]) for (const key of ['assess', 'sdg', 'ldS5T', 'ldS5D', 'mtSdgLead', 'mtSdgNoRole']) expect(table[key]).toBeUndefined()
     expect(app).toMatch(/roadmap: 'pathway'/)

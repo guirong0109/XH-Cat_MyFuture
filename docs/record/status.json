@@ -2910,6 +2910,11 @@
       "time": "31 Oct",
       "step": "Organisation view: target role suggestions",
       "detail": "Owner: the Change box for a department's target role needs a suggest list. Now suggests eMASCO roles as you type (2 letters, 250 ms pause, only the last keystroke, refreshes only the list so the box keeps focus), opens with roles matching the department's name, an empty box asks for 2 letters, Enter still works; same box for join links (opens empty). Texts en/ms/zh. Tests first (8); npm test 1762 passed. Not yet published"
+    },
+    {
+      "time": "31 Oct",
+      "step": "AI news moved into the Future Skills Radar",
+      "detail": "Owner: move the Compare futures AI news into the Radar, same as For You and Explore all. The news view is now public/js/components/newsPanel.js: For You ends with AI news for you (profile study fields), Explore all trends with AI news by field (10-field picker). The Compare futures tab and landing step are removed; #futures opens #radar. Texts en/ms/zh. Tests first; npm test 1765 passed; checked on localhost:3400. Not yet published"
     }
   ]
 }

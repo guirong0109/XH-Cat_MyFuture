@@ -2,7 +2,7 @@
 export default {
   welcome: 'Selamat datang', returning: 'Tetamu kembali', access: 'Tetamu atau akaun', category: 'Siapakah anda?', org: 'HR & TVET (pratonton)',
   source: 'CV atau manual', upload: 'Muat naik CV', form: 'Profil anda', review: 'Sahkan profil', summary: 'Ringkasan profil anda',
-  radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian', futures: 'Bandingkan masa depan',
+  radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian',
   heroSub: 'Mulakan dengan diri anda hari ini: pengajian, kerja dan kemahiran, daripada CV atau borang ringkas.',
   themeToDark: 'Mod gelap', themeToLight: 'Mod cerah',
   langNote: 'Antara muka kekal dalam bahasa ini. Ia hanya berubah apabila anda memilih bahasa lain.',
@@ -962,8 +962,6 @@ export default {
   ldS3D: "Peranan masa depan mengikut kedudukan, dengan skor yang boleh diperincikan: mengapa skor ini, dan apa yang boleh menaikkannya.",
   ldS4T: "Ikuti laluan",
   ldS4D: "Pelan pembelajaran tersusun dengan anggaran masa dan kursus percuma atau kos rendah yang benar-benar wujud.",
-  ldS6T: "Bandingkan masa depan",
-  ldS6D: "Tukar antara sekurang-kurangnya dua senario AI dan lihat bagaimana cadangan berubah, dilabel sebagai anggaran.",
   ldS1a: "CV PDF atau Word",
   ldS1b: "Atau borang ringkas",
   ldS1c: "Anda sahkan setiap kemahiran",
@@ -1480,11 +1478,10 @@ export default {
   shSrcHeld: "apa yang dipegang {org} sekarang, daripada perkongsian terakhir anda", // translation: owner review
   shAfterUpdate: "Selepas Kemas Kini, {org} akan melihat:", // translation: owner review
   shMoves: "Berkongsi dengan {org} menghentikan perkongsian anda dengan {other}.", // translation: owner review
-  // Compare futures: AI news (translation: owner review)
-  nwTitle: "Berita AI", // translation: owner review
+  // AI news (in the Future Skills Radar since 1 Nov 2026) (translation: owner review)
+  nwTitleYou: "Berita AI untuk anda", // translation: owner review
+  nwTitleAll: "Berita AI mengikut bidang", // translation: owner review
   nwLead: "Berita terkini tentang AI dalam setiap bidang pengajian, ditemui oleh DeepSeek Search dan disemak dengan peraturan mudah.", // translation: owner review
-  nwTabYou: "Untuk anda", // translation: owner review
-  nwTabAll: "Teroka semua", // translation: owner review
   nwPick: "Bidang", // translation: owner review
   nwYourField: "bidang anda", // translation: owner review
   nwSource: "Ditemui oleh DeepSeek Search untuk “{query}” · dikemas kini {updated} · muat semula seterusnya sekitar {next}", // translation: owner review

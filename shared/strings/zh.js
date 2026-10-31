@@ -2,7 +2,7 @@
 export default {
   welcome: '欢迎', returning: '回访访客', access: '访客或账户', category: '你是哪一类用户？', org: 'HR 与 TVET（预览）',
   source: '简历或手动填写', upload: '上传简历', form: '你的资料', review: '确认资料', summary: '你的资料摘要',
-  radar: '未来技能雷达', match: '职业匹配', pathway: '学习路径', futures: '比较未来情景',
+  radar: '未来技能雷达', match: '职业匹配', pathway: '学习路径',
   heroSub: '从今天的你开始：你的学历、工作和技能，来自简历或简短表格。',
   themeToDark: '深色模式', themeToLight: '浅色模式',
   langNote: '界面会保持这种语言，只有在你选择其他语言时才会改变。',
@@ -962,8 +962,6 @@ export default {
   ldS3D: "按排名列出的未来职位，分数可以逐项拆解：为什么是这个分数，怎样可以提高。",
   ldS4T: "跟随学习路径",
   ldS4D: "有先后顺序的学习计划，附时间估算，以及真实存在的免费或低成本课程。",
-  ldS6T: "比较不同的未来",
-  ldS6D: "在至少两种 AI 情景之间切换，查看建议如何变化，并标明是估算。",
   ldS1a: "PDF 或 Word 简历",
   ldS1b: "或简短表格",
   ldS1c: "每项技能由你确认",
@@ -1480,11 +1478,10 @@ export default {
   shSrcHeld: "{org} 目前持有的内容，来自您上次的分享", // translation: owner review
   shAfterUpdate: "更新后，{org} 将看到：", // translation: owner review
   shMoves: "与 {org} 分享将停止您与 {other} 的分享。", // translation: owner review
-  // Compare futures: AI news (translation: owner review)
-  nwTitle: "AI 新闻", // translation: owner review
+  // AI news (in the Future Skills Radar since 1 Nov 2026) (translation: owner review)
+  nwTitleYou: "为你推荐的 AI 新闻", // translation: owner review
+  nwTitleAll: "按领域浏览 AI 新闻", // translation: owner review
   nwLead: "每个学习领域中有关 AI 的最新新闻，由 DeepSeek Search 查找，并按简单规则检查。", // translation: owner review
-  nwTabYou: "为你推荐", // translation: owner review
-  nwTabAll: "浏览全部", // translation: owner review
   nwPick: "领域", // translation: owner review
   nwYourField: "你的领域", // translation: owner review
   nwSource: "由 DeepSeek Search 搜索 “{query}” 找到 · 更新于 {updated} · 下次刷新约 {next}", // translation: owner review

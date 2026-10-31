@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1762 passed
+npm install && npm test     # expect 1765 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -93,10 +93,12 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - HR sees only shared skills (O\*NET key + level), group, role and name. Join tokens: hash only, single use, 7 days.
   Never log names, skills or tokens; never store team results. Rosters: made-up people only.
 
-## Compare futures: AI news (details: branch `claude/compare-futures`)
-- Code in `shared/news/rules.js`, `server/news/` (deepseek, relevance, service, store, routes), `public/js/screens/futures.js`,
-  `public/js/newsApi.js`; data `data/news/fields.json` (10 ISCED-F broad fields, manifest hash). Screen `#futures`:
-  For you (profile study fields, picked in the browser) and Explore all.
+## AI news, in the Future Skills Radar (details: branch `claude/compare-futures`)
+- Code in `shared/news/rules.js`, `server/news/` (deepseek, relevance, service, store, routes),
+  `public/js/components/newsPanel.js`, `public/js/newsApi.js`; data `data/news/fields.json` (10 ISCED-F broad fields,
+  manifest hash). Since 1 Nov 2026 (owner) it closes the Radar's tabs: For You → "AI news for you" (profile study
+  fields, picked in the browser), Explore all trends → "AI news by field". The Compare futures tab is gone; `#futures`
+  opens `#radar`.
 - **The news refreshes every 3 hours (owner). Keep it that way on every host.** The timer runs in the server
   (`news.start()` in `server/index.js`); after a host sleeps, the first visit past the due time refreshes.
 - DeepSeek Search finds the news; DeepSeek `deepseek-flash` only keeps or drops each new result (news about AI in the

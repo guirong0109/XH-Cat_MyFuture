@@ -1,6 +1,7 @@
-// Compare futures → AI news screen (spec §8, plan Task 5). Render functions on a hand-made /api/news reply.
+// AI news panel (spec §8, plan Task 5), shown in the Future Skills Radar's For You and Explore all trends tabs since
+// 1 Nov 2026 (owner: moved from Compare futures). Render functions on a hand-made /api/news reply.
 import { describe, expect, it } from 'vitest'
-import { futuresView, myt } from '../../public/js/screens/futures.js'
+import { myt, newsSection } from '../../public/js/components/newsPanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import en from '../../shared/strings/en.js'
 import ms from '../../shared/strings/ms.js'
@@ -21,9 +22,9 @@ const reply = (change = {}) => ({
   ...(change.top ?? {}),
 })
 const ict = { education: { records: [{ field: { code: '0613', title: 'Software' } }] } }
-const view = (news, profile = ict) => futuresView({ t, state: { lang: 'en', profile, news } })
+const view = (news, profile = ict) => newsSection({ t, state: { lang: 'en', profile, news }, tab: news.tab === 'all' ? 'all' : 'you' })
 
-describe('futures screen', () => {
+describe('AI news panel', () => {
   it('myt shows Malaysia time', () => {
     expect(myt('2026-10-31T07:00:00Z')).toBe('2026-10-31 15:00 MYT')
   })
@@ -53,7 +54,8 @@ describe('futures screen', () => {
     const html = view({ tab: 'you', field: null, data: reply(), loading: false, failed: false }, { education: { records: [] } })
     expect(html).toContain(en.nwNoField)
     expect(html).toContain('data-go="form"')
-    expect(html).toContain('data-act="newsTab" data-arg="all"')
+    // the button switches the Radar to its Explore all trends tab, where every field's news is
+    expect(html).toContain('data-act="radarTab" data-arg="ex"')
   })
 
   it('Explore all has a picker of the 10 fields, marks the own field and shows one list', () => {

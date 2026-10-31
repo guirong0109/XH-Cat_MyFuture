@@ -3,6 +3,7 @@
 // By default only the user's own fields, jobs and roles and what they reach (D2); "View all" is the last element of
 // each tab. Every number has its source link next to it (D3). Relevance is worked out here, in the browser, from the
 // confirmed profile and the public reference data; nothing personal is sent to the server (spec §11.2).
+import { newsSection } from '../components/newsPanel.js'
 import { esc, tag } from '../ui.js'
 import { radarChart } from '../components/charts/radarChart.js'
 import { lineChart } from '../components/charts/lineChart.js'
@@ -349,16 +350,18 @@ function researchCards({ t, state, data, all = false }) {
 // For You (D44): the AI usage question until it is answered or skipped (or reopened); then the Change button, the AI
 // tasks scatter and the research signals for the user's field. Nothing else.
 export function forYouTab({ t, state, data }) {
-  if (needsAsking(state?.profile) || (ui(state).aiAsk?.open && state?.profile)) return aiTasksQuestion({ t, state })
+  // The AI news for the user's own study fields closes the tab (owner, 1 Nov 2026), also while the question is asked.
+  const news = newsSection({ t, state, tab: 'you' })
+  if (needsAsking(state?.profile) || (ui(state).aiAsk?.open && state?.profile)) return `${aiTasksQuestion({ t, state })}${news}`
   const change = state?.profile?.aiTasks ? `<p class="rd-aiask-line"><button class="btn sm ghost" data-act="aiAskOpen">${esc(t('rdAiAskChange'))}</button></p>` : ''
   const { a5 } = researchCards({ t, state, data })
-  return `${change}${aiTasksCard({ t, state, data })}${a5}`
+  return `${change}${aiTasksCard({ t, state, data })}${a5}${news}`
 }
 
 // Explore all trends (D45): research momentum and papers per year for all six topics; no View all.
 export function exploreTab({ t, state, data }) {
   const { a2, a1 } = researchCards({ t, state, data, all: true })
-  return `${a2}${a1}`
+  return `${a2}${a1}${newsSection({ t, state, tab: 'all' })}`
 }
 
 // ---------- Skills & Careers tab ----------

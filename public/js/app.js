@@ -32,7 +32,6 @@ import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './scr
 import * as matchApi from './matchApi.js'
 import pathwayScreen, { activeOf, addTargets, pathwayToSave } from './screens/pathway.js'
 import * as pathwayApi from './pathwayApi.js'
-import { futuresView } from './screens/futures.js'
 import * as newsApi from './newsApi.js'
 import { readAiUse } from '/shared/matching/overall.js'
 import { esc } from './ui.js'
@@ -48,10 +47,11 @@ import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
 const SCREENS = { welcome, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
-const NEXT = ['radar', 'match', 'pathway', 'futures']
+const NEXT = ['radar', 'match', 'pathway']
 // Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab; the SDG
-// contribution section was removed on 1 Nov 2026 (owner), so #sdg opens Career matching, where the SDG tags stay).
-const ALIAS = { roadmap: 'pathway', sdg: 'match' }
+// contribution section was removed on 1 Nov 2026 (owner), so #sdg opens Career matching, where the SDG tags stay; the
+// AI news moved into the Radar the same day, so #futures opens the Radar).
+const ALIAS = { roadmap: 'pathway', sdg: 'match', futures: 'radar' }
 const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
@@ -544,7 +544,7 @@ function setProgress(key, value) {
   persist()
   render()
 }
-// Compare futures → AI news: the same lists for every visitor, loaded once (again after a failure). Never saved.
+// AI news in the Radar's tabs: the same lists for every visitor, loaded once (again after a failure). Never saved.
 const newsUi = () => (state.news ??= { tab: 'you', field: null, data: null, loading: false, failed: false })
 async function loadNews() {
   const n = newsUi()
@@ -552,15 +552,14 @@ async function loadNews() {
   n.failed = false
   const out = await newsApi.load()
   state.news = { ...newsUi(), loading: false, data: out.ok ? out.data : null, failed: !out.ok }
-  if (state.screen === 'futures') render()
+  if (state.screen === 'radar') render()
 }
 function ensureNews() {
   const n = newsUi()
   if (!n.data && !n.loading && !n.failed) loadNews()
 }
 const newsActions = {
-  newsTab: (tab) => { state.news = { ...newsUi(), tab: tab === 'all' ? 'all' : 'you' }; render() },
-  newsField: (code) => { state.news = { ...newsUi(), tab: 'all', field: String(code ?? '') }; render() },
+  newsField: (code) => { state.news = { ...newsUi(), field: String(code ?? '') }; render() },
   newsRetry: () => loadNews(),
 }
 
@@ -1188,14 +1187,13 @@ function render() {
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match') ensureMatch()
   if (screen === 'pathway') ensurePathway()
-  if (screen === 'futures') ensureNews()
+  if (screen === 'radar') ensureNews()
   if (screen === 'org') actions.orgEnsure()
   if (screen === 'share') actions.shareEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
   else if (screen === 'pathway') view = pathwayScreen({ t, state })
-  else if (screen === 'futures') view = futuresView({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
   const page = view !== undefined || NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome

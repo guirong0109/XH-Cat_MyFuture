@@ -37,10 +37,11 @@ describe('landing page', () => {
     for (const fact of DATA_FACTS) expect(page()).toContain(translate('en', fact.source))
   })
 
-  it('shows the five stages of the guide; only the profile works now', () => {
-    // Owner, 1 Nov 2026: the SDG contribution step is removed.
-    expect(STAGES).toHaveLength(5)
+  it('shows the four stages of the guide; only the profile works now', () => {
+    // Owner, 1 Nov 2026: the SDG contribution and Compare futures steps are removed.
+    expect(STAGES).toHaveLength(4)
     expect(STAGES.map((s) => s.id)).not.toContain('sdg')
+    expect(STAGES.map((s) => s.id)).not.toContain('futures')
     expect(STAGES.filter((stage) => stage.live).map((stage) => stage.id)).toEqual(['profile'])
     const html = page()
     expect(html.split(translate('en', 'ldNext')).length - 1).toBe(1)

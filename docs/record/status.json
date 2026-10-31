@@ -2719,6 +2719,11 @@
       "time": "31 Oct",
       "step": "News A1: relevance check client",
       "detail": "server/news/relevance.js: deepseek-flash, thinking off, JSON mode, temperature 0, max_tokens 1000; fixed prompt with field title and numbered headline, site, snippet (no links); only whole-number ids in keep are kept, reasons counted; blank or wrong answer retried once like network, timeout, 408, 429, 5xx; fake fetch only (      Tests  1539 passed (1539))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: relevance check in the refresh",
+      "detail": "server/news/service.js: each field's new items (plus items kept before Amendment 1) go to the check once; kept ones marked checked, dropped and dropReasons recorded; no new item means no check; a failed check adds nothing (check_<code>), 401/402 stop the run; checks capped 10 per run and 80 per 24 h (memory and store, before each request, stop before searching a field with no check left); reply shows checked items only with checkedBy and dropped (      Tests  1550 passed (1550))"
     }
   ]
 }

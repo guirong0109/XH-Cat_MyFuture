@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { MAX_PER_DAY, MAX_PER_RUN, REFRESH_MS, createNewsService, createNewsServiceFromEnv } from '../../server/news/service.js'
+import { MAX_CHECKS_PER_DAY, MAX_CHECKS_PER_RUN, MAX_PER_DAY, MAX_PER_RUN, REFRESH_MS, createNewsService, createNewsServiceFromEnv } from '../../server/news/service.js'
 import { createFileNewsStore, createR2NewsStore } from '../../server/news/store.js'
 import { NewsSearchError } from '../../server/news/deepseek.js'
 import { loadNewsFields } from '../../server/news/fields.js'
@@ -40,11 +40,16 @@ function timers() {
   const planned = []
   return { planned, setTimer: (fn, ms) => { const h = { fn, ms, cleared: false }; planned.push(h); return h }, clearTimer: (h) => { if (h) h.cleared = true } }
 }
+// A relevance check that keeps everything, recording what it was sent (Amendment 1).
+function passAll() {
+  const sent = []
+  return { sent, async check(title, items) { sent.push({ title, items }); return { keep: items.map((_, i) => i), reasons: {} } } }
+}
 const make = (o = {}) => {
   const c = o.clock ?? clock()
   const tm = o.timers ?? timers()
   const logs = []
-  const service = createNewsService({ enabled: true, loadFields: async () => FIELDS, store: o.store ?? memoryStore(), search: o.search ?? fakeSearch(), now: c.now, log: (line) => logs.push(line), setTimer: tm.setTimer, clearTimer: tm.clearTimer, ...o.options })
+  const service = createNewsService({ enabled: true, loadFields: async () => FIELDS, store: o.store ?? memoryStore(), search: o.search ?? fakeSearch(), relevance: o.relevance ?? passAll(), now: c.now, log: (line) => logs.push(line), setTimer: tm.setTimer, clearTimer: tm.clearTimer, ...o.options })
   return { service, clock: c, timers: tm, logs }
 }
 
@@ -55,11 +60,12 @@ describe('news service: a run', () => {
     const { service } = make({ store, search })
     expect(await service.runNow()).toEqual({ searched: 10, stopped: null })
     expect(search.queries).toEqual(FIELDS.map((f) => buildQuery(f.words, T0)))
-    // Once before each search (the count survives a restart mid-run) and once at the end.
-    expect(store.writes).toBe(11)
+    // Once before each search and each check (the counts survive a restart mid-run) and once at the end; field 05 has
+    // no usable result, so no check.
+    expect(store.writes).toBe(20)
     expect(store.state.lastRunAt).toBe(T0.toISOString())
     expect(store.state.fields['06']).toMatchObject({ query: buildQuery(FIELDS[5].words, T0), searchedAt: T0.toISOString(), lastAttemptAt: T0.toISOString(), lastOutcome: 'ok', lastError: null })
-    expect(store.state.fields['06'].items).toEqual([{ title: 'News for 06', url: 'https://e.com/06', site: 'E', date: '2026-10-30T00:00:00Z', snippet: 's', foundAt: T0.toISOString() }])
+    expect(store.state.fields['06'].items).toEqual([{ title: 'News for 06', url: 'https://e.com/06', site: 'E', date: '2026-10-30T00:00:00Z', snippet: 's', foundAt: T0.toISOString(), checked: true }])
     expect(store.state.fields['05']).toMatchObject({ lastOutcome: 'no_results', items: [] })
   })
 
@@ -201,7 +207,7 @@ describe('news service: snapshot', () => {
     const reply = await service.snapshot()
     expect(reply).toMatchObject({ enabled: true, source: 'DeepSeek Search', refreshEveryHours: 3, nextRunAt: new Date(T0.getTime() + REFRESH_MS).toISOString(), rules: { maxItems: 25, maxAgeDays: 30, language: 'en' } })
     expect(reply.fields.map((f) => f.code)).toEqual(FIELDS.map((f) => f.code))
-    expect(Object.keys(reply.fields[5]).sort()).toEqual(['code', 'items', 'lastAttemptAt', 'lastOutcome', 'query', 'searchedAt', 'title'])
+    expect(Object.keys(reply.fields[5]).sort()).toEqual(['code', 'dropped', 'items', 'lastAttemptAt', 'lastOutcome', 'query', 'searchedAt', 'title'])
     expect(reply.fields[5]).toMatchObject({ code: '06', title: FIELDS[5].title, lastOutcome: 'ok' })
     expect(JSON.stringify(reply)).not.toMatch(/score|weight|rank/i)
   })
@@ -320,5 +326,164 @@ describe('news service from env', () => {
     expect(reply.enabled).toBe(false)
     expect(reply.fields).toHaveLength(10)
     expect(calls).toBe(0)
+  })
+})
+
+describe('news service: relevance check (Amendment 1)', () => {
+  const item = (code, n, o = {}) => ({ title: `Story ${n} for ${code}`, url: `https://e.com/${code}/${n}`, site: 'E', date: '2026-10-30T00:00:00Z', snippet: 's', ...o })
+  // Three results per field: story 1 (news), story 2 (news), "Listing" (not news).
+  const threeEach = () => ({
+    queries: [],
+    async search(query) {
+      this.queries.push(query)
+      const code = FIELDS.find((f) => query.includes(f.words)).code
+      return [item(code, 1), item(code, 2), item(code, 3, { title: `Listing page ${code}` })]
+    },
+  })
+  // Keeps every item whose headline does not start with "Listing"; the others are "listing".
+  const dropListings = () => {
+    const sent = []
+    return {
+      sent,
+      async check(title, items) {
+        sent.push({ title, items })
+        const keep = items.map((x, i) => (x.title.startsWith('Listing') ? null : i)).filter((i) => i !== null)
+        return { keep, reasons: items.length - keep.length ? { listing: items.length - keep.length } : {} }
+      },
+    }
+  }
+  const storeWith = (fields) => memoryStore({ lastRunAt: null, searches: [], checks: [], fields })
+  const record = (items, o = {}) => ({ query: 'q', items, searchedAt: 'x', lastAttemptAt: 'x', lastOutcome: 'ok', lastError: null, ...o })
+  const only06 = { loadFields: async () => [FIELDS[5]] }
+
+  it('sends each field its new items once, keeps the checked ones and counts the dropped', async () => {
+    const store = memoryStore()
+    const relevance = dropListings()
+    const { service } = make({ store, search: threeEach(), relevance })
+    await service.runNow()
+    expect(relevance.sent).toHaveLength(10)
+    expect(relevance.sent[5]).toMatchObject({ title: FIELDS[5].title })
+    expect(relevance.sent[5].items.map((x) => x.title)).toEqual(['Story 1 for 06', 'Story 2 for 06', 'Listing page 06'])
+    const f = store.state.fields['06']
+    expect(f).toMatchObject({ lastOutcome: 'ok', dropped: 1, dropReasons: { listing: 1 } })
+    expect(f.items.map((x) => x.title).sort()).toEqual(['Story 1 for 06', 'Story 2 for 06'])
+    expect(f.items.every((x) => x.checked === true)).toBe(true)
+  })
+
+  it('items already checked are not sent again; only new ones are', async () => {
+    const store = memoryStore()
+    const relevance = dropListings()
+    const { service, clock: c } = make({ store, search: threeEach(), relevance })
+    await service.runNow()
+    c.move(REFRESH_MS)
+    relevance.sent.length = 0
+    await service.runNow()
+    // Same results again: the stories are kept already, the listing was dropped, so the listing alone is new.
+    expect(relevance.sent[5].items.map((x) => x.title)).toEqual(['Listing page 06'])
+    expect(store.state.fields['06']).toMatchObject({ lastOutcome: 'no_results', dropped: 1 })
+    expect(store.state.fields['06'].items).toHaveLength(2)
+  })
+
+  it('a field with no new item makes no check request and keeps its list', async () => {
+    const kept = [{ ...item('06', 1), foundAt: 'x', checked: true }]
+    const store = storeWith({ '06': record(kept) })
+    const relevance = dropListings()
+    const search = { async search() { return [item('06', 1)] } }
+    const { service } = make({ store, search, relevance, options: only06 })
+    await service.runNow()
+    expect(relevance.sent).toHaveLength(0)
+    expect(store.state.fields['06']).toMatchObject({ lastOutcome: 'no_results', dropped: 0, items: kept })
+  })
+
+  it('a check that keeps nothing: no_results, dropped = number sent, last list kept', async () => {
+    const kept = [{ ...item('06', 9), foundAt: 'x', checked: true }]
+    const store = storeWith({ '06': record(kept) })
+    const relevance = { async check(title, items) { return { keep: [], reasons: { off_topic: items.length } } } }
+    const { service } = make({ store, search: threeEach(), relevance, options: only06 })
+    await service.runNow()
+    expect(store.state.fields['06']).toMatchObject({ lastOutcome: 'no_results', dropped: 3, dropReasons: { off_topic: 3 } })
+    expect(store.state.fields['06'].items.map((x) => x.title)).toEqual(['Story 9 for 06'])
+  })
+
+  it('items saved before the amendment are sent once with the new ones', async () => {
+    const legacy = [{ ...item('06', 7), foundAt: '2026-10-29T00:00:00.000Z' }]
+    const store = storeWith({ '06': record(legacy) })
+    const relevance = dropListings()
+    const { service } = make({ store, search: threeEach(), relevance, options: only06 })
+    await service.runNow()
+    expect(relevance.sent[0].items.map((x) => x.title)).toEqual(['Story 7 for 06', 'Story 1 for 06', 'Story 2 for 06', 'Listing page 06'])
+    const seven = store.state.fields['06'].items.find((x) => x.title === 'Story 7 for 06')
+    expect(seven).toMatchObject({ checked: true, foundAt: '2026-10-29T00:00:00.000Z' })
+  })
+
+  it('a failed check adds nothing, marks the field check_<code> and the others go on', async () => {
+    const store = memoryStore()
+    const relevance = { async check(title, items) { if (title === FIELDS[2].title) throw new NewsSearchError('bad_reply'); return { keep: items.map((_, i) => i), reasons: {} } } }
+    const { service, logs } = make({ store, search: threeEach(), relevance })
+    expect(await service.runNow()).toEqual({ searched: 10, stopped: null })
+    expect(store.state.fields['03']).toMatchObject({ lastOutcome: 'failed', lastError: 'check_bad_reply', items: [] })
+    expect(store.state.fields['04'].lastOutcome).toBe('ok')
+    expect(logs.some((l) => l.includes('03') && l.includes('check_bad_reply'))).toBe(true)
+  })
+
+  it('402 from the check stops the run', async () => {
+    const store = memoryStore()
+    const relevance = { async check(title) { if (title === FIELDS[1].title) throw new NewsSearchError('http_402'); return { keep: [0], reasons: {} } } }
+    const search = threeEach()
+    const { service, logs } = make({ store, search, relevance })
+    expect(await service.runNow()).toEqual({ searched: 2, stopped: 'check_http_402' })
+    expect(search.queries).toHaveLength(2)
+    expect(logs).toContain('[news] deepseek 402')
+    expect(store.state.fields['03']).toBeUndefined()
+  })
+
+  it('stops at 80 checks in 24 hours, before searching the next field', async () => {
+    const recent = Array.from({ length: 75 }, () => new Date(T0.getTime() - HOUR).toISOString())
+    const store = memoryStore({ lastRunAt: null, searches: [], checks: recent, fields: {} })
+    const relevance = dropListings()
+    const search = threeEach()
+    const { service } = make({ store, search, relevance })
+    expect(await service.runNow()).toEqual({ searched: 5, stopped: 'daily_check_cap' })
+    expect(relevance.sent).toHaveLength(5)
+    expect(search.queries).toHaveLength(5)
+    expect(store.state.checks).toHaveLength(MAX_CHECKS_PER_DAY)
+    expect(MAX_CHECKS_PER_RUN).toBe(10)
+  })
+
+  it('each check is counted in the store before it is made, and a failing write cannot reset the count', async () => {
+    const store = memoryStore()
+    const seen = []
+    const relevance = { async check(title, items) { seen.push(store.state?.checks?.length ?? 0); return { keep: items.map((_, i) => i), reasons: {} } } }
+    const { service } = make({ store, search: threeEach(), relevance })
+    await service.runNow()
+    expect(seen).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+    const old = { lastRunAt: new Date(T0.getTime() - 4 * HOUR).toISOString(), searches: [], checks: [], fields: {} }
+    const broken = { async read() { return structuredClone(old) }, async write() { throw new Error('disk full') } }
+    const counted = dropListings()
+    const second = make({ store: broken, search: threeEach(), relevance: counted })
+    for (let i = 0; i < 24 * 6; i++) {
+      await second.service.snapshot()
+      await second.service.wakeIfDue()
+      second.clock.move(10 * 60 * 1000)
+    }
+    expect(counted.sent.length).toBeLessThanOrEqual(MAX_CHECKS_PER_DAY + MAX_CHECKS_PER_RUN)
+  })
+
+  it('the reply shows only checked items, without the flag, with checkedBy and dropped', async () => {
+    const fields = { '06': record([{ ...item('06', 1), foundAt: 'x', checked: true }, { ...item('06', 2), foundAt: 'x' }], { dropped: 4 }) }
+    const { service } = make({ store: storeWith(fields) })
+    const reply = await service.snapshot()
+    expect(reply.checkedBy).toBe('deepseek-flash')
+    expect(reply.fields[5].items.map((x) => x.title)).toEqual(['Story 1 for 06'])
+    expect(reply.fields[5].items[0]).not.toHaveProperty('checked')
+    expect(reply.fields[5].dropped).toBe(4)
+    expect(reply.fields[0].dropped).toBe(0)
+    expect(JSON.stringify(reply)).not.toMatch(/score|weight|rank/i)
+  })
+
+  it('from env without a key no check is built', () => {
+    const service = createNewsServiceFromEnv({ dataDir: 'data', env: {}, storeFile: path.join(mkdtempSync(path.join(tmpdir(), 'news-a1-')), 'latest.json') })
+    expect(service.enabled).toBe(false)
   })
 })

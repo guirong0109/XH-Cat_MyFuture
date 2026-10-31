@@ -5,14 +5,19 @@
 // is made when the store cannot be read. A failed field keeps its last good list. Logs hold time, field code, outcome
 // and error code only.
 import path from 'node:path'
-import { LANGUAGE, MAX_AGE_DAYS, MAX_ITEMS, buildQuery, mergeItems, usableItem } from '../../shared/news/rules.js'
+// Amendment 1 (N9): each field's new items go to the DeepSeek relevance check; only checked items are kept and shown.
+// Checks have their own caps (10 per run, 80 per 24 hours), counted the same way as searches.
+import { LANGUAGE, MAX_AGE_DAYS, MAX_ITEMS, buildQuery, mergeItems, newItems, usableItem } from '../../shared/news/rules.js'
 import { createDeepseekSearch } from './deepseek.js'
 import { loadNewsFields } from './fields.js'
+import { CHECK_MODEL, createRelevanceCheck } from './relevance.js'
 import { createFileNewsStore, createR2NewsStore } from './store.js'
 
 export const REFRESH_MS = 3 * 60 * 60 * 1000
 export const MAX_PER_RUN = 10
 export const MAX_PER_DAY = 80
+export const MAX_CHECKS_PER_RUN = 10
+export const MAX_CHECKS_PER_DAY = 80
 
 const DAY_MS = 24 * 60 * 60 * 1000
 // A bad key or no credit: every other field would fail the same way, so the run stops.
@@ -21,6 +26,7 @@ const STOPS_RUN = new Set(['http_401', 'http_402'])
 const stateOf = (s) => ({
   lastRunAt: typeof s?.lastRunAt === 'string' ? s.lastRunAt : null,
   searches: Array.isArray(s?.searches) ? s.searches.filter((t) => typeof t === 'string') : [],
+  checks: Array.isArray(s?.checks) ? s.checks.filter((t) => typeof t === 'string') : [],
   fields: s?.fields && typeof s.fields === 'object' && !Array.isArray(s.fields) ? s.fields : {},
 })
 const later = (a, b) => (!a ? b : !b ? a : Date.parse(a) >= Date.parse(b) ? a : b)
@@ -35,7 +41,7 @@ function unionStamps(a, b) {
   return [...count].flatMap(([t, n]) => Array(n).fill(t))
 }
 
-export function createNewsService({ enabled, loadFields, store, search, now = () => new Date(), log = console.info, setTimer = setTimeout, clearTimer = clearTimeout }) {
+export function createNewsService({ enabled, loadFields, store, search, relevance, now = () => new Date(), log = console.info, setTimer = setTimeout, clearTimer = clearTimeout }) {
   let running = null
   let started = false
   let timer = null
@@ -43,6 +49,7 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
   let lastRunAt = null
   let lastAttemptAt = null
   let searches = []
+  let checks = []
 
   // The stored state merged with memory; down = the store could not be read.
   const readState = async () => {
@@ -57,8 +64,10 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
     const at = now().getTime()
     state.lastRunAt = later(state.lastRunAt, lastRunAt)
     state.searches = unionStamps(state.searches, searches).filter((t) => at - Date.parse(t) < DAY_MS)
+    state.checks = unionStamps(state.checks, checks).filter((t) => at - Date.parse(t) < DAY_MS)
     lastRunAt = state.lastRunAt
     searches = [...state.searches]
+    checks = [...state.checks]
     return { state, down }
   }
   const save = async (state, stamp) => {
@@ -89,6 +98,7 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
       return { searched: 0, stopped: 'store_unavailable' }
     }
     let searched = 0
+    let checkedThisRun = 0
     let stopped = null
     for (const field of fields) {
       if (searched >= MAX_PER_RUN) {
@@ -100,24 +110,79 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
         log(`[news] ${stamp} daily cap of ${MAX_PER_DAY} searches reached`)
         break
       }
+      // A field searched without a check left would be paid for and thrown away: stop before searching it.
+      if (checkedThisRun >= MAX_CHECKS_PER_RUN) {
+        stopped = 'check_run_cap'
+        break
+      }
+      if (state.checks.length >= MAX_CHECKS_PER_DAY) {
+        stopped = 'daily_check_cap'
+        log(`[news] ${stamp} daily cap of ${MAX_CHECKS_PER_DAY} checks reached`)
+        break
+      }
       const query = buildQuery(field.words, runAt)
       const before = state.fields[field.code] ?? {}
+      const kept = Array.isArray(before.items) ? before.items : []
+      const failed = (code) => {
+        state.fields[field.code] = { query, items: kept, searchedAt: before.searchedAt ?? null, lastAttemptAt: stamp, lastOutcome: 'failed', lastError: code, dropped: before.dropped ?? 0, dropReasons: before.dropReasons ?? {} }
+        log(`[news] ${stamp} ${field.code} failed ${code}`)
+      }
       state.searches.push(stamp)
       searches = [...state.searches]
       searched++
       await save(state, stamp)
+      let found
       try {
-        const found = (await search.search(query)).map((result) => usableItem(result, runAt)).filter(Boolean)
-        state.fields[field.code] = { query, items: mergeItems(before.items ?? [], found, runAt), searchedAt: stamp, lastAttemptAt: stamp, lastOutcome: found.length ? 'ok' : 'no_results', lastError: null }
+        found = (await search.search(query)).map((result) => usableItem(result, runAt)).filter(Boolean)
       } catch (error) {
         const code = typeof error?.code === 'string' ? error.code : 'error'
-        state.fields[field.code] = { query, items: before.items ?? [], searchedAt: before.searchedAt ?? null, lastAttemptAt: stamp, lastOutcome: 'failed', lastError: code }
-        log(`[news] ${stamp} ${field.code} failed ${code}`)
+        failed(code)
         if (STOPS_RUN.has(code)) {
           log(`[news] deepseek ${code.slice(5)}`)
           stopped = code
           break
         }
+        continue
+      }
+      // To the check: items kept before Amendment 1 (never checked) and the new found items; checked ones stay as they are.
+      const checkedKept = kept.filter((item) => item.checked === true)
+      const oldUnchecked = newItems(checkedKept, kept.filter((item) => item.checked !== true), runAt)
+      const fresh = newItems([...checkedKept, ...oldUnchecked], found, runAt)
+      const candidates = [...oldUnchecked, ...fresh]
+      if (!candidates.length) {
+        state.fields[field.code] = { query, items: mergeItems(checkedKept, [], runAt), searchedAt: stamp, lastAttemptAt: stamp, lastOutcome: 'no_results', lastError: null, dropped: 0, dropReasons: {} }
+        continue
+      }
+      state.checks.push(stamp)
+      checks = [...state.checks]
+      checkedThisRun++
+      await save(state, stamp)
+      let answer
+      try {
+        answer = await relevance.check(field.title, candidates)
+      } catch (error) {
+        const code = `check_${typeof error?.code === 'string' ? error.code : 'error'}`
+        failed(code)
+        if (STOPS_RUN.has(code.slice(6))) {
+          log(`[news] deepseek ${code.slice(11)}`)
+          stopped = code
+          break
+        }
+        continue
+      }
+      const keep = new Set(answer.keep)
+      const passed = (list, offset) => list.filter((_, i) => keep.has(i + offset)).map((item) => ({ ...item, checked: true }))
+      const keptOld = passed(oldUnchecked, 0)
+      const keptNew = passed(fresh, oldUnchecked.length)
+      state.fields[field.code] = {
+        query,
+        items: mergeItems([...checkedKept, ...keptOld], keptNew, runAt),
+        searchedAt: stamp,
+        lastAttemptAt: stamp,
+        lastOutcome: keptOld.length + keptNew.length ? 'ok' : 'no_results',
+        lastError: null,
+        dropped: candidates.length - keptOld.length - keptNew.length,
+        dropReasons: answer.reasons ?? {},
       }
     }
     state.lastRunAt = stamp
@@ -176,8 +241,11 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
         refreshEveryHours: REFRESH_MS / (60 * 60 * 1000),
         nextRunAt: enabled ? new Date(state.lastRunAt ? Date.parse(state.lastRunAt) + REFRESH_MS : at.getTime()).toISOString() : null,
         rules: { maxItems: MAX_ITEMS, maxAgeDays: MAX_AGE_DAYS, language: LANGUAGE },
+        checkedBy: CHECK_MODEL,
         fields: fields.map((field) => {
           const record = state.fields[field.code] ?? {}
+          // Only items the relevance check kept are shown (Amendment 1), without the flag.
+          const checked = (Array.isArray(record.items) ? record.items : []).filter((item) => item?.checked === true)
           return {
             code: field.code,
             title: field.title,
@@ -185,7 +253,8 @@ export function createNewsService({ enabled, loadFields, store, search, now = ()
             searchedAt: record.searchedAt ?? null,
             lastAttemptAt: record.lastAttemptAt ?? null,
             lastOutcome: record.lastOutcome ?? null,
-            items: mergeItems(record.items ?? [], [], at),
+            dropped: Number.isInteger(record.dropped) ? record.dropped : 0,
+            items: mergeItems(checked, [], at).map(({ checked: _flag, ...item }) => item),
           }
         }),
       }
@@ -209,6 +278,7 @@ export function createNewsServiceFromEnv({ dataDir, env = process.env, fetchImpl
     loadFields,
     store: tempStore ? createR2NewsStore(tempStore) : createFileNewsStore(storeFile),
     search: apiKey ? createDeepseekSearch({ apiKey, fetchImpl }) : null,
+    relevance: apiKey ? createRelevanceCheck({ apiKey, fetchImpl }) : null,
     now,
     log,
   })

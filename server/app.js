@@ -165,6 +165,9 @@ export function createApp({
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))
   app.use('/shared', express.static(path.join(ROOT, 'shared')))
+  // three.js for the landing page's ATM intro, served from the installed package (no CDN; works offline).
+  app.use('/vendor/three/build', express.static(path.join(ROOT, 'node_modules', 'three', 'build')))
+  app.use('/vendor/three/addons', express.static(path.join(ROOT, 'node_modules', 'three', 'examples', 'jsm')))
   app.use(express.static(path.join(ROOT, 'public')))
 
   // Last resort: no stack trace and no file path in the answer.

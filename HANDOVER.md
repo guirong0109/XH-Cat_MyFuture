@@ -17,6 +17,7 @@ scenario comparison.
 | Light mode by default, switch to dark | `main` | 2026-10-30 | Done |
 | Future Skills Radar Round 1 + skill trends from O\*NET | `claude/future-radar` | merged 2026-10-30 | Done; 651 tests pass; whole-branch reviews fixed |
 | Career matching, AI scenarios and SDG links | `claude/career-matching` | merged 2026-10-31 | Done; 803 tests pass; checked in the browser |
+| Landing page (ATM intro, guide figures, roller counters) | `claude/website-interface` | merged 2026-10-31 | Merged as built; 829 tests pass; checked in the browser |
 | Learning roadmap and the rest of the journey | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -80,6 +81,13 @@ scenario comparison.
   is a count of links with reasons, never a score.
 - The profile sent to `/api/matching` is never stored or logged. Forbidden keys: score, weight, rank, opportunit.
 
+## Landing page (since 2026-10-31, details: branch `claude/website-interface`)
+- The welcome screen is now the landing page. Its "Get started" buttons open the sign-in / guest choice
+  (`access`); every other screen is the app as before.
+- The 3D ATM intro (three.js 0.186.1, served from `node_modules`, no CDN) stays as built. **The owner will say
+  later what changes in the ATM section; do not alter it until then.**
+- Its stage list still says only the profile is built; radar and matching exist now. Owner to decide the wording.
+
 ## Next module: learning roadmap (not started)
 It can reuse the confirmed profile and the matching result (`skillMatch`, gaps per O\*NET element).
 
@@ -99,7 +107,7 @@ It can reuse the confirmed profile and the matching result (`skillMatch`, gaps p
 ## Commands
 ```bash
 npm install
-npm test          # expect 803 passed
+npm test          # expect 829 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 48 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

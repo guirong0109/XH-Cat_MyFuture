@@ -462,6 +462,37 @@
           "status": "todo"
         }
       ]
+    },
+    {
+      "id": "Step 12",
+      "name": "Website interface (your request)",
+      "tasks": [
+        {
+          "title": "T27 Branch",
+          "sub": "claude/website-interface from main",
+          "status": "done"
+        },
+        {
+          "title": "T28 Landing page",
+          "sub": "Editorial Dopamine · guide figures with sources",
+          "status": "stop"
+        },
+        {
+          "title": "T28b ATM intro (three.js)",
+          "sub": "receipt prints, tears, flies to the middle",
+          "status": "stop"
+        },
+        {
+          "title": "T28c Roller counters",
+          "sub": "digit wheels in a recessed window",
+          "status": "stop"
+        },
+        {
+          "title": "T29 Restyle the app",
+          "sub": "profile screens in the same look",
+          "status": "todo"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -503,7 +534,10 @@
     "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
     "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
     "Career Matching: spec docs/superpowers/specs/2026-10-30-career-matching-design.md and diagram docs/architecture-matching.html written; branch HANDOVER.md and CLAUDE.md detailed",
-    "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
+    "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed.",
+    "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
+    "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))",
+    "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))"
   ],
   "waiting": [
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
@@ -512,7 +546,12 @@
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
     "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
-    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
+    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check",
+    "T28: your review of the landing page, its wording and the BM / 中文 translations",
+    "T28b: your review of the ATM intro (look, timing, receipt wording)",
+    "T28c: your review of the roller counters",
+    "T28: the section 2 column headings in BM and 中文 (ldTally1–3)",
+    "T28: the stages-built line in BM and 中文 (ldBuilt)"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -564,7 +603,25 @@
     "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
     "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
     "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
-    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page"
+    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page",
+    "T28: the three figures (56%, 26%, 600,000+) are quoted from the Finalist Guide with their original source named — cost: we did not check the Hays guide or the MOSTI statement ourselves",
+    "T28: stages 2–6 say \"Next module · not built yet\" — cost: the page promises less than the final journey until those modules exist",
+    "T28: fonts (Geist, Instrument Serif) load from Google Fonts — cost: one outside request per visit; without it the page falls back to system fonts",
+    "T28b: the receipt prints only the ATM story already on the page (draft copy) and today's date — no new history or numbers",
+    "T28b: three.js is served from our own server, not a CDN, so the intro also works offline — cost: about 1.5 MB to download on the first visit (not compressed)",
+    "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip",
+    "T28b: the receipt waits in the middle until the user clicks Continue (or anywhere, Enter, Space, Esc); the safety timer only ends an intro that stalls before the receipt arrives — cost: a visitor who leaves the tab sees the receipt until they come back",
+    "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)",
+    "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)",
+    "T28b: once the receipt is pinned, the headline and its two buttons rise in beside it in the same first section (below it on narrow screens); Replay replaces the scroll cue",
+    "T28: the gap section shows 56% and 26% on one 0-100% scale with the 30-point gap marked Calculated; heading: \"More people use AI at work than have been trained for it.\" (follows from the two quoted figures)",
+    "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
+    "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
+    "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
+    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
+    "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more",
+    "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none",
+    "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode"
   ],
   "log": [
     {
@@ -1271,6 +1328,301 @@
       "time": "31 Oct",
       "step": "Merged career matching to main (your request)",
       "detail": "branch pushed to GitHub; merged into main; main's short HANDOVER and CLAUDE updated; npm test 803 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "front page + restyled app; \"Editorial Dopamine\" look; use the Finalist Guide"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "npm test 237 passed; screenshots at 1440 px and 390 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "ATM story first: ATM prints, paper goes to the middle, then the page; three.js; reference anthnyung.com/yc"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 242 passed; screenshots of each phase at 1440 px and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "removed the line \"Career foresight for Malaysia\": the product is not for Malaysian users only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choice",
+      "detail": "numbers as mechanical roller counters in a recessed window, lower digits faster, overshoot and rebound"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28c",
+      "detail": "npm test 247 passed; roll checked in Chrome at 15% speed (wheels independent, overshoot visible)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "each digit in its own recessed window (not one joined window); separators between windows; npm test 248 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "lighter shading on the roller counter windows"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "question section on the receipt, receipt waits in the middle until the user clicks; page headline stays outside the paper"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 248 passed; checked in Chrome: receipt holds 4 s+, Continue focused, click shows the page; no-intro shows the question at the top"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "ATM waits for a click; pinned receipt is the first section; the headline section comes after scrolling"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 249 passed; checked in Chrome at 1440 and 500 px: idle 3 s without printing, click prints, receipt pinned, scroll cue reaches the hero"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "headline + buttons beside the pinned receipt in one section; Replay instead of Scroll; the gap figures as a redesigned second section"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 251 passed; checked in Chrome at 1440 and 500 px: idle, print, pinned + headline, gap bars grow, Replay returns to the waiting ATM; no-3D shows an HTML receipt"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Fix",
+      "detail": "restored the styles of How it works, The data, Principles, Who it is for, closing and footer (deleted by mistake with the section 2 redesign); renamed the gap scale ticks (clashed with .lp-ticks); test guards every section style"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "section 2 had too many elements and clashing styles (retro counters vs colourful cards); too much space above it"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "section 2 redesigned as a ruled ledger; space above it cut from 128 to 64 px; npm test 252 passed; checked in Chrome at 1440 and 500 px, light and dark; How it works and The data unchanged"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "section 2 laid out like your reference (three columns), no bars for 56% and 26%; roller tiles more 3D, digit set inside"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "npm test 252 passed; checked in Chrome at 1440, 720 and 500 px, light and dark; The data counters still fit their cards"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the sign on top of the ATM reads ATM (was FutureReady MY); checked in Chrome"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works looked too simple; add pixel, retro elements"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "pixel icons, pixel numbers, notched cards with stepped hover, level path with the player on stage 1; npm test 257 passed; checked in Chrome at 1440 and 500 px, light and dark"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works too long; big gap between sections 2 and 3"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "live card one wide low row, the five next stages in one row; space between sections 2 and 3 about 105 px (was about 256); fixed the live card showing half width on mid screens; npm test 257 passed; checked in Chrome at 1440, 820 and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "remove the six-stage strip under the first section (How it works already shows the stages)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "strip and its styles removed; test checks the stages are listed once; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "roll back the coloured section 2; keep the black and white version"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "reverted a2edfdd; section 2 back to the black and white three columns"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the pixel look is too far from the site; give section 3 the retro look of section 2, keep its layout"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "section 3 as a hairline ledger with roller-counter numbers, no colour; npm test 255 passed; checked in Chrome at 1440 and 500 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "roll back the 3D roadmap"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "reverted 66866d3; section 3 back to the white card and the five-column ledger"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "no animation for the stage numbers 01-06"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "stage numbers stay on the drum tiles but do not roll (counter without a key); npm test 256 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "stage numbers without the roller tiles; stages 02-06 as a text banner under the white card, no descriptions"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "plain serif stage number, banner of the five next stages (number + short name); npm test 255 passed; checked in Chrome at 1440 and 500 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer like your reference image"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "new footer; npm test 256 passed; checked in Chrome at 1440 and 390 px, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block not as a separate box; join it to the footer like your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block is the dark top of the footer panel, its bottom edge cut into scallops; footer band removed; npm test 257 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "Who it is for in the stacked file folder design of your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "four audience folders + front title folder; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer to the full screen width, not a card"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block and footer span the full width, content lined up with the page; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block background black"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block solid black (glow and grid removed), black in dark mode too; npm test 258 passed; checked in Chrome, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the folder design from the title For people at a turning point"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "title back to a plain section heading above the four audience folders; front folder and binder clip removed; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove all folder design from Who it is for"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "Who it is for back to the plain ruled list (same styles as before the folders); npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer background the same as the page background"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "footer on the page cream instead of paper; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the white cards in The data"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "The data counts without cards, thin rules between them like section 2; npm test 258 passed; checked in Chrome at 1440 and 820 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "navigation bar did not stretch to the full width"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Fix",
+      "detail": "nav background spans the full screen width, its content lined up with the page (shared --edge); npm test 258 passed; checked in Chrome at 1653 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer edge as triangles instead of circles"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block bottom edge cut into triangles (zigzag); npm test 258 passed; checked in Chrome"
     }
   ]
 }

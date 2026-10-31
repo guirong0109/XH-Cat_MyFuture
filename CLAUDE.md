@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1748 passed
+npm install && npm test     # expect 1754 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -114,13 +114,17 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - The file holds real accounts (emails, salted password hashes, profiles): never commit, log or send it; the owner
   backs it up by copying it. Claude never creates real accounts on the live site; test with a throw-away file.
 
-## Live site: https://futures.grong.my (since 31 Oct 2026)
-- **main is served live** from the owner's computer through the Cloudflare Tunnel `compare-futures` (config
-  `C:\Users\guiro\.cloudflared\compare-futures.yml` → `http://localhost:3300`), no router port forwarding.
-- Start: launch entry `main-live` (this folder's `server/index.js`, port 3300, `TRUST_PROXY=1`, main's `.env` then
-  `C:\Users\guiro\XH_Cat_Final\.env` for `DEEPSEEK_API_KEY`), then in its own terminal tab
-  `cloudflared tunnel --config C:\Users\guiro\.cloudflared\compare-futures.yml run compare-futures`. Stop: Ctrl-C in
-  that tab. The site is up only while both run and the computer is awake; the news refreshes every 3 hours meanwhile.
-- Run only one news server with the key at a time (not also the branch's `futures-real`), or refreshes are paid twice.
+## Two hosts (owner, 1 Nov 2026): public stable + local testing
+| Host | Address | Runs from | Accounts | News |
+|---|---|---|---|---|
+| **Public** | https://futures.grong.my (Cloudflare Tunnel `compare-futures` → `localhost:3300`) | `C:\Users\guiro\XH_Cat_Final-live`, a worktree fixed (detached) at the last commit pushed to `origin/main`; launch entry `main-live`, `TRUST_PROXY=1`, `ACCOUNTS_DB=local` | the real `XH_Cat_Final-live\data\cache\accounts\accounts.db` (owner backs it up) | on (`DEEPSEEK_API_KEY` from `C:\Users\guiro\XH_Cat_Final\.env`), every 3 hours |
+| **Local** | http://localhost:3400 | this folder (`XH_Cat_Final-main`), so edits show at once; launch entry `main-dev` | test file `data\cache\accounts\dev-accounts.db` (never real users) | off (`DEEPSEEK_API_KEY` empty) |
+- Work and test on the local host. **Publish** only after the owner's OK: commit, push `main`, then
+  `git -C C:\Users\guiro\XH_Cat_Final-live fetch origin && git -C C:\Users\guiro\XH_Cat_Final-live checkout --detach origin/main`
+  (run `npm ci` there if `package-lock.json` changed), restart `main-live`, check futures.grong.my.
+- Tunnel: in its own terminal tab `cloudflared tunnel --config C:\Users\guiro\.cloudflared\compare-futures.yml run
+  compare-futures`; Ctrl-C stops it. The public site is up only while `main-live` and the tunnel run and the computer is awake.
+- Only `main-live` has the DeepSeek key; never give it to another running server, or refreshes are paid twice.
+- `XH_Cat_Final-main\data\cache\accounts\accounts.db` is an old copy from before 1 Nov; the real one is in the live folder.
 - CV AI reading is off on the live site until `CV_LLM_KEY` is set (same DeepSeek key, paid; ask first).
 - Full procedure and history: branch `claude/compare-futures` `CLAUDE.md`.

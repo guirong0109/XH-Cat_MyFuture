@@ -24,13 +24,26 @@ export function stateField({ t, profile, path, label, options = null, kind = 'te
     <select id="${id}-c" data-choice="${path}">${option('', t('preferNot'), !open)}${option('answer', t('answerIt'), open)}</select>${input}</div>`
 }
 
+// An optional field shown as small buttons in one row, easier to see than a dropdown; the one-line explanation is the
+// hover text. None chosen = "prefer not to say", which the pill under the buttons shows and can choose again.
+// options: [value, labelKey, textKey?].
+export function choiceField({ t, profile, path, label, options }) {
+  const field = get(profile, path) ?? { state: 'empty' }
+  const value = field.state === 'value' ? field.value : ''
+  const id = `f-${path.replace(/\./g, '-')}-label`
+  const button = ([v, labelKey, textKey]) => `<button class="option${value === v ? ' sel' : ''}" role="radio" aria-checked="${value === v}"${textKey ? ` title="${esc(t(textKey))}"` : ''} data-act="choose" data-arg="${path}|${esc(v)}">${esc(t(labelKey))}</button>`
+  return `<div class="field"><span class="label" id="${id}">${esc(label)}</span>
+    <div class="options" role="radiogroup" aria-labelledby="${id}">${options.map(button).join('')}</div>
+    <div><button class="chip${value ? '' : ' on'}" aria-pressed="${!value}" data-act="choose" data-arg="${path}|">${esc(t('preferNot'))}</button></div></div>`
+}
+
 // A list of short texts typed as "a, b, c".
 export function listField({ profile, path, label }) {
   const id = `l-${path.replace(/\./g, '-')}`
   return `<div class="field"><label for="${id}">${esc(label)}</label><input id="${id}" data-list="${path}" value="${esc((get(profile, path) ?? []).join(', '))}"></div>`
 }
 
-function cvNote(t, record) {
+export function cvNote(t, record) {
   if (!record.extraction) return ''
   const quote = record.extraction.evidence ? `: “${esc(record.extraction.evidence)}”` : ''
   return `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${quote}</div>`

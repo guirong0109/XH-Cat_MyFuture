@@ -84,7 +84,9 @@ export function mergeSkills(skills) {
     const texts = new Set(String(seen.originalText ?? '').split(' | ').filter(Boolean))
     if (skill.originalText) texts.add(skill.originalText)
     const stronger = (skill.extraction?.confidence ?? -1) > (seen.extraction?.confidence ?? -1)
-    out.set(key, { ...(stronger ? skill : seen), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed })
+    const usedIn = [...(seen.usedIn ?? [])]
+    for (const place of skill.usedIn ?? []) if (!usedIn.some((p) => p.kind === place.kind && p.title === place.title)) usedIn.push(place)
+    out.set(key, { ...(stronger ? skill : seen), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed, usedIn })
   }
   return [...out.values()]
 }

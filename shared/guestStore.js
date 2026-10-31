@@ -2,7 +2,7 @@
 // nothing is saved and the app still works. The profile is minimized before saving (no raw CV, no CV quotes).
 const KEY = 'futureready-profile-v1'
 // Screens before any profile work: nothing worth resuming yet.
-const START = ['welcome', 'returning', 'access']
+const START = ['welcome', 'use', 'returning', 'access']
 
 // With site data blocked, even reading window.localStorage throws: then there is no storage at all.
 export function safeLocalStorage() {
@@ -54,7 +54,7 @@ export function startScreen(saved, hash) {
 }
 
 export function afterGetStarted(resumeTo) {
-  return resumeTo ? 'returning' : 'access'
+  return resumeTo ? 'returning' : 'use'
 }
 
 // While the landing or Welcome back screen is shown, the saved place is kept (not overwritten by the start screen).

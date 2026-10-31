@@ -1,10 +1,10 @@
 // CV text lines → draft structured profile (spec §6). L1 sections, L2 rules and dictionaries, L3 semantic match
 // (a hook filled by server/cv/semantic.js), L4 merge + schema check + uncertain list.
-// Nothing here is confirmed, and a skill level is never set from a CV.
-import { emptyProfile, makeSkill, val, validateProfile } from '../../shared/profileSchema.js'
+// Nothing here is confirmed. The only level set from a CV: Good (from_projects) for a skill used in a job or project.
+import { emptyProfile, levelFromUse, makeSkill, val, validateProfile } from '../../shared/profileSchema.js'
 import { mergeSkills } from '../skills/normalize.js'
 import { nameKey, wordsOf } from '../skills/onetSkills.js'
-import { DATE_RANGE, PERSONAL_LINE, QUALIFICATIONS, SECTION_WORDS, rangeMonths } from './patterns.js'
+import { DATE_RANGE, PERSONAL_LINE, QUALIFICATIONS, SECTION_WORDS, levelOfLabel, rangeMonths } from './patterns.js'
 
 export const EXTRACTOR_VERSION = 'cv-1.0'
 const MAX_LINES = 300
@@ -45,6 +45,8 @@ function education(rows, hasSection, extraction) {
     const year = line.match(/\b(?:19|20)\d{2}\b/g)?.at(-1) ?? ''
     out.push({
       qualification: found[1],
+      // Chosen for the user to check (owner, 31 Oct), from the qualification the line names.
+      level: levelOfLabel(found[1]),
       fieldOfStudy: parts[0]?.replace(/\b(?:19|20)\d{2}\b.*$/, '').trim() ?? '',
       institution: parts.slice(1).find((part) => part && !/^\d{4}\)?$/.test(part)) ?? '',
       year,
@@ -55,8 +57,18 @@ function education(rows, hasSection, extraction) {
   return out
 }
 
+// Description lines: one that starts with a bullet, ends a sentence or is longer than six words describes the job or
+// project above it.
+const BULLET = /^[•\-*▪–·●○■◦►]\s*/u
+const DESCRIBES = (line) => BULLET.test(line) || /[.!]$/.test(line) || line.split(/\s+/).length > 6
+// A description line as shown to the user: without its bullet.
+const described = (line) => line.trim().replace(BULLET, '')
+
+// owner: for each row of the Experience section, the index of the job it belongs to (from the job's first line to the
+// line before the next job). The other lines of a job are its description; skills found in them are linked to it.
 function employment(rows, hasSection, extraction, now) {
   const records = []
+  const starts = []
   let months = 0
   rows.forEach(({ line, section }, i) => {
     if (section === 'education' || (hasSection && section !== 'experience')) return
@@ -64,12 +76,44 @@ function employment(rows, hasSection, extraction, now) {
     if (!match) return
     months += rangeMonths(match, now)
     let before = line.slice(0, match.index).replace(/[,|·(\s-]+$/u, '').trim()
-    if (!before && i > 0) before = rows[i - 1].line
+    let start = i
+    if (!before && i > 0) {
+      before = rows[i - 1].line
+      start = i - 1
+    }
     const [title, employer] = before.split(/\s*,\s*|\s+at\s+|\s+di\s+/i)
     if (!title) return
-    records.push({ jobTitle: title.trim(), employer: employer?.trim() ?? '', period: match[0].trim(), userConfirmed: false, extraction: extraction('pattern', line, 0.9) })
+    records.push({ jobTitle: title.trim(), employer: employer?.trim() ?? '', period: match[0].trim(), description: '', userConfirmed: false, extraction: extraction('pattern', line, 0.9) })
+    starts.push({ start, dateRow: i })
   })
-  return { records, years: months ? Math.round((months / 12) * 10) / 10 : null }
+  const owner = new Map()
+  starts.forEach(({ start, dateRow }, j) => {
+    const end = j + 1 < starts.length ? starts[j + 1].start : rows.length
+    const lines = []
+    for (let i = start; i < end && !rows[i].heading && rows[i].section === 'experience'; i++) {
+      owner.set(i, j)
+      if (i !== start && i !== dateRow) lines.push(described(rows[i].line))
+    }
+    records[j].description = lines.join(' ')
+  })
+  return { records, years: months ? Math.round((months / 12) * 10) / 10 : null, owner }
+}
+
+// Projects: a short line is a project's title; a description line (above) belongs to the project before it.
+// owner: row index → project index, as for jobs.
+function projectRecords(rows, extraction) {
+  const records = []
+  const owner = new Map()
+  rows.forEach((row, i) => {
+    if (row.section !== 'projects' || row.heading) return
+    const line = row.line.trim()
+    if (records.length && DESCRIBES(line)) {
+      const project = records[records.length - 1]
+      project.description = [project.description, described(line)].filter(Boolean).join(' ')
+    } else records.push({ title: line, description: '', userConfirmed: false, extraction: extraction('section', line, 0.9) })
+    owner.set(i, records.length - 1)
+  })
+  return { records, owner }
 }
 
 const sectionRecords = (rows, section, key, extraction) => rows
@@ -128,7 +172,8 @@ export async function extractProfile({ lines, language, interfaceLanguage, catal
   profile.employment.records = work.records
   if (work.years !== null) profile.employment.yearsOfExperience = { ...val(work.years), source: 'cv_rules', kind: 'inferred' }
   profile.certifications = sectionRecords(rows, 'certifications', 'name', extraction)
-  profile.projects = sectionRecords(rows, 'projects', 'title', extraction)
+  const projects = projectRecords(rows, extraction)
+  profile.projects = projects.records
   profile.training = sectionRecords(rows, 'training', 'name', extraction)
 
   let skills = await skillsFromRules(rows, catalogue, normalizer, extraction)
@@ -144,9 +189,19 @@ export async function extractProfile({ lines, language, interfaceLanguage, catal
     }
   }
 
-  // L4: one entry per skill; uncertain items listed for the review.
+  // Where each skill was used: the job or project of the line it was found on (matched by the quoted line).
+  const usedAt = new Map()
+  rows.forEach((row, i) => {
+    const job = work.owner.get(i)
+    const project = projects.owner.get(i)
+    if (job !== undefined) usedAt.set(cut(row.line), { kind: 'job', title: work.records[job].jobTitle })
+    else if (project !== undefined) usedAt.set(cut(row.line), { kind: 'project', title: profile.projects[project].title })
+  })
+  skills = skills.map((skill) => ({ ...skill, usedIn: usedAt.has(skill.extraction?.evidence) ? [usedAt.get(skill.extraction.evidence)] : [] }))
+
+  // L4: one entry per skill (with every job and project it was used in); uncertain items listed for the review.
   layers.push('L4')
-  profile.skills = mergeSkills(skills)
+  profile.skills = mergeSkills(skills).map(levelFromUse)
   const uncertain = []
   profile.skills.forEach((skill, i) => {
     if (!skill.canonicalId) uncertain.push({ path: `skills.${i}`, reason: 'unknown_skill' })

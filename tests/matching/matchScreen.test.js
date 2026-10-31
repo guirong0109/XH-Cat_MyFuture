@@ -609,7 +609,7 @@ describe('Owner UI round (31 Oct)', () => {
       const body = app.slice(at, app.indexOf('\n', at))
       expect(body).toContain('state.section = AI_SECTION')
       expect(body).toContain("go('form')")
-      expect(app).toMatch(/const AI_SECTION = 5/)
+      expect(app).toMatch(/const AI_SECTION = SECTIONS.indexOf\('secAi'\)/)
     })
 
     it('the page passes the open state per role code; CSS puts the boxes side by side from 760 px', () => {

@@ -8,7 +8,7 @@ export function accountBox({ t, state }) {
   const message = account.message ? `<div class="banner ${account.message.kind === 'ok' ? 'b-ok' : 'b-bad'}" role="alert"><div>${esc(account.message.text)}</div></div>` : ''
   if (account.status === 'in') {
     return `<div class="card">${message}<p>${esc(t('acSignedIn', { email: account.user.email }))}</p>
-      <div class="row">${btn(t('acContinue'), { go: 'category', kind: 'pri' })}${btn(t('acSignout'), { act: 'acLogout' })}
+      <div class="row">${btn(t('acContinue'), { go: state.use === 'org' ? 'category' : 'goal', kind: 'pri' })}${btn(t('acSignout'), { act: 'acLogout' })}
       <button class="btn" style="color:var(--bad)" data-act="acDelete">${esc(t('acDelete'))}</button></div></div>`
   }
   return `<div class="card">${message}

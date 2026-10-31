@@ -16,7 +16,7 @@ describe('landing page first', () => {
 
   it('Get started brings back the saved session through the Welcome back choice', () => {
     expect(afterGetStarted('form')).toBe('returning')
-    expect(afterGetStarted(null)).toBe('access')
+    expect(afterGetStarted(null)).toBe('use')
   })
 
   it('the saved place is kept while the landing or Welcome back screen is shown', () => {

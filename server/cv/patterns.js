@@ -23,6 +23,11 @@ export const QUALIFICATIONS = [
   [/\bspm\b|sijil pelajaran malaysia/i, 'SPM'],
   [/\bcertificate\b|\bsijil\b|证书/i, 'Certificate'],
 ]
+// The profile's qualification level (the form's dropdown) for each label above.
+const LEVELS = { SPM: 'spm', STPM: 'stpm', Certificate: 'certificate', Diploma: 'diploma', 'Bachelor degree': 'bachelor', 'Master degree': 'master', PhD: 'phd' }
+export const levelOfLabel = (label) => LEVELS[label] ?? ''
+// The level of a qualification written in words (e.g. by the AI re-read), or '' when none of the patterns fits.
+export const levelOf = (text) => levelOfLabel(QUALIFICATIONS.find(([re]) => re.test(String(text ?? '')))?.[1])
 
 const MONTHS = {
   jan: 1, january: 1, januari: 1, feb: 2, february: 2, februari: 2, mar: 3, march: 3, mac: 3, apr: 4, april: 4,

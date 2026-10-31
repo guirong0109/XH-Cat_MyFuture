@@ -29,10 +29,15 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1338 passed
+npm install && npm test     # expect 1427 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
+
+## Start and profile form (details: branch `claude/cv-profile-module`)
+- Landing page → `#use` (for myself / my organisation) → `access` → `#goal` (personal) or `#category` (C, D only).
+- Form sections: Education, Employment, Skills, Using AI, Interests (`SECTIONS` in `form.js`); use
+  `SECTIONS.indexOf(...)`, never a fixed number. Certificates and training are not asked (`dropNotAsked`).
 
 ## Future Skills Radar (details: branch `claude/future-radar`)
 - Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.

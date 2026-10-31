@@ -1895,6 +1895,95 @@
       "mqrRef": null,
       "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=697:us6762001-sarjana-muda-kerja-sosial-kepujian-2&catid=73",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1013-1",
+      "field": "1013",
+      "kind": "accredited",
+      "name": "HM260 - Bachelor of Science in Hospitality Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fhtm.uitm.edu.my/index.php/en/academics/programmes/undergraduate/hotel-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1014-1",
+      "field": "1014",
+      "kind": "accredited",
+      "name": "SR 243 - Bachelor of Sports Science (Hons.)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://sports.uitm.edu.my/index.php/component/content/article/195-sr-243-bachelor-of-sports-science-hons-2?layout=edit&Itemid=101",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1015-1",
+      "field": "1015",
+      "kind": "accredited",
+      "name": "HM261 - Bachelor of Science in Tourism Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fhtm.uitm.edu.my/index.php/en/academics/programmes/undergraduate/tourism-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1021-1",
+      "field": "1021",
+      "kind": "accredited",
+      "name": "US6862001 - BACHELOR OF SCIENCE IN OCCUPATIONAL SAFETY AND HEALTH WITH ENVIRONMENTAL HEALTH WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=714&catid=74",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1022-1",
+      "field": "1022",
+      "kind": "accredited",
+      "name": "Bachelor of Occupational Safety and Health with Environmental Health with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-occupational-safety-and-health-with-environmental-health-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1022-2",
+      "field": "1022",
+      "kind": "professional",
+      "name": "Safety and Health Officer",
+      "body": "Department of Occupational Safety and Health (DOSH)",
+      "link": "https://dosh.gov.my/en/semakan/pegawai-keselamatan-dan-kesihatan/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1031-1",
+      "field": "1031",
+      "kind": "accredited",
+      "name": "Ijazah Sarjana Muda Pengurusan Pertahanan dan Keselamatan",
+      "institution": "Universiti Pertahanan Nasional Malaysia (UPNM)",
+      "mqrRef": null,
+      "link": "https://ppap.upnm.edu.my/senarai-program/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1032-1",
+      "field": "1032",
+      "kind": "accredited",
+      "name": "Ijazah Sarjana Muda Sains (Kepujian) Kepolisan, Keselamatan Global dan Perisikan",
+      "institution": "Universiti Pertahanan Nasional Malaysia (UPNM)",
+      "mqrRef": null,
+      "link": "https://ppap.upnm.edu.my/senarai-program/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1041-1",
+      "field": "1041",
+      "kind": "accredited",
+      "name": "BACHELOR OF MANAGEMENT (MARITIME) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/sarjana-muda-pengurusan-maritim-dengan-kepujian-fpm/",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

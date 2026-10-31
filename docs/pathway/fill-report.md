@@ -54,3 +54,6 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0921 | Care of the elderly and of disabled adults | general web search (gerontology, elderly care, disability bachelor Honours), UPM/UKM/UPSI/USM/UM/UiTM pages | 2026-10-31 | only postgraduate gerontology found; no undergraduate programme clearly in it |
 | field:0922 | Child care and youth services | general web search (child development, youth development, early childhood care), UPM Human Ecology, UKM, UPSI, UM pages | 2026-10-31 | UPM Bachelor of Human Development Science with Honours and UKM developmental science are broader (social science); early childhood education sits under 0112; none clearly child care or youth services |
 | field:0929 | Welfare not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:1011 | Domestic services | general web search (domestic services, household management bachelor) | 2026-10-31 | no degree programme clearly in it |
+| field:1012 | Hair and beauty services | general web search (hair, beauty, cosmetic, spa therapy bachelor Honours), UiTM/USM/UKM/UPM/UMS/UNIMAS pages | 2026-10-31 | only diploma/skills-level training found; no degree programme |
+| field:1019 | Personal services not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |

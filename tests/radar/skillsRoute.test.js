@@ -6,6 +6,7 @@ import { loadRadarReferences } from '../../server/radar/references.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { FORBIDDEN_KEY_PATTERN } from '../../shared/radar/contract.js'
 import { load } from '../../public/js/radarApi.js'
+import { skillCorners } from '../../shared/radar/profileCharts.js'
 
 const bundleStore = createFileStore('data/radar/bundle')
 let references
@@ -67,6 +68,26 @@ describe('GET /api/radar/skills', () => {
     expect(body.sourceLinks.map((l) => l.url)).toEqual(expect.arrayContaining(['https://www.onetcenter.org/database.html', 'https://www.onetonline.org/search/hot_tech/']))
     expect(body.manifestId).toBeTruthy()
     expect(keysOf(body).filter((k) => FORBIDDEN_KEY_PATTERN.test(k))).toEqual([])
+  })
+
+  it('a posting spelled differently from the flag shares its skillId, so Skill corners pairs them (Review Focus 5)', async () => {
+    const radar = service()
+    const spelled = 'Microsoft  EXCEL  v2'
+    const odd = { ...radar, answer: async (id) => {
+      const a = await radar.answer(id)
+      const hot = a.view.snapshots['onet-hottech']
+      const observations = hot.observations.map((o) => (o.entityId === 'Microsoft Excel' ? { ...o, entityId: spelled } : o))
+      return { ...a, view: { ...a.view, snapshots: { ...a.view.snapshots, 'onet-hottech': { ...hot, observations } } } }
+    } }
+    await start(odd)
+    const { body } = await get('/api/radar/skills')
+    const row = body.postings.rows.find((r) => r.technology === spelled)
+    expect(row).toBeTruthy()
+    const flag = body.changes['13-2011.00'].kept.find((i) => i.example === 'Microsoft Excel')
+    expect(row.skillId).toBe(flag.skillId)
+    const job = { code: '13-2011.00', title: 'Accountants and Auditors', via: [] }
+    const excel = skillCorners([job], body).items.find((i) => i.example === 'Microsoft Excel')
+    expect(excel.postings).toBe(row.postings)
   })
 
   it('every added/dropped item has a signal that the signals route serves, even with spaces in the id', async () => {

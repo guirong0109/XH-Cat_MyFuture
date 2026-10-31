@@ -120,14 +120,15 @@ describe('skillCorners (real bundled skills answer)', () => {
     expect(out.noSkills[0].code).toBe('29-1141.00')
   })
   it('two jobs share Office, Excel and PowerPoint; the rest have one job', () => {
-    const { items } = skillCorners([job('27-1024.00', 'Graphic Designers'), job('11-2021.00', 'Marketing Managers')], skills)
+    const designer = job('27-1024.00', 'Graphic Designers')
+    const { items } = skillCorners([designer, job('11-2021.00', 'Marketing Managers')], skills)
     expect(items).toHaveLength(16)
     const shared = ['Microsoft Office software', 'Microsoft Excel', 'Microsoft PowerPoint']
     for (const name of shared) {
       const hits = items.filter((i) => i.example === name)
       expect(hits).toHaveLength(1)
       expect(hits[0].jobs.map((j) => j.code)).toEqual(['27-1024.00', '11-2021.00'])
-      expect(hits[0].jobs[0].via).toEqual(items[0].jobs[0].via)
+      expect(hits[0].jobs[0].via).toEqual(designer.via)
     }
     for (const i of items.filter((x) => !shared.includes(x.example))) expect(i.jobs).toHaveLength(1)
   })
@@ -146,7 +147,7 @@ describe('skillCorners (real bundled skills answer)', () => {
     expect(items.find((i) => i.example === 'Microsoft Excel').previousPostings).toBe(3000000)
     expect(items.find((i) => i.example !== 'Microsoft Excel').previousPostings).toBeNull()
   })
-  it('flags match posting rows by skillId, not by the spelling of the name', () => {
+  it('posting rows are paired with flags by skillId, not by the name text', () => {
     const synthetic = {
       changes: { 'X-1': { kept: [{ example: 'Microsoft Excel', skillId: 'onet:tech:microsoft excel' }], added: [], dropped: [] } },
       postings: { window: { year: '2025' }, rows: [{ technology: 'Microsoft  EXCEL ', skillId: 'onet:tech:microsoft excel', postings: 5 }], previous: null, firstSnapshot: true },

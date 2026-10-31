@@ -66,8 +66,9 @@ Safety checks first, reused from `reextract.js`:
 - `dropNotAsked` still empties certificates and training in the browser.
 
 Then, per list:
-- **Same item** = same normalised key: education qualification + institution; job title + employer; project title;
-  skill canonical id, or the normalised name when the id is null.
+- **Same item** = the evidence quotes overlap on word boundaries and share at least 8 characters, or the main field is
+  equal (qualification, job title, project title). Skills match by O*NET id when both have one, else by normalised
+  name. Why: a key of title + employer could never fill an empty employer, because the two items would not match.
 - **Same item found by both:** the rules value is kept. The AI fills only fields the rules left empty. When the AI
   has a different non-empty value for a field, an `uncertain` entry is added:
   `{path, reason: 'ai_differs', aiValue}`. The form shows "AI read this as: <aiValue>. Check it."
@@ -86,7 +87,7 @@ Then, per list:
   "AI read this as" line. Every tag names its source (owner rule: show the source of every suggestion).
 - AI step not used: one line above the form, by reason — `ai_unavailable` "AI reading was not available this time;
   please check carefully", `ai_limit` "AI reading is paused for a while; please check carefully". The form works
-  the same.
+  the same. The line sits on the ready receipt, just before the form.
 
 ## 8. Limits
 

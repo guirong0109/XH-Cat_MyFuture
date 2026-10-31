@@ -400,8 +400,7 @@
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
-    "Owner review: DeepSeek CV reading spec (docs/superpowers/specs/2026-10-31-cv-ai-reading-design.md) and the updated diagram; then a DeepSeek key (CV_LLM_KEY) for the accuracy check, under $0.50"
+    "DeepSeek key (CV_LLM_KEY) for the accuracy check, under $0.50"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1213,6 +1212,11 @@
       "time": "31 Oct",
       "step": "Spec: AI reads every CV (DeepSeek)",
       "detail": "your request: AI reads the CV on upload for accuracy. Your decisions: always, stated on the upload screen; DeepSeek API; rules and AI run together and merge into one draft (approach A). Spec docs/superpowers/specs/2026-10-31-cv-ai-reading-design.md; diagram docs/architecture-cv-branch.html updated (DeepSeek only provider, Claude backup and re-read button removed). DeepSeek price and privacy checked on its pages (Flash about $0.004 per CV at peak; data stored in China). Waiting for your review of the spec; no code yet"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task: DeepSeek reads every CV (built)",
+      "detail": "your decision: AI reads every CV with the rules. Built in 5 tasks: server/cv/aiRead.js (one call, 15 s, 20 reads per hour, quote check), mergeDrafts.js (rules win, AI fills gaps and adds missed items), route runs both together within the 20 s clock, upload notice and 'Found by AI' tags in en/ms/zh. Removed: the re-read button, consent box, compare view, Claude backup, R2 upload copy. Docs updated (sources, handover, acceptance, spec merge rule). npm test 352 passed. Browser check without a key: notice shown, extract 200, fallback line shown, rules items tagged. Accuracy check (eval-cv.mjs --ai) not run: waiting for your DeepSeek key and cost OK (under $0.50)"
     }
   ]
 }

@@ -55,7 +55,8 @@ that failed first. The branch was merged into `main` via PR #1
 | Skills | `server/skills/onetSkills.js` (catalogue ids `onet:tech:<name>`, `onet:el:<element id>`), `server/skills/normalize.js`, `server/routes/skills.js` `POST /api/skills/normalize` |
 | Occupations | `server/occupations/{onetLive,cache,onetSnapshot,lookup}.js`, `server/routes/occupations.js` `GET /api/occupations/search?q=`; order live → cached (cached live answer, else snapshot) → eMASCO alternative → failed |
 | Accounts / storage | `server/auth.js` (scrypt, `fr_session` cookie, sign-in limit 10 per 15 min), `server/routes/auth.js`, `server/store/d1.js` + `migrations.sql`, `server/store/r2.js` (SigV4), `server/rateLimit.js`, `server/routes/profiles.js` (validate, save, list, get, PATCH with version → 409, mappings) |
-| AI re-read (no provider) | `server/cv/reextract.js` + `reextractPrompt.js`, route `POST /api/cv/reextract` (consent, 3 per upload, 20 per hour) |
+| DeepSeek reads every CV (31 Oct, owner decision; spec `docs/superpowers/specs/2026-10-31-cv-ai-reading-design.md`) | `server/cv/aiRead.js` (one chat call, `response_format: json_object`, 15 s, 20 reads per hour per address, every item must quote the CV, CV text never logged), `aiReadPrompt.js`, `mergeDrafts.js` (rules win; the AI fills empty fields and adds missed items; a different AI value gives `extraction.aiDiffers` and an uncertain `ai_differs`; same item = evidence on word boundaries of at least 8 characters, or an equal main field; skills by O\*NET id when both have one, else normalised name). `server/routes/cv.js` runs both readers together and waits for the AI only for the time left on the 20 s upload clock (500 ms margin); warnings `ai_unavailable`, `ai_limit`; `extractor.layers` gains `ai` and `extractor.model` when merged. Browser: upload notice (en/ms/zh), tag "Found by AI — check it", "AI read this as: … Check it." lines, fallback line on the ready receipt. `mergeDraft` now keeps repeated draft items. Tests: 352 pass |
+| Removed on 31 Oct | `POST /api/cv/reextract`, `reextract.js`, `reextractPrompt.js`, the consent box, the compare view (`improveWithAi.js`, `compareView.js`), the Claude backup, `CV_LLM_BACKUP_*`, the R2 upload copy and its `cv-temp` deletes, `features.tempCopy`, `tempStore` in `createApp`. `server/store/r2.js` stays but the CV flow no longer uses it |
 | Shared (browser + server + tests) | `shared/profileSchema.js`, `shared/profileState.js`, `shared/flow.js`, `shared/guestStore.js` (localStorage key `futureready-profile-v1`), `shared/i18n.js`, `shared/strings/{en,ms,zh}.js` (same keys, enforced by a test) |
 | Browser (ES modules, no build) | `public/index.html`, `public/styles.css`, `public/js/app.js` (state, router, all actions), `public/js/{api,cvApi,accountApi,ui}.js`, `public/js/screens/*.js`, `public/js/components/*.js` |
 | Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/isced/*.tsv` + `manifest.json` (ISCED-F 2013, 124 fields, CIP bridge to O\*NET), `data/SOURCES.md` |
@@ -71,17 +72,17 @@ that failed first. The branch was merged into `main` via PR #1
 | Which describes you best? (31 Oct, owner requests) | Start = personal / organisation → guest or account → goal → CV or form; `category.js` ("Who are you?") is for organisations only (C, D). Personal users answer at the top of the profile form: four buttons (`WHO` in `form.js`, `choiceField` in `fields.js`, action `choose`): Student, Fresh graduate, Underemployed, Unemployed, plus a "Prefer not to say" pill. Saved as `userCategory`; `USER_CATEGORIES` in `shared/profileSchema.js` accepts them plus the two old values. Strings `catGrad`, `catStudent`, `catUnder`, `catUnemp` (+ `Text`); `catA`/`catB` left for `main`'s landing page. Tests `tests/category.test.js`. No "Working adult" option any more (owner's list) |
 | No education status (31 Oct, owner request) | "Current education status" removed from the form (`form.js`) and the receipt (`review.js`, shown only if an earlier profile has an answer). `education.educationStatus` stays in `shared/profileSchema.js` for saved profiles |
 | Qualifications (31 Oct, owner requests) | `form.js` `qualifications()`: "+ Add a qualification" adds a row with only the level (`QUALIFICATIONS`) and the field of study (major): a dropdown of all ISCED-F fields by broad area, from the read-only `GET /api/fields` (`server/routes/fields.js`, `isced.list()`). No highest qualification (shown on the receipt only for a profile saved earlier with one), no institution, no year. Tests `tests/qualifications.test.js` |
-| No certificates, training or projects (31 Oct, owner request) | `SECTIONS` in `form.js` has four sections. `dropNotAsked` empties `certifications`, `training` and `projects` in the CV draft and the AI re-read (`app.js`); the server's CV reader still finds them. The receipt shows them only for an earlier saved profile. Tests `tests/noCertificates.test.js` |
+| No certificates, training or projects (31 Oct, owner request) | `SECTIONS` in `form.js` has four sections. `dropNotAsked` empties `certifications`, `training` and `projects` in the CV draft, rules and AI alike (`app.js`); the server's CV reader still finds them. The receipt shows them only for an earlier saved profile. Tests `tests/noCertificates.test.js` |
 | No employment status (31 Oct, owner request) | "Current employment status" removed from the form (`form.js`) and the receipt (`review.js`, shown only if an earlier profile has an answer). `employment.status` stays in `shared/profileSchema.js` for saved profiles |
 | Jobs: title then years (31 Oct, owner request) | `form.js` `jobRow()`/`work()`: Job title, then Years of work experience for that job (`years`, number box with arrows, `toYears`); the first job is on screen straight away and typing creates it; the occupation finder stays. Employer, period, industries and `employment.yearsOfExperience` are no longer asked (the receipt shows them only when a CV or earlier profile has them). Tests `tests/employment.test.js` |
 | Last section renamed (31 Oct, owner request) | `secPrefs` reads "Interests" (BM "Minat", 中文 "兴趣"); the key and the questions inside are unchanged |
 | Interests: one question (31 Oct, owner request) | `form.js` `prefs` is only `interestField` (Career interests and fields); career goal (asked on the goal screen), occupations of interest, work location and learning hours are not asked; the receipt shows location and hours only when saved earlier. Main's radar also reads occupations of interest |
 | Review and confirm on Interests only (31 Oct, owner request) | `form.js`: sections 1-3 end with Back and Next (main button); only the last section shows Review and confirm |
 | Skill level toggle bar (31 Oct, owner request) | `form.js` `levelBar()`: `.toggle` radiogroup of Not assessed yet / Basic / Good / Expert, `data-act="level" data-arg="<i>|<level>"`; `app.js` `level` action (empty = not assessed) |
-| Skills grouped under jobs and projects (31 Oct, owner request) | `skills[].usedIn = [{ kind: 'job'|'project', title }]`, set by the CV reader (lines under a job or project) and the AI re-read (`usedIn` field); `public/js/screens/skillGroups.js` draws a card per job and project plus Others, with Looks right / Confirm all / Edit (level bar) / + add skill. Links are by title: renaming keeps them, removing moves skills to Others. Projects are back (`NOT_ASKED` = certificates, training). |
-| Used in a job or project = Good (31 Oct, owner rule) | `levelFromUse()` in `shared/profileSchema.js`: a skill with `usedIn` and not yet rated gets `proficiency: 'good'`, `proficiencyStatus: 'from_projects'` (tag "From your projects"); losing every link resets it; a user's level is never changed. Applied by the CV reader, the AI re-read and `linkSkill`/`unlinkPlace`. Main's matching reads this level. Other skills are folded (`state.otherOpen`) |
+| Skills grouped under jobs and projects (31 Oct, owner request) | `skills[].usedIn = [{ kind: 'job'|'project', title }]`, set by the CV reader (lines under a job or project) and the DeepSeek reader (`usedIn` field); `public/js/screens/skillGroups.js` draws a card per job and project plus Others, with Looks right / Confirm all / Edit (level bar) / + add skill. Links are by title: renaming keeps them, removing moves skills to Others. Projects are back (`NOT_ASKED` = certificates, training). |
+| Used in a job or project = Good (31 Oct, owner rule) | `levelFromUse()` in `shared/profileSchema.js`: a skill with `usedIn` and not yet rated gets `proficiency: 'good'`, `proficiencyStatus: 'from_projects'` (tag "From your projects"); losing every link resets it; a user's level is never changed. Applied by the CV reader, the DeepSeek reader and `linkSkill`/`unlinkPlace`. Main's matching reads this level. Other skills are folded (`state.otherOpen`) |
 | CV result: only Edit in the form (31 Oct, owner request) | `upload.js` `ready()`: one main button to the form; no Review and confirm or Upload another file there, because the CV reading is never fully correct |
-| CV qualification and field prechosen (31 Oct, owner request) | CV reader and AI re-read set `education.records[].level` (`levelOf` in `server/cv/patterns.js`); `public/js/cvPrechoose.js` sets `field` to the first `/api/fields/search` match for the CV words (`via: 'cv_match'`, `term`) before the draft is merged; the form shows "Chosen from your CV … Check it is right" |
+| CV qualification and field prechosen (31 Oct, owner request) | CV reader sets `education.records[].level` (the AI never does) (`levelOf` in `server/cv/patterns.js`); `public/js/cvPrechoose.js` sets `field` to the first `/api/fields/search` match for the CV words (`via: 'cv_match'`, `term`) before the draft is merged; the form shows "Chosen from your CV … Check it is right" |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
 
 ---
@@ -99,20 +100,18 @@ Each item below says what you will see and what to do.
      `node --env-file-if-exists=.env -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"`.
    - **To test without Cloudflare:** run `node scripts/serve-local-accounts.mjs`, which uses an in-memory SQLite
      stand-in on port 3100, or 3201 via the launch config `cvaccounts`.
-2. **P1 — No temporary CV copy; "Improve extraction with AI" answers `not_configured` or `cv_expired`.**
-   - **Cause:** no R2 settings.
-   - **Do:** set `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY`, and add a 1-day
-     lifecycle rule on `cv-temp/`.
-   - `GET /api/health` shows `features.tempCopy`.
 3. **P2 — Occupation lookup always says "From O\*NET snapshot 31.0 (cached, 2026-10-29)".**
    - **Cause:** there is no `ONET_API_KEY`, so the warning is `no_api_key`.
    - **Do:** the owner registers a free key at https://services.onetcenter.org and sets `ONET_API_KEY`.
    - API base `https://api-v2.onetcenter.org`, `X-API-Key` header, path `/online/search?keyword=`.
-4. **P2 — AI re-read: "No AI service is set up on this server yet."**
-   - **Cause:** the owner chose "build, no provider yet".
-   - **Do:** either set `CV_LLM_BACKUP_KEY` (Claude, model `claude-opus-5-5`), or create a RunPod chat endpoint
-     **after the owner approves the price**, then set `CV_LLM_URL`, `CV_LLM_KEY` and `CV_LLM_MODEL`.
-   - Earlier this session the 24 GB serverless pool showed $0.75/h; re-read the live price before asking.
+4. **P1 — DeepSeek accuracy check not run; no key yet, so CVs are read by the rules only.**
+   - **Cause:** no `CV_LLM_KEY`. The upload shows "AI reading was not available this time; please check carefully".
+   - **Do:** the owner puts `CV_LLM_KEY` in `.env` and says yes to the cost (11 CVs, under $0.50). Then run
+     `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai` (rules-only against rules + DeepSeek: precision,
+     recall, F1, wrong-item rate, latency, tokens, cost at peak price). The owner then picks `deepseek-flash`
+     (default) or `deepseek-v4-pro`. Also upload one synthetic CV in the browser to see the "Found by AI" tags.
+   - **PDPA:** the CV text is sent to DeepSeek in China. Fine for synthetic data. Check Malaysia's PDPA
+     cross-border rules before real users.
 5. **P3 — L3 is off; extraction warnings say `semantic_unavailable`.**
    - The owner chose to skip it.
    - To enable: create a RunPod embedding endpoint (`BAAI/bge-m3`; the 16 GB pool showed $0.58/h while running;
@@ -140,7 +139,7 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **31 files, 232 tests passed** on this branch (30 Oct) |
+| `npm test` (= `vitest run`) | **43 files, 352 tests passed** on this branch (31 Oct) |
 | `python -m unittest discover pipeline/tests` | **8 tests OK** |
 | `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
@@ -159,7 +158,7 @@ Each item below says what you will see and what to do.
 - **No scoring or matching method from the previous project.**
 - **Follow the owner's diagram exactly.** Add nothing it does not state. Example: I added per-address limits on
   sign-up, upload and search; the owner said "This dont limit" and they were removed (commit `372adad`). Only the
-  spec's limits exist: sign-in 10 per 15 min; AI re-read 3 per upload and 20 per hour.
+  spec's limits exist: sign-in 10 per 15 min; AI reading 20 per hour per address.
 - **Anything paid needs the owner's OK on the price first,** including RunPod endpoints.
 - **Integration (merge, push, PR) is the owner's decision.** Force-push only with an explicit OK.
 
@@ -245,13 +244,13 @@ Each item below says what you will see and what to do.
   - Python 3, built on 3.14.0, standard library only.
   - Dependencies: `express ^5.3.0` and `pdfjs-dist ^6.4.299`; dev `vitest ^5.0.5`. Install with `npm install`.
 - **Settings:** all optional. They are listed in `.env.example` and the README:
-  `ONET_API_KEY`, `D1_*`, `R2_*`, `SEMANTIC_*`, `CV_LLM_*`, `CV_LLM_BACKUP_*`, `CV_MAX_MB`, `TRUST_PROXY`, `PORT`.
+  `ONET_API_KEY`, `D1_*`, `SEMANTIC_*`, `CV_LLM_URL`, `CV_LLM_KEY`, `CV_LLM_MODEL` (DeepSeek), `CV_MAX_MB`, `TRUST_PROXY`, `PORT`.
 - **Start working:**
   ```bash
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 232 passed
+  npm test                                # expect 352 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

@@ -26,7 +26,7 @@ npm start            # http://localhost:3200; reads .env if present (copy .env.e
 npm test             # Vitest
 ```
 
-With no settings at all, guests can use everything. Occupation lookups use the bundled O\*NET 31.0 snapshot, marked "cached". Accounts say "not available on this server". The AI re-read says "not configured".
+With no settings at all, guests can use everything. Occupation lookups use the bundled O\*NET 31.0 snapshot, marked "cached". Accounts say "not available on this server". The AI reading of CVs is off and the upload says "AI reading was not available this time".
 
 To try accounts without Cloudflare (development only, data in memory):
 
@@ -40,12 +40,11 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
 |---|---|
 | `ONET_API_KEY` | Live O\*NET Web Services search (free key from https://services.onetcenter.org). Without it the lookup answers from the snapshot |
 | `D1_ACCOUNT_ID`, `D1_DATABASE_ID`, `D1_TOKEN` | Accounts and saved profiles in Cloudflare D1 |
-| `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Temporary CV copy in Cloudflare R2. The AI re-read needs it |
 | `SEMANTIC_URL`, `SEMANTIC_KEY`, `SEMANTIC_MODEL`, `SEMANTIC_CUTOFF` | L3 semantic match (RunPod embedding endpoint, cutoff from Model Eval) |
-| `CV_LLM_URL`, `CV_LLM_KEY`, `CV_LLM_MODEL` | AI re-read, first provider (RunPod chat endpoint) |
-| `CV_LLM_BACKUP_KEY`, `CV_LLM_BACKUP_MODEL` | AI re-read, backup provider (Claude API, default model `claude-opus-5-5`) |
+| `CV_LLM_KEY` | Turns on DeepSeek AI reading of every CV, next to the rules reader. The CV text goes to DeepSeek (servers in China). Without it: rules only |
+| `CV_LLM_URL`, `CV_LLM_MODEL` | DeepSeek address (default `https://api.deepseek.com/chat/completions`) and model (default `deepseek-flash`) |
 | `CV_MAX_MB` | Upload limit (default 10) |
-| `TRUST_PROXY` | Behind a reverse proxy: number of proxy hops, so the sign-in and AI re-read limits count each visitor, not the proxy |
+| `TRUST_PROXY` | Behind a reverse proxy: number of proxy hops, so the sign-in and AI reading limits count each visitor, not the proxy |
 
 ## Setting up the outside services (owner)
 
@@ -57,14 +56,11 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
       node --env-file-if-exists=.env -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"
       ```
       The Node command reads the `D1_*` settings from `.env`.
-2. **Cloudflare R2:**
-   1. Create a bucket and an R2 API token (access key id and secret), then set the four `R2_*` settings.
-   2. Add a lifecycle rule on the bucket that deletes objects under `cv-temp/` after 1 day.
-3. **O\*NET Web Services:** register for a free key and set `ONET_API_KEY`.
-4. **RunPod (optional, billed per second while running):**
-   1. Create serverless endpoints for the embedding model (`BAAI/bge-m3`) and/or a chat model behind the OpenAI-compatible routes, then set the matching settings.
+2. **O\*NET Web Services:** register for a free key and set `ONET_API_KEY`.
+3. **RunPod (optional, billed per second while running):**
+   1. Create a serverless endpoint for the embedding model (`BAAI/bge-m3`) behind the OpenAI-compatible route, then set the `SEMANTIC_*` settings.
    2. For L3, run `node scripts/model-eval.mjs` and set `SEMANTIC_CUTOFF` to the cutoff it writes into `docs/model-eval.md`.
-5. **Claude API (optional):** set `CV_LLM_BACKUP_KEY`.
+4. **DeepSeek (optional, paid per use, about $0.004 per CV at peak price):** make an API key at https://platform.deepseek.com and set `CV_LLM_KEY`. Compare rules-only with rules + AI on the 11 synthetic CVs: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`.
 
 ## Refresh the O\*NET data
 
@@ -88,8 +84,8 @@ node scripts/model-eval.mjs    # L3 cutoff on the RunPod embedding model → doc
 ```
 public/        browser screens (ES modules, no build step), from docs/mockup-journey.html
 shared/        profile schema, profile state helpers, strings (en / ms / zh); used by browser, server and tests
-server/        Express app: cv/ (file checks, reading, language, extraction, L3, AI re-read), skills/, occupations/,
-               store/ (D1, R2), routes/, auth.js
+server/        Express app: cv/ (file checks, reading, language, extraction, L3, DeepSeek reader and merge), skills/, occupations/,
+               store/ (D1; R2 code stays, the CV flow no longer uses it), routes/, auth.js
 data/          O*NET 31.0 snapshot and eMASCO titles (see data/SOURCES.md)
 pipeline/      O*NET download script (Python)
 scripts/       evaluation scripts, local accounts server

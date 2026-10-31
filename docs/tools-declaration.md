@@ -16,15 +16,14 @@ Every outside tool, data set, model and service this module uses or can use, and
 | Item | Use | Status |
 |---|---|---|
 | Embedding model `BAAI/bge-m3` on a RunPod serverless endpoint (OpenAI-compatible `/embeddings`) | L3 semantic match of CV wordings to O\*NET skill names, above a cutoff chosen by Model Eval | Code and Model Eval ready. **No endpoint created**: the owner chose to skip L3 for now, so extractions report `semantic_unavailable` |
-| Chat model (proposed `Qwen/Qwen2.5-7B-Instruct`) on a RunPod serverless endpoint (OpenAI-compatible chat) | "Improve extraction with AI", first provider; consent required | Code ready. **Not created** (owner's choice) |
-| Claude API, model `claude-opus-5-5` (Anthropic), raw HTTPS, `anthropic-version: 2026-10-21` | "Improve extraction with AI", backup provider; consent required | Code ready. **No key set** (owner's choice) |
+| DeepSeek API (`https://api.deepseek.com/chat/completions`, OpenAI-compatible chat), model `deepseek-flash` (or `deepseek-v4-pro`) | Reads every uploaded CV next to the rules reader; the user checks everything before it is saved. The upload screen says so | Built (31 Oct). **No key set yet**: rules only until the owner adds `CV_LLM_KEY`. Data is stored in China: fine for synthetic data, check Malaysia's PDPA before real users |
 
 Rules for every AI path:
 - the CV is sent as data inside `<cv>` tags;
 - every item must quote the CV word for word or it is dropped;
 - levels, skill ids and occupation codes never come from a model;
-- suggestions change nothing until the user ticks them, and stay Unverified until Confirm;
-- CV text and model replies are never logged;
+- AI items are tagged "Found by AI" and stay Unverified until the user confirms;
+- CV text and model replies are never logged; the user is told on the upload screen that DeepSeek reads the CV;
 - CVs are never used as training data.
 
 ## Infrastructure and libraries
@@ -37,7 +36,7 @@ Rules for every AI path:
 | Vitest 5.0 | Tests | In use (dev only) |
 | Python 3 (standard library) | `pipeline/fetch_onet.py` O\*NET refresh and its tests | In use |
 | Cloudflare D1 (REST query API) | Accounts, sessions, saved profiles | Code ready; needs the owner's D1 settings. Tested with `node:sqlite` and the real `migrations.sql` |
-| Cloudflare R2 (S3-compatible API, Signature V4) | Temporary CV copy `cv-temp/<extractionId>`, deleted on save and by a 1-day lifecycle rule | Code ready; needs the owner's R2 settings |
+| Cloudflare R2 (S3-compatible API, Signature V4) | Code in `server/store/r2.js` stays, but the CV flow no longer uses it (the temporary CV copy was removed on 31 Oct) | Not used |
 
 ## Development tools
 

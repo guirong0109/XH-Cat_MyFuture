@@ -9,7 +9,7 @@ and how to work here.
 - Use **no scoring or matching method** from the previous project. Matching is a later module.
 - **Do not use `C:/Users/guiro/XH-Cat_Domain1` as a template.** Read the diagram only; its data files were copied
   once already.
-- Ask before anything paid (RunPod endpoints: state the hourly price and wait for a yes), before merges, pushes and
+- Ask before anything paid (RunPod endpoints: state the hourly price; DeepSeek runs: state the cost; wait for a yes), before merges, pushes and
   PRs, and always before a force-push.
 - **Branch docs:**
   - Every branch keeps a detailed `HANDOVER.md` and `CLAUDE.md` for its feature.
@@ -23,10 +23,19 @@ and how to work here.
 - Plan: `docs/superpowers/plans/2026-10-29-cv-profile-module.md`.
 - Files marked SUPERSEDED in `docs/superpowers/` are not to be followed.
 
+## CV AI reading (31 Oct)
+- DeepSeek reads every CV next to the rules (`server/cv/aiRead.js`, `aiReadPrompt.js`, `mergeDrafts.js`). Rules win; the AI
+  fills empty fields and adds missed items, each tagged "Found by AI". Levels, ids and codes never come from the AI.
+- Settings: `CV_LLM_KEY` (turns it on), `CV_LLM_URL` (default `https://api.deepseek.com/chat/completions`),
+  `CV_LLM_MODEL` (default `deepseek-flash`). No key = rules only plus the "AI reading was not available" line.
+- The re-read button, consent box, compare view, Claude backup and the R2 upload copy are gone. Do not bring them back.
+- The CV text goes to DeepSeek in China: fine for synthetic data; check Malaysia's PDPA before real users.
+- Accuracy check: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`. Paid (under $0.50): ask first.
+
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 320 passed
+npm test                                          # Vitest, expect 352 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -63,7 +72,7 @@ Browser pane launch configs (`.claude/launch.json`):
   - Qualifications (owner, 31 Oct): "+ Add a qualification" shows only the level and the field of study (major), both
     dropdowns; the field list is the 124 ISCED-F fields (`GET /api/fields`). No highest qualification, institution or
     year in the form (`education.highestQualification` stays in the schema for saved profiles).
-  - The profile has four sections (owner, 31 Oct): no certificates, training or projects. What a CV or the AI re-read
+  - The profile has four sections (owner, 31 Oct): no certificates, training or projects. What a CV or the AI reader
     finds for them is dropped in the browser (`dropNotAsked` in `form.js`); don't bring them back without the owner.
   - Jobs (owner, 31 Oct): each `employment.records[]` row is the job title, then `years` (a number 0-60, `toYears` in
     `form.js`), plus the standard-occupation finder. No employer, period, industries or overall years in the form; the

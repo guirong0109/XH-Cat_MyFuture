@@ -474,7 +474,7 @@
         },
         {
           "title": "Brainstorming",
-          "sub": "11 decisions with you (P1-P11)",
+          "sub": "12 decisions with you (P1-P12)",
           "status": "done"
         },
         {
@@ -592,7 +592,8 @@
     "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
     "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
     "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page",
-    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links"
+    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
+    "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links"
   ],
   "log": [
     {
@@ -1304,6 +1305,11 @@
       "time": "31 Oct",
       "step": "Study Pathway design (your request)",
       "detail": "checked MQA register and e-LATiH (no open licence; e-LATiH search links work, MQR links do not); spec and diagram written"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: more course sites (your change)",
+      "detail": "search links checked in the browser for 9 sites (6 work); spec and diagram updated with sites.json"
     }
   ]
 }

@@ -67,7 +67,8 @@ Rules (do not infer more):
   says "unchanged in 31.0". Measured 30.2 → 30.3: 5 newly Hot (Google Looker Analytics, Grafana Labs Grafana Cloud,
   Intuit TurboTax, Microsoft Power Platform software, Prometheus), 0 dropped; In Demand: 151 added, 219 dropped.
 - **Only changes become signals (D26).** Skills that stayed "In Demand" are reference data in the export, not signals.
-- **eMASCO jobs have no official link to O\*NET (D27):** "skill list not available". Matching must not invent a
+- **eMASCO jobs reach O\*NET only through the official code chain (D29, replaces D27):** a broken chain says "skill list
+  not available" and names the missing step. Matching must not invent a
   crosswalk.
 - **A flag is not a score.** "In Demand" is O\*NET's yes/no mark, and the data are US job ads, software and technology
   skills only: no Malaysian demand, no general or soft skills.
@@ -78,7 +79,18 @@ Rules (do not infer more):
 `31.0`), `comparedWith` the earlier set id it was compared with (`30.2`), `inDemand` the still-in-demand lists (kept,
 reference data), `hot` the current Hot Technologies. It is `null` or empty when no O\*NET data is loaded. `GET
 /api/radar/skills` gives the screen the release, the changes per job, the Hot lists, the posting counts, the labels
-and the source links.
+and the source links. In `GET /api/radar/skills`, every `postings.rows` item carries `skillId` (`onet:tech:<nameKey>`,
+the same id as the change rows, so the browser pairs counts and flags by id, not by name), and `postings.previous` holds
+the earlier yearly snapshot's counts (`null` while only one exists).
+
+`GET /api/radar/references` also carries `emascoChain` (true when the bridge's first step, MASCO 2020 unit → ISCO-08, is
+built), so the screen knows whether the eMASCO code chain can be followed.
+
+`GET /api/radar/ai-tasks` (31 Oct 2026, D31) is **reference data, not signals**: the Anthropic Economic Index task
+counts (release 2026-06-26) and the ILO WP140 generative-AI exposure scores per ISCO-08 code, copied from `main`
+(`data/ai/`, hashes in `data/radar/copied-from-main.json`). It is static: no manifest, no query parameters, and it
+never appears in the signal export. Matching must not read it as a Radar signal (it has its own source on `main`).
+If the data cannot be loaded it answers `{state: "unavailable", reason}`.
 
 ## Pipeline output
 

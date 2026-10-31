@@ -1,14 +1,16 @@
 # HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 30 Oct 2026 (skill trends added). Branch made from `main` at 928f4a7. Nothing pushed or merged.
+Updated 31 Oct 2026 (charts that follow the profile added). Branch made from `main` at 928f4a7. Nothing pushed or merged.
 
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
   fixes found on the way.
 - **Skill trends from O\*NET are built** (9 tasks, spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`,
   D23–D27; plan `docs/superpowers/plans/2026-10-30-radar-skill-trends.md`). See "Skill trends" below.
-- Tests: **643 Vitest tests pass** (`npm test`; the CV module's 232 are among them) and
-  **11 Python tests OK** (`python -m unittest discover pipeline/tests`). Round 1 alone was 568.
+- **Charts that follow your profile are built** (31 Oct 2026, spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
+  D28-D33; plan `docs/superpowers/plans/2026-10-31-radar-profile-charts.md`). See "Profile charts" below.
+- Tests: **738 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
+  **14 Python tests OK** (`python -m unittest discover pipeline/tests`; the bridge script test copied from `main` is among them). Round 1 alone was 568; skill trends took it to 647.
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
   Small notes (N1–N6) are listed there for your judgement.
@@ -42,8 +44,8 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 643 passed
-python -m unittest discover pipeline/tests  # 11 OK
+npm test                                    # 738 passed
+python -m unittest discover pipeline/tests  # 14 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook); on the committed bundle it skips O*NET releases already active; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each
 ```
@@ -86,6 +88,34 @@ says "US job ads (Lightcast via O\*NET), not Malaysian" and "Software and techno
 4. After deploying, restart judge sessions: sessions made before this change have no O\*NET data and Scenario C fails for them.
 5. Small deferred reviewer notes are in `.superpowers/sdd/2026-10-30-radar-skill-trends/progress.md` (for example a
    two-digit minor release such as 30.10 is not accepted yet).
+
+## Profile charts (D28-D33), added 31 Oct 2026
+Both Radar charts now follow the user's **confirmed** profile (nothing from the profile is sent to the server).
+- **Skills & Careers** opens with a radar of the in-demand software skills of the user's jobs (O*NET In Demand flag),
+  valued by 2025 US job ads (O*NET Hot Technologies). 8 corners by default (highest first, ties by name); a switch gives
+  16, 30 or All; a numbered list with a search box holds every item. The number is a list position shown on screen, never stored.
+- **eMASCO roles (D29, replaces D27)** reach O*NET only through the official code chain MASCO 2020 → ISCO-08 → SOC 2010 →
+  SOC 2018 → O*NET. Every step is named with its source; a broken chain says "not available" and names the missing step.
+- **AI Impact (D31)** opens with a chart of the user's job tasks that appear in the Anthropic Economic Index (value = share
+  where AI does the task; the rest is AI helping), plus the ILO WP140 exposure gradient per job. The six-topic research
+  chart stays below, showing only the topics linked to the user's field, with "View all six topics" at the bottom.
+- **D30 / D33:** counts and shares only, labelled "not a score"; AI chart labelled "how AI is used today, not a forecast of
+  jobs lost". No score, weight, rank or match field.
+- **Copied from `main`, not merged (D32):** the code chain (`shared/radar/chain.js`, `data/radar/occupation-bridge.json`,
+  its source files and script) and the AI data (`data/ai/*`, `data/onet/tasks.tsv`) are byte-identical to `main` commit
+  d4286d6. Their SHA-256 hashes are in `data/radar/copied-from-main.json`. When this branch is merged later, these files
+  are identical on both sides, so they should not conflict.
+- **New data route:** `GET /api/radar/ai-tasks` (reference data, not signals; `docs/radar/contract.md`). The skills route rows
+  now carry `skillId` and `postings.previous`; the references route has `emascoChain`.
+- **Browser check** (31 Oct, `docs/radar/acceptance.md`, last section): Software Developer, Accountant, eMASCO 2512-02 and
+  Registered Nurse profiles, light and dark, 375 px with no sideways scroll, search keeps focus, EN and BM.
+
+### Open points for you (profile charts)
+- Review the Bahasa Melayu and 中文 lines marked `// translation: owner review` in `shared/strings/ms.js` and `zh.js`.
+- **eMASCO limit:** the chain works at the 4-digit unit, so all eMASCO roles in one unit show the same chart (the screen says so).
+- **"Your profile" card hint:** for a profile with an O*NET role it still says "Add your field of study or roles to see
+  what relates to you" (it only looks at DOSM groups and topics). This now contradicts the new cards. Existing behaviour, found in the browser check; your call.
+- The dashed earlier-year line appears only once a second yearly Hot Technologies snapshot is served (today: "One year so far").
 
 ## Still needed from you (spec §17)
 1. **BLS crosswalk files** (SOC 2010 ↔ 2018; ISCO-08 ↔ SOC 2010): download them in a browser into

@@ -20,10 +20,11 @@ rules and how to work here.
 - Use plain words with the owner. The owner writes English, sometimes briefly.
 
 ## State
-- Round 1 is built (plan tasks 1–21 done) and browser-accepted (`docs/radar/acceptance.md`: 27 of 28 pass; F1 phone
-  width on Skills & Careers is open). Deployment notes: `docs/radar/deploy.md`. Nothing pushed, merged or deployed.
+- Round 1 is built (plan tasks 1–21 done) and browser-accepted (`docs/radar/acceptance.md`: 28 of 28 pass after F1). Deployment notes: `docs/radar/deploy.md`. Nothing pushed, merged or deployed.
 - Skill trends from O\*NET are built on top (spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`, D23–D27;
-  643 tests). Detail in `HANDOVER.md` "Skill trends".
+  see `HANDOVER.md` "Skill trends").
+- Charts that follow the confirmed profile are built (spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
+  D28-D33; `HANDOVER.md` "Profile charts"). 738 Vitest tests and 14 Python tests pass.
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
@@ -35,15 +36,29 @@ rules and how to work here.
 - New data needs a `data/SOURCES.md` entry (where from, date, licence) and a hash.
 - BLS files block automated download: never work around it. The owner downloads them.
 
-## Skill trend rules (D23–D27)
+## Skill trend rules (D23–D27; D27 replaced by D29, see below)
 - Every skill item carries both labels: "US job ads (Lightcast via O\*NET), not Malaysian" and "Software and technology skills only".
 - **D25:** compare a release with the most recent earlier release whose flags differ; show both release numbers.
 - **D26:** only changes become signals; "still in demand" lists are reference data.
-- **D27:** eMASCO jobs say "No official link to O\*NET: skill list not available". Never invent a crosswalk.
+- **D27 (replaced by D29 on 31 Oct):** never invent a word-matching crosswalk; eMASCO reaches O\*NET only by the official code chain.
 - Hot Technologies (`onet-hottech`): `direction: null`, reason `first_snapshot` while one counting window exists. The rule for
   two windows needs the owner's decision (D24); add no threshold.
 - The 13 MB release zips are never committed; keep URL and SHA-256 in `data/SOURCES.md`. Keep the Hot Technologies original.
 - The user's jobs and skills are matched in the browser; nothing personal goes to the server or the logs.
+
+## Profile chart rules (D28-D33)
+- Only a confirmed profile counts (`profileStatus === 'confirmed'`); no profile data goes in any request.
+- **D29 replaces D27:** eMASCO roles reach O*NET only through the official code chain (MASCO 2020 → ISCO-08 → SOC 2010 → SOC 2018 → O*NET).
+  Name every step with its source; a broken chain says "not available" and names the missing step. Never match by words.
+- Corners: 8 by default, ordered by value (highest first, ties by name); the switch gives 16, 30, All. The list number is shown, never stored.
+- Skills chart value = 2025 US job ads (Hot Technologies). AI chart value = share of the task's conversations where AI does the task.
+  Both are "not a score"; AI chart is "how AI is used today, not a forecast of jobs lost". No key named score, weight, rank, match or opportunit.
+- **Copied from `main` d4286d6, byte-identical (D32):** `shared/radar/chain.js`, `tests/radar/chain.test.js`,
+  `data/radar/occupation-bridge.json`, `data/radar/source/ISCO_SOC_Crosswalk.*`, `data/radar/source/soc_2010_to_2018_crosswalk.xlsx`,
+  `pipeline/fetch_radar_bridge.py`, `pipeline/tests/test_radar_bridge.py`, `data/onet/tasks.tsv`, `data/ai/*`. Hashes: `data/radar/copied-from-main.json`.
+  Do not edit them here; change them on `main` and copy again. On a later merge they are identical on both sides.
+- `/api/radar/ai-tasks` is reference data (no manifest, no parameters), not signals.
+- Colours in the new chart component: CSS variables only (`--accent` skills, `--est` AI).
 
 ## Conventions (same as the rest of the app)
 - **Test first** (Vitest): failing test, watch it fail, implement, run the whole suite. Real servers on port 0.
@@ -59,8 +74,8 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 643 passed (vitest.config.js skips helper worktrees)
-python -m unittest discover pipeline/tests         # expect 11 OK
+npm test                                           # expect 738 passed (vitest.config.js skips helper worktrees)
+python -m unittest discover pipeline/tests         # expect 14 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<dir with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # O*NET zips read locally, not downloaded

@@ -15,6 +15,8 @@ Future Skills Radar Round 1, branch `claude/future-radar`, 30 Oct 2026).
 | UNESCO ISCED-F 2013, Statistics Canada concordance, O\*NET CIP and SOC crosswalks | Radar personal relevance: field of study → O\*NET jobs → (SOC 2018 → SOC 2010 → ISCO-08 → MASCO major group) | see `data/SOURCES.md` | as listed there | O\*NET → SOC 2018 in use; BLS steps and ISCO-08 → MASCO pending (owner actions) |
 | O\*NET database releases 30.2 (Feb 2026), 30.3 (May 2026), 31.0 (Aug 2026), Software Skills: "In Demand" and "Hot Technology" flags per job | Radar skill trends: which software and technology skills became or stopped being in demand between two releases (US job ads, Lightcast via O\*NET) | Zips from `https://www.onetcenter.org/dl_files/database/db_<v>_text.zip`, downloaded 2026-10-30; zip and file SHA-256 in `data/SOURCES.md`; zips not kept. No AI model involved | CC BY 4.0, USDOL/ETA | In use (bundled). Admin refresh reads a newer release |
 | O\*NET OnLine Hot Technologies page (`onetonline.org/search/hot_tech/`; Lightcast US unique postings, 1/25 to 12/25) | Radar skill trends: posting counts of 176 hot technologies; first counting window, so no direction yet | Saved 2026-10-30, original kept with SHA-256; `robots.txt` allows the page. No AI model involved | CC BY 4.0, USDOL/ETA | In use (bundled). Admin refresh reads the page again |
+| ILO Working Paper 140, "Generative AI and Jobs: A 2025 update" (Gmyrek et al., 20 May 2025): GenAI exposure scores per ISCO-08 occupation (427), file from the lead author's repository `pgmyrek/2025_GenAI_scores_ISCO08` | Radar AI Impact: each job's exposure gradient (D31). Never a score of the user | Copied unchanged from `main` d4286d6 on 2026-10-31 (no merge, D32); SHA-256 of `data/ai/ilo_wp140.tsv` in `data/ai/manifest.json` and `data/radar/copied-from-main.json`; the 2.6 MB original is not kept. No AI model involved | CC BY 4.0 | In use (bundled) |
+| Anthropic Economic Index, Hugging Face dataset `Anthropic/EconomicIndex`, release 2026-06-26 (claude.ai usage per O\*NET task, May 2026 slice) | Radar AI Impact: how much AI is observed in use for the tasks of the user's job (D31) | Copied unchanged from `main` d4286d6 on 2026-10-31; SHA-256 in `data/ai/manifest.json`; the 219 MB original is not kept. Only published counts are read; no AI model involved | CC-BY (data) | In use (bundled) |
 | Synthetic Radar base (`data/radar/demo/base.json`) | Judge Trend Change Test only (Scenarios A, B and C; C changes one In Demand flag) | written by the team, labelled synthetic on screen | — | In use; every value fictional |
 | Synthetic CVs and labelled terms (`testing/`) | Tests, extraction evaluation, Model Eval | written by the team | — | In use; no real CVs |
 
@@ -60,7 +62,7 @@ Rules for every AI path:
   score, weight or ranking.
 - No new npm packages for the Radar: its xlsx reader is built on the app's own zip reader and tested against the real
   DOSM workbook.
-- No AI exposure (ILO, OECD), AI usage (Anthropic Economic Index) or MyCOL data in Radar Round 1 (later rounds, each
-  with its own approval).
+- No OECD or MyCOL data in the Radar. ILO and Anthropic data are used only for the AI Impact task chart (D31, 31 Oct
+  2026), as published, with no score, weight or ranking.
 - No OCR: scanned CVs get a clear message and the manual form.
 - No real personal data.

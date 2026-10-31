@@ -1,5 +1,5 @@
 {
-  "updated": "30 Oct 2026",
+  "updated": "31 Oct 2026",
   "groups": [
     {
       "id": "S0",
@@ -406,6 +406,62 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 11",
+      "name": "Radar charts that follow your profile (branch claude/future-radar)",
+      "tasks": [
+        {
+          "title": "Spec and plan",
+          "sub": "D28-D33 (skills chart, eMASCO code chain replaces D27, corners 8/16/30/All, AI task chart, no merge of main, not a score); mockup docs/radar/mockup/role-skill-chart.html",
+          "status": "done"
+        },
+        {
+          "title": "T1 Copied from main",
+          "sub": "code chain, AI data and bridge script byte-identical to main d4286d6; hashes in data/radar/copied-from-main.json (D32)",
+          "status": "done"
+        },
+        {
+          "title": "T2 Your O*NET jobs",
+          "sub": "from roles, field and the eMASCO code chain; union of ISCO codes per job",
+          "status": "done"
+        },
+        {
+          "title": "T3 Skill corners",
+          "sub": "in-demand skills of your jobs with 2025 US job-ad counts; skillId pinned end to end",
+          "status": "done"
+        },
+        {
+          "title": "T4 AI task data",
+          "sub": "GET /api/radar/ai-tasks (reference data, not signals): Anthropic Economic Index tasks and ILO WP140",
+          "status": "done"
+        },
+        {
+          "title": "T5 Task corners",
+          "sub": "tasks of your job found in the Economic Index; AI does it / AI helps shares",
+          "status": "done"
+        },
+        {
+          "title": "T6 Chart component",
+          "sub": "radar with log or linear scale, keyboard corners, bar fallback; CSS variables only",
+          "status": "done"
+        },
+        {
+          "title": "T7 Skills & Careers chart",
+          "sub": "8 corners, switch 8/16/30/All, numbered list with search, code chain shown step by step",
+          "status": "done"
+        },
+        {
+          "title": "T8 AI Impact chart",
+          "sub": "task chart with ILO exposure gradient; topic chart shows your field's topics, View all six at the bottom",
+          "status": "done"
+        },
+        {
+          "title": "T9 Docs and browser check",
+          "sub": "Software Developer, Accountant, eMASCO 2512-02, Registered Nurse; light, dark, 375 px no sideways scroll; search keeps focus; EN and BM. 738 tests, pipeline 14 OK",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -445,7 +501,8 @@
     "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet.",
     "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
     "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
-    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed."
+    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
+    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 unchanged (D32). Checked in the browser (4 profiles, light/dark, 375 px). 738 tests, pipeline 14 OK. Nothing pushed."
   ],
   "waiting": [
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
@@ -453,7 +510,8 @@
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
-    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying"
+    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
+    "Profile charts: review the Bahasa Melayu and 中文 lines marked 'translation: owner review'; decide on the eMASCO same-4-digit-group limit; decide the 'Your profile' card hint that now contradicts the new cards; the dashed earlier-year line appears only after a second yearly Hot Technologies snapshot"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -493,7 +551,8 @@
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
     "D25: a release is compared with the most recent earlier release whose flags differ, both release numbers shown (31.0 equals 30.3, so the comparison is 30.2 to 30.3) - cost: a quiet release shows the last change again",
-    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script"
+    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script",
+    "R1-R3 (profile charts): a job's ISCO codes = union on its chain vias, else its own; profileRadar numbers-only threshold 16 (AI card 10); /api/radar/ai-tasks is static reference data with a memoised loader and no manifest"
   ],
   "log": [
     {
@@ -1080,6 +1139,11 @@
       "time": "30 Oct",
       "step": "Skill trends final review fixes",
       "detail": "bootstrap rebuild skips active releases; O*NET source cards show state; not-newer refresh keeps its slot; safe source link; source registry names no release; tests for encoded ids and revised Hot counts; npm test 647 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts T9",
+      "detail": "browser check, contract, specs pointers, tools declaration, handover and build record; npm test 738 passed, pipeline 14 OK"
     }
   ]
 }

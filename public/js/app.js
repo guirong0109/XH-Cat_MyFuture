@@ -18,7 +18,7 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
-import radarScreen, { staleRadar } from './screens/radar.js'
+import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -118,7 +118,7 @@ function go(screen) {
 // The screen keeps the manifest id it loaded and sends it on every follow-up call (spec §6.5, Review Focus 4).
 const radarUi = () => (state.radar ??= {})
 function setRadar(patch) {
-  state.radar = { ...radarUi(), ...patch }
+  state.radar = { ...radarUi(), openDrop: false, ...patch }
   render()
 }
 // Each load gets a number; a load that ends after a newer one started (or after the data went stale) is dropped.
@@ -148,9 +148,17 @@ async function openEvidence(kind, id, signalId) {
   setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
   document.getElementById('radarDrawer')?.focus()
 }
+// The AI task data is static reference data (no manifest, no profile): fetched once, when the AI tab is first shown.
+async function loadAiTasks() {
+  state.radar = { ...radarUi(), aiTasks: { loading: true } }
+  const out = await radarApi.aiTasks()
+  state.radar = { ...radarUi(), aiTasks: out.ok ? { ok: true, data: out.data } : { ok: false, code: out.code } }
+  if (state.screen === 'radar') render()
+}
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+  if (r.tab === 'ai' && !r.aiTasks) loadAiTasks()
 }
 // After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
 // changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
@@ -452,9 +460,39 @@ function update(profile) {
 
 const actions = {
   // Radar: Skills & Careers is the first tab and opens by default (D21).
-  radarTab: (tab) => setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null }),
+  radarTab: (tab) => {
+    setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })
+    if (tab === 'ai' && !radarUi().aiTasks) loadAiTasks()
+  },
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),
+  // Skills card: how many corners, and a corner or list number picked (highlights its row and scrolls to it).
+  skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
+  // AI tasks card: which job, how many corners, and a corner picked (highlights its row and scrolls to it).
+  aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null, pages: withPage(radarUi().pages, 'ai', 1) }),
+  aiCorners: (n) => setRadar({ corners: { sk: 8, ...radarUi().corners, ai: n === 'all' ? 'all' : [8, 16].includes(Number(n)) ? Number(n) : 8 } }),
+  // A corner opens the page of its row (10 rows a page; the list is whole again for the skills list), then highlights it.
+  aiCorner: (n) => {
+    setRadar({ aiHl: Number(n), pages: withPage(radarUi().pages, 'ai', pageForRow(n)) })
+    document.getElementById(`rd-ai-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
+  skCorner: (n) => {
+    setRadar({ hl: Number(n), q: '', pages: withPage(radarUi().pages, 'sk', pageForRow(n)) })
+    document.getElementById(`rd-sk-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
+  // A page of a long list: "<list>:<page>" (list = sk | ai | skDrop). The screen shows the last page when past it.
+  rdPage: (arg) => {
+    const got = parsePageArg(arg)
+    if (!got) return
+    setRadar({ pages: withPage(radarUi().pages, got.list, got.page), openDrop: got.list === 'skDrop' })
+    document.querySelector(`.rd-pager [data-arg^="${got.list}:"][aria-current="page"]`)?.focus()
+  },
+  // The "Go to page" box of one list.
+  rdPageGo: (list) => {
+    if (!parsePageList(list)) return
+    const page = Number.parseInt(document.getElementById(`rdGo-${list}`)?.value ?? '', 10)
+    if (Number.isFinite(page) && page >= 1) actions.rdPage(`${list}:${Math.min(page, 999999)}`)
+  },
   radarLine: (axisId) => {
     const hidden = new Set(radarUi().hidden ?? [])
     if (hidden.has(axisId)) hidden.delete(axisId)
@@ -985,6 +1023,7 @@ document.addEventListener('submit', (event) => {
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
   if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
+  if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })
@@ -1009,6 +1048,13 @@ async function runSearch(kind, key, term) {
   show()
 }
 document.addEventListener('input', (event) => {
+  // Radar skills card: the search box filters the list as you type; focus and caret come back after the redraw.
+  if (event.target.hasAttribute?.('data-radar-search')) {
+    if (event.isComposing) return // wait for compositionend (pinyin and other input methods)
+    const pos = event.target.selectionStart ?? event.target.value.length
+    setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
+    return keepCaret(pos)
+  }
   const search = event.target.dataset?.search
   if (!search) return
   const [kind, ...rest] = search.split('|')
@@ -1016,6 +1062,11 @@ document.addEventListener('input', (event) => {
   state.pick ??= {}
   clearTimeout(searchTimers[key])
   searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
+})
+document.addEventListener('compositionend', (event) => {
+  if (!event.target.hasAttribute?.('data-radar-search')) return
+  setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
+  keepCaret(event.target.selectionStart ?? event.target.value.length)
 })
 document.addEventListener('keydown', (event) => {
   // Radar: chart points are keyboard buttons (role="button"); Escape closes the evidence panel.

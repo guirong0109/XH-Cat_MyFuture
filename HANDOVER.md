@@ -18,6 +18,7 @@ scenario comparison.
 | Future Skills Radar Round 1 + skill trends from O\*NET | `claude/future-radar` | merged 2026-10-30 | Done; 651 tests pass; whole-branch reviews fixed |
 | Career matching, AI scenarios and SDG links | `claude/career-matching` | merged 2026-10-31 | Done; 803 tests pass; checked in the browser |
 | Landing page (ATM intro, guide figures, roller counters) | `claude/website-interface` | merged 2026-10-31 | Merged as built; 829 tests pass; checked in the browser |
+| Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
 | Learning roadmap and the rest of the journey | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -32,6 +33,14 @@ scenario comparison.
   (`docs/radar/contract.md`); `GET /api/radar/export` is its input.
 - **Owner decides:** field ↔ AI topic links (16 proposals, pending until approved in `#admin`) and possible DOSM
   structural breaks (4, incl. 2025 Q3, which blocks most group comparisons until reviewed or until 2026 Q3).
+- **Charts follow the profile (D28–D33, 31 Oct):** Skills & Careers opens with the in-demand O\*NET software skills of
+  the user's own jobs (O\*NET roles, field-of-study jobs, eMASCO roles through the code chain), sized by 2025 US job-ad
+  counts. AI Impact opens with the user's O\*NET tasks and how often AI does them (Anthropic Economic Index) plus the
+  ILO WP140 exposure gradient; the six-topic chart below shows the field's approved topics. Long lists show 10 rows a
+  page with a page bar; long notes fold. Counts and shares only, never a score. `GET /api/radar/ai-tasks` takes no
+  parameters, so the profile never leaves the browser.
+- **Two copies of the chain walker:** `shared/radar/chain.js` is a copy of `shared/matching/chain.js` (only its header
+  line differs; hashes in `data/radar/copied-from-main.json`). Merge them into one module at a later clean-up.
 
 ## Profile form since 2026-10-30 (owner requests)
 - **Search as you type:** skills (O\*NET), roles of interest (O\*NET + eMASCO) and field of study (UNESCO
@@ -61,6 +70,10 @@ scenario comparison.
   "translation: owner review"); decide a "rising" rule for Hot Technology counts when the 2026 window appears;
   accept or trim ~10.8 MB of bundled O\*NET snapshots; find an official source that MASCO 2020 major groups match
   ISCO-08.
+- **Radar profile charts:** review the new BM and 中文 lines ("translation: owner review"); eMASCO roles in one 4-digit
+  MASCO group show the same chart (the chain works at that level); the "Your profile" card still says "Add your field
+  of study or roles" for a profile with only O\*NET roles; copy the three browser-check screenshots into
+  `docs/record/screens/` (blocked by a permission check for Claude).
 - **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
   approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
   OK for a new package).
@@ -107,7 +120,7 @@ It can reuse the confirmed profile and the matching result (`skillMatch`, gaps p
 ## Commands
 ```bash
 npm install
-npm test          # expect 829 passed
+npm test          # expect 955 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 48 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

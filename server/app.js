@@ -27,6 +27,7 @@ import { loadOnetSnapshot } from './occupations/onetSnapshot.js'
 import { createOccupationLookup } from './occupations/lookup.js'
 import { readFile } from 'node:fs/promises'
 import { createRadarServiceFromEnv } from './radar/service.js'
+import { loadAiTasks } from './radar/aiTasks.js'
 import { radarRoutes } from './radar/routes.js'
 import { createRadarAccess } from './radar/access.js'
 import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
@@ -153,7 +154,9 @@ export function createApp({
   const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
   app.use(matchingRoutes({ matching: matchingService }))
   if (radar) {
-    app.use(radarRoutes({ radar }))
+    let aiTasksPromise = null
+    const aiTasks = () => (aiTasksPromise ??= loadAiTasks(dataDir))
+    app.use(radarRoutes({ radar, aiTasks }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
     // Owner decisions on the SDG links (career matching), in the Radar review store.

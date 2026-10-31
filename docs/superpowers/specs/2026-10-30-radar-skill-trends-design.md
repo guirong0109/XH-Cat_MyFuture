@@ -19,7 +19,7 @@ signal from an official, free, updatable source the project already uses.
 | D24 | Approach **A** (compare O\*NET releases) now, and **B** (yearly Hot Technologies posting counts) starts collecting snapshots now. B shows no direction until a second yearly snapshot exists; its direction rule is brought to the owner then (no new limit is added without approval). |
 | D25 | A release is compared with **the most recent earlier release whose flags differ** (the previous flag update), and both release numbers are shown. Reason: O\*NET does not refresh the flags every release; 31.0's `Software Skills.txt` is byte-identical to 30.3's (SHA-256 `3fd63fb0…4f4c`), so comparing 31.0 with 30.3 alone would show no change. |
 | D26 | Changes become signals; "still in demand" lists are reference data in the export, not signals. |
-| D27 | eMASCO jobs get no O\*NET skill list: there is no official eMASCO → O\*NET crosswalk, so none is invented. |
+| D27 | eMASCO jobs get no O\*NET skill list: there is no official eMASCO → O\*NET crosswalk, so none is invented. **Replaced by D29 on 31 Oct 2026** (the official code chain, `2026-10-31-radar-profile-charts-design.md`); no word-matching crosswalk is invented. |
 
 ## 3. Sources
 

@@ -58,3 +58,9 @@ export async function signal(signalId, manifestId, { base = '' } = {}) {
   if (!out.ok) return { ok: false, code: out.code, retryable: out.retryable }
   return { ok: true, signal: out.data.signal, activeManifestId: out.data.activeManifestId ?? manifestId }
 }
+
+// aiTasks() → { ok:true, data } | { ok:false, code, retryable }: static AI task data, no manifest and no profile data.
+export async function aiTasks({ base = '' } = {}) {
+  const out = await api('GET', `${base}/api/radar/ai-tasks`)
+  return out.ok ? { ok: true, data: out.data } : { ok: false, code: out.code, retryable: out.retryable }
+}

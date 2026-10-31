@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { radarChart } from '../../public/js/components/charts/radarChart.js'
 import { lineChart } from '../../public/js/components/charts/lineChart.js'
 import { divergingBars } from '../../public/js/components/charts/divergingBars.js'
+import { profileRadar } from '../../public/js/components/charts/profileRadar.js'
 import en from '../../shared/strings/en.js'
 
 const t = (key, vars = {}) => String(en[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '')
@@ -109,5 +110,105 @@ describe('divergingBars', () => {
     expect(svg).toContain('Not enough data')
     expect(svg).toContain('Row &lt;u&gt;')
     expect(svg).not.toMatch(/NaN|undefined|null/)
+  })
+})
+
+describe('profileRadar', () => {
+  const mk = (n, extra = {}) => Array.from({ length: n }, (_, i) => ({ id: `s${i}`, label: `Skill number ${i}`, value: 20000 * (i + 1), aria: `Skill ${i}: aria`, ...extra }))
+  const logScale = { kind: 'log', min: 10000, max: 5000000 }
+  const rings = [{ value: 10000, label: '10k' }, { value: 100000, label: '100k' }, { value: 1000000, label: '1M', dashed: true }]
+  const base = (o = {}) => ({ items: mk(6), scale: logScale, rings, act: 'skCorner', label: 'Skills', colour: 'accent', t, ...o })
+
+  it('6 items: one data polygon plus one per ring, 6 keyboard corners', () => {
+    const svg = profileRadar(base())
+    expect(count(svg, /<polygon/g)).toBe(1 + rings.length)
+    expect(count(svg, /<g [^>]*role="button" tabindex="0" data-act="skCorner" data-arg="s\d"[^>]*aria-label="Skill \d: aria"/g)).toBe(6)
+  })
+  it('hollow item uses a surface fill', () => {
+    const items = mk(6); items[2].hollow = true
+    expect(profileRadar(base({ items }))).toContain('fill:var(--surface)')
+    expect(profileRadar(base())).not.toMatch(/<circle[^>]*fill:var\(--surface\)/)
+  })
+  it('ring labels come from the caller', () => {
+    const svg = profileRadar(base())
+    for (const l of ['10k', '100k', '1M']) expect(svg).toContain(`>${l}<`)
+  })
+  it('2 items: bars, no polygon', () => {
+    const svg = profileRadar(base({ items: mk(2) }))
+    expect(svg).toContain('rd-bars')
+    expect(svg).not.toContain('<polygon')
+    expect(count(svg, /role="button"/g)).toBe(2)
+  })
+  it('bar fallback passes the prefix through, so bars read T1, T2 like the list', () => {
+    const svg = profileRadar(base({ items: mk(2), prefix: 'T' }))
+    expect(svg).toContain('>T1 Skill number 0<')
+    expect(svg).toContain('>T2 Skill number 1<')
+    expect(profileRadar(base({ items: mk(2) }))).not.toContain('>T1 ')
+  })
+  it('bar fallback shows valueText instead of the bare number', () => {
+    const items = mk(2); items[0].valueText = '3,211,598 ads'
+    const svg = profileRadar(base({ items }))
+    expect(svg).toContain('>3,211,598 ads<')
+    expect(svg).not.toContain(`>${String(items[0].value)}<`)
+    expect(svg).not.toContain('NaN')
+  })
+  it('bar fallback wraps a long label to two lines inside the viewBox', () => {
+    const items = mk(2); items[0].label = 'A very long software skill name that would run far off the left edge of the chart'
+    const svg = profileRadar(base({ items }))
+    const row = svg.match(/data-arg="s0"[\s\S]*?<\/g>/)[0]
+    expect(count(row, /<tspan/g)).toBeLessThanOrEqual(2)
+    expect(row).toContain('…')
+    expect(row).not.toContain('off the left edge')
+    for (const l of row.match(/<tspan[^>]*>([^<]*)<\/tspan>/g)) expect(l.replace(/<[^>]+>/g, '').length).toBeLessThanOrEqual(32)
+  })
+  it('no hex colours; est colour uses var(--est)', () => {
+    expect(profileRadar(base({ colour: 'est' }))).not.toMatch(/#[0-9a-f]{3,6}\b/i)
+    expect(profileRadar(base({ colour: 'est' }))).toContain('var(--est)')
+    expect(profileRadar(base())).not.toContain('var(--est)')
+  })
+  it('escapes labels and aria', () => {
+    const items = mk(6); items[0].label = '<script>x</script>'; items[0].aria = 'a"<b>'
+    const svg = profileRadar(base({ items }))
+    expect(svg).not.toContain('<script>')
+    expect(svg).not.toContain('a"<b>')
+    expect(svg).toContain('&lt;script&gt;')
+  })
+  it('wraps labels to at most 3 lines with the list number; 30 items show numbers only', () => {
+    const items = mk(6); items[0].label = 'A very long skill name that keeps going on and on and on forever'
+    const svg = profileRadar(base({ items }))
+    expect(svg).toContain('>1 A very long<')
+    const g0 = svg.match(/data-arg="s0"[\s\S]*?<\/g>/)[0]
+    expect(count(g0, /<tspan/g)).toBeLessThanOrEqual(3)
+    const many = profileRadar(base({ items: mk(30) }))
+    expect(many).toContain('>30<')
+    expect(many).not.toContain('Skill number')
+  })
+  it('numbersOnlyAbove can be lowered (AI card passes 10)', () => {
+    const svg = profileRadar(base({ items: mk(12), numbersOnlyAbove: 10 }))
+    expect(svg).not.toContain('Skill number')
+    expect(profileRadar(base({ items: mk(12) }))).toContain('Skill')
+  })
+  it('previous polygon only when every item has a finite previous', () => {
+    const one = profileRadar(base())
+    expect(count(one, /<polygon/g)).toBe(4)
+    expect(one).not.toContain('stroke-dasharray="5 4"')
+    const some = mk(6); some[0].previous = 30000
+    expect(count(profileRadar(base({ items: some })), /<polygon/g)).toBe(4)
+    const all = mk(6, { previous: 30000 })
+    const svg = profileRadar(base({ items: all }))
+    expect(count(svg, /<polygon/g)).toBe(5)
+    expect(svg).toMatch(/<polygon[^>]*class="rd-cmp"[^>]*stroke-dasharray/)
+  })
+  it('log value below min is drawn at 4% of the radius', () => {
+    const items = mk(6, { value: 5 })
+    const svg = profileRadar(base({ items }))
+    const m = svg.match(/<polygon class="rd-data"[^>]*points="([^"]+)"/)[1].split(' ')
+    const [x, y] = m[0].split(',').map(Number)
+    expect(Math.hypot(x - 230, y - 175)).toBeCloseTo(118 * 0.04, 0)
+  })
+  it('linear scale places 50 halfway', () => {
+    const svg = profileRadar(base({ scale: { kind: 'linear', min: 0, max: 100 }, items: mk(6, { value: 50 }), rings: [{ value: 50, label: '50' }] }))
+    const [x, y] = svg.match(/<polygon class="rd-data"[^>]*points="([^"]+)"/)[1].split(' ')[0].split(',').map(Number)
+    expect(Math.hypot(x - 230, y - 175)).toBeCloseTo(59, 0)
   })
 })

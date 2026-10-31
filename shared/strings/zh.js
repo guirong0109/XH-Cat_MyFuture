@@ -316,7 +316,7 @@ export default {
   rdSkDropped: "不再有需求",
   rdSkKept: "仍有需求（{count}）",
   rdSkNoFlags: "此版本中没有为这个职业标出任何技能",
-  rdSkNoOnetLink: "没有与 O*NET 的官方对应：无法提供技能列表",
+  rdSkNoOnetLink: "通过官方代码链对应：见上方「你的职业所要求的技能」。", // translation: owner review
   rdOnProfile: "在您的个人资料中",
   rdSkHot: "成为热门技术",
   rdSkHotDropped: "不再是热门技术",
@@ -991,4 +991,69 @@ export default {
   introStage: "ATM 故事：一台 ATM 打印出一张凭条，上面写着下面的问题。",
   introSkip: "跳过开场",
   introReplay: "重播 ATM 故事",
+  rdChange_versions: "版本", // translation: owner review
+  rdSkChartTitle: "你的职业所要求的技能", // translation: owner review
+  rdSkChartTag: "美国招聘广告 · O*NET", // translation: owner review
+  rdCorners: "顶点", // translation: owner review
+  rdCornersAll: "全部（{n}）", // translation: owner review
+  rdSkSearch: "在你的 {n} 项技能中搜索", // translation: owner review
+  rdSkShown: "{shown} / {n} · 按 {year} 年美国招聘广告数编号", // translation: owner review
+  rdSkFrom: "来自", // translation: owner review
+  rdSkNew: "{release} 新增", // translation: owner review
+  rdSkNoCount: "无美国广告数", // translation: owner review
+  rdSkNoMatch: "没有技能符合此搜索", // translation: owner review
+  rdSkDroppedFold: "不再有需求（{n}），在 O*NET {previous} 与 {current} 之间被移除", // translation: owner review
+  rdSkNone: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。不绘制图表。", // translation: owner review
+  rdChainBroken: "eMASCO {code} 无法显示：代码链在 {step} 处中断。不会猜测 O*NET 职业。", // translation: owner review
+  rdChainPath: "代码链", // translation: owner review
+  rdSkOneYear: "目前只有一年：下一次年度统计后会出现前一年的虚线。", // translation: owner review
+  rdSkLegend: "{year} 年要求该技能的美国招聘广告数（对数刻度）· 空心点 = 新增需求", // translation: owner review
+  rdSkSource: "美国数据，非马来西亚 · 仅限软件技能 · 招聘广告数量，不是分数", // translation: owner review
+  rdConfirmFirst: "请先确认你的个人资料，以查看你的职业所要求的技能。", // translation: owner review
+  rdChainSameUnit: "同一 4 位数组别的 eMASCO 职位共用一个 O*NET 链接，因此显示相同的技能。", // translation: owner review
+  rdPages: "页码", // translation: owner review
+  rdPrevPage: "上一页", // translation: owner review
+  rdNextPage: "下一页", // translation: owner review
+  rdPageN: "第 {page} 页", // translation: owner review
+  rdGoToPage: "跳到页", // translation: owner review
+  rdGo: "前往", // translation: owner review
+  rdShowingRows: "显示第 {from}–{to} 项，共 {n} 项", // translation: owner review
+  rdSkNoneFold: "您的 {n} 个职业没有列出热门软件（O*NET 数据库 {release}）", // translation: owner review
+  rdSkNoneOne: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。", // translation: owner review
+  rdSkNoneSome: "这些职业不增加角点。", // translation: owner review
+  rdSkNoneSome1: "这个职业不增加角点。", // translation: owner review
+  rdSkNoChart: "不绘制图表。", // translation: owner review
+  rdChainFold: "eMASCO {code} 的代码链：{n} 个官方步骤", // translation: owner review
+  rdSkAds: "则广告", // translation: owner review
+  rdSkAria: "{n}. {name}：{year} 年 {count} 则美国招聘广告", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} 在下一份官方对照表中没有对应项", // translation: owner review
+  rdChainStop_pending: "{system} {codes}：下一份官方对照表尚未建立", // translation: owner review
+  rdChainStop_invalid: "{codes} 不是 4 位数的 MASCO 单位代码", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}：所链接的 O*NET 职业没有技能数据", // translation: owner review
+  rdSkLicence: "O*NET 数据为 CC BY 4.0 · 美国招聘广告（Lightcast，经由 O*NET）", // translation: owner review
+  rdAiChartTitle: "您工作中的任务如何使用 AI", // translation: owner review
+  rdAiChartTag: "实际使用情况 · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "{job} 的生成式 AI 暴露程度：ISCO-08 {isco} {title} 为{gradient}（任务平均分 {mean}）", // translation: owner review
+  rdAiGrad_G4: "第 4 级（暴露程度最高）", // translation: owner review
+  rdAiGrad_G3: "第 3 级", // translation: owner review
+  rdAiGrad_G2: "第 2 级", // translation: owner review
+  rdAiGrad_G1: "第 1 级", // translation: owner review
+  rdAiGrad_minimal: "极低暴露", // translation: owner review
+  rdAiGrad_not_exposed: "无暴露", // translation: owner review
+  rdAiNoIsco: "未找到此工作的 ISCO-08 代码，因此无法提供 ILO 暴露度", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} 在 ILO WP140 表中没有对应行，因此无法提供 ILO 暴露度", // translation: owner review
+  rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
+  rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
+  rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
+  rdAiNone: "此工作的 {total} 项 O*NET 任务都没有出现在 AI 对话数据中。不绘制图表。", // translation: owner review
+  rdAiLoading: "正在加载 AI 任务数据…", // translation: owner review
+  rdAiUnavailable: "AI 任务数据不可用（来源：Anthropic Economic Index、ILO WP140）。", // translation: owner review
+  rdAiSource: "今天 AI 的使用方式，不是对失业的预测，也不是分数", // translation: owner review
+  rdJob: "工作", // translation: owner review
+  rdTopicsOwn: "与您的领域相关的 AI 研究主题", // translation: owner review
+  rdTopicsViewAll: "查看全部六个主题", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index：CC-BY · ILO WP140：CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "您的领域关联的主题少于 3 个，因此显示为条形图。", // translation: owner review
+  rdAiConfirmFirst: "请确认您的个人资料，以查看 AI 如何用于您工作中的任务。", // translation: owner review
+  rdAiUnder: "低于 0.01", // translation: owner review
 }

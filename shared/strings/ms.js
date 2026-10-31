@@ -316,7 +316,7 @@ export default {
   rdSkDropped: "Tidak lagi diperlukan",
   rdSkKept: "Masih diperlukan ({count})",
   rdSkNoFlags: "Tiada kemahiran ditandakan untuk pekerjaan ini dalam keluaran ini",
-  rdSkNoOnetLink: "Tiada pautan rasmi ke O*NET: senarai kemahiran tidak tersedia",
+  rdSkNoOnetLink: "Dicapai melalui rantaian kod rasmi: lihat 'Kemahiran yang diminta oleh pekerjaan anda' di atas.", // translation: owner review
   rdOnProfile: "Ada dalam profil anda",
   rdSkHot: "Menjadi Teknologi Hangat",
   rdSkHotDropped: "Tidak lagi Teknologi Hangat",
@@ -991,4 +991,69 @@ export default {
   introStage: "Kisah ATM: sebuah ATM mencetak resit dengan persoalan di bawah.",
   introSkip: "Langkau pengenalan",
   introReplay: "Main semula kisah ATM",
+  rdChange_versions: "versi", // translation: owner review
+  rdSkChartTitle: "Kemahiran yang diminta oleh pekerjaan anda", // translation: owner review
+  rdSkChartTag: "Iklan kerja AS · O*NET", // translation: owner review
+  rdCorners: "Bucu", // translation: owner review
+  rdCornersAll: "Semua ({n})", // translation: owner review
+  rdSkSearch: "Cari {n} kemahiran anda", // translation: owner review
+  rdSkShown: "{shown} daripada {n} · dinomborkan mengikut iklan kerja AS {year}", // translation: owner review
+  rdSkFrom: "Daripada", // translation: owner review
+  rdSkNew: "baharu dalam {release}", // translation: owner review
+  rdSkNoCount: "tiada bilangan iklan AS", // translation: owner review
+  rdSkNoMatch: "Tiada kemahiran sepadan dengan carian ini", // translation: owner review
+  rdSkDroppedFold: "Tidak lagi dalam permintaan ({n}), digugurkan antara O*NET {previous} dan {current}", // translation: owner review
+  rdSkNone: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}). Tiada carta dilukis.", // translation: owner review
+  rdChainBroken: "Tidak tersedia untuk eMASCO {code}: rantaian kod berhenti di {step}. Tiada pekerjaan O*NET diteka.", // translation: owner review
+  rdChainPath: "Rantaian kod", // translation: owner review
+  rdSkOneYear: "Satu tahun setakat ini: garisan putus-putus tahun terdahulu muncul dengan bilangan tahunan seterusnya.", // translation: owner review
+  rdSkLegend: "Iklan kerja AS {year} yang meminta kemahiran ini (skala log) · titik berongga = baharu dalam permintaan", // translation: owner review
+  rdSkSource: "Data AS, bukan Malaysia · kemahiran perisian sahaja · bilangan iklan kerja, bukan skor", // translation: owner review
+  rdConfirmFirst: "Sahkan profil anda untuk melihat kemahiran yang diminta oleh pekerjaan anda.", // translation: owner review
+  rdChainSameUnit: "Peranan eMASCO dalam kumpulan 4 digit yang sama berkongsi satu pautan O*NET, jadi menunjukkan kemahiran yang sama.", // translation: owner review
+  rdPages: "Halaman", // translation: owner review
+  rdPrevPage: "Halaman sebelumnya", // translation: owner review
+  rdNextPage: "Halaman seterusnya", // translation: owner review
+  rdPageN: "Halaman {page}", // translation: owner review
+  rdGoToPage: "Pergi ke halaman", // translation: owner review
+  rdGo: "Pergi", // translation: owner review
+  rdShowingRows: "Menunjukkan {from}–{to} daripada {n}", // translation: owner review
+  rdSkNoneFold: "{n} daripada pekerjaan anda tidak menyenaraikan perisian dalam permintaan (pangkalan data O*NET {release})", // translation: owner review
+  rdSkNoneOne: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}).", // translation: owner review
+  rdSkNoneSome: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoneSome1: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoChart: "Tiada carta dilukis.", // translation: owner review
+  rdChainFold: "Rantaian kod untuk eMASCO {code}: {n} langkah rasmi", // translation: owner review
+  rdSkAds: "iklan", // translation: owner review
+  rdSkAria: "{n}. {name}: {count} iklan kerja AS pada {year}", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} tiada pautan dalam jadual rasmi seterusnya", // translation: owner review
+  rdChainStop_pending: "{system} {codes}: jadual rasmi seterusnya belum dibina", // translation: owner review
+  rdChainStop_invalid: "{codes} bukan kod unit MASCO 4 digit", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}: pekerjaan O*NET yang dipautkan tiada data kemahiran", // translation: owner review
+  rdSkLicence: "Data O*NET ialah CC BY 4.0 · iklan kerja AS (Lightcast melalui O*NET)", // translation: owner review
+  rdAiChartTitle: "Bagaimana AI digunakan dalam tugas pekerjaan anda", // translation: owner review
+  rdAiChartTag: "penggunaan sebenar · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "Pendedahan kepada AI generatif bagi {job}: {gradient} untuk ISCO-08 {isco} {title} (purata skor tugas {mean})", // translation: owner review
+  rdAiGrad_G4: "Gred 4 (pendedahan tertinggi)", // translation: owner review
+  rdAiGrad_G3: "Gred 3", // translation: owner review
+  rdAiGrad_G2: "Gred 2", // translation: owner review
+  rdAiGrad_G1: "Gred 1", // translation: owner review
+  rdAiGrad_minimal: "Pendedahan minimum", // translation: owner review
+  rdAiGrad_not_exposed: "Tidak terdedah", // translation: owner review
+  rdAiNoIsco: "tiada kod ISCO-08 ditemui untuk pekerjaan ini, jadi pendedahan ILO tidak tersedia", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} tiada baris dalam jadual ILO WP140, jadi pendedahan ILO tidak tersedia", // translation: owner review
+  rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
+  rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
+  rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
+  rdAiNone: "Tiada satu pun daripada {total} tugas O*NET pekerjaan ini muncul dalam data perbualan AI. Tiada carta dilukis.", // translation: owner review
+  rdAiLoading: "Memuatkan data tugas AI…", // translation: owner review
+  rdAiUnavailable: "Data tugas AI tidak tersedia (sumber: Anthropic Economic Index, ILO WP140).", // translation: owner review
+  rdAiSource: "cara AI digunakan hari ini, bukan ramalan kehilangan pekerjaan, dan bukan skor", // translation: owner review
+  rdJob: "Pekerjaan", // translation: owner review
+  rdTopicsOwn: "Topik penyelidikan AI yang dipautkan kepada bidang anda", // translation: owner review
+  rdTopicsViewAll: "Lihat kesemua enam topik", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index: CC-BY · ILO WP140: CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "Bidang anda dipautkan kepada kurang daripada 3 topik, jadi bar dipaparkan.", // translation: owner review
+  rdAiConfirmFirst: "Sahkan profil anda untuk melihat bagaimana AI digunakan dalam tugas pekerjaan anda.", // translation: owner review
+  rdAiUnder: "kurang daripada 0.01", // translation: owner review
 }

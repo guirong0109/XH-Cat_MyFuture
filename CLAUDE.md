@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 829 passed
+npm install && npm test     # expect 955 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 48 OK
 ```
@@ -39,6 +39,8 @@ python -m unittest discover pipeline/tests   # expect 48 OK
 - Output contract `radar-signal/v1` (`docs/radar/contract.md`): never add score, weight, rank or match fields.
 - Field ↔ topic links and structural breaks are the owner's decisions; never approve them on the owner's behalf.
 - Admin and judge keys live only in server env; never print, log or commit them.
+- Both Radar charts are built in the browser from the confirmed profile (D28–D33): skills of the user's own jobs and
+  AI use of their tasks. eMASCO reaches O\*NET only through the code chain (D29 replaced D27).
 
 ## Career matching (details: branch `claude/career-matching`)
 - Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.

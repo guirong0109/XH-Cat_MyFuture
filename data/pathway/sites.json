@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "pathway-sites/v1",
+  "sites": [
+    {
+      "id": "elatih",
+      "name": "e-LATiH (HRD Corp)",
+      "group": "malaysian",
+      "home": "https://elatih.hrdcorp.gov.my/",
+      "terms": "https://elatih.hrdcorp.gov.my/pages/terms-of-use",
+      "search": "https://elatih.hrdcorp.gov.my/courses?order=None&categories=&levels=&languages=&start_duration=&end_duration=&content_provider=&ratings=&version=&start_price=&end_price=&course=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "elatih.hrdcorp.gov.my"
+      ]
+    },
+    {
+      "id": "coursera",
+      "name": "Coursera",
+      "group": "global",
+      "home": "https://www.coursera.org/",
+      "terms": "https://www.coursera.org/about/terms",
+      "search": "https://www.coursera.org/search?query=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "www.coursera.org"
+      ]
+    },
+    {
+      "id": "edx",
+      "name": "edX",
+      "group": "global",
+      "home": "https://www.edx.org/",
+      "terms": "https://www.edx.org/",
+      "search": "https://www.edx.org/search?q=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "www.edx.org"
+      ]
+    },
+    {
+      "id": "khan",
+      "name": "Khan Academy",
+      "group": "global",
+      "home": "https://www.khanacademy.org/",
+      "terms": "https://www.khanacademy.org/",
+      "search": "https://www.khanacademy.org/search?page_search_query=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "www.khanacademy.org"
+      ]
+    },
+    {
+      "id": "mslearn",
+      "name": "Microsoft Learn",
+      "group": "tech",
+      "home": "https://learn.microsoft.com/",
+      "terms": "https://learn.microsoft.com/en-us/legal/termsofuse",
+      "search": "https://learn.microsoft.com/en-us/training/browse/?terms=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "learn.microsoft.com"
+      ]
+    },
+    {
+      "id": "googleskills",
+      "name": "Google Skills",
+      "group": "tech",
+      "home": "https://www.skills.google/",
+      "terms": "https://www.skills.google/terms_of_service",
+      "search": "https://www.skills.google/catalog?keywords=<q>",
+      "searchCheckedAt": "2026-10-31",
+      "hosts": [
+        "www.skills.google"
+      ]
+    },
+    {
+      "id": "freecodecamp",
+      "name": "freeCodeCamp",
+      "group": "global",
+      "home": "https://www.freecodecamp.org/",
+      "terms": "https://www.freecodecamp.org/news/terms-of-service/",
+      "search": null,
+      "searchCheckedAt": null,
+      "hosts": [
+        "www.freecodecamp.org"
+      ]
+    },
+    {
+      "id": "awsskillbuilder",
+      "name": "AWS Skill Builder",
+      "group": "tech",
+      "home": "https://skillbuilder.aws/",
+      "terms": "https://skillbuilder.aws/",
+      "search": null,
+      "searchCheckedAt": null,
+      "hosts": [
+        "skillbuilder.aws",
+        "explore.skillbuilder.aws"
+      ]
+    },
+    {
+      "id": "openlearning",
+      "name": "OpenLearning",
+      "group": "malaysian",
+      "home": "https://www.openlearning.com/",
+      "terms": "https://solutions.openlearning.com/terms-of-service",
+      "search": null,
+      "searchCheckedAt": null,
+      "hosts": [
+        "www.openlearning.com"
+      ]
+    },
+    {
+      "id": "mdec",
+      "name": "MDEC",
+      "group": "malaysian",
+      "home": "https://mdec.my/",
+      "terms": "https://www.mdec.my/terms-conditions",
+      "search": null,
+      "searchCheckedAt": null,
+      "hosts": [
+        "mdec.my",
+        "www.mdec.my"
+      ]
+    }
+  ]
+}

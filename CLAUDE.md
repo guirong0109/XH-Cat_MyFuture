@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 260 passed
+npm test                                          # Vitest, expect 269 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -60,7 +60,10 @@ Browser pane launch configs (`.claude/launch.json`):
   - The form shows "Prefer not to say" as every optional field's default (a dropdown, never a checkbox; for button
     questions, a pill under the buttons that is on until an answer is chosen). Opening a
     section saves its unanswered fields as `declined` (`declineUnanswered`); `isUntouched` counts only answers.
-  - Skills, roles of interest and field of study are picked with `searchPicker` (search as you type). Nothing is
+  - Qualifications are one list (owner, 31 Oct): level dropdown first, then field of study as a dropdown of the 124
+    ISCED-F fields (`GET /api/fields`), institution and year. `education.highestQualification` is worked out from the
+    levels (`highestLevel` in `form.js`, `withHighest` in `app.js`), never asked separately.
+  - Skills and roles of interest are picked with `searchPicker` (search as you type). Nothing is
     linked silently: typed or CV wording stays unlinked until the user picks.
   - Skills suggested from a linked field of study (`GET /api/fields/:code/skills`, rule "typical of the field") are only
     added when the user clicks them; they keep `suggestedFrom` and stay `not_assessed`.

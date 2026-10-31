@@ -14,7 +14,7 @@ import category from './screens/category.js'
 import org from './screens/org.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS, highestLevel } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -32,7 +32,7 @@ const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
-  'education.records': { qualification: '', fieldOfStudy: '', institution: '', year: '' },
+  'education.records': { level: '', qualification: '', fieldOfStudy: '', institution: '', year: '' },
   'employment.records': { jobTitle: '', employer: '', period: '' },
   certifications: { name: '', issuer: '', year: '' },
   training: { name: '', year: '' },
@@ -42,6 +42,7 @@ const NEW_RECORD = {
 // Search picker endpoints by kind (skills: O*NET catalogue; roles: O*NET and eMASCO; field of study: ISCED-F 2013).
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
+const STUDY_SECTION = 0
 const SKILLS_SECTION = 2
 const PREFERENCES_SECTION = 4
 
@@ -60,14 +61,30 @@ const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
 function showSection() {
   if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
+  if (state.screen === 'form' && state.section === STUDY_SECTION) loadFields()
   if (state.screen === 'form' && state.section === SKILLS_SECTION) loadSuggestions()
   if (state.screen === 'form' && state.section === PREFERENCES_SECTION) loadInterests()
+}
+
+// The ISCED-F 2013 fields of study for the dropdown, fetched once (again after a failure).
+async function loadFields() {
+  if (state.fields && !state.fields.failed) return
+  state.fields = { loading: true }
+  const out = await api('GET', '/api/fields')
+  state.fields = out.ok ? out.data : { failed: true }
+  if (state.screen === 'form' && state.section === STUDY_SECTION) render()
+}
+
+// The highest qualification is worked out from the levels in the list (none chosen: prefer not to say).
+function withHighest(profile) {
+  const top = highestLevel(profile.education.records)
+  return setField(profile, 'education.highestQualification', top ? val(top) : DECLINED)
 }
 
 // The O*NET interest areas for "Career interests and fields", fetched once (again after a failure).
@@ -175,7 +192,8 @@ const actions = {
   addRec: (listPath) => update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] })),
   delRec: (arg) => {
     const [listPath, i] = arg.split('|')
-    update(removeRecord(state.profile, listPath, Number(i)))
+    const profile = removeRecord(state.profile, listPath, Number(i))
+    update(listPath === 'education.records' ? withHighest(profile) : profile)
   },
   review: (arg) => {
     const [path, on] = arg.split('|')
@@ -428,7 +446,19 @@ function onChange(target) {
   if (d.list) return update(setField(state.profile, d.list, target.value.split(',').map((s) => s.trim()).filter(Boolean)))
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
-    return update(setField(state.profile, `${listPath}.${i}.${key}`, target.value))
+    let profile = state.profile
+    // The first qualification row is on screen before it exists: choosing its level creates it.
+    if (listPath === 'education.records' && Number(i) >= profile.education.records.length) profile = addRecord(profile, listPath, { ...NEW_RECORD[listPath] })
+    profile = setField(profile, `${listPath}.${i}.${key}`, target.value)
+    return update(key === 'level' ? withHighest(profile) : profile)
+  }
+  // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.
+  if (d.fieldPick !== undefined) {
+    const i = Number(d.fieldPick)
+    const chosen = state.fields?.fields?.find((f) => f.code === target.value)
+    if (!chosen) return update(setField(state.profile, `education.records.${i}.field`, null))
+    const field = { source: 'isced', code: chosen.code, title: chosen.title, version: state.fields.version, via: 'list' }
+    return update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, chosen.title), `education.records.${i}.field`, field))
   }
   if (d.level !== undefined) {
     const level = target.value || null

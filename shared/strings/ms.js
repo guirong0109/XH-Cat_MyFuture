@@ -118,6 +118,8 @@ export default {
   suggestSource: "Sumber: O*NET {onet} (Jabatan Buruh A.S., CC BY 4.0). Bidang ke pekerjaan: {isced} → program CIP (Statistics Canada) → pekerjaan O*NET (O*NET CIP crosswalk).",
   skillSource: "Kemahiran: O*NET {version} (Jabatan Buruh A.S., CC BY 4.0)",
   fieldSource: "Bidang: UNESCO ISCED-F 2013. Nama program: Statistics Canada (CIP 2016).",
+  qualChoose: 'Pilih tahap', fieldChoose: 'Pilih bidang', asWritten: 'Seperti ditulis: “{text}”. Pilih yang sepadan.',
+  highestAuto: 'Kelayakan tertinggi: {level} (dikira daripada senarai anda).', fieldListSource: 'Sumber: UNESCO {version}, {n} bidang.',
   suggestClick: "Klik kemahiran untuk menambahnya ke senarai anda. Halakan tetikus padanya untuk melihat sebabnya dicadangkan.",
   suggestGroupSkills: "Kemahiran",
   suggestGroupTools: "Alat dan perisian",

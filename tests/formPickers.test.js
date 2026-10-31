@@ -81,20 +81,24 @@ describe('form sections', () => {
     expect(form({ t, state: state(2, profile) })).toMatch(/<option value="" selected>levelNone<\/option>/)
   })
 
-  it('skills, roles of interest and field of study use search pickers', () => {
-    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
-    expect(form({ t, state: state(0, profile) })).toContain('data-search="field|field|0"')
+  it('skills and roles of interest use search pickers; field of study is a dropdown', () => {
+    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ level: 'bachelor', qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
+    const fields = { version: 'ISCED-F 2013', fields: [{ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' }] }
+    expect(form({ t, state: { ...state(0, profile), fields } })).toContain('data-field-pick="0"')
+    expect(form({ t, state: { ...state(0, profile), fields } })).not.toContain('data-search="field|')
     expect(form({ t, state: state(2, profile) })).toContain('data-search="skill|skill"')
     expect(form({ t, state: state(4, profile) })).toContain('data-search="interest|interest"')
   })
 
-  it('a field of study typed or read from a CV says it is not linked yet', () => {
-    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
-    expect(form({ t, state: state(0, profile) })).toContain('fieldNotLinked')
+  it('a field of study typed or read from a CV shows the words until a standard field is chosen', () => {
+    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ level: 'bachelor', qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
+    const fields = { version: 'ISCED-F 2013', fields: [{ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' }] }
+    expect(form({ t, state: { ...state(0, profile), fields } })).toContain('asWritten:{&quot;text&quot;:&quot;Nursing&quot;}')
     const linked = structuredClone(profile)
     linked.education.records[0].field = { source: 'isced', code: '0913', title: 'Nursing and midwifery', version: 'ISCED-F 2013' }
-    const html = form({ t, state: state(0, linked) })
-    expect(html).toContain('0913')
-    expect(html).not.toContain('fieldNotLinked')
+    linked.education.records[0].fieldOfStudy = 'Nursing and midwifery'
+    const html = form({ t, state: { ...state(0, linked), fields } })
+    expect(html).toContain('<option value="0913" selected>')
+    expect(html).not.toContain('asWritten')
   })
 })

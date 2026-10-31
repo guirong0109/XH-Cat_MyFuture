@@ -1,7 +1,7 @@
 // Case B (manual entry) and Case C editing: the profile form in five sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
-import { choiceField, listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
+import { choiceField, cvNote, listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
@@ -26,17 +26,6 @@ function picker(ctx, kind, key, label, placeholder, value) {
 }
 
 const field = (ctx, options) => stateField({ ...ctx, ...options, answering: Boolean(ctx.state?.answering?.[options.path]) })
-
-// Field of study: picked from ISCED-F 2013; what the user (or the CV) wrote is kept until they link it.
-function fieldOfStudy(ctx, record, i) {
-  const { t } = ctx
-  const link = record.field
-    ? `<div class="tiny" style="margin-top:-6px">${esc(t('fieldLinked'))}: <b>${esc(record.field.title)}</b> · ISCED-F ${esc(record.field.code)} · ${esc(record.field.version ?? '')}
-        <button class="btn sm ghost" data-act="fieldUnlink" data-arg="${i}">${esc(t('occUnlink'))}</button></div>
-        <div class="tiny muted">${esc(t('fieldSuggestHint'))}</div>`
-    : record.fieldOfStudy ? `<div class="tiny muted" style="margin-top:-6px">${esc(t('fieldNotLinked'))}</div>` : ''
-  return `<div>${picker(ctx, 'field', `field|${i}`, t('fieldOfStudy'), t('fieldFind'), record.fieldOfStudy ?? '')}${link}</div>`
-}
 
 // Career interests and fields: O*NET interest areas, several allowed (chips with ×); none chosen = prefer not to say.
 function interestField({ t, profile, state }) {
@@ -68,14 +57,64 @@ export const WHO = [
 ]
 const withOld = (options, old, field) => [...options, ...(old[field?.value] ? [[field.value, old[field.value]]] : [])]
 
-const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
+// Qualification levels, lowest to highest. The highest level in the list is the profile's highest qualification.
+export const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
+export function highestLevel(records) {
+  let best = -1
+  for (const record of records ?? []) best = Math.max(best, QUALIFICATIONS.findIndex(([value]) => value === record?.level))
+  return best < 0 ? null : QUALIFICATIONS[best][0]
+}
+export const levelLabel = (value) => QUALIFICATIONS.find(([v]) => v === value)?.[1]
+const asWritten = (t, text) => `<div class="tiny" style="color:var(--self)">${esc(t('asWritten', { text }))}</div>`
+
+// Field of study: a dropdown of the ISCED-F 2013 fields grouped by broad area (GET /api/fields, loaded by app.js).
+// Words typed or read from a CV stay visible until a standard field is chosen.
+function fieldSelect({ t, state }, record, i) {
+  const list = state.fields
+  let control = `<p class="tiny muted">${esc(t('occSearching'))}</p>`
+  if (list?.failed) control = `<p class="tiny">${esc(t('pickFailed'))}</p>`
+  else if (list?.fields) {
+    const groups = new Map()
+    for (const f of list.fields) groups.set(f.broadTitle, [...(groups.get(f.broadTitle) ?? []), f])
+    const option = (f) => `<option value="${esc(f.code)}"${f.code === record.field?.code ? ' selected' : ''}>${esc(f.title)}</option>`
+    control = `<select id="fs-${i}" data-field-pick="${i}"><option value="">${esc(t('fieldChoose'))}</option>${[...groups].map(([broad, items]) => `<optgroup label="${esc(broad)}">${items.map(option).join('')}</optgroup>`).join('')}</select>
+      <div class="tiny muted">${esc(t('fieldListSource', { version: list.version, n: list.fields.length }))}</div>`
+  }
+  const typed = !record.field && record.fieldOfStudy ? asWritten(t, record.fieldOfStudy) : ''
+  const hint = record.field ? `<div class="tiny muted">${esc(t('fieldSuggestHint'))}</div>` : ''
+  return `<div class="field"><label for="fs-${i}">${esc(t('fieldOfStudy'))}</label>${control}${typed}${hint}</div>`
+}
+
+// One qualification: the level first; once it is chosen, the field of study, institution and year.
+// saved: false for the first row shown before any qualification exists (choosing its level creates it).
+function qualificationRow(ctx, record, i, saved) {
+  const { t } = ctx
+  const level = `<div class="field"><label for="ql-${i}">${esc(t('qualification'))}</label>
+    <select id="ql-${i}" data-rec="education.records|${i}|level"><option value="">${esc(t('qualChoose'))}</option>${QUALIFICATIONS.map(([v, key]) => `<option value="${v}"${record.level === v ? ' selected' : ''}>${esc(t(key))}</option>`).join('')}</select>
+    ${!record.level && record.qualification ? asWritten(t, record.qualification) : ''}</div>`
+  const input = (key) => `<div class="field"><label for="q${key}-${i}">${esc(t(key))}</label><input id="q${key}-${i}" data-rec="education.records|${i}|${key}" value="${esc(record[key] ?? '')}"></div>`
+  const more = record.level ? `<div class="grid g2">${input('institution')}${input('year')}</div>` : ''
+  const tools = saved
+    ? `<div class="row">${reviewToggle(t, `education.records.${i}`, record)}<span style="flex:1"></span><button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="education.records|${i}">${esc(t('remove'))}</button></div>`
+    : ''
+  return `<div class="card">${cvNote(t, record)}<div class="grid g2">${level}${record.level ? fieldSelect(ctx, record, i) : ''}</div>${more}${tools}</div>`
+}
+
+function qualifications(ctx) {
+  const { t, profile } = ctx
+  const records = profile.education.records
+  const rows = (records.length ? records : [{}]).map((record, i) => qualificationRow(ctx, record, i, records.length > 0)).join('')
+  const top = highestLevel(records)
+  const highest = top ? `<p class="tiny muted" style="margin:4px 0 12px">${esc(t('highestAuto', { level: t(levelLabel(top)) }))}</p>` : ''
+  const add = records.length ? `<button class="btn sm" data-act="addRec" data-arg="education.records">${esc(t('addEducation'))}</button>` : ''
+  return `${rows}${highest}${add}`
+}
 
 function study(ctx) {
   const { t } = ctx
   return [
     choiceField({ ...ctx, path: 'userCategory', label: t('fCategory'), options: withOld(WHO, OLD_CATEGORIES, ctx.profile.userCategory) }),
-    field(ctx, { path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
-    recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation'), custom: { fieldOfStudy: (record, i) => fieldOfStudy(ctx, record, i) } }),
+    qualifications(ctx),
   ].join('')
 }
 

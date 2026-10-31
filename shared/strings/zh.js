@@ -118,6 +118,8 @@ export default {
   suggestSource: "来源：O*NET {onet}（美国劳工部，CC BY 4.0）。领域到职业：{isced} → CIP 专业（加拿大统计局）→ O*NET 职业（O*NET CIP 对照表）。",
   skillSource: "技能：O*NET {version}（美国劳工部，CC BY 4.0）",
   fieldSource: "领域：联合国教科文组织 ISCED-F 2013。专业名称：加拿大统计局（CIP 2016）。",
+  qualChoose: '选择学历层次', fieldChoose: '选择学科领域', asWritten: '原文：“{text}”。请选择对应的一项。',
+  highestAuto: '最高学历：{level}（根据你的列表得出）。', fieldListSource: '来源：UNESCO {version}，共 {n} 个领域。',
   suggestClick: "点击技能即可加入你的列表。将鼠标移到技能上可查看推荐原因。",
   suggestGroupSkills: "技能",
   suggestGroupTools: "工具与软件",

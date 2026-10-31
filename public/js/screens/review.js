@@ -2,7 +2,7 @@
 import { improveWithAi } from '../components/improveWithAi.js'
 import { esc, tag } from '../ui.js'
 import { GOALS } from './goal.js'
-import { WHO } from './form.js'
+import { WHO, levelLabel } from './form.js'
 
 const get = (object, path) => path.split('.').reduce((node, key) => (node == null ? undefined : node[key]), object)
 
@@ -45,7 +45,7 @@ export function profileTable(t, profile) {
     ${field('userCategory', 'fCategory')}
     ${get(profile, 'education.educationStatus')?.state === 'value' ? field('education.educationStatus', 'fEduStatus') : ''}
     ${field('education.highestQualification', 'fHighest')}
-    ${row(t('qualification'), records(profile.education.records, (r) => [r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
+    ${row(t('qualification'), records(profile.education.records, (r) => [r.level ? `${t(levelLabel(r.level))}${r.qualification ? ` (${r.qualification})` : ''}` : r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${field('employment.status', 'fEmpStatus')}
     ${field('employment.yearsOfExperience', 'fYears')}
     ${row(t('fIndustries'), list(profile.employment.industries))}

@@ -43,7 +43,7 @@ export function listField({ profile, path, label }) {
   return `<div class="field"><label for="${id}">${esc(label)}</label><input id="${id}" data-list="${path}" value="${esc((get(profile, path) ?? []).join(', '))}"></div>`
 }
 
-function cvNote(t, record) {
+export function cvNote(t, record) {
   if (!record.extraction) return ''
   const quote = record.extraction.evidence ? `: “${esc(record.extraction.evidence)}”` : ''
   return `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${quote}</div>`

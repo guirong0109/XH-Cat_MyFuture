@@ -2644,6 +2644,16 @@
       "time": "31 Oct",
       "step": "Join the two CV merges on main",
       "detail": "GitHub's merge kept (Who is it for? inside the guest/account step, join links skip it); kept from this computer: Using AI before Interests (Interests last), light by default (no follow-the-computer dark), Python cache files untracked. npm test 1425 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge main into the Radar branch",
+      "detail": "Your OK. Everything from main since the Radar charts merge came in (7f6763e); the Radar branch kept its detailed HANDOVER.md and CLAUDE.md. npm test 1425 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Remove the \"Your profile\" card from the Radar",
+      "detail": "Your request. Card, its note and its EN/BM/中文 strings removed; test first (079175a). npm test 1426 passed; checked in the browser"
     }
   ]
 }

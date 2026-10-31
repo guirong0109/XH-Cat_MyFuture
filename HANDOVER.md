@@ -1,6 +1,6 @@
 # HANDOVER — branch `claude/future-radar` (Future Skills Radar)
 
-Updated 31 Oct 2026 (charts that follow the profile added). Branch made from `main` at 928f4a7. Nothing pushed or merged.
+Updated 31 Oct 2026 (`main` merged in; "Your profile" card removed). Branch made from `main` at 928f4a7. Nothing pushed or merged.
 
 ## Where things stand
 - **Round 1 is built and checked in the browser.** All 21 plan tasks are done, each reviewed, plus a few integration
@@ -9,7 +9,12 @@ Updated 31 Oct 2026 (charts that follow the profile added). Branch made from `ma
   D23–D27; plan `docs/superpowers/plans/2026-10-30-radar-skill-trends.md`). See "Skill trends" below.
 - **Charts that follow your profile are built** (31 Oct 2026, spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
   D28-D33; plan `docs/superpowers/plans/2026-10-31-radar-profile-charts.md`). See "Profile charts" below.
-- Tests: **751 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
+- **31 Oct 2026, later:** `main` was merged into this branch (7f6763e, everything from main since the Radar charts merge:
+  CV screens in the new design, Study Pathway, Career Matching, organisation view). This branch kept its detailed
+  `HANDOVER.md` and `CLAUDE.md`. Then, on your request, the **"Your profile" card was removed** from the Radar page
+  (its heading, the fields / jobs / interests columns, its note and its strings in EN, BM and 中文).
+  Now **1426 Vitest tests** and **49 Python tests** pass (the numbers below are from before the merge).
+- Tests (before the merge): **751 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
   **14 Python tests OK** (`python -m unittest discover pipeline/tests`; the bridge script test copied from `main` is among them). Round 1 alone was 568; skill trends took it to 647.
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
@@ -44,8 +49,8 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 769 passed
-python -m unittest discover pipeline/tests  # 14 OK
+npm test                                    # 1426 passed
+python -m unittest discover pipeline/tests  # 49 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook); on the committed bundle it skips O*NET releases already active; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each
 ```
@@ -116,8 +121,7 @@ Both Radar charts now follow the user's **confirmed** profile (nothing from the 
 ### Open points for you (profile charts)
 - Review the Bahasa Melayu and 中文 lines marked `// translation: owner review` in `shared/strings/ms.js` and `zh.js`.
 - **eMASCO limit:** the chain works at the 4-digit unit, so all eMASCO roles in one unit show the same chart (the screen says so).
-- **"Your profile" card hint:** for a profile with an O*NET role it still says "Add your field of study or roles to see
-  what relates to you" (it only looks at DOSM groups and topics). This now contradicts the new cards. Existing behaviour, found in the browser check; your call.
+- ~~"Your profile" card hint~~: settled on 31 Oct 2026, the whole card is removed (your request).
 - The dashed earlier-year line appears only once a second yearly Hot Technologies snapshot is served (today: "One year so far").
 
 ## Still needed from you (spec §17)

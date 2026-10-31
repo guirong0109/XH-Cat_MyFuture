@@ -1,11 +1,11 @@
 # HANDOVER — `hr-branch` (detailed)
 
-Updated 2026-10-31 (all 12 plan tasks built). Branch from `main` at `d4286d6` (after the study pathway merge). `main`
+Updated 2026-10-31 (all 12 plan tasks built; final review fixes done). Branch from `main` at `d4286d6` (after the study pathway merge). `main`
 keeps a short version of this file; on merge, put only the important points there and do not overwrite it with this
 one.
 
 ## State
-- **All 12 plan tasks are built** (1256 Vitest tests, 49 pipeline tests). The owner decides on merge. Nothing is
+- **All 12 plan tasks are built**, with the final review fixes (1294 Vitest tests, 49 pipeline tests). The owner decides on merge. Nothing is
   pushed or merged.
 - The organisation view (HR and L&D managers, TVET and university career centres) works end to end: setup, people
   (roster upload and join links), heatmap, team plan, outlook and SDG. Both organisation types are built (`hr` and
@@ -47,7 +47,9 @@ one.
 - **O8** Both C and D on the same screens; HR first, the career-centre type last.
 
 ### Rulings made during the build (controller)
-1. The role used for the "current" team plan is the most common current code in the group (ties: lowest code).
+1. The role used for the "current" team plan is the most common current code among the group's people who have a
+   Skill Match (ties: lowest code); a broken chain is never the plan role. The plan and its SDG count only the people
+   on that role ("For <role>: k of n people in this group"). The heatmap keeps every role.
 2. People left out (broken chain, or no known skill) are also left out of band counts, "moved" and the SDG count.
 3. "Moved" compares Moderate (before) with Rapid (after).
 4. A roster row with a level but no skill is rejected: "skill is empty".
@@ -56,6 +58,15 @@ one.
    use the link.
 7. A pending join link is forgotten on sign-out, delete and reset.
 8. The share screen shows the role HR will see.
+9. One share per user: sharing through a link of another organisation first removes the share with the first one
+   (person and skills); the screen warns "Sharing with <B> stops your sharing with <A>."
+10. A roster person whose name (ignoring case and outer spaces) is already in the organisation is rejected "already in
+    the organisation" (once, at the first row) and never imported. A row with an empty group is rejected.
+11. Only the latest roster preview of an owner is kept; an older previewId answers 410.
+12. Skills are written in multi-row inserts of at most 33 rows (D1 binds at most 100 parameters).
+13. An hr person with no current role is counted as left out of the current view ("no_current_role").
+14. A pathway failure keeps the team answer: steps show "No team pick yet." without search links; the log has the code
+    only.
 
 Other points to know:
 - Join and share each have their own limiter (10 attempts per 15 minutes per address).
@@ -64,20 +75,18 @@ Other points to know:
 - Read routes beyond the spec table: `GET /api/org/roster/sample` and `GET /api/org/share`.
 
 ### Waits on the owner
-- **D1 keys** for trials and the demo (`D1_*`). Cloudflare D1 has a free tier; check the current price and state it to
-  the owner before anything is switched on. No price is assumed here.
+- **D1 keys** for trials and the demo (`D1_*`). The price must be checked on Cloudflare's own D1 pricing page and
+  stated to the owner before anything is switched on. No price or free allowance is assumed here.
 - **BM / 中文 wording review** (strings marked "translation: owner review").
 - **Whether the deployed site gets D1** (without it the org view is "not available").
 - **Merge decision.**
 
 ### Open points (known gaps, none fixed)
 - Roles in a group whose target nobody holds yet show the code only (no title).
-- The cell panel lacks the needed level and the list of people.
 - The plan says "raise to <level>", not "from -> to" (the data holds no "from" level per step).
-- A user sharing with two organisations sees only the latest share.
 - D1's REST API has no transactions, so a database failure in the middle of an import or a share can leave a partial
   write.
-- Roster previews are in memory (lost on restart) and not capped per owner.
+- Roster previews are in memory (lost on restart); one per owner.
 - Small wording points: "1 people" in the moved list; the share confirmation doubles a full stop when the display
   name ends with one; the heat grid shows small white diamond artefacts between cells.
 
@@ -91,7 +100,7 @@ Other points to know:
 
 ## Commands
 ```bash
-npm test                                      # 1256 passed
+npm test                                      # 1294 passed
 python -m unittest discover pipeline/tests    # 49 OK
 npm start                                     # http://localhost:3200, tab #org
 node scripts/serve-local-accounts.mjs         # local server with a fake in-memory D1

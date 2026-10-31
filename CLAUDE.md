@@ -59,7 +59,7 @@ tasks are built. Do not touch main's files; the owner decides on merge.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1256 passed
+npm install && npm test     # expect 1294 passed
 npm start                   # http://localhost:3200, tab #org
 node scripts/serve-local-accounts.mjs   # local server with a fake in-memory D1 (accounts work without keys)
 python -m unittest discover pipeline/tests   # expect 49 OK

@@ -72,11 +72,11 @@ afterEach(async () => {
 
 // The app as in production, with the fixture data dir for matching only. radarOverride replaces the Radar service
 // (e.g. one whose store does not answer); demoOverride replaces the judge demo service.
-async function start({ store = createMemoryStore(), radarOverride = null, demoOverride, dataDir = fixture.dir, appDataDir = undefined } = {}) {
+async function start({ store = createMemoryStore(), radarOverride = null, demoOverride, dataDir = fixture.dir, appDataDir = undefined, log = () => {} } = {}) {
   const radar = radarOverride ?? createRadarService({ store, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
   const radarAccess = createRadarAccess({ env: ENV, now })
   const demo = demoOverride !== undefined ? demoOverride : createDemoService({ store, base: BASE, references: async () => references, now })
-  const matching = createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, references: fixtureReferences, now, log: () => {} })
+  const matching = createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, references: fixtureReferences, now, log })
   server = createApp({ ...(appDataDir ? { dataDir: appDataDir } : {}), radar, radarAccess, radarDemo: demo, matching, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
@@ -306,15 +306,21 @@ describe('POST /api/matching', () => {
   })
 
   it('M17: no AI data for the scenario -> Overall equals Skill Match', async () => {
-    await start()
-    const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: null, apply: null, design: null } } })
-    const r = body.roles.find((x) => x.skillMatch && x.ai.moderate.touchPct === null) ?? body.roles.find((x) => x.skillMatch && x.ai.rapid.touchPct === null)
-    if (r) {
-      const scenario = r.ai.moderate.touchPct === null ? 'moderate' : 'rapid'
-      expect(r.overallMatch[scenario]).toMatchObject({ percent: r.skillMatch.percent, noAiData: true })
+    // a data set whose ILO file has no row for the full role's ISCO code (2521): Skill Match yes, Rapid touch no
+    const noIlo = await makeMatchingFixture({ edit: (files) => { files['ai/ilo_wp140.tsv'] = files['ai/ilo_wp140.tsv'].split('\n').filter((row) => !row.startsWith('2521\t')).join('\n') } })
+    try {
+      await start({ dataDir: noIlo.dir })
+      const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: null, apply: null, design: null } } })
+      const r = roleOf(body, FIXTURE.fullRole)
+      expect(r.skillMatch).toBeTruthy()
+      expect(r.ai.rapid.touchPct).toBeNull()
+      expect(r.overallMatch.rapid).toMatchObject({ percent: r.skillMatch.percent, noAiData: true })
+      expect(r.ai.moderate.touchPct).not.toBeNull()
+      expect(r.overallMatch.moderate.noAiData).toBe(false)
+      expect(roleOf(body, FIXTURE.brokenRole).overallMatch).toEqual({ moderate: null, rapid: null })
+    } finally {
+      await noIlo.cleanup()
     }
-    const noSkill = roleOf(body, FIXTURE.brokenRole)
-    expect(noSkill.overallMatch).toEqual({ moderate: null, rapid: null })
   })
 
   it('M17: a tampered aiUse -> non-object is 400, unknown values count as unanswered (Review Focus 2)', async () => {
@@ -326,10 +332,11 @@ describe('POST /api/matching', () => {
   })
 
   it('M17: the AI answers are never logged and the answer has no forbidden keys', async () => {
-    await start()
+    await start({ log: (message) => console.error(message) }) // the app's default logger, so the spies see its lines
     const spies = ['log', 'info', 'warn', 'error', 'debug'].map((m) => vi.spyOn(console, m))
     const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: 'no', apply: 'yes', design: 'no' } } })
     for (const spy of spies) for (const call of spy.mock.calls) expect(JSON.stringify(call.map(String))).not.toMatch(/mindset|aiUse/)
+    spies.forEach((spy) => spy.mockRestore())
     expect(keysDeep(body).filter((k) => FORBIDDEN_KEY.test(k))).toEqual([])
   })
 

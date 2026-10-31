@@ -40,7 +40,7 @@ describe('the goal question, after guest or account', () => {
 })
 
 describe('the same four goals in the form and on the receipt', () => {
-  const prefs = (profile) => form({ t, state: { section: 4, profile, occ: {}, pick: {}, interests: { areas: [], version: '31.0' } } })
+  const prefs = (profile) => form({ t, state: { section: 3, profile, occ: {}, pick: {}, interests: { areas: [], version: '31.0' } } })
 
   it('the form\'s career goal offers the four goals, with the answer from the start selected', () => {
     const html = prefs(withGoal('grow_field'))

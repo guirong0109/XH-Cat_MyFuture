@@ -7,12 +7,12 @@ import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
 import { GOALS } from './goal.js'
 
-export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
+// Certificates, training and projects are not asked (owner, 31 Oct).
+export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
   ['userCategory'],
   ['employment.status', 'employment.yearsOfExperience'],
-  [],
   [],
   ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
 ]
@@ -139,18 +139,6 @@ function skills(ctx) {
   return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${fieldSuggestions(ctx)}${rows}`
 }
 
-function certs(ctx) {
-  const { t } = ctx
-  return [
-    `<h3>${esc(t('certName'))}</h3>`,
-    recordsField({ ...ctx, listPath: 'certifications', fields: [['name', 'certName'], ['issuer', 'issuer'], ['year', 'year']], addLabel: t('addCert') }),
-    `<h3 style="margin-top:16px">${esc(t('trainingName'))}</h3>`,
-    recordsField({ ...ctx, listPath: 'training', fields: [['name', 'trainingName'], ['year', 'year']], addLabel: t('addTraining') }),
-    `<h3 style="margin-top:16px">${esc(t('projTitle'))}</h3>`,
-    recordsField({ ...ctx, listPath: 'projects', fields: [['title', 'projTitle'], ['description', 'projDesc']], addLabel: t('addProject') }),
-  ].join('')
-}
-
 function prefs(ctx) {
   const { t, profile } = ctx
   const interests = profile.occupationMappings.map((m, i) => (m.kind === 'interest' ? linkedLine(t, m.chosen, `interest|${i}`) : '')).join('')
@@ -163,7 +151,12 @@ function prefs(ctx) {
   ].join('')
 }
 
-const BODIES = [study, work, skills, certs, prefs]
+const BODIES = [study, work, skills, prefs]
+
+// Lists the profile no longer asks for: what a CV or the AI re-read finds for them is left out, so the profile never holds
+// something the user cannot see or edit.
+export const NOT_ASKED = ['certifications', 'training', 'projects']
+export const dropNotAsked = (profile) => ({ ...profile, ...Object.fromEntries(NOT_ASKED.map((list) => [list, []])) })
 
 export default ({ t, state }) => {
   const section = state.section ?? 0

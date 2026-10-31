@@ -14,7 +14,7 @@ import category from './screens/category.js'
 import org from './screens/org.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS, dropNotAsked } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -43,8 +43,8 @@ const NEW_RECORD = {
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
 const STUDY_SECTION = 0
-const SKILLS_SECTION = 2
-const PREFERENCES_SECTION = 4
+const SKILLS_SECTION = SECTIONS.indexOf('secSkills')
+const PREFERENCES_SECTION = SECTIONS.indexOf('secPrefs')
 
 const fresh = () => ({ screen: 'welcome', lang: 'en', use: null, access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
@@ -259,7 +259,7 @@ const actions = {
     })
     update({ ...state.profile, skills })
   },
-  editSkills: () => { state.section = 2; go('form') },
+  editSkills: () => { state.section = SKILLS_SECTION; go('form') },
   occFind: async (key) => {
     const term = state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
     if (term.length < 2) return
@@ -314,8 +314,10 @@ const actions = {
       return render()
     }
     // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
-    state.profile = mergeDraft(state.profile, out.data.profile)
-    cvDraft = out.data.profile
+    // Certificates, training and projects found in the CV are left out: the profile does not ask for them.
+    const draft = dropNotAsked(out.data.profile)
+    state.profile = mergeDraft(state.profile, draft)
+    cvDraft = draft
     state.cvSession = true
     state.ai = null
     state.extractionId = out.data.extractionId
@@ -339,7 +341,7 @@ const actions = {
       return render()
     }
     // What the user changed since the CV draft is locked: the AI never overwrites it.
-    const rows = diffProfiles(state.profile, out.data.suggested, userEditedPaths(cvDraft, state.profile))
+    const rows = diffProfiles(state.profile, dropNotAsked(out.data.suggested), userEditedPaths(cvDraft, state.profile))
     state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
     render()
   },

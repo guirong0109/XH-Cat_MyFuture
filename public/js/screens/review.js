@@ -51,9 +51,9 @@ export function profileTable(t, profile) {
     ${row(t('fIndustries'), list(profile.employment.industries))}
     ${row(t('jobTitle'), records(profile.employment.records, (r) => [r.jobTitle, r.employer, r.period].filter(Boolean).join(' · ')))}
     ${row(t('secSkills'), profile.skills.length ? profile.skills.map((s) => `<div><b>${esc(s.name)}</b> ${s.canonicalId ? `<span class="tiny muted">${esc(s.canonicalId)}</span>` : `<span class="tiny muted">${esc(t('skillUnknown'))}</span>`} ${skillTags(t, s)}</div>`).join('') : tag('unv', t('none')))}
-    ${row(t('certName'), records(profile.certifications, (r) => [r.name, r.issuer, r.year].filter(Boolean).join(' · ')))}
-    ${row(t('trainingName'), records(profile.training, (r) => [r.name, r.year].filter(Boolean).join(' · ')))}
-    ${row(t('projTitle'), records(profile.projects, (r) => [r.title, r.description].filter(Boolean).join(' — ')))}
+    ${profile.certifications?.length ? row(t('certName'), records(profile.certifications, (r) => [r.name, r.issuer, r.year].filter(Boolean).join(' · '))) : ''}
+    ${profile.training?.length ? row(t('trainingName'), records(profile.training, (r) => [r.name, r.year].filter(Boolean).join(' · '))) : ''}
+    ${profile.projects?.length ? row(t('projTitle'), records(profile.projects, (r) => [r.title, r.description].filter(Boolean).join(' — '))) : ''}
     ${row(t('fInterests'), list((profile.preferences.careerInterests ?? []).map((item) => item?.name ?? item)))}
     ${field('preferences.careerGoal', 'fGoal')}
     ${field('preferences.preferredWorkLocation', 'fLocation')}

@@ -273,6 +273,11 @@
           "title": "T28m Qualifications: only level and major",
           "sub": "no Highest qualification · Add a qualification first · no institution or year",
           "status": "done"
+        },
+        {
+          "title": "T28n No certificates, training or projects",
+          "sub": "profile has 4 sections · CV finds for them left out",
+          "status": "done"
         }
       ]
     }
@@ -323,7 +328,8 @@
     "Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)",
     "Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)",
     "Task 28l: your request - 'Highest qualification' and 'Add a qualification' asked the same thing; they are now one list. Each qualification starts with a level dropdown (SPM … PhD); once chosen, Field of study appears as a dropdown of all 124 UNESCO ISCED-F 2013 fields grouped by broad area (your choice), with Institution and Year. The highest qualification is worked out from the list and shown under it. Words from a CV stay visible ('As written: …') until the user picks. New read-only server route GET /api/fields sends the whole list (your OK); nothing else in the backend changed (Tests 269 passed)",
-    "Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)"
+    "Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
+    "Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1030,6 +1036,21 @@
       "time": "31 Oct",
       "step": "Task 28m",
       "detail": "tests rewritten first (6 failed), then form.js, review.js, app.js and the wording files; npm test 268 passed; clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove certificate and project from the profile"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "remove the whole section, training too; leave out what a CV finds for them"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28n",
+      "detail": "3 tests first (failed), then form.js (sections, dropNotAsked), app.js (CV draft and AI re-read), review.js; npm test 271 passed; a synthetic CV with a certificate and a project uploaded in Chrome: server read 1 + 1, profile kept 0 + 0 and all 4 skills"
     }
   ]
 }

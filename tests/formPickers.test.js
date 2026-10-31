@@ -87,7 +87,7 @@ describe('form sections', () => {
     expect(form({ t, state: { ...state(0, profile), fields } })).toContain('data-field-pick="0"')
     expect(form({ t, state: { ...state(0, profile), fields } })).not.toContain('data-search="field|')
     expect(form({ t, state: state(2, profile) })).toContain('data-search="skill|skill"')
-    expect(form({ t, state: state(4, profile) })).toContain('data-search="interest|interest"')
+    expect(form({ t, state: state(3, profile) })).toContain('data-search="interest|interest"')
   })
 
   it('a field of study typed or read from a CV shows the words until a standard field is chosen', () => {

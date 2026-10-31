@@ -25,11 +25,15 @@ scenario comparison.
 | CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
 | Radar: "Your profile" card removed; source details as four cards (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1429 tests pass; checked in the browser |
 | DeepSeek reads every CV next to the rules reader (merged draft, "Found by AI" tags; consent re-read removed) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1481 tests pass after the merge; whole-branch review fixed; checked with the owner's key and real CV |
+| Radar: AI usage question (10 owner categories), AI tasks scatter, two tabs For You / Explore all trends (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1535 tests pass after the merge; whole-branch reviews fixed; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
-- **Screen `#radar`**, two tabs: Skills & Careers (first) and AI Impact. By default it shows only what relates to
-  the user's confirmed profile, worked out in the browser; "View all" sits at the bottom. Every number links to its
+- **Screen `#radar`**, two tabs since 31 Oct (D43-D48): **For You** (first; the AI usage question until answered or
+  skipped, then the AI tasks scatter and research signals for you) and **Explore all trends** (research momentum and
+  papers per year, all six topics; opens first for the goal "Switch career"). The Skills & Careers sections (skills
+  chart, DOSM job ads, skill changes, fields, what it means) are off the page; their code and data stay. Worked out in
+  the browser from the confirmed profile. Every number links to its
   source and date. Admin `#admin` and judge test `#judge` use server keys (`RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`,
   `RADAR_SESSION_SECRET`); keys never reach the browser.
 - **Sources:** OpenAlex (AI research papers per topic), DOSM (Malaysian online job ads by MASCO major group),
@@ -193,7 +197,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1481 passed
+npm test          # expect 1535 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

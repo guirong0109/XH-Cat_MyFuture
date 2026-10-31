@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1481 passed
+npm install && npm test     # expect 1535 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -58,8 +58,11 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - Both Radar charts are built in the browser from the confirmed profile (D28–D33): skills of the user's own jobs and
   AI use of their tasks. eMASCO reaches O\*NET only through the code chain (D29 replaced D27).
 - The Radar page has no "Your profile" card (owner, 31 Oct 2026). Do not bring it back.
-- The four Radar source details (OpenAlex, DOSM, two O\*NET) are cards in the app look, two by two, one column on a
-  phone (`.rd-srccard`, owner, 31 Oct 2026); availability is the tag at the top.
+- Two tabs (D43-D48, 31 Oct 2026): **For You** (the "Which of these do you use AI for?" question first, then the AI
+  tasks scatter and research signals for you) and **Explore all trends** (research momentum and papers per year, all
+  six topics). Explore opens first only for the goal "Switch career". Only the OpenAlex source card is on the page.
+- The AI usage answer is `profile.aiTasks` (`shared/aiTasks.js`): only recorded, in no Radar request; save it without
+  `update()` so a confirmed profile stays confirmed. The AI tasks chart is a scatter (`taskScatter.js`), no safe/risky words.
 
 ## Career matching (details: branch `claude/career-matching`)
 - Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.

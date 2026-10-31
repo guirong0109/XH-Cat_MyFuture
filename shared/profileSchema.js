@@ -1,5 +1,6 @@
 // The structured profile that Case A (CV) and Case B (manual) both produce. Used by the browser, the server and the tests.
 // Spec: docs/superpowers/specs/2026-10-29-cv-profile-module-design.md §4 (CV spec §7.1).
+import { aiTasksErrors } from './aiTasks.js'
 
 // Three states for an optional field: no information, "prefer not to say", or a value.
 export const EMPTY = Object.freeze({ state: 'empty' })
@@ -144,6 +145,8 @@ export function validateProfile(profile) {
       }
     }
   }
+  // aiTasks (Radar D38) is optional: "Which of these do you use AI for?", skipped or answered.
+  if (profile.aiTasks !== undefined && profile.aiTasks !== null) errors.push(...aiTasksErrors(profile.aiTasks))
   if (!['draft', 'confirmed'].includes(profile.profileStatus)) errors.push({ path: 'profileStatus', code: 'bad_enum' })
   return { ok: errors.length === 0, errors }
 }

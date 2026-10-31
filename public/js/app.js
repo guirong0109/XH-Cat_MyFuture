@@ -4,6 +4,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
+import { aiAskStep } from '/shared/aiTasks.js'
 import { addRecord, confirmProfile, declineUnanswered, isUntouched, mergeCareerFields, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
@@ -22,7 +23,7 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
-import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
+import radarScreen, { aiAskFocus, radarTabOf, keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -179,7 +180,7 @@ async function openEvidence(kind, id, signalId) {
   setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
   document.getElementById('radarDrawer')?.focus()
 }
-// The AI task data is static reference data (no manifest, no profile): fetched once, when the AI tab is first shown.
+// The AI task data is static reference data (no manifest, no profile): fetched once, when For You is first shown.
 async function loadAiTasks() {
   state.radar = { ...radarUi(), aiTasks: { loading: true } }
   const out = await radarApi.aiTasks()
@@ -189,7 +190,7 @@ async function loadAiTasks() {
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
-  if (r.tab === 'ai' && !r.aiTasks) loadAiTasks()
+  if (radarTabOf(state) === 'fy' && !r.aiTasks) loadAiTasks()
 }
 // After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
 // changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
@@ -574,6 +575,18 @@ const pathwayActions = {
   pwClear: (key) => setProgress(key, null),
 }
 
+// The Radar's AI usage question (D35-D39). Its answer is not CV content, so it is saved without update(): a confirmed
+// profile stays confirmed (D38). Unsaved ticks live in state.radar.aiAsk, which is never saved (persist drops radar).
+function aiAsk(act, arg) {
+  const out = aiAskStep({ profile: state.profile, aiAsk: radarUi().aiAsk ?? null }, act, arg, today())
+  state.profile = out.profile
+  if (act === 'continue' || act === 'skip') persist()
+  setRadar({ aiAsk: out.aiAsk })
+  // The render replaced the card: give keyboard and screen-reader users their place back (final review).
+  const sel = aiAskFocus(act, arg)
+  if (sel) document.querySelector(sel)?.focus()
+}
+
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
 function update(profile) {
   state.profile = { ...profile, profileStatus: 'draft' }
@@ -583,10 +596,16 @@ function update(profile) {
 }
 
 const actions = {
-  // Radar: Skills & Careers is the first tab and opens by default (D21).
+  // Radar: "Which of these do you use AI for?" (D35, D36, D39)
+  aiAskPick: (id) => aiAsk('pick', id),
+  aiAskNone: () => aiAsk('none'),
+  aiAskContinue: () => aiAsk('continue'),
+  aiAskSkip: () => aiAsk('skip'),
+  aiAskOpen: () => aiAsk('open'),
+  // Radar: For You and Explore all trends (D43); which one opens first follows the career goal (D46).
   radarTab: (tab) => {
-    setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })
-    if (tab === 'ai' && !radarUi().aiTasks) loadAiTasks()
+    setRadar({ tab: tab === 'ex' ? 'ex' : 'fy', open: null })
+    if (tab !== 'ex' && !radarUi().aiTasks) loadAiTasks()
   },
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),

@@ -278,6 +278,14 @@ describe('POST /api/matching', () => {
     expect(body.roles.every((r) => r.overallMatch.moderate === null && r.overallMatch.rapid === null)).toBe(true)
   })
 
+  it('a profile carrying the Radar AI task answers (D38) is still accepted (Review Focus 3)', async () => {
+    await start()
+    const without = await post('/api/matching', { profile: FULL })
+    const withAnswers = await post('/api/matching', { profile: { ...FULL, aiTasks: { status: 'answered', picked: ['writing'], date: '2026-10-31' } } })
+    expect(withAnswers.status).toBe(without.status)
+    expect(withAnswers.status).toBe(200)
+  })
+
   it('M17: answers give know-how and an Overall that follows the formula, Skill Match unchanged', async () => {
     await start()
     const without = (await post('/api/matching', { profile: FULL })).body

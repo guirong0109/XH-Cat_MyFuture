@@ -14,6 +14,8 @@ import { makeBridge } from '../../../shared/radar/bridge.js'
 import { makeChain } from '../../../shared/radar/chain.js'
 import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
 import { profileRadar } from '../components/charts/profileRadar.js'
+import { taskScatter } from '../components/charts/taskScatter.js'
+import { AI_TASK_IDS, askOf, canContinue, needsAsking } from '../../../shared/aiTasks.js'
 
 // ---------- reference data and relevance ----------
 
@@ -54,7 +56,14 @@ function profileSkillIds(state, data) {
 // ---------- small helpers ----------
 
 const ui = (state) => state?.radar ?? {}
-const tabOf = (state) => (ui(state).tab === 'ai' ? 'ai' : 'sk')
+// Which tab is shown (D46): the one the user picked, else Explore all trends for a career switch and For You for
+// everyone else. Read in the browser; an old tab id (sk, ai) from before the two tabs falls back to the rule.
+export function radarTabOf(state) {
+  const picked = ui(state).tab
+  if (picked === 'fy' || picked === 'ex') return picked
+  const goal = state?.profile?.preferences?.careerGoal
+  return goal?.state === 'value' && goal.value === 'switch_career' ? 'ex' : 'fy'
+}
 const viewAllOn = (state, tab) => Boolean(ui(state).all?.[tab])
 
 function axisLabel(axis, t, lang) {
@@ -171,9 +180,10 @@ const healthText = (t, st) => st.refreshHealth === 'failed' && st.refreshCode ? 
 
 // statusCards(states, t, {sources, manifestId, ai, occ}): one card per source with its link, observation period,
 // publication date (DOSM), last successful fetch, manifest id and the five answer-state dimensions (spec §11.1, §12).
-export function statusCards(states, t, { sources = [], manifestId = null, ai = null, occ = null } = {}) {
+// ids: which sources get a card; the Radar page lists only OpenAlex (D48), the admin screen both.
+export function statusCards(states, t, { sources = [], manifestId = null, ai = null, occ = null, ids = ['openalex', 'dosm'] } = {}) {
   const signals = { openalex: (ai?.axes ?? []).map((a) => a.signal).filter(Boolean), dosm: (occ?.groups ?? []).map((g) => g.signal).filter(Boolean) }
-  return `<div class="rd-srcgrid">${['openalex', 'dosm'].map((id) => {
+  return `<div class="rd-srcgrid">${ids.map((id) => {
     const st = states?.[id] ?? {}
     const src = sources.find((s) => s.sourceId === id)
     const fresh = id === 'dosm' && st.expectedNextRelease ? `${dim(t, 'Fresh', st.freshness)} · ${t('rdNextRelease', { date: fmtDate(st.expectedNextRelease) })}` : dim(t, 'Fresh', st.freshness)
@@ -244,9 +254,16 @@ function banners(t, state, data) {
 // ---------- AI Impact tab ----------
 
 export function aiTab({ t, state, data }) {
+  const { a2, a1, a5, globalNote } = researchCards({ t, state, data })
+  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+}
+
+// The research cards: A2 (momentum by topic), A1 (papers per year) and A5 (signals for the user's field). all: every
+// topic (Explore all trends, D45); otherwise the user's linked topics with View all, as on the old AI Impact tab.
+function researchCards({ t, state, data, all = false }) {
   const lang = state?.lang ?? 'en'
   const rel = relevance(state, data)
-  const sc = scope(state, data, rel, 'ai')
+  const sc = all ? { ...scope(state, data, rel, 'ai'), mine: false, axes: data.ai?.axes ?? [] } : scope(state, data, rel, 'ai')
   const mode = ui(state).mode === 'share' ? 'share' : 'count'
   const hidden = new Set(ui(state).hidden ?? [])
   const allAxes = data.ai?.axes ?? []
@@ -326,7 +343,22 @@ export function aiTab({ t, state, data }) {
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
   const globalNote = sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''
-  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  return { a2, a1, a5, globalNote }
+}
+
+// For You (D44): the AI usage question until it is answered or skipped (or reopened); then the Change button, the AI
+// tasks scatter and the research signals for the user's field. Nothing else.
+export function forYouTab({ t, state, data }) {
+  if (needsAsking(state?.profile) || (ui(state).aiAsk?.open && state?.profile)) return aiTasksQuestion({ t, state })
+  const change = state?.profile?.aiTasks ? `<p class="rd-aiask-line"><button class="btn sm ghost" data-act="aiAskOpen">${esc(t('rdAiAskChange'))}</button></p>` : ''
+  const { a5 } = researchCards({ t, state, data })
+  return `${change}${aiTasksCard({ t, state, data })}${a5}`
+}
+
+// Explore all trends (D45): research momentum and papers per year for all six topics; no View all.
+export function exploreTab({ t, state, data }) {
+  const { a2, a1 } = researchCards({ t, state, data, all: true })
+  return `${a2}${a1}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -630,8 +662,6 @@ export function skillsChartCard({ t, state, data }) {
 // The numbers are shares of observed AI conversations (Anthropic Economic Index), not a forecast and not a score.
 
 const AI_CORNER_CHOICES = [8, 16, 'all']
-const AI_SCALE = { kind: 'linear', min: 0, max: 100 }
-const AI_RINGS = [{ value: 25, label: '25%' }, { value: 50, label: '50%', dashed: true }, { value: 75, label: '75%' }, { value: 100, label: '100%' }]
 const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
 const ILO_URL = 'https://doi.org/10.54394/HETP0387'
 const JOB_SWITCH_MAX = 4 // more jobs than this (a field brings many) go in a drop-down, not a row of buttons
@@ -684,15 +714,16 @@ export function aiTasksCard({ t, state, data }) {
     const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) ?? t('rdAiUnder') })
     const points = numbered.slice(0, k).map((it) => ({
       id: String(it.n),
-      label: it.text,
-      value: it.automation,
-      valueText: `${it.automation}%`,
+      n: it.n,
+      text: it.text,
+      automation: it.automation,
+      usage: it.usage,
       aria: `T${it.n}. ${it.text}: ${rowText(it)}`,
     }))
     const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
-    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span>
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdAiDots'))}</span><span class="seg" role="group" aria-label="${esc(t('rdAiDots'))}">${seg}</span>
       <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
-      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, prefix: 'T', t })}</div>
+      <div class="rd-chart">${taskScatter({ items: points, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, t })}</div>
       <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
     const pg = paged(t, 'ai', numbered, u.pages?.ai)
     list = `<ul class="rd-rank-list">${pg.slice.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">T${it.n}</span>
@@ -874,6 +905,33 @@ function drawer(t, state, data) {
 // data shown would stay out of date. The view choices (tab, mode, hidden lines, View all) and the banner flag stay.
 export const staleRadar = (radar) => ({ ...(radar ?? {}), data: null, open: null, signal: null, newerManifestId: null, gone: false, error: null, loading: false })
 
+// "Which of these do you use AI for?" (D34-D39): the owner's 10 categories as checkboxes, "none of these", the source
+// and privacy lines, Continue (off until something is ticked) and Skip. Ticks not yet saved are in state.radar.aiAsk;
+// otherwise the saved answer is shown. Only known ids are ever drawn, so a saved unknown id is never echoed.
+// Where the keyboard focus goes after a card action, as a selector (a render replaces the page): the same box after a
+// tick or "none", the first box when the card opens, the Change button after Continue or Skip. Only known ids are used.
+export function aiAskFocus(act, arg) {
+  if (act === 'pick') return AI_TASK_IDS.includes(arg) ? `[data-act="aiAskPick"][data-arg="${arg}"]` : null
+  if (act === 'none') return '[data-act="aiAskNone"]'
+  if (act === 'open') return '[data-act="aiAskPick"]'
+  if (act === 'continue' || act === 'skip') return '[data-act="aiAskOpen"]'
+  return null
+}
+
+export function aiTasksQuestion({ t, state }) {
+  const { picked, none } = askOf(state?.profile, ui(state).aiAsk)
+  const box = (act, arg, on) => `<input type="checkbox" data-act="${act}"${arg ? ` data-arg="${arg}"` : ''}${on ? ' checked' : ''}>`
+  const opts = AI_TASK_IDS.map((id) => `<label class="rd-aiask-opt">${box('aiAskPick', id, picked.includes(id))} <span>${esc(t(`rdAiTask_${id}`))}<span class="tiny muted">${esc(t(`rdAiTaskEx_${id}`))}</span></span></label>`).join('')
+  return `<article class="rd-srccard rd-aiask"><fieldset><legend>${esc(t('rdAiAskTitle'))}</legend>
+      <p class="small muted">${esc(t('rdAiAskSub'))}</p>
+      <div class="rd-aiask-opts">${opts}
+      <label class="rd-aiask-opt rd-aiask-none">${box('aiAskNone', null, none)} <span>${esc(t('rdAiAskNone'))}</span></label></div>
+      <p class="tiny muted">${esc(t('rdAiAskSource'))}</p>
+      <p class="tiny muted">${esc(t('rdAiAskPrivacy'))}</p>
+      <div class="rd-aiask-btns"><button class="btn" data-act="aiAskContinue"${canContinue({ picked, none }) ? '' : ' disabled'}>${esc(t('rdAiAskContinue'))}</button> <button class="btn ghost" data-act="aiAskSkip">${esc(t('rdAiAskSkip'))}</button></div>
+    </fieldset></article>`
+}
+
 export function radarView({ t, state, data }) {
   const u = ui(state)
   const head = `<h1>${esc(t('rdTitle'))}</h1><p class="lead">${esc(t('rdLead'))}</p><p class="small muted">${esc(t('rdSub'))}</p>`
@@ -885,14 +943,13 @@ export function radarView({ t, state, data }) {
         : `<p class="muted"><span class="spin"></span> ${esc(t('rdLoading'))}</p>`
     return `<div class="rd">${head}${banners(t, state, null)}${body}</div>`
   }
-  const rel = relevance(state, data)
-  const tab = tabOf(state)
-  const tabs = [['sk', 'rdTabSK', 'rdTabSKq'], ['ai', 'rdTabAI', 'rdTabAIq']]
+  const tab = radarTabOf(state)
+  const tabs = [['fy', 'rdTabFY', 'rdTabFYq'], ['ex', 'rdTabEX', 'rdTabEXq']]
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
-  const body = tab === 'ai' ? aiTab({ t, state, data }) : skillsTab({ t, state, data })
+  const body = tab === 'ex' ? exploreTab({ t, state, data }) : forYouTab({ t, state, data })
   return `<div class="rd">${head}${banners(t, state, data)}
-    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}${onetSourceCards(data.sources, t, data.states)}</div>
-    ${sourcesList(t, data.sources ?? [])}
+    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ, ids: ['openalex'] })}</div>
+    ${sourcesList(t, (data.sources ?? []).filter((s) => s.sourceId === 'openalex'))}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>
     ${drawer(t, state, data)}</div>`

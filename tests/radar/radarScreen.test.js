@@ -10,7 +10,8 @@ import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
 import { usageText } from '../../shared/radar/profileCharts.js'
-import { aiTab, keepCaret, onetSourceCards, pageForRow, pageItems, pageOf, parsePageArg, parsePageList, radarView, skillsChartCard, skillsTab, statusCards, withPage } from '../../public/js/screens/radar.js'
+import { AI_TASK_IDS } from '../../shared/aiTasks.js'
+import { aiTab, radarTabOf, keepCaret, onetSourceCards, pageForRow, pageItems, pageOf, parsePageArg, parsePageList, radarView, skillsChartCard, skillsTab, statusCards, withPage } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import { esc as esc_ } from '../../public/js/ui.js'
@@ -28,8 +29,9 @@ beforeAll(async () => {
 })
 afterAll(() => radar.close())
 
+// The AI usage question is answered (skipped) by default, so these tests see the Radar itself, not the question card.
 const profile = (extra = {}) => ({
-  profileStatus: 'confirmed', education: { records: [] }, employment: { records: [] }, preferences: { careerInterests: [] }, occupationMappings: [], ...extra,
+  profileStatus: 'confirmed', education: { records: [] }, employment: { records: [] }, preferences: { careerInterests: [] }, occupationMappings: [], aiTasks: { status: 'skipped', date: '2026-10-31' }, ...extra,
 })
 const ownProfile = () => profile({
   education: { records: [{ field: { source: 'isced', code: '0613', title: 'Software and applications development and analysis' } }] },
@@ -56,20 +58,21 @@ function expectNumbersLinked(html) {
 }
 const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const unesc = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+const panel = (html) => html.slice(html.indexOf('<section class="rd-tab"'), html.indexOf('</section>', html.indexOf('<section class="rd-tab"')))
 const lineLabels = (html) => unesc(html.match(/<svg class="rd-lines"[^>]*aria-label="([^"]*)"/)[1])
 
 describe('Radar screen', () => {
-  it('Skills & Careers is the first tab and is selected and shown by default (D21)', () => {
+  it('For You is the first tab and is selected and shown by default (D43, D46)', () => {
     const html = view(ownProfile())
     const tabs = [...html.matchAll(/<button[^>]*role="tab"[^>]*>/g)].map((m) => m[0])
     expect(tabs).toHaveLength(2)
-    expect(tabs[0]).toContain('data-arg="sk"')
+    expect(tabs[0]).toContain('data-arg="fy"')
     expect(tabs[0]).toContain('aria-selected="true"')
-    expect(tabs[1]).toContain('data-arg="ai"')
+    expect(tabs[1]).toContain('data-arg="ex"')
     expect(tabs[1]).toContain('aria-selected="false"')
-    expect(html.indexOf(t('rdTabSK'))).toBeLessThan(html.indexOf(t('rdTabAI')))
-    expect(html).toContain(t('rdB1Title'))
-    expect(html).not.toContain(t('rdA2Title'))
+    expect(html).toContain('<span>For You</span>')
+    expect(html).toContain('<span>Explore all trends</span>')
+    expect(html.indexOf('For You')).toBeLessThan(html.indexOf('Explore all trends'))
   })
 
   it('has no "Your profile" card, with or without a profile (owner, 31 Oct)', () => {
@@ -265,10 +268,193 @@ describe('Radar screen', () => {
       occupationMappings: [{ kind: 'interest', term: evil, chosen: { source: 'emasco', code: '2512-01', title: evil } }],
       preferences: { careerInterests: [evil] },
     })
-    for (const radar of [{}, { tab: 'ai', open: { kind: 'axis', id: 'language' } }, { open: { kind: 'group', id: '2' } }, { open: { kind: 'axis', id: 'language' } }, { all: { sk: true, ai: true } }]) {
+    for (const radar of [{ tab: 'ex', open: { kind: 'axis', id: 'vision' } }, { tab: 'ai', open: { kind: 'axis', id: 'language' } }, { open: { kind: 'group', id: '2' } }, { open: { kind: 'axis', id: 'language' } }, { tab: 'ex', mode: 'share', open: { kind: 'axis', id: 'robotics' } }]) {
       const html = radarView({ t, state: { lang: 'en', profile: prof, radar }, data: bad })
       expect(html).not.toContain('<img')
       expect(html).toContain('&lt;img src=x')
+    }
+  })
+})
+
+describe('AI usage question (D34-D39)', () => {
+  const D = '2026-10-31'
+  const notAsked = () => { const p = profile(); delete p.aiTasks; return p }
+  const card = (html) => html.slice(html.indexOf('<article class="rd-srccard rd-aiask"'), html.indexOf('</article>', html.indexOf('rd-aiask')))
+  const NEW_KEYS = ['rdAiAskTitle', 'rdAiAskSub', 'rdAiAskNone', 'rdAiAskSource', 'rdAiAskPrivacy', 'rdAiAskContinue', 'rdAiAskSkip', 'rdAiAskChange',
+    ...AI_TASK_IDS.flatMap((id) => [`rdAiTask_${id}`, `rdAiTaskEx_${id}`])]
+
+  it('without an answer For You shows only the question card: ten boxes in order, none, source and privacy lines (D44)', () => {
+    const html = view(notAsked())
+    expect(html).toContain('rd-aiask')
+    expect(html).toContain('role="tablist"')
+    expect(panel(html)).not.toContain('data-sec=')
+    const c = card(html)
+    expect([...c.matchAll(/data-act="aiAskPick" data-arg="([a-z]+)"/g)].map((m) => m[1])).toEqual([...AI_TASK_IDS])
+    expect(count(c, /type="checkbox"/g)).toBe(11)
+    expect(c).toContain('data-act="aiAskNone"')
+    expect(c).toContain('<legend>Which of these do you use AI for?</legend>')
+    expect(unesc(c)).toContain('Tick all that apply. This does not change what the Radar shows.')
+    expect(unesc(c)).toContain("I don't use AI for any of these")
+    expect(c).toContain('Categories set by the FutureReady team (31 Oct 2026); not from an outside study.')
+    expect(c).toContain('Kept with your profile: on this device, and in your account if you sign in and save it.')
+    expect(c).toContain('Writing &amp; Documentation')
+    expect(c).toContain('Reports, emails, meeting minutes, documentation')
+    expect(c).toContain('data-act="aiAskSkip"')
+  })
+
+  it('Continue is off until something is ticked; ticks and none are shown checked', () => {
+    expect(card(view(notAsked()))).toMatch(/<button class="btn" data-act="aiAskContinue" disabled>/)
+    const ticked = card(view(notAsked(), { aiAsk: { picked: ['data'], none: false } }))
+    expect(ticked).toMatch(/<button class="btn" data-act="aiAskContinue">/)
+    expect(ticked).toMatch(/data-act="aiAskPick" data-arg="data" checked/)
+    expect(ticked).not.toMatch(/data-act="aiAskPick" data-arg="writing" checked/)
+    const none = card(view(notAsked(), { aiAsk: { picked: [], none: true } }))
+    expect(none).toMatch(/<button class="btn" data-act="aiAskContinue">/)
+    expect(none).toMatch(/data-act="aiAskNone" checked/)
+  })
+
+  it('once skipped or answered: no card, the Radar shows with a "Change my AI use answers" button; reopening shows the saved ticks', () => {
+    for (const aiTasks of [{ status: 'skipped', date: D }, { status: 'answered', picked: ['writing'], date: D }]) {
+      const html = view(profile({ aiTasks }))
+      expect(html).not.toContain('rd-aiask"')
+      expect(html).toContain('role="tablist"')
+      expect(html).toContain('<button class="btn sm ghost" data-act="aiAskOpen">Change my AI use answers</button>')
+    }
+    const reopened = card(view(profile({ aiTasks: { status: 'answered', picked: ['writing'], date: D } }), { aiAsk: { open: true } }))
+    expect(reopened).toMatch(/data-act="aiAskPick" data-arg="writing" checked/)
+    const reopenedNone = card(view(profile({ aiTasks: { status: 'answered', picked: [], date: D } }), { aiAsk: { open: true } }))
+    expect(reopenedNone).toMatch(/data-act="aiAskNone" checked/)
+  })
+
+  it('no profile: the Radar shows, without the card or the change button', () => {
+    const html = view(null)
+    expect(html).not.toContain('rd-aiask')
+    expect(html).not.toContain('data-act="aiAskOpen"')
+    expect(html).toContain('role="tablist"')
+  })
+
+  it('a saved unknown id is never echoed into the page', () => {
+    const html = view(profile({ aiTasks: { status: 'answered', picked: ['<img src=x>'], date: D } }), { aiAsk: { open: true } })
+    expect(html).not.toContain('<img')
+  })
+
+  it('the card works in all three languages; BM and 中文 lines are marked for owner review', () => {
+    for (const lang of ['ms', 'zh']) {
+      for (const key of NEW_KEYS) expect(translate(lang, key), `${lang} ${key}`).not.toBe(key)
+      const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
+      for (const key of NEW_KEYS) expect(lines.find((l) => l.trimStart().startsWith(`${key}:`)), `${lang} ${key}`).toContain('// translation: owner review')
+      const html = radarView({ t: (k, v) => translate(lang, k, v), state: { lang, profile: notAsked(), radar: {} }, data: linked() })
+      expect(html).toContain('rd-aiask')
+    }
+    for (const key of NEW_KEYS) expect(t(key), key).not.toBe(key)
+  })
+
+  it('D37: no Radar request carries the answers', async () => {
+    const calls = []
+    const real = globalThis.fetch
+    globalThis.fetch = (url, init = {}) => { calls.push({ url: String(url), body: init.body }); return real(url, init) }
+    try {
+      await radarApi.load(BUNDLE_ACTIVE, { base })
+      await radarApi.storeInfo({ base })
+      await radarApi.signal('openalex:T10028', BUNDLE_ACTIVE, { base })
+      await radarApi.aiTasks({ base })
+    } finally {
+      globalThis.fetch = real
+    }
+    expect(calls.length).toBeGreaterThan(0)
+    for (const c of calls) {
+      expect(c.body, c.url).toBeUndefined()
+      expect(c.url).not.toMatch(/picked|aiTasks=|writing|programming/)
+    }
+  })
+})
+
+describe('two tabs (D43-D47)', () => {
+  const D = '2026-10-31'
+  const goal = (value) => profile({ preferences: { careerInterests: [], careerGoal: { state: 'value', value } } })
+  const secs = (html) => [...panel(html).matchAll(/data-sec="([A-Z0-9]+)"/g)].map((m) => m[1])
+
+  it('radarTabOf: Explore first only for a career switch; a picked tab wins; old tab ids fall back (Review Focus 2, 3)', () => {
+    const st = (prof, radar = {}) => ({ lang: 'en', profile: prof, radar })
+    expect(radarTabOf(st(null))).toBe('fy')
+    expect(radarTabOf(st(profile()))).toBe('fy')
+    expect(radarTabOf(st(goal('grow_field')))).toBe('fy')
+    expect(radarTabOf(st(goal('switch_career')))).toBe('ex')
+    expect(radarTabOf(st(profile({ preferences: { careerInterests: [], careerGoal: { state: 'declined' } } })))).toBe('fy')
+    expect(radarTabOf(st(goal('switch_career'), { tab: 'fy' }))).toBe('fy')
+    expect(radarTabOf(st(profile(), { tab: 'ex' }))).toBe('ex')
+    for (const old of ['sk', 'ai', 'x']) {
+      expect(radarTabOf(st(profile(), { tab: old }))).toBe('fy')
+      expect(radarTabOf(st(goal('switch_career'), { tab: old }))).toBe('ex')
+    }
+  })
+
+  it('a career switcher who has not answered lands on Explore; For You still asks first', () => {
+    const p = goal('switch_career'); delete p.aiTasks
+    const html = view(p)
+    expect(html).toMatch(/aria-selected="true"[^>]*data-arg="ex"/)
+    expect(html).toMatch(/aria-selected="false"[^>]*data-arg="fy"/)
+    expect(secs(html)).toEqual(['A2', 'A1'])
+    expect(html).not.toContain('rd-aiask')
+    expect(view(p, { tab: 'fy' })).toContain('rd-aiask')
+  })
+
+  it('Explore opens straight away even before the question is answered', () => {
+    const p = profile(); delete p.aiTasks
+    expect(secs(view(p, { tab: 'ex' }))).toEqual(['A2', 'A1'])
+  })
+
+  it('answered: For You shows the Change button, the AI tasks card and research signals for you, in that order, nothing else', () => {
+    const html = view(ownProfile({ aiTasks: { status: 'answered', picked: ['data'], date: D } }))
+    const pn = panel(html)
+    expect(secs(html)).toEqual(['AI', 'A5'])
+    expect(pn.indexOf('data-act="aiAskOpen"')).toBeGreaterThan(-1)
+    expect(pn.indexOf('data-act="aiAskOpen"')).toBeLessThan(pn.indexOf('data-sec="AI"'))
+    expect(html.indexOf('data-act="aiAskOpen"')).toBeGreaterThan(html.indexOf('role="tablist"'))
+  })
+
+  it('the five removed sections and the old View all are not on the page in either tab (D47)', () => {
+    for (const radar of [{}, { tab: 'fy' }, { tab: 'ex' }]) {
+      const html = view(ownProfile(), radar)
+      for (const sec of ['SK', 'B1', 'B2', 'B5', 'B6']) expect(html, `${JSON.stringify(radar)} ${sec}`).not.toContain(`data-sec="${sec}"`)
+      expect(html).not.toContain('data-act="viewAll"')
+    }
+  })
+
+  it('no profile: For You shows the AI card hint and A5, no question card, no crash (Review Focus 4)', () => {
+    const html = view(null)
+    expect(html).not.toContain('rd-aiask')
+    expect(secs(html)).toEqual(['AI', 'A5'])
+    expect(html).not.toMatch(/\bnull\b|NaN|undefined/)
+  })
+
+  it('Explore shows all six topics with no View all; the linked topic keeps its tag (D45)', () => {
+    const html = view(ownProfile(), { tab: 'ex' })
+    const pn = panel(html)
+    const a2 = section(pn, 'A2')
+    expect(new Set([...a2.matchAll(/data-act="axis" data-arg="([a-z]+)"/g)].map((m) => m[1])).size).toBe(6)
+    expect(lineLabels(pn).split(', ')).toHaveLength(6)
+    const row = (id) => (a2.match(new RegExp(`<tr><td><button[^>]*data-arg="${id}"[\\s\\S]*?</tr>`)) ?? [''])[0]
+    expect(row('language')).toContain(t('rdFromProfile'))
+    expect(row('robotics')).toBeTruthy()
+    expect(row('robotics')).not.toContain(t('rdFromProfile'))
+    expect(pn).not.toContain('data-act="viewAll"')
+    expect(pn).not.toContain(t('rdGlobalView'))
+    expect(pn).not.toContain(t('rdTopicsOwn'))
+  })
+
+  it('the evidence panel opens from Explore (Review Focus 5)', () => {
+    const html = view(ownProfile(), { tab: 'ex', open: { kind: 'axis', id: 'language' } })
+    expect(html).toContain('id="radarDrawer"')
+  })
+
+  it('tab names in BM and 中文 are marked for owner review', () => {
+    for (const lang of ['ms', 'zh']) {
+      const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
+      for (const key of ['rdTabFY', 'rdTabFYq', 'rdTabEX', 'rdTabEXq']) {
+        expect(translate(lang, key), `${lang} ${key}`).not.toBe(key)
+        expect(lines.find((l) => l.trimStart().startsWith(`${key}:`)), `${lang} ${key}`).toContain('// translation: owner review')
+      }
     }
   })
 })
@@ -538,25 +724,30 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
 })
 
 describe('status cards (spec §11.1, §12)', () => {
-  it('the four sources sit as cards in one grid: OpenAlex, DOSM, O*NET skills, Hot Technologies (owner, 31 Oct)', () => {
-    const html = view(ownProfile())
-    const start = html.indexOf('<div class="rd-srcgrid">')
-    expect(start).toBeGreaterThan(-1)
-    const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1])
-    expect(cards).toHaveLength(4)
-    expect(html.indexOf('<article class="rd-srccard')).toBeGreaterThan(start)
-    const names = ['OpenAlex', 'Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot')]
-    names.forEach((name, i) => expect(unesc(cards[i].match(/<h3>([^<]*)<\/h3>/)[1]), name).toContain(name))
-    for (const c of cards) {
+  it('only the source the page shows is listed: one OpenAlex card and OpenAlex alone in View data sources (D48)', () => {
+    for (const radar of [{}, { tab: 'ex' }]) {
+      const html = view(ownProfile(), radar)
+      const start = html.indexOf('<div class="rd-srcgrid">')
+      expect(start).toBeGreaterThan(-1)
+      const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1]).filter((c) => !c.includes('<fieldset>'))
+      expect(cards).toHaveLength(1)
+      const c = cards[0]
+      expect(unesc(c.match(/<h3>([^<]*)<\/h3>/)[1])).toContain('OpenAlex')
       // name with its source link in the head, availability as a tag, the facts as label-value pairs
       expect(c).toMatch(/<header class="rd-srccard-head"><h3>[^<]+<\/h3> <a href="https:\/\//)
       expect(c).toContain('<span class="pill ok" aria-label="Availability: Data available">Data available</span>')
       expect(c).toContain('<dl class="rd-srccard-facts">')
-      expect(c).not.toContain(`<dt>${t('rdDim_availability')}</dt>`)
+      for (const gone of ['Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot'), 'rd-onet-card']) expect(html, gone).not.toContain(gone)
+      const list = html.slice(html.indexOf('<details class="rd-sources">'), html.indexOf('</details>', html.indexOf('<details class="rd-sources">')))
+      const names = [...list.matchAll(/<tr><td><b>([^<]*)<\/b>/g)].map((m) => unesc(m[1]))
+      expect(names).toHaveLength(1)
+      expect(names[0]).toContain('OpenAlex')
     }
-    // the old rule-style blocks are gone
-    expect(html).not.toContain('card rd-src-card')
-    expect(html).not.toContain('rd-kv tiny')
+  })
+
+  it('the admin screen keeps both OpenAlex and DOSM cards (statusCards default)', () => {
+    const html = statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })
+    expect(count(html, /<article class="rd-srccard/g)).toBe(2)
   })
 
   it('a source card is a box in the app look: ink outline, round corners, paper, offset shadow', () => {
@@ -848,7 +1039,10 @@ describe('AI Impact card', () => {
     expect(aiRows(d)).toHaveLength(8)
     expect(aiRows(a)).toHaveLength(10)
     expect(aiRows(card(tab(acc(), { pages: { ai: 2 } })))).toHaveLength(1)
-    expect(d).toContain('<polygon')
+    // D40: a scatter, not a spider web
+    expect(d).toContain('class="rd-scatter"')
+    expect(d).not.toContain('class="rd-radar"')
+    expect(d).not.toContain('<polygon')
     expect(unesc(d)).toContain('Modify existing software to correct errors')
     expect(unesc(a)).not.toContain('Modify existing software to correct errors')
     expect(d).toContain(t('rdAiShown', { n: 8, total: 17 }))
@@ -867,13 +1061,38 @@ describe('AI Impact card', () => {
     expect(html).toContain('https://doi.org/10.54394/HETP0387')
     expect(unesc(html)).toContain(t('rdAiExposure', { job: 'Software Developers', gradient: t('rdAiGrad_G3'), isco: '2512', title: row.title, mean: row.mean.toFixed(2) }))
   })
-  it('the nurse gets bars (no polygon) and Not exposed', () => {
+  it('the nurse (two tasks) gets a scatter with two dots, no bars, and Not exposed (D40)', () => {
     const html = card(tab(nurse()))
     expect(html).not.toContain('<polygon')
-    expect(html).toContain('class="rd-bars"')
+    expect(html).not.toContain('class="rd-bars"')
+    expect(html).toContain('class="rd-scatter"')
     expect(html).toContain(t('rdAiGrad_not_exposed'))
     expect(corners(html)).toHaveLength(2)
   })
+  it('a job with one task in the source gets a scatter with one dot (D40, Review Focus 5)', () => {
+    const counts = {}
+    for (const x of ai.tasks) counts[x.code] = (counts[x.code] ?? 0) + 1
+    const code = Object.keys(counts).sort().find((c) => counts[c] === 1)
+    expect(code).toBeTruthy()
+    const html = card(tab(prof(code)))
+    expect(html).toContain('class="rd-scatter"')
+    expect(corners(html)).toHaveLength(1)
+  })
+
+  it('the scatter dots carry the task text and numbers, the corner switch picks how many, and the legend explains both axes', () => {
+    const html = card(tab(acc(), { corners: { ai: 'all' } }))
+    const dots = [...html.matchAll(/<g role="button" tabindex="0" data-act="aiCorner" data-arg="(\d+)" aria-label="([^"]*)"/g)]
+    expect(dots).toHaveLength(11)
+    expect(unesc(dots[0][2])).toMatch(/^T1\. .+: AI does it [\d.]+% · AI helps [\d.]+% · /)
+    expect(unesc(html)).toContain(t('rdAiLegend'))
+    expect(t('rdAiLegend')).toContain('Not a score')
+    expect(unesc(html)).toContain(t('rdAiScHelps'))
+    // a scatter has dots, not corners: the switch says how many tasks are shown
+    expect(html).toContain(`<span class="small muted">${t('rdAiDots')}</span>`)
+    expect(html).not.toContain(`<span class="small muted">${t('rdCorners')}</span>`)
+    for (const lang of ['ms', 'zh']) expect(translate(lang, 'rdAiDots')).not.toBe('rdAiDots')
+  })
+
   it('two jobs show a switch with 2 buttons; a stale job index falls back to job 0', () => {
     const html = card(tab(pair()))
     expect(count(html, /data-act="aiJob"/g)).toBe(2)
@@ -913,9 +1132,9 @@ describe('AI Impact card', () => {
     expect(rule).toMatch(/text-overflow:ellipsis/)
   })
 
-  it('on a phone the count and source column of a list row moves under the row text', () => {
+  it('up to 760 px wide the count and source column of a list row moves under the row text (one letter per line at 588 px before)', () => {
     const css = readFileSync('public/styles.css', 'utf8')
-    const phone = [...css.matchAll(/@media \(max-width:560px\)\{([\s\S]*?\}\s*)\}/g)].map((m) => m[1]).find((b) => b.includes('.rd-rank-list')) ?? ''
+    const phone = [...css.matchAll(/@media \(max-width:760px\)\{([\s\S]*?\}\s*)\}/g)].map((m) => m[1]).find((b) => b.includes('.rd-rank-list')) ?? ''
     expect(phone).toMatch(/\.rd-rank-list \.rd-row\{grid-template-columns:2\.4em minmax\(0,1fr\)\}/)
     expect(phone).toMatch(/\.rd-rank-list \.rd-rc\{grid-column:2;white-space:normal\}/)
   })
@@ -1014,7 +1233,7 @@ describe('AI Impact card', () => {
   })
   it('T-prefix on corners and list rows; licences on the source line; usage text in the user language', () => {
     const html = card(tab(dev()))
-    expect(html).toMatch(/>T1 /)
+    expect(html).toContain('>T1</text>') // the scatter labels each dot with its number (D40); the text is in the list and the aria label
     expect(html).toContain('<span class="rd-rn">T1</span>')
     expect(html).toContain('aria-label="T1. ')
     expect(html).toContain(t('rdAiLicence'))

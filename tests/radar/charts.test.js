@@ -3,6 +3,7 @@ import { radarChart } from '../../public/js/components/charts/radarChart.js'
 import { lineChart } from '../../public/js/components/charts/lineChart.js'
 import { divergingBars } from '../../public/js/components/charts/divergingBars.js'
 import { profileRadar } from '../../public/js/components/charts/profileRadar.js'
+import { PLOT, taskScatter, xOf, yOf } from '../../public/js/components/charts/taskScatter.js'
 import en from '../../shared/strings/en.js'
 
 const t = (key, vars = {}) => String(en[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '')
@@ -210,5 +211,65 @@ describe('profileRadar', () => {
     const svg = profileRadar(base({ scale: { kind: 'linear', min: 0, max: 100 }, items: mk(6, { value: 50 }), rings: [{ value: 50, label: '50' }] }))
     const [x, y] = svg.match(/<polygon class="rd-data"[^>]*points="([^"]+)"/)[1].split(' ')[0].split(',').map(Number)
     expect(Math.hypot(x - 230, y - 175)).toBeCloseTo(59, 0)
+  })
+})
+
+describe('taskScatter (D40-D42)', () => {
+  const item = (n, automation, usage, extra = {}) => ({ id: String(n), n, text: `Task ${n}`, automation, usage, aria: `T${n}. Task ${n}`, ...extra })
+  const dots = (svg) => [...svg.matchAll(/<g role="button"[^>]*>\s*<circle class="rd-pt" cx="([\d.]+)" cy="([\d.]+)"/g)].map((m) => [Number(m[1]), Number(m[2])])
+
+  it('across: 0 % at the left edge, 100 % at the right, 50 % midway; values outside are clamped', () => {
+    expect(xOf(0)).toBe(PLOT.left)
+    expect(xOf(100)).toBe(PLOT.right)
+    expect(xOf(50)).toBeCloseTo((PLOT.left + PLOT.right) / 2, 5)
+    expect(xOf(-5)).toBe(PLOT.left)
+    expect(xOf(130)).toBe(PLOT.right)
+  })
+
+  it('up: log scale, 10 % at the top, 0.01 % above the band, anything under 0.01 % on the band', () => {
+    expect(yOf(10)).toBe(PLOT.top)
+    expect(yOf(1)).toBeLessThan(yOf(0.1))
+    expect(yOf(0.1)).toBeLessThan(yOf(0.01))
+    expect(yOf(0.01)).toBeLessThan(PLOT.band)
+    expect(yOf(0.001)).toBe(PLOT.band)
+    expect(yOf(0)).toBe(PLOT.band)
+    expect(yOf(50)).toBe(PLOT.top)
+    // equal steps per tenfold
+    expect(yOf(0.1) - yOf(1)).toBeCloseTo(yOf(1) - yOf(10), 5)
+  })
+
+  it('one task draws one dot (no bar fallback); each dot is a keyboard button with its label', () => {
+    const svg = taskScatter({ items: [item(1, 40, 0.5)], act: 'aiCorner', label: 'AI tasks', t })
+    expect(svg).toMatch(/^<svg class="rd-scatter"/)
+    expect(svg).toContain('role="group"')
+    expect(svg).toContain('aria-label="AI tasks"')
+    expect(count(svg, /role="button"/g)).toBe(1)
+    expect(svg).toContain('tabindex="0" data-act="aiCorner" data-arg="1" aria-label="T1. Task 1"')
+    expect(svg).toContain('>T1</text>')
+    expect(dots(svg)).toEqual([[xOf(40), yOf(0.5)].map((v) => Math.round(v * 10) / 10)])
+  })
+
+  it('40 tasks at the same values give 40 dots at the same spot (no jitter)', () => {
+    const svg = taskScatter({ items: Array.from({ length: 40 }, (_, i) => item(i + 1, 60, 0)), act: 'aiCorner', label: 'x', t })
+    const d = dots(svg)
+    expect(d).toHaveLength(40)
+    expect(new Set(d.map((p) => p.join())).size).toBe(1)
+  })
+
+  it('draws the dashed 50 % line, the four ticks, the band, both side labels and the axis titles in --est', () => {
+    const svg = taskScatter({ items: [item(1, 20, 1), item(2, 80, 0.05)], act: 'aiCorner', label: 'x', t })
+    expect(svg).toMatch(new RegExp(`<line class="rd-half" x1="${xOf(50)}"[^>]*stroke-dasharray`))
+    for (const tick of ['0.01%', '0.1%', '1%', '10%']) expect(svg).toContain(`>${tick}</text>`)
+    for (const key of ['rdAiScUnder', 'rdAiScHelps', 'rdAiScDoes', 'rdAiScX', 'rdAiScUp']) expect(svg, key).toContain(t(key).replace(/&/g, '&amp;').replace(/'/g, '&#39;'))
+    expect(svg).toContain('var(--est)')
+    expect(svg.replace(/<[^>]+>/g, ' ')).not.toMatch(/score|rank|risk|safe/i)
+  })
+
+  it('non-finite values are left out of the chart; every text is escaped', () => {
+    const svg = taskScatter({ items: [item(1, NaN, 1), item(2, 30, null), item(3, 30, 1, { aria: '<b>x</b>' })], act: 'a"b', label: '<i>', t })
+    expect(count(svg, /role="button"/g)).toBe(1)
+    expect(svg).not.toContain('<b>')
+    expect(svg).not.toContain('<i>')
+    expect(svg).toContain('data-act="a&quot;b"')
   })
 })

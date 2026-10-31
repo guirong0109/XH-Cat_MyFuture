@@ -176,6 +176,29 @@ details summary{cursor:pointer;font:500 11.5px var(--mono);letter-spacing:.08em;
 .toggle button.on{background:var(--ink);color:var(--bg);box-shadow:inset 0 2px 0 rgba(0,0,0,.35)}
 .toggle button.on::before{content:"";display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--lime);vertical-align:1px}
 .toggle button:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+/* Skills and proficiency, grouped: the CV summary and one card per job or project (and Others), like the big choice
+   buttons (ink outline, hard shadow). Skill chips: lime tint = in the O*NET list, dashed amber = not in it. */
+.cvsum{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 20px;margin:0 0 18px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink)}
+.cvsum h3{margin:2px 0 4px;font:600 18px/1.3 var(--sans)}
+.kicker{margin:0;font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--self)}
+.grp{padding:16px 20px;margin:0 0 16px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink)}
+.grp-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.grp-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.grp-title h3{margin:0;font:600 19px/1.3 var(--sans);overflow-wrap:anywhere}
+.kind{flex:none;padding:2px 8px;border:1px solid var(--ink);border-radius:99px;font:500 10px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.grp-sub{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.grp-quote{margin:8px 0 0;font-size:13px;color:var(--self)}
+.sks{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.sk{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border:1px solid var(--ink);border-radius:99px;font-size:13px;color:var(--ink);background:var(--surface)}
+.sk small{font-size:11px;color:var(--muted)}
+.sk em{font:500 10px/1 var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;padding:2px 5px;border-radius:4px;background:var(--ink);color:var(--bg)}
+.sk.ok{background:color-mix(in srgb,var(--lime) 28%,var(--surface))}
+.sk.unk{border-style:dashed;border-color:var(--self);background:var(--self-soft);color:var(--self)}
+.sk.add{cursor:pointer;border-style:dashed;font:inherit;font-size:13px}
+.sk.add:hover{border-style:solid;background:var(--ink);color:var(--bg)}
+.grp-edit{margin-top:12px;border-top:1px solid var(--ink)}
+.sk-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.sk-name{flex:1 1 200px;min-width:0}
 .option.sel::before{background:var(--lime);border-color:var(--lime);box-shadow:inset 0 0 0 3px var(--ink)}
 .field label.tiny{display:flex;gap:6px;align-items:center;font-weight:400}
 .field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:9px 11px;width:100%}
@@ -233,6 +256,9 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
   .hide-m{display:none}
   .tabs{flex-wrap:nowrap}
   .slot::before{left:-6px;right:-6px}
+  .grp,.cvsum{padding:14px}
+  .toggle{display:flex;width:100%}
+  .toggle button{flex:1 1 auto;padding:7px 4px;letter-spacing:.02em}
 }
 @media (prefers-reduced-motion:reduce){
   .btn,.grid>.choice,.grid>.choice::after,.option{transition:none}

@@ -15,6 +15,7 @@ import org from './screens/org.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
 import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
+import { confirmGroup, groupsOf, linkSkill, placeOf, renamePlace, unlinkPlace, unlinkSkill } from './screens/skillGroups.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -61,7 +62,7 @@ const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -192,26 +193,54 @@ const actions = {
     go('welcome')
   },
   section: (i) => { state.section = Number(i); showSection(); persist(); render(); window.scrollTo(0, 0) },
-  addRec: (listPath) => update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] })),
+  addRec: (listPath) => {
+    // A new project opens in its card's Edit view, where its title is typed.
+    if (listPath === 'projects') state.groupEdit = `project|${state.profile.projects.length}`
+    update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] }))
+  },
   delRec: (arg) => {
     const [listPath, i] = arg.split('|')
-    update(removeRecord(state.profile, listPath, Number(i)))
+    let profile = removeRecord(state.profile, listPath, Number(i))
+    // The skills of a removed job or project go to Others (unless another one has the same title).
+    const kind = { 'employment.records': 'job', projects: 'project' }[listPath]
+    if (kind) {
+      const title = kind === 'job' ? state.profile.employment.records[Number(i)]?.jobTitle : state.profile.projects[Number(i)]?.title
+      const stays = groupsOf(profile).some((g) => g.kind === kind && g.title.trim().toLowerCase() === String(title ?? '').trim().toLowerCase())
+      if (!stays) profile = unlinkPlace(profile, kind, title ?? '')
+      state.groupEdit = null
+      state.groupAdd = null
+    }
+    update(profile)
+  },
+  // Skills and proficiency cards: "Looks right", "Confirm all", Edit, "+ add skill", and taking a skill out of a card.
+  groupOk: (key) => update(confirmGroup(state.profile, key)),
+  groupOkAll: () => update(groupsOf(state.profile).filter((g) => g.needsCheck).reduce((profile, g) => confirmGroup(profile, g.key), state.profile)),
+  groupEdit: (key) => { state.groupEdit = state.groupEdit === key ? null : key; render() },
+  groupAdd: (key) => {
+    state.groupAdd = state.groupAdd === key ? null : key
+    render()
+    document.querySelector(`[data-search="skill|gskill|${key}"]`)?.focus()
+  },
+  unlinkSkill: (arg) => {
+    const [i, ...key] = arg.split('|')
+    const place = placeOf(state.profile, key.join('|'))
+    if (place) update(unlinkSkill(state.profile, Number(i), place))
   },
   review: (arg) => {
     const [path, on] = arg.split('|')
     update(markForReview(state.profile, path, on === 'on'))
   },
   // A skill in the user's own words: normalised by the server (O*NET id, candidates to pick, or unknown).
-  addSkill: async (typed) => {
+  // place: the job or project card it was added in ({ kind, title }), or null for Others.
+  addSkill: async (typed, place = null) => {
     const text = String(typed ?? '').trim()
     if (!text) return
     const out = await api('POST', '/api/skills/normalize', { texts: [text] })
     // Without the server the skill is kept as typed (unknown), never guessed.
     const found = out.ok ? out.data.skills[0] : { name: text, canonicalId: null, category: null, originalText: text, candidates: [] }
-    const key = (found.canonicalId ?? found.name).toLowerCase()
-    if (state.profile.skills.some((s) => (s.canonicalId ?? s.name).toLowerCase() === key)) return render()
-    const skill = { ...makeSkill({ ...found, source: 'user_input' }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
-    update({ ...state.profile, skills: [...state.profile.skills, skill] })
+    const profile = linkSkill(state.profile, found, place)
+    if (profile === state.profile) return render()
+    update(profile)
   },
   // A choice from a search picker ("<key>|<index>").
   pick: (arg) => {
@@ -222,9 +251,11 @@ const actions = {
     const chosen = pick?.result?.candidates?.[index]
     if (!chosen) return
     state.pick = { ...state.pick, [key]: null }
-    if (key === 'skill') {
-      if (state.profile.skills.some((s) => s.canonicalId === chosen.id)) return render()
-      return update({ ...state.profile, skills: [...state.profile.skills, makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' })] })
+    if (key === 'skill' || key.startsWith('gskill|')) {
+      const place = key === 'skill' ? null : placeOf(state.profile, key.slice('gskill|'.length))
+      state.groupAdd = null
+      const profile = linkSkill(state.profile, { name: chosen.name, canonicalId: chosen.id, category: chosen.category }, place)
+      return profile === state.profile ? render() : update(profile)
     }
     if (key === 'interest') {
       state.occ = { ...(state.occ ?? {}), interest: { ...pick.result, term: pick.term } }
@@ -241,6 +272,10 @@ const actions = {
     state.pick = { ...state.pick, [key]: null }
     if (!term) return render()
     if (key === 'skill') return actions.addSkill(term)
+    if (key.startsWith('gskill|')) {
+      state.groupAdd = null
+      return actions.addSkill(term, placeOf(state.profile, key.slice('gskill|'.length)))
+    }
     const i = Number(key.split('|')[1])
     update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
   },
@@ -453,6 +488,9 @@ function onChange(target) {
     let profile = state.profile
     // The first job is on screen before it exists: typing in it creates it.
     if (listPath === 'employment.records' && Number(i) >= profile.employment.records.length) profile = addRecord(profile, listPath, { ...NEW_RECORD[listPath] })
+    // A job or project renamed keeps the skills listed under it.
+    if (listPath === 'employment.records' && key === 'jobTitle') profile = renamePlace(profile, 'job', profile.employment.records[Number(i)]?.jobTitle ?? '', target.value)
+    if (listPath === 'projects' && key === 'title') profile = renamePlace(profile, 'project', profile.projects[Number(i)]?.title ?? '', target.value)
     return update(setField(profile, `${listPath}.${i}.${key}`, key === 'years' ? toYears(target.value) : target.value))
   }
   // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.

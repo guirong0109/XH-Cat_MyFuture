@@ -3,7 +3,8 @@ import form from '../public/js/screens/form.js'
 import { emptyProfile, makeSkill } from '../shared/profileSchema.js'
 
 const t = (key) => key
-const skillsPage = (skills) => form({ t, state: { section: 2, profile: { ...emptyProfile(), skills }, occ: {}, pick: {} } })
+// The level is set in a card's Edit view (owner, 31 Oct: skills grouped under jobs and projects); these skills are under Others.
+const skillsPage = (skills) => form({ t, state: { section: 2, profile: { ...emptyProfile(), skills }, occ: {}, pick: {}, groupEdit: 'other' } })
 const python = (proficiency = null) => ({ ...makeSkill({ name: 'Python', canonicalId: 'onet:tech:python', source: 'user_input' }), proficiency, proficiencyStatus: proficiency ? 'self_reported' : 'not_assessed' })
 const segments = (html) => [...html.matchAll(/<button class="([^"]*)" role="radio" aria-checked="(true|false)" data-act="level" data-arg="0\|(\w*)">(\w+)<\/button>/g)]
   .map(([, cls, checked, value, label]) => ({ on: cls === 'on' && checked === 'true', value, label }))

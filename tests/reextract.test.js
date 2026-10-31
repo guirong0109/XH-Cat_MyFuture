@@ -108,6 +108,20 @@ describe('createReextractor', () => {
     expect(out.suggested.interfaceLanguage).toBe('ms')
   })
 
+  it('a skill names the job or project it was used in; a name the AI did not return as a job or project links nothing', async () => {
+    const reply = { ...REPLY, skills: [
+      { name: 'Microsoft Excel', usedIn: 'it support executive', evidence: 'monthly reports in Microsoft Excel' },
+      { name: 'Microsoft Excel', usedIn: 'Made-up Project', evidence: 'Built monthly reports in Microsoft Excel' },
+    ] }
+    const { reextractor } = await setup({ fetchImpl: async () => claudeReply(reply) })
+    const out = await run(reextractor)
+    expect(out.suggested.skills).toHaveLength(1)
+    expect(out.suggested.skills[0].usedIn).toEqual([{ kind: 'job', title: 'IT Support Executive' }])
+    expect(validateProfile(out.suggested)).toEqual({ ok: true, errors: [] })
+    expect(CV_SCHEMA.properties.skills.items.properties.usedIn).toEqual({ type: 'string' })
+    expect(SYSTEM_PROMPT).toContain('usedIn')
+  })
+
   it('the CV goes inside <cv> tags with the rule to ignore instructions in it', async () => {
     const { reextractor, calls } = await setup({ fetchImpl: async () => claudeReply(REPLY) })
     await run(reextractor)

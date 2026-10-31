@@ -6,6 +6,7 @@ import { readText } from './readText.js'
 import { validateFile } from './validateFile.js'
 import { CV_SCHEMA, SYSTEM_PROMPT, userMessage } from './reextractPrompt.js'
 import { createWindowLimiter } from '../rateLimit.js'
+import { mergeSkills } from '../skills/normalize.js'
 
 const RUNS_PER_UPLOAD = 3
 const RUNS_PER_HOUR = 20
@@ -24,12 +25,14 @@ class ProviderError extends Error {
 }
 
 const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
+// Fields a reply may leave out (replies from before they were asked for are still read).
+const OPTIONAL = new Set(['usedIn'])
 
 // The reply must have the five lists of objects with string fields; anything else is a failed reply.
 function checkShape(reply) {
   if (!reply || typeof reply !== 'object') return false
   return Object.entries(FIELDS).every(([list, fields]) => Array.isArray(reply[list])
-    && reply[list].every((entry) => entry && typeof entry === 'object' && fields.every((f) => typeof entry[f] === 'string')))
+    && reply[list].every((entry) => entry && typeof entry === 'object' && fields.every((f) => typeof entry[f] === 'string' || (OPTIONAL.has(f) && entry[f] === undefined))))
 }
 
 // The value(s) of an item that its quote must contain (for education, any one of the three: a Malay CV says
@@ -52,7 +55,7 @@ export function keepQuoted(reply, cvText) {
         dropped++
         continue
       }
-      fields[list].push(Object.fromEntries(keys.map((key) => [key, String(entry[key] ?? '').trim()])))
+      fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || entry[key] !== undefined).map((key) => [key, String(entry[key] ?? '').trim()])))
     }
   }
   return { fields, dropped }
@@ -129,11 +132,17 @@ export function createReextractor({ tempStore, providers, fetchImpl = fetch, nor
     profile.employment.records = fields.jobs.map((j) => ({ jobTitle: j.jobTitle, employer: j.employer, period: '', userConfirmed: false, extraction: extraction(j.evidence) }))
     profile.certifications = fields.certifications.map((c) => ({ name: c.name, issuer: '', year: '', userConfirmed: false, extraction: extraction(c.evidence) }))
     profile.projects = fields.projects.map((p) => ({ title: p.title, description: '', userConfirmed: false, extraction: extraction(p.evidence) }))
+    // Where a skill was used: only a job or project the AI itself returned (and kept), by its title.
+    const places = [
+      ...profile.employment.records.map((j) => ({ kind: 'job', title: j.jobTitle })),
+      ...profile.projects.map((p) => ({ kind: 'project', title: p.title })),
+    ]
+    const usedIn = (name) => places.filter((p) => name && norm(p.title) === norm(name)).slice(0, 1)
     // Skill names go through the same O*NET normaliser as everything else; ids never come from the AI.
-    profile.skills = await Promise.all(fields.skills.filter((s) => s.name).map(async (s) => {
+    profile.skills = mergeSkills(await Promise.all(fields.skills.filter((s) => s.name).map(async (s) => {
       const found = await normalizer.normalizeSkill(s.name)
-      return makeSkill({ ...found, source: 'cv_ai', extraction: extraction(s.evidence) })
-    }))
+      return makeSkill({ ...found, source: 'cv_ai', extraction: extraction(s.evidence), usedIn: usedIn(s.usedIn) })
+    })))
     return profile
   }
 

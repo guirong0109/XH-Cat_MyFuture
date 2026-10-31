@@ -74,7 +74,7 @@ describe('search pickers', () => {
 })
 
 describe('form sections', () => {
-  const state = (section, profile) => ({ section, profile, occ: {}, pick: {} })
+  const state = (section, profile) => ({ section, profile, occ: {}, pick: {}, groupEdit: 'other' })
 
   it('the skill level starts on "Not assessed yet"', () => {
     const profile = { ...emptyProfile(), skills: [makeSkill({ name: 'Python', canonicalId: 'onet:tech:python', source: 'user_input' })] }

@@ -57,7 +57,8 @@ export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' 
   }
 }
 
-export function makeSkill({ name, originalText = name, canonicalId = null, category = null, source, extraction = null }) {
+// usedIn: the jobs and projects the skill was used in, by title ({ kind: 'job' | 'project', title }); none = other skills.
+export function makeSkill({ name, originalText = name, canonicalId = null, category = null, source, extraction = null, usedIn = [] }) {
   return {
     name,
     originalText,
@@ -68,6 +69,7 @@ export function makeSkill({ name, originalText = name, canonicalId = null, categ
     proficiency: null,
     proficiencyStatus: 'not_assessed',
     extraction,
+    usedIn,
   }
 }
 
@@ -94,6 +96,10 @@ function checkSkill(skill, i, errors) {
   }
   if (!SKILL_SOURCES.includes(skill.source)) errors.push({ path: `${at}.source`, code: 'bad_enum' })
   if (!PROFICIENCY_STATUS.includes(skill.proficiencyStatus)) errors.push({ path: `${at}.proficiencyStatus`, code: 'bad_enum' })
+  // Older profiles have no usedIn; when present it lists jobs and projects by title.
+  if (skill.usedIn !== undefined && !(Array.isArray(skill.usedIn) && skill.usedIn.every((p) => ['job', 'project'].includes(p?.kind) && typeof p.title === 'string'))) {
+    errors.push({ path: `${at}.usedIn`, code: 'bad_type' })
+  }
   if (skill.proficiency !== null && !LEVELS.includes(skill.proficiency)) errors.push({ path: `${at}.proficiency`, code: 'bad_enum' })
   // A CV can show that a skill is mentioned; only the user (or an assessment) can say how good they are.
   else if (skill.proficiency !== null && CV_SOURCES.has(skill.source) && !skill.userConfirmed) {

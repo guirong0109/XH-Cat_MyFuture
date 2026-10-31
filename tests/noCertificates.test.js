@@ -12,24 +12,24 @@ const withLists = () => ({
   projects: [{ title: 'Budget app', description: 'A small app' }],
 })
 
-describe('no certificates, training or projects in the profile', () => {
+describe('no certificates or training in the profile; projects came back (owner, 31 Oct)', () => {
   it('the profile has four sections: education, employment, skills, interests', () => {
     expect(SECTIONS).toEqual(['secStudy', 'secWork', 'secSkills', 'secPrefs'])
     expect(SECTION_FIELDS).toHaveLength(SECTIONS.length)
     for (let section = 0; section < SECTIONS.length; section += 1) {
       const html = page(section)
-      for (const key of ['addCert', 'addTraining', 'addProject', 'secCerts']) expect(html).not.toContain(key)
+      for (const key of ['addCert', 'addTraining', 'secCerts']) expect(html).not.toContain(key)
     }
     expect(page(3)).toContain('fInterests')
   })
 
-  it('what a CV or the AI re-read finds for them is left out; everything else stays', () => {
-    expect(NOT_ASKED).toEqual(['certifications', 'training', 'projects'])
+  it('certificates and training a CV or the AI re-read finds are left out; projects and everything else stay', () => {
+    expect(NOT_ASKED).toEqual(['certifications', 'training'])
     const draft = { ...withLists(), skills: [makeSkill({ name: 'Python', source: 'cv_rules' })] }
     const out = dropNotAsked(draft)
     expect(out.certifications).toEqual([])
     expect(out.training).toEqual([])
-    expect(out.projects).toEqual([])
+    expect(out.projects).toEqual(draft.projects)
     expect(out.skills).toEqual(draft.skills)
     expect(draft.certifications).toHaveLength(1)
   })

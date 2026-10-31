@@ -1,12 +1,11 @@
 // Case B (manual entry) and Case C editing: the profile form in four sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
-import { esc, tag } from '../ui.js'
+import { esc } from '../ui.js'
 import { choiceField, cvNote, reviewToggle } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
-import { pickerList, searchPicker } from '../components/searchPicker.js'
-import { fieldSuggestions } from '../components/fieldSuggestions.js'
+import { skillGroups } from './skillGroups.js'
 
-// Certificates, training and projects are not asked (owner, 31 Oct).
+// Certificates and training are not asked (owner, 31 Oct); projects are cards in Skills and proficiency.
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
@@ -15,14 +14,6 @@ export const SECTION_FIELDS = [
   [],
   [],
 ]
-
-// A search picker with its current list (the last search for that key, or nothing yet).
-function picker(ctx, kind, key, label, placeholder, value) {
-  const { t, state } = ctx
-  const pick = state.pick?.[key]
-  const term = pick?.term ?? value
-  return searchPicker({ t, kind, key, label, placeholder, value: term, list: pick ? pickerList({ t, kind, key, term, result: pick.result, busy: pick.busy }) : '' })
-}
 
 // Career interests and fields: O*NET interest areas, several allowed (chips with ×); none chosen = prefer not to say.
 function interestField({ t, profile, state }) {
@@ -132,36 +123,8 @@ function work(ctx) {
   return `${rows}<button class="btn sm" data-act="addRec" data-arg="employment.records">${esc(t('addJob'))}</button>`
 }
 
-// Skill level (owner, 31 Oct): a toggle bar; one press picks the level. "Not assessed yet" is on until one is chosen.
-const LEVEL_OPTIONS = [['', 'levelNone'], ['basic', 'basic'], ['good', 'good'], ['expert', 'expert']]
-function levelBar(t, skill, i) {
-  return `<div class="toggle" role="radiogroup" aria-labelledby="lv-${i}">${LEVEL_OPTIONS.map(([value, key]) => {
-    const on = (skill.proficiency ?? '') === value
-    return `<button class="${on ? 'on' : ''}" role="radio" aria-checked="${on}" data-act="level" data-arg="${i}|${value}">${esc(t(key))}</button>`
-  }).join('')}</div>`
-}
-
-function skills(ctx) {
-  const { t, profile } = ctx
-  const rows = profile.skills.map((skill, i) => {
-    const levelTag = skill.proficiencyStatus === 'not_assessed' ? '' : tag(skill.proficiencyStatus === 'assessed' ? 'calc' : 'self', t(skill.proficiencyStatus === 'assessed' ? 'tagAssessed' : 'tagSelf'))
-    const from = skill.extraction ? `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${skill.extraction.evidence ? `: “${esc(skill.extraction.evidence)}”` : ''}</div>` : ''
-    const pick = skill.candidates?.length
-      ? `<div class="tiny" style="margin-top:4px">${esc(t('pickTerm'))} ${skill.candidates.map((c) => `<button class="btn sm" data-act="pickSkill" data-arg="${i}|${esc(c.id)}">${esc(c.name)}</button>`).join(' ')}</div>`
-      : ''
-    const unknown = skill.canonicalId ? `<div class="tiny muted">O*NET · ${esc(skill.canonicalId)}${skill.category ? ` · ${esc(skill.category)}` : ''}</div>` : `<div class="tiny muted">${esc(t('skillUnknown'))}</div>${pick}`
-    const original = skill.originalText && skill.originalText !== skill.name ? `<span class="tiny muted"> “${esc(skill.originalText)}”</span>` : ''
-    const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title, source: `O*NET ${skill.suggestedFrom.onetVersion ?? ''}`.trim() }))}</div>` : ''
-    return `<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between">
-      <div><b>${esc(skill.name)}</b>${original}${from}${suggested}${unknown}</div>
-      <div class="row"><span class="tiny muted" id="lv-${i}">${esc(t('level'))}</span>
-        ${levelBar(t, skill, i)}
-        ${levelTag} ${reviewToggle(t, `skills.${i}`, skill)}
-        <button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button></div>
-    </div></div>`
-  }).join('')
-  return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${fieldSuggestions(ctx)}${rows}`
-}
+// Skills and proficiency: skills grouped under the jobs and projects they were used in (skillGroups.js).
+const skills = (ctx) => skillGroups(ctx)
 
 // Interests (owner, 31 Oct): only Career interests and fields. The goal is asked at the start; occupations of interest,
 // work location and learning hours are not asked. A profile saved earlier keeps its answers, and the receipt shows them.
@@ -171,7 +134,7 @@ const BODIES = [study, work, skills, prefs]
 
 // Lists the profile no longer asks for: what a CV or the AI re-read finds for them is left out, so the profile never holds
 // something the user cannot see or edit.
-export const NOT_ASKED = ['certifications', 'training', 'projects']
+export const NOT_ASKED = ['certifications', 'training']
 export const dropNotAsked = (profile) => ({ ...profile, ...Object.fromEntries(NOT_ASKED.map((list) => [list, []])) })
 
 export default ({ t, state }) => {

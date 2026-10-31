@@ -116,3 +116,52 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(profile.skills.length).toBeGreaterThan(0)
   })
 })
+
+describe('skills are linked to the job or project they were used in (owner, 31 Oct)', () => {
+  const GROUPED = [
+    'EXPERIENCE',
+    'Data Analyst Intern, Retail company, Jun 2025 - Dec 2025',
+    '• Built weekly sales reports in Microsoft Excel for store managers',
+    'IT Support, Acme Sdn Bhd, Jan 2024 - May 2025',
+    'Wrote small office tools in Python and kept the laptops running',
+    'PROJECTS',
+    'Flood Risk Prediction Model',
+    '• Trained a model in Python on public rainfall data',
+    'Campus FAQ Assistant',
+    'Built a chatbot in JavaScript and Python that answers student questions.',
+    'SKILLS',
+    'Python, Reading Comprehension, Oracle Java',
+  ]
+  const grouped = () => extractProfile({ lines: GROUPED, language: 'en', interfaceLanguage: 'en', catalogue, normalizer, now: NOW })
+  const usedIn = (profile, name) => profile.skills.find((s) => s.name === name)?.usedIn
+
+  it('a project is a short title line; the bullet or sentence lines under it are its description, without the bullets', async () => {
+    const { profile } = await grouped()
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([
+      ['Flood Risk Prediction Model', 'Trained a model in Python on public rainfall data'],
+      ['Campus FAQ Assistant', 'Built a chatbot in JavaScript and Python that answers student questions.'],
+    ])
+  })
+
+  it('a job keeps the lines under it as its description', async () => {
+    const { profile } = await grouped()
+    expect(profile.employment.records.map((j) => j.description)).toEqual([
+      'Built weekly sales reports in Microsoft Excel for store managers',
+      'Wrote small office tools in Python and kept the laptops running',
+    ])
+  })
+
+  it('each skill lists every job and project it was found under; Skills-section-only skills list none', async () => {
+    const { profile } = await grouped()
+    expect(usedIn(profile, 'Microsoft Excel')).toEqual([{ kind: 'job', title: 'Data Analyst Intern' }])
+    expect(usedIn(profile, 'JavaScript')).toEqual([{ kind: 'project', title: 'Campus FAQ Assistant' }])
+    expect(usedIn(profile, 'Python')).toEqual([
+      { kind: 'job', title: 'IT Support' },
+      { kind: 'project', title: 'Flood Risk Prediction Model' },
+      { kind: 'project', title: 'Campus FAQ Assistant' },
+    ])
+    expect(usedIn(profile, 'Oracle Java')).toEqual([])
+    expect(usedIn(profile, 'Reading Comprehension')).toEqual([])
+    expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
+  })
+})

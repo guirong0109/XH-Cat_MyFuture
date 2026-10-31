@@ -109,7 +109,8 @@ export function mergeSkills(skills) {
     const stronger = (skill.extraction?.confidence ?? -1) > (seen.extraction?.confidence ?? -1)
     const usedIn = [...(seen.usedIn ?? [])]
     for (const place of skill.usedIn ?? []) if (!usedIn.some((p) => p.kind === place.kind && p.title === place.title)) usedIn.push(place)
-    out.set(key, { ...(stronger ? skill : seen), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed, usedIn })
+    const aiSuggestion = seen.aiSuggestion ?? skill.aiSuggestion
+    out.set(key, { ...(stronger ? skill : seen), ...(aiSuggestion ? { aiSuggestion } : {}), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed, usedIn })
   }
   return [...out.values()]
 }

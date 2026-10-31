@@ -287,4 +287,43 @@ describe('mergeDrafts', () => {
       expect(merged.profile.employment.records).toHaveLength(2)
     })
   })
+
+  describe('AI O*NET suggestions', () => {
+    const sug = (id, name = 'Programming') => ({ id, name, evidence: 'writes code' })
+    const rs = (name, canonicalId, extra = {}) => ({ ...makeSkill({ name, canonicalId, source: 'cv_rules', extraction: rulesEx(name) }), ...extra })
+    const as = (name, canonicalId, aiSuggestion) => ({ ...makeSkill({ name, canonicalId, source: 'cv_ai', extraction: aiEx(name) }), ...(aiSuggestion ? { aiSuggestion } : {}) })
+    const merge = (rulesSkills, aiSkills) => mergeDrafts(result(build((p) => { p.skills = rulesSkills })), build((p) => { p.skills = aiSkills })).profile.skills
+
+    it('moves the AI suggestion onto the matching rules skill', () => {
+      const out = merge([rs('Python', 'onet:tech:python')], [as('Python', 'onet:tech:python', sug('onet:el:2.A.2.b'))])
+      expect(out).toHaveLength(1)
+      expect(out[0].source).toBe('cv_rules')
+      expect(out[0].aiSuggestion).toEqual(sug('onet:el:2.A.2.b'))
+    })
+
+    it('keeps the suggestion the rules skill already has', () => {
+      const out = merge([rs('Python', 'onet:tech:python', { aiSuggestion: sug('onet:el:first', 'First') })], [as('Python', 'onet:tech:python', sug('onet:el:second', 'Second'))])
+      expect(out[0].aiSuggestion.id).toBe('onet:el:first')
+    })
+
+    it('drops a suggestion whose id is already a skill id in the draft', () => {
+      const out = merge([rs('Programming', 'onet:el:2.A.2.b'), rs('Python', 'onet:tech:python')], [as('Python', 'onet:tech:python', sug('onet:el:2.A.2.b'))])
+      expect(out.find((s) => s.name === 'Python').aiSuggestion).toBeUndefined()
+    })
+
+    it('lets only the first of two skills keep the same suggestion', () => {
+      const out = merge([], [as('Python', 'onet:tech:python', sug('onet:el:x')), as('Java', 'onet:tech:java', sug('onet:el:x'))])
+      expect(out.map((s) => s.aiSuggestion?.id)).toEqual(['onet:el:x', undefined])
+    })
+
+    it('does not change its inputs', () => {
+      const rules = result(build((p) => { p.skills = [rs('Python', 'onet:tech:python')] }))
+      const ai = build((p) => { p.skills = [as('Python', 'onet:tech:python', sug('onet:el:x'))] })
+      const rc = structuredClone(rules)
+      const ac = structuredClone(ai)
+      mergeDrafts(rules, ai)
+      expect(rules).toEqual(rc)
+      expect(ai).toEqual(ac)
+    })
+  })
 })

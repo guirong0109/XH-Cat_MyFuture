@@ -75,6 +75,20 @@ function joinList(rulesList, aiList, { main, second, fields, path, uncertain, on
   return { list, matches }
 }
 
+// A suggestion is dropped when its id is already a skill in the draft, or an earlier skill kept the same one.
+function dropTakenSuggestions(skills) {
+  const taken = new Set(skills.map((s) => s.canonicalId).filter(Boolean))
+  return skills.map((skill) => {
+    if (!skill.aiSuggestion) return skill
+    if (taken.has(skill.aiSuggestion.id)) {
+      const { aiSuggestion, ...rest } = skill
+      return rest
+    }
+    taken.add(skill.aiSuggestion.id)
+    return skill
+  })
+}
+
 export function mergeDrafts({ profile, uncertain }, aiProfile) {
   if (!aiProfile) return { profile, uncertain }
   const flags = [...uncertain]
@@ -109,6 +123,7 @@ export function mergeDrafts({ profile, uncertain }, aiProfile) {
       skills.push({ ...ai, usedIn: aiPlaces })
       continue
     }
+    if (ai.aiSuggestion && !same.aiSuggestion) same.aiSuggestion = ai.aiSuggestion
     for (const place of aiPlaces) if (!same.usedIn.some((p) => p.kind === place.kind && p.title === place.title)) same.usedIn.push(place)
   }
 
@@ -119,7 +134,7 @@ export function mergeDrafts({ profile, uncertain }, aiProfile) {
       employment: { ...profile.employment, records: jobs.list },
       projects: projects.list,
       certifications: certifications.list,
-      skills: mergeSkills(skills).map(levelFromUse),
+      skills: dropTakenSuggestions(mergeSkills(skills).map(levelFromUse)),
     },
     uncertain: flags,
   }

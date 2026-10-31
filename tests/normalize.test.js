@@ -112,4 +112,12 @@ describe('mergeSkills', () => {
   it('keeps unknown skills, deduped by name', () => {
     expect(mergeSkills([makeSkill({ name: 'Weaving', source: 'user_input' }), makeSkill({ name: 'weaving', source: 'user_input' })])).toHaveLength(1)
   })
+
+  it('keeps an aiSuggestion from either entry of the same skill', () => {
+    const sug = { id: 'onet:el:x', name: 'X', evidence: 'quote' }
+    const plain = makeSkill({ name: 'Weaving', source: 'user_input' })
+    const withSug = { ...makeSkill({ name: 'Weaving', source: 'user_input' }), aiSuggestion: sug }
+    expect(mergeSkills([plain, withSug])[0].aiSuggestion).toEqual(sug)
+    expect(mergeSkills([withSug, plain])[0].aiSuggestion).toEqual(sug)
+  })
 })

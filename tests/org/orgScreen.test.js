@@ -615,3 +615,89 @@ describe('final review fix 9: group delete and target removal ask first', () => 
     expect(s.api.updateGroup).toHaveBeenCalledWith('g1', { targetCode: null })
   })
 })
+
+// Owner, 1 Nov 2026: the target-role box suggests eMASCO roles as you type, starts with roles matching the department's
+// name, and an empty box asks for 2 letters instead of saying nothing was found.
+describe('target role suggestions', () => {
+  afterEach(() => vi.useRealTimers())
+  const roles = [{ code: '2411-01', title: 'Accountant', source: 'emasco' }, { code: '3313-01', title: 'Accounting Clerk', source: 'emasco' }]
+  function setup(searchRoles = vi.fn(async () => ({ ok: true, data: roles }))) {
+    const st = { screen: 'org', lang: 'en', account: { status: 'in', user: {} }, org: makeOrg() }
+    const render = vi.fn()
+    const api = { searchRoles }
+    return { st, render, api, ...createOrgActions({ state: st, render, api, t, go: vi.fn() }) }
+  }
+
+  it('opening Change suggests roles from the department name at once', async () => {
+    const s = setup()
+    await s.actions.orgRoleOpen('g:g1')
+    expect(s.api.searchRoles).toHaveBeenCalledWith('Finance')
+    expect(s.st.org.roleSearch).toMatchObject({ for: 'g:g1', term: 'Finance', results: roles })
+    const html = setupView(t, s.st.org)
+    expect(html).toContain('data-act="orgRolePick"')
+    expect(html).toContain('Accountant')
+  })
+
+  it('the join-link box opens empty and asks for 2 letters', async () => {
+    const s = setup()
+    await s.actions.orgRoleOpen('invite')
+    expect(s.api.searchRoles).not.toHaveBeenCalled()
+    expect(s.st.org.roleSearch).toMatchObject({ for: 'invite', term: '' })
+  })
+
+  it('typing searches after a short pause and refreshes only the list (no full redraw)', async () => {
+    vi.useFakeTimers()
+    const s = setup()
+    s.st.org.roleSearch = { for: 'g:g1', term: '' }
+    const handled = s.onInput({ dataset: { orgRole: 'g:g1' }, value: 'acc' })
+    expect(handled).toBe(true)
+    expect(s.api.searchRoles).not.toHaveBeenCalled()
+    await vi.advanceTimersByTimeAsync(250)
+    expect(s.api.searchRoles).toHaveBeenCalledWith('acc')
+    expect(s.st.org.roleSearch).toMatchObject({ for: 'g:g1', term: 'acc', results: roles })
+    expect(s.render).not.toHaveBeenCalled()
+  })
+
+  it('only the last of quick keystrokes is searched; under 2 letters clears the list', async () => {
+    vi.useFakeTimers()
+    const s = setup()
+    s.st.org.roleSearch = { for: 'g:g1', term: '' }
+    s.onInput({ dataset: { orgRole: 'g:g1' }, value: 'ac' })
+    s.onInput({ dataset: { orgRole: 'g:g1' }, value: 'acco' })
+    await vi.advanceTimersByTimeAsync(250)
+    expect(s.api.searchRoles).toHaveBeenCalledTimes(1)
+    expect(s.api.searchRoles).toHaveBeenCalledWith('acco')
+    s.onInput({ dataset: { orgRole: 'g:g1' }, value: 'a' })
+    await vi.advanceTimersByTimeAsync(250)
+    expect(s.api.searchRoles).toHaveBeenCalledTimes(1)
+    expect(s.st.org.roleSearch).toMatchObject({ term: 'a' })
+    expect(s.st.org.roleSearch.results).toBeUndefined()
+  })
+
+  it('other inputs are not handled here', () => {
+    expect(setup().onInput({ dataset: {}, value: 'x' })).toBe(false)
+  })
+
+  it('Enter still searches at once', async () => {
+    const s = setup()
+    s.st.org.roleSearch = { for: 'g:g1', term: '' }
+    expect(await s.onChange({ dataset: { orgRole: 'g:g1' }, value: 'clerk' })).toBe(true)
+    expect(s.api.searchRoles).toHaveBeenCalledWith('clerk')
+  })
+
+  it('an empty box asks for 2 letters; a search with nothing found says so', () => {
+    const empty = setupView(t, makeOrg({ roleSearch: { for: 'g:g1', term: '' } }))
+    expect(empty).toContain(t('ogRoleType'))
+    expect(empty).not.toContain(t('ogRoleNone'))
+    expect(empty).toContain('id="og-role-list"')
+    const none = setupView(t, makeOrg({ roleSearch: { for: 'g:g1', term: 'zzz', results: [] } }))
+    expect(none).toContain(t('ogRoleNone'))
+  })
+
+  it('the hint no longer says to press Enter; the new text exists in three languages; app.js passes typing to the org screen', () => {
+    expect(en.ogRoleSearchHint).not.toMatch(/Enter/)
+    for (const table of [en, ms, zh]) expect(String(table.ogRoleType ?? '').trim()).not.toBe('')
+    const app = readFileSync(new URL('../../public/js/app.js', import.meta.url), 'utf8')
+    expect(app).toMatch(/orgView\.onInput\(event\.target\)/)
+  })
+})

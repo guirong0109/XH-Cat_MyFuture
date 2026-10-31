@@ -2905,6 +2905,11 @@
       "time": "31 Oct",
       "step": "Two hosts: public stable and local testing",
       "detail": "Owner asked for two hosts. Public futures.grong.my now runs from XH_Cat_Final-live (detached at origin/main 752c475) with the real accounts and news; local http://localhost:3400 runs this folder with a test accounts file and no news key. Publishing = push main, move the live folder to origin/main, restart main-live"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: target role suggestions",
+      "detail": "Owner: the Change box for a department's target role needs a suggest list. Now suggests eMASCO roles as you type (2 letters, 250 ms pause, only the last keystroke, refreshes only the list so the box keeps focus), opens with roles matching the department's name, an empty box asks for 2 letters, Enter still works; same box for join links (opens empty). Texts en/ms/zh. Tests first (8); npm test 1762 passed. Not yet published"
     }
   ]
 }

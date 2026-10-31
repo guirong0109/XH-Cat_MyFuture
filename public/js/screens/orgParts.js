@@ -42,10 +42,12 @@ function viewSeg(t, o) {
 }
 
 // ---------- eMASCO role search (target role of a group, current role of a join link) ----------
-function roleBox(t, o, forKey) {
+// The suggestions under the box (owner, 1 Nov 2026: as you type). Typing refreshes only this list (#og-role-list), so the
+// box keeps its text and focus. An empty or 1-letter box asks for 2 letters.
+export function roleList(t, o) {
   const rs = o?.roleSearch
-  if (!rs || rs.for !== forKey) return ''
-  let list = ''
+  if (!rs) return ''
+  let list = `<p class="tiny muted">${esc(t('ogRoleType'))}</p>`
   if (rs.busy) list = `<p class="tiny muted">${esc(t('occSearching'))}</p>`
   else if (rs.failed) list = `<p class="tiny">${esc(t('ogRoleFail'))}</p>`
   else if (rs.results) {
@@ -53,9 +55,15 @@ function roleBox(t, o, forKey) {
       ? rs.results.map((c, i) => `<button type="button" class="choice" data-act="orgRolePick" data-arg="${i}"><b>${esc(c.title)}</b><span class="tiny muted">eMASCO ${esc(c.code)}</span></button>`).join('')
       : `<p class="tiny muted">${esc(t('ogRoleNone'))}</p>`
   }
+  return list
+}
+
+function roleBox(t, o, forKey) {
+  const rs = o?.roleSearch
+  if (!rs || rs.for !== forKey) return ''
   return `<div class="og-rolebox"><label class="tiny muted" for="ogRoleQ">${esc(t('ogRoleSearchLabel'))}</label>
     <input id="ogRoleQ" data-org-role="${esc(forKey)}" value="${esc(rs.term ?? '')}" placeholder="${esc(t('ogRoleSearchHint'))}" autocomplete="off">
-    <div class="og-roles">${list}</div>
+    <div class="og-roles" id="og-role-list">${roleList(t, o)}</div>
     <div class="tiny muted">${esc(t('ogSrcSetup'))}</div>
     <button type="button" class="btn sm" data-act="orgRoleClose">${esc(t('ogCancel'))}</button></div>`
 }

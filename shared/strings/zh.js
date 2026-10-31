@@ -1298,8 +1298,9 @@ export default {
   ogRemoveTarget: "移除目标职位", // translation: owner review
   ogAddGroupBtn: "添加", // translation: owner review
   ogRoleSearchLabel: "搜索 eMASCO 职位", // translation: owner review
-  ogRoleSearchHint: "输入职位名称，然后按 Enter", // translation: owner review
+  ogRoleSearchHint: "输入职位名称", // translation: owner review
   ogRoleNone: "没有找到 eMASCO 职位。", // translation: owner review
+  ogRoleType: "至少输入 2 个字母以查看 eMASCO 职位。", // translation: owner review
   ogRoleFail: "职位搜索失败，请重试。", // translation: owner review
   ogSrcSetup: "目标职位来自 eMASCO（MOHR），2026 年 10 月 23 日抓取", // translation: owner review
   ogSource: "来源：", // translation: owner review

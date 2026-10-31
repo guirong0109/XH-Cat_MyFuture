@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1754 passed
+npm install && npm test     # expect 1762 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```

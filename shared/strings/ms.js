@@ -1298,8 +1298,9 @@ export default {
   ogRemoveTarget: "Buang peranan sasaran", // translation: owner review
   ogAddGroupBtn: "Tambah", // translation: owner review
   ogRoleSearchLabel: "Cari peranan eMASCO", // translation: owner review
-  ogRoleSearchHint: "Taip tajuk kerja, kemudian tekan Enter", // translation: owner review
+  ogRoleSearchHint: "Taip tajuk kerja", // translation: owner review
   ogRoleNone: "Tiada peranan eMASCO ditemui.", // translation: owner review
+  ogRoleType: "Taip sekurang-kurangnya 2 huruf untuk melihat peranan eMASCO.", // translation: owner review
   ogRoleFail: "Carian peranan gagal. Cuba lagi.", // translation: owner review
   ogSrcSetup: "peranan sasaran daripada eMASCO (MOHR), dirayapi 23 Okt 2026", // translation: owner review
   ogSource: "Sumber:", // translation: owner review

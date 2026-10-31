@@ -1278,6 +1278,8 @@ async function runSearch(kind, key, term) {
   show()
 }
 document.addEventListener('input', (event) => {
+  // Organisation view: the target-role box suggests eMASCO roles as you type (wait for pinyin and other input methods).
+  if (!event.isComposing && orgView.onInput(event.target)) return
   // Radar skills card: the search box filters the list as you type; focus and caret come back after the redraw.
   if (event.target.hasAttribute?.('data-radar-search')) {
     if (event.isComposing) return // wait for compositionend (pinyin and other input methods)
@@ -1294,6 +1296,7 @@ document.addEventListener('input', (event) => {
   searchTimers[key] = setTimeout(() => runSearch(kind, key, event.target.value), SEARCH_DELAY_MS)
 })
 document.addEventListener('compositionend', (event) => {
+  if (orgView.onInput(event.target)) return
   if (!event.target.hasAttribute?.('data-radar-search')) return
   setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
   keepCaret(event.target.selectionStart ?? event.target.value.length)

@@ -2,8 +2,12 @@
 // returns { actions, onChange }. app.js spreads `actions` into its own and calls onChange(el) first in its change
 // handler (true = handled). Everything lives in state.org, which is never saved in the browser. A roster preview (names
 // and skills of made-up people) and a join link stay in memory only.
+import { roleList } from './screens/orgParts.js'
+
 const MAX_ROSTER = 1_048_576
 const SEARCH_MIN = 2
+// The pause after the last keystroke before the role suggestions are searched (same as the profile pickers).
+const SEARCH_DELAY_MS = 250
 
 // Category C or D: signed in → the organisation screen; otherwise the access screen with a note.
 export const orgEntry = (state) => (state?.account?.status === 'in' ? { screen: 'org', note: null } : { screen: 'access', note: 'ogNeedAccount' })
@@ -110,16 +114,29 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     }
   }
 
-  async function searchRoles(forKey, term) {
+  // listOnly (while typing): redraw only the suggestions under the box, so its text, caret and focus stay.
+  const refreshRoles = () => {
+    const el = globalThis.document?.getElementById('og-role-list')
+    if (el) el.innerHTML = roleList(t, org())
+  }
+  async function searchRoles(forKey, term, { listOnly = false } = {}) {
     const o = org()
-    if (term.length < SEARCH_MIN) return
+    const show = listOnly ? refreshRoles : render
+    if (term.length < SEARCH_MIN) {
+      if (listOnly) {
+        o.roleSearch = { for: forKey, term }
+        show()
+      }
+      return
+    }
     o.roleSearch = { for: forKey, term, busy: true }
-    render()
+    show()
     const out = await api.searchRoles(term)
     if (o.roleSearch?.term !== term || o.roleSearch?.for !== forKey) return
     o.roleSearch = out.ok ? { for: forKey, term, results: out.data } : { for: forKey, term, failed: true }
-    render()
+    show()
   }
+  let roleTimer = null
 
 
   // ---- employee: join link and sharing (state.share, never saved in the browser)
@@ -346,10 +363,19 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
       if (!out.ok) return fail(out)
       await load()
     },
-    orgRoleOpen: (forKey) => {
-      org().roleSearch = { for: forKey, term: '' }
+    // A department's box opens with roles matching the department's name; the join-link box opens empty.
+    orgRoleOpen: async (forKey) => {
+      const o = org()
+      const id = typeof forKey === 'string' && forKey.startsWith('g:') ? forKey.slice(2) : null
+      const name = id ? String((o.data?.groups ?? []).find((g) => g.id === id)?.name ?? '').trim() : ''
+      o.roleSearch = { for: forKey, term: name }
       render()
-      globalThis.document?.getElementById('ogRoleQ')?.focus()
+      const focus = () => globalThis.document?.getElementById('ogRoleQ')?.focus()
+      focus()
+      if (name.length >= SEARCH_MIN) {
+        await searchRoles(forKey, name)
+        focus()
+      }
     },
     orgRoleClose: () => {
       org().roleSearch = null
@@ -478,7 +504,17 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     return false
   }
 
-  return { actions, onChange, startJoin: (token) => { joinToken = token },
+  // Typing in the role box: search after a short pause; only the last keystroke counts. true = handled here.
+  function onInput(el) {
+    const forKey = el?.dataset?.orgRole
+    if (forKey === undefined) return false
+    const term = String(el.value ?? '').trim()
+    clearTimeout(roleTimer)
+    roleTimer = setTimeout(() => searchRoles(forKey, term, { listOnly: true }), SEARCH_DELAY_MS)
+    return true
+  }
+
+  return { actions, onChange, onInput, startJoin: (token) => { joinToken = token },
     // sign-out or reset: the pending link and everything on the share screen are forgotten
     clearJoin: () => { joinToken = null; previewRun++; state.share = null }, joinPending: () => Boolean(joinToken) }
 }

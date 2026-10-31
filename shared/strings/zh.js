@@ -61,7 +61,7 @@ export default {
   secWork: "工作背景",
   secSkills: "技能与熟练度",
   secCerts: "证书与项目",
-  secPrefs: "职业偏好",
+  secPrefs: "兴趣",
   next: "下一步",
   back: "返回",
   preferNot: "不愿透露",

@@ -61,7 +61,7 @@ export default {
   secWork: "Employment Background",
   secSkills: "Skills and Proficiency",
   secCerts: "Certifications and Projects",
-  secPrefs: "Career Preferences",
+  secPrefs: "Interests",
   next: "Next",
   back: "Back",
   preferNot: "Prefer not to say",

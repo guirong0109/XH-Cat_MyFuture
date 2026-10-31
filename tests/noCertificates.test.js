@@ -13,7 +13,7 @@ const withLists = () => ({
 })
 
 describe('no certificates, training or projects in the profile', () => {
-  it('the profile has four sections: study, employment, skills, career preferences', () => {
+  it('the profile has four sections: education, employment, skills, interests', () => {
     expect(SECTIONS).toEqual(['secStudy', 'secWork', 'secSkills', 'secPrefs'])
     expect(SECTION_FIELDS).toHaveLength(SECTIONS.length)
     for (let section = 0; section < SECTIONS.length; section += 1) {
@@ -48,6 +48,13 @@ describe('section names', () => {
     expect(translate('en', 'secStudy')).toBe('Education')
     expect(translate('ms', 'secStudy')).toBe('Pendidikan')
     expect(translate('zh', 'secStudy')).toBe('教育')
+  })
+
+  it('the last section is called Interests', async () => {
+    const { t: translate } = await import('../shared/i18n.js')
+    expect(translate('en', 'secPrefs')).toBe('Interests')
+    expect(translate('ms', 'secPrefs')).toBe('Minat')
+    expect(translate('zh', 'secPrefs')).toBe('兴趣')
   })
 })
 

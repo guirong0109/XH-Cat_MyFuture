@@ -61,7 +61,7 @@ export default {
   secWork: "Latar Belakang Pekerjaan",
   secSkills: "Kemahiran dan Tahap",
   secCerts: "Sijil dan Projek",
-  secPrefs: "Pilihan Kerjaya",
+  secPrefs: "Minat",
   next: "Seterusnya",
   back: "Kembali",
   preferNot: "Tidak mahu menyatakan",

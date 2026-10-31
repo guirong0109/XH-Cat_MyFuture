@@ -26,3 +26,11 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0417 | Work skills | general web search, UiTM diploma lists | 2026-10-31 | no degree programme clearly in it |
 | field:0419 | Business and administration not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
 | field:0488 | Inter-disciplinary programmes and qualifications involving business, administration and law | general web search | 2026-10-31 | no such programme found |
+| field:0500 | Natural sciences, mathematics and statistics not further defined | general web search | 2026-10-31 | residual category; no programme named so; fitting programmes sit in 0511-0542 |
+| field:0519 | Biological and related sciences not elsewhere classified | general web search, UKM/UTM/USM science faculty lists | 2026-10-31 | residual category; no programme clearly in it |
+| field:0520 | Environment not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0521-0522 |
+| field:0530 | Physical sciences not further defined | general web search, UTM/UKM/USM science faculty lists | 2026-10-31 | residual category; fitting programmes sit in 0531-0533 |
+| field:0539 | Physical sciences not elsewhere classified | general web search, UTM/UKM/USM science faculty lists | 2026-10-31 | no programme clearly in it |
+| field:0540 | Mathematics and statistics not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0541-0542 |
+| field:0588 | Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics | general web search | 2026-10-31 | no such programme found |
+| field:0599 | Natural sciences, mathematics and statistics not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |

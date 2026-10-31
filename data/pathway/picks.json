@@ -1370,6 +1370,115 @@
       "mqrRef": null,
       "link": "https://www.ukm.my/studyukm/law-bachelor-hons/",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0511-1",
+      "field": "0511",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Biology) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://science.utm.my/undergraduate/?p=2559",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0512-1",
+      "field": "0512",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Biochemistry",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-science-in-biochemistry",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0521-1",
+      "field": "0521",
+      "kind": "accredited",
+      "name": "Bachelor of Science With Honours (Environmental Science)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/environmental-science-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0522-1",
+      "field": "0522",
+      "kind": "accredited",
+      "name": "Conservation Biology (UH6421001)",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://www.ums.edu.my/fpt/index.php/what-we-offer/undergraduate/uh6421001-conservation-biology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0531-1",
+      "field": "0531",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Chemistry) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0767",
+      "link": "https://science.utm.my/undergraduate/?p=819",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0531-2",
+      "field": "0531",
+      "kind": "professional",
+      "name": "Registered chemist (Chemists Act 1975)",
+      "body": "Institut Kimia Malaysia (IKM)",
+      "link": "https://ikm.org.my/about-ikm/power-and-privileges/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0532-1",
+      "field": "0532",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Geology with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/geology-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0533-1",
+      "field": "0533",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Physics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://science.utm.my/undergraduate/?p=736",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0541-1",
+      "field": "0541",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Mathematics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0768",
+      "link": "https://science.utm.my/undergraduate/?p=837",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0541-2",
+      "field": "0541",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Mathematics with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/alternative-senior-citizen/bachelor-of-science-in-mathematics-with-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0542-1",
+      "field": "0542",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Statistics",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-science-in-statistics",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

@@ -1271,6 +1271,11 @@
       "time": "31 Oct",
       "step": "Overall match designed (M17, your request)",
       "detail": "role count checked: all 1,812 eMASCO roles already shown (live eMASCO matches); mockup docs/mockup-overall-match.html approved; spec section 5a written: 4 UNESCO-based AI questions, Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch; waiting for your spec review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 spec approved; plan written",
+      "detail": "docs/superpowers/plans/2026-10-31-overall-match.md: task 0 bring main in (your OK), 1 maths, 2 profile questions, 3 server, 4 card and list, 5 browser check and docs; waiting for your plan review"
     }
   ]
 }

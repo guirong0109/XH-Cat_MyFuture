@@ -248,6 +248,11 @@
           "title": "T28h Who are you? options",
           "sub": "Fresh graduate · Student · Underemployed · Unemployed",
           "status": "done"
+        },
+        {
+          "title": "T28i Who you are moves into the profile",
+          "sub": "start: personal / organisation → guest or account → goal → CV · profile opens with 4 buttons",
+          "status": "done"
         }
       ]
     }
@@ -293,7 +298,8 @@
     "Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
     "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
     "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
-    "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)"
+    "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
+    "Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -939,6 +945,16 @@
       "time": "31 Oct",
       "step": "Task 28h",
       "detail": "8 tests first (failed), then category.js, app.js, org.js, form.js, review.js, profileSchema.js and the wording files; npm test 257 passed; clicked through to Confirm as a guest and with a new account (accounts test server restarted): 'Saved to your account (version 1)'"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the start is personal / organisation, goal, upload CV; then the profile; the profile first asks Which describes you best? with 4 buttons (Student, Fresh graduate, Underemployed, Unemployed) instead of a dropdown"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28i",
+      "detail": "tests rewritten first (5 failed), then category.js (organisations only), choiceField in fields.js, form.js, review.js, app.js (goal → source; choose action) and styles.css; npm test 257 passed; clicked through in Chrome at 1440 px and 390 px, light and dark: choosing Underemployed saves it, Prefer not to say clears it"
     }
   ]
 }

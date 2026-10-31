@@ -22,13 +22,8 @@ describe('first question: personal or organisation', () => {
     }
   })
 
-  it('"Who are you?" then shows only the matching choices', () => {
-    expect(choices(category({ t, state: { use: 'personal' } }))).toEqual(['fresh_graduate', 'student', 'underemployed', 'unemployed'])
+  it('organisations then choose C or D on "Who are you?"', () => {
     expect(choices(category({ t, state: { use: 'org' } }))).toEqual(['C', 'D'])
-  })
-
-  it('someone who signed in without answering still sees every choice', () => {
-    expect(choices(category({ t, state: {} }))).toEqual(['fresh_graduate', 'student', 'underemployed', 'unemployed', 'C', 'D'])
   })
 })
 

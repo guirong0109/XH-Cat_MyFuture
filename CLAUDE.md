@@ -57,7 +57,8 @@ Browser pane launch configs (`.claude/launch.json`):
   - Skills use `makeSkill()`. `source` is one of `cv_rules|cv_semantic|cv_ai|user_input`. `proficiency` stays null
     until the user sets it, and an extraction never sets it.
   - Forbidden fields are never stored: age, gender, ethnicity, religion, maritalStatus, photo, address, icNumber.
-  - The form shows "Prefer not to say" as every optional field's default (a dropdown, never a checkbox). Opening a
+  - The form shows "Prefer not to say" as every optional field's default (a dropdown, never a checkbox; for button
+    questions, a pill under the buttons that is on until an answer is chosen). Opening a
     section saves its unanswered fields as `declined` (`declineUnanswered`); `isUntouched` counts only answers.
   - Skills, roles of interest and field of study are picked with `searchPicker` (search as you type). Nothing is
     linked silently: typed or CV wording stays unlinked until the user picks.
@@ -68,8 +69,8 @@ Browser pane launch configs (`.claude/launch.json`):
   - `preferences.careerGoal` takes the four goals of the goal screen (`GOALS` in `public/js/screens/goal.js`: `where_i_stand`,
     `find_direction`, `switch_career`, `grow_field`). Old values (`first_job`, `improve`, `change`, `explore_ai`) still
     display (`OLD_GOALS` in `form.js`); don't convert them silently.
-  - `userCategory` takes the four "Who are you?" answers (`PERSONAL` in `public/js/screens/category.js`: `fresh_graduate`,
-    `student`, `underemployed`, `unemployed`); `working_adult` and `graduate_switcher` stay valid for saved profiles
+  - `userCategory` is the profile's first question, "Which describes you best?", answered with buttons (`choiceField` in
+    `fields.js`, `WHO` in `public/js/screens/form.js`: `student`, `fresh_graduate`, `underemployed`, `unemployed`); `working_adult` and `graduate_switcher` stay valid for saved profiles
     (`USER_CATEGORIES`, `OLD_CATEGORIES`). Don't edit `catA`/`catB` strings: `main`'s landing page uses them.
   - Every list and suggestion shows its source on screen (owner: "highly important").
   - The skill search also offers O\*NET work styles, knowledge areas and work activities (`catalogue.more`). They are

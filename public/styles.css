@@ -159,6 +159,12 @@ details summary{cursor:pointer;font:500 11.5px var(--mono);letter-spacing:.08em;
 /* form fields: mono caps labels, plain paper inputs */
 .field{display:grid;gap:6px;margin-bottom:16px;align-content:start}
 .field label{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field .label{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field .grid{gap:14px;margin-bottom:8px}
+/* answers picked with buttons (not going anywhere): an empty circle that fills with the lime check when chosen */
+.field .grid>.choice::after{content:""}
+.field .grid>.choice:hover::after{background:none;border-color:var(--bg);transform:none}
+.field .grid>.choice.sel::after{content:"✓";background:var(--lime);border-color:var(--lime)}
 .field label.tiny{display:flex;gap:6px;align-items:center;font-weight:400}
 .field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:9px 11px;width:100%}
 .field input:hover,.field select:hover,.field textarea:hover{border-color:var(--muted)}

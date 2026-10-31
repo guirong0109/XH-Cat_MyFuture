@@ -119,7 +119,7 @@ const actions = {
   goal: (value) => {
     state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
     state.profile = setField(state.profile, 'preferences.careerGoal', val(value))
-    go('category')
+    go('source')
   },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
@@ -152,15 +152,12 @@ const actions = {
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
-  // Personal answers are the profile's userCategory; C and D are the organisation preview.
-  category: (k) => {
-    state.category = k
-    const org = k === 'C' || k === 'D'
-    if (!org) {
-      state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
-      state.profile = setField(state.profile, 'userCategory', val(k))
-    }
-    go(org ? 'org' : 'source')
+  // "Who are you?" is for organisations (C, D): the preview.
+  category: (k) => { state.category = k; go('org') },
+  // A field answered with buttons ("path|value"); an empty value is "prefer not to say".
+  choose: (arg) => {
+    const [path, value] = arg.split('|')
+    update(setField(state.profile, path, value ? val(value) : DECLINED))
   },
   resume: () => go(resumeTo ?? 'source'),
   startNew: () => {

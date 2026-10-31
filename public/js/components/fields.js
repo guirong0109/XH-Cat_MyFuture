@@ -24,6 +24,18 @@ export function stateField({ t, profile, path, label, options = null, kind = 'te
     <select id="${id}-c" data-choice="${path}">${option('', t('preferNot'), !open)}${option('answer', t('answerIt'), open)}</select>${input}</div>`
 }
 
+// An optional field shown as big buttons, easier to see than a dropdown. None chosen = "prefer not to say", which the
+// small pill under the buttons shows and can choose again. options: [value, labelKey, textKey?].
+export function choiceField({ t, profile, path, label, options }) {
+  const field = get(profile, path) ?? { state: 'empty' }
+  const value = field.state === 'value' ? field.value : ''
+  const id = `f-${path.replace(/\./g, '-')}-label`
+  const button = ([v, labelKey, textKey]) => `<button class="choice${value === v ? ' sel' : ''}" role="radio" aria-checked="${value === v}" data-act="choose" data-arg="${path}|${esc(v)}"><b>${esc(t(labelKey))}</b>${textKey ? `<span class="small muted">${esc(t(textKey))}</span>` : ''}</button>`
+  return `<div class="field"><span class="label" id="${id}">${esc(label)}</span>
+    <div class="grid g2" role="radiogroup" aria-labelledby="${id}">${options.map(button).join('')}</div>
+    <div><button class="chip${value ? '' : ' on'}" aria-pressed="${!value}" data-act="choose" data-arg="${path}|">${esc(t('preferNot'))}</button></div></div>`
+}
+
 // A list of short texts typed as "a, b, c".
 export function listField({ profile, path, label }) {
   const id = `l-${path.replace(/\./g, '-')}`

@@ -1,12 +1,11 @@
 // Case B (manual entry) and Case C editing: the profile form in five sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
-import { listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
+import { choiceField, listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
 import { GOALS } from './goal.js'
-import { PERSONAL } from './category.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
@@ -60,14 +59,21 @@ function interestField({ t, profile, state }) {
 // with an older answer keeps it as an extra option.
 export const OLD_GOALS = { first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' }
 export const OLD_CATEGORIES = { working_adult: 'optWorking', graduate_switcher: 'optGraduate' }
-const withOld = (options, old, field) => [...options.map(([v, label]) => [v, label]), ...(old[field?.value] ? [[field.value, old[field.value]]] : [])]
+// "Which describes you best?" (owner, 31 Oct): the first question of the profile, as four buttons.
+export const WHO = [
+  ['student', 'catStudent', 'catStudentText'],
+  ['fresh_graduate', 'catGrad', 'catGradText'],
+  ['underemployed', 'catUnder', 'catUnderText'],
+  ['unemployed', 'catUnemp', 'catUnempText'],
+]
+const withOld = (options, old, field) => [...options, ...(old[field?.value] ? [[field.value, old[field.value]]] : [])]
 
 const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
 
 function study(ctx) {
   const { t } = ctx
   return [
-    field(ctx, { path: 'userCategory', label: t('fCategory'), options: withOld(PERSONAL, OLD_CATEGORIES, ctx.profile.userCategory) }),
+    choiceField({ ...ctx, path: 'userCategory', label: t('fCategory'), options: withOld(WHO, OLD_CATEGORIES, ctx.profile.userCategory) }),
     field(ctx, { path: 'education.educationStatus', label: t('fEduStatus'), options: [['studying', 'optStudying'], ['graduated', 'optGraduated'], ['not_studying', 'optNotStudying']] }),
     field(ctx, { path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
     recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation'), custom: { fieldOfStudy: (record, i) => fieldOfStudy(ctx, record, i) } }),
@@ -126,7 +132,7 @@ function prefs(ctx) {
   return [
     interestField(ctx),
     `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
-    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: withOld(GOALS, OLD_GOALS, profile.preferences.careerGoal) }),
+    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: withOld(GOALS.map(([v, label]) => [v, label]), OLD_GOALS, profile.preferences.careerGoal) }),
     field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
     field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
   ].join('')

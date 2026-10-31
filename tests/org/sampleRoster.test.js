@@ -8,6 +8,7 @@ import { createApp } from '../../server/app.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import { checkRoster } from '../../server/org/roster.js'
 import { profileOf } from '../../server/org/service.js'
+import { makeRosterNormalizer } from '../../server/org/rosterSkills.js'
 import { createNormalizer } from '../../server/skills/normalize.js'
 import { loadSkillCatalogue } from '../../server/skills/onetSkills.js'
 import { createFakeD1 } from '../helpers/fakeStores.js'
@@ -19,10 +20,11 @@ const HR_GROUPS = ['Finance', 'Customer Service', 'Operations']
 
 async function sampleCheck() {
   const bytes = await readFile(path.join(orgDir, 'sample-roster-hr.csv'))
-  const normalizer = createNormalizer({ catalogue: await loadSkillCatalogue(path.join(dataDir, 'onet')) })
+  const catalogue = await loadSkillCatalogue(path.join(dataDir, 'onet'))
+  const normalizeSkill = makeRosterNormalizer({ catalogue, normalizeSkill: createNormalizer({ catalogue }).normalizeSkill })
   const roles = JSON.parse(await readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')).roles
   const roleCodes = new Set(roles.filter((r) => r.title).map((r) => r.code))
-  return checkRoster({ bytes, type: 'hr', groups: HR_GROUPS, roleCodes, normalizeSkill: normalizer.normalizeSkill })
+  return checkRoster({ bytes, type: 'hr', groups: HR_GROUPS, roleCodes, normalizeSkill })
 }
 
 describe('files and manifest', () => {
@@ -36,7 +38,7 @@ describe('files and manifest', () => {
   })
   it('the template is just the header and one example', async () => {
     const text = await readFile(path.join(orgDir, 'roster-template.csv'), 'utf8')
-    expect(text.split('\n')[0]).toBe('name,group,current_role_code,skill,level')
+    expect(text).toBe('name,group,current_role_code,skill,level\nStaff 01,Finance,2411-01,Mathematics,good\n')
   })
 })
 
@@ -50,6 +52,15 @@ describe('sample HR roster', () => {
     expect(r.people.every((p) => /^Staff \d\d$/.test(p.name))).toBe(true)
     expect([...new Set(r.people.map((p) => p.group))].sort()).toEqual([...HR_GROUPS].sort())
     expect(new Set(r.people.flatMap((p) => p.skills.map((s) => s.level)))).toEqual(new Set(['basic', 'good', 'expert', 'not_assessed']))
+  })
+
+  it('holds knowledge items (kn:) as well as skills (el:), with Economics and Accounting among them', async () => {
+    const r = await sampleCheck()
+    const keys = r.people.flatMap((p) => p.skills.map((s) => s.key))
+    expect(keys.some((k) => k.startsWith('kn:'))).toBe(true)
+    expect(keys.some((k) => k.startsWith('el:'))).toBe(true)
+    expect(keys).toContain('kn:2.C.1.c')
+    expect(r.people.filter((p) => p.skills.some((s) => s.key.startsWith('kn:'))).length).toBeGreaterThanOrEqual(5)
   })
 
   it('with the real matching, each department has someone available and only the planned role breaks the chain', async () => {
@@ -83,6 +94,21 @@ describe('GET /api/org/roster/sample', () => {
 
   it('needs a signed-in user', async () => {
     expect((await fetch(`${base}/api/org/roster/sample?type=hr`)).status).toBe(401)
+  })
+  it('the preview accepts a knowledge name and leaves "Excel wizardry" unrecognised', async () => {
+    const signup = await fetch(`${base}/api/auth/signup`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'preview-owner@example.com', password: 'password 123' }),
+    })
+    const cookie = signup.headers.get('set-cookie').split(';')[0]
+    await fetch(`${base}/api/org`, { method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: JSON.stringify({ name: 'Synthetic Co', type: 'hr' }) })
+    const csv = 'name,group,current_role_code,skill,level\nStaff 01,Finance,2411-01,Economics and Accounting,good\nStaff 01,Finance,2411-01,Excel wizardry,good\n'
+    const r = await fetch(`${base}/api/org/roster/preview`, { method: 'POST', headers: { 'Content-Type': 'text/csv', Cookie: cookie }, body: csv })
+    expect(r.status).toBe(200)
+    const body = await r.json()
+    expect(body.rejected).toEqual([])
+    expect(body.people[0].skills).toEqual([{ key: 'kn:2.C.1.c', name: 'Economics and Accounting', level: 'good' }])
+    expect(body.unrecognised).toEqual([{ row: 3, skill: 'Excel wizardry' }])
   })
   it('returns the CSV as text/csv; other types are 404', async () => {
     const signup = await fetch(`${base}/api/auth/signup`, {

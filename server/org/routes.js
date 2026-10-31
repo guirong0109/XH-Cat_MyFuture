@@ -9,6 +9,7 @@ import { jsonBody, sendError } from '../errors.js'
 import { makeRequireUser } from '../routes/auth.js'
 import { OrgError } from './store.js'
 import { checkRoster, RosterError } from './roster.js'
+import { makeRosterNormalizer } from './rosterSkills.js'
 
 const PREVIEW_MS = 15 * 60 * 1000
 const TYPES = ['hr', 'centre']
@@ -20,7 +21,7 @@ const MAX_NAME = 80
 
 const text = (value) => (typeof value === 'string' && value.trim() && value.trim().length <= MAX_NAME ? value.trim() : null)
 
-export function orgRoutes({ auth, store, service, loadNormalizer, loadRoleCodes, dataDir, log = () => {}, now = () => new Date() }) {
+export function orgRoutes({ auth, store, service, loadNormalizer, loadCatalogue, loadRoleCodes, dataDir, log = () => {}, now = () => new Date() }) {
   const router = express.Router()
   const requireUser = makeRequireUser(auth)
   const previews = new Map() // previewId -> { ownerId, preview, expires }
@@ -143,7 +144,7 @@ export function orgRoutes({ auth, store, service, loadNormalizer, loadRoleCodes,
     const org = await orgFor(request, response)
     if (!org) return
     if (!Buffer.isBuffer(request.body)) return sendError(response, 415, 'bad_type', 'Send the roster as text/csv.')
-    const { normalizeSkill } = await loadNormalizer()
+    const normalizeSkill = makeRosterNormalizer({ catalogue: await loadCatalogue(), normalizeSkill: (await loadNormalizer()).normalizeSkill })
     const groups = (await store.groups(org.id)).map((g) => g.name)
     const preview = await checkRoster({ bytes: request.body, type: org.type, groups, roleCodes: await loadRoleCodes(), normalizeSkill })
     sweep()

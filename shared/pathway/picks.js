@@ -7,6 +7,14 @@ export const PICKS_SOURCE = 'pathway-picks'
 const STATUS_OF = { approved: 'approved', rejected: 'rejected', revise: 'pending' }
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 const KINDS = new Set(['accredited', 'professional'])
+const GROUPS = new Set(['malaysian', 'global', 'tech', 'professional'])
+// The keys each pick may have (spec §4); any other key stops the load.
+const KEYS = {
+  course: ['id', 'for', 'site', 'name', 'link', 'checkedAt'],
+  accredited: ['id', 'field', 'kind', 'name', 'link', 'checkedAt', 'institution', 'mqrRef'],
+  professional: ['id', 'field', 'kind', 'name', 'link', 'checkedAt', 'body'],
+  searchWord: ['id', 'for', 'word', 'checkedAt'],
+}
 
 const isText = (v) => typeof v === 'string' && v.trim() !== ''
 
@@ -32,10 +40,12 @@ export function checkSites(file) {
     if (seen.has(id)) fail('has a duplicate id')
     seen.add(id)
     if (!isText(s.name)) fail('has no name')
+    if (!GROUPS.has(s.group)) fail('group must be malaysian, global, tech or professional')
     if (!httpsUrl(s.home)) fail('home must be an https link')
+    if (!httpsUrl(s.terms)) fail('terms must be an https link')
     if (!Array.isArray(s.hosts) || s.hosts.length === 0 || !s.hosts.every(isText)) fail('needs a list of hosts')
     if (s.search != null) {
-      if (!httpsUrl(s.search) || !s.search.includes('<q>')) fail('search must be an https link containing <q>')
+      if (!httpsUrl(s.search) || s.search.split('<q>').length !== 2) fail('search must be an https link containing <q> exactly once')
       if (!DATE.test(String(s.searchCheckedAt ?? ''))) fail('search needs searchCheckedAt as YYYY-MM-DD')
     }
     out.push(s)
@@ -62,6 +72,9 @@ export function checkPicks(file, sites, { itemKeys, fieldCodes } = {}) {
       if (!isText(id)) fail('has no id')
       if (seen.has(id)) fail('has a duplicate id')
       seen.add(id)
+      const allowed = KEYS[type === 'programme' ? p.kind : type]
+      const extra = allowed ? Object.keys(p).filter((k) => !allowed.includes(k)) : []
+      if (extra.length) fail(`has a key it may not have: ${extra.join(', ')}`)
       if (!DATE.test(String(p.checkedAt ?? ''))) fail('needs checkedAt as YYYY-MM-DD')
       out.push({ ...p, type, for: build(p, fail) })
     }
@@ -81,6 +94,8 @@ export function checkPicks(file, sites, { itemKeys, fieldCodes } = {}) {
   each(file?.programmes, 'programmes', 'programme', (p, fail) => {
     if (!isText(p.name)) fail('has no name')
     if (!KINDS.has(p.kind)) fail('kind must be accredited or professional')
+    if (p.kind === 'accredited' && !isText(p.institution)) fail('needs an institution')
+    if (p.kind === 'professional' && !isText(p.body)) fail('needs a body')
     if (!httpsUrl(p.link)) fail('link must be an https link')
     if (!fields.has(p.field)) fail(`has an unknown field "${p.field}"`)
     return `field:${p.field}`

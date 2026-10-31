@@ -39,7 +39,8 @@ describe('checkSites', () => {
   })
   const bad = (patch) => ({ ...SITES_FILE, sites: [{ ...SITES_FILE.sites[1], ...patch }] })
   it('throws naming sites.json and the site id', () => {
-    for (const patch of [{ home: 'http://www.coursera.org/' }, { hosts: [] }, { search: 'https://www.coursera.org/search' }, { search: 'http://www.coursera.org/s?q=<q>' }, { name: '' }, { searchCheckedAt: null }]) {
+    for (const patch of [{ home: 'http://www.coursera.org/' }, { hosts: [] }, { search: 'https://www.coursera.org/search' }, { search: 'http://www.coursera.org/s?q=<q>' }, { name: '' }, { searchCheckedAt: null },
+      { group: 'other' }, { group: undefined }, { terms: 'http://www.coursera.org/about/terms' }, { terms: undefined }, { search: 'https://www.coursera.org/search?query=<q>&again=<q>' }]) {
       expect(() => checkSites(bad(patch))).toThrow(/sites\.json.*coursera/)
     }
   })
@@ -93,7 +94,16 @@ describe('checkPicks', () => {
     'programme missing checkedAt': [file({ programmes: [accredited({ checkedAt: undefined })] }), /p1/],
     'searchWord missing word': [file({ searchWords: [word({ word: '' })] }), /w1/],
     'searchWord missing checkedAt': [file({ searchWords: [word({ checkedAt: undefined })] }), /w1/],
-    'missing id': [file({ courses: [course({ id: undefined })] }), /courses\[0\]/]
+    'missing id': [file({ courses: [course({ id: undefined })] }), /courses\[0\]/],
+    'course with an extra key': [file({ courses: [course({ institution: 'Uni A' })] }), /c1.*institution/],
+    'accredited programme with an extra key': [file({ programmes: [accredited({ notes: 'x' })] }), /p1.*notes/],
+    'accredited programme with a body': [file({ programmes: [accredited({ body: 'Body B' })] }), /p1.*body/],
+    'professional pick with an institution': [file({ programmes: [professional({ institution: 'Uni A' })] }), /p2.*institution/],
+    'professional pick with an MQA reference': [file({ programmes: [professional({ mqrRef: 'MQR/1' })] }), /p2.*mqrRef/],
+    'searchWord with an extra key': [file({ searchWords: [word({ link: 'https://example.org/' })] }), /w1.*link/],
+    'accredited programme with no institution': [file({ programmes: [accredited({ institution: undefined })] }), /p1.*institution/],
+    'accredited programme with an empty institution': [file({ programmes: [accredited({ institution: '' })] }), /p1.*institution/],
+    'professional pick with no body': [file({ programmes: [professional({ body: undefined })] }), /p2.*body/]
   }
   for (const [name, [input, idRe]] of Object.entries(cases)) {
     it(`throws on ${name}, naming picks.json and the pick`, () => {

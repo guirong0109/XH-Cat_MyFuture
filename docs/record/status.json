@@ -2915,6 +2915,11 @@
       "time": "31 Oct",
       "step": "AI news moved into the Future Skills Radar",
       "detail": "Owner: move the Compare futures AI news into the Radar, same as For You and Explore all. The news view is now public/js/components/newsPanel.js: For You ends with AI news for you (profile study fields), Explore all trends with AI news by field (10-field picker). The Compare futures tab and landing step are removed; #futures opens #radar. Texts en/ms/zh. Tests first; npm test 1765 passed; checked on localhost:3400. Not yet published"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Live: AI CV reading on, dry run of CV and news",
+      "detail": "The CV error was AI reading off on the live server (no CV_LLM_KEY); the owner added the same DeepSeek key as CV_LLM_KEY. Owner-asked dry run on futures.grong.my: CV upload 200 in 2 s with the AI step, no ai_unavailable warning; news refresh run at once (backup latest-before-dry-run.json): all 10 fields ok, 17 new items, 10 searches and 10 checks (about US$0.03), next refresh 05:04 MYT; server log clean"
     }
   ]
 }

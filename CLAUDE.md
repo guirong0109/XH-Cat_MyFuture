@@ -128,5 +128,6 @@ python -m unittest discover pipeline/tests   # expect 49 OK
   compare-futures`; Ctrl-C stops it. The public site is up only while `main-live` and the tunnel run and the computer is awake.
 - Only `main-live` has the DeepSeek key; never give it to another running server, or refreshes are paid twice.
 - `XH_Cat_Final-main\data\cache\accounts\accounts.db` is an old copy from before 1 Nov; the real one is in the live folder.
-- CV AI reading is off on the live site until `CV_LLM_KEY` is set (same DeepSeek key, paid; ask first).
+- CV AI reading is on for the live site since 1 Nov 2026 (`CV_LLM_KEY` = the same DeepSeek key, in
+  `C:\Users\guiro\XH_Cat_Final\.env`; about US$0.002-0.004 per CV). The local host has no key.
 - Full procedure and history: branch `claude/compare-futures` `CLAUDE.md`.

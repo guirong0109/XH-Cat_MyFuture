@@ -26,11 +26,6 @@ export default {
   catC: 'HR / 学习与发展经理', catCText: '为团队规划再培训。需要账户。',
   catD: 'TVET 或大学就业中心', catDText: '在机构层面指导学生。需要账户。',
   preview: '账户 · 预览',
-  orgBanner: '开发中——尚不可用。',
-  orgBannerText: '此机构视图是设计预览。这里的内容都不是真实的，也不会保存。',
-  orgTitle: '团队和学生工具',
-  orgLead: '为机构规划：团队或学生群体的再培训计划。',
-  orgTryIndividual: '改为尝试个人流程',
   sourceTitle: '你有想要上传的简历吗？',
   sourceLead: '上传简历是可选的。两种方式都会得到相同的资料。',
   sourceUpload: '上传我的简历', sourceUploadText: 'PDF 或 DOCX，最大 10 MB。我们找到的所有内容都需你核对后才算数。',
@@ -1190,4 +1185,243 @@ export default {
   aiKnowHowLine: "您的 AI 知识：{percent}%（已回答 {answered} 题，其中 {yes} 题为“是”）", // translation: owner review
   aiKnowHowNone: "您的 AI 知识：尚未回答任何问题", // translation: owner review
   aiUseSource: "问题依据联合国教科文组织学生人工智能能力框架（2024）的四个部分 · 您的答案只留在此浏览器中", // translation: owner review
+  // Organisation view (HR and career centres) (translation: owner review)
+  ogNeedAccount: "使用机构工具需要账户", // translation: owner review
+  ogLoading: "正在加载你的机构…", // translation: owner review
+  ogLoadError: "无法加载你的机构。", // translation: owner review
+  ogRetry: "重试", // translation: owner review
+  ogOff: "此服务器未提供账户功能，因此无法使用机构工具。", // translation: owner review
+  ogErr_other: "出了点问题，请重试。", // translation: owner review
+  ogErr_network: "没有网络连接，请重试。", // translation: owner review
+  ogErr_not_signed_in: "请重新登录后继续。", // translation: owner review
+  ogErr_exists: "你已经有一个机构了。", // translation: owner review
+  ogErr_group_exists: "已有同名分组。", // translation: owner review
+  ogErr_group_has_people: "请先移走或删除该分组中的人员。", // translation: owner review
+  ogErr_unknown_role: "eMASCO 中没有该职位代码。", // translation: owner review
+  ogErr_preview_expired: "此预览已过期，请重新检查文件。", // translation: owner review
+  ogErr_too_large: "名单文件超过 1 MB。", // translation: owner review
+  ogErr_bad_header: "第一行必须是：name,group,current_role_code,skill,level", // translation: owner review
+  ogErr_not_utf8: "名单文件必须是 UTF-8 文本。", // translation: owner review
+  ogErr_not_csv: "名单文件不是有效的 CSV。", // translation: owner review
+  ogErr_bad_request: "请检查输入后重试。", // translation: owner review
+  ogTab_setup: "设置", // translation: owner review
+  ogTab_heat: "热力图", // translation: owner review
+  ogTab_outlook: "前景与 SDG", // translation: owner review
+  og_dept_hr: "部门", // translation: owner review
+  og_dept_centre: "课程", // translation: owner review
+  og_depts_hr: "部门", // translation: owner review
+  og_depts_centre: "课程", // translation: owner review
+  og_people_hr: "人员", // translation: owner review
+  og_people_centre: "学生", // translation: owner review
+  og_staff_hr: "员工", // translation: owner review
+  og_staff_centre: "学生", // translation: owner review
+  og_plan_hr: "团队计划", // translation: owner review
+  og_plan_centre: "班级计划", // translation: owner review
+  og_person_hr: "名员工", // translation: owner review
+  og_person_centre: "名学生", // translation: owner review
+  og_addgroup_hr: "添加部门", // translation: owner review
+  og_addgroup_centre: "添加课程", // translation: owner review
+  og_type_hr: "HR / 培训负责人", // translation: owner review
+  og_type_centre: "TVET / 大学就业中心", // translation: owner review
+  ogSetupTitle: "设置你的机构", // translation: owner review
+  ogSetupLead: "一个账户管理一个机构。", // translation: owner review
+  ogHiring: "本工具帮助规划培训，不做招聘决定。", // translation: owner review
+  ogOrgName: "机构名称", // translation: owner review
+  ogType: "类型", // translation: owner review
+  ogTypeNote: "类型会改变用词（部门 ↔ 课程，员工 ↔ 学生）。就业中心没有当前职位：差距只与目标职位比较。", // translation: owner review
+  ogTypeNoteCentre: "差距按每个课程的目标职位来衡量。", // translation: owner review
+  ogCreate: "创建机构", // translation: owner review
+  ogSave: "保存名称", // translation: owner review
+  ogSaved: "已保存。", // translation: owner review
+  ogDeleteOrg: "删除机构", // translation: owner review
+  ogDeleteOrgConfirm: "删除此机构及其中所有人员？此操作无法撤销。", // translation: owner review
+  ogGroupsTitle: "{groups}与目标职位", // translation: owner review
+  ogTargetRole: "目标职位（可选）", // translation: owner review
+  ogNoTarget: "未设置", // translation: owner review
+  ogChange: "更改", // translation: owner review
+  ogRemove: "删除", // translation: owner review
+  ogRemoveTarget: "移除目标职位", // translation: owner review
+  ogAddGroupBtn: "添加", // translation: owner review
+  ogRoleSearchLabel: "搜索 eMASCO 职位", // translation: owner review
+  ogRoleSearchHint: "输入职位名称，然后按 Enter", // translation: owner review
+  ogRoleNone: "没有找到 eMASCO 职位。", // translation: owner review
+  ogRoleFail: "职位搜索失败，请重试。", // translation: owner review
+  ogSrcSetup: "目标职位来自 eMASCO（MOHR），2026 年 10 月 23 日抓取", // translation: owner review
+  ogSource: "来源：", // translation: owner review
+  ogPeopleLead: "可上传虚构人员的名单，或把加入链接发给真实员工，由其自己分享技能。", // translation: owner review
+  ogPeopleLeadCentre: "可上传虚构学生的名单。技能仅以名单所列为准。", // translation: owner review
+  ogUploadTitle: "上传名单（CSV）", // translation: owner review
+  ogSynthetic: "只使用合成（虚构）人员", // translation: owner review
+  ogChooseFile: "选择文件…", // translation: owner review
+  ogUseSample: "使用示例名单", // translation: owner review
+  ogPreviewOf: "预览：{name}", // translation: owner review
+  ogNothingSaved: "尚未保存任何内容", // translation: owner review
+  ogAccepted: "接受的行", // translation: owner review
+  ogRejected: "拒绝的行", // translation: owner review
+  ogUnrecognised: "未识别，不计入", // translation: owner review
+  ogNewGroups: "将新建的分组", // translation: owner review
+  ogRowReason: "第 {row} 行：{reason}", // translation: owner review
+  ogRowSkill: "“{skill}”（第 {row} 行）", // translation: owner review
+  ogImport: "导入 {count} 行", // translation: owner review
+  ogCancel: "取消", // translation: owner review
+  ogImported: "已添加 {people} 人。", // translation: owner review
+  ogNothingSavedMsg: "没有保存任何内容。", // translation: owner review
+  ogInviteTitle: "加入链接", // translation: owner review
+  ogInviteRole: "当前职位（可选）", // translation: owner review
+  ogMakeLink: "生成加入链接", // translation: owner review
+  ogLinkOnce: "请现在复制此链接，它只显示一次。", // translation: owner review
+  ogLinkNote: "单次使用 · 7 天后过期 · 本应用不发送电子邮件", // translation: owner review
+  ogCopy: "复制链接", // translation: owner review
+  ogCopied: "链接已复制。", // translation: owner review
+  ogCopyFail: "请选中链接后复制。", // translation: owner review
+  ogStaffCount: "{count} {people}", // translation: owner review
+  ogLeftOutCount: "{count} 人未计入", // translation: owner review
+  ogColName: "姓名", // translation: owner review
+  ogColRole: "当前职位", // translation: owner review
+  ogColNow: "当前技能匹配", // translation: owner review
+  ogColTarget: "目标技能匹配", // translation: owner review
+  ogColSource: "来源", // translation: owner review
+  ogNoPeople: "请用名单或加入链接添加人员", // translation: owner review
+  ogNoGroups: "请先在“设置”中添加{dept}。", // translation: owner review
+  ogNA: "不可用", // translation: owner review
+  ogNoTargetShort: "无目标", // translation: owner review
+  ogProvisional: "暂定", // translation: owner review
+  ogSrcShared: "由员工分享", // translation: owner review
+  ogSrcRoster: "由 HR 录入", // translation: owner review
+  ogRemovePerson: "删除 {name}", // translation: owner review
+  ogMovePerson: "{name} 的{dept}", // translation: owner review
+  ogReason_chain_broken: "不可用：{name}（{code}）在“{step}”这一步中断，不计入汇总，也不猜测。", // translation: owner review
+  ogReason_unknown_role: "不可用：{name}（{code}）：职业匹配不认识此职位，不计入汇总。", // translation: owner review
+  ogReason_no_known_skill: "不可用：{name} 暂无已知技能，因此没有技能匹配，不计入汇总。", // translation: owner review
+  ogPeopleNote: "HR 只能看到分享的技能和水平，看不到简历、匹配结果或学习路径。", // translation: owner review
+  ogSrcPeople: "技能匹配来自职业匹配（O*NET 31.0 技能与知识，重要性 ≥ 3.0）· 代码链 eMASCO → ISCO-08 → SOC → O*NET", // translation: owner review
+  ogTeamError: "无法加载团队数据。", // translation: owner review
+  ogHeatTitle: "技能差距热力图", // translation: owner review
+  ogHeatLead: "每个格子：职位需要该项的人中有多少人未达要求的水平，以及平均差几个等级。列顺序：缺口人数最多的在前。", // translation: owner review
+  ogCompare: "比较对象", // translation: owner review
+  ogCurrent: "当前职位", // translation: owner review
+  ogTarget: "目标职位", // translation: owner review
+  ogLegend0: "无人不足", // translation: owner review
+  ogLegend1: "不到 1 级", // translation: owner review
+  ogLegend2: "1 到 2 级", // translation: owner review
+  ogLegend3: "2 级以上", // translation: owner review
+  ogLegendNone: "不需要", // translation: owner review
+  ogCellOf: "{m} 人中 {n} 人", // translation: owner review
+  ogCellAvg: "平均差 {avg}", // translation: owner review
+  ogCellProv: "暂定", // translation: owner review
+  ogNotNeeded: "不需要", // translation: owner review
+  ogNoTargetRole: "无目标职位", // translation: owner review
+  ogCols: "第 {from}–{to} 列，共 {total} 列", // translation: owner review
+  ogPrev: "上一组列", // translation: owner review
+  ogNext: "下一组列", // translation: owner review
+  ogLeftOut: "{count} 人未计入汇总：职位的代码链中断，或没有已知技能。详见“{people}”页。", // translation: owner review
+  ogLeftOutGroup: "{count} 人未计入", // translation: owner review
+  ogHeatEmpty: "暂无可显示的差距。", // translation: owner review
+  ogCellTitle: "所选格子", // translation: owner review
+  ogCellHint: "点击有颜色的格子，查看谁不足以及原因。", // translation: owner review
+  ogCellRole: "职位", // translation: owner review
+  ogCellShort: "差距等级", // translation: owner review
+  ogCellShortVal: "共 {total} · 平均 {avg}", // translation: owner review
+  ogMet: "达标", // translation: owner review
+  ogBelow: "低于要求", // translation: owner review
+  ogMissing: "缺失", // translation: owner review
+  ogNotAssessed: "未评估", // translation: owner review
+  ogCellProvNote: "{count} 人此项为“尚未评估”：按达标计算，因此该格为暂定（与职业匹配规则相同）。", // translation: owner review
+  ogMakePlan: "为 {group} 制定计划", // translation: owner review
+  ogSrcHeat: "O*NET 31.0 技能与知识（CC BY 4.0）· 水平来自分享的技能和 HR 名单", // translation: owner review
+  ogPlanFor: "面向对象", // translation: owner review
+  ogPlanForText: "{group}，{count} {people}，对照{kind} {code}。", // translation: owner review
+  ogSelfReported: "进度由自己填报", // translation: owner review
+  ogPlanNoRoleTarget: "请在“设置”中为该分组选择目标职位，以查看差距。", // translation: owner review
+  ogPlanNoRoleCurrent: "该分组中没有人设置当前职位。", // translation: owner review
+  ogPlanNone: "该分组中没有人在此职位上存在不足。", // translation: owner review
+  ogStepLine: "{short} 人不足（{missing} 缺失，{below} 低于要求）· 共差 {levels} 级 · 提升到 {to}", // translation: owner review
+  ogStepLineOne: "1 人不足（{missing} 缺失，{below} 低于要求）· 共差 {levels} 级 · 提升到 {to}", // translation: owner review
+  ogStillShort: "（达到专家级仍有差距）", // translation: owner review
+  ogNoPick: "团队暂无推荐。请使用下面的搜索链接。", // translation: owner review
+  ogTime: "时长：请看各课程页面。", // translation: owner review
+  ogStatus_planned: "计划中", // translation: owner review
+  ogStatus_in_progress: "进行中", // translation: owner review
+  ogStatus_done: "已完成", // translation: owner review
+  ogStatusOf: "{name} 的状态", // translation: owner review
+  ogSteps: "步骤", // translation: owner review
+  ogStepsSkills: "{count} 项技能有差距", // translation: owner review
+  ogPlanOrder: "顺序：缺口人数最多的在前，其次是差距等级最多的。不显示课时：应用中没有带来源的课程时长数据。", // translation: owner review
+  ogSrcPlan: "差距来自职业匹配（O*NET 31.0）· 课程来自学习路径的团队推荐，逐一在浏览器中打开核对，标明网站和日期 · 搜索链接打开各网站自己的搜索", // translation: owner review
+  ogOutlookTitle: "前景与 SDG", // translation: owner review
+  ogScenario: "AI 采用情景", // translation: owner review
+  ogEstimates: "估计", // translation: owner review
+  ogScenarioNote: "情景只改变这些人数，不会改变任何人的差距、热力图或计划顺序。", // translation: owner review
+  ogByCurrent: "按当前职位", // translation: owner review
+  ogByTarget: "按目标职位", // translation: owner review
+  ogBand1: "1 · 增长，AI 辅助", // translation: owner review
+  ogBand2: "2 · AI 可能大幅改变", // translation: owner review
+  ogBand3: "3 · 招聘减少", // translation: owner review
+  ogBand4: "4 · 证据不足", // translation: owner review
+  ogMovedTitle: "在“温和”与“快速”之间的变动", // translation: owner review
+  ogMovedLine: "{group}：{count} 人，档位 {from} → {to}", // translation: owner review
+  ogMovedNone: "在“温和”与“快速”之间没有人变档。", // translation: owner review
+  ogSrcOutlook: "温和 = Anthropic 经济指数 · 快速 = ILO WP140 生成式 AI 暴露度 · 招聘广告 = DOSM 按 MASCO 大组统计的在线职位空缺，“大组层面，不是这份工作” · 均标明日期", // translation: owner review
+  ogSdgTitle: "计划的 SDG 贡献", // translation: owner review
+  ogSdgFor: "对象", // translation: owner review
+  ogSdgLine: "{group} 计划学习的技能涉及 {goals} 个目标下的 {links} 条链接。这是带理由的链接数量，不是分数。", // translation: owner review
+  ogSdgNone: "该分组暂无 SDG 链接。", // translation: owner review
+  ogSdgLinkOne: "{count} 条链接", // translation: owner review
+  ogSdgLinkMany: "{count} 条链接", // translation: owner review
+  ogGoalLabel: "联合国目标 {goal}", // translation: owner review
+  ogSrcSdg: "SDG 链接：团队按 MASCO 大组和 O*NET 项目起草，立即显示，并标明“尚未审核”或“已获负责人批准”· 联合国 SDG 目标 API · 目标页面 sdgs.un.org", // translation: owner review
+  // Employee share screen
+  shNeedAccount: "请登录或创建账户，以便与您的机构分享技能", // translation: owner review
+  shTitle: "与 {org} 分享我的技能", // translation: owner review
+  shGroupLine: "您将加入 {group}。", // translation: owner review
+  shSees: "{org} 只会看到以下内容（没有简历、匹配结果或发展路径）：", // translation: owner review
+  shColSkill: "技能或知识（O*NET）", // translation: owner review
+  shColLevel: "等级", // translation: owner review
+  shLevel_basic: "基础", // translation: owner review
+  shLevel_good: "良好", // translation: owner review
+  shLevel_expert: "精通", // translation: owner review
+  shLevel_not_assessed: "尚未评估", // translation: owner review
+  shNotShared: "不分享：", // translation: owner review
+  shNotOnet: "不是 O*NET 技能或知识项目", // translation: owner review
+  shNoSkills: "此档案还没有可分享的 O*NET 技能或知识项目。", // translation: owner review
+  shProfile: "使用哪个已保存的档案？", // translation: owner review
+  shProfileOpt: "保存于 {date}", // translation: owner review
+  shNoProfile: "您还没有已保存的档案。请先用简历或表单工具建立一个，然后再打开链接。", // translation: owner review
+  shBuild: "建立档案", // translation: owner review
+  shName: "人力资源部将看到的名字", // translation: owner review
+  shShare: "分享我的技能", // translation: owner review
+  shUpdate: "更新已分享的技能", // translation: owner review
+  shStop: "停止分享", // translation: owner review
+  shNoLink: "请打开人力资源部给您的加入链接来分享技能。在您选择之前不会分享任何内容。", // translation: owner review
+  shAlready: "您正以“{name}”的名字与 {org}（{group}）分享。", // translation: owner review
+  shDone: "已分享。{org} 现在可以看到以上技能。", // translation: owner review
+  shUpdated: "已更新。{org} 现在看到以上技能。", // translation: owner review
+  shStopped: "您已停止分享。您的名字和技能已从机构中移除。", // translation: owner review
+  shStopConfirm: "停止分享，并从机构中移除您的名字和技能吗？", // translation: owner review
+  shNameNeeded: "请输入人力资源部应看到的名字。", // translation: owner review
+  shChecking: "正在检查将分享的内容…", // translation: owner review
+  shSrc: "您已保存的档案，保存于 {date} · 仅限 O*NET 31.0 技能和知识项目", // translation: owner review
+  shErr_link_expired: "此链接已过期或已被使用。请向人力资源部索取新链接。", // translation: owner review
+  shErr_own_organisation: "这是您自己的机构，无需加入。", // translation: owner review
+  shErr_no_share: "您目前没有与任何机构分享。", // translation: owner review
+  shErr_too_many_attempts: "尝试次数过多，请几分钟后再试。", // translation: owner review
+  shErr_not_found: "找不到该档案，请选择其他档案。", // translation: owner review
+  shRole: "职位：{role}", // translation: owner review
+  shNoRole: "未设置职位", // translation: owner review
+  ogPlanCounted: "针对 {code}：本组 {total} 人中的 {count} 人。", // translation: owner review
+  ogPlanNoAvailable: "本组没有人的当前职位有技能匹配（代码链断开或没有已知技能），因此暂无计划职位。", // translation: owner review
+  ogCellRoles: "此格中的职位", // translation: owner review
+  ogCellPeople: "人员", // translation: owner review
+  ogCellPerson: "{name}：{status} · 您 {you} → 所需级别 {needed}", // translation: owner review
+  ogCellNotListed: "未列出", // translation: owner review
+  ogCellNeeded: "所需级别 {level}（满分 7）", // translation: owner review
+  ogReason_no_current_role: "此视图不计入：{name} 没有当前职位，因此无从比较。", // translation: owner review
+  ogNoPickNoLinks: "团队暂无推荐。", // translation: owner review
+  ogDelGroupConfirm: "删除小组“{group}”？", // translation: owner review
+  ogClearTargetConfirm: "移除“{group}”的目标职位？其团队计划将没有职位。", // translation: owner review
+  shHolds: "{org} 目前看到：", // translation: owner review
+  shHoldsNone: "{org} 目前没有您的任何技能。", // translation: owner review
+  shSrcHeld: "{org} 目前持有的内容，来自您上次的分享", // translation: owner review
+  shAfterUpdate: "更新后，{org} 将看到：", // translation: owner review
+  shMoves: "与 {org} 分享将停止您与 {other} 的分享。", // translation: owner review
 }

@@ -590,6 +590,112 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 15",
+      "name": "Organisation view: HR and career centres (owner request)",
+      "tasks": [
+        {
+          "title": "O1 Branch",
+          "sub": "hr-branch from main, folder XH_Cat_Final-hr",
+          "status": "done"
+        },
+        {
+          "title": "O2 Guide check",
+          "sub": "prototype checked against the Finalist Guide (docs/hr/guide-check.md)",
+          "status": "done"
+        },
+        {
+          "title": "O3 Spec",
+          "sub": "docs/superpowers/specs/2026-10-31-hr-org-view-design.md, approved by owner 31 Oct",
+          "status": "done"
+        },
+        {
+          "title": "O4 Mockup",
+          "sub": "docs/mockup-org.html, every button works, sample data",
+          "status": "done"
+        },
+        {
+          "title": "O5 Diagram",
+          "sub": "docs/architecture-org.html, approved by owner 31 Oct",
+          "status": "done"
+        },
+        {
+          "title": "O6a Up to date with main",
+          "sub": "main merged after the study pathway merge",
+          "status": "done"
+        },
+        {
+          "title": "O6b D1 tables",
+          "sub": "six tables, cascade on delete",
+          "status": "done"
+        },
+        {
+          "title": "O6c Roster check",
+          "sub": "CSV reading, row checks, file line numbers",
+          "status": "done"
+        },
+        {
+          "title": "O6d Team sums",
+          "sub": "shared/org/team.js: cells, plan order, bands, SDG count",
+          "status": "done"
+        },
+        {
+          "title": "O6e Organisation store",
+          "sub": "D1 reads and writes, import checks groups first",
+          "status": "done"
+        },
+        {
+          "title": "O6f Team service",
+          "sub": "per person matching + pathway, then team sums",
+          "status": "done"
+        },
+        {
+          "title": "O6g Owner routes",
+          "sub": "organisation, groups, roster preview/import, team, plan steps",
+          "status": "done"
+        },
+        {
+          "title": "O6h Join links and sharing",
+          "sub": "hashed single-use links, skills-only share, stop sharing",
+          "status": "done"
+        },
+        {
+          "title": "O6i Sample roster",
+          "sub": "12 made-up staff, real role codes and O*NET skills + knowledge, manifest",
+          "status": "done"
+        },
+        {
+          "title": "O6j HR screens",
+          "sub": "setup, people, heatmap, team plan, outlook and SDG; role titles",
+          "status": "done"
+        },
+        {
+          "title": "O6k Employee share screen",
+          "sub": "join link, exact list HR will see incl. role, share / update / stop",
+          "status": "done"
+        },
+        {
+          "title": "O6l Career centre type",
+          "sub": "programmes and students, target roles only, centre sample roster",
+          "status": "done"
+        },
+        {
+          "title": "O6m Handover and browser check",
+          "sub": "docs/org/acceptance.md, branch HANDOVER.md and CLAUDE.md, tools declaration",
+          "status": "done"
+        },
+        {
+          "title": "O6n Final whole-branch review",
+          "sub": "7 important + 7 smaller findings fixed and re-checked; one judge-test source label left for the owner",
+          "status": "done"
+        },
+        {
+          "title": "O6 Build",
+          "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
+          "status": "todo"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -1884,6 +1990,91 @@
       "time": "31 Oct",
       "step": "Merged Overall match (M17) to main (your request)",
       "detail": "claude/career-matching pushed (fc071f2) and merged into main; main's short HANDOVER and CLAUDE updated; tests 1129 passed (vitest --maxWorkers=3), pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view spec and mockup (hr-branch)",
+      "detail": "Prototype checked against the Finalist Guide; owner decisions O1-O8 (roster and join link, current and target role, matching's sums, skills-only sharing, server works out team numbers, HR and career centres with HR first); spec and sample-data mockup written. npm test 833 passed; mockup checked in the browser at 127.0.0.2:3201, desktop and 360 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: spec approved, diagram drafted (hr-branch)",
+      "detail": "Owner approved the spec; mockup buttons all work; architecture diagram drafted for approval. npm test 833 passed; diagram checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: diagram approved, plan written (hr-branch)",
+      "detail": "Owner approved the architecture diagram; implementation plan written (Tasks 0-12, career centre last). npm test 833 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: build started (hr-branch)",
+      "detail": "Study pathway merged into main; main merged into hr-branch (Task 0)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6b D1 tables (hr-branch)",
+      "detail": "Task 1 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6c Roster check (hr-branch)",
+      "detail": "Task 2 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6d Team sums (hr-branch)",
+      "detail": "Task 3 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6e Organisation store (hr-branch)",
+      "detail": "Task 4 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6f Team service (hr-branch)",
+      "detail": "Task 5 reviewed clean; npm test 1137 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6g Owner routes (hr-branch)",
+      "detail": "Task 6 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6h Join links and sharing (hr-branch)",
+      "detail": "Task 7 reviewed clean (security review); npm test 1175 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6i Sample roster (hr-branch)",
+      "detail": "Task 8 reviewed, 1 fix round (rosters accept knowledge items); npm test 1183 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6j HR screens (hr-branch)",
+      "detail": "Task 9 reviewed, 1 fix round; browser check of setup and heatmap on real data; npm test 1222 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6k Employee share screen (hr-branch)",
+      "detail": "Task 10 reviewed (security), 1 fix round; browser check of join and share; npm test 1250 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6l Career centre type (hr-branch)",
+      "detail": "Task 11 reviewed clean; npm test 1256 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6m Handover and browser check (hr-branch)",
+      "detail": "Task 12 reviewed clean; full browser run (HR and career centre, 360 px); npm test 1256, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6n Final whole-branch review (hr-branch)",
+      "detail": "Final review (most capable model) and one fix wave; npm test 1294 passed, pipeline 49 OK"
     }
   ]
 }

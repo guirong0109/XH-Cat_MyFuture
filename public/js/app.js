@@ -11,6 +11,7 @@ import returning from './screens/returning.js'
 import access from './screens/access.js'
 import category from './screens/category.js'
 import org from './screens/org.js'
+import orgShare from './screens/orgShare.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
 import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
@@ -32,6 +33,8 @@ import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
+import * as orgApi from './orgApi.js'
+import { consumeJoinHash, createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
@@ -39,7 +42,7 @@ import { linkedFields } from './components/fieldSuggestions.js'
 import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
-const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
+const SCREENS = { welcome, returning, access, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
 // Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
 const ALIAS = { roadmap: 'pathway' }
@@ -78,7 +81,7 @@ function persist() {
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, org: null, share: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -114,6 +117,7 @@ function go(screen) {
   if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
+  if (screen !== 'access') state.accessNote = null
   showSection()
   state.message = null
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
@@ -636,6 +640,7 @@ const actions = {
     await accountApi.logout()
     // A shared computer must not show the next person this account's profile.
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
     cvFile = null
     cvDraft = null
@@ -658,6 +663,7 @@ const actions = {
       return render()
     }
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
@@ -667,7 +673,13 @@ const actions = {
       state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
       state.profile = setField(state.profile, 'userCategory', val(k === 'A' ? 'working_adult' : 'graduate_switcher'))
     }
-    go(k === 'C' || k === 'D' ? 'org' : 'source')
+    if (k === 'C' || k === 'D') {
+      // organisation tools need an account
+      const entry = orgEntry(state)
+      state.accessNote = entry.note
+      return go(entry.screen)
+    }
+    go('source')
   },
   resume: () => {
     const to = resumeTo ?? 'source'
@@ -677,6 +689,7 @@ const actions = {
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
     resumeTo = null
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang }
     go('access')
   },
@@ -688,6 +701,7 @@ const actions = {
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    orgView.clearJoin()
     resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')
@@ -876,7 +890,10 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions, matchActions, pathwayActions)
+// Organisation view (HR and career centres): its actions live in orgActions.js; the proxy keeps them on the current state.
+const orgState = new Proxy({}, { get: (_, key) => state[key], set: (_, key, value) => { state[key] = value; return true } })
+const orgView = createOrgActions({ state: orgState, render, api: orgApi, t, go })
+Object.assign(actions, adminActions, matchActions, pathwayActions, orgView.actions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -902,9 +919,9 @@ async function accountCall(kind) {
     state.profile = mergeCareerFields(latest.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
-    return go('summary')
+    return go(orgView.joinPending() ? 'share' : 'summary')
   }
-  go('category')
+  go(orgView.joinPending() ? 'share' : 'category')
 }
 
 // After Confirm: always on this device; also in the account when signed in.
@@ -1068,6 +1085,8 @@ function render() {
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
   if (screen === 'pathway') ensurePathway()
+  if (screen === 'org') actions.orgEnsure()
+  if (screen === 'share') actions.shareEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
@@ -1131,6 +1150,7 @@ document.addEventListener('change', (event) => {
   if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
+  if (orgView.onChange(event.target)) return
   onChange(event.target)
 })
 // Search pickers: search while typing, after a short pause; only the list is redrawn, so typing goes on.
@@ -1217,7 +1237,10 @@ if (previous) {
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
 if (resumeChoice(previous) === 'ask') resumeTo = screenOf(previous.screen)
-state.screen = screenOf(startScreen(previous, location.hash))
+// A join link (#join=<token>) is read once, kept in memory only and removed from the address bar at once.
+const joinToken = consumeJoinHash(location, history)
+if (joinToken) orgView.startJoin(joinToken)
+state.screen = joinToken ? 'share' : screenOf(startScreen(previous, location.hash))
 // #roadmap opens #pathway: the address shows the new name.
 if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()

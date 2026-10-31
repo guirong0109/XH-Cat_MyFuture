@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1129 passed
+npm install && npm test     # expect 1335 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -62,3 +62,11 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - eMASCO qualification first, O\*NET US level under it (P14). No "team draft" word on `#pathway` (P15). The NEC code
   is shown only where known (P16). Never approve picks on the owner's behalf.
 - Forbidden keys: score, weight, rank, opportunit. The profile sent to `/api/pathway` is never stored or logged.
+
+## Organisation view (details: branch `hr-branch`)
+- Code in `shared/org/team.js`, `server/org/` (store, service, routes, shareRoutes, roster), `public/js/orgApi.js`,
+  `orgActions.js`, `screens/org.js`, `orgParts.js`, `orgShare.js`; data `data/org/` (synthetic rosters, manifest).
+- Every number comes from `matching.role()` per person; `team.js` only counts and sums. Scenarios change only band
+  counts. No hours, no language model, forbidden keys as above.
+- HR sees only shared skills (O\*NET key + level), group, role and name. Join tokens: hash only, single use, 7 days.
+  Never log names, skills or tokens; never store team results. Rosters: made-up people only.

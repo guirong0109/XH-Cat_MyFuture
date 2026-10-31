@@ -21,6 +21,7 @@ scenario comparison.
 | Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
 | Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
+| Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1335 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1) |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -86,6 +87,10 @@ scenario comparison.
   the 60 accredited picks that have no MQA reference yet (the scripted MQR query works, see the branch handover);
   review BM and 中文 pathway wording; professional bodies not linked (law, architecture and town planning,
   veterinary, social work); a few weaker course fits.
+- **Organisation view:** in the judge's Trend Change Test session the Outlook still names DOSM as the job-ad source
+  while the bands come from test data (`server/org/service.js`, add a `judgeSession` guard and a test); D1 keys and
+  price before any trial with real accounts; one roster import on real D1 not yet timed; review BM and 中文 org
+  wording; small wording points in `docs/org/acceptance.md` ("raise to X", "1 people").
 
 ## Career matching (since 2026-10-31, details: branch `claude/career-matching`)
 - **Screen `#match`** lists eMASCO roles (pages of 10) with a Skill Match chart, an outlook under two AI scenarios
@@ -133,13 +138,28 @@ scenario comparison.
 - **NEC hint:** a field code is shown only where it is known (P16); MQA's register cannot be linked, only searched.
 - A bad picks file stops the server at start-up and names the pick. The profile is never stored or logged.
 
+## Organisation view (since 2026-10-31, details: branch `hr-branch`)
+- **Screen `#org`** for category C (HR / L&D) and D (TVET / university career centre); account needed (D1). One
+  account owns one organisation. Design: `docs/superpowers/specs/2026-10-31-hr-org-view-design.md` (O1–O8),
+  `docs/architecture-org.html`, mockup `docs/mockup-org.html`, browser results `docs/org/acceptance.md`.
+- **People in two ways:** a roster CSV of made-up people (checked and previewed before import; names already in the
+  organisation refused) or a one-time join link (32 random bytes, only its hash stored, 7 days) with which an
+  employee shares **skills only** (O\*NET skill/knowledge + level, group, role, name). One share per employee; they
+  see exactly what HR holds and can update or stop.
+- **Numbers are matching's:** each person goes through `matching.role()` for their current and target role;
+  `shared/org/team.js` only counts and sums. Heatmap cells, a team plan per role (pathway courses, no hours), band
+  counts under Moderate / Rapid AI and an SDG link count (never a score). Scenarios change only the band counts.
+- Tables `orgs`, `org_groups`, `org_people`, `org_skills`, `org_invites`, `org_plan_steps` (cascade delete). Nothing
+  personal is logged; team results are never stored.
+
 **No scoring method from the old project.**
 
 ## What is not switched on yet (needs the owner's keys or OK)
 - **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
   "cached".
 - **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them, accounts say "not available" and guests still work
-  fully.
+  fully. The organisation view needs D1 (check Cloudflare's current D1 price and tell the owner first). Local
+  trial: `node scripts/serve-local-accounts.mjs` (in-memory stand-ins).
 - **Radar storage and refresh:** a deployed Radar needs R2 settings (`RADAR_STORE`, `R2_*`) and a free OpenAlex key;
   `RADAR_STORE=memory` is for local trials only and forgets everything on restart. See `docs/radar/deploy.md`. No
   host chosen yet (owner's price decision).
@@ -149,7 +169,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1129 passed
+npm test          # expect 1335 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain
@@ -170,7 +190,7 @@ Every data file, its source, date and licence: `data/SOURCES.md`.
 ## Repository
 - `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
 - Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`),
-  `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`) and `claude/study-pathway` (worktree
-  `C:\Users\guiro\XH_Cat_Final-pathway`). `main` is also checked out as a worktree at
+  `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`), `claude/study-pathway` (worktree
+  `C:\Users\guiro\XH_Cat_Final-pathway`) and `hr-branch` (worktree `C:\Users\guiro\XH_Cat_Final-hr`). `main` is also checked out as a worktree at
   `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
 - Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.

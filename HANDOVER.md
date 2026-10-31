@@ -5,8 +5,9 @@ keeps a short version of this file; on merge, put only the important points ther
 one.
 
 ## State
-- **All 12 plan tasks are built**, with the final review fixes (1297 Vitest tests, 49 pipeline tests). The owner decides on merge. Nothing is
-  pushed or merged.
+- **All 12 plan tasks are built**, with the final review fixes (1297 Vitest tests, 49 pipeline tests). Merged into `main` and pushed on
+  31 Oct 2026 (`eb8d81a`); then the judge-test source label fix followed on this branch: in a judge Trend Change Test
+  session the Outlook says the job-ad groups use test data and never names DOSM.
 - The organisation view (HR and L&D managers, TVET and university career centres) works end to end: setup, people
   (roster upload and join links), heatmap, team plan, outlook and SDG. Both organisation types are built (`hr` and
   `centre`).

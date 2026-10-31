@@ -26,7 +26,7 @@ export default {
   catC: 'Pengurus HR / Pembelajaran & Pembangunan', catCText: 'Rancang latihan semula untuk pasukan. Akaun diperlukan.',
   catD: 'Pusat kerjaya TVET atau universiti', catDText: 'Bimbing pelajar di peringkat institusi. Akaun diperlukan.',
   useTitle: 'Untuk siapa?', usePersonal: 'Untuk diri sendiri', usePersonalText: 'Bina profil anda sendiri dan lihat ke mana kemahiran anda boleh membawa anda.',
-  useOrg: 'Untuk organisasi saya', useOrgText: 'Pasukan HR, serta pusat kerjaya TVET atau universiti. Pratonton buat masa ini; akaun diperlukan.',
+  useOrg: 'Untuk organisasi saya', useOrgText: 'Pasukan HR, serta pusat kerjaya TVET atau universiti. Akaun diperlukan.',
   accessOrgTitle: 'Daftar untuk menggunakannya bagi organisasi anda', accessOrgLead: 'Alat organisasi memerlukan akaun. Cipta akaun, atau log masuk jika anda sudah mempunyainya.',
   acOrgOff: 'Akaun belum tersedia pada pelayan ini, jadi alat organisasi tidak boleh dibuka.', useMyself: 'Gunakan untuk diri sendiri',
   goalTitle: 'Apakah matlamat anda?', goalLead: 'Di sinilah kita bermula. Anda boleh mengubahnya kemudian dalam profil anda.',

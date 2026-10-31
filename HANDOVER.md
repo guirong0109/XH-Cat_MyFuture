@@ -22,7 +22,7 @@ scenario comparison.
 | Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
 | Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
-| CV and profile screens, owner round 31 Oct (Who is it for?, goal, new form, skills under jobs and projects) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1427 tests pass after the merge; checked in the browser |
+| CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -64,17 +64,21 @@ scenario comparison.
 - **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
   and not used yet.
 
-## Start and profile form since 2026-10-31 (owner round, details: branch `claude/cv-profile-module`)
-- **Start:** landing page → Get started → **Who is it for?** (`#use`: for myself / for my organisation) → guest or
-  account (organisations must sign up) → personal: **What is your goal?** (`#goal`) → CV or form; organisation:
-  **Who are you?** (C or D only) → `#org`. A saved session still gets **Welcome back** first.
-- **Form has five sections:** Education (Which describes you best? as four buttons, qualifications as level +
-  field of study), Employment (job title + years only), Skills (grouped under the jobs and projects they were
-  used in; level is a toggle bar), Using AI (M17, from matching), Interests (career interests only). Review and
-  confirm is only on Interests, the last section.
-- **Not asked any more:** certificates, training, education and employment status, career goal / location / hours
-  in the form. What a CV finds for them is left out. A CV's qualification level and field are prechosen for the
-  user to check; after a CV is read, the way on is Edit in the form.
+## CV and profile screens since 2026-10-31 (owner requests, details: branch `claude/cv-profile-module`)
+- **Look:** the app screens use the landing page's design (cream, serif headlines, mono labels, thin rules, ATM and
+  receipts). Main's matching, Radar, pathway and organisation screens keep their rules, now in the same colours.
+- **Start:** "Who is it for?" → personal: guest or account, then "What is your goal?" (4 goals), then CV or form;
+  organisation: account only (no guest), then C/D and the organisation view. Sign-in notes from the organisation
+  view skip the question.
+- **Profile:** five sections — Education (qualification + field of study dropdowns), Employment background (job title
+  + years), Skills and proficiency, Using AI, Interests (career interests only). "Review and confirm" is on the last
+  section, Interests. No certificates or training; projects are kept as cards in Skills.
+- **Skills:** a card per job and project with the skills used there, "Other skills" folded. A skill used in a job or
+  project starts at **Good** (tag "From your projects"; the owner's rule) — matching counts it as Good.
+- **After a CV:** only "Edit in the form"; the qualification level and field of study come prechosen ("Chosen from
+  your CV … check it is right").
+- **Merge note:** on a Windows checkout with `core.autocrlf=true`, `tests/radar/copiedFromMain.test.js` fails 2 checks
+  (line endings change the files' SHA-256); the files themselves are unchanged.
 
 ## Open points for the owner
 - **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
@@ -118,7 +122,7 @@ scenario comparison.
 - **SDG:** team drafts shown with a UN goal link; rejected links hidden; approved links dated. The path contribution
   is a count of links with reasons, never a score.
 - The profile sent to `/api/matching` is never stored or logged. Forbidden keys: score, weight, rank, opportunit.
-- **Overall match (M17, 31 Oct):** profile section 6 "Using AI" asks 4 yes/no questions based on the UNESCO AI
+- **Overall match (M17, 31 Oct):** profile section 4 "Using AI" asks 4 yes/no questions based on the UNESCO AI
   competency framework for students (2024, https://doi.org/10.54675/JKJB9835). AI know-how = Yes ÷ answered.
   Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch; AI touch = share of the job's tasks seen in AI use
   (Moderate, Anthropic) or the ILO exposure score (Rapid). The Skill Match and the bands never change; inside a band
@@ -126,8 +130,8 @@ scenario comparison.
   `shared/matching/overall.js`.
 
 ## Landing page (since 2026-10-31, details: branch `claude/website-interface`)
-- The welcome screen is now the landing page. Its "Get started" buttons open **Who is it for?** (`#use`), or
-  Welcome back when a session is saved. Opening the site address always shows the landing page first.
+- The welcome screen is now the landing page. Its "Get started" buttons open "Who is it for?" (for myself / for my
+  organisation), then the guest or account choice (`access`).
 - The 3D ATM intro (three.js 0.186.1, served from `node_modules`, no CDN) stays as built. **The owner will say
   later what changes in the ATM section; do not alter it until then.**
 - Its stage list still says only the profile is built; radar and matching exist now. Owner to decide the wording.
@@ -180,7 +184,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1338 passed
+npm test          # expect 1425 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

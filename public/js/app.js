@@ -1,5 +1,5 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-aiuse;
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-field-pick, data-aiuse;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
@@ -7,7 +7,6 @@ import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared
 import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
-import use from './screens/use.js'
 import returning from './screens/returning.js'
 import access from './screens/access.js'
 import goal from './screens/goal.js'
@@ -46,7 +45,7 @@ import { linkedFields } from './components/fieldSuggestions.js'
 import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
-const SCREENS = { welcome, use, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
+const SCREENS = { welcome, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
 // Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
 const ALIAS = { roadmap: 'pathway' }
@@ -1060,13 +1059,6 @@ function onChange(target) {
   }
   if (d.aiuse !== undefined) {
     return update({ ...state.profile, aiUse: { ...readAiUse(state.profile), [d.aiuse]: target.value || null } })
-  }
-  if (d.level !== undefined) {
-    const level = target.value || null
-    const skills = state.profile.skills.map((skill, i) => (i !== Number(d.level) ? skill : {
-      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
-    }))
-    return update({ ...state.profile, skills })
   }
   // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.
   if (d.fieldPick !== undefined) {

@@ -26,7 +26,7 @@ export default {
   catC: 'HR / Learning & Development manager', catCText: 'Plan reskilling for a team. Account required.',
   catD: 'TVET or university career centre', catDText: 'Guide students at institution level. Account required.',
   useTitle: 'Who is it for?', usePersonal: 'For myself', usePersonalText: 'Build your own profile and see where your skills can take you.',
-  useOrg: 'For my organisation', useOrgText: 'HR teams, and TVET or university career centres. A preview for now; account required.',
+  useOrg: 'For my organisation', useOrgText: 'HR teams, and TVET or university career centres. An account is required.',
   accessOrgTitle: 'Sign up to use it for your organisation', accessOrgLead: 'Organisation tools need an account. Create one, or sign in if you already have one.',
   acOrgOff: 'Accounts are not available on this server yet, so organisation tools cannot be opened.', useMyself: 'Use it for myself instead',
   goalTitle: 'What is your goal?', goalLead: 'This is where we start. You can change it later in your profile.',

@@ -29,15 +29,22 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1427 passed
+npm install && npm test     # expect 1425 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
 
-## Start and profile form (details: branch `claude/cv-profile-module`)
-- Landing page → `#use` (for myself / my organisation) → `access` → `#goal` (personal) or `#category` (C, D only).
-- Form sections: Education, Employment, Skills, Using AI, Interests (`SECTIONS` in `form.js`); use
-  `SECTIONS.indexOf(...)`, never a fixed number. Certificates and training are not asked (`dropNotAsked`).
+## CV and profile screens (details: branch `claude/cv-profile-module`)
+- Look: cream page, Instrument Serif / Geist / Geist Mono, thin rules; one rule per class in `public/styles.css`
+  (`tests/appLook.test.js`). Main's other screens' rules sit at the end of that file. Don't alter the landing page's
+  ATM intro until the owner says what changes.
+- Start: landing → Get started → "Who is it for?" (in `access.js`) → personal: guest or account → goal → CV or form;
+  organisation: account only → C/D → organisation view.
+- Profile sections: Education, Employment background, Skills and proficiency, Using AI, Interests (found by name in
+  `SECTIONS`, never by number). No certificates or training (`dropNotAsked`).
+- Skills are grouped under the job or project they were used in (`skills[].usedIn`, `skillGroups.js`); a skill used in
+  a job or project starts at Good, `proficiencyStatus: 'from_projects'` (owner rule; matching reads this level).
+- After a CV: only "Edit in the form"; qualification level and field of study are prechosen for the user to check.
 
 ## Future Skills Radar (details: branch `claude/future-radar`)
 - Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.

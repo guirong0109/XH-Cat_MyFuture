@@ -26,7 +26,7 @@ export default {
   catC: 'HR / 学习与发展经理', catCText: '为团队规划再培训。需要账户。',
   catD: 'TVET 或大学就业中心', catDText: '在机构层面指导学生。需要账户。',
   useTitle: '为谁使用？', usePersonal: '个人使用', usePersonalText: '建立你自己的档案，看看你的技能能带你走向哪里。',
-  useOrg: '机构使用', useOrgText: 'HR 团队，以及 TVET 或大学就业中心。目前仅为预览；需要账户。',
+  useOrg: '机构使用', useOrgText: 'HR 团队，以及 TVET 或大学就业中心。需要账户。',
   accessOrgTitle: '注册账户，供你的机构使用', accessOrgLead: '机构工具需要账户。请创建账户；如已有账户，请登录。',
   acOrgOff: '此服务器暂未开放账户功能，因此无法打开机构工具。', useMyself: '改为个人使用',
   goalTitle: '你的目标是什么？', goalLead: '我们从这里开始。你之后可以在档案中更改。',

@@ -180,3 +180,12 @@ Note for the owner:
 - **N9** - With one source card left, it sits on the left half of the two-column grid at desktop width. Say if you want
   it full width.
 
+## Source card at the bottom (owner, 31 Oct 2026)
+
+Checked on http://radar.localhost:3210.
+
+| # | Check | Result |
+|---|---|---|
+| B1 | The OpenAlex card and "View data sources" sit below the tab panel on both tabs; the tabs come right after the banners | Pass |
+| B2 | No sideways scroll at 1024 px | Pass |
+

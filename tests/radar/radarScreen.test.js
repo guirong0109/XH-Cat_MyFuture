@@ -724,6 +724,17 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
 })
 
 describe('status cards (spec §11.1, §12)', () => {
+  it('the OpenAlex card and View data sources sit at the bottom, below the tab panel, on both tabs (owner, 31 Oct)', () => {
+    for (const radar of [{}, { tab: 'ex' }]) {
+      const html = view(ownProfile(), radar)
+      const panelEnd = html.indexOf('</section>', html.indexOf('id="radarPanel"'))
+      expect(panelEnd).toBeGreaterThan(-1)
+      expect(html.indexOf('<div class="rd-srcgrid">')).toBeGreaterThan(panelEnd)
+      expect(html.indexOf('<details class="rd-sources">')).toBeGreaterThan(panelEnd)
+      expect(html.indexOf('role="tablist"')).toBeLessThan(html.indexOf('<div class="rd-srcgrid">'))
+    }
+  })
+
   it('only the source the page shows is listed: one OpenAlex card and OpenAlex alone in View data sources (D48)', () => {
     for (const radar of [{}, { tab: 'ex' }]) {
       const html = view(ownProfile(), radar)

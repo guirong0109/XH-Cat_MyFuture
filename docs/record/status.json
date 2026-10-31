@@ -2810,6 +2810,16 @@
       "time": "31 Oct",
       "step": "Merge claude/compare-futures into main",
       "detail": "Owner asked to push to main. Compare futures AI news (DeepSeek Search every 3 hours, relevance check, English only) merged; conflicts resolved: app.js save keeps main's fields plus news: null (main removed state.ai); SOURCES.md keeps both DeepSeek sections; status.json merged as data; main's short CLAUDE.md and HANDOVER.md get the key points (3-hour refresh rule, CV_LLM_KEY vs DEEPSEEK_API_KEY, Cloudflare plan). Main removed tempStore, so createApp's news fallback no longer passes it. npm test 1673 passed, pipeline 49 OK. Browser check of main not run: the per-folder server limit was reached and the owner's news server stays running"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar: OpenAlex source card moved to the bottom",
+      "detail": "Your request. The OpenAlex card and View data sources now sit below the For You / Explore all trends panel. Test first; npm test 1484 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/future-radar: source card at the bottom",
+      "detail": "Your OK. The OpenAlex card and View data sources sit below the Radar tabs. Conflicts: status.json (kept both logs), build-record.html (rebuilt)."
     }
   ]
 }

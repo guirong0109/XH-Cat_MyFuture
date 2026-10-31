@@ -92,7 +92,7 @@
   - `view(null)` shows the Radar (no card).
   - Escaping: names come from `t()`, but a saved unknown id must not be echoed raw (`picked: ['<img>']` in a hand-made profile renders no `<img`).
   - All three languages render the card without missing keys (`t(key) !== key` for every new key in `ms` and `zh`), and every new `ms`/`zh` line carries `// translation: owner review`.
-  - D37: `public/js/radarApi.js` source contains neither `aiTasks` nor `profile` (no Radar request can carry the answers).
+  - D37: with `globalThis.fetch` replaced by a recorder, call every exported function of `public/js/radarApi.js` (public ones; the existing `aiTasks()` there is the server's AI task data, not the answers) and assert no request has a body and no URL contains a category id such as `writing` or the word `picked` (no Radar request can carry the answers).
   - The existing tests that render the Radar with a profile pass `aiTasks: skipped('2026-10-31')` in the `profile()` helper's defaults, so they keep testing the page, not the card; add one test proving the default helper without it shows the card.
 
 - [ ] **Step 2: Run** `npx vitest run tests/radar/radarScreen.test.js` — new tests FAIL.

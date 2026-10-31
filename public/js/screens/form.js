@@ -12,7 +12,7 @@ export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
   ['userCategory'],
-  ['employment.status', 'employment.yearsOfExperience'],
+  ['employment.yearsOfExperience'],
   [],
   ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
 ]
@@ -110,7 +110,6 @@ function work(ctx) {
   const extra = (record, i) => linkedLine(t, record.occupation, `job|${i}`)
     + (record.jobTitle ? occupationPicker({ t, key: `job|${i}`, term: record.jobTitle, result: state.occ?.[`job|${i}`], busy: state.occBusy === `job|${i}` }) : '')
   return [
-    field(ctx, { path: 'employment.status', label: t('fEmpStatus'), options: [['employed', 'optEmployed'], ['unemployed', 'optUnemployed'], ['self_employed', 'optSelf'], ['student', 'optStudent']] }),
     field(ctx, { path: 'employment.yearsOfExperience', label: t('fYears'), kind: 'number' }),
     listField({ ...ctx, path: 'employment.industries', label: t('fIndustries') }),
     recordsField({ ...ctx, listPath: 'employment.records', fields: [['jobTitle', 'jobTitle'], ['employer', 'employer'], ['period', 'period']], addLabel: t('addJob'), extra }),

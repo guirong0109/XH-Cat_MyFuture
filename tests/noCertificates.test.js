@@ -50,3 +50,22 @@ describe('section names', () => {
     expect(translate('zh', 'secStudy')).toBe('教育')
   })
 })
+
+describe('no "Current employment status" question', () => {
+  it('Employment background does not ask it, and opening the section does not answer it for the user', () => {
+    const html = page(1)
+    expect(html).not.toContain('fEmpStatus')
+    expect(html).not.toContain('employment.status')
+    expect(html).toContain('fYears')
+    expect(SECTION_FIELDS.flat()).not.toContain('employment.status')
+  })
+
+  it('the receipt leaves it out, unless a profile saved earlier has an answer', async () => {
+    const { setField } = await import('../shared/profileState.js')
+    const { val } = await import('../shared/profileSchema.js')
+    expect(profileTable(t, emptyProfile())).not.toContain('fEmpStatus')
+    const old = setField(emptyProfile(), 'employment.status', val('employed'))
+    expect(profileTable(t, old)).toContain('fEmpStatus')
+    expect(profileTable(t, old)).toContain('optEmployed')
+  })
+})

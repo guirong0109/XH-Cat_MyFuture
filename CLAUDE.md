@@ -1,109 +1,108 @@
-# CLAUDE.md — `main`
+# CLAUDE.md — branch `claude/cv-profile-module` (CV extraction and structured profile)
 
-Read `HANDOVER.md` here first. Then switch to the feature branch you work on: its `HANDOVER.md` and `CLAUDE.md`
-are detailed.
+Read `HANDOVER.md` first. It covers the state, the next steps and the pitfalls. This file holds the standing rules
+and how to work here.
 
-## Rules
-- **One branch per feature.** Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md` about its feature. `main`
-  keeps short versions with only the important points. On every merge to `main`, update main's two files. Don't
-  overwrite them with a branch's detailed version.
-- **Follow the owner's architecture diagram exactly.** Add nothing it does not state.
-- **Use no scoring or matching method from the previous project.** Don't use `C:/Users/guiro/XH-Cat_Domain1` as a
-  template; read its diagrams only.
-- **Ask the owner before:** anything paid (state the price), merge, push, PR, and above all force-push.
-- **Test first** (Vitest). Run `npm test` before every commit. Commit messages use the form `feat:`, `fix:` or
-  `docs:`, with no attribution lines.
-- **Record every step** in the build record (`docs/record/status.json` → `python docs/record/build_record.py`).
-- **Show the source of every list and suggestion on screen** (owner: "highly important").
-- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`); the owner clicks in the same
-  Browser pane, and each address keeps its own saved progress.
-- **New data needs a source:** record it in `data/SOURCES.md` (where from, date, licence), check it against a
-  manifest hash, and keep the downloaded original when it is small.
-- **Use plain words** with the owner.
+## Owner rules (always)
+- Follow the owner's architecture diagram exactly (`C:/Users/guiro/XH-Cat_Domain1/docs/architecture-cv-profile.html`).
+  Add nothing it does not state: no extra limits, features or screens.
+- Use **no scoring or matching method** from the previous project. Matching is a later module.
+- **Do not use `C:/Users/guiro/XH-Cat_Domain1` as a template.** Read the diagram only; its data files were copied
+  once already.
+- Ask before anything paid (RunPod endpoints: state the hourly price; DeepSeek runs: state the cost; wait for a yes), before merges, pushes and
+  PRs, and always before a force-push.
+- **Branch docs:**
+  - Every branch keeps a detailed `HANDOVER.md` and `CLAUDE.md` for its feature.
+  - `main` keeps short versions with only the important points.
+  - On every merge to `main`, update main's two files with the important points. Don't overwrite them with a
+    branch's detailed version.
+- Explain things to the owner in plain words. The owner writes English, sometimes briefly; answer clearly.
 
-## Working here
-- `main` is checked out as a worktree at `C:\Users\guiro\XH_Cat_Final-main`. Merge to `main` there:
-  `git checkout main` fails in `C:\Users\guiro\XH_Cat_Final`. Chain git steps with `&&`, so that a failed step stops
-  the rest.
-- Bash heredocs break on apostrophes here. Write helper scripts with the Write tool and run them with python.
+## Source of truth
+- Spec: `docs/superpowers/specs/2026-10-29-cv-profile-module-design.md`.
+- Plan: `docs/superpowers/plans/2026-10-29-cv-profile-module.md`.
+- Files marked SUPERSEDED in `docs/superpowers/` are not to be followed.
+
+## CV AI reading (31 Oct)
+- DeepSeek reads every CV next to the rules (`server/cv/aiRead.js`, `aiReadPrompt.js`, `mergeDrafts.js`). Rules win; the AI
+  fills empty fields and adds missed items, each tagged "Found by AI". Levels, ids and codes never come from the AI.
+- Settings: `CV_LLM_KEY` (turns it on), `CV_LLM_URL` (default `https://api.deepseek.com/chat/completions`),
+  `CV_LLM_MODEL` (default `deepseek-flash`). No key = rules only plus the "AI reading was not available" line.
+- The re-read button, consent box, compare view, Claude backup and the R2 upload copy are gone. Do not bring them back.
+- The CV text goes to DeepSeek in China: fine for synthetic data; check Malaysia's PDPA before real users.
+- Accuracy check: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`. Paid (under $0.50): ask first.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1673 passed
-npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 49 OK
+npm install
+npm test                                          # Vitest, expect 372 passed
+python -m unittest discover pipeline/tests        # expect 8 OK
+npm start                                         # http://localhost:3200 (reads .env if present)
+node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
+node scripts/eval-cv.mjs                          # writes docs/eval-results.md
+node scripts/model-eval.mjs                       # needs SEMANTIC_* (L3 is off)
+python docs/record/build_record.py                # docs/record/status.json -> docs/build-record.html
+python pipeline/fetch_onet.py 31.0                # refresh O*NET data + manifest
+python pipeline/fetch_isced.py                    # refresh ISCED-F fields + CIP bridge to O*NET
 ```
+Browser pane launch configs (`.claude/launch.json`):
+- Use `cvmodule` (3200), `cvaccounts` (3201) and `record` (8766).
+- Do not use `mockup`, `app-test` or `app-accounts`; they point at the Domain1 folder.
 
-## CV and profile screens (details: branch `claude/cv-profile-module`)
-- Look: cream page, Instrument Serif / Geist / Geist Mono, thin rules; one rule per class in `public/styles.css`
-  (`tests/appLook.test.js`). Main's other screens' rules sit at the end of that file. Don't alter the landing page's
-  ATM intro until the owner says what changes.
-- Start: landing → Get started → "Who is it for?" (in `access.js`) → personal: guest or account → goal → CV or form;
-  organisation: account only → C/D → organisation view.
-- Profile sections: Education, Employment background, Skills and proficiency, Using AI, Interests (found by name in
-  `SECTIONS`, never by number). No certificates or training (`dropNotAsked`).
-- Skills are grouped under the job or project they were used in (`skills[].usedIn`, `skillGroups.js`); a skill used in
-  a job or project starts at Good, `proficiencyStatus: 'from_projects'` (owner rule; matching reads this level).
-- After a CV: only "Edit in the form"; qualification level and field of study are prechosen for the user to check.
-- **DeepSeek reads every CV (31 Oct)** next to the rules reader (`server/cv/aiRead.js`, `mergeDrafts.js`); rules win, the
-  AI fills blanks and adds missed items, tagged "Found by AI — check it". `CV_LLM_KEY` turns it on (paid; ask before
-  paid runs). Thinking off, 40 s AI / 45 s upload limits. CV text and AI replies are never logged; tests pass
-  `aiProvider: null`. The old consent "AI re-read", compare view, Claude backup and R2 CV copy are gone.
+## Architecture in one breath
+- **Layers:** Express 5 `server/`, browser ES modules with no build step in `public/`, and pure modules in
+  `shared/` used by browser, server and tests.
+- **`createApp({...})`** in `server/app.js` receives every optional service: `d1`, `tempStore`, `semantic`,
+  `llmProviders`, `onetLive`, `trustProxy`. Each is null or empty when its settings are missing, and that part
+  then reports "not available".
+- **One error shape:** `{error:{code,message,retryable}}`.
 
-## Future Skills Radar (details: branch `claude/future-radar`)
-- Pure engine in `shared/radar/`, server in `server/radar/`, screens `public/js/screens/radar.js` and `radarAdmin.js`.
-- Output contract `radar-signal/v1` (`docs/radar/contract.md`): never add score, weight, rank or match fields.
-- Field ↔ topic links and structural breaks are the owner's decisions; never approve them on the owner's behalf.
-- Admin and judge keys live only in server env; never print, log or commit them.
-- Both Radar charts are built in the browser from the confirmed profile (D28–D33): skills of the user's own jobs and
-  AI use of their tasks. eMASCO reaches O\*NET only through the code chain (D29 replaced D27).
-- The Radar page has no "Your profile" card (owner, 31 Oct 2026). Do not bring it back.
-- Two tabs (D43-D48, 31 Oct 2026): **For You** (the "Which of these do you use AI for?" question first, then the AI
-  tasks scatter and research signals for you) and **Explore all trends** (research momentum and papers per year, all
-  six topics). Explore opens first only for the goal "Switch career". Only the OpenAlex source card is on the page.
-- The AI usage answer is `profile.aiTasks` (`shared/aiTasks.js`): only recorded, in no Radar request; save it without
-  `update()` so a confirmed profile stays confirmed. The AI tasks chart is a scatter (`taskScatter.js`), no safe/risky words.
-
-## Career matching (details: branch `claude/career-matching`)
-- Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.
-- Skill Match = Σ min(you, needed) ÷ Σ needed (O\*NET skills + knowledge, importance ≥ 3.0); the owner's example
-  12.05 / 9.2 / 76% is a test. Trends and AI scenarios never change it. No language model.
-- eMASCO → O\*NET only through `data/radar/occupation-bridge.json`; a broken chain shows "not available" with the
-  missing step, never a guess.
-- Only show SDG links as the owner decided (M16: team drafts labelled, rejected hidden); never approve on the
-  owner's behalf. The profile sent to `/api/matching` is never stored or logged.
-- Overall match (M17): Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch (`shared/matching/overall.js`);
-  it never changes the Skill Match or the bands. The 4 AI questions follow the UNESCO framework (source on screen).
-
-## Study pathway (details: branch `claude/study-pathway`)
-- Code in `shared/pathway/`, `server/pathway/`, `public/js/screens/pathway.js`, `pathwayParts.js`, `pathwayApi.js`.
-- Gap points are matching's own (`POST /api/pathway` calls `matching.role()`); no new maths, no language model.
-- Team picks (`data/pathway/picks.json`): only name, link, date (+ institution and MQA ref, or body); never invent a
-  link, name or MQA reference; copy the page's main heading (a leading programme code is dropped). Keep the manifest
-  hash in step; a bad picks file stops start-up.
-- eMASCO qualification first, O\*NET US level under it (P14). No "team draft" word on `#pathway` (P15). The NEC code
-  is shown only where known (P16). Never approve picks on the owner's behalf.
-- Forbidden keys: score, weight, rank, opportunit. The profile sent to `/api/pathway` is never stored or logged.
-
-## Organisation view (details: branch `hr-branch`)
-- Code in `shared/org/team.js`, `server/org/` (store, service, routes, shareRoutes, roster), `public/js/orgApi.js`,
-  `orgActions.js`, `screens/org.js`, `orgParts.js`, `orgShare.js`; data `data/org/` (synthetic rosters, manifest).
-- Every number comes from `matching.role()` per person; `team.js` only counts and sums. Scenarios change only band
-  counts. No hours, no language model, forbidden keys as above.
-- HR sees only shared skills (O\*NET key + level), group, role and name. Join tokens: hash only, single use, 7 days.
-  Never log names, skills or tokens; never store team results. Rosters: made-up people only.
-
-## Compare futures: AI news (details: branch `claude/compare-futures`)
-- Code in `shared/news/rules.js`, `server/news/` (deepseek, relevance, service, store, routes), `public/js/screens/futures.js`,
-  `public/js/newsApi.js`; data `data/news/fields.json` (10 ISCED-F broad fields, manifest hash). Screen `#futures`:
-  For you (profile study fields, picked in the browser) and Explore all.
-- **The news refreshes every 3 hours (owner). Keep it that way on every host.** The timer runs in the server
-  (`news.start()` in `server/index.js`); after a host sleeps, the first visit past the due time refreshes.
-- DeepSeek Search finds the news; DeepSeek `deepseek-flash` only keeps or drops each new result (news about AI in the
-  field) and writes nothing shown. **Paid**, about US$4-6 a month; caps 10 searches and 10 checks per run, 80 of each
-  per 24 hours, counted in memory and in the store. `DEEPSEEK_API_KEY` turns it on (server secrets / local `.env`).
-  The CV reader uses the same DeepSeek account under `CV_LLM_KEY`; set both names to use both features.
-- Usable: English only (said on screen), title, http(s) link, date within 30 days, repeats removed, kept by the check,
-  newest 25 per field. No profile data reaches the server or DeepSeek. News never changes matching, Radar or SDG.
-- Owner's hosting plan: Cloudflare Tunnel from the owner's computer at `futures.grong.my`; the procedure (owner steps
-  1-3, Claude creates the tunnel only after the owner's yes) is in the branch `CLAUDE.md`.
+## Conventions
+- **Test first.** Write a failing Vitest test, watch it fail, implement, then run the whole suite. Tests use real
+  servers on port 0, synthetic PDF/DOCX from `tests/helpers/cvFixtures.js`, the O\*NET fixture from
+  `tests/helpers/onetFixture.js`, and the D1/R2 stand-ins from `tests/helpers/fakeStores.js`.
+- **Profile fields:**
+  - Optional fields use `{state:'empty'|'declined'|'value', value}`.
+  - Skills use `makeSkill()`. `source` is one of `cv_rules|cv_semantic|cv_ai|user_input`. `proficiency` stays null
+    until the user sets it, and an extraction never sets it.
+  - Forbidden fields are never stored: age, gender, ethnicity, religion, maritalStatus, photo, address, icNumber.
+  - The form shows "Prefer not to say" as every optional field's default (a dropdown, never a checkbox; for button
+    questions, a pill under the buttons that is on until an answer is chosen). Opening a
+    section saves its unanswered fields as `declined` (`declineUnanswered`); `isUntouched` counts only answers.
+  - Qualifications (owner, 31 Oct): "+ Add a qualification" shows only the level and the field of study (major), both
+    dropdowns; the field list is the 124 ISCED-F fields (`GET /api/fields`). No highest qualification, institution or
+    year in the form (`education.highestQualification` stays in the schema for saved profiles).
+  - The profile has four sections (owner, 31 Oct): no certificates, training or projects. What a CV or the AI reader
+    finds for them is dropped in the browser (`dropNotAsked` in `form.js`); don't bring them back without the owner.
+  - Jobs (owner, 31 Oct): each `employment.records[]` row is the job title, then `years` (a number 0-60, `toYears` in
+    `form.js`), plus the standard-occupation finder. No employer, period, industries or overall years in the form; the
+    first job shows before it exists and typing creates it (`app.js`).
+  - Skills and roles of interest are picked with `searchPicker` (search as you type). Nothing is
+    linked silently: typed or CV wording stays unlinked until the user picks.
+  - Skills suggested from a linked field of study (`GET /api/fields/:code/skills`, rule "typical of the field") are only
+    added when the user clicks them; they keep `suggestedFrom` and stay `not_assessed`.
+  - `preferences.careerInterests` is one list (career interests and fields merged): O\*NET interest areas
+    `{source:'onet', id:'onet:ia:…', name, version}`, or texts saved before. `preferredCareerFields` no longer exists.
+  - `preferences.careerGoal` takes the four goals of the goal screen (`GOALS` in `public/js/screens/goal.js`: `where_i_stand`,
+    `find_direction`, `switch_career`, `grow_field`). Old values (`first_job`, `improve`, `change`, `explore_ai`) still
+    display (`OLD_GOALS` in `form.js`); don't convert them silently.
+  - `userCategory` is the profile's first question, "Which describes you best?", answered with buttons (`choiceField` in
+    `fields.js`, `WHO` in `public/js/screens/form.js`: `student`, `fresh_graduate`, `underemployed`, `unemployed`); `working_adult` and `graduate_switcher` stay valid for saved profiles
+    (`USER_CATEGORIES`, `OLD_CATEGORIES`). Don't edit `catA`/`catB` strings: `main`'s landing page uses them.
+  - Every list and suggestion shows its source on screen (owner: "highly important").
+  - The skill search also offers O\*NET work styles, knowledge areas and work activities (`catalogue.more`). They are
+    kept out of `byName`/`byWord`, so CV matching stays as measured. Don't merge them in without re-running the CV eval.
+- **Strings:** every UI text goes through `t(lang, key)`. Add each key to `shared/strings/en.js`, `ms.js` **and**
+  `zh.js`; `tests/i18n.test.js` fails otherwise. Every interpolated text in HTML goes through `esc()`.
+- **Privacy:** never log CV text, AI replies or personal fields. Only error names and codes are logged.
+- **Browser storage:** `safeLocalStorage()` (`shared/guestStore.js`), never `globalThis.localStorage` directly.
+- **Writing JS from scripts:** in this environment, heredocs break on apostrophes. Write helper scripts with the
+  Write tool and run them with python.
+- **Commits:** small, one per task or fix. Messages use the form `feat:`, `fix:` or `docs:`. Don't add attribution
+  lines.
+- **Look (31 Oct, owner request):** the screens use the landing page's design language, all in `public/styles.css`:
+  cream page, Instrument Serif headlines, Geist body, Geist Mono labels, thin rules instead of boxes. The CV drop
+  zone is an ATM (`.drop.atm`); the CV reading, the draft, Review and Your profile are receipts (`.slot` > `.receipt`).
+  Keep one rule per class (`tests/appLook.test.js`) and check light, dark and phone width after any CSS change.
+- **Build record:** after each task, update `docs/record/status.json` and regenerate `docs/build-record.html`.
+  The owner wants every step recorded.

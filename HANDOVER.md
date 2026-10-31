@@ -5,7 +5,7 @@ keeps a short version of this file; on merge, put only the important points ther
 one.
 
 ## State
-- **All 12 plan tasks are built**, with the final review fixes (1294 Vitest tests, 49 pipeline tests). The owner decides on merge. Nothing is
+- **All 12 plan tasks are built**, with the final review fixes (1297 Vitest tests, 49 pipeline tests). The owner decides on merge. Nothing is
   pushed or merged.
 - The organisation view (HR and L&D managers, TVET and university career centres) works end to end: setup, people
   (roster upload and join links), heatmap, team plan, outlook and SDG. Both organisation types are built (`hr` and
@@ -100,7 +100,7 @@ Other points to know:
 
 ## Commands
 ```bash
-npm test                                      # 1294 passed
+npm test                                      # 1297 passed
 python -m unittest discover pipeline/tests    # 49 OK
 npm start                                     # http://localhost:3200, tab #org
 node scripts/serve-local-accounts.mjs         # local server with a fake in-memory D1

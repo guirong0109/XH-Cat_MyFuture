@@ -59,7 +59,9 @@ function roleBox(t, o, forKey) {
     <div class="tiny muted">${esc(t('ogSrcSetup'))}</div>
     <button type="button" class="btn sm" data-act="orgRoleClose">${esc(t('ogCancel'))}</button></div>`
 }
-const roleName = (o, code) => (o?.titles?.[code] ? `${o.titles[code]} · ${code}` : code)
+// "Accountant · 2411-01": the title with its code; the code alone when the title is not known
+export const roleLabel = (title, code) => (title && code ? `${title} · ${code}` : code ?? '—')
+const roleName = (o, code, title = null) => roleLabel(title ?? o?.titles?.[code] ?? null, code)
 
 // ---------- 1 Setup ----------
 export function setupView(t, o) {
@@ -79,10 +81,11 @@ export function setupView(t, o) {
   }
   const type = typeOf(o)
   const sizes = new Map()
-  for (const g of arr(o?.team?.groups)) sizes.set(g.id, g.size)
+  const titleOfGroup = new Map()
+  for (const g of arr(o?.team?.groups)) { sizes.set(g.id, g.size); titleOfGroup.set(g.id, g.targetTitle ?? null) }
   const rows = arr(data.groups).map((g) => {
     const target = g.targetCode
-      ? `<b>${esc(roleName(o, g.targetCode))}</b> <button type="button" class="iconbtn" data-act="orgClearTarget" data-arg="${esc(g.id)}" aria-label="${esc(t('ogRemoveTarget'))}">✕</button>`
+      ? `<b>${esc(roleName(o, g.targetCode, titleOfGroup.get(g.id) ?? null))}</b> <button type="button" class="iconbtn" data-act="orgClearTarget" data-arg="${esc(g.id)}" aria-label="${esc(t('ogRemoveTarget'))}">✕</button>`
       : `<span class="muted">${esc(t('ogNoTarget'))}</span>`
     return `<tr><td>${esc(g.name)}${sizes.has(g.id) ? ` <span class="tiny muted">${esc(t('ogStaffCount', { count: sizes.get(g.id), people: t(`og_person_${type}`) }))}</span>` : ''}</td>
       <td>${target}<br><button type="button" class="btn sm" data-act="orgRoleOpen" data-arg="g:${esc(g.id)}">${esc(t('ogChange'))}</button>${roleBox(t, o, `g:${g.id}`)}</td>
@@ -150,7 +153,7 @@ function leftOutNotes(t, o, team) {
     const person = arr(team.people).find((p) => p.id === l.personId)
     const slice = sliceOf(person, view)
     const key = ['chain_broken', 'unknown_role', 'no_known_skill'].includes(l.reason) ? l.reason : 'no_known_skill'
-    return `<p class="note">${esc(t(`ogReason_${key}`, { name: person?.displayName ?? '', code: slice?.code ?? l.code ?? '', step: l.missingStep ?? '' }))}</p>`
+    return `<p class="note">${esc(t(`ogReason_${key}`, { name: person?.displayName ?? '', code: roleLabel(slice?.title, slice?.code ?? l.code ?? ''), step: l.missingStep ?? '' }))}</p>`
   }).join('')
 }
 
@@ -173,7 +176,7 @@ function staffTable(t, o) {
       ? `${tag('src', t('ogSrcShared'))}${p.addedAt ? `<div class="tiny muted">${esc(day(p.addedAt))}</div>` : ''}`
       : tag('unv', t('ogSrcRoster'))
     return `<tr><td>${esc(p.displayName)}${prov}</td><td>${move}</td>
-      ${hr ? `<td>${esc(p.current?.code ?? p.currentCode ?? '—')}</td><td class="num">${team ? percentCell(t, p.current, '—') : '—'}</td>` : ''}
+      ${hr ? `<td>${esc(roleLabel(p.current?.title, p.current?.code ?? p.currentCode))}</td><td class="num">${team ? percentCell(t, p.current, '—') : '—'}</td>` : ''}
       <td class="num">${team ? percentCell(t, p.target, t('ogNoTargetShort')) : '—'}</td><td>${source}</td>
       <td><button type="button" class="iconbtn" data-act="orgDelPerson" data-arg="${esc(p.id)}" aria-label="${esc(t('ogRemovePerson', { name: p.displayName ?? '' }))}">✕</button></td></tr>`
   }).join('')
@@ -220,11 +223,11 @@ function cellPanel(t, o, team) {
   }
   const n = cell.needing || 0
   const pc = (x) => (n ? Math.round(((x ?? 0) / n) * 1000) / 10 : 0)
-  const code = team.plans?.[group.id]?.roleCode ?? null
+  const code = roleLabel(team.plans?.[group.id]?.roleTitle, team.plans?.[group.id]?.roleCode)
   const bar = [['met', 'ok'], ['below', 'self'], ['missing', 'bad'], ['notAssessed', 'est']]
   return `<div class="card og-stack"><span class="tiny muted">${esc(t('ogCellTitle'))}</span>
     <h3>${esc(group.name)} · ${esc(column?.name ?? sel.key)}</h3>
-    <dl class="kv"><dt>${esc(t('ogCellRole'))}</dt><dd>${esc(code ?? '—')}</dd>
+    <dl class="kv"><dt>${esc(t('ogCellRole'))}</dt><dd>${esc(code)}</dd>
       <dt>${esc(t('ogCellShort'))}</dt><dd>${esc(t('ogCellShortVal', { total: one(cell.levelsShort), avg: one(cell.averageGap) }))}</dd></dl>
     <div><div class="og-bar">${bar.map(([k, c]) => `<i style="width:${pc(cell[k])}%;background:var(--${c})"></i>`).join('')}</div>
       <div class="legend"><span><i style="background:var(--ok)"></i>${esc(t('ogMet'))} ${esc(cell.met ?? 0)}</span><span><i style="background:var(--self)"></i>${esc(t('ogBelow'))} ${esc(cell.below ?? 0)}</span><span><i style="background:var(--bad)"></i>${esc(t('ogMissing'))} ${esc(cell.missing ?? 0)}</span><span><i style="background:var(--est)"></i>${esc(t('ogNotAssessed'))} ${esc(cell.notAssessed ?? 0)}</span></div></div>
@@ -309,7 +312,7 @@ export function planView(t, o) {
   else body = steps.map((s) => stepItem(t, o, s)).join('')
   const count = (k) => steps.filter((s) => (s.status ?? 'planned') === k).length
   const side = `<div class="card og-stack"><h3>${esc(t('ogPlanFor'))}</h3>
-    <p class="small">${esc(t('ogPlanForText', { group: g.name, count: g.size ?? 0, people: word(t, o, 'person'), kind: t(view === 'target' ? 'ogTarget' : 'ogCurrent'), code: plan.roleCode ?? '—' }))}</p>
+    <p class="small">${esc(t('ogPlanForText', { group: g.name, count: g.size ?? 0, people: word(t, o, 'person'), kind: t(view === 'target' ? 'ogTarget' : 'ogCurrent'), code: roleLabel(plan.roleTitle, plan.roleCode) }))}</p>
     <dl class="kv"><dt>${esc(t('ogSteps'))}</dt><dd>${esc(t('ogStepsSkills', { count: steps.length }))}</dd>
       <dt>${esc(t('ogStatus_planned'))}</dt><dd>${count('planned')}</dd><dt>${esc(t('ogStatus_in_progress'))}</dt><dd>${count('in_progress')}</dd><dt>${esc(t('ogStatus_done'))}</dt><dd>${count('done')}</dd></dl>
     ${src(t, o, 'ogSrcPlan')}</div>`

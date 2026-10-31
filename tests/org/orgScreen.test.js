@@ -23,13 +23,13 @@ function makeTeam(extra = {}) {
     view: 'current',
     scenario: 'moderate',
     groups: [
-      { id: 'g1', name: 'Finance', targetCode: '2524-02', size: 2 },
+      { id: 'g1', name: 'Finance', targetCode: '2524-02', targetTitle: 'Data Analyst', size: 2 },
       { id: 'g2', name: 'Operations', targetCode: null, size: 1 },
     ],
     people: [
-      { id: 'p1', groupId: 'g1', displayName: 'Aisyah R.', source: 'shared', addedAt: '2026-10-31T01:00:00.000Z', current: slice('2411-01', 71, { provisional: true }), target: slice('2524-02', 48) },
+      { id: 'p1', groupId: 'g1', displayName: 'Aisyah R.', source: 'shared', addedAt: '2026-10-31T01:00:00.000Z', current: slice('2411-01', 71, { provisional: true, title: 'Accountant' }), target: slice('2524-02', 48) },
       { id: 'p2', groupId: 'g1', displayName: 'Staff 02', source: 'roster', addedAt: '2026-10-31T01:00:00.000Z', current: slice('2411-01', 64), target: slice('2524-02', 41) },
-      { id: 'p3', groupId: 'g2', displayName: 'Staff 03', source: 'roster', addedAt: '2026-10-31T01:00:00.000Z', current: { code: '2182-03', available: false, reason: 'chain_broken', missingStep: 'MASCO to ISCO-08: no same 4-digit code', percent: null, provisional: false }, target: null },
+      { id: 'p3', groupId: 'g2', displayName: 'Staff 03', source: 'roster', addedAt: '2026-10-31T01:00:00.000Z', current: { code: '2182-03', title: 'Store Executive', available: false, reason: 'chain_broken', missingStep: 'MASCO to ISCO-08: no same 4-digit code', percent: null, provisional: false }, target: null },
     ],
     heatmap: {
       columns: [
@@ -48,6 +48,7 @@ function makeTeam(extra = {}) {
     plans: {
       g1: {
         roleCode: '2411-01',
+        roleTitle: 'Accountant',
         steps: [
           { key: KN, name: 'Economics and Accounting', neededMax: 5.8, peopleShort: 2, missing: 1, below: 1, levelsShort: 2.8, to: 'expert', stillShort: false, status: 'planned',
             courses: [{ name: 'Accounting basics', link: 'https://elatih.example/a', site: 'elatih', siteName: 'e-LATiH', checkedAt: '2026-10-30' }],
@@ -120,6 +121,26 @@ describe('heatmap view', () => {
   it('says how many people were left out of the sums', () => {
     const html = text(heatView(t, makeOrg()))
     expect(html).toContain('1 left out of the sums')
+  })
+
+  it('shows role titles with their codes, and the code alone when the title is unknown', () => {
+    expect(text(heatView(t, makeOrg({ sel: { groupId: 'g1', key: KN } })))).toContain('Accountant · 2411-01')
+    expect(text(peopleView(t, makeOrg({ tab: 'people' })))).toContain('Accountant · 2411-01')
+    expect(text(peopleView(t, makeOrg({ tab: 'people' })))).toContain('Store Executive · 2182-03')
+    expect(text(planView(t, makeOrg({ tab: 'plan' })))).toContain('Accountant · 2411-01')
+    expect(text(setupView(t, makeOrg({ tab: 'setup' })))).toContain('Data Analyst · 2524-02')
+    const team = makeTeam()
+    team.plans.g1.roleTitle = null
+    team.groups[0].targetTitle = null
+    expect(text(planView(t, makeOrg({ tab: 'plan', team })))).toContain('2411-01')
+    expect(text(planView(t, makeOrg({ tab: 'plan', team })))).not.toContain('null')
+    expect(text(setupView(t, makeOrg({ tab: 'setup', team })))).toContain('2524-02')
+  })
+
+  it('escapes role titles', () => {
+    const team = makeTeam()
+    team.plans.g1.roleTitle = '<b>x</b>'
+    expect(planView(t, makeOrg({ tab: 'plan', team }))).not.toContain('<b>x</b>')
   })
 
   it('shows the cell panel with the counts and a button to the plan', () => {

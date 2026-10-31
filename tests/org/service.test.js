@@ -112,7 +112,7 @@ describe('team answer', () => {
     const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
     expect(answer.org).toMatchObject({ id: org.id, type: 'hr' })
     expect(answer.view).toBe('current')
-    expect(answer.groups).toEqual([{ id: expect.any(String), name: 'Ops', targetCode: FIXTURE.fullRole, size: 3 }])
+    expect(answer.groups).toEqual([{ id: expect.any(String), name: 'Ops', targetCode: FIXTURE.fullRole, targetTitle: expect.any(String), size: 3 }])
     const cells = Object.values(answer.heatmap.cells)[0]
     expect(cells['el:2.A.1.a'].needing).toBe(2)
     expect(answer.leftOut).toHaveLength(1)
@@ -186,6 +186,11 @@ describe('team answer', () => {
     const group = await roster(store, org, THREE)
     const t = await service.team('u1', { view: 'target', scenario: 'moderate' }, null)
     expect(t.plans[group.id].roleCode).toBe(FIXTURE.fullRole)
+    // the role title travels with the code: on the plan, the group target and each person's role
+    expect(typeof t.plans[group.id].roleTitle).toBe('string')
+    expect(t.plans[group.id].roleTitle.length).toBeGreaterThan(0)
+    expect(t.groups.find((g) => g.id === group.id).targetTitle).toBe(t.plans[group.id].roleTitle)
+    expect(t.people.find((p) => p.target?.available).target.title).toBe(t.plans[group.id].roleTitle)
     const c = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
     expect(c.plans[group.id].roleCode).toBe(FIXTURE.fullRole)
     // tie: one on 2512-01, one on 2521-03 -> the lowest code

@@ -15,6 +15,7 @@ export function sliceOf(answer) {
   const jobAds = answer?.outlook?.jobAds
   return {
     code: answer?.code ?? null,
+    title: typeof answer?.title === 'string' ? answer.title : null,
     available,
     reason: missingStep ? 'chain_broken' : fit == null ? 'no_known_skill' : null,
     missingStep,

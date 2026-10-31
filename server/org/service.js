@@ -17,12 +17,12 @@ export function profileOf(skills) {
 
 // A role code matching does not know: left out like a broken chain, with its own reason.
 const unknownSlice = (code) => ({
-  code, available: false, reason: 'unknown_role', missingStep: null, percent: null, provisional: false,
+  code, title: null, available: false, reason: 'unknown_role', missingStep: null, percent: null, provisional: false,
   rows: null, bands: { moderate: 4, rapid: 4 }, sdgLinks: [],
 })
 
 const outRole = (s) => (s == null ? null : {
-  code: s.code, available: s.available, reason: s.reason, missingStep: s.missingStep, percent: s.percent, provisional: s.provisional,
+  code: s.code, title: s.title ?? null, available: s.available, reason: s.reason, missingStep: s.missingStep, percent: s.percent, provisional: s.provisional,
 })
 
 // Most common code; ties go to the lowest code. Null when there is none.
@@ -61,6 +61,10 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
     const map = heatmap(groups, people, effective)
     const { leftOut, ...heat } = map
 
+    // role titles come from matching's role answers of the people (null when no one has that role)
+    const titles = new Map()
+    for (const p of people) for (const s of [p.current, p.target]) if (s?.code && s.title) titles.set(s.code, s.title)
+    const titleOf = (code) => (code ? titles.get(code) ?? null : null)
     const plans = {}
     const sdg = {}
     let sources = null
@@ -88,6 +92,7 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
       }
       plans[g.id] = {
         roleCode,
+        roleTitle: titleOf(roleCode),
         steps: steps.map((s) => ({
           ...s,
           status: statuses.get(s.key) ?? 'planned',
@@ -112,7 +117,7 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
       org: { id: org.id, name: org.name, type: org.type },
       view: effective,
       scenario,
-      groups: groups.map((g) => ({ ...g, size: roster.filter((p) => p.groupId === g.id).length })),
+      groups: groups.map((g) => ({ ...g, targetTitle: titleOf(g.targetCode), size: roster.filter((p) => p.groupId === g.id).length })),
       people: roster.map((p, i) => ({
         id: p.id, groupId: p.groupId, displayName: p.displayName, source: p.source, addedAt: p.addedAt,
         current: outRole(people[i].current), target: outRole(people[i].target),

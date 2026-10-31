@@ -1179,8 +1179,10 @@ function render() {
   document.documentElement.dataset.theme = theme
   document.getElementById('themeBtn').textContent = t(theme === 'dark' ? 'themeToLight' : 'themeToDark')
   const screen = state.screen
-  const tabs = TABS.includes(screen)
-    ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`
+  // The four main screens are a side bar on the left (owner, 1 Nov 2026); on a phone it sits on top as a row.
+  const side = TABS.includes(screen)
+  const tabs = side
+    ? `<nav class="side-nav" aria-label="${esc(t('summary'))}, ${esc(t('radar'))}, ${esc(t('match'))}, ${esc(t('pathway'))}">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}"${screen === id ? ' aria-current="page"' : ''}>${esc(t(id))}</button>`).join('')}</nav>`
     : ''
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
@@ -1203,7 +1205,8 @@ function render() {
   // the key is carried over from the old box to the new one only, never through the state.
   const typing = ['admKey', 'admLabel'].map((id) => document.getElementById(id)).filter((box) => box?.value)
   const carried = typing.map((box) => [box.id, box.value, document.activeElement === box])
-  document.getElementById('main').innerHTML = tabs + view
+  document.body.classList.toggle('has-side', side)
+  document.getElementById('main').innerHTML = side ? `<div class="side-layout">${tabs}<div class="side-body">${view}</div></div>` : view
   for (const [id, value, focused] of carried) {
     const box = document.getElementById(id)
     if (!box) continue

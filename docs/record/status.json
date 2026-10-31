@@ -2659,6 +2659,11 @@
       "time": "31 Oct",
       "step": "Compare futures: spec and diagram approved, build plan written",
       "detail": "Owner approved the spec and the diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news.md: 6 tasks (field list and rules, DeepSeek client, refresh service with caps, GET /api/news, #futures screen, browser check and branch docs). Waits on the owner: plan review and the choice of how to build it."
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: field list and rules",
+      "detail": "data/news/fields.json (10 ISCED-F broad fields with search words, manifest hash, SOURCES.md entry for it and for DeepSeek Search); shared/news/rules.js (query, usable check, repeats, merge, top 25, For-you fields); server/news/fields.js loader. npm test 1454 passed"
     }
   ]
 }

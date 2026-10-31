@@ -1,0 +1,15 @@
+{
+  "source": "ISCED-F 2013 broad fields (titles as in data/isced/fields.tsv); search words: team draft, owner may change",
+  "fields": [
+    { "code": "01", "title": "Education", "words": "education teaching schools" },
+    { "code": "02", "title": "Arts and humanities", "words": "arts humanities design media" },
+    { "code": "03", "title": "Social sciences, journalism and information", "words": "social sciences journalism" },
+    { "code": "04", "title": "Business, administration and law", "words": "business finance law" },
+    { "code": "05", "title": "Natural sciences, mathematics and statistics", "words": "science mathematics statistics" },
+    { "code": "06", "title": "Information and Communication Technologies (ICTs)", "words": "software computing cybersecurity" },
+    { "code": "07", "title": "Engineering, manufacturing and construction", "words": "engineering manufacturing construction" },
+    { "code": "08", "title": "Agriculture, forestry, fisheries and veterinary", "words": "agriculture fisheries veterinary" },
+    { "code": "09", "title": "Health and welfare", "words": "healthcare medicine welfare" },
+    { "code": "10", "title": "Services", "words": "services tourism hospitality transport" }
+  ]
+}

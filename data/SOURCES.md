@@ -59,6 +59,13 @@ Refresh O\*NET: `python pipeline/fetch_onet.py <version>` (see the script's head
 Refresh the Radar skill flags: admin "Refresh O\*NET skills" with a release number (e.g. `31.1`), or `node scripts/radar-bootstrap.mjs` (set `ONET_ZIP_DIR` to a folder holding `db_30_2.zip`, `db_30_3.zip`, `db_31_0.zip` to read local copies instead of downloading 13 MB each; the recorded URL stays the official one and the hash is of the bytes read). The Hot Technologies page: admin "Refresh Hot Technologies".
 Refresh ISCED-F and its CIP bridge: `python pipeline/fetch_isced.py` (downloads again), or rebuild from the kept originals: `python pipeline/fetch_isced.py data/isced/source/isced-f-2013-cip2016-eng.csv data/isced/source/Education_CIP_to_ONET_SOC.xlsx`. The concordance uses CIP Canada 2016 and the O\*NET crosswalk CIP 2020; a CIP code is matched only when both tables use the same code, so 6 fields (e.g. 9999 Field unknown) have no O\*NET link.
 
+## AI news (Compare futures)
+
+| File | What it is | Source | Date | Licence / notes |
+|---|---|---|---|---|
+| `news/fields.json` | The 10 ISCED-F 2013 broad study fields (01-10) with the words searched for each field's AI news | Titles as in `isced/fields.tsv` (UNESCO UIS ISCED-F 2013); search words written by the FutureReady team | written 2026-10-31 | Team draft; the owner may change the words (then update the hash in `news/manifest.json`) |
+| News lists (`cache/news/latest.json` or R2 `news/latest.json`, not in git) | Up to 25 AI news items per field: title, link, site, publish date and DeepSeek's short display snippet, refreshed every 3 hours | DeepSeek Search API, `POST https://api.deepseek.com/v1/tools/search` (docs https://api-docs.deepseek.com/guides/search/ and https://api-docs.deepseek.com/api/search/, read 2026-10-31) | each refresh | Paid: US$0.75 per 1,000 successful searches (billing from 1 Nov 2026, 00:00 Beijing time). DeepSeek's Search pages state no rule on storing or showing results; ask the owner if that matters. Only the five display fields are kept, never the article text, and every item links to the original |
+
 ## Test and evaluation sets (synthetic)
 
 | File | What it is |

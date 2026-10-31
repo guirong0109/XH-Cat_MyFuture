@@ -1849,6 +1849,11 @@
       "time": "31 Oct",
       "step": "Brought main into the branch (Study Pathway, Radar charts)",
       "detail": "merged origin/main; conflicts only in the build record (both sides kept); npm test 1088 tests (1087 pass here, 1 fails only from Windows CRLF line endings on a copied file), pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 1: Overall match maths",
+      "detail": "shared/matching/overall.js (readAiUse, aiKnowHow, overallMatch, sortValue); 17 new tests, npm test 1105 passed"
     }
   ]
 }

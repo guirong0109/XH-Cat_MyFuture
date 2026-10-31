@@ -25,6 +25,31 @@ export const afterSkip = (current, date) => (current?.status === 'answered' ? cu
 // The card shows by itself only while a profile has no answer yet (D36). No profile: nothing to keep it in.
 export const needsAsking = (profile) => Boolean(profile && typeof profile === 'object' && profile.aiTasks == null)
 
+// The ticks on screen: unsaved ones from the card's state (aiAsk) when there are any, else the saved answer.
+export function askOf(profile, aiAsk) {
+  const saved = profile?.aiTasks?.status === 'answered' && Array.isArray(profile.aiTasks.picked) ? profile.aiTasks.picked : null
+  return {
+    picked: Array.isArray(aiAsk?.picked) ? aiAsk.picked : saved ?? [],
+    none: typeof aiAsk?.none === 'boolean' ? aiAsk.none : saved?.length === 0,
+  }
+}
+
+// One step of the card (D35, D36, D39): state = { profile, aiAsk } -> the same shape. 'pick' (arg = id) and 'none' change
+// only the card's ticks; 'continue' and 'skip' save into profile.aiTasks and close the card; 'open' reopens it with the
+// saved ticks. profileStatus is never touched (D38). Without a profile nothing changes.
+export function aiAskStep(state, act, arg, date) {
+  const { profile, aiAsk } = state
+  if (!profile) return state
+  const ask = askOf(profile, aiAsk)
+  const open = aiAsk?.open === true
+  if (act === 'pick') return { profile, aiAsk: { picked: togglePick(ask.picked, arg), none: false, open } }
+  if (act === 'none') return { profile, aiAsk: { picked: ask.none ? ask.picked : [], none: !ask.none, open } }
+  if (act === 'continue') return canContinue(ask) ? { profile: { ...profile, aiTasks: answered(ask.none ? [] : ask.picked, date) }, aiAsk: null } : state
+  if (act === 'skip') return { profile: { ...profile, aiTasks: afterSkip(profile.aiTasks, date) }, aiAsk: null }
+  if (act === 'open') return { profile, aiAsk: { ...askOf(profile, null), open: true } }
+  return state
+}
+
 // The profile check for aiTasks (spec §4); called only when aiTasks is neither undefined nor null.
 export function aiTasksErrors(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return [{ path: 'aiTasks', code: 'bad_type' }]

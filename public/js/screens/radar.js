@@ -14,7 +14,7 @@ import { makeBridge } from '../../../shared/radar/bridge.js'
 import { makeChain } from '../../../shared/radar/chain.js'
 import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
 import { profileRadar } from '../components/charts/profileRadar.js'
-import { AI_TASK_IDS, canContinue, needsAsking } from '../../../shared/aiTasks.js'
+import { AI_TASK_IDS, askOf, canContinue, needsAsking } from '../../../shared/aiTasks.js'
 
 // ---------- reference data and relevance ----------
 
@@ -879,10 +879,7 @@ export const staleRadar = (radar) => ({ ...(radar ?? {}), data: null, open: null
 // and privacy lines, Continue (off until something is ticked) and Skip. Ticks not yet saved are in state.radar.aiAsk;
 // otherwise the saved answer is shown. Only known ids are ever drawn, so a saved unknown id is never echoed.
 export function aiTasksQuestion({ t, state }) {
-  const saved = state?.profile?.aiTasks?.status === 'answered' ? state.profile.aiTasks.picked ?? [] : null
-  const draft = ui(state).aiAsk
-  const picked = Array.isArray(draft?.picked) ? draft.picked : saved ?? []
-  const none = typeof draft?.none === 'boolean' ? draft.none : Array.isArray(saved) && saved.length === 0
+  const { picked, none } = askOf(state?.profile, ui(state).aiAsk)
   const box = (act, arg, on) => `<input type="checkbox" data-act="${act}"${arg ? ` data-arg="${arg}"` : ''}${on ? ' checked' : ''}>`
   const opts = AI_TASK_IDS.map((id) => `<label class="rd-aiask-opt">${box('aiAskPick', id, picked.includes(id))} <span>${esc(t(`rdAiTask_${id}`))}<span class="tiny muted">${esc(t(`rdAiTaskEx_${id}`))}</span></span></label>`).join('')
   return `<article class="rd-srccard rd-aiask"><fieldset><legend>${esc(t('rdAiAskTitle'))}</legend>

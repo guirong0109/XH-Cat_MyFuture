@@ -4,6 +4,7 @@
 import { t as translate } from '/shared/i18n.js'
 import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
+import { aiAskStep } from '/shared/aiTasks.js'
 import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
@@ -577,6 +578,15 @@ const pathwayActions = {
   pwClear: (key) => setProgress(key, null),
 }
 
+// The Radar's AI usage question (D35-D39). Its answer is not CV content, so it is saved without update(): a confirmed
+// profile stays confirmed (D38). Unsaved ticks live in state.radar.aiAsk, which is never saved (persist drops radar).
+function aiAsk(act, arg) {
+  const out = aiAskStep({ profile: state.profile, aiAsk: radarUi().aiAsk ?? null }, act, arg, today())
+  state.profile = out.profile
+  if (act === 'continue' || act === 'skip') persist()
+  setRadar({ aiAsk: out.aiAsk })
+}
+
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
 function update(profile) {
   state.profile = { ...profile, profileStatus: 'draft' }
@@ -586,6 +596,12 @@ function update(profile) {
 }
 
 const actions = {
+  // Radar: "Which of these do you use AI for?" (D35, D36, D39)
+  aiAskPick: (id) => aiAsk('pick', id),
+  aiAskNone: () => aiAsk('none'),
+  aiAskContinue: () => aiAsk('continue'),
+  aiAskSkip: () => aiAsk('skip'),
+  aiAskOpen: () => aiAsk('open'),
   // Radar: Skills & Careers is the first tab and opens by default (D21).
   radarTab: (tab) => {
     setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })

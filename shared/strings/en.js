@@ -143,6 +143,7 @@ export default {
   grpAddLabel: "Add a skill used here",
   grpAsWritten: "As written: “{text}”",
   grpLegend: "✓ in the O*NET skill list (U.S. Department of Labor, CC BY 4.0) · ? not in it: kept, not used for matching",
+  cvPicked: "Chosen from your CV: “{text}”. Check it is right.",
   tagFromProjects: "From your projects",
   grpLevelNote: "A skill used in a job or project starts at Good (from your projects). Change it in Edit.",
   otherShow: "Show {n} skills",

@@ -85,6 +85,11 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(await names(['PROJECTS', 'Python, JavaScript'])).toEqual(['Python', 'JavaScript'])
   })
 
+  it('each qualification comes with its level already chosen for the dropdown (owner, 31 Oct)', async () => {
+    const { profile } = await run()
+    expect(profile.education.records.map((r) => [r.qualification, r.level])).toEqual([['Diploma', 'diploma'], ['Bachelor degree', 'bachelor']])
+  })
+
   it('reads certificates and projects as unconfirmed records', async () => {
     const { profile } = await run()
     expect(profile.certifications.map((c) => c.name)).toEqual(['Google Data Analytics Certificate, 2023'])

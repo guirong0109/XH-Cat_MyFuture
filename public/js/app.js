@@ -16,6 +16,7 @@ import source from './screens/source.js'
 import upload from './screens/upload.js'
 import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
 import { confirmGroup, groupsOf, linkSkill, placeOf, renamePlace, unlinkPlace, unlinkSkill } from './screens/skillGroups.js'
+import { prechooseFields } from './cvPrechoose.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -58,6 +59,12 @@ let cvFile = null
 let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
 // After guest or account: personal users are asked their goal first; organisations go to "Who are you?".
+// The ISCED-F field search (field names and the CIP programmes linked to them); null when it is not available.
+const searchFields = async (words) => {
+  const out = await api('GET', `/api/fields/search?q=${encodeURIComponent(words)}`)
+  return out.ok ? out.data : null
+}
+
 const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
@@ -365,7 +372,8 @@ const actions = {
     }
     // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
     // Certificates, training and projects found in the CV are left out: the profile does not ask for them.
-    const draft = dropNotAsked(out.data.profile)
+    // The field of study is prechosen from the CV words, for the user to check (owner, 31 Oct).
+    const draft = await prechooseFields(dropNotAsked(out.data.profile), searchFields)
     state.profile = mergeDraft(state.profile, draft)
     cvDraft = draft
     state.cvSession = true
@@ -391,7 +399,8 @@ const actions = {
       return render()
     }
     // What the user changed since the CV draft is locked: the AI never overwrites it.
-    const rows = diffProfiles(state.profile, dropNotAsked(out.data.suggested), userEditedPaths(cvDraft, state.profile))
+    const suggested = await prechooseFields(dropNotAsked(out.data.suggested), searchFields)
+    const rows = diffProfiles(state.profile, suggested, userEditedPaths(cvDraft, state.profile))
     state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
     render()
   },

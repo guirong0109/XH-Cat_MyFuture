@@ -143,6 +143,7 @@ export default {
   grpAddLabel: "添加在此使用的技能",
   grpAsWritten: "原文：“{text}”",
   grpLegend: "✓ 在 O*NET 技能列表中（美国劳工部，CC BY 4.0）· ? 不在列表中：保留，但不用于匹配",
+  cvPicked: "根据你的简历选择：“{text}”。请检查是否正确。",
   tagFromProjects: "来自你的项目",
   grpLevelNote: "在工作或项目中用过的技能，起始水平为“良好”（来自你的项目）。可在“编辑”中更改。",
   otherShow: "显示 {n} 项技能",

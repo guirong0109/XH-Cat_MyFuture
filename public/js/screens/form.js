@@ -62,7 +62,9 @@ function fieldSelect({ t, state }, record, i) {
     control = `<select id="fs-${i}" data-field-pick="${i}"><option value="">${esc(t('fieldChoose'))}</option>${[...groups].map(([broad, items]) => `<optgroup label="${esc(broad)}">${items.map(option).join('')}</optgroup>`).join('')}</select>
       <div class="tiny muted">${esc(t('fieldListSource', { version: list.version, n: list.fields.length }))}</div>`
   }
-  const typed = !record.field && record.fieldOfStudy ? asWritten(t, record.fieldOfStudy) : ''
+  // Chosen from the CV words (owner, 31 Oct): the user checks it against them; changing the dropdown makes it theirs.
+  const picked = record.field?.via === 'cv_match' ? `<div class="tiny" style="color:var(--self)">${esc(t('cvPicked', { text: record.field.term }))}</div>` : ''
+  const typed = !record.field && record.fieldOfStudy ? asWritten(t, record.fieldOfStudy) : picked
   const hint = record.field ? `<div class="tiny muted">${esc(t('fieldSuggestHint'))}</div>` : ''
   return `<div class="field"><label for="fs-${i}">${esc(t('fieldOfStudy'))}</label>${control}${typed}${hint}</div>`
 }

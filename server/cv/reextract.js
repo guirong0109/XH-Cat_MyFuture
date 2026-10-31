@@ -8,6 +8,7 @@ import { validateFile } from './validateFile.js'
 import { CV_SCHEMA, SYSTEM_PROMPT, userMessage } from './reextractPrompt.js'
 import { createWindowLimiter } from '../rateLimit.js'
 import { mergeSkills } from '../skills/normalize.js'
+import { levelOf } from './patterns.js'
 
 const RUNS_PER_UPLOAD = 3
 const RUNS_PER_HOUR = 20
@@ -129,7 +130,7 @@ export function createReextractor({ tempStore, providers, fetchImpl = fetch, nor
     const extraction = (evidence) => ({ method: 'ai', evidence, confidence: null, extractorVersion: `ai:${provider.model}`, provider: provider.kind, at, kind: 'explicit' })
     const profile = emptyProfile({ inputMethod: 'cv', interfaceLanguage })
     profile.dataProvenance.extractionModel = `ai:${provider.model}`
-    profile.education.records = fields.education.map((e) => ({ qualification: e.qualification, fieldOfStudy: e.fieldOfStudy, institution: e.institution, year: '', userConfirmed: false, extraction: extraction(e.evidence) }))
+    profile.education.records = fields.education.map((e) => ({ qualification: e.qualification, level: levelOf(e.qualification), fieldOfStudy: e.fieldOfStudy, institution: e.institution, year: '', userConfirmed: false, extraction: extraction(e.evidence) }))
     profile.employment.records = fields.jobs.map((j) => ({ jobTitle: j.jobTitle, employer: j.employer, period: '', userConfirmed: false, extraction: extraction(j.evidence) }))
     profile.certifications = fields.certifications.map((c) => ({ name: c.name, issuer: '', year: '', userConfirmed: false, extraction: extraction(c.evidence) }))
     profile.projects = fields.projects.map((p) => ({ title: p.title, description: '', userConfirmed: false, extraction: extraction(p.evidence) }))

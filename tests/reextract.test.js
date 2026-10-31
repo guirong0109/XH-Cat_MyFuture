@@ -104,7 +104,7 @@ describe('createReextractor', () => {
     expect(validateProfile(out.suggested)).toEqual({ ok: true, errors: [] })
     expect(out.suggested.skills).toEqual([expect.objectContaining({ name: 'Microsoft Excel', canonicalId: 'onet:tech:microsoft excel', source: 'cv_ai', proficiency: null, proficiencyStatus: 'not_assessed', userConfirmed: false })])
     expect(out.suggested.skills[0].extraction).toMatchObject({ method: 'ai', kind: 'explicit', evidence: 'monthly reports in Microsoft Excel' })
-    expect(out.suggested.education.records[0]).toMatchObject({ qualification: 'Diploma', institution: 'Politeknik Ungku Omar', userConfirmed: false })
+    expect(out.suggested.education.records[0]).toMatchObject({ qualification: 'Diploma', level: 'diploma', institution: 'Politeknik Ungku Omar', userConfirmed: false })
     expect(out.suggested.interfaceLanguage).toBe('ms')
   })
 

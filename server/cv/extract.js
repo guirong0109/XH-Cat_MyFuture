@@ -4,7 +4,7 @@
 import { emptyProfile, levelFromUse, makeSkill, val, validateProfile } from '../../shared/profileSchema.js'
 import { mergeSkills } from '../skills/normalize.js'
 import { nameKey, wordsOf } from '../skills/onetSkills.js'
-import { DATE_RANGE, PERSONAL_LINE, QUALIFICATIONS, SECTION_WORDS, rangeMonths } from './patterns.js'
+import { DATE_RANGE, PERSONAL_LINE, QUALIFICATIONS, SECTION_WORDS, levelOfLabel, rangeMonths } from './patterns.js'
 
 export const EXTRACTOR_VERSION = 'cv-1.0'
 const MAX_LINES = 300
@@ -45,6 +45,8 @@ function education(rows, hasSection, extraction) {
     const year = line.match(/\b(?:19|20)\d{2}\b/g)?.at(-1) ?? ''
     out.push({
       qualification: found[1],
+      // Chosen for the user to check (owner, 31 Oct), from the qualification the line names.
+      level: levelOfLabel(found[1]),
       fieldOfStudy: parts[0]?.replace(/\b(?:19|20)\d{2}\b.*$/, '').trim() ?? '',
       institution: parts.slice(1).find((part) => part && !/^\d{4}\)?$/.test(part)) ?? '',
       year,

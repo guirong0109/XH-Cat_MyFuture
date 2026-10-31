@@ -143,6 +143,7 @@ export default {
   grpAddLabel: "Tambah kemahiran yang digunakan di sini",
   grpAsWritten: "Seperti ditulis: “{text}”",
   grpLegend: "✓ ada dalam senarai kemahiran O*NET (Jabatan Buruh A.S., CC BY 4.0) · ? tiada: disimpan, tidak digunakan untuk padanan",
+  cvPicked: "Dipilih daripada CV anda: “{text}”. Semak sama ada betul.",
   tagFromProjects: "Daripada projek anda",
   grpLevelNote: "Kemahiran yang digunakan dalam kerja atau projek bermula pada Baik (daripada projek anda). Ubah di Sunting.",
   otherShow: "Tunjuk {n} kemahiran",

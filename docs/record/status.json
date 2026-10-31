@@ -328,6 +328,11 @@
           "title": "T28x After the CV: only 'Edit in the form'",
           "sub": "no Review and confirm or Upload another file on the CV result",
           "status": "done"
+        },
+        {
+          "title": "T28y CV qualification and field prechosen",
+          "sub": "level from the CV reader · field from the ISCED search · 'Check it is right'",
+          "status": "done"
         }
       ]
     }
@@ -389,7 +394,8 @@
     "Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
     "Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
     "Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)",
-    "Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)"
+    "Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)",
+    "Task 28y: your request - after a CV upload, the Education dropdowns come prechosen, so the user only checks them: the qualification level from what the CV reader recognised (e.g. 'Bachelor of ...' = Bachelor degree), and the field of study as the first match of the existing ISCED-F field search for the CV words (e.g. 'Computer Science' = Software and applications development and analysis, 0613, through the Statistics Canada CIP link). Under it: 'Chosen from your CV: “Computer Science”. Check it is right.' instead of 'Choose the matching one'. When nothing matches, the dropdown stays empty with the CV words, as before. The AI re-read does the same (Tests 320 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1196,6 +1202,11 @@
       "time": "31 Oct",
       "step": "Task 28x",
       "detail": "your request: after uploading a CV, leave only Edit in the form, because the extraction is never correct; test first (1 failed), then upload.js; npm test 315 passed; in Chrome the CV result shows one button, Edit in the form"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28y",
+      "detail": "your request: prechoose the qualification and field of study from the CV so the user just checks; tests first (4 failed), then server/cv/patterns.js (levelOf), extract.js and reextract.js (level), public/js/cvPrechoose.js (first ISCED search match, via cv_match), app.js (upload and AI re-read), form.js ('Chosen from your CV … Check it is right'), wording in en/ms/zh; npm test 320 passed; eval-cv 0 failures; in Chrome a CV with 'Bachelor of Computer Science' and 'Diploma in Accounting' showed Bachelor degree + Software and applications development and analysis, Diploma + Accounting and taxation"
     }
   ]
 }

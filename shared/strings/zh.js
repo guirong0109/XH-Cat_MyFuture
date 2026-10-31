@@ -960,7 +960,6 @@ export default {
   pwEduSuppressed: "O*NET 标记为不可靠的 {count} 行已略去。", // translation: owner review
   pwSrcLabel: "来源：", // translation: owner review
   pwSrcMqr: "MQA 名册（仅链接）", // translation: owner review
-  pwSrcPicksName: "FutureReady 团队精选，每项附链接核查日期（负责人在管理页审核）", // translation: owner review
   pwFieldsTitle: "通往此职位的学习领域", // translation: owner review
   pwSourced: "有来源", // translation: owner review
   pwFieldsLead: "通过官方对照表反向查找：O*NET 职业 → 美国/加拿大学习课程（CIP）→ 联合国教科文组织学习领域（ISCED-F 2013）。", // translation: owner review

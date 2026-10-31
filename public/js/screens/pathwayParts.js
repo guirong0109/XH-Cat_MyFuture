@@ -26,7 +26,7 @@ export function sourceLine(t, sources, ids, extra = [], attr = '') {
   const byId = new Map(arr(sources).map((s) => [s.id, s]))
   const pieces = ids.flatMap((id) => (id.endsWith('*') ? arr(sources).filter((s) => s.id.startsWith(id.slice(0, -1))) : byId.has(id) ? [byId.get(id)] : []))
     .map((s) => {
-      const name = s.id === 'pathway-picks' ? t('pwSrcPicksName') : s.name ?? s.id
+      const name = s.name ?? s.id
       const bits = [s.date ? day(s.date) : '', s.licence ?? ''].filter(Boolean).map(esc).join(', ')
       return `${ext(s.url, name)}${bits ? `, ${bits}` : ''}`
     })
@@ -53,7 +53,7 @@ function pickItem(t, who, p, before = '') {
 function courseList(t, names, list) {
   const shown = arr(list)
   if (!shown.length) return `<p class="small muted">${esc(t('pwNoPick'))}</p>`
-  return `<ul class="pw-picks">${shown.map((p) => pickItem(t, names.get(p.site) ?? p.site ?? '', p)).join('')}</ul>`
+  return `<ul class="pw-picks">${shown.map((p) => pickItem(t, p.siteName ?? names.get(p.site) ?? p.site ?? '', p)).join('')}</ul>`
 }
 function moreOn(t, links) {
   const list = arr(links).filter((l) => safeUrl(l?.url))

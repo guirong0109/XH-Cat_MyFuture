@@ -37,7 +37,7 @@ const SOURCES = [
   { id: 'emasco-qualification', name: 'eMASCO (MASCO 2020), English pages', url: 'https://emasco.mohr.gov.my', date: '2026-10-23', licence: null },
   { id: 'isced-cip', name: 'ISCED-F 2013 to CIP Canada 2016 concordance (Statistics Canada)', url: 'https://www.statcan.gc.ca/x.csv', date: '2026-10-30', licence: 'Statistics Canada Open Licence' },
   { id: 'cip-onet', name: '2020 CIP to O*NET-SOC 2019 crosswalk', url: 'https://www.onetcenter.org/crosswalks/cip/x.xlsx', date: '2026-10-30', licence: 'CC BY 4.0' },
-  { id: 'pathway-picks', name: 'Study pathway picks (FutureReady team draft; rejected ones hidden, approved ones dated)', url: null, date: '2026-10-31', licence: null },
+  { id: 'pathway-picks', name: 'FutureReady team picks (owner review in Admin)', url: null, date: '2026-10-31', licence: null },
   { id: 'site:elatih', name: 'e-LATiH (HRD Corp)', url: 'https://elatih.hrdcorp.gov.my/', date: '2026-10-31', licence: null },
   { id: 'site:coursera', name: 'Coursera', url: 'https://www.coursera.org/', date: '2026-10-31', licence: null },
 ]
@@ -292,9 +292,17 @@ describe('Study pathway screen', () => {
     for (const name of ['O*NET Database 31.0', 'Occupation bridge (eMASCO to O*NET)', 'eMASCO (MASCO 2020), English pages', 'Statistics Canada', '2020 CIP to O*NET-SOC 2019 crosswalk', 'e-LATiH (HRD Corp)', 'Coursera']) {
       expect(text(table)).toContain(name)
     }
-    expect(text(table)).toContain(t('pwSrcPicksName'))
+    expect(text(table)).toContain('FutureReady team picks (owner review in Admin)')
     expect(text(table)).toContain('2026-10-23')
     expect(text(table)).toContain('Statistics Canada Open Licence')
+  })
+
+  it('a course pick shows its site name (siteName), not the site id', () => {
+    const fcc = { ...COURSE, id: 'c9', site: 'freecodecamp', siteName: 'freeCodeCamp', name: 'Responsive Web Design', link: 'https://www.freecodecamp.org/learn/x' }
+    const a = { ...ANSWER, steps: { ...ANSWER.steps, gaps: [{ ...ANSWER.steps.gaps[0], courses: [fcc] }] } }
+    const s = text(view({ targets: [target(a.code, a.title)], active: a.code, answers: { [a.code]: a } }))
+    expect(s).toContain('freeCodeCamp Responsive Web Design ↗')
+    expect(s).not.toContain('freecodecamp')
   })
 
   it('links open in a new tab with noopener; bad links are not links; every text is escaped', () => {
@@ -343,6 +351,13 @@ describe('Career matching card and app wiring', () => {
     expect(app).toMatch(/const NEXT = \['assess', 'radar', 'match', 'pathway', 'sdg', 'futures'\]/)
     expect(app).toMatch(/roadmap: 'pathway'/)
     expect(app).toMatch(/pathway: state\.pathway \? pathwayToSave\(state\.pathway\) : null/)
+    // back / forward to #roadmap also shows #pathway in the address
+    const popstate = app.slice(app.indexOf("window.addEventListener('popstate'"))
+    expect(popstate.slice(0, popstate.indexOf('})'))).toContain("history.replaceState(null, '', '#pathway')")
+    // progress and addedAt use the local date, not the UTC one
+    const today = app.slice(app.indexOf('const today = '), app.indexOf('function setProgress'))
+    expect(today).toMatch(/getFullYear\(\)[\s\S]*getMonth\(\) \+ 1[\s\S]*getDate\(\)/)
+    expect(today).not.toContain('toISOString')
   })
 })
 

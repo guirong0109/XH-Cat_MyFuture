@@ -960,7 +960,6 @@ export default {
   pwEduSuppressed: "{count} rows O*NET marks as not reliable are left out.",
   pwSrcLabel: "Sources:",
   pwSrcMqr: "MQA register (link only)",
-  pwSrcPicksName: "FutureReady team picks, each with the date its link was checked (owner review in Admin)",
   pwFieldsTitle: "Fields of study that lead here",
   pwSourced: "sourced",
   pwFieldsLead: "Read backwards through official tables: O*NET job → US/Canada study programmes (CIP) → UNESCO field of study (ISCED-F 2013).",

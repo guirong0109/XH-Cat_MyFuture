@@ -116,7 +116,7 @@ export async function loadPathwayData(dataDir) {
     { id: 'emasco-qualification', name: details.source ?? 'eMASCO (MASCO 2020)', url: 'https://emasco.mohr.gov.my', date: details.fetchedAt ?? emascoManifest.fetchedAt ?? null, licence: null },
     iscedSource('isced-cip', statcan),
     iscedSource('cip-onet', crosswalk),
-    { id: PICKS_SOURCE, name: `Study pathway picks (FutureReady ${picksFile.status ?? 'team draft'}; rejected ones hidden, approved ones dated)`, url: null, date: pathwayManifest.builtAt ?? null, licence: null },
+    { id: PICKS_SOURCE, name: 'FutureReady team picks (owner review in Admin)', url: null, date: pathwayManifest.builtAt ?? null, licence: null },
     ...sites.filter((s) => s.search).map((s) => ({ id: `site:${s.id}`, name: s.name, url: s.home, date: s.searchCheckedAt ?? null, licence: null })),
   ]
 

@@ -50,7 +50,9 @@ export function createPathwayService({ loadData, matching, store = null, now = (
     return shownPicks(data.picks, reviews).map(({ hash, ...p }) => p)
   }
 
-  const coursesFor = (shown, key) => shown.filter((p) => p.type === 'course' && p.for === key)
+  // Each course pick carries its site's name from sites.json (every site, also those with no search link).
+  const siteName = (sites, id) => (sites ?? []).find((s) => s.id === id)?.name ?? null
+  const coursesFor = (shown, key, sites) => shown.filter((p) => p.type === 'course' && p.for === key).map((p) => ({ ...p, siteName: siteName(sites, p.site) }))
   const searchFor = (shown, key, name, sites) => searchLinks(searchWordFor(key, shown, name), sites)
 
   function routeOf(data, onetCode, profile, shown) {
@@ -62,7 +64,7 @@ export function createPathwayService({ loadData, matching, store = null, now = (
         ...f,
         programmes: programmes.filter((p) => p.kind === 'accredited'),
         professional: programmes.filter((p) => p.kind === 'professional'),
-        courses: coursesFor(shown, key),
+        courses: coursesFor(shown, key, data.sites),
         search: searchFor(shown, key, f.title, data.sites),
         mqr: { url: MQR_URL, nec: f.code },
       }
@@ -72,7 +74,7 @@ export function createPathwayService({ loadData, matching, store = null, now = (
 
   function stepsOf(data, rows, shown) {
     const { gaps, notAssessed, met, provisional } = pathwaySteps(rows)
-    const dress = (s) => ({ ...s, courses: coursesFor(shown, s.key), search: searchFor(shown, s.key, s.name, data.sites) })
+    const dress = (s) => ({ ...s, courses: coursesFor(shown, s.key, data.sites), search: searchFor(shown, s.key, s.name, data.sites) })
     return { steps: { gaps: gaps.map(dress), notAssessed: notAssessed.map(dress), met: met.map(dress) }, provisional }
   }
 

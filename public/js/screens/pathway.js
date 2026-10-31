@@ -68,7 +68,7 @@ function sourcesTable(t, sources) {
   const rows = arr(sources).map((s) => {
     const id = String(s.id ?? '')
     const what = SRC_WHAT[id] ? t(SRC_WHAT[id]) : id.startsWith('site:') ? t('pwSrc_site') : id
-    const name = id === 'pathway-picks' ? t('pwSrcPicksName') : s.name ?? id
+    const name = s.name ?? id
     const licence = s.licence ?? (id === 'pathway-picks' || id.startsWith('site:') ? t('pwLinksOnly') : '—')
     return `<tr><td>${esc(what)}</td><td>${ext(s.url, name)}</td><td>${esc(s.date ? day(s.date) : '—')}</td><td>${esc(licence)}</td></tr>`
   }).join('')

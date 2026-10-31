@@ -960,7 +960,6 @@ export default {
   pwEduSuppressed: "{count} baris yang ditandakan O*NET sebagai tidak boleh dipercayai tidak dimasukkan.", // translation: owner review
   pwSrcLabel: "Sumber:", // translation: owner review
   pwSrcMqr: "Daftar MQA (pautan sahaja)", // translation: owner review
-  pwSrcPicksName: "Pilihan pasukan FutureReady, setiap satu dengan tarikh pautannya disemak (semakan pemilik dalam Admin)", // translation: owner review
   pwFieldsTitle: "Bidang pengajian yang membawa ke sini", // translation: owner review
   pwSourced: "bersumber", // translation: owner review
   pwFieldsLead: "Dibaca secara terbalik melalui jadual rasmi: pekerjaan O*NET → program pengajian AS/Kanada (CIP) → bidang pengajian UNESCO (ISCED-F 2013).", // translation: owner review

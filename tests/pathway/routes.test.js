@@ -13,7 +13,7 @@ import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import { createPathwayServiceFromEnv } from '../../server/pathway/service.js'
 import { PathwayDataError, checkPathwayData, loadPathwayData, pickHash } from '../../server/pathway/data.js'
 import { FIXTURE, fixtureReferences } from '../helpers/matchingFixture.js'
-import { PATHWAY, PICKS, makePathwayFixture } from '../helpers/pathwayFixture.js'
+import { PATHWAY, PICKS, SITES, makePathwayFixture } from '../helpers/pathwayFixture.js'
 
 const ENV = { RADAR_ADMIN_KEY: 'admin-key-for-tests-0123456789', RADAR_DEMO_KEY: 'demo-key-for-tests-9876543210', RADAR_SESSION_SECRET: 's'.repeat(40) }
 const FORBIDDEN_KEY = /score|weight|rank|opportunit/i
@@ -276,6 +276,25 @@ describe('loadPathwayData', () => {
     expect(pickHash({ id: 'x', type: 'course', for: 'kn:1', site: 's', name: 'N', link: 'https://a', checkedAt: '2026-01-01' })).toBe(a)
     expect(pickHash({ id: 'x', type: 'course', for: 'kn:1', site: 's', name: 'N2', link: 'https://a' })).not.toBe(a)
     expect(pickHash({ id: 'p', type: 'programme', for: 'field:1', kind: 'accredited', mqrRef: 'A' })).not.toBe(pickHash({ id: 'p', type: 'programme', for: 'field:1', kind: 'accredited', mqrRef: 'B' }))
+  })
+
+  it('a course pick on a site with no search link carries the site name (siteName from sites.json)', async () => {
+    const fcc = { id: 'freecodecamp', name: 'freeCodeCamp', group: 'global', home: 'https://www.freecodecamp.org/', terms: 'https://www.freecodecamp.org/news/terms-of-service/', search: null, searchCheckedAt: null, hosts: ['www.freecodecamp.org'] }
+    const pick = { id: 'c-fcc', for: 'kn:2.C.3.a', site: 'freecodecamp', name: 'Responsive Web Design', link: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/', checkedAt: '2026-10-31' }
+    const dir = await makePathwayFixture({ sites: { ...SITES, sites: [...SITES.sites, fcc] }, picks: { ...PICKS, courses: [...PICKS.courses, pick] } })
+    try {
+      await start({ dataDir: dir.dir })
+      const { status, body } = await post('/api/pathway', { profile: FULL, code: FIXTURE.fullRole })
+      expect(status).toBe(200)
+      const courses = body.steps.gaps.find((g) => g.key === 'kn:2.C.3.a').courses
+      expect(courses.find((c) => c.id === 'c-fcc')).toMatchObject({ site: 'freecodecamp', siteName: 'freeCodeCamp' })
+      expect(courses.find((c) => c.id === PATHWAY.course)).toMatchObject({ site: 'elatih', siteName: 'e-LATiH (HRD Corp)' })
+      // a site with no search link gives no "More on" link and no source row
+      expect(body.steps.gaps[0].search.map((l) => l.site)).not.toContain('freecodecamp')
+      expect(body.sources.find((s) => s.id === 'pathway-picks').name).toBe('FutureReady team picks (owner review in Admin)')
+    } finally {
+      await dir.cleanup()
+    }
   })
 
   it('a picks file with an unknown for -> PathwayDataError naming the pick id', async () => {

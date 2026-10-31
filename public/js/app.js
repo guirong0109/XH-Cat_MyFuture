@@ -487,7 +487,11 @@ function ensurePathway() {
   }
   for (const { code } of p.targets) if (!p.answers[code]) loadPathway(code)
 }
-const today = () => new Date().toISOString().slice(0, 10)
+// The local date (YYYY-MM-DD): in Malaysia (UTC+8) a toggle before 08:00 is still today.
+const today = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 function setProgress(key, value) {
   if (typeof key !== 'string' || !key) return
   const p = pathwayUi()
@@ -1024,7 +1028,12 @@ document.addEventListener('drop', (event) => {
   const file = event.dataTransfer?.files?.[0]
   if (file) actions.cvFile(file)
 })
-window.addEventListener('popstate', () => { state.screen = screenOf(location.hash.slice(1) || 'welcome'); render() })
+window.addEventListener('popstate', () => {
+  state.screen = screenOf(location.hash.slice(1) || 'welcome')
+  // #roadmap opens #pathway: the address shows the new name.
+  if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
+  render()
+})
 
 // Boot: a saved guest session past the start screens gets the "Welcome back" choice.
 const previous = store.load()

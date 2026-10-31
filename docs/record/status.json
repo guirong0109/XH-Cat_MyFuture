@@ -651,6 +651,16 @@
           "status": "done"
         },
         {
+          "title": "O6g Owner routes",
+          "sub": "organisation, groups, roster preview/import, team, plan steps",
+          "status": "done"
+        },
+        {
+          "title": "O6h Join links and sharing",
+          "sub": "hashed single-use links, skills-only share, stop sharing",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1945,6 +1955,16 @@
       "time": "31 Oct",
       "step": "O6f Team service (hr-branch)",
       "detail": "Task 5 reviewed clean; npm test 1137 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6g Owner routes (hr-branch)",
+      "detail": "Task 6 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6h Join links and sharing (hr-branch)",
+      "detail": "Task 7 reviewed clean (security review); npm test 1175 passed"
     }
   ]
 }

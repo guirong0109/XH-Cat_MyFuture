@@ -2704,6 +2704,11 @@
       "time": "31 Oct",
       "step": "News: Amendment 1 spec and diagram",
       "detail": "Owner approved in chat: N9 relevance check by DeepSeek deepseek-flash (thinking off, JSON, one request per field per run, new items only, not clearly kept = dropped; check fails = no new items), near-repeats by headline without a trailing site name, N10 English articles only on screen. Extra cost about US$2-4 a month, ceiling about US$6.50. Spec and diagram updated; waiting for owner review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 build plan",
+      "detail": "Owner approved the amended spec and diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news-amendment-1.md: 5 tasks (headline site-name rule, relevance check client, service integration with its own caps, screen lines, local and real run with docs)"
     }
   ]
 }

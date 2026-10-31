@@ -56,8 +56,8 @@ export function profileTable(t, profile) {
     ${profile.projects?.length ? row(t('projTitle'), records(profile.projects, (r) => [r.title, r.description].filter(Boolean).join(' — '))) : ''}
     ${row(t('fInterests'), list((profile.preferences.careerInterests ?? []).map((item) => item?.name ?? item)))}
     ${field('preferences.careerGoal', 'fGoal')}
-    ${field('preferences.preferredWorkLocation', 'fLocation')}
-    ${field('preferences.preferredLearningHoursPerWeek', 'fHours')}
+    ${get(profile, 'preferences.preferredWorkLocation')?.state === 'value' ? field('preferences.preferredWorkLocation', 'fLocation') : ''}
+    ${get(profile, 'preferences.preferredLearningHoursPerWeek')?.state === 'value' ? field('preferences.preferredLearningHoursPerWeek', 'fHours') : ''}
     ${row(t('occLinked'), profile.occupationMappings.length ? profile.occupationMappings.map((m) => (!m.chosen ? `<div>${esc(m.term)} → ${tag('unv', t('none'))}</div>` : `<div>${esc(m.term)} → <b>${esc(m.chosen.title)}</b> <span class="tiny muted">${m.chosen.source === 'onet' ? 'O*NET' : 'eMASCO'} ${esc(m.chosen.code)} · ${esc(m.chosen.version ?? '')} · ${esc(String(m.chosen.fetchedAt ?? '').slice(0, 10))} · ${esc(m.chosen.lookupState ?? '')}</span></div>`)).join('') : tag('unv', t('none')))}
   </table>`
 }

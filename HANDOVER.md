@@ -75,6 +75,7 @@ that failed first. The branch was merged into `main` via PR #1
 | No employment status (31 Oct, owner request) | "Current employment status" removed from the form (`form.js`) and the receipt (`review.js`, shown only if an earlier profile has an answer). `employment.status` stays in `shared/profileSchema.js` for saved profiles |
 | Jobs: title then years (31 Oct, owner request) | `form.js` `jobRow()`/`work()`: Job title, then Years of work experience for that job (`years`, number box with arrows, `toYears`); the first job is on screen straight away and typing creates it; the occupation finder stays. Employer, period, industries and `employment.yearsOfExperience` are no longer asked (the receipt shows them only when a CV or earlier profile has them). Tests `tests/employment.test.js` |
 | Last section renamed (31 Oct, owner request) | `secPrefs` reads "Interests" (BM "Minat", 中文 "兴趣"); the key and the questions inside are unchanged |
+| Interests: one question (31 Oct, owner request) | `form.js` `prefs` is only `interestField` (Career interests and fields); career goal (asked on the goal screen), occupations of interest, work location and learning hours are not asked; the receipt shows location and hours only when saved earlier. Main's radar also reads occupations of interest |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
 
 ---

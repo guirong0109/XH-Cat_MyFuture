@@ -39,18 +39,16 @@ describe('the goal question, after guest or account', () => {
   })
 })
 
-describe('the same four goals in the form and on the receipt', () => {
+describe('the goal on the receipt', () => {
   const prefs = (profile) => form({ t, state: { section: 3, profile, occ: {}, pick: {}, interests: { areas: [], version: '31.0' } } })
 
-  it('the form\'s career goal offers the four goals, with the answer from the start selected', () => {
+  it('the goal is asked only at the start: the Interests section does not ask it again', () => {
     const html = prefs(withGoal('grow_field'))
-    for (const [value] of GOALS) expect(html).toContain(`value="${value}"`)
-    expect(html).toContain('<option value="grow_field" selected>')
-    expect(html).not.toContain('value="first_job"')
+    expect(html).not.toContain('fGoal')
+    expect(html).not.toContain('preferences.careerGoal')
   })
 
-  it('a profile saved with an old goal still shows it, in the form and on the receipt', () => {
-    expect(prefs(withGoal('first_job'))).toContain('<option value="first_job" selected>optFirstJob</option>')
+  it('the receipt shows the goal chosen at the start, and an old goal saved earlier', () => {
     expect(profileTable(t, withGoal('first_job'))).toContain('optFirstJob')
     expect(profileTable(t, withGoal('switch_career'))).toContain('goalSwitch')
   })

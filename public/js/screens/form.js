@@ -1,11 +1,10 @@
-// Case B (manual entry) and Case C editing: the profile form in five sections. Free movement between sections;
+// Case B (manual entry) and Case C editing: the profile form in four sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
-import { choiceField, cvNote, reviewToggle, stateField } from '../components/fields.js'
+import { choiceField, cvNote, reviewToggle } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
-import { GOALS } from './goal.js'
 
 // Certificates, training and projects are not asked (owner, 31 Oct).
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secPrefs']
@@ -14,7 +13,7 @@ export const SECTION_FIELDS = [
   ['userCategory'],
   [],
   [],
-  ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
+  [],
 ]
 
 // A search picker with its current list (the last search for that key, or nothing yet).
@@ -24,8 +23,6 @@ function picker(ctx, kind, key, label, placeholder, value) {
   const term = pick?.term ?? value
   return searchPicker({ t, kind, key, label, placeholder, value: term, list: pick ? pickerList({ t, kind, key, term, result: pick.result, busy: pick.busy }) : '' })
 }
-
-const field = (ctx, options) => stateField({ ...ctx, ...options, answering: Boolean(ctx.state?.answering?.[options.path]) })
 
 // Career interests and fields: O*NET interest areas, several allowed (chips with ×); none chosen = prefer not to say.
 function interestField({ t, profile, state }) {
@@ -44,9 +41,8 @@ function interestField({ t, profile, state }) {
   return `<div class="field"><label for="f-interest">${esc(t('fInterests'))}</label>${chips}${control}</div>`
 }
 
-// Career goal and "Which describes you best?" offer the answers of the goal and Who are you? screens. A profile saved
-// with an older answer keeps it as an extra option.
-export const OLD_GOALS = { first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' }
+// "Which describes you best?" offers the answers of the Who are you? screen. A profile saved with an older answer keeps
+// it as an extra option.
 export const OLD_CATEGORIES = { working_adult: 'optWorking', graduate_switcher: 'optGraduate' }
 // "Which describes you best?" (owner, 31 Oct): the first question of the profile, as four buttons.
 export const WHO = [
@@ -158,17 +154,9 @@ function skills(ctx) {
   return `${picker(ctx, 'skill', 'skill', t('skillSearch'), t('skillAdd'), '')}${fieldSuggestions(ctx)}${rows}`
 }
 
-function prefs(ctx) {
-  const { t, profile } = ctx
-  const interests = profile.occupationMappings.map((m, i) => (m.kind === 'interest' ? linkedLine(t, m.chosen, `interest|${i}`) : '')).join('')
-  return [
-    interestField(ctx),
-    `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
-    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: withOld(GOALS.map(([v, label]) => [v, label]), OLD_GOALS, profile.preferences.careerGoal) }),
-    field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
-    field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
-  ].join('')
-}
+// Interests (owner, 31 Oct): only Career interests and fields. The goal is asked at the start; occupations of interest,
+// work location and learning hours are not asked. A profile saved earlier keeps its answers, and the receipt shows them.
+const prefs = (ctx) => interestField(ctx)
 
 const BODIES = [study, work, skills, prefs]
 

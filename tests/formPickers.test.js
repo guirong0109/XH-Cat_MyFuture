@@ -81,13 +81,12 @@ describe('form sections', () => {
     expect(form({ t, state: state(2, profile) })).toMatch(/<option value="" selected>levelNone<\/option>/)
   })
 
-  it('skills and roles of interest use search pickers; field of study is a dropdown', () => {
+  it('skills use a search picker; field of study is a dropdown', () => {
     const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ level: 'bachelor', qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
     const fields = { version: 'ISCED-F 2013', fields: [{ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' }] }
     expect(form({ t, state: { ...state(0, profile), fields } })).toContain('data-field-pick="0"')
     expect(form({ t, state: { ...state(0, profile), fields } })).not.toContain('data-search="field|')
     expect(form({ t, state: state(2, profile) })).toContain('data-search="skill|skill"')
-    expect(form({ t, state: state(3, profile) })).toContain('data-search="interest|interest"')
   })
 
   it('a field of study typed or read from a CV shows the words until a standard field is chosen', () => {

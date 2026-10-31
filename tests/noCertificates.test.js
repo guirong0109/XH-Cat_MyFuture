@@ -58,6 +58,26 @@ describe('section names', () => {
   })
 })
 
+describe('Interests asks only "Career interests and fields"', () => {
+  it('no occupations of interest, career goal, work location or learning hours', () => {
+    const html = page(3)
+    expect(html).toContain('fInterests')
+    for (const gone of ['occInterests', 'data-search="interest|interest"', 'fGoal', 'fLocation', 'fHours', 'preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek']) expect(html).not.toContain(gone)
+    expect(SECTION_FIELDS[3]).toEqual([])
+  })
+
+  it('the receipt shows work location and learning hours only when a profile saved earlier has them', async () => {
+    const { setField } = await import('../shared/profileState.js')
+    const { val } = await import('../shared/profileSchema.js')
+    const empty = profileTable(t, emptyProfile())
+    expect(empty).not.toContain('fLocation')
+    expect(empty).not.toContain('fHours')
+    const old = setField(setField(emptyProfile(), 'preferences.preferredWorkLocation', val('Penang')), 'preferences.preferredLearningHoursPerWeek', val(5))
+    expect(profileTable(t, old)).toContain('fLocation')
+    expect(profileTable(t, old)).toContain('fHours')
+  })
+})
+
 describe('no "Current employment status" question', () => {
   it('Employment background does not ask it, and opening the section does not answer it for the user', () => {
     const html = page(1)

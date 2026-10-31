@@ -222,6 +222,7 @@ export default {
   occInterests: "Occupations you are interested in",
   occAttribution: "O*NET data: U.S. Department of Labor, CC BY 4.0. Similar wording does not make two jobs the same — you choose.",
   cvLead: "We suggest your studies, jobs and skills from your CV. You decide what stays.",
+  cvLastUpdate: "Last update: 1 Nov 2026",
   cvPrivacy: "Your CV is read by DeepSeek AI (stored in China) to improve accuracy. You check everything before it is saved.",
   cvDrag: "Drag your CV here or",
   cvChoose: "Choose a file",

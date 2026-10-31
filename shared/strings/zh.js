@@ -222,6 +222,7 @@ export default {
   occInterests: "你感兴趣的职业",
   occAttribution: "O*NET 数据：美国劳工部，CC BY 4.0。用词相近不代表两个职位相同——由你决定。",
   cvLead: "我们会根据您的简历建议学历、工作和技能。保留哪些由您决定。",
+  cvLastUpdate: "最后更新：2026年11月1日",
   cvPrivacy: "你的简历由 DeepSeek AI 读取（数据存放在中国），以提高准确度。保存之前，所有内容都由你核对。",
   cvDrag: "将简历拖到这里，或",
   cvChoose: "选择文件",

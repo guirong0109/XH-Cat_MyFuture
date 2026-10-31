@@ -11,7 +11,7 @@ import { loadRadarReferences } from '../../server/radar/references.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import { createPathwayServiceFromEnv } from '../../server/pathway/service.js'
 import * as pathwayApi from '../../public/js/pathwayApi.js'
-import { pathwayScreen, pathwayToSave } from '../../public/js/screens/pathway.js'
+import { addTargets, pathwayScreen, pathwayToSave } from '../../public/js/screens/pathway.js'
 import { roleCard, stepText } from '../../public/js/screens/match.js'
 import en from '../../shared/strings/en.js'
 import ms from '../../shared/strings/ms.js'
@@ -349,10 +349,10 @@ describe('Study pathway screen', () => {
 })
 
 describe('Career matching card and app wiring', () => {
-  it('the card button plans a study pathway', () => {
+  it('the card has a Plan my study pathway checkbox (owner, 1 Nov 2026)', () => {
     const html = roleCard({ t, role: { code: '2521-03', title: 'X' } })
-    expect(html).toMatch(/<button class="btn sm" type="button" data-act="pwPlan" data-arg="2521-03">Plan my study pathway<\/button>/)
-    expect(html).not.toMatch(/<button[^>]*disabled[^>]*>Plan my study pathway/)
+    expect(html).toMatch(/<label class="mt-plan"><input type="checkbox" data-act="mPick" data-arg="2521-03"> Plan my study pathway<\/label>/)
+    expect(html).not.toContain('Choose this role')
   })
 
   it('the tab is "Study pathway" in three languages; #roadmap opens #pathway', () => {
@@ -417,5 +417,47 @@ describe('pathwayApi and the screen on a real answer', () => {
     expect(s).toContain("In the US: Bachelor's Degree, 55% of workers in this job who were asked")
     expect(s).toContain('Skill Match 71%')
     expect(s).not.toMatch(/team draft|not yet reviewed/i)
+  })
+})
+
+// Owner, 1 Nov 2026: tick "Plan my study pathway" on several roles in Career matching, then the bar at the bottom adds
+// them all to the Study pathway.
+describe('several ticked roles go to the Study pathway at once', () => {
+  const roles = [{ code: 'a', title: 'A' }, { code: 'b', title: 'B' }, { code: 'c', title: 'C' }]
+  const day = '2026-11-01'
+
+  it('adds every ticked role in tick order, keeps the roles already there, opens the first new one', () => {
+    const before = { targets: [{ code: 'b', title: 'B', addedAt: '2026-10-31' }], active: 'b', progress: { k: { state: 'done' } }, answers: { b: { code: 'b' } } }
+    const after = addTargets(before, roles, ['c', 'b', 'a'], day)
+    expect(after.targets).toEqual([{ code: 'b', title: 'B', addedAt: '2026-10-31' }, { code: 'c', title: 'C', addedAt: day }, { code: 'a', title: 'A', addedAt: day }])
+    expect(after.active).toBe('c')
+    expect(after.progress).toEqual(before.progress)
+    expect(after.answers).toEqual(before.answers)
+  })
+
+  it('ticked roles that are all there already: nothing doubled, the first ticked opens', () => {
+    const before = { targets: [{ code: 'a', title: 'A', addedAt: 'x' }], active: null, progress: {}, answers: {} }
+    const after = addTargets(before, roles, ['a', 'a'], day)
+    expect(after.targets).toHaveLength(1)
+    expect(after.active).toBe('a')
+  })
+
+  it('a code not in the list keeps its code as title; junk codes are ignored', () => {
+    const after = addTargets({ targets: [], active: null, progress: {}, answers: {} }, roles, ['zz', '', null, 3], day)
+    expect(after.targets).toEqual([{ code: 'zz', title: 'zz', addedAt: day }])
+  })
+
+  it('the app wires the ticks and the bar; no Choose this role left; texts in three languages', () => {
+    const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+    expect(app).toContain('mPick: ')
+    expect(app).toContain('pwPlanPicked: ')
+    expect(app).not.toContain('mChoose')
+    for (const table of [en, ms, zh]) {
+      expect(table.mtChoose).toBeUndefined()
+      expect(table.mtChosen).toBeUndefined()
+      for (const key of ['mtPlanBar', 'mtPlanBarOne', 'mtStudyPlan', 'pwNoTarget', 'pwYourRoles']) expect(String(table[key] ?? '').trim()).not.toBe('')
+    }
+    expect(en.mtPlanBar).toContain('{count}')
+    expect(en.pwNoTarget).not.toMatch(/press .Plan my study pathway/)
   })
 })

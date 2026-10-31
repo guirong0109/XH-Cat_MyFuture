@@ -831,9 +831,9 @@ export default {
   mtSwShown: "美国招聘广告（Lightcast，经 O*NET）· 仅显示，不计入百分比", // translation: owner review
   mtSdgNone: "尚未标注 SDG", // translation: owner review
   mtApprovedOn: "团队草稿，所有者于 {date} 批准", // translation: owner review
-  mtChoose: "选择此职位", // translation: owner review
-  mtChosen: "✓ 已选职位", // translation: owner review
   mtStudyPlan: "规划我的学习路径", // translation: owner review
+  mtPlanBar: "规划学习路径（{count} 个职位）→", // translation: owner review
+  mtPlanBarOne: "规划学习路径（1 个职位）→", // translation: owner review
   mtWhy: "为什么是这个匹配？", // translation: owner review
   mtWhyNone: "为什么没有技能匹配？", // translation: owner review
   mtWhyNoneText: "我们只通过官方代码表将 eMASCO 职位关联到 O*NET 技能，从不根据名称猜测。此职位有一步还没有关联：", // translation: owner review
@@ -1127,8 +1127,8 @@ export default {
   rdPickColName: "名称", // translation: owner review
   rdPickColChecked: "核查日期", // translation: owner review
   pwLead: "针对你在职业匹配中选择的每个职位：从事该工作的人通常学什么，以及你仍需要的技能，差距最大的排在最前。每门课程都是其网站上的真实页面；由团队挑选，由负责人审核。这里的任何内容都不会改变你的技能匹配度。", // translation: owner review
-  pwYourRoles: "你的职位（在职业匹配中通过“规划我的学习路径”添加）", // translation: owner review
-  pwNoTarget: "还没有职位。请在职业匹配中选择一个，然后点击“规划我的学习路径”。", // translation: owner review
+  pwYourRoles: "你的职位（在职业匹配中勾选“规划我的学习路径”）", // translation: owner review
+  pwNoTarget: "还没有职位。在职业匹配中，为想要的职位勾选“规划我的学习路径”，然后按底部的“规划学习路径”。", // translation: owner review
   pwGoMatch: "前往职业匹配", // translation: owner review
   pwRemove: "移除", // translation: owner review
   pwRemoveLabel: "移除 {title}", // translation: owner review

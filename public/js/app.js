@@ -30,7 +30,7 @@ import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
 import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
 import * as matchApi from './matchApi.js'
-import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
+import pathwayScreen, { activeOf, addTargets, pathwayToSave } from './screens/pathway.js'
 import * as pathwayApi from './pathwayApi.js'
 import { futuresView } from './screens/futures.js'
 import * as newsApi from './newsApi.js'
@@ -92,7 +92,7 @@ const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
-  // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
+  // Career matching: only the AI scenario is kept (the Plan my study pathway ticks are not); the answers are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
   saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, news: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
@@ -490,10 +490,12 @@ const matchActions = {
   mExplore: () => { state.match = { ...matchUi(), explore: !matchUi().explore }; render() },
   mAllBars: (code) => { state.match = { ...matchUi(), allBars: { ...matchUi().allBars, [code]: true } }; render() },
   mDetail: (code) => loadMatchDetail(code),
-  mChoose: (code) => {
+  // "Plan my study pathway" ticks (owner, 1 Nov 2026): several roles at once; the bar at the bottom sends them.
+  mPick: (code) => {
+    if (typeof code !== 'string' || !code) return
     const m = matchUi()
-    state.match = { ...m, chosen: m.chosen === code ? null : code, prevScenario: null }
-    persist()
+    const picks = Array.isArray(m.picks) ? m.picks : []
+    state.match = { ...m, picks: picks.includes(code) ? picks.filter((c) => c !== code) : [...picks, code] }
     render()
   },
   mAskAi: () => { state.section = AI_SECTION; persist(); go('form') },
@@ -563,13 +565,13 @@ const newsActions = {
 }
 
 const pathwayActions = {
-  // From a #match card: add the role (if not yet a target), make it active, open #pathway.
-  pwPlan: (code) => {
-    if (typeof code !== 'string' || !code) return
-    const p = pathwayUi()
-    const title = state.match?.data?.roles?.find((r) => r.code === code)?.title ?? code
-    const targets = p.targets.some((x) => x.code === code) ? p.targets : [...p.targets, { code, title, addedAt: today() }]
-    state.pathway = { ...p, targets, active: code }
+  // From the #match bar: add every ticked role (roles already there stay), open the first new one, clear the ticks.
+  pwPlanPicked: () => {
+    const m = matchUi()
+    const picks = Array.isArray(m.picks) ? m.picks : []
+    if (!picks.length) return
+    state.pathway = addTargets(pathwayUi(), m.data?.roles ?? [], picks, today())
+    state.match = { ...m, picks: [] }
     go('pathway')
   },
   // A target tab; on a failed answer it asks again.

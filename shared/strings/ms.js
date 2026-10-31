@@ -831,9 +831,9 @@ export default {
   mtSwShown: "Iklan kerja AS (Lightcast melalui O*NET) · ditunjukkan sahaja, bukan dalam %", // translation: owner review
   mtSdgNone: "SDG belum ditandakan", // translation: owner review
   mtApprovedOn: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
-  mtChoose: "Pilih peranan ini", // translation: owner review
-  mtChosen: "✓ Peranan dipilih", // translation: owner review
   mtStudyPlan: "Rancang laluan pengajian saya", // translation: owner review
+  mtPlanBar: "Rancang laluan pengajian ({count} peranan) →", // translation: owner review
+  mtPlanBarOne: "Rancang laluan pengajian (1 peranan) →", // translation: owner review
   mtWhy: "Mengapa padanan ini?", // translation: owner review
   mtWhyNone: "Mengapa tiada Padanan Kemahiran?", // translation: owner review
   mtWhyNoneText: "Kami hanya memautkan peranan eMASCO kepada kemahiran O*NET melalui jadual kod rasmi, tidak pernah dengan meneka daripada tajuk. Untuk peranan ini satu langkah belum ada pautan:", // translation: owner review
@@ -1127,8 +1127,8 @@ export default {
   rdPickColName: "Nama", // translation: owner review
   rdPickColChecked: "Tarikh disemak", // translation: owner review
   pwLead: "Untuk setiap peranan yang anda pilih dalam Padanan kerjaya: apa yang biasanya dipelajari untuknya, dan kemahiran yang masih anda perlukan, jurang terbesar dahulu. Setiap kursus ialah halaman sebenar di laman webnya sendiri; pasukan memilihnya dan pemilik menyemaknya. Tiada apa di sini mengubah Padanan Kemahiran anda.", // translation: owner review
-  pwYourRoles: "Peranan anda (ditambah dengan “Rancang laluan pengajian saya” dalam Padanan kerjaya)", // translation: owner review
-  pwNoTarget: "Belum ada peranan. Pilih satu dalam Padanan kerjaya dan tekan “Rancang laluan pengajian saya”.", // translation: owner review
+  pwYourRoles: "Peranan anda (ditanda dengan “Rancang laluan pengajian saya” dalam Padanan kerjaya)", // translation: owner review
+  pwNoTarget: "Belum ada peranan. Dalam Padanan kerjaya, tanda “Rancang laluan pengajian saya” pada peranan yang anda mahu, kemudian tekan “Rancang laluan pengajian” di bawah.", // translation: owner review
   pwGoMatch: "Pergi ke Padanan kerjaya", // translation: owner review
   pwRemove: "buang", // translation: owner review
   pwRemoveLabel: "Buang {title}", // translation: owner review

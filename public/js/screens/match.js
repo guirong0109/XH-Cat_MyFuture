@@ -57,7 +57,7 @@ export function sdgTag(goal, label, title = '') {
 export const reviewText = (t, approvedAt) => (typeof approvedAt === 'string' && approvedAt ? t('mtApprovedOn', { date: day(approvedAt) }) : t('mtNotReviewed'))
 
 // Only the scenario and the chosen role are kept with the guest profile; the answers are fetched again.
-export const matchToSave = (m) => ({ scenario: scenarioOf(m), chosen: typeof m?.chosen === 'string' ? m.chosen : null })
+export const matchToSave = (m) => ({ scenario: scenarioOf(m) })
 
 // The missing step of the code chain in the user's language, from its id and kind (shared/matching/chain.js). The
 // data's own reason (bridge pendingReason, English) is only an extra detail, never the main text.
@@ -330,23 +330,21 @@ function openPanel(t, lang, role, detail, d, scenario, allBars, onet) {
 
 // One role card. `detail` is the role answer, { loading: true } or { error } (null before it is asked for); `open` says
 // whether "Show outlook and details" is open for this role.
-export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', chosen = null, allBars = false, sources = [], open = false, knowHow = null }) {
+export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', picked = false, allBars = false, sources = [], open = false, knowHow = null }) {
   const d = loadedDetail(detail)
   const isOpen = open === true
-  const isChosen = chosen === role.code
   const onet = (sources ?? []).find((s) => s.id === 'onet') ?? null
   const panel = isOpen ? openPanel(t, lang, role, detail, d, scenario, allBars, onet) : ''
   const chain = !(isOpen && d?.fit) && role.unavailable?.missingStep && !role.skillMatch ? chainBlock(t, role, d) : ''
   const url = safeUrl(role.url)
-  return `<article class="card mt-role${isChosen ? ' mt-chosen' : ''}" data-code="${esc(role.code)}">
+  return `<article class="card mt-role" data-code="${esc(role.code)}">
     <div class="mt-main">
       <div><span class="mt-ttl">${esc(role.title)}</span> <span class="mt-code">MASCO ${esc(role.code)}${url ? ` · ${link(url, t('mtEmascoPage'))}` : ''}</span></div>
       <div class="small muted mt-cmp">${comparedLine(t, role, d)}</div>
       <dl class="mt-parts"><dt>SDG</dt><dd>${sdgGoalTags(t, role)}</dd></dl>
       <div class="mt-actions">
         <button class="btn sm" type="button" data-act="mOpen" data-arg="${esc(role.code)}" aria-expanded="${isOpen}">${esc(t(isOpen ? 'mtHideDetail' : 'mtShowDetail'))}</button>
-        <button class="btn sm${isChosen ? '' : ' pri'}" type="button" data-act="mChoose" data-arg="${esc(role.code)}" aria-pressed="${isChosen}">${esc(t(isChosen ? 'mtChosen' : 'mtChoose'))}</button>
-        <button class="btn sm" type="button" data-act="pwPlan" data-arg="${esc(role.code)}">${esc(t('mtStudyPlan'))}</button>
+        <label class="mt-plan"><input type="checkbox" data-act="mPick" data-arg="${esc(role.code)}"${picked ? ' checked' : ''}> ${esc(t('mtStudyPlan'))}</label>
       </div>
     </div>
     <div class="mt-side">${sidePanel(t, role, scenario, knowHow)}</div>
@@ -396,7 +394,7 @@ function bandList(t, lang, roles, m, sources, list, knowHow = null) {
     const last = Math.max(1, Math.ceil(inBand.length / PAGE_SIZE))
     const page = pageOf(m.pages, key, inBand.length)
     const shown = inBand.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-    const cards = shown.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, chosen: m.chosen, allBars: m.allBars?.[role.code], sources, open: m.open?.[role.code] === true, knowHow })).join('')
+    const cards = shown.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, picked: picksOf(m).includes(role.code), allBars: m.allBars?.[role.code], sources, open: m.open?.[role.code] === true, knowHow })).join('')
     return `<section class="mt-band"><div class="mt-bandh"><span class="mt-num">${b}</span>${esc(t(BAND_TITLE[b]))} <span class="mt-bandwhy">· ${esc(t(BAND_WHY[b]))}</span></div>
       ${cards || `<div class="mt-empty">${esc(t('mtBandEmpty'))}</div>`}${last > 1 ? pager(t, key, page, last) : ''}</section>`
   }).join('')
@@ -542,6 +540,16 @@ function sourcesCard(t, data) {
   return `<div class="card mt-sources"><h3>${esc(t('mtSourcesTitle'))}</h3><div class="mt-tw"><table class="small"><tbody>${rows.join('')}</tbody></table></div></div>`
 }
 
+// The roles ticked with "Plan my study pathway" (owner, 1 Nov 2026): in the tab only, never saved.
+const picksOf = (m) => (Array.isArray(m?.picks) ? m.picks.filter((c) => typeof c === 'string') : [])
+
+// A bar fixed at the bottom of the screen while at least one role is ticked; it sends them to the Study pathway.
+function planBar(t, count) {
+  if (!count) return ''
+  const label = count === 1 ? t('mtPlanBarOne') : t('mtPlanBar', { count })
+  return `<div class="mt-planspace"></div><div class="mt-planbar" role="region" aria-label="${esc(label)}"><button class="btn pri" type="button" data-act="pwPlanPicked">${esc(label)}</button></div>`
+}
+
 export function matchView({ t, state }) {
   const m = ui(state)
   const lang = state?.lang ?? 'en'
@@ -574,6 +582,7 @@ export function matchView({ t, state }) {
     <button class="btn" type="button" data-act="mExplore" aria-expanded="${Boolean(m.explore)}">${esc(t(m.explore ? 'mtHideRoles' : 'mtShowRoles'))}</button>
     ${m.explore ? bandList(t, lang, other, m, data.sources, 'other', data.aiKnowHow) : ''}
     ${sourcesCard(t, data)}
+    ${planBar(t, picksOf(m).length)}
   </div>`
 }
 

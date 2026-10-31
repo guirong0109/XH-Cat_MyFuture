@@ -169,7 +169,8 @@ describe('Career matching screen', () => {
     // the data's own reason stays as an English detail in the chain path
     expect(page).toContain('waits for the ISCO-08 code list in the BLS ISCO file')
     expect(page).toContain('Fixture Database Designer')
-    expect(page).toContain(t('mtChoose'))
+    expect(page).toContain(t('mtStudyPlan'))
+    expect(page).not.toContain('Choose this role')
   })
 
   it('thin profile: no percent and the Add skills card; provisional note when a level is not assessed', () => {
@@ -200,11 +201,33 @@ describe('Career matching screen', () => {
     expect(text(card(FIXTURE.noIscoRole))).toContain(t('mtSdgNone'))
   })
 
-  it('chosen role is marked and saved with scenario only (no data, no details)', () => {
-    const html = card(FIXTURE.fullRole, { chosen: FIXTURE.fullRole })
-    expect(html).toContain('mt-chosen')
-    expect(text(html)).toContain(t('mtChosen'))
-    expect(matchToSave(match({ chosen: FIXTURE.fullRole, scenario: 'rapid', details: { a: 1 } }))).toEqual({ scenario: 'rapid', chosen: FIXTURE.fullRole })
+  // Owner, 1 Nov 2026: no "Choose this role"; a "Plan my study pathway" checkbox per card, several roles at once, and a
+  // bar fixed at the bottom of the screen that sends the ticked roles to the Study pathway.
+  it('each card has a Plan my study pathway checkbox, ticked when picked; no Choose this role', () => {
+    const off = card(FIXTURE.fullRole)
+    expect(off).toMatch(new RegExp(`<input type="checkbox" data-act="mPick" data-arg="${FIXTURE.fullRole}">`))
+    expect(text(off)).toContain(t('mtStudyPlan'))
+    expect(off).not.toContain('mChoose')
+    expect(off).not.toContain('pwPlan')
+    expect(card(FIXTURE.fullRole, { picked: true })).toMatch(/data-act="mPick"[^>]* checked>/)
+  })
+
+  it('the plan bar shows only with ticked roles and counts them; ticks are not saved', () => {
+    expect(view()).not.toContain('mt-planbar')
+    const one = view({ picks: [FIXTURE.fullRole] })
+    expect(one).toContain('mt-planbar')
+    expect(one).toContain('data-act="pwPlanPicked"')
+    expect(text(one)).toContain(t('mtPlanBarOne'))
+    expect(text(view({ picks: [FIXTURE.fullRole, FIXTURE.noIscoRole] }))).toContain(t('mtPlanBar', { count: 2 }))
+    expect(view({ picks: [FIXTURE.fullRole] })).toMatch(new RegExp(`data-arg="${FIXTURE.fullRole}" checked>`))
+    expect(matchToSave(match({ picks: ['a'], scenario: 'rapid', details: { a: 1 } }))).toEqual({ scenario: 'rapid' })
+  })
+
+  it('the plan bar is fixed at the bottom of the screen', async () => {
+    const css = readFileSync(join(process.cwd(), 'public/styles.css'), 'utf8')
+    const rule = css.match(/^\.mt-planbar\{([^}]*)\}/m)[1]
+    expect(rule).toContain('position:fixed')
+    expect(rule).toContain('bottom:0')
   })
 
   it('sources table and source line show where each part comes from', () => {
@@ -528,7 +551,7 @@ describe('Owner UI round (31 Oct)', () => {
       expect(load).toContain('pages: {}')
       expect(app).toContain('mPage: ')
       expect(app).toContain('mPageGo: ')
-      expect(matchToSave(match({ pages: { 'other:4': 3 }, open: { a: true } }))).toEqual({ scenario: 'moderate', chosen: null })
+      expect(matchToSave(match({ pages: { 'other:4': 3 }, open: { a: true } }))).toEqual({ scenario: 'moderate' })
     })
   })
 

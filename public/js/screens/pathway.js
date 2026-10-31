@@ -20,6 +20,24 @@ export function pathwayToSave(p) {
   return { targets, active: typeof p?.active === 'string' ? p.active : null, progress: plainObject(p?.progress) ? p.progress : {} }
 }
 
+// Several roles ticked in Career matching (owner, 1 Nov 2026): each new one is added in tick order with its title from
+// the matching list (else its code); roles already there stay as they are; the first newly added role opens (else the
+// first ticked). Answers and progress are kept.
+export function addTargets(p, roles, codes, today) {
+  const targets = arr(p?.targets).slice()
+  let first = null
+  let firstPicked = null
+  for (const code of arr(codes)) {
+    if (typeof code !== 'string' || !code) continue
+    firstPicked ??= code
+    if (targets.some((x) => x.code === code)) continue
+    const title = arr(roles).find((r) => r?.code === code)?.title ?? code
+    targets.push({ code, title, addedAt: today })
+    first ??= code
+  }
+  return { ...p, targets, active: first ?? firstPicked ?? p?.active ?? null }
+}
+
 // The active target: the saved one when it is still a target, else the first target, else null.
 export const activeOf = (p) => {
   const targets = arr(p?.targets)

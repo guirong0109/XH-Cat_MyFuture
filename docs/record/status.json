@@ -2895,6 +2895,16 @@
       "time": "31 Oct",
       "step": "Proficiency check and SDG contribution removed (main)",
       "detail": "Owner asked to change main directly. Removed: the Proficiency check tab (assess, a placeholder), the SDG contribution tab and page (#sdg, sdgTab.js) with its tests, its landing step and 9 labels in en/ms/zh. Kept: SDG tags and filter on Career matching, SDG link review in #admin, skill levels. Old #sdg links open Career matching. Tests changed first; npm test 1748 passed; checked on localhost:3300: 5 tabs"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Career matching: Plan my study pathway checkboxes",
+      "detail": "Owner: no Choose this role; a Plan my study pathway checkbox on each role card, several roles at once; a bar fixed at the bottom of the screen (Plan study pathway (N roles)) adds all ticked roles to the Study pathway (roles already there stay, the first new one opens), ticks not saved. addTargets in pathway.js; texts in en/ms/zh. Tests first; npm test 1754 passed. Not yet on the public site"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Two hosts: public stable and local testing",
+      "detail": "Owner asked for two hosts. Public futures.grong.my now runs from XH_Cat_Final-live (detached at origin/main 752c475) with the real accounts and news; local http://localhost:3400 runs this folder with a test accounts file and no news key. Publishing = push main, move the live folder to origin/main, restart main-live"
     }
   ]
 }

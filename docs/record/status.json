@@ -1154,6 +1154,11 @@
       "time": "31 Oct",
       "step": "Profile charts phone fix",
       "detail": "owner OK: the AI job drop-down, the list rows and long job-name links stay inside the card at 375 px (field 0413, 104 jobs; checked in the browser, no sideways scroll on either tab); npm test 751 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages and folds",
+      "detail": "owner OK: skills list, AI task list and the no-longer-in-demand fold show 10 rows a page with a page bar and Go to page box (row numbers keep counting, a chart corner opens its page, a search starts at page 1); jobs without in-demand software and each code chain become one-line folds with the source link beside them; No chart is drawn only when no corners exist; npm test 765 passed"
     }
   ]
 }

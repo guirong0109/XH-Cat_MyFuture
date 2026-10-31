@@ -714,6 +714,19 @@ export default {
   rdSkSource: "美国数据，非马来西亚 · 仅限软件技能 · 招聘广告数量，不是分数", // translation: owner review
   rdConfirmFirst: "请先确认你的个人资料，以查看你的职业所要求的技能。", // translation: owner review
   rdChainSameUnit: "同一 4 位数组别的 eMASCO 职位共用一个 O*NET 链接，因此显示相同的技能。", // translation: owner review
+  rdPages: "页码", // translation: owner review
+  rdPrevPage: "上一页", // translation: owner review
+  rdNextPage: "下一页", // translation: owner review
+  rdPageN: "第 {page} 页", // translation: owner review
+  rdGoToPage: "跳到页", // translation: owner review
+  rdGo: "前往", // translation: owner review
+  rdShowingRows: "显示第 {from}–{to} 项，共 {n} 项", // translation: owner review
+  rdSkNoneFold: "您的 {n} 个职业没有列出热门软件（O*NET 数据库 {release}）", // translation: owner review
+  rdSkNoneOne: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。", // translation: owner review
+  rdSkNoneSome: "这些职业不增加角点。", // translation: owner review
+  rdSkNoneSome1: "这个职业不增加角点。", // translation: owner review
+  rdSkNoChart: "不绘制图表。", // translation: owner review
+  rdChainFold: "eMASCO {code} 的代码链：{n} 个官方步骤", // translation: owner review
   rdSkAds: "则广告", // translation: owner review
   rdSkAria: "{n}. {name}：{year} 年 {count} 则美国招聘广告", // translation: owner review
   rdChainStop_no_row: "{system} {codes} 在下一份官方对照表中没有对应项", // translation: owner review

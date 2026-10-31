@@ -10,7 +10,7 @@ import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
 import { usageText } from '../../shared/radar/profileCharts.js'
-import { aiTab, keepCaret, onetSourceCards, radarView, skillsChartCard, skillsTab, statusCards } from '../../public/js/screens/radar.js'
+import { aiTab, keepCaret, onetSourceCards, pageItems, pageOf, radarView, skillsChartCard, skillsTab, statusCards } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import { esc as esc_ } from '../../public/js/ui.js'
@@ -630,7 +630,13 @@ describe('Skills card on Skills & Careers', () => {
     expect(corners(card(dev(), { corners: { sk: 16 } }))).toHaveLength(16)
     const all = card(dev(), { corners: { sk: 'all' } })
     expect(corners(all)).toHaveLength(29)
-    for (const html of [d8, all]) expect(rowNumbers(html)).toEqual(Array.from({ length: 30 }, (_, i) => i + 1))
+    // 10 rows a page; the three pages together are rows 1 to 30
+    for (const radar of [{}, { corners: { sk: 'all' } }]) {
+      const pages = [1, 2, 3, 4].map((p) => rowNumbers(card(dev(), { ...radar, pages: { sk: p } })))
+      expect(pages[0]).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      expect(pages[2]).toEqual(Array.from({ length: 10 }, (_, i) => i + 21))
+      expect(pages[3]).toEqual(pages[2]) // past the last page shows the last page
+    }
     expect(d8).toContain('<polygon')
     expect(d8).toMatch(/data-arg="8"[^>]*aria-pressed="true"/)
     expect(all).toContain(t('rdCornersAll', { n: 29 }))
@@ -644,7 +650,8 @@ describe('Skills card on Skills & Careers', () => {
     const nums = rowNumbers(html)
     expect(nums.length).toBeGreaterThan(0)
     expect(nums.length).toBeLessThan(30)
-    const full = rowNumbers(card(dev()))
+    const full = [1, 2, 3].flatMap((p) => rowNumbers(card(dev(), { pages: { sk: p } })))
+    expect(full).toHaveLength(30)
     expect(nums.every((n) => full.includes(n))).toBe(true)
     for (const li of rows(html)) expect(unesc(li.match(/<b>([^<]*)<\/b>/)[1]).toLowerCase()).toContain('git')
     expect(html).toContain('data-radar-search')
@@ -660,7 +667,7 @@ describe('Skills card on Skills & Careers', () => {
     const html = card(dev())
     expect(html).toContain(`${t('rdSkFrom')}:`)
     expect(html).toContain('https://www.onetonline.org/link/summary/15-1252.00')
-    expect(html).toContain(t('rdSkNoCount'))
+    expect(card(dev(), { pages: { sk: 3 } })).toContain(t('rdSkNoCount'))
     expect(rows(html)[0]).toContain('2025')
     expect(html).toContain('CC BY 4.0')
     expect(html).toContain('Lightcast via O*NET')
@@ -709,7 +716,8 @@ describe('Skills card on Skills & Careers', () => {
     const html = card(fieldOnly())
     expect(html).toContain('data-sec="SK"')
     expect(html).toContain('<polygon')
-    expect(count(html, /<li id="rd-sk-\d+"/g)).toBeGreaterThan(20)
+    expect(count(html, /<li id="rd-sk-\d+"/g)).toBe(10)
+    expect(Number(unesc(html).match(/\d+ of (\d+) . numbered/)[1])).toBeGreaterThan(20)
   })
   it('a draft profile is asked to confirm first and no chart is drawn', () => {
     const html = card({ ...dev(), profileStatus: 'draft' })
@@ -793,7 +801,8 @@ describe('AI Impact card', () => {
     expect(corners(d)).toHaveLength(8)
     expect(corners(a)).toHaveLength(8)
     expect(aiRows(d)).toHaveLength(8)
-    expect(aiRows(a)).toHaveLength(11)
+    expect(aiRows(a)).toHaveLength(10)
+    expect(aiRows(card(tab(acc(), { pages: { ai: 2 } })))).toHaveLength(1)
     expect(d).toContain('<polygon')
     expect(unesc(d)).toContain('Modify existing software to correct errors')
     expect(unesc(a)).not.toContain('Modify existing software to correct errors')
@@ -1015,5 +1024,142 @@ describe('AI Impact card', () => {
         if (lang !== 'en') expect(line, `${lang}.${key}`).toMatch(/\/\/ translation: owner review\r?$/)
       }
     }
+  })
+})
+
+// ---------- Pages for long lists, folds for long notes (owner request, 31 Oct) ----------
+describe('Pages and folds on the Radar charts', () => {
+  const fieldOnly = () => profile({ education: { records: [{ field: { source: 'isced', code: '0413', title: 'Management and administration' } }] } })
+  const jobs = (...codes) => profile({ occupationMappings: codes.map((c) => ({ term: 'x', kind: 'job', chosen: { source: 'onet', code: c, title: 'x' } })) })
+  const emasco = (code) => profile({ occupationMappings: [{ term: 'x', kind: 'job', chosen: { source: 'emasco', code, title: 'x' } }] })
+  const sk = (radar = {}, p = fieldOnly()) => skillsChartCard(ctx(p, radar))
+  const rowNums = (html) => [...html.matchAll(/<li id="rd-sk-(\d+)"/g)].map((m) => Number(m[1]))
+  const pagerOf = (html) => html.match(/<div class="rd-pagerow">[\s\S]*?<\/form><\/div>/)?.[0] ?? ''
+  const app = readFileSync('public/js/app.js', 'utf8')
+  const css = readFileSync('public/styles.css', 'utf8')
+  const total = (html) => Number(unesc(html).match(/\d+ of (\d+) . numbered/)[1])
+
+  it('pageOf clamps: 1 when unset or not a number, the last page when past it', () => {
+    expect(pageOf(undefined, 25)).toBe(1)
+    expect(pageOf('abc', 25)).toBe(1)
+    expect(pageOf(0, 25)).toBe(1)
+    expect(pageOf(2, 25)).toBe(2)
+    expect(pageOf('3', 25)).toBe(3)
+    expect(pageOf(9, 25)).toBe(3)
+    expect(pageOf(5, 0)).toBe(1)
+    expect(pageOf(2, 25, 5)).toBe(2)
+  })
+  it('pageItems gives first, last and current +-1 with dots', () => {
+    expect(pageItems(1, 1)).toEqual([1])
+    expect(pageItems(1, 3)).toEqual([1, 2, 3])
+    expect(pageItems(5, 9)).toEqual([1, '…', 4, 5, 6, '…', 9])
+    expect(pageItems(2, 9)).toEqual([1, 2, 3, '…', 9])
+  })
+  it('a field profile shows 10 skill rows and a pager; page 2 starts at row 11', () => {
+    const p1 = sk()
+    expect(rowNums(p1)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    const bar = pagerOf(p1)
+    expect(bar).toContain('data-act="rdPage" data-arg="sk:2"')
+    expect(bar).toContain('data-form="rdPageGo" data-arg="sk"')
+    expect(bar).toContain('aria-current="page"')
+    expect(unesc(bar)).toContain(t('rdShowingRows', { from: 1, to: 10, n: total(p1) }))
+    const p2 = sk({ pages: { sk: 2 } })
+    expect(rowNums(p2)[0]).toBe(11)
+    expect(rowNums(p2)).toHaveLength(10)
+  })
+  it('a list of 10 rows or fewer has no pager', () => {
+    expect(skillsChartCard(ctx(jobs('13-2011.00')))).not.toContain('rd-pagerow')
+  })
+  it('a search shows page 1 of the results and the numbers stay the original ones', () => {
+    // (the action sets pages.sk to 1 when the text changes; the screen keeps the numbers of the whole list)
+    const all = [1, 2, 3, 4].flatMap((p) => rowNums(sk({ pages: { sk: p } })))
+    const hit = rowNums(sk({ q: 'a' }))
+    expect(hit.length).toBeGreaterThan(0)
+    expect(hit.every((n) => all.includes(n))).toBe(true)
+    expect(hit[0]).toBeGreaterThanOrEqual(1)
+  })
+  it('the AI task list is paged when a job has more than 10 tasks', async () => {
+    const out = await radarApi.aiTasks({ base })
+    const ai = out.data
+    const per = new Map()
+    for (const x of ai.tasks) per.set(x.code, (per.get(x.code) ?? 0) + 1)
+    const code = [...per.entries()].find(([, n]) => n > 10)?.[0]
+    expect(code).toBeTruthy()
+    const aiHtml = (radar) => section(aiTab(ctx(jobs(code), { aiTasks: { ok: true, data: ai }, ...radar })), 'AI')
+    const p1 = aiHtml({})
+    expect(count(p1, /<li id="rd-ai-\d+"/g)).toBe(10)
+    expect(p1).toContain('data-act="rdPage" data-arg="ai:2"')
+    expect(aiHtml({ pages: { ai: 2 } })).toContain('<li id="rd-ai-11"')
+  })
+  it('app wiring: page actions, corner pages, search and job reset', () => {
+    expect(app).toMatch(/rdPage: \(arg\)/)
+    expect(app).toMatch(/rdPageGo: \(list\)/)
+    expect(app).toContain('(sk|ai|skDrop)')
+    expect(app).toMatch(/skCorner: [\s\S]*?pages:/)
+    expect(app).toMatch(/aiCorner: [\s\S]*?pages:/)
+    expect(app).toMatch(/aiJob: [^\n]*pages:/)
+    expect(app).toMatch(/setRadar\(\{ q: event\.target\.value, pages:/)
+  })
+  it('the page bar has its own rd- styles with variables only', () => {
+    for (const c of ['.rd-pagerow', '.rd-pager', '.rd-pg', '.rd-goto', '.rd-gap-dots']) expect(css).toContain(c)
+    const block = css.split('\n').filter((l) => /^\.rd-(pagerow|pager|pg|goto|goin|gap-dots)/.test(l)).join('\n')
+    expect(block).not.toMatch(/#[0-9a-f]{3,6}/i)
+  })
+
+  it('several jobs without in-demand software are one fold line with the release; job links inside; source link next to it', () => {
+    const html = skillsChartCard(ctx(jobs('29-1141.00', '15-1252.00', '31-1131.00', '29-1171.00')))
+    const fold = html.match(/<details class="rd-fold">(?:(?!<\/details>)[\s\S])*in-demand software(?:(?!<\/details>)[\s\S])*<\/details>/)?.[0] ?? ''
+    expect(fold).toBeTruthy()
+    expect(unesc(fold)).toMatch(/<summary[^>]*>\d+ of your jobs list no in-demand software \(O\*NET database 30\.3\)<\/summary>/)
+    expect(fold).toContain('https://www.onetonline.org/link/summary/29-1141.00')
+    expect(html).toContain('https://www.onetcenter.org/database.html')
+  })
+  it('one job without in-demand software stays a plain note, no fold', () => {
+    const html = skillsChartCard(ctx(jobs('29-1141.00')))
+    expect(html).not.toContain('<details')
+    expect(unesc(html)).toContain('O*NET lists no in-demand software for')
+  })
+  it('No chart is drawn only when there are no corners; otherwise "adds no corners"', () => {
+    const none = skillsChartCard(ctx(jobs('29-1141.00')))
+    expect(unesc(none)).toContain('No chart is drawn.')
+    expect(none).not.toContain('<polygon')
+    const some = skillsChartCard(ctx(jobs('15-1252.00', '29-1141.00')))
+    expect(some).toContain('<polygon')
+    expect(unesc(some)).not.toContain('No chart is drawn.')
+    expect(unesc(some)).toContain(t('rdSkNoneSome1'))
+    const many = skillsChartCard(ctx(jobs('15-1252.00', '29-1141.00', '31-1131.00')))
+    expect(unesc(many)).not.toContain('No chart is drawn.')
+    expect(unesc(many)).toContain(t('rdSkNoneSome'))
+    const allNone = skillsChartCard(ctx(jobs('29-1141.00', '31-1131.00')))
+    expect(unesc(allNone)).toContain(t('rdSkNoChart'))
+    expect(unesc(allNone)).not.toContain(t('rdSkNoneSome'))
+  })
+  it('the code chain is a fold: one summary line with the step count, steps and links inside, a source link beside it', () => {
+    const html = skillsChartCard(ctx(emasco('2512-02')))
+    const fold = html.match(/<details class="rd-fold">(?:(?!<\/details>)[\s\S])*Code chain(?:(?!<\/details>)[\s\S])*<\/details>/)?.[0] ?? ''
+    expect(fold).toBeTruthy()
+    expect(unesc(fold)).toMatch(/<summary[^>]*>Code chain for eMASCO 2512-02: \d+ official steps<\/summary>/)
+    expect(fold).toContain('https://www.bls.gov/soc/isco_soc_crosswalk.xls')
+    const after = html.slice(html.indexOf('</details>'), html.indexOf('</details>') + 400)
+    expect(after).toMatch(/<a href="https:/)
+  })
+  it('a broken chain stop note stays visible, not in a fold', () => {
+    const html = skillsChartCard(ctx(emasco('1121-01')))
+    expect(html).not.toContain('<details')
+    expect(unesc(html)).toContain('Not available for eMASCO 1121-01')
+  })
+  it('new strings exist in en, ms and zh with the review comment; the page state has no score words', () => {
+    const keys = ['rdPages', 'rdPrevPage', 'rdNextPage', 'rdPageN', 'rdGoToPage', 'rdGo', 'rdShowingRows', 'rdSkNoneFold', 'rdSkNoneOne', 'rdSkNoneSome', 'rdSkNoneSome1', 'rdSkNoChart', 'rdChainFold']
+    for (const lang of ['en', 'ms', 'zh']) {
+      const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
+      for (const key of keys) {
+        const line = lines.find((l) => l.trimStart().startsWith(`${key}:`))
+        expect(line, `${lang}.${key}`).toBeTruthy()
+        if (lang !== 'en') expect(line, `${lang}.${key}`).toMatch(/\/\/ translation: owner review\r?$/)
+      }
+    }
+    const attrs = (sk({ pages: { sk: 2 } }).match(/data-(?:act|arg|form)="[^"]*"/g) ?? []).join(' ').toLowerCase()
+    expect(attrs).not.toMatch(/score|weight|rank|match|opportunit/)
+    expect(app).not.toMatch(/pages:[^\n]*(score|weight|rank|opportunit)/i)
   })
 })

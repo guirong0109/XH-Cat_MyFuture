@@ -74,7 +74,7 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 751 passed (vitest.config.js skips helper worktrees)
+npm test                                           # expect 765 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 14 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder

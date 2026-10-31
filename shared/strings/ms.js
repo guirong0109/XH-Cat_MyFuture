@@ -714,6 +714,19 @@ export default {
   rdSkSource: "Data AS, bukan Malaysia · kemahiran perisian sahaja · bilangan iklan kerja, bukan skor", // translation: owner review
   rdConfirmFirst: "Sahkan profil anda untuk melihat kemahiran yang diminta oleh pekerjaan anda.", // translation: owner review
   rdChainSameUnit: "Peranan eMASCO dalam kumpulan 4 digit yang sama berkongsi satu pautan O*NET, jadi menunjukkan kemahiran yang sama.", // translation: owner review
+  rdPages: "Halaman", // translation: owner review
+  rdPrevPage: "Halaman sebelumnya", // translation: owner review
+  rdNextPage: "Halaman seterusnya", // translation: owner review
+  rdPageN: "Halaman {page}", // translation: owner review
+  rdGoToPage: "Pergi ke halaman", // translation: owner review
+  rdGo: "Pergi", // translation: owner review
+  rdShowingRows: "Menunjukkan {from}–{to} daripada {n}", // translation: owner review
+  rdSkNoneFold: "{n} daripada pekerjaan anda tidak menyenaraikan perisian dalam permintaan (pangkalan data O*NET {release})", // translation: owner review
+  rdSkNoneOne: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}).", // translation: owner review
+  rdSkNoneSome: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoneSome1: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoChart: "Tiada carta dilukis.", // translation: owner review
+  rdChainFold: "Rantaian kod untuk eMASCO {code}: {n} langkah rasmi", // translation: owner review
   rdSkAds: "iklan", // translation: owner review
   rdSkAria: "{n}. {name}: {count} iklan kerja AS pada {year}", // translation: owner review
   rdChainStop_no_row: "{system} {codes} tiada pautan dalam jadual rasmi seterusnya", // translation: owner review

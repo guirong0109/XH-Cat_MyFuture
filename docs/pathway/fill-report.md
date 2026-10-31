@@ -47,3 +47,10 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0799 | Engineering, manufacturing and construction not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
 | field:0810 | Agriculture not further defined | general web search (agriculture programmes Malaysia), UPM/UiTM faculty lists | 2026-10-31 | residual category; fitting programmes sit in 0811-0831 |
 | field:0819 | Agriculture not elsewhere classified | general web search, UPM/UiTM agriculture faculty lists | 2026-10-31 | no programme clearly in it |
+| field:0910 | Health not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0911-0917 |
+| field:0917 | Traditional and complementary medicine and therapy | general web search (traditional/Chinese/Islamic medicine degree Honours), UTAR, USIM, UiTM, IIUM, UM, USM, UKM pages; TCM Council pages | 2026-10-31 | UTAR Bachelor of Chinese Medicine (Honours) exists but its official pages failed certificate checks on 2026-10-31 and the T&CM Council page returned 500; not confirmed |
+| field:0919 | Health not elsewhere classified | general web search, UKM/UPM health faculty lists | 2026-10-31 | no programme clearly in it |
+| field:0920 | Welfare not further defined | general web search | 2026-10-31 | residual category; fitting programme sits in 0923 |
+| field:0921 | Care of the elderly and of disabled adults | general web search (gerontology, elderly care, disability bachelor Honours), UPM/UKM/UPSI/USM/UM/UiTM pages | 2026-10-31 | only postgraduate gerontology found; no undergraduate programme clearly in it |
+| field:0922 | Child care and youth services | general web search (child development, youth development, early childhood care), UPM Human Ecology, UKM, UPSI, UM pages | 2026-10-31 | UPM Bachelor of Human Development Science with Honours and UKM developmental science are broader (social science); early childhood education sits under 0112; none clearly child care or youth services |
+| field:0929 | Welfare not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |

@@ -1761,6 +1761,140 @@
       "mqrRef": null,
       "link": "https://fpv.umk.edu.my/program-details.cfm?ref=301&name=Doctor-of-Veterinary-Medicine",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0911-1",
+      "field": "0911",
+      "kind": "accredited",
+      "name": "BACHELOR OF DENTAL SURGERY",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-dental-surgery",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0911-2",
+      "field": "0911",
+      "kind": "professional",
+      "name": "Registration with the Malaysian Dental Council (Malaysian Health Care Practitioners' System)",
+      "body": "Malaysian Dental Council",
+      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0912-1",
+      "field": "0912",
+      "kind": "accredited",
+      "name": "Bachelor of Medicine and Bachelor of Surgery",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://medicine.um.edu.my/bachelor-of-medicine-and-bachelor-of-surgery",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0912-2",
+      "field": "0912",
+      "kind": "professional",
+      "name": "Registration of Medical Practitioners",
+      "body": "Malaysian Medical Council (MMC)",
+      "link": "https://mmc.gov.my/?p=9188",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0913-1",
+      "field": "0913",
+      "kind": "accredited",
+      "name": "US6723001 - BACHELOR OF NURSING WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=710:us6723001-sarjana-muda-kejururawatan-kepujian-2&catid=74",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0913-2",
+      "field": "0913",
+      "kind": "professional",
+      "name": "Registration with the Malaysia Nursing Board (MNB)",
+      "body": "Malaysia Nursing Board (MNB)",
+      "link": "https://hq.moh.gov.my/nursing/en/faq/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0914-1",
+      "field": "0914",
+      "kind": "accredited",
+      "name": "Bachelor of Diagnostic Imaging and Radiotherapy with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-diagnostic-imaging-and-radiotherapy-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0914-2",
+      "field": "0914",
+      "kind": "professional",
+      "name": "Registration with the Malaysian Allied Health Professions Council (Malaysian Health Care Practitioners' System)",
+      "body": "Malaysian Allied Health Professions Council",
+      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-1",
+      "field": "0915",
+      "kind": "accredited",
+      "name": "Bachelor of Physiotherapy with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-physiotherapy-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-2",
+      "field": "0915",
+      "kind": "accredited",
+      "name": "Bachelor of Optometry with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-optometry-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-3",
+      "field": "0915",
+      "kind": "professional",
+      "name": "Registration with the Malaysian Allied Health Professions Council (Malaysian Health Care Practitioners' System)",
+      "body": "Malaysian Allied Health Professions Council",
+      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0916-1",
+      "field": "0916",
+      "kind": "accredited",
+      "name": "Bachelor of Pharmacy (Honours)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/farmasi/bachelor-of-pharmacy-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0916-2",
+      "field": "0916",
+      "kind": "professional",
+      "name": "Qualifying Examination to Practice Pharmacy",
+      "body": "Pharmacy Board of Malaysia (PBM)",
+      "link": "https://pharmacy.moh.gov.my/en/content/qualifying-examination-practice-pharmacy.html",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0923-1",
+      "field": "0923",
+      "kind": "accredited",
+      "name": "US6762001 - BACHELOR OF SOCIAL WORK WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=697:us6762001-sarjana-muda-kerja-sosial-kepujian-2&catid=73",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

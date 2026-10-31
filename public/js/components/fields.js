@@ -46,7 +46,10 @@ export function listField({ profile, path, label }) {
 export function cvNote(t, record) {
   if (!record.extraction) return ''
   const quote = record.extraction.evidence ? `: “${esc(record.extraction.evidence)}”` : ''
-  return `<div class="tiny" style="color:var(--self)">${esc(t('tagFromCv'))}${quote}</div>`
+  const label = record.extraction.method === 'ai' ? 'tagFromAi' : 'tagFromCv'
+  // A field the AI read differently from the rules: the rules value stays, the AI value is shown to check.
+  const differs = Object.values(record.extraction.aiDiffers ?? {}).map((text) => `<div class="tiny" style="color:var(--self)">${esc(t('aiReadAs', { text }))}</div>`).join('')
+  return `<div class="tiny" style="color:var(--self)">${esc(t(label))}${quote}</div>${differs}`
 }
 
 export function reviewToggle(t, path, record) {

@@ -1,4 +1,4 @@
-// Pure helpers for the profile form (Case B), the review (Case C), the CV draft (Case A) and the AI compare view.
+// Pure helpers for the profile form (Case B), the review (Case C), and the CV draft (Case A).
 // Nothing here changes its input.
 
 const SCALARS = [
@@ -16,7 +16,6 @@ const LIST_KEYS = {
   training: (r) => String(r.name ?? '').toLowerCase(),
 }
 const OTHER_LISTS = ['employment.industries', 'preferences.careerInterests']
-const EMPTY_STATE = { state: 'empty' }
 
 const clone = (value) => (value === undefined ? undefined : structuredClone(value))
 const get = (object, path) => path.split('.').reduce((node, key) => (node == null ? undefined : node[key]), object)
@@ -60,73 +59,23 @@ export function confirmProfile(profile) {
   return out
 }
 
-// Records compared without provenance (the CV rules and the AI always differ there).
-const plain = (record) => JSON.stringify({ ...record, extraction: undefined, userConfirmed: undefined, source: undefined, needsReview: undefined })
-
-export function diffProfiles(original, suggested, editedPaths = new Set()) {
-  const rows = []
-  for (const path of SCALARS) {
-    const from = get(original, path)
-    const to = get(suggested, path)
-    if (!to || to.state !== 'value') continue
-    let kind = 'same'
-    if (!from || from.state !== 'value') kind = 'new'
-    else if (JSON.stringify(from.value) !== JSON.stringify(to.value)) kind = 'conflict'
-    rows.push({ path, kind, from, to, locked: editedPaths.has(path) })
-  }
-  for (const [listPath, keyOf] of Object.entries(LIST_KEYS)) {
-    const before = new Map((get(original, listPath) ?? []).map((record) => [keyOf(record), record]))
-    for (const record of get(suggested, listPath) ?? []) {
-      const path = `${listPath}#${keyOf(record)}`
-      const from = before.get(keyOf(record))
-      const kind = !from ? 'new' : plain(from) === plain(record) ? 'same' : 'changed'
-      rows.push({ path, kind, from: from ?? null, to: record, locked: editedPaths.has(path) })
-    }
-  }
-  return rows
-}
-
-// Applies accepted rows only; locked rows (the user's own edits) and 'same' rows never change anything.
-export function applyAccepted(original, diff, acceptedPaths) {
-  let out = clone(original)
-  for (const row of diff) {
-    if (row.locked || row.kind === 'same' || !acceptedPaths.has(row.path)) continue
-    const [listPath] = row.path.split('#')
-    if (listPath === row.path) {
-      out = setPath(out, row.path, clone(row.to))
-      continue
-    }
-    const keyOf = LIST_KEYS[listPath]
-    const list = get(out, listPath) ?? []
-    const index = list.findIndex((record) => keyOf(record) === keyOf(row.to))
-    out = setPath(out, listPath, index < 0 ? [...list, clone(row.to)] : list.map((record, i) => (i === index ? clone(row.to) : record)))
-  }
-  return out
-}
-
 // A CV draft into the form: an untouched form takes the draft; otherwise only new items are added and what the user
-// already typed wins every conflict.
+// already typed wins every conflict (a job or skill the user already has keeps its own values and gets no CV tag).
 export function mergeDraft(current, draft) {
   if (isUntouched(current)) return clone(draft)
-  const rows = diffProfiles(current, draft).filter((row) => row.kind === 'new')
-  return { ...applyAccepted(current, rows, new Set(rows.map((row) => row.path))), inputMethod: 'cv', cvLanguage: draft.cvLanguage }
-}
-
-// What the user changed after the CV draft (or filled in when there was none). The compare view locks these.
-export function userEditedPaths(draft, current) {
-  const edited = new Set()
+  let out = clone(current)
   for (const path of SCALARS) {
-    const before = draft ? get(draft, path) ?? EMPTY_STATE : EMPTY_STATE
-    if (JSON.stringify(before) !== JSON.stringify(get(current, path) ?? EMPTY_STATE)) edited.add(path)
+    const from = get(out, path)
+    const to = get(draft, path)
+    if (to?.state === 'value' && from?.state !== 'value') out = setPath(out, path, clone(to))
   }
   for (const [listPath, keyOf] of Object.entries(LIST_KEYS)) {
-    const before = new Map((draft ? get(draft, listPath) ?? [] : []).map((record) => [keyOf(record), record]))
-    for (const record of get(current, listPath) ?? []) {
-      const was = before.get(keyOf(record))
-      if (!was || plain(was) !== plain(record)) edited.add(`${listPath}#${keyOf(record)}`)
-    }
+    const list = get(out, listPath) ?? []
+    const have = new Set(list.map(keyOf))
+    const added = (get(draft, listPath) ?? []).filter((record) => !have.has(keyOf(record)))
+    if (added.length) out = setPath(out, listPath, [...list, ...clone(added)])
   }
-  return edited
+  return { ...out, inputMethod: 'cv', cvLanguage: draft.cvLanguage }
 }
 
 // "Career interests" and "preferred career fields" became one list (owner, 30 Oct). A profile saved before keeps

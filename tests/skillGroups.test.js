@@ -3,6 +3,7 @@ import form, { NOT_ASKED, dropNotAsked } from '../public/js/screens/form.js'
 import { confirmGroup, groupsOf, linkSkill, renamePlace, unlinkPlace, unlinkSkill } from '../public/js/screens/skillGroups.js'
 import { emptyProfile, makeSkill, validateProfile } from '../shared/profileSchema.js'
 import { t as translate } from '../shared/i18n.js'
+import { mergeDraft } from '../shared/profileState.js'
 
 const t = (key, vars) => (vars ? `${key}:${JSON.stringify(vars)}` : key)
 const q = (text) => text.replace(/"/g, '&quot;')
@@ -170,5 +171,37 @@ describe('projects are back in the profile (owner, 31 Oct); certificates and tra
         expect(translate(lang, key), `${lang} ${key}`).not.toBe(key)
       }
     }
+  })
+})
+
+describe('AI tags on skills and job cards', () => {
+  const real = (key, vars) => translate('en', key, vars)
+  const cvPage = (profile) => form({ t: real, state: { section: 2, profile, occ: {}, pick: {} } })
+  it('a skill found only by the AI carries Found by AI; a rules skill does not', () => {
+    const p = fromCv()
+    p.skills = [skill('SQL', [job], { source: 'cv_ai' }), skill('Python', [job])]
+    const html = cvPage(p)
+    const chips = html.match(/<span class="sk ok">.*?<\/span>/g)
+    expect(chips.find((c) => c.includes('SQL'))).toContain('Found by AI')
+    expect(chips.find((c) => c.includes('Python'))).not.toContain('Found by AI')
+  })
+  it('a job found only by the AI shows the tag on its card', () => {
+    const p = fromCv()
+    p.employment.records[0].extraction = { method: 'ai', evidence: 'Data Analyst Intern' }
+    const html = cvPage(p)
+    const head = html.match(/<div class="grp-head">.*?<\/div>\s*<div class="row">/s)[0]
+    expect(head).toContain('Found by AI')
+    const rules = cvPage(fromCv()).match(/<div class="grp-head">.*?<\/div>\s*<div class="row">/s)[0]
+    expect(rules).not.toContain('Found by AI')
+  })
+  it('a job the user typed before the upload keeps its title and gets no AI tag when the AI draft has the same job', () => {
+    const typed = emptyProfile()
+    typed.employment.records = [{ jobTitle: 'Data Analyst Intern', employer: 'Retail company', userConfirmed: true }]
+    const draft = fromCv()
+    draft.employment.records[0].extraction = { method: 'ai', evidence: 'Data Analyst Intern' }
+    const merged = mergeDraft(typed, draft)
+    expect(merged.employment.records).toHaveLength(1)
+    expect(merged.employment.records[0].extraction).toBeUndefined()
+    expect(cvPage(merged)).not.toContain('Found by AI')
   })
 })

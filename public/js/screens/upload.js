@@ -39,7 +39,10 @@ function ready(t, state) {
   const p = state.profile
   const list = (items) => (items.length ? items.map(esc).join(', ') : `<span class="muted">${esc(t('cvNothing'))}</span>`)
   const cvLanguage = LANGS.includes(state.cv.language) ? t(`langName_${state.cv.language}`) : t(`cvLang_${state.cv.language}`)
-  return `${languagePrompt(t, state)}
+  // The server says when the AI step did not run, so the user knows to check everything more carefully.
+  const aiLines = (state.cv.warnings ?? []).filter((w) => w === 'ai_unavailable' || w === 'ai_limit')
+    .map((w) => `<div class="banner b-warn"><div>${esc(t(`aiWarn_${w}`))}</div></div>`).join('')
+  return `${languagePrompt(t, state)}${aiLines}
   <div class="slot"><div class="receipt"><h3>✓ ${esc(t('cvStep_ready'))} ${tag('unv', t('cvUnverified'))}</h3>
     <table>
       <tr><th>${esc(t('cvRowEducation'))}</th><td>${list(p.education.records.map((r) => [r.qualification, r.fieldOfStudy].filter(Boolean).join(' · ')))}</td></tr>
@@ -67,5 +70,5 @@ export default ({ t, state }) => {
       <div class="row" style="margin-top:12px">${btn(t('cvManual'), { go: 'form' })}</div>`
   }
   return `<h1>${esc(t('upload'))}</h1><p class="lead">${esc(t('cvLead'))}</p>
-  <div class="banner b-info"><div>${esc(t('cvPrivacy'))}${state.features?.tempCopy ? ` ${esc(t('cvPrivacyServer'))}` : ''}</div></div>${body}`
+  <div class="banner b-info"><div>${esc(t('cvPrivacy'))}</div></div>${body}`
 }

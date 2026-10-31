@@ -317,7 +317,7 @@ export default {
   rdSkDropped: "Tidak lagi diperlukan",
   rdSkKept: "Masih diperlukan ({count})",
   rdSkNoFlags: "Tiada kemahiran ditandakan untuk pekerjaan ini dalam keluaran ini",
-  rdSkNoOnetLink: "Tiada pautan rasmi ke O*NET: senarai kemahiran tidak tersedia",
+  rdSkNoOnetLink: "Dicapai melalui rantaian kod rasmi: lihat 'Kemahiran yang diminta oleh pekerjaan anda' di atas.", // translation: owner review
   rdOnProfile: "Ada dalam profil anda",
   rdSkHot: "Menjadi Teknologi Hangat",
   rdSkHotDropped: "Tidak lagi Teknologi Hangat",
@@ -730,13 +730,14 @@ export default {
   rdAiGrad_G1: "Gred 1", // translation: owner review
   rdAiGrad_minimal: "Pendedahan minimum", // translation: owner review
   rdAiGrad_not_exposed: "Tidak terdedah", // translation: owner review
-  rdAiNoIsco: "tiada kod ISCO-08 pada rantaian, jadi tidak tersedia", // translation: owner review
+  rdAiNoIsco: "tiada kod ISCO-08 ditemui untuk pekerjaan ini, jadi pendedahan ILO tidak tersedia", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} tiada baris dalam jadual ILO WP140, jadi pendedahan ILO tidak tersedia", // translation: owner review
   rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
   rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
   rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
   rdAiNone: "Tiada satu pun daripada {total} tugas O*NET pekerjaan ini muncul dalam data perbualan AI. Tiada carta dilukis.", // translation: owner review
   rdAiLoading: "Memuatkan data tugas AI…", // translation: owner review
-  rdAiUnavailable: "Data tugas AI tidak tersedia.", // translation: owner review
+  rdAiUnavailable: "Data tugas AI tidak tersedia (sumber: Anthropic Economic Index, ILO WP140).", // translation: owner review
   rdAiSource: "cara AI digunakan hari ini, bukan ramalan kehilangan pekerjaan, dan bukan skor", // translation: owner review
   rdJob: "Pekerjaan", // translation: owner review
   rdTopicsOwn: "Topik penyelidikan AI yang dipautkan kepada bidang anda", // translation: owner review

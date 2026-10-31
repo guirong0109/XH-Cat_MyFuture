@@ -1,4 +1,4 @@
-// Copied unchanged from main shared/matching/chain.js (commit d4286d6, spec D32). The matching code chain: eMASCO role -> MASCO unit -> ISCO-08 -> SOC 2010 -> SOC 2018 -> O*NET jobs.
+// Copied from main d4286d6 shared/matching/chain.js; only this header line differs (spec D32). The matching code chain: eMASCO role -> MASCO unit -> ISCO-08 -> SOC 2010 -> SOC 2018 -> O*NET jobs.
 // Pure, no I/O: server and browser share it. It reads the bridge file (data/radar/occupation-bridge.json) and walks
 // the BLS steps backwards. It never guesses: a pending step or a code with no row stops the walk and says why.
 const FIRST = 'masco2020_unit_to_isco08'

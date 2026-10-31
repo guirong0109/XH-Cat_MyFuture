@@ -222,6 +222,14 @@ describe('taskCorners (real Anthropic Economic Index data)', () => {
     const r = taskCorners(job, ai, { iscoOf: () => ['2512'] })
     expect(r.ilo.map((x) => x.isco)).toEqual(['2411', '2512'])
   })
+  it('exposes the ISCO codes it found, also when ILO has no row for them', () => {
+    expect(taskCorners(jobOf('15-1252.00'), ai, { iscoOf }).iscos).toContain('2512')
+    const none = taskCorners(jobOf('15-1252.00'), ai, { iscoOf: () => [] })
+    expect(none.iscos).toEqual([])
+    const noRow = taskCorners(jobOf('15-1252.00'), ai, { iscoOf: () => ['9999'] })
+    expect(noRow.iscos).toEqual(['9999'])
+    expect(noRow.ilo).toEqual([])
+  })
   it('usageText', () => {
     expect(usageText(0)).toBeNull()
     expect(usageText(0.007)).toBeNull()
@@ -229,6 +237,6 @@ describe('taskCorners (real Anthropic Economic Index data)', () => {
     expect(usageText(0.2)).toBe('0.20')
   })
   it('unavailable data gives empty output', () => {
-    expect(taskCorners(jobOf('15-1252.00'), { state: 'unavailable', reason: 'x' }, { iscoOf })).toEqual({ items: [], total: null, ilo: [] })
+    expect(taskCorners(jobOf('15-1252.00'), { state: 'unavailable', reason: 'x' }, { iscoOf })).toEqual({ items: [], total: null, ilo: [], iscos: [] })
   })
 })

@@ -139,6 +139,12 @@ describe('profileRadar', () => {
     expect(svg).not.toContain('<polygon')
     expect(count(svg, /role="button"/g)).toBe(2)
   })
+  it('bar fallback passes the prefix through, so bars read T1, T2 like the list', () => {
+    const svg = profileRadar(base({ items: mk(2), prefix: 'T' }))
+    expect(svg).toContain('>T1 Skill number 0<')
+    expect(svg).toContain('>T2 Skill number 1<')
+    expect(profileRadar(base({ items: mk(2) }))).not.toContain('>T1 ')
+  })
   it('bar fallback shows valueText instead of the bare number', () => {
     const items = mk(2); items[0].valueText = '3,211,598 ads'
     const svg = profileRadar(base({ items }))

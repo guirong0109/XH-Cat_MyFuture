@@ -377,7 +377,7 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
   })
 
   it('eMASCO job: no official link to O*NET (D27)', () => {
-    expect(t('rdSkNoOnetLink')).toBe('No official link to O*NET: skill list not available')
+    expect(t('rdSkNoOnetLink')).toBe("Reached through the official code chain: see 'Skills your jobs ask for' above.")
     const c = col(ownProfile())
     expect(c).toContain('2512-01')
     expect(unesc(c)).toContain(t('rdSkNoOnetLink'))
@@ -601,6 +601,7 @@ describe('status cards (spec §11.1, §12)', () => {
 describe('Skills card on Skills & Careers', () => {
   const job = (source, code, title) => profile({ occupationMappings: [{ term: 'x', kind: 'job', chosen: { source, code, title } }] })
   const dev = () => job('onet', '15-1252.00', 'Software Developers')
+  const fieldOnly = () => profile({ education: { records: [{ field: { source: 'isced', code: '0413', title: 'Management and administration' } }] } })
   const acc = () => job('onet', '13-2011.00', 'Accountants and Auditors')
   const nurse = () => job('onet', '29-1141.00', 'Registered Nurses')
   const card = (prof, radar = {}, d = linked()) => skillsChartCard(ctx(prof, radar, d))
@@ -695,6 +696,21 @@ describe('Skills card on Skills & Careers', () => {
     expect(html).toContain('15-1253.00')
     expect(unesc(html)).toContain('eMASCO 2512-02')
   })
+  it('a confirmed profile with nothing on it gets the add-to-profile hint, not "confirm"; unavailable skills name O*NET', () => {
+    const empty = card(profile())
+    expect(empty).not.toContain(t('rdConfirmFirst'))
+    expect(empty).toContain(t('rdAddProfile'))
+    const off = card(dev(), {}, { ...linked(), skills: { state: 'unavailable' } })
+    expect(off).toContain(t('rdSkUnavailable'))
+    expect(off).toContain('O*NET')
+    expect(off).toContain('https://www.onetcenter.org/database.html')
+  })
+  it('a field-only profile (many jobs) gives a long skills list and still renders', () => {
+    const html = card(fieldOnly())
+    expect(html).toContain('data-sec="SK"')
+    expect(html).toContain('<polygon')
+    expect(count(html, /<li id="rd-sk-\d+"/g)).toBeGreaterThan(20)
+  })
   it('a draft profile is asked to confirm first and no chart is drawn', () => {
     const html = card({ ...dev(), profileStatus: 'draft' })
     expect(html).toContain(t('rdConfirmFirst'))
@@ -749,6 +765,7 @@ describe('AI Impact card', () => {
   const job = (code) => ({ term: 'x', kind: 'job', chosen: { source: 'onet', code, title: 'x' } })
   const prof = (...codes) => profile({ occupationMappings: codes.map(job) })
   const dev = () => prof('15-1252.00')
+  const fieldOnly = () => profile({ education: { records: [{ field: { source: 'isced', code: '0413', title: 'Management and administration' } }] } })
   const acc = () => prof('13-2011.00')
   const nurse = () => prof('29-1141.00')
   const pair = () => prof('27-1024.00', '11-2021.00')
@@ -812,6 +829,31 @@ describe('AI Impact card', () => {
     expect(card(tab(pair(), { aiJob: 1 }))).not.toBe(first)
     expect(count(card(tab(dev())), /data-act="aiJob"/g)).toBe(0)
   })
+  it('a field-only profile has many jobs: the job switch is a labelled drop-down, not buttons', () => {
+    const jobs = data.refs.fields.find((f) => f.code === '0413').jobs
+    expect(jobs.length).toBeGreaterThan(4)
+    const html = card(tab(fieldOnly()))
+    expect(count(html, /<option /g)).toBe(jobs.length)
+    expect(html).toMatch(/<label[^>]*for="rd-ai-job"[^>]*>Job<\/label><select id="rd-ai-job" data-radar-aijob>/)
+    expect(html).not.toContain('class="seg" role="group" aria-label="Job"')
+    expect(html).not.toContain('data-act="aiJob"')
+    expect(count(html, /<option [^>]*selected/g)).toBe(1)
+    expect(unesc(html)).toContain(`${jobs[0].title} (${jobs[0].code})`)
+    const second = card(tab(fieldOnly(), { aiJob: 1 }))
+    expect(second).toMatch(/<option value="1" selected>/)
+  })
+  it('four jobs keep the buttons; five switch to the drop-down', () => {
+    const four = card(tab(prof('15-1252.00', '13-2011.00', '29-1141.00', '27-1024.00')))
+    expect(count(four, /data-act="aiJob"/g)).toBe(4)
+    expect(four).not.toContain('<select')
+    const five = card(tab(prof('15-1252.00', '13-2011.00', '29-1141.00', '27-1024.00', '11-2021.00')))
+    expect(five).toContain('<select id="rd-ai-job"')
+    expect(five).not.toContain('data-act="aiJob"')
+  })
+  it('app wiring: the drop-down change calls the aiJob action', () => {
+    const app = readFileSync('public/js/app.js', 'utf8')
+    expect(app).toContain("hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)")
+  })
   it('loading, failed and missing data show their text and the topic card still renders', () => {
     for (const [aiTasks, key] of [[{ loading: true }, 'rdAiLoading'], [{ ok: false, code: 'network' }, 'rdAiUnavailable'], [undefined, 'rdAiLoading']]) {
       const html = aiTab(ctx(dev(), { aiTasks }))
@@ -820,6 +862,12 @@ describe('AI Impact card', () => {
     }
     const off = aiTab(ctx(dev(), { aiTasks: { ok: true, data: { state: 'unavailable', reason: 'x' } } }))
     expect(card(off)).toContain(t('rdAiUnavailable'))
+    expect(card(off)).toContain('Anthropic Economic Index')
+    expect(card(off)).toContain('https://doi.org/10.54394/HETP0387')
+    // Confirmed but empty: the add-to-profile hint, not "confirm your profile".
+    const empty = card(tab(profile()))
+    expect(empty).toContain(t('rdAddProfile'))
+    expect(empty).not.toContain(t('rdAiConfirmFirst').replace(/'/g, '&#39;'))
   })
   it('a draft profile is asked to confirm first; an eMASCO role with a broken chain shows its stop', () => {
     expect(unesc(card(tab({ ...dev(), profileStatus: 'draft' })))).toContain(t('rdAiConfirmFirst'))
@@ -828,7 +876,17 @@ describe('AI Impact card', () => {
     expect(broken).not.toContain('data-act="aiCorner"')
   })
   it('a job with no ISCO code says so; a job with no task in the data gets the none message', () => {
-    expect(card(tab(dev(), { aiTasks: { ok: true, data: { ...ai, ilo: [] } } }))).toContain(t('rdAiNoIsco'))
+    const noIlo = card(tab(dev(), { aiTasks: { ok: true, data: { ...ai, ilo: [] } } }))
+    expect(unesc(noIlo)).toContain(t('rdAiNoIloRow', { isco: '2512' }))
+    expect(noIlo).not.toContain(esc_(t('rdAiNoIsco')))
+    expect(noIlo).toContain('https://doi.org/10.54394/HETP0387')
+    // No ISCO-08 code at all: the other message.
+    const base_ = linked()
+    const noCode = { ...base_, refs: { ...base_.refs, bridge: { ...base_.refs.bridge, steps: base_.refs.bridge.steps.map((s) => (s.id === 'soc2010_to_isco08' ? { ...s, links: {} } : s)) } } }
+    const noCodeHtml = card(tab(dev(), {}, noCode))
+    expect(unesc(noCodeHtml)).toContain(t('rdAiNoIsco'))
+    expect(noCodeHtml).not.toContain('rdAiNoIloRow')
+    expect(noCodeHtml).toContain('https://doi.org/10.54394/HETP0387')
     const html = card(tab(dev(), { aiTasks: { ok: true, data: { ...ai, tasks: [] } } }))
     expect(unesc(html)).toContain(t('rdAiNone', { total: 17 }))
     expect(html).not.toContain('<polygon')
@@ -928,7 +986,7 @@ describe('AI Impact card', () => {
     expect(keys.filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
   })
   it('every new string exists in en, ms and zh with the review comment', () => {
-    const keys = ['rdAiChartTitle', 'rdAiChartTag', 'rdAiExposure', 'rdAiGrad_G4', 'rdAiGrad_G3', 'rdAiGrad_G2', 'rdAiGrad_G1', 'rdAiGrad_minimal', 'rdAiGrad_not_exposed', 'rdAiNoIsco', 'rdAiShown', 'rdAiRow', 'rdAiLegend', 'rdAiNone', 'rdAiLoading', 'rdAiUnavailable', 'rdAiSource', 'rdAiLicence', 'rdFewOwnAxes', 'rdAiConfirmFirst', 'rdAiUnder', 'rdJob', 'rdTopicsOwn', 'rdTopicsViewAll']
+    const keys = ['rdAiChartTitle', 'rdAiChartTag', 'rdAiExposure', 'rdAiGrad_G4', 'rdAiGrad_G3', 'rdAiGrad_G2', 'rdAiGrad_G1', 'rdAiGrad_minimal', 'rdAiGrad_not_exposed', 'rdAiNoIsco', 'rdAiShown', 'rdAiRow', 'rdAiLegend', 'rdAiNone', 'rdAiLoading', 'rdAiUnavailable', 'rdAiSource', 'rdAiLicence', 'rdFewOwnAxes', 'rdAiConfirmFirst', 'rdAiUnder', 'rdJob', 'rdAiNoIloRow', 'rdSkNoOnetLink', 'rdTopicsOwn', 'rdTopicsViewAll']
     for (const lang of ['en', 'ms', 'zh']) {
       const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
       for (const key of keys) {

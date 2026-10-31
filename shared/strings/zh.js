@@ -317,7 +317,7 @@ export default {
   rdSkDropped: "不再有需求",
   rdSkKept: "仍有需求（{count}）",
   rdSkNoFlags: "此版本中没有为这个职业标出任何技能",
-  rdSkNoOnetLink: "没有与 O*NET 的官方对应：无法提供技能列表",
+  rdSkNoOnetLink: "通过官方代码链对应：见上方「你的职业所要求的技能」。", // translation: owner review
   rdOnProfile: "在您的个人资料中",
   rdSkHot: "成为热门技术",
   rdSkHotDropped: "不再是热门技术",
@@ -730,13 +730,14 @@ export default {
   rdAiGrad_G1: "第 1 级", // translation: owner review
   rdAiGrad_minimal: "极低暴露", // translation: owner review
   rdAiGrad_not_exposed: "无暴露", // translation: owner review
-  rdAiNoIsco: "代码链上没有 ISCO-08 代码，因此不可用", // translation: owner review
+  rdAiNoIsco: "未找到此工作的 ISCO-08 代码，因此无法提供 ILO 暴露度", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} 在 ILO WP140 表中没有对应行，因此无法提供 ILO 暴露度", // translation: owner review
   rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
   rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
   rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
   rdAiNone: "此工作的 {total} 项 O*NET 任务都没有出现在 AI 对话数据中。不绘制图表。", // translation: owner review
   rdAiLoading: "正在加载 AI 任务数据…", // translation: owner review
-  rdAiUnavailable: "AI 任务数据不可用。", // translation: owner review
+  rdAiUnavailable: "AI 任务数据不可用（来源：Anthropic Economic Index、ILO WP140）。", // translation: owner review
   rdAiSource: "今天 AI 的使用方式，不是对失业的预测，也不是分数", // translation: owner review
   rdJob: "工作", // translation: owner review
   rdTopicsOwn: "与您的领域相关的 AI 研究主题", // translation: owner review

@@ -99,7 +99,7 @@ Date: 31 Oct 2026 · Branch `claude/future-radar` at `76f2ac0` · Spec `2026-10-
 
 - `node server/index.js` (radar-trial, port 3210), opened on its own address
   `http://check.radar.localhost:3210/#radar`, so its saved progress is separate from the owner's `radar.localhost`.
-  Server stopped afterwards. Browser: the Claude desktop app's browser pane. Guest, confirmed profiles set in local storage.
+  Guest, confirmed profiles set in local storage.
 - Widths: desktop and phone 375 px (light theme). Desktop dark theme. Languages: English, plus Bahasa Melayu for the AI card.
 
 ## Results

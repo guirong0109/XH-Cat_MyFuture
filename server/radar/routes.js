@@ -304,9 +304,9 @@ export function radarRoutes({ radar, aiTasks = null }) {
   // Static reference data: no manifest, no query parameters. A loader failure answers "unavailable" (the screen says so).
   router.get('/api/radar/ai-tasks', async (request, response) => {
     try {
-      response.json(aiTasks ? await aiTasks() : { state: 'unavailable', reason: 'The AI task data is not configured on this server.' })
+      response.json(aiTasks ? await aiTasks() : { state: 'unavailable', reason: 'AI task data files are missing' })
     } catch (error) {
-      response.json({ state: 'unavailable', reason: String(error?.message ?? error) })
+      response.json({ state: 'unavailable', reason: 'AI task data failed its check' })
     }
   })
 

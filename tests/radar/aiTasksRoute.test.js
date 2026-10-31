@@ -1,5 +1,5 @@
 // Public AI task data: Anthropic Economic Index task rows and the ILO WP140 occupation scores (static reference data).
-import { mkdtemp } from 'node:fs/promises'
+import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -50,6 +50,20 @@ describe('GET /api/radar/ai-tasks', () => {
     expect(body.emascoChain).toBe(true)
   })
 
+  it('a loader that throws answers a fixed plain reason, never the error text', async () => {
+    const { default: express } = await import('express')
+    const { radarRoutes } = await import('../../server/radar/routes.js')
+    const app = express()
+    app.use(radarRoutes({ radar: {}, aiTasks: async () => { throw new Error('ENOENT C:\secret\path\tasks.tsv at stack') } }))
+    const server = await new Promise((resolve) => { const s = app.listen(0, '127.0.0.1', () => resolve(s)) })
+    try {
+      const body = await (await fetch(`http://127.0.0.1:${server.address().port}/api/radar/ai-tasks`)).json()
+      expect(body).toEqual({ state: 'unavailable', reason: 'AI task data failed its check' })
+    } finally {
+      server.close()
+    }
+  })
+
   it('radarApi.aiTasks returns the body', async () => {
     radar = await startRadar()
     const out = await aiTasks({ base: radar.base })
@@ -63,6 +77,21 @@ describe('loadAiTasks', () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'ai-'))
     const out = await loadAiTasks(dir)
     expect(out.state).toBe('unavailable')
-    expect(typeof out.reason).toBe('string')
+    expect(out.reason).toBe('AI task data files are missing')
+  })
+  it('a changed byte in data/onet/tasks.tsv fails the hash check and gives a plain reason', async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'ai-'))
+    for (const sub of ['ai', 'onet', 'radar']) await cp(path.join('data', sub), path.join(dir, sub), { recursive: true })
+    const file = path.join(dir, 'onet', 'tasks.tsv')
+    const text = await readFile(file, 'utf8')
+    await writeFile(file, text.replace('a', 'b'))
+    const out = await loadAiTasks(dir)
+    expect(out).toEqual({ state: 'unavailable', reason: 'AI task data failed its check' })
+    expect(JSON.stringify(out)).not.toMatch(/tasks\.tsv|manifest|[\/]/)
+  })
+  it('the real data still loads from an untouched temp copy', async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'ai-'))
+    for (const sub of ['ai', 'onet', 'radar']) await cp(path.join('data', sub), path.join(dir, sub), { recursive: true })
+    expect((await loadAiTasks(dir)).state).toBe('data')
   })
 })

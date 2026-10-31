@@ -484,9 +484,9 @@ export function skillsChartCard({ t, state, data }) {
   const head = `<h2>${esc(t('rdSkChartTitle'))} ${tag('src', t('rdSkChartTag'))}</h2>`
   const wrapCard = (body) => `<div class="card rd-sec" data-sec="SK">${head}${body}</div>`
   const rel = relevance(state, data)
-  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  if (!rel) return wrapCard(state?.profile?.profileStatus === 'confirmed' ? hint(t) : `<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
   const sk = data.skills
-  if (!sk || sk.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdUnavailable'))}</p>`)
+  if (!sk || sk.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdSkUnavailable'))} ${srcLink({ label: 'O*NET', url: 'https://www.onetcenter.org/database.html' })}</p>`)
 
   const refs = refsFor(data.refs)
   const onetTitle = (code) => refs.onetTitle(code) ?? sk.changes?.[code]?.title ?? null
@@ -561,16 +561,18 @@ const AI_CORNER_CHOICES = [8, 16, 'all']
 const AI_SCALE = { kind: 'linear', min: 0, max: 100 }
 const AI_RINGS = [{ value: 25, label: '25%' }, { value: 50, label: '50%', dashed: true }, { value: 75, label: '75%' }, { value: 100, label: '100%' }]
 const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
+const ILO_URL = 'https://doi.org/10.54394/HETP0387'
+const JOB_SWITCH_MAX = 4 // more jobs than this (a field brings many) go in a drop-down, not a row of buttons
 
 export function aiTasksCard({ t, state, data }) {
   const wrapCard = (body) => `<div class="card rd-sec" data-sec="AI"><h2>${esc(t('rdAiChartTitle'))} ${tag('est', t('rdAiChartTag'))}</h2>${body}</div>`
   const rel = relevance(state, data)
-  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdAiConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  if (!rel) return wrapCard(state?.profile?.profileStatus === 'confirmed' ? hint(t) : `<div class="hint">${esc(t('rdAiConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
   const u = ui(state)
   const got = u.aiTasks
   if (!got || got.loading) return wrapCard(`<p class="small muted"><span class="spin"></span> ${esc(t('rdAiLoading'))}</p>`)
   const ai = got.ok ? got.data : null
-  if (!ai || ai.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdAiUnavailable'))}</p>`)
+  if (!ai || ai.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdAiUnavailable'))} ${srcLink({ label: 'Anthropic Economic Index', url: AEI_URL })} ${srcLink({ label: 'ILO WP140', url: ILO_URL })}</p>`)
 
   const refs = refsFor(data.refs)
   const { jobs, broken } = profileJobs(rel, { chain: refs.chain, onetTitle: refs.onetTitle })
@@ -580,19 +582,23 @@ export function aiTasksCard({ t, state, data }) {
   const idx = Number.isInteger(u.aiJob) && u.aiJob >= 0 && u.aiJob < jobs.length ? u.aiJob : 0
   const job = jobs[idx]
   const jobName = job.title ?? job.code
-  const switchBar = jobs.length > 1
-    ? `<div class="rd-tools"><span class="small muted">${esc(t('rdJob'))}</span><span class="seg" role="group" aria-label="${esc(t('rdJob'))}">${jobs.map((j, i) => `<button class="${i === idx ? 'on' : ''}" data-act="aiJob" data-arg="${i}" aria-pressed="${i === idx}">${esc(j.title ?? j.code)}</button>`).join('')}</span></div>`
-    : ''
+  const switchBar = jobs.length > JOB_SWITCH_MAX
+    ? `<div class="rd-tools"><label class="small muted" for="rd-ai-job">${esc(t('rdJob'))}</label><select id="rd-ai-job" data-radar-aijob>${jobs.map((j, i) => `<option value="${i}"${i === idx ? ' selected' : ''}>${esc(`${j.title ?? j.code} (${j.code})`)}</option>`).join('')}</select></div>`
+    : jobs.length > 1
+      ? `<div class="rd-tools"><span class="small muted">${esc(t('rdJob'))}</span><span class="seg" role="group" aria-label="${esc(t('rdJob'))}">${jobs.map((j, i) => `<button class="${i === idx ? 'on' : ''}" data-act="aiJob" data-arg="${i}" aria-pressed="${i === idx}">${esc(j.title ?? j.code)}</button>`).join('')}</span></div>`
+      : ''
   const jobLine = `<p class="small">${summaryLink(job)}${viaText(job) ? ` <span class="tiny">(${esc(viaText(job))})</span>` : ''}</p>`
 
-  const { items, total, ilo } = taskCorners(job, ai, { iscoOf: refs.bridge.iscoOf })
+  const { items, total, ilo, iscos } = taskCorners(job, ai, { iscoOf: refs.bridge.iscoOf })
   const link = (pattern) => (ai.sourceLinks ?? []).find((l) => pattern.test(l?.url ?? ''))
   const iloLink = link(/doi\.org/) ?? { label: 'ILO WP140', url: 'https://doi.org/10.54394/HETP0387' }
   const aeiLink = link(/huggingface\.co\/datasets\/Anthropic\/EconomicIndex$/) ?? { label: 'Anthropic Economic Index', url: AEI_URL }
   const gradient = (g) => { const key = `rdAiGrad_${g}`; const text = t(key); return text === key ? g : text }
   const exposure = ilo.length
     ? ilo.map((r) => `<p class="small">${esc(t('rdAiExposure', { job: jobName, gradient: gradient(r.gradient), isco: r.isco, title: r.title, mean: r.mean.toFixed(2) }))} ${srcLink(iloLink)}</p>`).join('')
-    : `<p class="small">${esc(`${jobName}: ${t('rdAiNoIsco')}`)}</p>`
+    : iscos.length
+      ? `<p class="small">${esc(`${jobName}: ${t('rdAiNoIloRow', { isco: iscos.join(', ') })}`)} ${srcLink(iloLink)}</p>`
+      : `<p class="small">${esc(`${jobName}: ${t('rdAiNoIsco')}`)} ${srcLink(iloLink)}</p>`
 
   const release = `${ai.release ?? DASH} · ${ai.dataPeriod ?? DASH}`
   let chart = ''

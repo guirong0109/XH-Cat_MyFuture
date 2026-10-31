@@ -81,7 +81,7 @@ reference data), `hot` the current Hot Technologies. It is `null` or empty when 
 /api/radar/skills` gives the screen the release, the changes per job, the Hot lists, the posting counts, the labels
 and the source links. In `GET /api/radar/skills`, every `postings.rows` item carries `skillId` (`onet:tech:<nameKey>`,
 the same id as the change rows, so the browser pairs counts and flags by id, not by name), and `postings.previous` holds
-the earlier yearly snapshot's counts (`null` while only one exists).
+the earlier yearly snapshot's counts. It is always `null` for now; serving a second yearly snapshot is a later refresh task.
 
 `GET /api/radar/references` also carries `emascoChain` (true when the bridge's first step, MASCO 2020 unit → ISCO-08, is
 built), so the screen knows whether the eMASCO code chain can be followed.

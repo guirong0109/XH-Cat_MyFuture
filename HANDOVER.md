@@ -9,7 +9,7 @@ Updated 31 Oct 2026 (charts that follow the profile added). Branch made from `ma
   D23–D27; plan `docs/superpowers/plans/2026-10-30-radar-skill-trends.md`). See "Skill trends" below.
 - **Charts that follow your profile are built** (31 Oct 2026, spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
   D28-D33; plan `docs/superpowers/plans/2026-10-31-radar-profile-charts.md`). See "Profile charts" below.
-- Tests: **738 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
+- Tests: **748 Vitest tests pass** (`npm test`, default workers, 61 files; the CV module's 232 are among them) and
   **14 Python tests OK** (`python -m unittest discover pipeline/tests`; the bridge script test copied from `main` is among them). Round 1 alone was 568; skill trends took it to 647.
 - Browser acceptance (`docs/radar/acceptance.md`): **28 of 28 checks pass** after the F1 fix (a long DOSM
   link made Skills & Careers wider than a phone; source links now wrap, re-checked at 360 px in EN, BM and 中文).
@@ -44,7 +44,7 @@ What a user sees:
 ```bash
 npm install
 npm start                                   # http://localhost:3200 — public Radar at #radar, bundled data, read-only
-npm test                                    # 738 passed
+npm test                                    # 748 passed
 python -m unittest discover pipeline/tests  # 14 OK
 node scripts/radar-bootstrap.mjs            # rebuilds data/radar/bundle/ (OpenAlex and Hot Technologies live; DOSM from the kept workbook); on the committed bundle it skips O*NET releases already active; RADAR_BUNDLE_DIR=<copy> targets another folder
 ONET_ZIP_DIR=<folder with db_30_2.zip db_30_3.zip db_31_0.zip> node scripts/radar-bootstrap.mjs   # reads the O*NET zips locally instead of downloading 13 MB each
@@ -102,13 +102,16 @@ Both Radar charts now follow the user's **confirmed** profile (nothing from the 
 - **D30 / D33:** counts and shares only, labelled "not a score"; AI chart labelled "how AI is used today, not a forecast of
   jobs lost". No score, weight, rank or match field.
 - **Copied from `main`, not merged (D32):** the code chain (`shared/radar/chain.js`, `data/radar/occupation-bridge.json`,
-  its source files and script) and the AI data (`data/ai/*`, `data/onet/tasks.tsv`) are byte-identical to `main` commit
-  d4286d6. Their SHA-256 hashes are in `data/radar/copied-from-main.json`. When this branch is merged later, these files
-  are identical on both sides, so they should not conflict.
+  its source files and script) and the AI data (`data/ai/*`, `data/onet/tasks.tsv`) are copied from `main` commit
+  d4286d6. All are byte-identical except `shared/radar/chain.js` and `tests/radar/chain.test.js`, where only the header
+  line and the import path changed. Their SHA-256 hashes are in `data/radar/copied-from-main.json`. The data and script
+  files are identical on both sides. On a later merge `chain.js` and its test sit at new paths beside
+  `shared/matching/chain.js`, so `main` will hold a second copy of the walker: a clean-up point for the owner at merge time.
 - **New data route:** `GET /api/radar/ai-tasks` (reference data, not signals; `docs/radar/contract.md`). The skills route rows
   now carry `skillId` and `postings.previous`; the references route has `emascoChain`.
 - **Browser check** (31 Oct, `docs/radar/acceptance.md`, last section): Software Developer, Accountant, eMASCO 2512-02 and
-  Registered Nurse profiles, light and dark, 375 px with no sideways scroll, search keeps focus, EN and BM.
+  Registered Nurse profiles. Scope: 375 px in the light theme only; the dark theme on desktop only; Bahasa Melayu on the AI card
+  only (the Skills card in BM and 中文 was not checked by hand). Search keeps focus.
 
 ### Open points for you (profile charts)
 - Review the Bahasa Melayu and 中文 lines marked `// translation: owner review` in `shared/strings/ms.js` and `zh.js`.
@@ -118,8 +121,8 @@ Both Radar charts now follow the user's **confirmed** profile (nothing from the 
 - The dashed earlier-year line appears only once a second yearly Hot Technologies snapshot is served (today: "One year so far").
 
 ## Still needed from you (spec §17)
-1. **BLS crosswalk files** (SOC 2010 ↔ 2018; ISCO-08 ↔ SOC 2010): download them in a browser into
-   `data/radar/source/`. BLS blocks automated downloads. Until then O\*NET jobs are not linked to DOSM groups.
+1. **BLS crosswalk files** (SOC 2010 ↔ 2018; ISCO-08 ↔ SOC 2010): done. They are copied into `data/radar/source/` and both
+   BLS steps are built (`data/radar/occupation-bridge.json`). Nothing needed from you here.
 2. **An official source that MASCO 2020 major groups match ISCO-08 major groups.** Without it that step stays pending
    and the screens say "Not mapped to a DOSM group yet".
 3. **R2 settings** (free allowance) for deployed state, and the real-R2 check of conditional writes.
@@ -177,7 +180,8 @@ Each was a judgement call where the spec was silent or two parts pulled apart; a
   - Validation and diff: a few cases untested (nested fields, unit changes, label-only changes, unstable sort for
     duplicates).
   - Reference data: an approved and a rejected link at the same level depend on list order (the rejection should win);
-    BLS parsers are tested on synthetic files only (the real files are not in yet).
+    the BLS parsers are tested on synthetic files, and the real files are also covered by the bridge script test and
+    the code chain tests (both BLS steps are built from the real files).
 - **Storage, access and operations**
   - R2 signing: some rare characters and query ordering follow a simpler rule than AWS's; R2's 409 conflict code is not
     mapped; checked with a fake only until real R2 settings exist.

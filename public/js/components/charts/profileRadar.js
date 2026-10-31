@@ -53,7 +53,7 @@ const attrs = (it, act) => `role="button" tabindex="0" data-act="${esc(act)}" da
 const BAR_LINE = 28 // characters of a bar label per line (the label column is 182 wide)
 const BAR_LINES = 2
 
-function barFallback(items, scale, act, label, c) {
+function barFallback(items, scale, act, label, c, prefix = '') {
   const rowH = 34
   const x0 = 190
   const bw = 130
@@ -61,7 +61,7 @@ function barFallback(items, scale, act, label, c) {
   items.forEach((it, i) => {
     const y = 12 + i * rowH
     const f = frac(scale, it.value)
-    const lines = wrap(it.label, BAR_LINE, BAR_LINES)
+    const lines = wrap(prefix ? `${prefix}${i + 1} ${it.label}` : it.label, BAR_LINE, BAR_LINES)
     const ty = y + 14 - ((lines.length - 1) * 12) / 2
     const val = wrap(it.valueText ?? fmt(it.value), 22, 1)[0] ?? ''
     g += `<g class="rd-barrow" ${attrs(it, act)}>`
@@ -78,7 +78,7 @@ function barFallback(items, scale, act, label, c) {
 export function profileRadar({ items = [], scale, rings = [], act, label = '', colour = 'accent', numbersOnlyAbove = 16, prefix = '', t } = {}) {
   const c = colour === 'est' ? 'var(--est)' : 'var(--accent)'
   const n = items.length
-  if (n < 3) return barFallback(items, scale, act, label, c)
+  if (n < 3) return barFallback(items, scale, act, label, c, prefix)
 
   const at = (i, f) => [CX + R * f * Math.cos(angle(i, n)), CY + R * f * Math.sin(angle(i, n))]
   let g = ''

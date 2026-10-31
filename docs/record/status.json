@@ -418,7 +418,7 @@
         },
         {
           "title": "T1 Copied from main",
-          "sub": "code chain, AI data and bridge script byte-identical to main d4286d6; hashes in data/radar/copied-from-main.json (D32)",
+          "sub": "code chain, AI data and bridge script copied from main d4286d6 (byte-identical except the header line and import path of chain.js and its test); hashes in data/radar/copied-from-main.json (D32); on a later merge main will hold a second copy of the walker (clean-up point)",
           "status": "done"
         },
         {
@@ -458,7 +458,7 @@
         },
         {
           "title": "T9 Docs and browser check",
-          "sub": "Software Developer, Accountant, eMASCO 2512-02, Registered Nurse; light, dark, 375 px no sideways scroll; search keeps focus; EN and BM. 738 tests, pipeline 14 OK",
+          "sub": "Software Developer, Accountant, eMASCO 2512-02, Registered Nurse; 375 px in light theme, dark theme on desktop, BM on the AI card only (Skills card in BM/zh not checked); search keeps focus. Screenshots to add: docs/record/screens/profile-charts-skills-developer-dark.jpg, profile-charts-ai-developer-dark.jpg, profile-charts-ai-developer-375-light.jpg. 748 tests, pipeline 14 OK",
           "status": "done"
         }
       ]
@@ -502,7 +502,7 @@
     "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
     "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
     "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
-    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 unchanged (D32). Checked in the browser (4 profiles, light/dark, 375 px). 738 tests, pipeline 14 OK. Nothing pushed."
+    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed."
   ],
   "waiting": [
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
@@ -1144,6 +1144,11 @@
       "time": "31 Oct",
       "step": "Profile charts T9",
       "detail": "browser check, contract, specs pointers, tools declaration, handover and build record; npm test 738 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts final review fixes",
+      "detail": "AI job switch becomes a drop-down above 4 jobs; B2 column wording follows D29; docs corrected (BLS done, copied-file wording, browser-check scope); ISCO and ILO messages split; bar labels keep the T prefix; confirmed-but-empty profile gets the add-to-profile hint; unavailable texts name their sources; tasks.tsv hash-checked; plain error reasons; npm test 748 passed, pipeline 14 OK"
     }
   ]
 }

@@ -24,7 +24,7 @@ rules and how to work here.
 - Skill trends from O\*NET are built on top (spec `docs/superpowers/specs/2026-10-30-radar-skill-trends-design.md`, D23–D27;
   see `HANDOVER.md` "Skill trends").
 - Charts that follow the confirmed profile are built (spec `docs/superpowers/specs/2026-10-31-radar-profile-charts-design.md`,
-  D28-D33; `HANDOVER.md` "Profile charts"). 738 Vitest tests and 14 Python tests pass.
+  D28-D33; `HANDOVER.md` "Profile charts"). 748 Vitest tests and 14 Python tests pass.
 - Mockup v2 approved 30 Oct with D21 (Skills & Careers tab first) and D22 (screens use `public/styles.css`).
 - Any change beyond Round 1 (Round 2 visuals, Round 3 evidence, Matching) needs its own spec and the owner's approval.
 
@@ -53,10 +53,10 @@ rules and how to work here.
 - Corners: 8 by default, ordered by value (highest first, ties by name); the switch gives 16, 30, All. The list number is shown, never stored.
 - Skills chart value = 2025 US job ads (Hot Technologies). AI chart value = share of the task's conversations where AI does the task.
   Both are "not a score"; AI chart is "how AI is used today, not a forecast of jobs lost". No key named score, weight, rank, match or opportunit.
-- **Copied from `main` d4286d6, byte-identical (D32):** `shared/radar/chain.js`, `tests/radar/chain.test.js`,
+- **Copied from `main` d4286d6 (D32); all byte-identical except `shared/radar/chain.js` and `tests/radar/chain.test.js`, where only the header line and the import path changed:** `shared/radar/chain.js`, `tests/radar/chain.test.js`,
   `data/radar/occupation-bridge.json`, `data/radar/source/ISCO_SOC_Crosswalk.*`, `data/radar/source/soc_2010_to_2018_crosswalk.xlsx`,
   `pipeline/fetch_radar_bridge.py`, `pipeline/tests/test_radar_bridge.py`, `data/onet/tasks.tsv`, `data/ai/*`. Hashes: `data/radar/copied-from-main.json`.
-  Do not edit them here; change them on `main` and copy again. On a later merge they are identical on both sides.
+  Do not edit them here; change them on `main` and copy again. The data and script files are identical on both sides. On a later merge `chain.js` and its test sit at new paths (`shared/radar/`, `tests/radar/`) beside `shared/matching/chain.js`, so `main` will hold a second copy of the walker: a clean-up point for the owner at merge time.
 - `/api/radar/ai-tasks` is reference data (no manifest, no parameters), not signals.
 - Colours in the new chart component: CSS variables only (`--accent` skills, `--est` AI).
 
@@ -74,7 +74,7 @@ rules and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                           # expect 738 passed (vitest.config.js skips helper worktrees)
+npm test                                           # expect 748 passed (vitest.config.js skips helper worktrees)
 python -m unittest discover pipeline/tests         # expect 14 OK
 npm start                                          # http://localhost:3200, Radar at #radar (bundled data, read-only)
 node scripts/radar-bootstrap.mjs                   # rebuild data/radar/bundle/ (OpenAlex and Hot Technologies live, DOSM from the kept workbook); releases already active are skipped; RADAR_BUNDLE_DIR=<copy> targets another folder

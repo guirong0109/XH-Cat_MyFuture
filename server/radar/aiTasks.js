@@ -28,10 +28,11 @@ export async function loadAiTasks(dataDir) {
     const aiDir = path.join(dataDir, 'ai')
     const manifest = JSON.parse(await readFile(path.join(aiDir, 'manifest.json'), 'utf8'))
     const aei = manifest.aei ?? {}
+    const copied = JSON.parse(await readFile(path.join(dataDir, 'radar', 'copied-from-main.json'), 'utf8'))
     const [aeiText, iloText, taskText] = await Promise.all([
       checkedText(path.join(aiDir, 'aei_tasks.tsv'), aei.files?.['aei_tasks.tsv']),
       checkedText(path.join(aiDir, 'ilo_wp140.tsv'), manifest.files?.['ilo_wp140.tsv']),
-      readFile(path.join(dataDir, 'onet', 'tasks.tsv'), 'utf8'),
+      checkedText(path.join(dataDir, 'onet', 'tasks.tsv'), copied.files?.['data/onet/tasks.tsv']),
     ])
     const usage = new Map(rowsOf(aeiText).map((r) => [r.task_id, r]))
     const taskCounts = {}
@@ -49,6 +50,7 @@ export async function loadAiTasks(dataDir) {
     ]
     return { state: 'data', release: aei.release ?? null, dataPeriod: aei.dataPeriod ?? null, tasks, taskCounts, ilo, sourceLinks, fetchedAt: aei.downloadedAt ?? null }
   } catch (error) {
-    return { state: 'unavailable', reason: error?.code === 'ENOENT' ? 'The AI task data files are missing on this server.' : String(error?.message ?? error) }
+    // A fixed plain reason only: file names, paths and stack text never reach the browser.
+    return { state: 'unavailable', reason: error?.code === 'ENOENT' ? 'AI task data files are missing' : 'AI task data failed its check' }
   }
 }

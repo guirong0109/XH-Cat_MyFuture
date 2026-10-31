@@ -747,6 +747,7 @@ document.addEventListener('submit', (event) => {
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
+  if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })

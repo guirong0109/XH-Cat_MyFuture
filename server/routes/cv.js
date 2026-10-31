@@ -12,6 +12,8 @@ import { createSemanticStep } from '../cv/semantic.js'
 import { validateFile } from '../cv/validateFile.js'
 
 const MB = 1024 * 1024
+// Left on the upload clock for building the answer after the AI wait ends.
+const ANSWER_MARGIN_MS = 500
 const MESSAGES = {
   unsupported_type: [415, 'Please upload a PDF or DOCX file.'],
   too_large: [413, 'The file is too large.'],
@@ -22,7 +24,7 @@ const MESSAGES = {
 }
 // One AI answer or the reason it is missing: { status: 'ok', ... } or { status: 'skipped', reason }.
 async function readWithAi({ aiReader, cvText, ip, interfaceLanguage, aiTimeoutMs }) {
-  if (!aiReader) return { status: 'skipped', reason: 'ai_unavailable' }
+  if (!aiReader || aiTimeoutMs <= 0) return { status: 'skipped', reason: 'ai_unavailable' }
   let timer
   const late = new Promise((resolve) => { timer = setTimeout(() => resolve({ status: 'skipped', reason: 'ai_unavailable' }), aiTimeoutMs) })
   try {
@@ -50,6 +52,7 @@ export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutof
     if (!checked.ok) return fail(response, checked.code)
     const interfaceLanguage = LANGS.includes(request.get('X-Interface-Language')) ? request.get('X-Interface-Language') : 'en'
 
+    const startedAt = Date.now()
     let timer
     const timeout = new Promise((resolve) => { timer = setTimeout(() => resolve({ timeout: true }), timeoutMs) })
     const work = (async () => {
@@ -57,7 +60,7 @@ export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutof
       if (!read.ok) return read
       const { language } = detectLanguage(read.lines)
       // The AI reads the same lines while the rules run; it never waits longer than aiTimeoutMs and never rejects.
-      const ai = readWithAi({ aiReader, cvText: read.lines.join(String.fromCharCode(10)), ip: request.ip, interfaceLanguage, aiTimeoutMs })
+      const ai = readWithAi({ aiReader, cvText: read.lines.join(String.fromCharCode(10)), ip: request.ip, interfaceLanguage, aiTimeoutMs: Math.min(aiTimeoutMs, timeoutMs - (Date.now() - startedAt) - ANSWER_MARGIN_MS) })
       const [catalogue, normalizer] = await Promise.all([loadCatalogue(), loadNormalizer()])
       const semanticStep = createSemanticStep({ semantic, catalogue, cutoff })
       const result = await extractProfile({ lines: read.lines, language, interfaceLanguage, catalogue, normalizer, semanticStep, now: now() })

@@ -176,6 +176,15 @@ describe('POST /api/cv/extract', () => {
       } finally { await s.close() }
     })
 
+    it('AI limit larger than the upload limit → still 200 with the rules draft, not 504', async () => {
+      const s = await serve({ read: () => new Promise(() => {}) }, { timeoutMs: 2000, aiTimeoutMs: 10000 })
+      try {
+        const response = await s.run(makePdf(SAMPLE_LINES), PDF, 'en')
+        expect(response.status).toBe(200)
+        expect((await response.json()).warnings).toContain('ai_unavailable')
+      } finally { await s.close() }
+    })
+
     it('the AI gets the same lines and the network address', async () => {
       const seen = []
       const s = await serve({ read: async (args) => { seen.push(args); return { status: 'skipped', reason: 'ai_unavailable' } } })

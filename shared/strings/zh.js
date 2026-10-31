@@ -970,7 +970,7 @@ export default {
   pwCipPartial: "部分", // translation: owner review
   pwAccredited: "马来西亚认证课程", // translation: owner review
   pwMqaRef: "MQA 编号 {ref}", // translation: owner review
-  pwMqaRefNone: "页面上未显示 MQA 编号", // translation: owner review
+  pwMqaRefNone: "MQA 编号尚未记录", // translation: owner review
   pwChecked: "{date} 核查", // translation: owner review
   pwApprovedOn: "负责人于 {date} 批准", // translation: owner review
   pwNoProgPick: "团队尚未挑选；请使用下方的 MQA 名册链接。", // translation: owner review

@@ -970,7 +970,7 @@ export default {
   pwCipPartial: "partial",
   pwAccredited: "Accredited Malaysian programmes",
   pwMqaRef: "MQA ref {ref}",
-  pwMqaRefNone: "MQA ref not shown on the page",
+  pwMqaRefNone: "MQA ref not recorded yet",
   pwChecked: "checked {date}",
   pwApprovedOn: "approved by owner on {date}",
   pwNoProgPick: "No team pick yet; use the MQA register link below.",

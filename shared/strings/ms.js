@@ -970,7 +970,7 @@ export default {
   pwCipPartial: "separa", // translation: owner review
   pwAccredited: "Program Malaysia yang diakreditasi", // translation: owner review
   pwMqaRef: "Rujukan MQA {ref}", // translation: owner review
-  pwMqaRefNone: "Rujukan MQA tidak dipaparkan di halaman", // translation: owner review
+  pwMqaRefNone: "Rujukan MQA belum direkodkan", // translation: owner review
   pwChecked: "disemak {date}", // translation: owner review
   pwApprovedOn: "diluluskan oleh pemilik pada {date}", // translation: owner review
   pwNoProgPick: "Belum ada pilihan pasukan; gunakan pautan daftar MQA di bawah.", // translation: owner review

@@ -172,11 +172,11 @@ describe('Study pathway screen', () => {
     expect(html).toMatch(/class="pw-field pw-yours"/)
     // the CIP fold
     expect(text(f0613)).toContain('11.0802 Data modelling/warehousing and database administration')
-    // accredited: institution, linked name, MQA ref or "not shown on the page", checked date, approved date only when approved
+    // accredited: institution, linked name, MQA ref or "not recorded yet", checked date, approved date only when approved
     expect(f0613).toContain('href="https://www.um.edu.my/programmes/bcs-se"')
     expect(text(f0613)).toContain('Universiti Malaya')
     expect(text(f0613)).toContain('MQA ref MQA/FA1234 · checked 2026-10-31')
-    expect(text(f0613)).toContain('MQA ref not shown on the page · checked 2026-10-29')
+    expect(text(f0613)).toContain('MQA ref not recorded yet · checked 2026-10-29')
     expect(text(f0613)).toContain('approved by owner on 2026-10-31')
     expect(text(f0613).match(/approved by owner/g)).toHaveLength(1)
     // professional: the body, the link, checked date

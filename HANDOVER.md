@@ -21,7 +21,7 @@ Updated 2026-10-31. Sub-branch of `claude/career-matching` (from `d82267e`). Not
 - **State:** base plan (6 tasks) and Amendment 1 plan (5 tasks) built; Vitest passes; C1-C9 checked in the browser
   (`docs/news/acceptance.md`). Real runs with the owner's key (local `.env`, git-ignored, launch entry
   `futures-real`): first run 10 searches; Amendment 1 run 10 searches + 10 checks, the junk pages and copies are gone.
-  The base branch review (opus) is done and its findings fixed; the Amendment 1 whole-branch review is next.
+  The base branch review (opus) is done and its findings fixed; the Amendment 1 review (opus) is done and its Important findings fixed.
 - **Waits on the owner:** the BM / 中文 strings (marked "translation: owner review") and the search words per field
   (`data/news/fields.json`, team draft; Natural sciences keeps only 6 items because its results are mostly papers,
   job ads and events). For a deployed server, the key goes in the host's secret settings, never in the repo.

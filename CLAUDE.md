@@ -65,7 +65,7 @@ still bind matching. Its final whole-branch review is still open on that branch.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1510 passed
+npm install && npm test     # expect 1563 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```

@@ -33,6 +33,9 @@ import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
 import { createDemoService } from './radar/demo.js'
 import { radarDemoRoutes } from './radar/demoRoutes.js'
 import { loadRadarReferences } from './radar/references.js'
+import { matchingAdminRoutes } from './matching/adminRoutes.js'
+import { createMatchingServiceFromEnv } from './matching/service.js'
+import { matchingRoutes } from './matching/routes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -54,6 +57,8 @@ export function createApp({
   radarAccess = createRadarAccess({ env: process.env, now }),
   // Judge Trend Change Test: needs the Radar's writable store (R2, or RADAR_STORE=memory locally); null otherwise.
   radarDemo = undefined,
+  // Career matching: data from dataDir (loaded once on first use), Radar signals (or a judge's demo session).
+  matching = undefined,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -136,18 +141,24 @@ export function createApp({
     return areasPromise
   }
   app.use(interestRoutes({ loadAreas }))
+  // The demo reads only the synthetic base and the bundled reference data; storage only under demo/<sessionId>/.
+  const demo = radarDemo !== undefined ? radarDemo : radar?.store ? createDemoService({
+    store: radar.store,
+    base: async () => JSON.parse(await readFile(path.join(dataDir, 'radar', 'demo', 'base.json'), 'utf8')),
+    references: () => loadRadarReferences(dataDir),
+    now,
+    devStore: Boolean(radar.info?.().devStore),
+  }) : null
+  // The profile sent here is used for the answer and dropped: never stored, never logged.
+  const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
+  app.use(matchingRoutes({ matching: matchingService }))
   if (radar) {
-    // The demo reads only the synthetic base and the bundled reference data; storage only under demo/<sessionId>/.
-    const demo = radarDemo !== undefined ? radarDemo : radar.store ? createDemoService({
-      store: radar.store,
-      base: async () => JSON.parse(await readFile(path.join(dataDir, 'radar', 'demo', 'base.json'), 'utf8')),
-      references: () => loadRadarReferences(dataDir),
-      now,
-      devStore: Boolean(radar.info?.().devStore),
-    }) : null
     app.use(radarRoutes({ radar }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
+    // Owner decisions on the SDG links (career matching), in the Radar review store.
+    // A decision drops the matching service's cached SDG decisions, so the next matching answer shows it.
+    app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir, onDecision: () => matchingService?.sdgDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)

@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Career Matching Mockup</title>
+<!-- MOCKUP for owner review. Role titles, codes and O*NET skill names and importance are real; every level, percentage,
+     outlook, AI value, trend and SDG link here is SAMPLE data, not a calculation. Spec:
+     docs/superpowers/specs/2026-10-30-career-matching-design.md -->
+<style>
+:root{
+  --bg:#f5f6f2;--surface:#ffffff;--surface2:#eef1ec;--ink:#16201b;--muted:#5a6761;--line:#dce2db;
+  --accent:#0f766e;--accent-ink:#ffffff;--accent-soft:#dff3ef;
+  --src:#1d4ed8;--src-soft:#dbe7fe;--est:#6d28d9;--est-soft:#ece5fd;
+  --self:#a16207;--self-soft:#fdf1c7;--bad:#b91c1c;--bad-soft:#fde2e2;--ok:#15803d;--ok-soft:#dcf7e4;
+  --you:#e8b923;--need:#16201b;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+:root[data-theme="dark"]{
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--bad:#fca5a5;--bad-soft:#3b1717;--ok:#86efac;--ok-soft:#14321f;
+  --you:#facc15;--need:#cfd8d3;--shadow:none;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink)}
+button,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+.mockbar{background:var(--self-soft);color:var(--self);font-size:12.5px;text-align:center;padding:6px 16px;border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-weight:700}.brand span{color:var(--accent)}
+.top .sp{flex:1}
+main{padding:24px clamp(16px,4vw,48px) 60px;max-width:1060px;margin:0 auto;min-width:0}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:0 0 22px;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs .n{font-size:11px;width:18px;height:18px;border-radius:99px;display:grid;place-items:center;background:var(--surface2)}
+.tabs button.on .n{background:var(--accent);color:var(--accent-ink)}
+.tabs .dis{opacity:.5;cursor:default}
+h1{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;margin-bottom:6px}
+h2{font-size:18px;margin:26px 0 4px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+h3{font-size:15px;margin-bottom:4px}
+.lead{color:var(--muted);max-width:72ch;margin-bottom:14px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface2);padding:7px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn:disabled{opacity:.55;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:var(--surface2);padding:7px 14px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);text-align:left}
+.seg button small{display:block;font-weight:500;font-size:11.5px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;vertical-align:middle;white-space:nowrap}
+.t-src{background:var(--src-soft);color:var(--src)}.t-est{background:var(--est-soft);color:var(--est)}
+.t-self{background:var(--self-soft);color:var(--self)}.t-ok{background:var(--ok-soft);color:var(--ok)}
+.t-bad{background:var(--bad-soft);color:var(--bad)}.t-none{background:var(--surface2);color:var(--muted);border:1px dashed var(--line)}
+.t-sdg{color:#fff}
+.src{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);margin-top:10px;padding-top:7px}
+.note{font-size:13px;background:var(--surface2);border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:10px 0}
+.note.warn{border-left-color:var(--self)}
+.banner{display:flex;gap:10px;align-items:flex-start;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;margin:12px 0;font-size:13.5px}
+.banner .x{margin-left:auto}
+.band{margin-top:16px}
+.bandh{display:flex;gap:8px;align-items:center;font-weight:700;font-size:14px;margin-bottom:8px}
+.bandh .num{width:22px;height:22px;border-radius:99px;display:grid;place-items:center;font-size:12px;background:var(--surface2)}
+.bandh .why{font-weight:500;color:var(--muted);font-size:12.5px}
+.empty{font-size:13px;color:var(--muted);padding:6px 0 4px 30px}
+.role{display:grid;grid-template-columns:1fr 230px;gap:14px 20px;margin-bottom:12px}
+.role.chosen{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.role .ttl{font-size:17px;font-weight:700;margin-right:6px}
+.code{font-size:12px;color:var(--muted)}
+.parts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin-top:10px}
+.parts dt{color:var(--muted);white-space:nowrap}
+.parts dd{min-width:0}
+.score{border-left:1px solid var(--line);padding-left:18px}
+.score .pct{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.bar{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.chip{font-size:12px;padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:var(--surface2)}
+.chip.have{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+details.why{grid-column:1/-1;background:var(--surface2);border-radius:10px;padding:10px 14px;font-size:13.5px}
+details.why summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.whygrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;margin-top:10px}
+.chartcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.chartcard h4{font-size:15px;margin-bottom:2px}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--ink);font-size:11px;font-family:inherit}
+svg .ax{fill:var(--muted);font-size:10px}
+.legend{display:flex;gap:14px;font-size:12.5px;margin-top:6px;font-weight:600}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px;border:1px solid var(--need)}
+ol.raise{padding-left:18px;font-size:13.5px}
+ol.raise li{margin-bottom:5px}
+ol.path{list-style:none;font-size:12.5px;border-left:2px solid var(--line);padding-left:12px}
+ol.path li{margin-bottom:5px;position:relative}
+ol.path li:before{content:"";position:absolute;left:-17px;top:6px;width:8px;height:8px;border-radius:99px;background:var(--accent)}
+ol.path li.miss:before{background:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.tw{overflow-x:auto}
+.sdgrow{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}
+.sdgdot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.states{margin-top:34px;border:2px dashed var(--self);border-radius:14px;padding:14px 18px;background:var(--self-soft)}
+.hidden{display:none!important}
+.sel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13.5px;max-width:100%}
+@media (max-width:760px){
+  .role{grid-template-columns:1fr}
+  .score{border-left:0;border-bottom:1px solid var(--line);padding:0 0 12px;order:-1}
+  .bandh{flex-wrap:wrap}
+  .bandh .why{flex-basis:100%;padding-left:30px}
+  .whygrid{grid-template-columns:1fr}
+  .sdgrow{grid-template-columns:1fr}
+  .top{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<div class="mockbar">MOCKUP for owner review · role titles, codes and O*NET skill names are real · every level, %, outlook, AI value, trend and SDG link is <b>SAMPLE</b> data</div>
+<div class="top">
+  <div class="brand">FutureReady <span>MY</span></div>
+  <div class="sp"></div>
+  <span class="tiny muted">EN · BM · 中文 in the real build</span>
+  <button class="btn sm" id="themeBtn" type="button">Dark mode</button>
+</div>
+<main>
+  <nav class="tabs" aria-label="Journey">
+    <button class="dis" type="button"><span class="n">1</span>Your profile</button>
+    <button class="dis" type="button"><span class="n">2</span>Future Skills Radar</button>
+    <button type="button" data-view="match" class="on"><span class="n">3</span>Career matching</button>
+    <button class="dis" type="button"><span class="n">4</span>Learning roadmap</button>
+    <button type="button" data-view="sdg"><span class="n">5</span>SDG contribution</button>
+    <button class="dis" type="button"><span class="n">6</span>Compare futures</button>
+    <button type="button" data-view="admin"><span class="n">⚙</span>Admin: SDG review</button>
+  </nav>
+
+  <!-- ================= MATCH ================= -->
+  <section id="v-match">
+    <h1>Career matching</h1>
+    <p class="lead">Malaysian roles from eMASCO, compared with your confirmed profile. The <b>Skill Match</b> counts how many of the
+      levels a job needs you already meet. The <b>outlook</b> next to it never changes that number; it only decides which group
+      a role sits in. AI supports your choice; it never decides for you.</p>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="tiny muted" style="margin-bottom:4px">AI scenario <span class="tag t-est">estimate</span></div>
+          <div class="seg" role="group" aria-label="AI scenario">
+            <button type="button" data-scn="moderate" class="on">Moderate AI<small>AI use observed today</small></button>
+            <button type="button" data-scn="rapid">Rapid AI<small>full potential exposure</small></button>
+          </div>
+        </div>
+        <div>
+          <label class="tiny muted" for="sdgFilter" style="display:block;margin-bottom:4px">Show roles linked to</label>
+          <select id="sdgFilter" class="sel">
+            <option value="">All SDGs</option>
+            <option value="4">SDG 4 Quality education</option>
+            <option value="8">SDG 8 Decent work</option>
+            <option value="9">SDG 9 Industry and innovation</option>
+          </select>
+        </div>
+      </div>
+      <p class="small muted" style="margin-top:10px" id="scnText"></p>
+      <div class="src">Profile used: <b>Diploma · Software and applications development (ISCED-F 0613)</b> · 7 O*NET skills and knowledge
+        (3 “Not assessed yet”) · <a href="#">Edit profile</a>. Your profile is sent to work out the matches and is never stored.</div>
+    </div>
+
+    <div id="banner"></div>
+    <div class="note warn" id="provNote"><b>Provisional:</b> 3 of your skills are “Not assessed yet”, so they count as meeting each job's level.
+      Scores marked <span class="tag t-self">provisional</span> may drop once you set your levels. <a href="#">Set levels</a></div>
+    <div id="thinNote" class="hidden card" style="margin-top:12px"><h3>Add skills to see a Skill Match</h3>
+      <p class="small muted">Your profile has no O*NET skill or knowledge item yet, so we show no percentages rather than guess.
+      Software you listed (Python, SQL) is shown on each role as “also asked”, but it is not part of the %.</p>
+      <div class="actions"><button class="btn pri" type="button">Add skills</button></div></div>
+    <div id="chainNote" class="hidden note warn"><b>Skill Match not available yet for any role.</b> Every role needs the official code chain
+      eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET. Missing today: <b>SOC 2018 ↔ SOC 2010</b> and <b>SOC 2010 ↔ ISCO-08</b>
+      (BLS files, saved by hand) and an <b>official MASCO 2020 ↔ ISCO-08 source</b>. Roles, outlook and SDG tags still show.</div>
+
+    <h2>In your field <span class="tiny muted">Software and applications development · <span id="fieldCount"></span></span></h2>
+    <div class="tiny muted">How a role gets here: your field ISCED-F 0613 → CIP programmes (Statistics Canada concordance) → O*NET jobs
+      (O*NET crosswalk), or it matches a past job or a role you are interested in.</div>
+    <div id="fieldList"></div>
+
+    <h2>Explore all roles <span class="tiny muted">1,766 eMASCO roles · sample shows 3</span></h2>
+    <button class="btn" type="button" id="exploreBtn">Show all roles</button>
+    <div id="otherList" class="hidden"></div>
+
+    <div class="card" style="margin-top:26px">
+      <h3>Sources behind this page</h3>
+      <table class="small"><tbody>
+        <tr><td>Roles, tasks, skills (eMASCO)</td><td>emasco.mohr.gov.my, English pages, fetched 23 Oct 2026</td></tr>
+        <tr><td>Skills, knowledge, importance, level</td><td>O*NET 31.0 database, CC BY 4.0, downloaded 29 Oct 2026</td></tr>
+        <tr><td>Code chain</td><td>O*NET-SOC 2019→SOC 2018 (O*NET); SOC 2018↔2010 and SOC 2010↔ISCO-08 (US BLS); MASCO 2020↔ISCO-08 (official source to be named)</td></tr>
+        <tr><td>Job ads by group</td><td>DOSM Job Market Insights Q2 2026 (via the Radar), published 18 Aug 2026</td></tr>
+        <tr><td>Moderate AI</td><td>Anthropic Economic Index (release recorded at fetch)</td></tr>
+        <tr><td>Rapid AI</td><td>ILO Working Paper 140 (2025), GenAI exposure by ISCO-08 occupation</td></tr>
+        <tr><td>In-demand software</td><td>O*NET “In Demand” flags (US job ads via Lightcast), release 31.0</td></tr>
+        <tr><td>SDG targets and links</td><td>UN SDG targets (UN Statistics Division); links are team drafts shown only after owner approval</td></tr>
+      </tbody></table>
+    </div>
+  </section>
+
+  <!-- ================= SDG ================= -->
+  <section id="v-sdg" class="hidden">
+    <h1>SDG contribution</h1>
+    <p class="lead">How the role you chose, and the skills you would still build for it, link to the UN Sustainable Development Goals.
+      This is a count of links with reasons: <b>potential, not measured</b>.</p>
+    <div id="sdgBody"></div>
+  </section>
+
+  <!-- ================= ADMIN ================= -->
+  <section id="v-admin" class="hidden">
+    <h1>Admin · SDG link review</h1>
+    <p class="lead">Team-draft links wait here until you approve them. Only approved links appear to users; a rejected or pending link
+      shows “SDG not tagged yet”. Signed in with the Radar admin key.</p>
+    <div class="card tw">
+      <table id="adminTable"><thead><tr><th>Applies to</th><th>SDG target</th><th>Reason (team draft)</th><th>Status</th><th></th></tr></thead><tbody></tbody></table>
+      <div class="src">48 MASCO sub-major groups + 68 O*NET skills and knowledge items in the real build · sample shows 6 · BM and 中文 reasons marked “owner review”.</div>
+    </div>
+  </section>
+
+  <div class="states">
+    <b>Mockup only · show another state:</b>
+    <div class="row" style="margin-top:8px">
+      <div class="seg" role="group" aria-label="Mockup state">
+        <button type="button" data-state="normal" class="on">Chain ready (sample)</button>
+        <button type="button" data-state="today">Today: chain not ready</button>
+        <button type="button" data-state="thin">Thin profile</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ---------- sample data (titles, codes, O*NET names and importance real; levels and outlooks SAMPLE) ----------
+const LEVEL = { basic: 2, good: 4, expert: 6 }
+const PROFILE = { // canonical O*NET item -> your level; 'na' = Not assessed yet
+  'Programming': 'good', 'Critical Thinking': 'na', 'Reading Comprehension': 'na', 'Computers and Electronics': 'good',
+  'Mathematics': 'basic', 'English Language': 'good', 'Systems Analysis': 'basic',
+}
+const MY_SOFTWARE = ['Python', 'SQL', 'Microsoft Excel']
+const SDG = {
+  4: { name: 'Quality education', color: '#c5192d' }, 8: { name: 'Decent work and economic growth', color: '#a21942' },
+  9: { name: 'Industry, innovation and infrastructure', color: '#fd6925' }, 3: { name: 'Good health and well-being', color: '#4c9f38' },
+}
+const LINKS = [
+  { id: 'g25', on: 'MASCO 25 · ICT professionals', goal: 9, target: '9.c', reason: 'They build and run the digital systems that widen access to ICT.', status: 'approved', at: '30 Oct 2026' },
+  { id: 'g25b', on: 'MASCO 25 · ICT professionals', goal: 8, target: '8.2', reason: 'Their work raises productivity through technology upgrading.', status: 'approved', at: '30 Oct 2026' },
+  { id: 'g35', on: 'MASCO 35 · ICT technicians', goal: 9, target: '9.c', reason: 'They keep ICT systems working for users and firms.', status: 'pending' },
+  { id: 'kProg', on: 'O*NET skill · Programming', goal: 4, target: '4.4', reason: 'A technical skill named in target 4.4 (ICT skills for decent jobs).', status: 'approved', at: '30 Oct 2026' },
+  { id: 'kSA', on: 'O*NET skill · Systems Analysis', goal: 4, target: '4.4', reason: 'A technical ICT skill for decent jobs.', status: 'approved', at: '30 Oct 2026' },
+  { id: 'kCPS', on: 'O*NET knowledge · Customer and Personal Service', goal: 8, target: '8.5', reason: 'Service skills support full and productive employment.', status: 'pending' },
+]
+const linksFor = (role) => LINKS.filter((l) => l.status === 'approved' && (l.on.startsWith(`MASCO ${role.code.slice(0, 2)} `)))
+const itemLinks = (name) => LINKS.filter((l) => l.status === 'approved' && l.on.endsWith(`· ${name}`))
+
+const S = (name, imp, need) => ({ name, kind: 'Skill', imp, need })
+const K = (name, imp, need) => ({ name, kind: 'Knowledge', imp, need })
+const JOBS = {
+  '15-1252.00': { title: 'Software Developers', items: [S('Programming', 4.00, 4.6), S('Critical Thinking', 3.88, 4.0), S('Judgment and Decision Making', 3.62, 3.8), S('Reading Comprehension', 3.50, 4.0), S('Active Learning', 3.50, 3.9), S('Systems Analysis', 3.50, 4.1), S('Complex Problem Solving', 3.38, 4.2), S('Technology Design', 3.38, 4.0), K('Computers and Electronics', 4.75, 5.4), K('Mathematics', 3.57, 3.9), K('Customer and Personal Service', 3.56, 3.6), K('English Language', 3.27, 3.8)], software: [['Python', 1], ['Git', 1], ['JavaScript', 1], ['SQL', 0]] },
+  '15-1242.00': { title: 'Database Administrators', items: [S('Critical Thinking', 3.88, 4.1), S('Complex Problem Solving', 3.88, 4.0), S('Reading Comprehension', 3.75, 4.0), S('Active Listening', 3.75, 3.9), S('Judgment and Decision Making', 3.75, 3.9), S('Programming', 3.38, 3.7), K('Computers and Electronics', 4.79, 5.5), K('English Language', 3.96, 4.1), K('Customer and Personal Service', 3.93, 3.8), K('Mathematics', 3.55, 3.6), K('Telecommunications', 3.54, 3.4)], software: [['SQL', 1], ['Oracle Database', 1], ['Microsoft SQL Server', 1], ['Python', 0]] },
+  '15-1243.00': { title: 'Database Architects', items: [S('Reading Comprehension', 3.88, 4.2), S('Critical Thinking', 3.88, 4.3), S('Systems Analysis', 3.75, 4.5), S('Programming', 3.38, 4.4), K('Computers and Electronics', 4.30, 5.6), K('Engineering and Technology', 3.95, 4.6), K('Design', 3.71, 4.3), K('Mathematics', 3.67, 4.1)], software: [['SQL', 1], ['Amazon Web Services', 1]] },
+  '15-1211.00': { title: 'Computer Systems Analysts', items: [S('Speaking', 4.00, 4.2), S('Reading Comprehension', 3.88, 4.1), S('Active Listening', 3.75, 4.0), S('Critical Thinking', 3.75, 4.1), S('Systems Analysis', 3.75, 4.4), S('Systems Evaluation', 3.75, 4.2), S('Writing', 3.38, 3.9), K('Computers and Electronics', 4.63, 5.1), K('Customer and Personal Service', 3.70, 3.9), K('English Language', 3.48, 3.9), K('Mathematics', 3.25, 3.5)], software: [['Microsoft Excel', 1], ['SQL', 1], ['Microsoft Power BI', 1]] },
+  '15-1232.00': { title: 'Computer User Support Specialists', items: [S('Active Listening', 3.88, 3.6), S('Speaking', 3.75, 3.5), S('Critical Thinking', 3.62, 3.4), S('Reading Comprehension', 3.50, 3.4), K('Computers and Electronics', 4.60, 4.6), K('Customer and Personal Service', 4.10, 4.2), K('English Language', 3.60, 3.6)], software: [['Microsoft Excel', 1], ['ServiceNow', 1]] },
+  '13-1161.00': { title: 'Market Research Analysts and Marketing Specialists', items: [S('Reading Comprehension', 3.88, 4.2), S('Critical Thinking', 3.75, 4.1), S('Writing', 3.75, 4.3), S('Speaking', 3.62, 4.0), K('English Language', 4.10, 4.6), K('Sales and Marketing', 4.20, 4.9), K('Mathematics', 3.40, 3.8)], software: [['Microsoft Excel', 1], ['Google Analytics', 1]] },
+  '43-9061.00': { title: 'Office Clerks, General', items: [S('Active Listening', 3.62, 3.3), S('Reading Comprehension', 3.62, 3.3), S('Speaking', 3.50, 3.2), K('Clerical', 4.10, 4.3), K('Customer and Personal Service', 4.00, 4.1), K('English Language', 3.70, 3.6)], software: [['Microsoft Excel', 1], ['Microsoft Word', 1]] },
+}
+const DOSM = { 2: { name: 'Professionals', dir: 'rising', suff: true }, 3: { name: 'Technicians and associate professionals', dir: null, suff: false }, 4: { name: 'Clerical support workers', dir: 'declining', suff: true } }
+const ROLES = [
+  { code: '2512-01', title: 'Software Developer', field: true, isco: '2512', jobs: ['15-1252.00'], soc10: '15-1132, 15-1133', soc18: '15-1252', ai: { moderate: { share: 45, auto: 40 }, rapid: { gradient: 3 } } },
+  { code: '2521-02', title: 'Database Administrator', field: true, isco: '2521', jobs: ['15-1242.00', '15-1243.00'], soc10: '15-1141', soc18: '15-1242, 15-1243', ai: { moderate: { share: 52, auto: 62 }, rapid: { gradient: 4 } } },
+  { code: '2511-05', title: 'Systems Analyst', field: true, isco: '2511', jobs: ['15-1211.00'], soc10: '15-1121', soc18: '15-1211', ai: { moderate: { share: 35, auto: 30 }, rapid: { gradient: 2 } } },
+  { code: '3512-05', title: 'Database Assistant', field: true, isco: '3512', jobs: ['15-1232.00'], soc10: '15-1151', soc18: '15-1232', ai: { moderate: { share: 40, auto: 45 }, rapid: { gradient: 3 } } },
+  { code: '2519-03', title: 'Machine Learning/Artificial Intelligence (AI) Engineer', field: true, isco: '2519', jobs: [], miss: 'SOC 2018 15-1299 “Computer Occupations, All Other” → O*NET: an “All Other” code has no O*NET skill data', ai: { moderate: null, rapid: { gradient: 3 } } },
+  { code: '2431-02', title: 'Marketing Executive', field: false, isco: '2431', jobs: ['13-1161.00'], soc10: '13-1161', soc18: '13-1161', ai: { moderate: { share: 48, auto: 35 }, rapid: { gradient: 4 } } },
+  { code: '4111-01', title: 'Office Clerk', field: false, isco: '4110', jobs: ['43-9061.00'], soc10: '43-9061', soc18: '43-9061', ai: { moderate: { share: 30, auto: 70 }, rapid: { gradient: 4 } } },
+  { code: '2166-01', title: 'E-Commerce Web Designer', field: false, isco: '2166', jobs: [], miss: 'SOC 2010 → ISCO-08: sample of a role whose BLS row is missing', ai: { moderate: null, rapid: { gradient: 4 } } },
+]
+
+// ---------- the maths the build will use (spec §5, §6) ----------
+function fitOf(job) {
+  let met = 0, needed = 0, provisional = false
+  const rows = job.items.map((it) => {
+    const lvl = PROFILE[it.name]
+    let you = 0
+    if (lvl === 'na') { you = it.need; provisional = true } else if (lvl) you = LEVEL[lvl]
+    met += Math.min(you, it.need); needed += it.need
+    return { ...it, you, lvl, gap: it.need - Math.min(you, it.need) }
+  })
+  return { rows, met, needed, pct: Math.round((met / needed) * 100), provisional }
+}
+function bestJob(role) {
+  const all = role.jobs.map((c) => ({ code: c, ...JOBS[c], fit: fitOf(JOBS[c]) }))
+  all.sort((a, b) => b.fit.pct - a.fit.pct || a.code.localeCompare(b.code))
+  return { best: all[0] ?? null, others: all.slice(1) }
+}
+function aiChanges(role, scn) {
+  const a = role.ai[scn]
+  if (!a) return null
+  return scn === 'rapid' ? a.gradient >= 3 : a.auto > 50
+}
+function band(role, scn) {
+  const d = DOSM[role.code[0]] ?? { dir: null, suff: false }
+  if (d.suff && d.dir === 'declining') return 3
+  const changes = aiChanges(role, scn)
+  if (changes === true) return 2
+  if (changes === false && d.suff && (d.dir === 'rising' || d.dir === 'stable')) return 1
+  return 4
+}
+const BANDS = {
+  1: ['Job ads growing or steady, AI mostly helps', 'DOSM group trend rising or steady, and in this scenario AI mostly assists the work'],
+  2: ['AI may change much of this job (this scenario)', 'Rapid: ILO exposure gradient 3 or 4 · Moderate: most observed AI use does the task itself'],
+  3: ['Fewer job ads', 'DOSM shows the job group declining (group level, not this job)'],
+  4: ['Not enough evidence yet', 'The job-ad trend or the AI data is missing or not comparable'],
+}
+const levelWord = (n) => (n <= 2 ? 'basic' : n <= 4 ? 'good' : 'expert')
+const fmt = (n) => (Math.round(n * 10) / 10).toFixed(1)
+
+// ---------- state ----------
+let scn = 'moderate', prevScn = null, mode = 'normal', chosen = null, sdgFilter = '', view = 'match'
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
+
+function chart(fit, jobTitle, all) {
+  const rows = [...fit.rows].sort((a, b) => b.imp - a.imp || a.name.localeCompare(b.name))
+  const shown = all ? rows : rows.slice(0, 8)
+  const L = 175, W = 520, R = 20, scale = (W - L - R) / 7, rowH = 38
+  const H = shown.length * rowH + 30
+  let g = ''
+  for (let v = 0; v <= 7; v++) {
+    const x = L + v * scale
+    g += `<line x1="${x}" y1="4" x2="${x}" y2="${H - 22}" stroke="var(--line)"/><text class="ax" x="${x}" y="${H - 8}" text-anchor="middle">${v}</text>`
+  }
+  shown.forEach((r, i) => {
+    const y = 8 + i * rowH
+    const words = r.name.length > 24 ? r.name.replace(/^(.{0,24})\s/, '$1\n').split('\n') : [r.name]
+    words.forEach((w, k) => (g += `<text x="${L - 8}" y="${y + 14 + k * 12 - (words.length - 1) * 6}" text-anchor="end">${esc(w)}</text>`))
+    g += `<rect x="${L}" y="${y}" width="${Math.max(r.you * scale, 0.5)}" height="13" fill="var(--you)" stroke="var(--need)" stroke-width=".8"/>`
+    g += `<rect x="${L}" y="${y + 14}" width="${r.need * scale}" height="13" fill="var(--need)"/>`
+  })
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="You versus needed levels for ${esc(jobTitle)}">${g}</svg>
+    <div class="legend"><span><i style="background:var(--you)"></i>You</span><span><i style="background:var(--need)"></i>Needed</span>
+    <span class="muted" style="font-weight:500">O*NET level scale 0–7 · basic = 2, good = 4, expert = 6</span></div>`
+}
+
+function roleCard(role) {
+  const { best, others } = bestJob(role)
+  const d = DOSM[role.code[0]] ?? { name: 'Major group ' + role.code[0], dir: null, suff: false }
+  const a = role.ai[scn]
+  const chainReady = mode !== 'today' && !role.miss
+  const thin = mode === 'thin'
+  const isChosen = chosen === role.code
+  const tags = linksFor(role)
+  let score
+  if (!chainReady) {
+    score = `<div class="tiny muted">Skill Match</div><div style="font-weight:700;margin:4px 0">Not available</div>
+      <div class="tiny muted">No official link for this role yet. Missing: ${esc(mode === 'today' ? 'SOC 2018 ↔ SOC 2010 (BLS file not saved yet)' : role.miss)}.</div>`
+  } else if (thin) {
+    score = `<div class="tiny muted">Skill Match</div><div style="font-weight:700;margin:4px 0">No % yet</div><div class="tiny muted">Add skills to see it.</div>`
+  } else {
+    const f = best.fit
+    score = `<div class="tiny muted">Skill Match ${f.provisional ? '<span class="tag t-self">provisional</span>' : ''}</div>
+      <div class="pct">${f.pct}%</div><div class="bar"><i style="width:${f.pct}%"></i></div>
+      <div class="small">You meet <b>${fmt(f.met)}</b> of <b>${fmt(f.needed)}</b> needed levels for ${esc(best.title)}.</div>
+      <div class="tiny muted" style="margin-top:4px"><span class="tag t-src">calculated</span> from O*NET 31.0</div>`
+  }
+  const aiText = !a ? '<span class="tag t-none">no observed data</span> the Anthropic Economic Index does not cover this job'
+    : scn === 'moderate'
+      ? `<span class="tag t-est">estimate</span> AI use seen on ${a.share}% of this job's tasks; ${a.auto}% of that use does the task, ${100 - a.auto}% helps a person <span class="tiny muted">(Anthropic Economic Index)</span>`
+      : `<span class="tag t-est">estimate</span> ILO exposure gradient ${a.gradient} of 4 ${a.gradient >= 3 ? '(high)' : '(lower)'} <span class="tiny muted">(ILO WP140, ISCO-08 ${role.isco})</span>`
+  const dosmText = d.suff
+    ? `<span class="tag ${d.dir === 'declining' ? 't-bad' : 't-ok'}">${d.dir}</span> ${esc(d.name)} · share of online job ads, Q2 2025 → Q2 2026 <span class="tiny muted">(group level, not this job · DOSM)</span>`
+    : `<span class="tag t-none">not enough evidence</span> ${esc(d.name)} · a possible break in 2025 Q3 is waiting for review <span class="tiny muted">(DOSM)</span>`
+  const sw = best ? best.software.map(([n, inDemand]) => `<span class="chip ${MY_SOFTWARE.includes(n) ? 'have' : ''}">${MY_SOFTWARE.includes(n) ? '✓ ' : ''}${esc(n)}${inDemand ? ' · in demand' : ''}</span>`).join('') : '<span class="muted small">skill list not available</span>'
+  const sdgTags = tags.length
+    ? tags.map((l) => `<span class="tag t-sdg" style="background:${SDG[l.goal].color}" title="${esc(l.reason)}">SDG ${l.target}</span>`).join(' ')
+    : '<span class="tag t-none">SDG not tagged yet</span>'
+  return `<article class="card role ${isChosen ? 'chosen' : ''}" data-code="${role.code}">
+    <div>
+      <div><span class="ttl">${esc(role.title)}</span><span class="code">MASCO ${role.code} · <a href="https://emasco.mohr.gov.my/masco/${role.code}" target="_blank" rel="noopener">eMASCO page</a></span></div>
+      <div class="small muted" style="margin-top:2px">${best && chainReady ? `Compared with O*NET job <b>${esc(best.title)}</b> (${best.code})${others.length ? ` · also: ${others.map((o) => `${esc(o.title)} ${o.fit.pct}%`).join(', ')}` : ''}` : 'No O*NET job linked'}</div>
+      <dl class="parts">
+        <dt>Job ads</dt><dd>${dosmText}</dd>
+        <dt>AI in this job</dt><dd>${aiText}</dd>
+        <dt>Software asked</dt><dd><div class="chips">${sw}</div><div class="tiny muted">US job ads (Lightcast via O*NET) · shown only, not in the %</div></dd>
+        <dt>SDG</dt><dd>${sdgTags}</dd>
+      </dl>
+      <div class="actions">
+        <button class="btn ${isChosen ? '' : 'pri'} sm" type="button" data-choose="${role.code}">${isChosen ? '✓ Chosen role' : 'Choose this role'}</button>
+        <button class="btn sm" type="button" disabled>Study plan not available yet</button>
+      </div>
+    </div>
+    <div class="score">${score}</div>
+    ${chainReady && !thin ? whyBlock(role, best) : chainReady ? '' : chainBlock(role)}
+  </article>`
+}
+
+function pathList(role, best) {
+  return `<ol class="path">
+    <li>eMASCO <b>${role.code}</b> → unit group ${role.code.slice(0, 4)} <span class="tiny muted">(first four digits)</span></li>
+    <li>MASCO 2020 ${role.code.slice(0, 4)} → ISCO-08 <b>${role.isco}</b> <span class="tiny muted">(official MASCO ↔ ISCO-08 source)</span></li>
+    <li>ISCO-08 ${role.isco} → SOC 2010 <b>${role.soc10}</b> <span class="tiny muted">(BLS ISCO-08 to SOC 2010 crosswalk)</span></li>
+    <li>SOC 2010 → SOC 2018 <b>${role.soc18}</b> <span class="tiny muted">(BLS 2010 to 2018 SOC crosswalk)</span></li>
+    <li>SOC 2018 → O*NET <b>${role.jobs.join(', ')}</b> <span class="tiny muted">(O*NET 2019 to SOC 2018 crosswalk)</span></li></ol>`
+}
+function chainBlock(role) {
+  return `<details class="why"><summary>Why is there no Skill Match?</summary>
+    <p class="small" style="margin-top:8px">We only link an eMASCO role to O*NET skills through official code tables, never by guessing from the title.
+    For this role one step has no official link:</p>
+    <ol class="path" style="margin-top:8px"><li>eMASCO <b>${role.code}</b> → ISCO-08 ${role.isco}</li><li class="miss"><b>Missing:</b> ${esc(mode === 'today' ? 'SOC 2018 ↔ SOC 2010 (BLS file not saved yet)' : role.miss)}</li></ol></details>`
+}
+function whyBlock(role, best) {
+  const f = best.fit
+  const raise = [...f.rows].filter((r) => r.gap > 0).sort((a, b) => b.gap - a.gap || a.name.localeCompare(b.name)).slice(0, 3)
+  const raiseHtml = raise.map((r) => {
+    const pts = Math.round((r.gap / f.needed) * 100)
+    const word = levelWord(r.need)
+    const sdg = itemLinks(r.name).map((l) => ` <span class="tag t-sdg" style="background:${SDG[l.goal].color}">SDG ${l.target}</span>`).join('')
+    return r.you === 0
+      ? `<li><b>Learn ${esc(r.name)}</b> to ${word} <span class="tag t-ok">+${pts} pts</span>${sdg}</li>`
+      : `<li><b>Raise ${esc(r.name)}</b> from ${levelWord(r.you)} to ${word} <span class="tag t-ok">+${pts} pts</span>${sdg}</li>`
+  }).join('')
+  const table = f.rows.map((r) => `<tr><td>${esc(r.name)}</td><td>${r.kind}</td><td>${r.imp.toFixed(2)}</td><td>${fmt(r.need)}</td><td>${r.lvl === 'na' ? 'not assessed → counts as ' + fmt(r.need) : r.lvl ? r.lvl + ' = ' + r.you : 'not in profile = 0'}</td><td>${fmt(Math.min(r.you, r.need))}</td></tr>`).join('')
+  return `<details class="why"><summary>Why this match?</summary>
+    <div class="whygrid">
+      <div class="chartcard"><h4>How fit is worked out</h4>
+        <p class="small" style="margin-bottom:8px">You meet ${fmt(f.met)} of ${fmt(f.needed)} needed levels for ${esc(best.title)}, so fit is ${f.pct}%.</p>
+        <div data-chart="${role.code}">${chart(f, best.title, false)}</div>
+        ${f.rows.length > 8 ? `<button class="btn sm" type="button" data-allbars="${role.code}" style="margin-top:8px">Show all ${f.rows.length} items</button>` : ''}
+      </div>
+      <div>
+        <h3>What would raise it</h3>
+        <ol class="raise">${raiseHtml}</ol>
+        <p class="tiny muted">Points = the level gap ÷ all needed levels. Reaching every needed level gives 100%.</p>
+        <h3 style="margin-top:14px">How this role reaches O*NET</h3>
+        ${pathList(role, best)}
+      </div>
+    </div>
+    <div class="tw" style="margin-top:12px"><table><thead><tr><th>Item</th><th>Kind</th><th>Importance (1–5)</th><th>Needed level</th><th>You</th><th>Met</th></tr></thead><tbody>${table}</tbody></table></div>
+    <div class="src">Items: O*NET 31.0 skills and knowledge with importance 3.0 or more (what O*NET OnLine lists for the job) · needed level and importance:
+      O*NET 31.0 (CC BY 4.0) · your levels: your profile · sample shows ${f.rows.length} items.</div>
+  </details>`
+}
+
+function renderBands(list, el) {
+  let html = ''
+  for (const b of [1, 2, 3, 4]) {
+    const roles = list.filter((r) => band(r, scn) === b).sort((x, y) => {
+      const fx = bestJob(x).best?.fit.pct ?? -1, fy = bestJob(y).best?.fit.pct ?? -1
+      return fy - fx || x.title.localeCompare(y.title)
+    })
+    html += `<div class="band"><div class="bandh"><span class="num">${b}</span>${BANDS[b][0]} <span class="why">· ${BANDS[b][1]}</span></div>
+      ${roles.length ? roles.map(roleCard).join('') : '<div class="empty">No roles here in this scenario.</div>'}</div>`
+  }
+  el.innerHTML = html
+}
+
+function filtered(list) {
+  return sdgFilter ? list.filter((r) => linksFor(r).some((l) => String(l.goal) === sdgFilter)) : list
+}
+
+function renderMatch() {
+  document.getElementById('scnText').innerHTML = scn === 'moderate'
+    ? '<b>Moderate AI</b> uses AI use that is <b>observed today</b> on each job\'s tasks (Anthropic Economic Index). It never changes your Skill Match; it can move a role between groups.'
+    : '<b>Rapid AI</b> uses each job\'s <b>full potential exposure</b> to generative AI (ILO Working Paper 140, 2025). It never changes your Skill Match; it can move a role between groups.'
+  const fieldRoles = filtered(ROLES.filter((r) => r.field)), other = filtered(ROLES.filter((r) => !r.field))
+  document.getElementById('fieldCount').textContent = `${fieldRoles.length} roles in the sample`
+  renderBands(fieldRoles, document.getElementById('fieldList'))
+  renderBands(other, document.getElementById('otherList'))
+  document.getElementById('provNote').classList.toggle('hidden', mode !== 'normal')
+  document.getElementById('thinNote').classList.toggle('hidden', mode !== 'thin')
+  document.getElementById('chainNote').classList.toggle('hidden', mode !== 'today')
+  const bn = document.getElementById('banner')
+  if (prevScn && prevScn !== scn) {
+    const moved = ROLES.filter((r) => band(r, prevScn) !== band(r, scn))
+    bn.innerHTML = `<div class="banner" role="status"><div><b>Switching to ${scn === 'rapid' ? 'Rapid' : 'Moderate'} AI moved ${moved.length} role${moved.length === 1 ? '' : 's'}:</b>
+      ${moved.map((r) => `${esc(r.title)} (group ${band(r, prevScn)} → ${band(r, scn)})`).join(' · ') || 'none'}. Skill Match numbers did not change.</div>
+      <button class="btn sm x" type="button" data-closebanner>Close</button></div>`
+  } else bn.innerHTML = ''
+}
+
+function renderSdg() {
+  const el = document.getElementById('sdgBody')
+  const role = ROLES.find((r) => r.code === chosen)
+  if (!role) {
+    el.innerHTML = `<div class="card"><h3>No role chosen yet</h3><p class="small muted">Press “Choose this role” on a role in Career matching to see how that path links to the SDGs.</p>
+      <div class="actions"><button class="btn pri" type="button" data-goview="match">Go to Career matching</button></div></div>`
+    return
+  }
+  const { best } = bestJob(role)
+  const gaps = best && mode === 'normal' ? best.fit.rows.filter((r) => r.gap > 0).map((r) => r.name) : []
+  const items = [...linksFor(role).map((l) => ({ ...l, via: `the role (${l.on})` })),
+    ...gaps.flatMap((n) => itemLinks(n).map((l) => ({ ...l, via: `a skill you would build: ${n}` })))]
+  const goals = [...new Set(items.map((i) => i.goal))].sort((a, b) => a - b)
+  el.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between"><div><div class="tiny muted">Your chosen path</div><h3 style="font-size:18px">${esc(role.title)} <span class="code">MASCO ${role.code}</span></h3></div>
+      <span class="tag t-est">potential, not measured</span></div>
+    <p class="small" style="margin-top:6px">This path links to ${goals.map((g) => `<b>SDG ${g}</b> (${items.filter((i) => i.goal === g).length} link${items.filter((i) => i.goal === g).length === 1 ? '' : 's'})`).join(', ') || 'no approved SDG links yet'}.</p>
+    ${goals.map((g) => `<div class="sdgrow"><div><span class="sdgdot" style="background:${SDG[g].color}"></span><b>SDG ${g}</b><div class="tiny muted">${SDG[g].name}</div></div>
+      <div>${items.filter((i) => i.goal === g).map((i) => `<div class="small" style="margin-bottom:6px"><b>Target ${i.target}</b> · via ${esc(i.via)}<br>${esc(i.reason)}<div class="tiny muted">team draft, approved by owner on ${i.at}</div></div>`).join('')}</div></div>`).join('')}
+    <div class="src">SDG targets: UN Statistics Division. Links: team drafts approved in Admin · ${LINKS.filter((l) => l.status === 'pending').length} drafts still pending are not counted.
+      This counts links with reasons; it does not measure impact.</div></div>`
+}
+
+function renderAdmin() {
+  document.querySelector('#adminTable tbody').innerHTML = LINKS.map((l) => `<tr><td>${esc(l.on)}</td><td><span class="tag t-sdg" style="background:${SDG[l.goal].color}">SDG ${l.target}</span></td>
+    <td>${esc(l.reason)}</td><td>${l.status === 'approved' ? '<span class="tag t-ok">approved</span>' : l.status === 'rejected' ? '<span class="tag t-bad">rejected</span>' : '<span class="tag t-none">pending</span>'}</td>
+    <td><div class="row"><button class="btn sm" type="button" data-decide="${l.id}" data-d="approved">Approve</button><button class="btn sm" type="button" data-decide="${l.id}" data-d="rejected">Reject</button></div></td></tr>`).join('')
+}
+
+function render() {
+  for (const v of ['match', 'sdg', 'admin']) document.getElementById(`v-${v}`).classList.toggle('hidden', v !== view)
+  document.querySelectorAll('[data-view]').forEach((b) => b.classList.toggle('on', b.dataset.view === view))
+  if (view === 'match') renderMatch(); else if (view === 'sdg') renderSdg(); else renderAdmin()
+}
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('button')
+  if (!t) return
+  if (t.dataset.view || t.dataset.goview) { view = t.dataset.view || t.dataset.goview; prevScn = null; render(); window.scrollTo(0, 0) }
+  else if (t.dataset.scn) { prevScn = scn; scn = t.dataset.scn; document.querySelectorAll('[data-scn]').forEach((b) => b.classList.toggle('on', b === t)); render() }
+  else if (t.dataset.state) { mode = t.dataset.state; prevScn = null; document.querySelectorAll('[data-state]').forEach((b) => b.classList.toggle('on', b === t)); render() }
+  else if (t.dataset.choose) { chosen = chosen === t.dataset.choose ? null : t.dataset.choose; prevScn = null; render() }
+  else if (t.dataset.allbars) {
+    const role = ROLES.find((r) => r.code === t.dataset.allbars), { best } = bestJob(role)
+    document.querySelector(`[data-chart="${role.code}"]`).innerHTML = chart(best.fit, best.title, true); t.remove()
+  }
+  else if (t.dataset.decide) { LINKS.find((l) => l.id === t.dataset.decide).status = t.dataset.d; render() }
+  else if (t.hasAttribute('data-closebanner')) { prevScn = null; document.getElementById('banner').innerHTML = '' }
+  else if (t.id === 'exploreBtn') { document.getElementById('otherList').classList.toggle('hidden'); t.textContent = t.textContent === 'Show all roles' ? 'Hide other roles' : 'Show all roles' }
+  else if (t.id === 'themeBtn') {
+    const dark = document.documentElement.dataset.theme !== 'dark'
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light'; t.textContent = dark ? 'Light mode' : 'Dark mode'
+  }
+})
+document.getElementById('sdgFilter').addEventListener('change', (e) => { sdgFilter = e.target.value; prevScn = null; render() })
+render()
+</script>
+</body>
+</html>

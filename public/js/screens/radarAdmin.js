@@ -130,6 +130,57 @@ function mappingCard(t, state, data) {
   </div>`
 }
 
+// ---------- admin: SDG link review (career matching) ----------
+
+const SDG_DECISIONS = [['approved', 'rdApprove'], ['rejected', 'rdReject']]
+const SDG_KINDS = [['masco_submajor', 'rdSdgKindGroup'], ['onet_element', 'rdSdgKindItem']]
+
+function sdgLinkCard(t, state, data) {
+  const lang = state?.lang ?? 'en'
+  // The SDG link list could not be read: only this card says so; the other admin cards still show.
+  if (data.sdgLinksError) {
+    return `<div class="card rd-sec" id="admSdgCard">
+    <h2>${esc(t('rdSdgTitle'))} ${tag('self', t('rdSdgTag'))}</h2>
+    ${message(t, state, 'sdg')}
+    <div class="banner b-bad" role="alert"><div>${esc(errText(t, data.sdgLinksError))}${CLIENT_CODES[data.sdgLinksError] ? '' : ` <code>${esc(data.sdgLinksError)}</code>`}</div></div>
+  </div>`
+  }
+  const s = data.sdgLinks ?? {}
+  const writable = Boolean(s.writable)
+  const links = s.links ?? []
+  const goalTitles = s.goalTitles ?? {}
+  const row = (l) => {
+    const [kind, label] = MAP_STATUS[l.status] ?? MAP_STATUS.pending
+    const goal = String(l.target ?? '').split('.')[0]
+    const goalName = typeof goalTitles[goal] === 'string' ? goalTitles[goal] : ''
+    const what = l.kind === 'masco_submajor'
+      ? `<b>${esc(t('rdSdgGroupCode', { code: l.code }))}</b>${(l.examples ?? []).length ? `<div class="tiny muted">${esc(t('rdSdgExamples'))}: ${(l.examples ?? []).map((x) => esc(x)).join(' · ')}</div>` : ''}`
+      : `<b>${esc(l.name ?? l.code)}</b><div class="tiny muted"><code>${esc(l.code)}</code></div>`
+    const reason = l.reason?.[lang] ?? l.reason?.en ?? DASH
+    const others = ['en', 'ms', 'zh'].filter((x) => x !== lang && l.reason?.[x]).map((x) => `<div class="tiny"><b>${esc(x.toUpperCase())}</b> ${esc(l.reason[x])}</div>`).join('')
+    const last = l.reviewedAt ? `<div class="tiny muted">${esc(l.reviewedBy ?? DASH)} · ${esc(fmtDate(l.reviewedAt))}</div>` : ''
+    const buttons = SDG_DECISIONS.map(([decision, key]) => `<button class="btn sm" data-act="admSdg" data-arg="${esc(`${l.id}|${decision}`)}" aria-label="${esc(`${t(key)}: ${l.id}`)}"${disabled(!writable)}>${esc(t(key))}</button>`).join('')
+    return `<tr><td>${what}</td>
+      <td>${tag('self', t('rdSdgTarget', { target: l.target ?? DASH }))}<div class="tiny muted">${esc(goalName)}</div></td>
+      <td class="small">${esc(reason)}${others ? `<details><summary class="tiny">${esc(t('rdSdgOtherLangs'))}</summary>${others}</details>` : ''}</td>
+      <td>${tag(kind, t(label))}${last}</td>
+      <td><div class="row rd-decide">${buttons}</div></td></tr>`
+  }
+  const head = `<tr><th>${esc(t('rdColLink'))}</th><th>${esc(t('rdColSdgTarget'))}</th><th>${esc(t('rdColReason'))}</th><th>${esc(t('rdColStatus'))}</th><th>${esc(t('rdColDecide'))}</th></tr>`
+  const groups = SDG_KINDS.map(([kind, key]) => {
+    const rows = links.filter((l) => l.kind === kind).map(row).join('')
+    return rows ? `<h3>${esc(t(key))}</h3><div class="rd-scroll"><table>${head}${rows}</table></div>` : ''
+  }).join('')
+  return `<div class="card rd-sec" id="admSdgCard">
+    <h2>${esc(t('rdSdgTitle'))} ${tag('self', t('rdSdgTag'))}</h2>
+    <p class="small muted">${esc(t('rdSdgNote'))}</p>
+    ${writable ? '' : `<div class="banner b-info"><div>${esc(t('rdSdgReadOnly'))}</div></div>`}
+    <div class="field"><label for="admSdgNote">${esc(t('rdNote'))}</label><textarea id="admSdgNote" rows="2" maxlength="2000" required aria-required="true">${esc(ui(state).notes?.sdg ?? '')}</textarea></div>
+    ${message(t, state, 'sdg')}
+    ${groups || `<p class="muted">${esc(t('rdEvNone'))}</p>`}
+  </div>`
+}
+
 // ---------- admin: break review ----------
 
 // The DOSM listing titles of the quarter before and the flagged quarter, side by side (spec 6.2: evidence, not a cause).
@@ -296,6 +347,7 @@ export function adminView({ t, state, data }) {
   return `<div class="rd rd-admin">${head}${dev}${readOnly}${session}
     ${exportCard(t, state)}
     ${mappingCard(t, state, data)}
+    ${sdgLinkCard(t, state, data)}
     ${breakCard(t, state, data)}
     ${statusCard(t, state, data)}
     ${refreshCard(t, state, data)}

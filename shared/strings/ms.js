@@ -460,6 +460,7 @@ export default {
   rdErr_periods_removed: "Data baharu tiada tempoh yang ada sebelum ini, jadi ia tidak diterbitkan.",
   rdErr_publish_conflict: "Orang lain menerbitkan pada masa yang sama. Sila cuba lagi.",
   rdErr_store_unavailable: "Stor data tidak tersedia sekarang.",
+  rdErr_data_unavailable: "Data pautan SDG tidak dapat dibaca.", // translation: owner review
   rdErr_not_configured: "Ciri ini belum disediakan pada pelayan ini.",
   rdErr_not_allowed: "Anda tidak dibenarkan melakukan ini.",
   rdErr_csrf_failed: "Permintaan tidak dapat disemak. Muat semula halaman dan cuba lagi.",
@@ -695,5 +696,216 @@ export default {
   rdChange_reasons: "sebab", // translation: owner review
   rdChange_breaks: "perubahan struktur", // translation: owner review
   rdChange_revisions: "semakan semula", // translation: owner review
-  rdChange_versions: "versi", // translation: owner review
+  rdChange_versions: "versi", // translation: owner review,
+  // Career matching and SDG contribution (Task 14) (translation: owner review)
+  mtLead: "Peranan Malaysia daripada eMASCO, dibandingkan dengan profil anda. Padanan Kemahiran mengira berapa banyak tahap yang diperlukan oleh sesuatu pekerjaan yang sudah anda capai. Prospek di sebelahnya tidak pernah mengubah nombor itu; ia hanya menentukan kumpulan bagi sesuatu peranan. AI menyokong pilihan anda; ia tidak pernah membuat keputusan untuk anda.", // translation: owner review
+  mtNoProfile: "Bina profil anda dahulu", // translation: owner review
+  mtNoProfileText: "Padanan kerjaya membandingkan peranan dengan profil anda. Tambah pengajian, kerja dan kemahiran anda untuk bermula.", // translation: owner review
+  mtBuildProfile: "Bina profil saya", // translation: owner review
+  mtUnavailable: "Padanan kerjaya tidak tersedia sekarang. Sila cuba lagi.", // translation: owner review
+  mtRetry: "Cuba lagi", // translation: owner review
+  mtLoading: "Memuatkan…", // translation: owner review
+  mtScenario: "Senario AI", // translation: owner review
+  mtEstimate: "anggaran", // translation: owner review
+  mtScnModerate: "AI Sederhana", // translation: owner review
+  mtScnModerateSub: "Penggunaan AI yang diperhatikan hari ini", // translation: owner review
+  mtScnRapid: "AI Pesat", // translation: owner review
+  mtScnRapidSub: "pendedahan potensi penuh", // translation: owner review
+  mtScnModerateText: "AI Sederhana menggunakan penggunaan AI yang diperhatikan hari ini pada tugas setiap pekerjaan (Anthropic Economic Index). Ia tidak pernah mengubah Padanan Kemahiran anda; ia boleh memindahkan peranan antara kumpulan.", // translation: owner review
+  mtScnRapidText: "AI Pesat menggunakan pendedahan potensi penuh setiap pekerjaan kepada AI generatif (Kertas Kerja ILO 140, 2025). Ia tidak pernah mengubah Padanan Kemahiran anda; ia boleh memindahkan peranan antara kumpulan.", // translation: owner review
+  mtSdgFilter: "Tunjukkan peranan yang berkaitan dengan", // translation: owner review
+  mtSdgAll: "Semua SDG", // translation: owner review
+  mtSdgFilterSrc: "Matlamat bagi setiap pautan draf pasukan SDG yang tidak ditolak oleh pemilik disenaraikan.", // translation: owner review
+  mtProfileUsed: "Profil yang digunakan:", // translation: owner review
+  mtFieldCode: "{title} (ISCED-F {code})", // translation: owner review
+  mtProfileSkills: "{count} kemahiran dan pengetahuan O*NET ({na} “Belum dinilai”)", // translation: owner review
+  mtEditProfile: "Sunting profil", // translation: owner review
+  mtNeverStored: "Profil anda dihantar untuk mengira padanan dan tidak pernah disimpan.", // translation: owner review
+  mtBannerNoMove: "Bertukar kepada {scenario} tidak memindahkan mana-mana peranan ke kumpulan lain.", // translation: owner review
+  mtBannerSame: "Nombor Padanan Kemahiran tidak berubah.", // translation: owner review
+  mtTrendNoMove: "Data trend berubah, tetapi tiada peranan berpindah ke kumpulan lain dalam {scenario}.", // translation: owner review
+  mtClose: "Tutup", // translation: owner review
+  mtJudge: "Sesi Ujian Perubahan Trend juri: kumpulan iklan kerja menggunakan data ujian anda.", // translation: owner review
+  mtRadarDown: "Data iklan kerja tidak tersedia sekarang, jadi setiap peranan berada dalam kumpulan 4 apabila bahagian iklan kerja diperlukan.", // translation: owner review
+  mtDraft: "Profil anda belum disahkan: padanan ini menggunakan draf anda.", // translation: owner review
+  mtProvTitle: "Sementara:", // translation: owner review
+  mtProvText: "{count} kemahiran anda “Belum dinilai”, jadi ia dikira sebagai mencapai tahap setiap pekerjaan. Padanan Kemahiran bertanda sementara mungkin turun selepas anda menetapkan tahap.", // translation: owner review
+  mtProvTag: "sementara", // translation: owner review
+  mtSetLevels: "Tetapkan tahap", // translation: owner review
+  mtThinTitle: "Tambah kemahiran untuk melihat Padanan Kemahiran", // translation: owner review
+  mtThinText: "Profil anda belum mempunyai item kemahiran atau pengetahuan O*NET, jadi kami tidak menunjukkan peratusan daripada meneka.", // translation: owner review
+  mtThinSoftware: "Perisian yang anda senaraikan ({names}) ditunjukkan pada setiap peranan sebagai “turut diminta”, tetapi bukan sebahagian daripada %.", // translation: owner review
+  mtNotUsed: "Tidak digunakan dalam padanan: {names}", // translation: owner review
+  mtAddSkills: "Tambah kemahiran", // translation: owner review
+  mtChainTitle: "Padanan Kemahiran belum tersedia untuk mana-mana peranan.", // translation: owner review
+  mtChainText: "Setiap peranan memerlukan rantaian kod rasmi eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET. Yang tiada hari ini:", // translation: owner review
+  mtChainStep: "{reason} ({count} peranan)", // translation: owner review
+  mtStepDetail: "Nota data (Bahasa Inggeris):", // translation: owner review
+  mtStep_no_onet_data: "pekerjaan O*NET yang dipautkan ({codes}) tiada data kemahiran (cth. kod \"All Other\")", // translation: owner review
+  mtStep_invalid: "kod ini bukan kod unit MASCO 4 digit", // translation: owner review
+  mtStep_no_row: "tiada baris untuk {codes} dalam langkah rasmi {step}", // translation: owner review
+  mtStep_pending: "langkah rasmi {step} belum dibina", // translation: owner review
+  mtStep_waitsBls: "langkah rasmi {step} menunggu fail padanan BLS, yang belum disimpan", // translation: owner review
+  mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC (jadual silang O*NET)", // translation: owner review
+  mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018 (jadual silang BLS)", // translation: owner review
+  mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010 (jadual silang BLS)", // translation: owner review
+  mtStepName_masco2020_unit_to_isco08: "MASCO 2020 → ISCO-08", // translation: owner review
+  mtStepAt: "{from}: {reason}", // translation: owner review
+  mtChainStill: "Peranan, prospek dan tag SDG masih ditunjukkan.", // translation: owner review
+  mtInField: "Dalam bidang anda", // translation: owner review
+  mtRoleCount: "{count} peranan", // translation: owner review
+  mtInFieldHow: "Bagaimana peranan sampai ke sini: bidang pengajian anda (ISCED-F) → program CIP (padanan Statistics Canada) → pekerjaan O*NET (jadual silang O*NET), atau ia sepadan dengan pekerjaan lalu atau peranan yang anda minati.", // translation: owner review
+  mtExplore: "Teroka semua peranan", // translation: owner review
+  mtShowRoles: "Tunjukkan semua peranan", // translation: owner review
+  mtHideRoles: "Sembunyikan peranan lain", // translation: owner review
+  mtBand1: "Iklan kerja bertambah atau stabil, AI kebanyakannya membantu", // translation: owner review
+  mtBand1Why: "Trend kumpulan DOSM meningkat atau stabil, dan dalam senario ini AI kebanyakannya membantu kerja", // translation: owner review
+  mtBand2: "AI mungkin banyak mengubah pekerjaan ini (senario ini)", // translation: owner review
+  mtBand2Why: "Pesat: gradien pendedahan ILO 3 atau 4 · Sederhana: kebanyakan penggunaan AI yang diperhatikan melakukan tugas itu sendiri", // translation: owner review
+  mtBand3: "Iklan kerja berkurangan", // translation: owner review
+  mtBand3Why: "DOSM menunjukkan kumpulan pekerjaan menurun (peringkat kumpulan, bukan pekerjaan ini)", // translation: owner review
+  mtBand4: "Belum cukup bukti", // translation: owner review
+  mtBand4Why: "Trend iklan kerja atau data AI tiada atau tidak boleh dibandingkan", // translation: owner review
+  mtBandEmpty: "Tiada peranan di sini dalam senario ini.", // translation: owner review
+  mtSkillMatch: "Padanan Kemahiran", // translation: owner review
+  mtNotAvailable: "Tidak tersedia", // translation: owner review
+  mtNotAvailableTag: "tidak tersedia", // translation: owner review
+  mtNoLink: "Belum ada pautan rasmi untuk peranan ini.", // translation: owner review
+  mtMissing: "Tiada:", // translation: owner review
+  mtNoPct: "Belum ada %", // translation: owner review
+  mtNoPctText: "Tambah kemahiran untuk melihatnya.", // translation: owner review
+  mtSentence: "Anda mencapai {met} daripada {needed} tahap yang diperlukan untuk {job}, jadi padanan ialah {percent}%.", // translation: owner review
+  mtCalculated: "dikira", // translation: owner review
+  mtFromOnet: "daripada tahap O*NET dan profil anda", // translation: owner review
+  mtNoJob: "Tiada pekerjaan O*NET dipautkan", // translation: owner review
+  mtComparedWith: "Dibandingkan dengan pekerjaan O*NET", // translation: owner review
+  mtAlso: "juga:", // translation: owner review
+  mtEmascoPage: "Halaman eMASCO", // translation: owner review
+  mtJobAds: "Iklan kerja", // translation: owner review
+  mtAiPart: "AI dalam pekerjaan ini", // translation: owner review
+  mtSoftware: "Perisian yang diminta", // translation: owner review
+  mtOutlook: "Prospek", // translation: owner review
+  mtShowDetail: "Tunjukkan prospek dan butiran", // translation: owner review
+  mtDetailError: "Butiran tidak dapat dimuatkan.", // translation: owner review
+  mtAdsNoSignal: "Radar tiada isyarat iklan kerja untuk kumpulan ini", // translation: owner review
+  mtGroup: "Kumpulan utama MASCO 2020 {code}", // translation: owner review
+  mtGroupLevel: "peringkat kumpulan, bukan pekerjaan ini", // translation: owner review
+  mtDosmLink: "Keluaran DOSM", // translation: owner review
+  mtAdsWhat: "bahagian iklan kerja dalam talian", // translation: owner review
+  mtAdsInsufficient: "bukti tidak mencukupi", // translation: owner review
+  mtChangesMuch: "mungkin banyak berubah", // translation: owner review
+  mtAiModerate: "Penggunaan AI dilihat pada {share}% tugas pekerjaan ini; {auto}% daripada penggunaan itu melakukan tugas, {aug}% membantu seseorang", // translation: owner review
+  mtAiModerateSrc: "Anthropic Economic Index, O*NET {job}", // translation: owner review
+  mtAiRapid: "Gradien pendedahan ILO {gradient} (G1 terendah, G4 tertinggi)", // translation: owner review
+  mtAiRapidSrc: "ILO WP140, ISCO-08 {isco}", // translation: owner review
+  mtAiNoJob: "belum ada pekerjaan O*NET dipautkan kepada peranan ini", // translation: owner review
+  mtNoObserved: "tiada data diperhatikan", // translation: owner review
+  mtAiNoCover: "Anthropic Economic Index tidak merangkumi pekerjaan ini", // translation: owner review
+  mtAiNoIsco: "belum ada kod ISCO-08 untuk peranan ini.", // translation: owner review
+  mtAiNoIlo: "ILO WP140 tiada baris untuk ISCO-08 {isco}", // translation: owner review
+  mtSwNone: "senarai perisian tidak tersedia", // translation: owner review
+  mtSwSummary: "Anda ada {have} daripada {total} · {demand} dalam permintaan", // translation: owner review
+  mtSwMore: "+ {count} lagi", // translation: owner review
+  mtSwFewer: "Tunjuk kurang", // translation: owner review
+  mtInDemand: "dalam permintaan", // translation: owner review
+  mtSwShown: "Iklan kerja AS (Lightcast melalui O*NET) · ditunjukkan sahaja, bukan dalam %", // translation: owner review
+  mtSdgNone: "SDG belum ditandakan", // translation: owner review
+  mtApprovedOn: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
+  mtChoose: "Pilih peranan ini", // translation: owner review
+  mtChosen: "✓ Peranan dipilih", // translation: owner review
+  mtStudyPlan: "Pelan pembelajaran belum tersedia", // translation: owner review
+  mtWhy: "Mengapa padanan ini?", // translation: owner review
+  mtWhyNone: "Mengapa tiada Padanan Kemahiran?", // translation: owner review
+  mtWhyNoneText: "Kami hanya memautkan peranan eMASCO kepada kemahiran O*NET melalui jadual kod rasmi, tidak pernah dengan meneka daripada tajuk. Untuk peranan ini satu langkah belum ada pautan:", // translation: owner review
+  mtPathUnit: "eMASCO {code} → kumpulan unit {unit} (empat digit pertama)", // translation: owner review
+  mtHowTitle: "Bagaimana padanan dikira", // translation: owner review
+  mtRaiseTitle: "Apa yang boleh menaikkannya", // translation: owner review
+  mtLearn: "Pelajari {name} hingga {to}", // translation: owner review
+  mtRaise: "Tingkatkan {name} daripada {from} kepada {to}", // translation: owner review
+  mtPts: "+{points} mata", // translation: owner review
+  mtStillShort: "tahap pakar masih meninggalkan jurang", // translation: owner review
+  mtRaiseNone: "Anda mencapai setiap tahap yang diperlukan.", // translation: owner review
+  mtPtsNote: "Mata = jurang tahap ÷ semua tahap yang diperlukan. Mencapai setiap tahap yang diperlukan memberi 100%.", // translation: owner review
+  mtLeftOutTitle: "Tidak dikira", // translation: owner review
+  mtLeftOut: "dikecualikan: O*NET menandakan penilaian ini sebagai kurang tepat", // translation: owner review
+  mtPathTitle: "Bagaimana peranan ini sampai ke O*NET", // translation: owner review
+  mtShowAllItems: "Tunjukkan semua {count} item", // translation: owner review
+  mtColItem: "Item", // translation: owner review
+  mtColKind: "Jenis", // translation: owner review
+  mtColImportance: "Kepentingan (1–5)", // translation: owner review
+  mtColNeeded: "Tahap diperlukan", // translation: owner review
+  mtColMet: "Dicapai", // translation: owner review
+  mtYou: "Anda", // translation: owner review
+  mtNeeded: "Diperlukan", // translation: owner review
+  mtYouNa: "belum dinilai → dikira sebagai {needed}", // translation: owner review
+  mtYouMissing: "tiada dalam profil = 0", // translation: owner review
+  mtKind_el: "Kemahiran", // translation: owner review
+  mtKind_kn: "Pengetahuan", // translation: owner review
+  mtLevel_basic: "asas", // translation: owner review
+  mtLevel_good: "baik", // translation: owner review
+  mtLevel_expert: "pakar", // translation: owner review
+  mtItemsSrc: "Item: kemahiran dan pengetahuan O*NET dengan kepentingan 3.0 atau lebih (yang disenaraikan O*NET OnLine untuk pekerjaan itu) · tahap diperlukan dan kepentingan: {onet}, dimuat turun {date} · tahap anda: profil anda.", // translation: owner review
+  mtChartAria: "Tahap anda berbanding tahap diperlukan, skala tahap O*NET 0 hingga 7", // translation: owner review
+  mtScale: "Skala tahap O*NET 0–7 · asas = 2, baik = 4, pakar = 6", // translation: owner review
+  mtSourcesTitle: "Sumber di sebalik halaman ini", // translation: owner review
+  mtSrcRoles: "Peranan, tugas, kemahiran (eMASCO)", // translation: owner review
+  mtSrcOnet: "Kemahiran, pengetahuan, kepentingan, tahap", // translation: owner review
+  mtSrcChain: "Rantaian kod", // translation: owner review
+  mtSrcModerate: "AI Sederhana", // translation: owner review
+  mtSrcRapid: "AI Pesat", // translation: owner review
+  mtSrcSdgTargets: "Sasaran SDG", // translation: owner review
+  mtSrcSdgLinks: "Pautan SDG (draf pasukan; yang ditolak disembunyikan)", // translation: owner review
+  mtSrcDate: "{date}", // translation: owner review
+  mtSrcAds: "Iklan kerja mengikut kumpulan", // translation: owner review
+  mtSrcAdsText: "DOSM Job Market Insights {period} (melalui Radar), diterbitkan {date}", // translation: owner review
+  mtSrcInDemand: "Perisian dalam permintaan", // translation: owner review
+  mtSrcInDemandText: "Tanda “In Demand” O*NET (iklan kerja AS melalui Lightcast), dibaca daripada manifest aktif Radar", // translation: owner review
+  mtSdgLead: "Bagaimana peranan yang anda pilih, dan kemahiran yang masih perlu anda bina untuknya, berkait dengan Matlamat Pembangunan Mampan PBB. Ini ialah kiraan pautan beserta sebab:", // translation: owner review
+  mtPotential: "potensi, bukan diukur", // translation: owner review
+  mtSdgNoRole: "Belum ada peranan dipilih", // translation: owner review
+  mtSdgNoRoleText: "Tekan “Pilih peranan ini” pada peranan dalam Padanan kerjaya untuk melihat bagaimana laluan itu berkait dengan SDG.", // translation: owner review
+  mtGoMatch: "Pergi ke Padanan kerjaya", // translation: owner review
+  mtSdgPath: "Laluan pilihan anda", // translation: owner review
+  mtSdgLinksTo: "Laluan ini berkait dengan", // translation: owner review
+  mtSdgGoalOne: "SDG {goal} ({count} pautan)", // translation: owner review
+  mtSdgGoalMany: "SDG {goal} ({count} pautan)", // translation: owner review
+  mtSdgNoneText: "Belum ada pautan SDG pada laluan ini.", // translation: owner review
+  mtTarget: "Sasaran {target}", // translation: owner review
+  mtViaRole: "melalui peranan (kumpulan MASCO {code})", // translation: owner review
+  mtViaItem: "melalui kemahiran yang akan anda bina: {name}", // translation: owner review
+  mtApprovedDraft: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
+  mtSdgSrc: "Sasaran SDG: API SDG Bahagian Statistik PBB, diambil {date}. Pautan matlamat: laman SDG PBB (sdgs.un.org/goals). Pautan: draf pasukan, ditunjukkan serta-merta (keputusan pemilik M16); setiap satu menyatakan sama ada pemilik telah menyemaknya, dan yang ditolak disembunyikan. Ini mengira pautan beserta sebab; ia tidak mengukur impak.", // translation: owner review
+  mtBannerMoved: "Bertukar kepada {scenario} memindahkan {moves}.", // translation: owner review
+  mtTrendMoved: "Data trend berubah: dalam {scenario} ia memindahkan {moves}.", // translation: owner review
+  mtMoveOne: "1 peranan dari “{from}” (kumpulan {fromNum}) ke “{to}” (kumpulan {toNum})", // translation: owner review
+  mtMoveMany: "{count} peranan dari “{from}” (kumpulan {fromNum}) ke “{to}” (kumpulan {toNum})", // translation: owner review
+  mtMoveJoin: "; ", // translation: owner review
+  mtPages: "Halaman", // translation: owner review
+  mtPageN: "Halaman {page}", // translation: owner review
+  mtPrevPage: "Halaman sebelumnya", // translation: owner review
+  mtNextPage: "Halaman seterusnya", // translation: owner review
+  mtGoToPage: "Pergi ke halaman", // translation: owner review
+  mtGo: "Pergi", // translation: owner review
+  mtHideDetail: "Sembunyikan prospek dan butiran", // translation: owner review
+  mtAiCardModerate: "AI melakukan tugas dalam {pct}% penggunaan yang diperhatikan", // translation: owner review
+  mtAiCardRapid: "Pendedahan GenAI {pct}% · kumpulan ILO {group} daripada 4", // translation: owner review
+  mtAiCardRapidWord: "Pendedahan GenAI {pct}% · ILO: {word}", // translation: owner review
+  mtIlo_minimal: "pendedahan minimum", // translation: owner review
+  mtIlo_not_exposed: "tidak terdedah", // translation: owner review
+  mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
+  mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtNotReviewed: "draf pasukan, belum disemak", // translation: owner review
+  mtSdgGoalStatus: "SDG {goal}: {status}", // translation: owner review
+  rdSdgTitle: "Pautan SDG (padanan kerjaya)", // translation: owner review
+  rdSdgTag: "Draf pasukan: semakan pemilik", // translation: owner review
+  rdSdgNote: "Setiap pautan menghubungkan kumpulan pekerjaan atau kemahiran dengan satu sasaran SDG, beserta sebab. Setiap pautan ditunjukkan pada skrin padanan dan SDG sebagai draf pasukan sehingga anda membuat keputusan: yang diluluskan menunjukkan tarikh anda, yang ditolak disembunyikan. Sumber sasaran: UN Statistics Division SDG API.", // translation: owner review
+  rdSdgReadOnly: "Keputusan tersimpan tidak tersedia pada pelayan ini, jadi butang dimatikan.", // translation: owner review
+  rdSdgKindGroup: "Pautan kumpulan pekerjaan (kumpulan sub-major MASCO)", // translation: owner review
+  rdSdgKindItem: "Pautan kemahiran dan pengetahuan (elemen O*NET)", // translation: owner review
+  rdSdgGroupCode: "Kumpulan MASCO {code}", // translation: owner review
+  rdSdgExamples: "Peranan dalam kumpulan ini (eMASCO)", // translation: owner review
+  rdSdgTarget: "Sasaran SDG {target}", // translation: owner review
+  rdSdgOtherLangs: "Bahasa lain", // translation: owner review
+  rdColLink: "Pautan", // translation: owner review
+  rdColSdgTarget: "Sasaran", // translation: owner review
 }

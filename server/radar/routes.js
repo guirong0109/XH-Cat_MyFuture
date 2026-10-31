@@ -214,7 +214,7 @@ function skills(view, refs = null) {
 }
 
 // Reference lists for Matching (spec §5): what is flagged at the latest release, not signals.
-function onetSkillsReference(view) {
+export function onetSkillsReference(view) {
   const changes = view.signals.onetSkills ?? null
   const latest = view.snapshots['onet-skills']?.classification?.version ?? null
   return {

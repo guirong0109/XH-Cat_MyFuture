@@ -1,0 +1,58 @@
+{
+  "source": "ILO Working Paper 140, Generative AI and Jobs: A 2025 update (Gmyrek et al.)",
+  "paperUrl": "https://doi.org/10.54394/HETP0387",
+  "repositoryUrl": "https://github.com/pgmyrek/2025_GenAI_scores_ISCO08",
+  "sourceUrl": "https://raw.githubusercontent.com/pgmyrek/2025_GenAI_scores_ISCO08/main/Final_Scores_ISCO08_Gmyrek_et_al_2025.xlsx",
+  "licence": "CC BY 4.0",
+  "downloadedAt": "2026-10-30",
+  "columnsUsed": [
+    "ISCO_08",
+    "Title",
+    "mean_score_2025",
+    "SD_2025"
+  ],
+  "occupations": 427,
+  "gradientCounts": {
+    "not_exposed": 235,
+    "minimal": 80,
+    "G2": 44,
+    "G1": 17,
+    "G3": 38,
+    "G4": 13
+  },
+  "originalKept": false,
+  "originalSha256": "c1940b87e7293b1eb95b530b6d3da7cd806b61d217c4bff1e69372b2cff5c90a",
+  "files": {
+    "ilo_wp140.tsv": "0f954dbbf77b4f93d0299b0785cd9841decef56c16a6e7afdb56c33c82d17422"
+  },
+  "aei": {
+    "source": "Anthropic Economic Index, Hugging Face dataset Anthropic/EconomicIndex",
+    "release": "release_2026_06_26",
+    "dataPeriod": "April-May 2026",
+    "sourceUrl": "https://huggingface.co/datasets/Anthropic/EconomicIndex/resolve/main/release_2026_06_26/data/aei_claude_ai_2026-06-26.csv",
+    "licence": "CC BY (data); code MIT, per the dataset README",
+    "downloadedAt": "2026-10-30",
+    "geoLevel": "global",
+    "filter": "category_name=onet, hierarchy_level=0",
+    "period": "2026-05-01",
+    "metrics": [
+      "pct",
+      "collaboration_bucket_automation_pct",
+      "collaboration_bucket_augmentation_pct"
+    ],
+    "metricNote": "task-level usage share is metric_id pct in the file (usage_pct exists only for category overall); stored as usage_pct",
+    "keyForm": "node_external_id matched to data/onet/tasks.tsv by Task ID or exact statement text",
+    "matched": 2710,
+    "unmatched": 3,
+    "unmatchedExamples": [
+      "19549",
+      "22597",
+      "21000"
+    ],
+    "originalKept": false,
+    "originalSha256": "f974b358bce0e5a8417510c61da4342234cd0de9d9d0b62acf4c6dbcf8ec7b68",
+    "files": {
+      "aei_tasks.tsv": "a81a88b816d45925538900b6f968e72e1b389fb858d6b487d6914a6eea1e8b5d"
+    }
+  }
+}

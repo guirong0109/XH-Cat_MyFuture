@@ -1,5 +1,5 @@
 {
-  "updated": "30 Oct 2026",
+  "updated": "31 Oct 2026",
   "groups": [
     {
       "id": "S0",
@@ -406,6 +406,62 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 11",
+      "name": "Career Matching (branch claude/career-matching)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main b24660e",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "15 decisions with you (M1-M15)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "approved",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "approved (sample data)",
+          "status": "done"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "16 tasks; approved, running",
+          "status": "done"
+        },
+        {
+          "title": "Data T1-T8",
+          "sub": "eMASCO, O*NET levels, chain, ILO, Anthropic, SDG",
+          "status": "done"
+        },
+        {
+          "title": "Engine T9-T12",
+          "sub": "chain, fit, outlook, SDG; each reviewed",
+          "status": "done"
+        },
+        {
+          "title": "API + screens T13-T15",
+          "sub": "matching API, tabs, admin; each reviewed",
+          "status": "done"
+        },
+        {
+          "title": "Acceptance T16",
+          "sub": "browser check A1-A13, docs, handover; 766 tests, pipeline 48 OK",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "whole-branch review, then your decision on merge",
+          "status": "todo"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -445,7 +501,9 @@
     "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet.",
     "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
     "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
-    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed."
+    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
+    "Career Matching: spec docs/superpowers/specs/2026-10-30-career-matching-design.md and diagram docs/architecture-matching.html written; branch HANDOVER.md and CLAUDE.md detailed",
+    "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
   ],
   "waiting": [
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
@@ -453,7 +511,8 @@
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
     "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
-    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying"
+    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
+    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -493,7 +552,19 @@
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
     "D25: a release is compared with the most recent earlier release whose flags differ, both release numbers shown (31.0 equals 30.3, so the comparison is 30.2 to 30.3) - cost: a quiet release shows the last change again",
-    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script"
+    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script",
+    "Career matching: its own forbidden-key pattern (score, weight, rank, opportunit); the key is skillMatch - cost: one regex",
+    "Career matching: the judge test may inject signals through a service option if the demo base gives no sufficient direction - cost: less end-to-end testing of that path",
+    "Career matching: downloads named in the plan were approved with the plan - cost: none",
+    "Career matching: role_details.json keeps 1,814 entries; the list shows the 1,812 with a title - cost: a filter",
+    "Career matching: O*NET rows marked Recommend Suppress are left out and the screen says so - cost: a few core items missing from some percentages",
+    "Career matching: ILO gradient G3 closes a gap in the plan's reading of Table 5; no real row affected - cost: none today",
+    "Career matching: Anthropic task usage is the file's pct; only the latest monthly slice (May 2026) is kept - cost: one filter",
+    "Career matching: UN SDG API asked per goal with includechildren=true - cost: one query flag",
+    "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
+    "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
+    "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
+    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page"
   ],
   "log": [
     {
@@ -1085,6 +1156,121 @@
       "time": "30 Oct",
       "step": "Skill trends final review fixes",
       "detail": "bootstrap rebuild skips active releases; O*NET source cards show state; not-newer refresh keeps its slot; safe source link; source registry names no release; tests for encoded ids and revised Hot counts; npm test 647 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Request (summary)",
+      "detail": "career matching like the old screens (look only), using eMASCO, Finalist Guide, data on main"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching brainstorming",
+      "detail": "official code chain; levels met / needed (your chart); skills + knowledge; Moderate = Anthropic observed use, Rapid = ILO potential; 4 bands; SDG team draft you approve"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching spec + diagram",
+      "detail": "written and committed; waiting for your review; npm test 651 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching mockup",
+      "detail": "docs/mockup-matching.html approved (sample data)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Data sources checked",
+      "detail": "no official MASCO-ISCO table: same 4-digit code by your decision (M15); ILO file from the lead author's repository; Anthropic release 2026-06-26; importance cut-off reworded"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching plan",
+      "detail": "16 test-first tasks written; waiting for your review"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching data T1-T8",
+      "detail": "eMASCO 1814 entries; O*NET levels 61,880 rows; chain step by same code (pending until BLS files); ILO 427 jobs; Anthropic 2,710 tasks; 17 goals / 169 targets; 126 SDG draft links; each task reviewed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T9",
+      "detail": "code chain from eMASCO to O*NET; a broken chain names the missing step"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T10",
+      "detail": "Skill Match = levels met over levels needed, 'What would raise it' as a share of all needed levels"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T11",
+      "detail": "outlook parts and four bands per AI scenario; trends never change the percentage"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T12",
+      "detail": "SDG links with your decisions stored in the Radar review store"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching API T13",
+      "detail": "/api/matching: profile used, never stored or logged; Rapid AI uses the ISCO code from the chain only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching screens T14",
+      "detail": "Career matching and SDG contribution tabs"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching admin T15",
+      "detail": "your review of SDG links in #admin (approve or reject, note required)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching acceptance T16",
+      "detail": "browser check A1-A13 in docs/matching/acceptance.md; docs, sources, tools declaration, handover; 766 tests, pipeline 48 OK; waits on BLS files, SDG approvals, DOSM break review, BM/中文 review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching final review fixes",
+      "detail": "matching reloads after trend, judge or SDG changes with a 'trend data changed' banner; SDG decisions cached 60 s and dropped on each decision; missing chain step worded in EN/BM/中文; small fixes (level names, SDG card error, no-profile SDG tab, links file error); npm test 777 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching wording fix (your screenshot)",
+      "detail": "banner says no role moved instead of 0 role(s): none; 1 role / N roles; missing steps say they wait for the BLS crosswalk files; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "BLS crosswalk files saved (your OK)",
+      "detail": "both files fetched and kept in data/radar/source/; chain rebuilt: 1,261 of 1,812 roles reach O*NET and show a Skill Match; 540 Malaysian-only codes say no ISCO-08 match; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching UI round (your 5 approved changes)",
+      "detail": "short banner naming the groups; 10 roles per page with page buttons and Go to page; Show/Hide outlook and details with three boxes and a Why fold; AI line with a bar on every card; all SDG team drafts shown with a UN goal link (M16); npm test 800 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching UI round review fixes",
+      "detail": "SDG links source name and all binding documents (CLAUDE.md, diagram, spec, SOURCES.md, HANDOVER) now state M16; npm test 800 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching UI round checked in the browser",
+      "detail": "short group banner, pages of 10, open/close details, AI bar on cards, all SDG drafts with UN links (M16); SDG filter width fixed (long UN goal titles had widened the page); npm test 801 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Software asked box (your request)",
+      "detail": "count line, 8 chips (yours first, then in demand), the rest behind '+ N more' / 'Show fewer'; npm test 803 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged career matching to main (your request)",
+      "detail": "branch pushed to GitHub; merged into main; main's short HANDOVER and CLAUDE updated; npm test 803 passed"
     }
   ]
 }

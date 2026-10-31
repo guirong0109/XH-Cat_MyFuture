@@ -29,9 +29,9 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 651 passed
+npm install && npm test     # expect 803 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 11 OK
+python -m unittest discover pipeline/tests   # expect 48 OK
 ```
 
 ## Future Skills Radar (details: branch `claude/future-radar`)
@@ -39,3 +39,12 @@ python -m unittest discover pipeline/tests   # expect 11 OK
 - Output contract `radar-signal/v1` (`docs/radar/contract.md`): never add score, weight, rank or match fields.
 - Field ↔ topic links and structural breaks are the owner's decisions; never approve them on the owner's behalf.
 - Admin and judge keys live only in server env; never print, log or commit them.
+
+## Career matching (details: branch `claude/career-matching`)
+- Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.
+- Skill Match = Σ min(you, needed) ÷ Σ needed (O\*NET skills + knowledge, importance ≥ 3.0); the owner's example
+  12.05 / 9.2 / 76% is a test. Trends and AI scenarios never change it. No language model.
+- eMASCO → O\*NET only through `data/radar/occupation-bridge.json`; a broken chain shows "not available" with the
+  missing step, never a guess.
+- Only show SDG links as the owner decided (M16: team drafts labelled, rejected hidden); never approve on the
+  owner's behalf. The profile sent to `/api/matching` is never stored or logged.

@@ -460,6 +460,7 @@ export default {
   rdErr_periods_removed: "新数据缺少之前已有的时段，因此没有发布。",
   rdErr_publish_conflict: "有人同时进行了发布。请再试一次。",
   rdErr_store_unavailable: "数据存储目前不可用。",
+  rdErr_data_unavailable: "无法读取 SDG 关联数据。", // translation: owner review
   rdErr_not_configured: "这台服务器尚未设置此功能。",
   rdErr_not_allowed: "您没有权限执行此操作。",
   rdErr_csrf_failed: "无法验证请求。请刷新页面后再试。",
@@ -695,5 +696,216 @@ export default {
   rdChange_reasons: "原因", // translation: owner review
   rdChange_breaks: "断点", // translation: owner review
   rdChange_revisions: "修订", // translation: owner review
-  rdChange_versions: "版本", // translation: owner review
+  rdChange_versions: "版本", // translation: owner review,
+  // Career matching and SDG contribution (Task 14) (translation: owner review)
+  mtLead: "来自 eMASCO 的马来西亚职位，与您的档案对比。技能匹配计算您已达到该工作所需水平中的多少。旁边的前景从不改变这个数字，只决定职位所在的组别。AI 支持您的选择，但从不替您做决定。", // translation: owner review
+  mtNoProfile: "请先建立您的档案", // translation: owner review
+  mtNoProfileText: "职业匹配会将职位与您的档案对比。请先添加您的学历、工作和技能。", // translation: owner review
+  mtBuildProfile: "建立我的档案", // translation: owner review
+  mtUnavailable: "职业匹配暂时不可用，请重试。", // translation: owner review
+  mtRetry: "重试", // translation: owner review
+  mtLoading: "加载中…", // translation: owner review
+  mtScenario: "AI 情景", // translation: owner review
+  mtEstimate: "估计", // translation: owner review
+  mtScnModerate: "温和 AI", // translation: owner review
+  mtScnModerateSub: "当前观察到的 AI 使用", // translation: owner review
+  mtScnRapid: "快速 AI", // translation: owner review
+  mtScnRapidSub: "全部潜在暴露", // translation: owner review
+  mtScnModerateText: "温和 AI 使用当前在各工作任务中观察到的 AI 使用情况（Anthropic Economic Index）。它从不改变您的技能匹配，但可能让职位换组。", // translation: owner review
+  mtScnRapidText: "快速 AI 使用各工作对生成式 AI 的全部潜在暴露（国际劳工组织第 140 号工作论文，2025）。它从不改变您的技能匹配，但可能让职位换组。", // translation: owner review
+  mtSdgFilter: "显示关联到以下目标的职位", // translation: owner review
+  mtSdgAll: "所有 SDG", // translation: owner review
+  mtSdgFilterSrc: "列出所有者未拒绝的每条 SDG 团队草稿关联的目标。", // translation: owner review
+  mtProfileUsed: "使用的档案：", // translation: owner review
+  mtFieldCode: "{title}（ISCED-F {code}）", // translation: owner review
+  mtProfileSkills: "{count} 项 O*NET 技能和知识（{na} 项“尚未评估”）", // translation: owner review
+  mtEditProfile: "编辑档案", // translation: owner review
+  mtNeverStored: "您的档案仅用于计算匹配，从不保存。", // translation: owner review
+  mtBannerNoMove: "切换到{scenario}后，没有职位换组。", // translation: owner review
+  mtBannerSame: "技能匹配数字没有改变。", // translation: owner review
+  mtTrendNoMove: "趋势数据已更改，但在{scenario}中没有职位换组。", // translation: owner review
+  mtClose: "关闭", // translation: owner review
+  mtJudge: "评委趋势变化测试会话：招聘广告组使用您的测试数据。", // translation: owner review
+  mtRadarDown: "招聘广告数据暂时不可用，因此需要该部分时所有职位都在第 4 组。", // translation: owner review
+  mtDraft: "您的档案尚未确认：这些匹配使用您的草稿。", // translation: owner review
+  mtProvTitle: "暂定：", // translation: owner review
+  mtProvText: "您有 {count} 项技能“尚未评估”，因此按达到各工作所需水平计算。标为暂定的技能匹配在您设定水平后可能下降。", // translation: owner review
+  mtProvTag: "暂定", // translation: owner review
+  mtSetLevels: "设定水平", // translation: owner review
+  mtThinTitle: "添加技能以查看技能匹配", // translation: owner review
+  mtThinText: "您的档案还没有 O*NET 技能或知识项，因此我们不显示百分比，而不是猜测。", // translation: owner review
+  mtThinSoftware: "您列出的软件（{names}）会在每个职位上显示为“也要求”，但不计入百分比。", // translation: owner review
+  mtNotUsed: "未用于匹配：{names}", // translation: owner review
+  mtAddSkills: "添加技能", // translation: owner review
+  mtChainTitle: "目前所有职位都还没有技能匹配。", // translation: owner review
+  mtChainText: "每个职位都需要官方代码链 eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET。目前缺少：", // translation: owner review
+  mtChainStep: "{reason}（{count} 个职位）", // translation: owner review
+  mtStepDetail: "数据说明（英文）：", // translation: owner review
+  mtStep_no_onet_data: "关联的 O*NET 职业（{codes}）没有技能数据（例如 \"All Other\" 代码）", // translation: owner review
+  mtStep_invalid: "此代码不是 MASCO 4 位单元代码", // translation: owner review
+  mtStep_no_row: "官方步骤 {step} 中没有 {codes} 的对应行", // translation: owner review
+  mtStep_pending: "官方步骤 {step} 尚未建立", // translation: owner review
+  mtStep_waitsBls: "官方步骤 {step} 正在等待 BLS 对照文件，该文件尚未保存", // translation: owner review
+  mtStepName_onet_to_soc2018: "SOC 2018 → O*NET-SOC（O*NET 对照表）", // translation: owner review
+  mtStepName_soc2018_to_soc2010: "SOC 2010 → SOC 2018（BLS 对照表）", // translation: owner review
+  mtStepName_soc2010_to_isco08: "ISCO-08 → SOC 2010（BLS 对照表）", // translation: owner review
+  mtStepName_masco2020_unit_to_isco08: "MASCO 2020 → ISCO-08", // translation: owner review
+  mtStepAt: "{from}：{reason}", // translation: owner review
+  mtChainStill: "职位、前景和 SDG 标签仍会显示。", // translation: owner review
+  mtInField: "您的领域", // translation: owner review
+  mtRoleCount: "{count} 个职位", // translation: owner review
+  mtInFieldHow: "职位如何出现在这里：您的学习领域（ISCED-F）→ CIP 专业（加拿大统计局对照表）→ O*NET 工作（O*NET 对照表），或与您过去的工作或感兴趣的职位相符。", // translation: owner review
+  mtExplore: "浏览所有职位", // translation: owner review
+  mtShowRoles: "显示所有职位", // translation: owner review
+  mtHideRoles: "隐藏其他职位", // translation: owner review
+  mtBand1: "招聘广告增长或稳定，AI 主要起辅助作用", // translation: owner review
+  mtBand1Why: "DOSM 组别趋势上升或稳定，且在此情景下 AI 主要辅助工作", // translation: owner review
+  mtBand2: "AI 可能大幅改变这份工作（此情景）", // translation: owner review
+  mtBand2Why: "快速：ILO 暴露梯度 3 或 4 · 温和：观察到的 AI 使用大多直接完成任务", // translation: owner review
+  mtBand3: "招聘广告减少", // translation: owner review
+  mtBand3Why: "DOSM 显示该职业组在下降（组别层面，不是这份工作）", // translation: owner review
+  mtBand4: "证据尚不足", // translation: owner review
+  mtBand4Why: "招聘广告趋势或 AI 数据缺失或不可比较", // translation: owner review
+  mtBandEmpty: "此情景下这里没有职位。", // translation: owner review
+  mtSkillMatch: "技能匹配", // translation: owner review
+  mtNotAvailable: "不可用", // translation: owner review
+  mtNotAvailableTag: "不可用", // translation: owner review
+  mtNoLink: "此职位还没有官方关联。", // translation: owner review
+  mtMissing: "缺少：", // translation: owner review
+  mtNoPct: "暂无百分比", // translation: owner review
+  mtNoPctText: "添加技能即可查看。", // translation: owner review
+  mtSentence: "您达到 {job} 所需 {needed} 个水平中的 {met} 个，因此匹配度为 {percent}%。", // translation: owner review
+  mtCalculated: "计算所得", // translation: owner review
+  mtFromOnet: "来自 O*NET 水平和您的档案", // translation: owner review
+  mtNoJob: "没有关联的 O*NET 工作", // translation: owner review
+  mtComparedWith: "对比的 O*NET 工作", // translation: owner review
+  mtAlso: "另有：", // translation: owner review
+  mtEmascoPage: "eMASCO 页面", // translation: owner review
+  mtJobAds: "招聘广告", // translation: owner review
+  mtAiPart: "此工作中的 AI", // translation: owner review
+  mtSoftware: "要求的软件", // translation: owner review
+  mtOutlook: "前景", // translation: owner review
+  mtShowDetail: "显示前景和详情", // translation: owner review
+  mtDetailError: "无法加载详情。", // translation: owner review
+  mtAdsNoSignal: "雷达没有该组别的招聘广告信号", // translation: owner review
+  mtGroup: "MASCO 2020 大类 {code}", // translation: owner review
+  mtGroupLevel: "组别层面，不是这份工作", // translation: owner review
+  mtDosmLink: "DOSM 发布", // translation: owner review
+  mtAdsWhat: "在线招聘广告占比", // translation: owner review
+  mtAdsInsufficient: "证据不足", // translation: owner review
+  mtChangesMuch: "可能大幅改变", // translation: owner review
+  mtAiModerate: "在此工作 {share}% 的任务中观察到 AI 使用；其中 {auto}% 直接完成任务，{aug}% 辅助人", // translation: owner review
+  mtAiModerateSrc: "Anthropic Economic Index，O*NET {job}", // translation: owner review
+  mtAiRapid: "ILO 暴露梯度 {gradient}（G1 最低，G4 最高）", // translation: owner review
+  mtAiRapidSrc: "ILO WP140，ISCO-08 {isco}", // translation: owner review
+  mtAiNoJob: "此职位还没有关联的 O*NET 工作", // translation: owner review
+  mtNoObserved: "无观察数据", // translation: owner review
+  mtAiNoCover: "Anthropic Economic Index 未涵盖此工作", // translation: owner review
+  mtAiNoIsco: "此职位还没有 ISCO-08 代码。", // translation: owner review
+  mtAiNoIlo: "ILO WP140 没有 ISCO-08 {isco} 的数据", // translation: owner review
+  mtSwNone: "软件列表不可用", // translation: owner review
+  mtSwSummary: "你拥有 {total} 项中的 {have} 项 · {demand} 项需求旺盛", // translation: owner review
+  mtSwMore: "+ 另外 {count} 项", // translation: owner review
+  mtSwFewer: "收起", // translation: owner review
+  mtInDemand: "需求高", // translation: owner review
+  mtSwShown: "美国招聘广告（Lightcast，经 O*NET）· 仅显示，不计入百分比", // translation: owner review
+  mtSdgNone: "尚未标注 SDG", // translation: owner review
+  mtApprovedOn: "团队草稿，所有者于 {date} 批准", // translation: owner review
+  mtChoose: "选择此职位", // translation: owner review
+  mtChosen: "✓ 已选职位", // translation: owner review
+  mtStudyPlan: "学习计划暂不可用", // translation: owner review
+  mtWhy: "为什么是这个匹配？", // translation: owner review
+  mtWhyNone: "为什么没有技能匹配？", // translation: owner review
+  mtWhyNoneText: "我们只通过官方代码表将 eMASCO 职位关联到 O*NET 技能，从不根据名称猜测。此职位有一步还没有关联：", // translation: owner review
+  mtPathUnit: "eMASCO {code} → 细类 {unit}（前四位数字）", // translation: owner review
+  mtHowTitle: "匹配度如何计算", // translation: owner review
+  mtRaiseTitle: "如何提高", // translation: owner review
+  mtLearn: "学习 {name} 到{to}", // translation: owner review
+  mtRaise: "将 {name} 从{from}提高到{to}", // translation: owner review
+  mtPts: "+{points} 点", // translation: owner review
+  mtStillShort: "达到专家仍有差距", // translation: owner review
+  mtRaiseNone: "您已达到所有所需水平。", // translation: owner review
+  mtPtsNote: "点数 = 水平差距 ÷ 所有所需水平。达到全部所需水平即为 100%。", // translation: owner review
+  mtLeftOutTitle: "未计入", // translation: owner review
+  mtLeftOut: "已排除：O*NET 标记此评级不够精确", // translation: owner review
+  mtPathTitle: "此职位如何关联到 O*NET", // translation: owner review
+  mtShowAllItems: "显示全部 {count} 项", // translation: owner review
+  mtColItem: "项目", // translation: owner review
+  mtColKind: "类型", // translation: owner review
+  mtColImportance: "重要性（1–5）", // translation: owner review
+  mtColNeeded: "所需水平", // translation: owner review
+  mtColMet: "已达到", // translation: owner review
+  mtYou: "您", // translation: owner review
+  mtNeeded: "所需", // translation: owner review
+  mtYouNa: "未评估 → 按 {needed} 计", // translation: owner review
+  mtYouMissing: "档案中没有 = 0", // translation: owner review
+  mtKind_el: "技能", // translation: owner review
+  mtKind_kn: "知识", // translation: owner review
+  mtLevel_basic: "基础", // translation: owner review
+  mtLevel_good: "良好", // translation: owner review
+  mtLevel_expert: "专家", // translation: owner review
+  mtItemsSrc: "项目：重要性 3.0 及以上的 O*NET 技能和知识（O*NET OnLine 为该工作列出的内容）· 所需水平和重要性：{onet}，下载于 {date} · 您的水平：您的档案。", // translation: owner review
+  mtChartAria: "您的水平与所需水平对比，O*NET 水平刻度 0 到 7", // translation: owner review
+  mtScale: "O*NET 水平刻度 0–7 · 基础 = 2，良好 = 4，专家 = 6", // translation: owner review
+  mtSourcesTitle: "本页数据来源", // translation: owner review
+  mtSrcRoles: "职位、任务、技能（eMASCO）", // translation: owner review
+  mtSrcOnet: "技能、知识、重要性、水平", // translation: owner review
+  mtSrcChain: "代码链", // translation: owner review
+  mtSrcModerate: "温和 AI", // translation: owner review
+  mtSrcRapid: "快速 AI", // translation: owner review
+  mtSrcSdgTargets: "SDG 具体目标", // translation: owner review
+  mtSrcSdgLinks: "SDG 关联（团队草稿；被拒绝的不显示）", // translation: owner review
+  mtSrcDate: "{date}", // translation: owner review
+  mtSrcAds: "按组别的招聘广告", // translation: owner review
+  mtSrcAdsText: "DOSM 就业市场洞察 {period}（经雷达），发布于 {date}", // translation: owner review
+  mtSrcInDemand: "需求高的软件", // translation: owner review
+  mtSrcInDemandText: "O*NET“需求高”标记（美国招聘广告，经 Lightcast），读取自雷达的当前清单", // translation: owner review
+  mtSdgLead: "您选择的职位，以及您仍需为此培养的技能，如何关联到联合国可持续发展目标。这是带理由的关联计数：", // translation: owner review
+  mtPotential: "潜在，未经测量", // translation: owner review
+  mtSdgNoRole: "尚未选择职位", // translation: owner review
+  mtSdgNoRoleText: "在职业匹配中点击某个职位的“选择此职位”，即可查看该路径如何关联到 SDG。", // translation: owner review
+  mtGoMatch: "前往职业匹配", // translation: owner review
+  mtSdgPath: "您选择的路径", // translation: owner review
+  mtSdgLinksTo: "此路径关联到", // translation: owner review
+  mtSdgGoalOne: "SDG {goal}（{count} 个关联）", // translation: owner review
+  mtSdgGoalMany: "SDG {goal}（{count} 个关联）", // translation: owner review
+  mtSdgNoneText: "此路径上还没有 SDG 关联。", // translation: owner review
+  mtTarget: "具体目标 {target}", // translation: owner review
+  mtViaRole: "经由职位（MASCO 组 {code}）", // translation: owner review
+  mtViaItem: "经由您将培养的技能：{name}", // translation: owner review
+  mtApprovedDraft: "团队草稿，所有者于 {date} 批准", // translation: owner review
+  mtSdgSrc: "SDG 具体目标：联合国统计司 SDG API，获取于 {date}。目标链接：联合国 SDG 网站（sdgs.un.org/goals）。关联：团队草稿，立即显示（所有者决定 M16）；每条都注明所有者是否已审核，被拒绝的不显示。这里计算带理由的关联，不衡量影响。", // translation: owner review
+  mtBannerMoved: "切换到{scenario}后，{moves}。", // translation: owner review
+  mtTrendMoved: "趋势数据已更改：在{scenario}中，{moves}。", // translation: owner review
+  mtMoveOne: "1 个职位从“{from}”（组 {fromNum}）移到“{to}”（组 {toNum}）", // translation: owner review
+  mtMoveMany: "{count} 个职位从“{from}”（组 {fromNum}）移到“{to}”（组 {toNum}）", // translation: owner review
+  mtMoveJoin: "；", // translation: owner review
+  mtPages: "页码", // translation: owner review
+  mtPageN: "第 {page} 页", // translation: owner review
+  mtPrevPage: "上一页", // translation: owner review
+  mtNextPage: "下一页", // translation: owner review
+  mtGoToPage: "跳到第几页", // translation: owner review
+  mtGo: "前往", // translation: owner review
+  mtHideDetail: "隐藏前景和详情", // translation: owner review
+  mtAiCardModerate: "在观察到的使用中，AI 完成任务的占 {pct}%", // translation: owner review
+  mtAiCardRapid: "生成式 AI 暴露度 {pct}% · ILO 第 {group} 组（共 4 组）", // translation: owner review
+  mtAiCardRapidWord: "生成式 AI 暴露度 {pct}% · ILO：{word}", // translation: owner review
+  mtIlo_minimal: "极低暴露", // translation: owner review
+  mtIlo_not_exposed: "未暴露", // translation: owner review
+  mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
+  mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtNotReviewed: "团队草稿，尚未审核", // translation: owner review
+  mtSdgGoalStatus: "SDG {goal}：{status}", // translation: owner review
+  rdSdgTitle: "可持续发展目标关联（职业匹配）", // translation: owner review
+  rdSdgTag: "团队草稿：负责人审核", // translation: owner review
+  rdSdgNote: "每条关联把一个职业组或一项技能与一个可持续发展目标的具体指标相连，并附理由。在您作出决定之前，每条关联都以团队草稿形式显示在匹配和可持续发展目标页面上：获批的显示您的批准日期，被拒绝的不显示。指标来源：联合国统计司 SDG API。", // translation: owner review
+  rdSdgReadOnly: "此服务器无法保存决定，因此按钮已关闭。", // translation: owner review
+  rdSdgKindGroup: "职业组关联（MASCO 次大类）", // translation: owner review
+  rdSdgKindItem: "技能与知识关联（O*NET 要素）", // translation: owner review
+  rdSdgGroupCode: "MASCO 组 {code}", // translation: owner review
+  rdSdgExamples: "本组职位（eMASCO）", // translation: owner review
+  rdSdgTarget: "可持续发展目标指标 {target}", // translation: owner review
+  rdSdgOtherLangs: "其他语言", // translation: owner review
+  rdColLink: "关联", // translation: owner review
+  rdColSdgTarget: "指标", // translation: owner review
 }

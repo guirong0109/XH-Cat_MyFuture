@@ -22,6 +22,9 @@ import radarScreen, { staleRadar } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
+import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
+import sdgScreen from './screens/sdgTab.js'
+import * as matchApi from './matchApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -64,7 +67,8 @@ const t = (key, vars) => translate(state.lang, key, vars)
 function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
-  saved = store.save({ ...state, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
+  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -149,6 +153,7 @@ function ensureRadar() {
 function radarStale() {
   radarRun += 1
   state.radar = staleRadar(state.radar)
+  matchStale()
 }
 
 // ---------- Radar admin (#admin) and judge Trend Change Test (#judge) ----------
@@ -170,10 +175,13 @@ function adminFailed(name, out) {
 }
 // Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
 async function reloadAdmin(patch = {}, focus = null) {
-  const [pub, status, mappings, breaks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks()])
+  const [pub, status, mappings, breaks, sdgLinks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks()])
   const failed = [status, mappings, breaks].find((out) => !out.ok)
   if (failed) return adminFailed('status', failed)
-  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data } }, focus)
+  // A failed SDG link list fails only the SDG card (the rest of the admin screen still shows), unless the session is gone.
+  if (!sdgLinks.ok && !adminApi.session()) return adminFailed('status', sdgLinks)
+  const sdg = sdgLinks.ok ? { sdgLinks: sdgLinks.data, sdgLinksError: null } : { sdgLinks: null, sdgLinksError: sdgLinks.code ?? 'network' }
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg } }, focus)
 }
 async function loadJudge() {
   state.radarAdmin = { ...adminUi(), loading: true }
@@ -212,11 +220,16 @@ const adminActions = {
     const out = await adminApi.signIn(role === 'demo' ? 'demo' : 'admin', key, { label })
     key = ''
     if (!out.ok) return setAdmin(adminMsg('signin', { kind: 'bad', code: out.code }), 'admKey')
+    // A judge's matching answers use the judge's test data from now on.
+    if (role === 'demo') matchStale()
     state.radarAdmin = { msgs: {}, focus: 'admTop' }
     render()
   },
   admSignOut: async () => {
+    const wasJudge = adminApi.session()?.role === 'demo'
     await adminApi.signOut()
+    // Back to the live trend data in matching.
+    if (wasJudge) matchStale()
     state.radarAdmin = { msgs: { signin: { kind: 'ok', key: 'rdSignedOut' } }, focus: 'admMsg-signin' }
     render()
   },
@@ -241,6 +254,19 @@ const adminActions = {
     }
     radarStale()
     reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided', recalculation: out.data?.recalculation }) }, 'admMsg-map')
+  },
+  admSdg: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admSdgNote')
+    const notes = { ...adminUi().notes, sdg: note }
+    const out = await adminApi.decideSdgLink({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('sdg', out)
+      return setAdmin({ notes, ...adminMsg('sdg', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admSdgNote' : 'admMsg-sdg')
+    }
+    // The SDG tags in matching change (not the bands): fetch the list again, with no trend banner.
+    matchStale(false)
+    reloadAdmin({ notes: { ...notes, sdg: '' }, ...adminMsg('sdg', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-sdg')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')
@@ -295,13 +321,121 @@ const adminActions = {
     }
     const out = await adminApi.apply(body)
     if (!out.ok) return adminFailed('judge', out)
+    matchStale()
     setAdmin({ report: out.data, ...adminMsg('judge', null) }, 'demoReport')
   },
   demoReset: async () => {
     const out = await adminApi.reset()
     if (!out.ok) return adminFailed('judge', out)
+    matchStale()
     setAdmin({ report: out.data, ...adminMsg('judge', { kind: 'ok', key: 'rdJudgeResetDone' }) }, 'admMsg-judge')
   },
+}
+
+// ---------- Career matching (#match) and SDG contribution (#sdg) ----------
+// The profile is sent to the matching API for each answer (never stored there). The list is fetched again when the
+// profile changes (every edit makes a new profile object); a role's detail is fetched when it is asked for.
+const matchUi = () => {
+  if (!state.match?.details) state.match = { scenario: 'moderate', prevScenario: null, sdgFilter: '', data: null, details: {}, chosen: null, loading: false, error: null, explore: false, allBars: {}, pages: {}, open: {}, ...(state.match ?? {}), details: {} }
+  return state.match
+}
+let matchFor = null
+let matchRun = 0
+// What changed on the server since the list was loaded: null (nothing known), 'trend' (Radar data or a judge's test
+// data: bands may move, the banner says which) or 'sdg' (an SDG decision: tags only).
+let matchStaleBy = null
+// The bands shown before a trend change ({scenario, bands}), kept until the new list has come.
+let matchBefore = null
+const matchScreens = () => state.screen === 'match' || state.screen === 'sdg'
+// The matching answers in this tab may be out of date: load them again on the next #match / #sdg render. A load or
+// detail still on its way is dropped (it may hold the data from before the change).
+function matchStale(trend = true) {
+  matchRun += 1
+  matchStaleBy = trend ? 'trend' : matchStaleBy ?? 'sdg'
+  if (matchScreens()) render()
+}
+async function loadMatch() {
+  const run = ++matchRun
+  const profile = state.profile
+  const m = matchUi()
+  if (matchStaleBy !== 'trend' || matchFor !== profile) matchBefore = null
+  else if (m.data) matchBefore = { scenario: scenarioOf(m), bands: bandsAt(m.data, scenarioOf(m)) }
+  matchFor = profile
+  matchStaleBy = null
+  // New data: every list back to page 1, every card closed (pages and open cards are not saved to the guest store).
+  state.match = { ...m, loading: true, error: null, data: null, details: {}, prevScenario: null, trend: null, pages: {}, open: {} }
+  const out = await matchApi.list(minimizeForGuest(profile), { lang: state.lang })
+  // Dropped (stale again, or a new profile): the next load keeps matchBefore when it still applies.
+  if (run !== matchRun) return
+  const trend = out.ok ? trendMoves(matchBefore, out.data) : null
+  matchBefore = null
+  state.match = { ...matchUi(), loading: false, data: out.ok ? out.data : null, error: out.ok ? null : out.code ?? 'network', trend }
+  if (matchScreens()) render()
+}
+async function loadMatchDetail(code) {
+  if (!code || !state.profile) return
+  const run = matchRun
+  const m = matchUi()
+  m.details = { ...m.details, [code]: { loading: true } }
+  if (matchScreens()) render()
+  const out = await matchApi.role(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== matchRun) return
+  state.match.details = { ...state.match.details, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (matchScreens()) render()
+}
+function ensureMatch() {
+  const m = matchUi()
+  if (!state.profile) return
+  if (matchFor !== state.profile || matchStaleBy) loadMatch()
+  // The SDG tab shows the chosen role's path: its detail is needed.
+  if (state.screen === 'sdg' && m.chosen && !state.match.details?.[m.chosen]) loadMatchDetail(m.chosen)
+}
+const matchActions = {
+  // The scenario only moves roles between bands; the banner lists the roles that moved.
+  mScn: (scenario) => {
+    const m = matchUi()
+    const next = scenario === 'rapid' ? 'rapid' : 'moderate'
+    if (next === m.scenario) return
+    state.match = { ...m, prevScenario: m.scenario, scenario: next, trend: null, pages: {} }
+    persist()
+    render()
+  },
+  mFilter: (goal) => { state.match = { ...matchUi(), sdgFilter: goal ?? '', prevScenario: null, pages: {} }; render() },
+  // A page of one band list: "<list>:<band>:<page>" (list = field | other). The screen shows the last page when past it.
+  mPage: (arg) => {
+    const m = /^(field|other):([1-4]):(\d{1,6})$/.exec(String(arg ?? ''))
+    if (!m) return
+    const key = `${m[1]}:${m[2]}`
+    state.match = { ...matchUi(), pages: { ...(matchUi().pages ?? {}), [key]: Math.max(1, Number(m[3])) } }
+    render()
+    document.querySelector(`.mt-pager [data-arg^="${key}:"][aria-current="page"]`)?.focus()
+  },
+  // The "Go to page" box of one band list (key = "<list>:<band>").
+  mPageGo: (key) => {
+    if (!/^(field|other):[1-4]$/.test(String(key ?? ''))) return
+    const page = Number.parseInt(document.getElementById(`mtGo-${key.replace(':', '-')}`)?.value ?? '', 10)
+    if (Number.isFinite(page) && page >= 1) matchActions.mPage(`${key}:${Math.min(page, 999999)}`)
+  },
+  // "Show outlook and details" / "Hide outlook and details": the open state per role code; the detail is loaded once.
+  mOpen: (code) => {
+    const m = matchUi()
+    const isOpen = m.open?.[code] === true
+    state.match = { ...m, open: { ...(m.open ?? {}), [code]: !isOpen } }
+    const have = state.match.details?.[code]
+    if (!isOpen && (!have || have.error)) return loadMatchDetail(code)
+    render()
+  },
+  mBannerClose: () => { state.match = { ...matchUi(), prevScenario: null, trend: null }; render() },
+  mExplore: () => { state.match = { ...matchUi(), explore: !matchUi().explore }; render() },
+  mAllBars: (code) => { state.match = { ...matchUi(), allBars: { ...matchUi().allBars, [code]: true } }; render() },
+  mDetail: (code) => loadMatchDetail(code),
+  mChoose: (code) => {
+    const m = matchUi()
+    state.match = { ...m, chosen: m.chosen === code ? null : code, prevScenario: null }
+    persist()
+    render()
+  },
+  mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
@@ -584,7 +718,7 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions)
+Object.assign(actions, adminActions, matchActions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -683,8 +817,11 @@ function render() {
     : ''
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
+  if (screen === 'match' || screen === 'sdg') ensureMatch()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
+  else if (screen === 'match') view = matchScreen({ t, state })
+  else if (screen === 'sdg') view = sdgScreen({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
   else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
@@ -732,6 +869,7 @@ document.addEventListener('submit', (event) => {
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
+  if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
   onChange(event.target)
 })

@@ -52,6 +52,7 @@ export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' 
     },
     assessment: { status: 'incomplete', completedAt: null },
     occupationMappings: [],
+    aiUse: { mindset: null, ethics: null, apply: null, design: null },
     dataProvenance: { profileReviewedByUser: false, occupationalSources: [], extractionModel: null },
   }
 }
@@ -114,6 +115,16 @@ export function validateProfile(profile) {
   }
   for (const path of LISTS) if (!Array.isArray(get(profile, path))) errors.push({ path, code: 'bad_type' })
   if (Array.isArray(profile.skills)) profile.skills.forEach((skill, i) => checkSkill(skill, i, errors))
+  // aiUse (M17) is optional: profiles saved before it have none. Each answer is yes, no or unanswered.
+  if (profile.aiUse !== undefined) {
+    if (!profile.aiUse || typeof profile.aiUse !== 'object' || Array.isArray(profile.aiUse)) errors.push({ path: 'aiUse', code: 'bad_type' })
+    else {
+      for (const key of ['mindset', 'ethics', 'apply', 'design']) {
+        const v = profile.aiUse[key]
+        if (v !== undefined && v !== null && v !== 'yes' && v !== 'no') errors.push({ path: `aiUse.${key}`, code: 'bad_enum' })
+      }
+    }
+  }
   if (!['draft', 'confirmed'].includes(profile.profileStatus)) errors.push({ path: 'profileStatus', code: 'bad_enum' })
   return { ok: errors.length === 0, errors }
 }

@@ -40,7 +40,7 @@
     </div>
 
     <div class="diagram-container">
-      <svg viewBox="0 0 1200 760" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+      <svg viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
             <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
@@ -55,7 +55,7 @@
             <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
           </marker>
         </defs>
-        <rect width="1200" height="760" fill="url(#grid)"/>
+        <rect width="1200" height="850" fill="url(#grid)"/>
 
         <!-- Lane headers -->
         <g fill="#64748b" font-size="9" font-weight="600" letter-spacing="1">
@@ -67,8 +67,8 @@
         </g>
 
         <!-- Server boundary -->
-        <rect x="470" y="40" width="720" height="640" rx="12" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
-        <text x="480" y="674" fill="#fbbf24" font-size="8">One Node/Express app (same as Radar) · profile in request only, never stored or logged</text>
+        <rect x="470" y="40" width="720" height="730" rx="12" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="480" y="781" fill="#fbbf24" font-size="8">One Node/Express app (same as Radar) · profile in request only, never stored or logged</text>
 
         <!-- ===== Arrows: sources → pipeline → data ===== -->
         <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
@@ -272,14 +272,48 @@
         <text x="1065" y="635" fill="white" font-size="11" font-weight="600" text-anchor="middle">#judge change test</text>
         <text x="1065" y="651" fill="#94a3b8" font-size="8" text-anchor="middle">trend data changes → bands move</text>
 
+        <!-- ===== M17: Overall match path ===== -->
+        <text x="20" y="692" fill="#a78bfa" font-size="9" font-weight="600" letter-spacing="1">M17 · OVERALL MATCH (AI know-how and AI touch; Skill Match stays unchanged; same app as above)</text>
+        <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
+          <path d="M115 765 L115 785 L815 785 L815 765"/>
+          <path d="M670 732 L708 732"/>
+          <path d="M710 340 L690 340 L690 715 L672 715"/>
+        </g>
+        <g stroke="#22d3ee" stroke-width="1.3" fill="none" marker-end="url(#arrowcyan)">
+          <path d="M920 732 L958 732"/>
+        </g>
+        <rect x="20" y="700" width="190" height="65" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="115" y="718" fill="white" font-size="10" font-weight="600" text-anchor="middle">profile aiUse (M17)</text>
+        <text x="115" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">4 yes/no questions, based on</text>
+        <text x="115" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">UNESCO AI competency framework</text>
+        <text x="115" y="759" fill="#fbbf24" font-size="8" text-anchor="middle">AI know-how = Yes ÷ answered</text>
+
+        <rect x="480" y="700" width="190" height="65" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="718" fill="white" font-size="10" font-weight="600" text-anchor="middle">AI parts → touchPct (M17)</text>
+        <text x="575" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Moderate: AEI observed task share</text>
+        <text x="575" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">Rapid: ILO exposure score</text>
+        <text x="575" y="759" fill="#fbbf24" font-size="8" text-anchor="middle">none → Overall = Skill Match</text>
+
+        <rect x="710" y="700" width="210" height="65" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="718" fill="white" font-size="11" font-weight="600" text-anchor="middle">overall.js (M17)</text>
+        <text x="815" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Skill Match × (1 − touch)</text>
+        <text x="815" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">+ AI know-how × touch</text>
+        <text x="815" y="759" fill="#94a3b8" font-size="8" text-anchor="middle">never changes Skill Match or bands</text>
+
+        <rect x="960" y="700" width="210" height="65" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="1065" y="718" fill="white" font-size="11" font-weight="600" text-anchor="middle">Role card (M17)</text>
+        <text x="1065" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Overall match beside the</text>
+        <text x="1065" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">unchanged Skill Match + AI touch</text>
+        <text x="1065" y="759" fill="#94a3b8" font-size="8" text-anchor="middle">roles sort by Overall in a band</text>
+
         <!-- Legend -->
         <g font-size="8" fill="#94a3b8">
-          <line x1="20" y1="720" x2="44" y2="720" stroke="#64748b" stroke-width="1.3"/><text x="50" y="723">data flow</text>
-          <line x1="140" y1="720" x2="164" y2="720" stroke="#22d3ee" stroke-width="1.3"/><text x="170" y="723">engine → API</text>
-          <line x1="270" y1="720" x2="294" y2="720" stroke="#fb7185" stroke-width="1.3" stroke-dasharray="5,3"/><text x="300" y="723">owner decision / judge change</text>
-          <rect x="470" y="714" width="12" height="12" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24"/><text x="488" y="723">official source</text>
-          <rect x="590" y="714" width="12" height="12" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8"/><text x="608" y="723">repo / team draft</text>
-          <rect x="720" y="714" width="12" height="12" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa"/><text x="738" y="723">pure, tested</text>
+          <line x1="20" y1="815" x2="44" y2="815" stroke="#64748b" stroke-width="1.3"/><text x="50" y="818">data flow</text>
+          <line x1="140" y1="815" x2="164" y2="815" stroke="#22d3ee" stroke-width="1.3"/><text x="170" y="818">engine → API</text>
+          <line x1="270" y1="815" x2="294" y2="815" stroke="#fb7185" stroke-width="1.3" stroke-dasharray="5,3"/><text x="300" y="818">owner decision / judge change</text>
+          <rect x="470" y="809" width="12" height="12" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24"/><text x="488" y="818">official source</text>
+          <rect x="590" y="809" width="12" height="12" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8"/><text x="608" y="818">repo / team draft</text>
+          <rect x="720" y="809" width="12" height="12" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa"/><text x="738" y="818">pure, tested</text>
         </g>
       </svg>
     </div>
@@ -294,6 +328,7 @@
           <li>• outlook.js puts each role in one of 4 bands per scenario</li>
           <li>• Card: %, why (chart), what raises it, outlook, SDG tags</li>
           <li>• Choose this role → SDG contribution of the path</li>
+          <li>• M17: Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch</li>
         </ul>
       </div>
       <div class="card">
@@ -301,7 +336,7 @@
         <ul>
           <li>• No method from the old project; every weight is O*NET's</li>
           <li>• No AI or word linking: official code chain only</li>
-          <li>• Trends and scenarios never change the Skill Match</li>
+          <li>• Trends, scenarios and the Overall match never change the Skill Match</li>
           <li>• Group-level job ads labelled "not this job"</li>
           <li>• Every SDG team-draft link appears (M16); rejected ones are hidden</li>
           <li>• Missing data says "not available", never a guess</li>

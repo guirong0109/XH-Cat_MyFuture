@@ -255,6 +255,14 @@ a.tag.mt-sdg{text-decoration:none}
 a.tag.mt-sdg:hover{text-decoration:underline}
 .mt-aicard{font-size:13px;margin-top:6px;overflow-wrap:anywhere}
 .mt-aibar{height:5px;max-width:260px;margin-top:4px}
+.mt-aitouch,.mt-overall{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.mt-aitouchpct{font-size:22px;font-weight:700;line-height:1.1;color:var(--est)}
+.mt-aitouch .mt-aicard{margin-top:2px}
+.mt-aitouch .mt-aibar{max-width:100%}
+.mt-overall{background:var(--ok-soft);border-radius:10px;padding:10px 12px}
+.mt-overallpct{font-size:34px;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:var(--ok)}
+.mt-overallbar i{background:var(--ok)}
+.mt-overall.mt-overallask{background:var(--surface2)}
 .mt-open{grid-column:1/-1;min-width:0}
 .mt-open .mt-why{margin-top:10px}
 .mt-outgrid{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}

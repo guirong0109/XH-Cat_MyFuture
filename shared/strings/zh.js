@@ -696,7 +696,7 @@ export default {
   rdChange_revisions: "修订", // translation: owner review
   rdChange_versions: "版本", // translation: owner review,
   // Career matching and SDG contribution (Task 14) (translation: owner review)
-  mtLead: "来自 eMASCO 的马来西亚职位，与您的档案对比。技能匹配计算您已达到该工作所需水平中的多少。旁边的前景从不改变这个数字，只决定职位所在的组别。AI 支持您的选择，但从不替您做决定。", // translation: owner review
+  mtLead: "来自 eMASCO 的马来西亚职位，与您的档案对比。技能匹配计算您已达到该工作所需水平中的多少。旁边的前景从不改变这个数字，只决定职位所在的组别。AI 支持您的选择，但从不替您做决定。在 AI 涉及工作的地方，综合匹配会加入您的 AI 知识。", // translation: owner review
   mtNoProfile: "请先建立您的档案", // translation: owner review
   mtNoProfileText: "职业匹配会将职位与您的档案对比。请先添加您的学历、工作和技能。", // translation: owner review
   mtBuildProfile: "建立我的档案", // translation: owner review
@@ -885,13 +885,19 @@ export default {
   mtGoToPage: "跳到第几页", // translation: owner review
   mtGo: "前往", // translation: owner review
   mtHideDetail: "隐藏前景和详情", // translation: owner review
-  mtAiCardModerate: "在观察到的使用中，AI 完成任务的占 {pct}%", // translation: owner review
+  mtAiTouchModerate: "在此工作 {pct}% 的任务中观察到 AI 使用", // translation: owner review
   mtAiCardRapid: "生成式 AI 暴露度 {pct}% · ILO 第 {group} 组（共 4 组）", // translation: owner review
   mtAiCardRapidWord: "生成式 AI 暴露度 {pct}% · ILO：{word}", // translation: owner review
   mtIlo_minimal: "极低暴露", // translation: owner review
   mtIlo_not_exposed: "未暴露", // translation: owner review
   mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
   mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtAiTouch: "AI 涉及此工作的程度", // translation: owner review
+  mtOverall: "综合匹配", // translation: owner review
+  mtOverallSum: "{skill}% 技能 × {rest} + {know}% AI 知识 × {touch} = {percent}%", // translation: owner review
+  mtOverallNoAi: "此情景下没有该工作的 AI 数据，所以综合匹配 = 技能匹配。", // translation: owner review
+  mtOverallAsk: "回答 4 个简短的 AI 问题，查看您的综合匹配。", // translation: owner review
+  mtOverallBtn: "回答 AI 问题", // translation: owner review
   mtNotReviewed: "团队草稿，尚未审核", // translation: owner review
   mtSdgGoalStatus: "SDG {goal}：{status}", // translation: owner review
   rdSdgTitle: "可持续发展目标关联（职业匹配）", // translation: owner review
@@ -1168,4 +1174,20 @@ export default {
   pwSrc_picks: "课程、学位课程、专业机构", // translation: owner review
   pwSrc_site: "“更多”链接（该网站自己的搜索）", // translation: owner review
   pwLinksOnly: "仅链接", // translation: owner review
+  // Using AI (M17) (translation: owner review)
+  secAi: "使用人工智能", // translation: owner review
+  aiUseIntro: "四个关于您如何使用人工智能的简短问题。答案会把您的 AI 知识加入综合匹配。", // translation: owner review
+  aiDim_mindset: "以人为本的思维", // translation: owner review
+  aiDim_ethics: "人工智能伦理", // translation: owner review
+  aiDim_apply: "人工智能技术与应用", // translation: owner review
+  aiDim_design: "人工智能系统设计", // translation: owner review
+  aiQ_mindset: "我自己决定何时使用人工智能、何时不用，并对结果负责", // translation: owner review
+  aiQ_ethics: "我会检查人工智能回答中的错误和偏见，并且不把私人数据交给人工智能工具", // translation: owner review
+  aiQ_apply: "我在真实的工作或学习任务中使用人工智能工具（如 ChatGPT、Copilot）", // translation: owner review
+  aiQ_design: "我曾用人工智能搭建或设置过东西（提示流程、模型、自动化）", // translation: owner review
+  aiYes: "是", // translation: owner review
+  aiNo: "否", // translation: owner review
+  aiKnowHowLine: "您的 AI 知识：{percent}%（已回答 {answered} 题，其中 {yes} 题为“是”）", // translation: owner review
+  aiKnowHowNone: "您的 AI 知识：尚未回答任何问题", // translation: owner review
+  aiUseSource: "问题依据联合国教科文组织学生人工智能能力框架（2024）的四个部分 · 您的答案只留在此浏览器中", // translation: owner review
 }

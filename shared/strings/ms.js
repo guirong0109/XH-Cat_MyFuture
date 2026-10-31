@@ -696,7 +696,7 @@ export default {
   rdChange_revisions: "semakan semula", // translation: owner review
   rdChange_versions: "versi", // translation: owner review,
   // Career matching and SDG contribution (Task 14) (translation: owner review)
-  mtLead: "Peranan Malaysia daripada eMASCO, dibandingkan dengan profil anda. Padanan Kemahiran mengira berapa banyak tahap yang diperlukan oleh sesuatu pekerjaan yang sudah anda capai. Prospek di sebelahnya tidak pernah mengubah nombor itu; ia hanya menentukan kumpulan bagi sesuatu peranan. AI menyokong pilihan anda; ia tidak pernah membuat keputusan untuk anda.", // translation: owner review
+  mtLead: "Peranan Malaysia daripada eMASCO, dibandingkan dengan profil anda. Padanan Kemahiran mengira berapa banyak tahap yang diperlukan oleh sesuatu pekerjaan yang sudah anda capai. Prospek di sebelahnya tidak pernah mengubah nombor itu; ia hanya menentukan kumpulan bagi sesuatu peranan. AI menyokong pilihan anda; ia tidak pernah membuat keputusan untuk anda. Padanan keseluruhan menambah pengetahuan AI anda di mana AI menyentuh pekerjaan itu.", // translation: owner review
   mtNoProfile: "Bina profil anda dahulu", // translation: owner review
   mtNoProfileText: "Padanan kerjaya membandingkan peranan dengan profil anda. Tambah pengajian, kerja dan kemahiran anda untuk bermula.", // translation: owner review
   mtBuildProfile: "Bina profil saya", // translation: owner review
@@ -885,13 +885,19 @@ export default {
   mtGoToPage: "Pergi ke halaman", // translation: owner review
   mtGo: "Pergi", // translation: owner review
   mtHideDetail: "Sembunyikan prospek dan butiran", // translation: owner review
-  mtAiCardModerate: "AI melakukan tugas dalam {pct}% penggunaan yang diperhatikan", // translation: owner review
+  mtAiTouchModerate: "Penggunaan AI dilihat pada {pct}% tugas pekerjaan ini", // translation: owner review
   mtAiCardRapid: "Pendedahan GenAI {pct}% · kumpulan ILO {group} daripada 4", // translation: owner review
   mtAiCardRapidWord: "Pendedahan GenAI {pct}% · ILO: {word}", // translation: owner review
   mtIlo_minimal: "pendedahan minimum", // translation: owner review
   mtIlo_not_exposed: "tidak terdedah", // translation: owner review
   mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
   mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtAiTouch: "AI menyentuh pekerjaan ini", // translation: owner review
+  mtOverall: "Padanan keseluruhan", // translation: owner review
+  mtOverallSum: "{skill}% kemahiran × {rest} + {know}% pengetahuan AI × {touch} = {percent}%", // translation: owner review
+  mtOverallNoAi: "Tiada data AI untuk pekerjaan ini dalam senario ini, jadi Keseluruhan = Padanan Kemahiran.", // translation: owner review
+  mtOverallAsk: "Jawab 4 soalan ringkas tentang AI untuk melihat padanan keseluruhan anda.", // translation: owner review
+  mtOverallBtn: "Jawab soalan AI", // translation: owner review
   mtNotReviewed: "draf pasukan, belum disemak", // translation: owner review
   mtSdgGoalStatus: "SDG {goal}: {status}", // translation: owner review
   rdSdgTitle: "Pautan SDG (padanan kerjaya)", // translation: owner review
@@ -1168,4 +1174,20 @@ export default {
   pwSrc_picks: "Kursus, program, badan", // translation: owner review
   pwSrc_site: "Pautan “Lagi di” (carian laman itu sendiri)", // translation: owner review
   pwLinksOnly: "pautan sahaja", // translation: owner review
+  // Using AI (M17) (translation: owner review)
+  secAi: "Menggunakan AI", // translation: owner review
+  aiUseIntro: "Empat soalan ringkas tentang cara anda menggunakan AI. Jawapan menambah pengetahuan AI anda kepada Padanan keseluruhan.", // translation: owner review
+  aiDim_mindset: "Pemikiran berpusatkan manusia", // translation: owner review
+  aiDim_ethics: "Etika AI", // translation: owner review
+  aiDim_apply: "Teknik dan aplikasi AI", // translation: owner review
+  aiDim_design: "Reka bentuk sistem AI", // translation: owner review
+  aiQ_mindset: "Saya tentukan bila hendak guna AI dan bila tidak, dan saya kekal bertanggungjawab atas hasilnya", // translation: owner review
+  aiQ_ethics: "Saya semak jawapan AI untuk kesilapan dan bias, dan jauhkan data peribadi daripada alat AI", // translation: owner review
+  aiQ_apply: "Saya guna alat AI (cth. ChatGPT, Copilot) untuk kerja atau tugasan belajar sebenar", // translation: owner review
+  aiQ_design: "Saya pernah membina atau menyediakan sesuatu dengan AI (aliran prompt, model, automasi)", // translation: owner review
+  aiYes: "Ya", // translation: owner review
+  aiNo: "Tidak", // translation: owner review
+  aiKnowHowLine: "Pengetahuan AI anda: {percent}% ({yes} Ya daripada {answered} dijawab)", // translation: owner review
+  aiKnowHowNone: "Pengetahuan AI anda: belum ada soalan dijawab", // translation: owner review
+  aiUseSource: "Soalan berdasarkan empat bahagian kerangka kompetensi AI UNESCO untuk pelajar (2024) · jawapan anda kekal dalam pelayar ini", // translation: owner review
 }

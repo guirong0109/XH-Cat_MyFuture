@@ -11,6 +11,7 @@
 import { bestFit, profileLevels } from '../../shared/matching/fit.js'
 import { aeiForJob, aiPart, bandOf, jobAdsPart } from '../../shared/matching/outlook.js'
 import { goalsOfRole, pathContribution, roleLinks, shownLinks } from '../../shared/matching/sdg.js'
+import { aiKnowHow, overallMatch, readAiUse } from '../../shared/matching/overall.js'
 import { nameKey } from '../skills/onetSkills.js'
 import { loadReviews } from '../radar/reviews.js'
 import { loadRadarReferences } from '../radar/references.js'
@@ -23,6 +24,7 @@ const SDG_KIND = 'sdg_link'
 // after a decision through /api/admin/matching/sdg-links (sdgDecided).
 export const SDG_TTL_MS = 60000
 const round2 = (n) => Math.round(n * 100) / 100
+const round1 = (n) => Math.round(n * 10) / 10
 const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 const arr = (v) => (Array.isArray(v) ? v : [])
 const codeOf = (error) => error?.code ?? error?.name ?? 'Error'
@@ -65,7 +67,8 @@ function readProfile(profile, data) {
   }
   const usable = levels.size > 0
   const provisional = usable && [...levels.values()].some((l) => l.notAssessed)
-  return { levels, usable, provisional, unusedIds, software }
+  // AI know-how from the four yes/no answers (M17); null when none is answered or the profile has no aiUse.
+  return { levels, usable, provisional, unusedIds, software, knowHow: aiKnowHow(readAiUse(profile)) }
 }
 
 // Where the profile points: O*NET jobs from the fields of study, and the occupations of past jobs and chosen roles.
@@ -210,13 +213,20 @@ export function createMatchingService({ loadData, radar = null, references = nul
   const goalTitlesOf = (data) => Object.fromEntries(arr(data.sdg.targets.goals).map((g) => [String(g.code), g.title ?? null]))
 
   // The closed card's AI line (numbers only): the Moderate automation % that decides band 2, and the Rapid ILO exposure
-  // (mean x 100) and gradient of the chain's ISCO-08 code.
+  // (mean x 100) and gradient of the chain's ISCO-08 code. touchPct (M17, 0-100, one decimal, or null) is the AI touch
+  // in the Overall match: Moderate = the observed share of the best O*NET job's tasks (Anthropic Economic Index),
+  // Rapid = the ILO exposure mean x 100.
   const aiNumbers = ({ moderate, rapid }) => ({
-    moderate: { available: moderate.available, automationPct: moderate.available ? moderate.values.automationPct : null },
+    moderate: {
+      available: moderate.available,
+      automationPct: moderate.available ? moderate.values.automationPct : null,
+      touchPct: moderate.available && typeof moderate.values.observedShare === 'number' ? moderate.values.observedShare : null,
+    },
     rapid: {
       available: rapid.available,
       exposurePct: rapid.available && typeof rapid.values.mean === 'number' ? Math.round(rapid.values.mean * 100) : null,
       gradient: rapid.available ? rapid.values.gradient : null,
+      touchPct: rapid.available && typeof rapid.values.mean === 'number' ? round1(rapid.values.mean * 100) : null,
     },
   })
   // goal -> date (YYYY-MM-DD) when the owner approved every one of the role's links to that goal; other goals are not
@@ -244,16 +254,22 @@ export function createMatchingService({ loadData, radar = null, references = nul
     const roles = data.roles.map((role) => {
       const core = roleCore(role, data, mine, signals)
       const via = inFieldOf(role.code, core.chain.jobs, pointers)
+      const skillMatch = skillMatchOf(core.best, mine)
+      const ai = aiNumbers(core.ai)
       return {
         code: role.code,
         title: role.title,
         url: role.url,
         inField: via.length > 0,
         inFieldVia: via,
-        skillMatch: skillMatchOf(core.best, mine),
+        skillMatch,
         unavailable: core.chain.missingStep ? { missingStep: core.chain.missingStep } : null,
         bands: core.bands,
-        ai: aiNumbers(core.ai),
+        ai,
+        overallMatch: {
+          moderate: overallMatch(skillMatch, mine.knowHow, ai.moderate.touchPct),
+          rapid: overallMatch(skillMatch, mine.knowHow, ai.rapid.touchPct),
+        },
         sdgGoals: goalsOfRole(approved, role.code),
         sdgReviewed: reviewedGoals(approved, role.code),
       }
@@ -261,6 +277,7 @@ export function createMatchingService({ loadData, radar = null, references = nul
     return {
       sources: data.sources,
       radar: info,
+      aiKnowHow: mine.knowHow,
       profile: { usable: mine.usable, provisional: mine.provisional, unusedIds: mine.unusedIds },
       goalTitles: goalTitlesOf(data),
       roles,

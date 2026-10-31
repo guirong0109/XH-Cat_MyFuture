@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1088 passed
+npm install && npm test     # expect 1129 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -50,6 +50,8 @@ python -m unittest discover pipeline/tests   # expect 49 OK
   missing step, never a guess.
 - Only show SDG links as the owner decided (M16: team drafts labelled, rejected hidden); never approve on the
   owner's behalf. The profile sent to `/api/matching` is never stored or logged.
+- Overall match (M17): Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch (`shared/matching/overall.js`);
+  it never changes the Skill Match or the bands. The 4 AI questions follow the UNESCO framework (source on screen).
 
 ## Study pathway (details: branch `claude/study-pathway`)
 - Code in `shared/pathway/`, `server/pathway/`, `public/js/screens/pathway.js`, `pathwayParts.js`, `pathwayApi.js`.

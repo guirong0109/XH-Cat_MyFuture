@@ -603,6 +603,15 @@ describe('Owner UI round (31 Oct)', () => {
       expect(failed).toContain('data-act="mDetail"')
     })
 
+    it('the "Ask the AI questions" button opens the form on the AI section', () => {
+      const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
+      const at = app.indexOf('  mAskAi: ')
+      const body = app.slice(at, app.indexOf('\n', at))
+      expect(body).toContain('state.section = AI_SECTION')
+      expect(body).toContain("go('form')")
+      expect(app).toMatch(/const AI_SECTION = 5/)
+    })
+
     it('the page passes the open state per role code; CSS puts the boxes side by side from 760 px', () => {
       const html = view({ details: { [FIXTURE.fullRole]: d() }, open: { [FIXTURE.fullRole]: true } })
       expect(html).toContain('class="mt-outgrid"')
@@ -618,14 +627,21 @@ describe('Owner UI round (31 Oct)', () => {
   describe('4. AI on the closed card', () => {
     it('Moderate: the AEI automation % with a bar, labelled estimate with its source', () => {
       const line = aiLine(card(FIXTURE.fullRole))
-      expect(text(line)).toContain('AI does the task in 30% of observed use')
+      expect(text(line)).toContain("AI use seen on 66.7% of this job's tasks")
+      expect(text(line)).not.toContain('30%')
+      expect(line).toContain('mt-aibar')
       expect(text(line)).toContain(t('mtEstimate'))
       expect(text(line)).toContain('Anthropic Economic Index')
-      expect(line).toContain('style="width:30%"')
-      // under the title, before the SDG line
+      expect(line).toContain('style="width:66.7%"') // M17: the bar shows the AI touch (observed share), not the automation share
+      // M17: now in the right column, after the Skill Match
       const html = card(FIXTURE.fullRole)
-      expect(html.indexOf('class="mt-aicard"')).toBeGreaterThan(html.indexOf('class="mt-ttl"'))
-      expect(html.indexOf('class="mt-aicard"')).toBeLessThan(html.indexOf('class="mt-parts"'))
+      expect(html.indexOf('class="mt-aicard"')).toBeGreaterThan(html.indexOf('class="mt-side"'))
+    })
+
+    it('Moderate: the bar width and the number in the text are the same value', () => {
+      const line = aiLine(card(FIXTURE.fullRole))
+      const num = /AI use seen on ([\d.]+)%/.exec(text(line))[1]
+      expect(line).toContain(`style="width:${num}%"`)
     })
 
     it('Rapid: GenAI exposure % and the ILO group; minimal / not exposed in words, bar still shown', () => {
@@ -751,4 +767,53 @@ describe('Software asked box (owner request 31 Oct: too long)', () => {
     expect(softwareChips(t, [])).toContain(t('mtSwNone'))
     expect(softwareChips(t, [{ name: '<b>x</b>', have: true, inDemand: false }])).not.toContain('<b>x</b>')
   })
+})
+
+describe('Overall match on the card (M17 task 4)', () => {
+  const k = { percent: 75, yes: 3, answered: 4 }
+  const mk = (over) => ({ code: '2512-01', title: 'Software Developer', skillMatch: { percent: 64, met: 9, needed: 14, provisional: false, onetCode: '15-1252.00', onetTitle: 'Software Developers' },
+    ai: { moderate: { available: true, automationPct: 54.7, touchPct: 71 }, rapid: { available: true, exposurePct: 58, gradient: 'G3', touchPct: 58 } },
+    overallMatch: { moderate: { percent: 72, provisional: false, noAiData: false, skill: 64, knowHow: k, touch: 0.71 }, rapid: { percent: 70, provisional: false, noAiData: false, skill: 64, knowHow: k, touch: 0.58 } },
+    bands: { moderate: 2, rapid: 2 }, sdgGoals: [], inField: true, ...over })
+  const stateWith = (roles) => ({ lang: 'en', profile: FULL, match: match({ data: { ...list, roles, aiKnowHow: k } }) })
+
+  it('moves the AI bar to the right column, under the Skill Match, then the Overall', () => {
+    const html = roleCard({ t, role: mk(), scenario: 'moderate', knowHow: k })
+    const side = html.slice(html.indexOf('class="mt-side"'))
+    expect(html.slice(0, html.indexOf('class="mt-side"'))).not.toContain('mt-aicard')
+    expect(side.indexOf('Skill Match')).toBeLessThan(side.indexOf('mt-aitouch'))
+    expect(side.indexOf('mt-aitouch')).toBeLessThan(side.indexOf('mt-overall'))
+  })
+  it('writes the sum out with two decimals', () =>
+    expect(text(roleCard({ t, role: mk(), scenario: 'moderate', knowHow: k }))).toContain('64% skills × 0.29 + 75% AI know-how × 0.71 = 72%'))
+  it('switching scenario changes Overall but not Skill Match', () => {
+    const m = roleCard({ t, role: mk(), scenario: 'moderate', knowHow: k }); const r = roleCard({ t, role: mk(), scenario: 'rapid', knowHow: k })
+    expect(m).toContain('>64%<'); expect(r).toContain('>64%<')
+    expect(m).toContain('>72%<'); expect(r).toContain('>70%<')
+    expect(m).not.toContain('>70%<'); expect(r).not.toContain('>72%<')
+  })
+  it('no AI data -> Overall equals Skill Match with the note', () => {
+    const o = { percent: 64, provisional: false, noAiData: true, skill: 64, knowHow: k, touch: null }
+    const html = roleCard({ t, role: mk({ overallMatch: { moderate: o, rapid: null } }), scenario: 'moderate', knowHow: k })
+    expect(text(html)).toContain('No AI data for this job in this scenario, so Overall = Skill Match.')
+    expect(html).not.toContain('data-act="mAskAi"')
+  })
+  it('no answers -> the ask button, no Overall number', () => {
+    const html = roleCard({ t, role: mk({ overallMatch: { moderate: null, rapid: null } }), scenario: 'moderate', knowHow: null })
+    expect(html).toContain('data-act="mAskAi"'); expect(text(html)).not.toContain('AI know-how ×')
+    expect(roleCard({ t, role: mk({ overallMatch: { moderate: null, rapid: null } }), scenario: 'moderate' })).toContain('data-act="mAskAi"')
+  })
+  it('a role with no Skill Match shows no Overall block', () => {
+    const html = roleCard({ t, role: mk({ skillMatch: null, overallMatch: { moderate: null, rapid: null } }), scenario: 'moderate', knowHow: null })
+    expect(html).not.toContain('mt-overall'); expect(html).not.toContain('mAskAi')
+  })
+  it('sorts a band by Overall, then Skill Match, roles with neither last', () => {
+    const a = mk({ code: '1000-01', title: 'A', skillMatch: { ...mk().skillMatch, percent: 20 }, overallMatch: { moderate: { ...mk().overallMatch.moderate, percent: 50 }, rapid: null } })
+    const b = mk({ code: '1000-02', title: 'B', overallMatch: { moderate: null, rapid: null }, skillMatch: { ...mk().skillMatch, percent: 60 } })
+    const c = mk({ code: '1000-03', title: 'C', skillMatch: null, overallMatch: { moderate: null, rapid: null } })
+    const html = matchView({ t, state: stateWith([c, a, b]) })
+    expect(html.indexOf('data-code="1000-02"')).toBeLessThan(html.indexOf('data-code="1000-01"'))
+    expect(html.indexOf('data-code="1000-01"')).toBeLessThan(html.indexOf('data-code="1000-03"'))
+  })
+  it('has no forbidden words', () => expect(roleCard({ t, role: mk(), scenario: 'rapid', knowHow: k })).not.toMatch(FORBIDDEN))
 })

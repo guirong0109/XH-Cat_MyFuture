@@ -20,6 +20,7 @@ scenario comparison.
 | Landing page (ATM intro, guide figures, roller counters) | `claude/website-interface` | merged 2026-10-31 | Merged as built; 829 tests pass; checked in the browser |
 | Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
 | Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
+| Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -77,7 +78,10 @@ scenario comparison.
   `docs/record/screens/` (blocked by a permission check for Claude).
 - **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
   approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
-  OK for a new package).
+  OK for a new package). Overall match: the page's sources table has no UNESCO row yet (shown on the questions page);
+  zh mixes 您/你.
+- **Tests:** since the 31 Oct merges, a plain `npm test` sometimes fails a few unrelated server tests under load;
+  `npx vitest run --maxWorkers=3` is green. Decide a worker limit or timeout in the test settings.
 - **Study pathway:** review the team picks in `#admin` (none approved yet; a note is required per decision); fill
   the 60 accredited picks that have no MQA reference yet (the scripted MQR query works, see the branch handover);
   review BM and 中文 pathway wording; professional bodies not linked (law, architecture and town planning,
@@ -98,6 +102,12 @@ scenario comparison.
 - **SDG:** team drafts shown with a UN goal link; rejected links hidden; approved links dated. The path contribution
   is a count of links with reasons, never a score.
 - The profile sent to `/api/matching` is never stored or logged. Forbidden keys: score, weight, rank, opportunit.
+- **Overall match (M17, 31 Oct):** profile section 6 "Using AI" asks 4 yes/no questions based on the UNESCO AI
+  competency framework for students (2024, https://doi.org/10.54675/JKJB9835). AI know-how = Yes ÷ answered.
+  Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch; AI touch = share of the job's tasks seen in AI use
+  (Moderate, Anthropic) or the ILO exposure score (Rapid). The Skill Match and the bands never change; inside a band
+  roles sort by Overall. No answers → an "Answer AI questions" button; no AI data → Overall = Skill Match. Code
+  `shared/matching/overall.js`.
 
 ## Landing page (since 2026-10-31, details: branch `claude/website-interface`)
 - The welcome screen is now the landing page. Its "Get started" buttons open the sign-in / guest choice
@@ -139,7 +149,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1088 passed
+npm test          # expect 1129 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

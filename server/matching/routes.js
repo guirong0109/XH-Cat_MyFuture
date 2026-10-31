@@ -31,6 +31,7 @@ export function validProfile(profile) {
     if (!plainObject(parent)) return false
     if (parent[second] !== undefined && !Array.isArray(parent[second])) return false
   }
+  if (profile.aiUse !== undefined && !plainObject(profile.aiUse)) return false
   return true
 }
 

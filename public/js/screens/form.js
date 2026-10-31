@@ -1,12 +1,13 @@
-// Case B (manual entry) and Case C editing: the profile form in five sections. Free movement between sections;
+// Case B (manual entry) and Case C editing: the profile form in six sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
 import { listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
+import { AI_USE_KEYS, aiKnowHow, readAiUse } from '/shared/matching/overall.js'
 
-export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
+export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs', 'secAi']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
   ['userCategory', 'education.educationStatus', 'education.highestQualification'],
@@ -14,6 +15,7 @@ export const SECTION_FIELDS = [
   [],
   [],
   ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
+  [],
 ]
 
 // A search picker with its current list (the last search for that key, or nothing yet).
@@ -124,7 +126,19 @@ function prefs(ctx) {
   ].join('')
 }
 
-const BODIES = [study, work, skills, certs, prefs]
+// Using AI (M17): four yes/no questions, one per dimension of the UNESCO AI competency framework for students.
+function aiUseSection(ctx) {
+  const { t, profile } = ctx
+  const answers = readAiUse(profile)
+  const rows = AI_USE_KEYS.map((key) => `<div style="margin-bottom:12px"><label for="ai-${key}"><b>${esc(t(`aiDim_${key}`))}</b><br>${esc(t(`aiQ_${key}`))}</label>
+    <select id="ai-${key}" data-aiuse="${key}">${[['', 'preferNot'], ['yes', 'aiYes'], ['no', 'aiNo']].map(([v, k]) => `<option value="${v}"${(answers[key] ?? '') === v ? ' selected' : ''}>${esc(t(k))}</option>`).join('')}</select></div>`).join('')
+  const know = aiKnowHow(answers)
+  const line = know ? t('aiKnowHowLine', { percent: know.percent, yes: know.yes, answered: know.answered }) : t('aiKnowHowNone')
+  return `<p>${esc(t('aiUseIntro'))}</p>${rows}<p><b>${esc(line)}</b></p>
+  <p class="tiny">${esc(t('aiUseSource'))} · <a href="https://doi.org/10.54675/JKJB9835" target="_blank" rel="noopener">UNESCO, 2024</a></p>`
+}
+
+const BODIES = [study, work, skills, certs, prefs, aiUseSection]
 
 export default ({ t, state }) => {
   const section = state.section ?? 0

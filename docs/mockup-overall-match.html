@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Overall Match Mockup</title>
+<!-- MOCKUP for owner review (proposed owner decision M17). Role titles, codes and O*NET job names are real; every
+     percentage, AI value and answer here is SAMPLE data, not a calculation from the app. -->
+<style>
+:root{
+  --bg:#f5f6f2;--surface:#ffffff;--surface2:#eef1ec;--ink:#16201b;--muted:#5a6761;--line:#dce2db;
+  --accent:#0f766e;--accent-ink:#ffffff;--accent-soft:#dff3ef;
+  --src:#1d4ed8;--src-soft:#dbe7fe;--est:#6d28d9;--est-soft:#ece5fd;
+  --self:#a16207;--self-soft:#fdf1c7;--ok:#15803d;--ok-soft:#dcf7e4;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--ok:#86efac;--ok-soft:#14321f;--shadow:none;}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+button,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+.mockbar{background:var(--self-soft);color:var(--self);font-size:12.5px;text-align:center;padding:6px 16px;border-bottom:1px solid var(--line)}
+main{padding:24px 16px 60px;max-width:1060px;margin:0 auto}
+h1{font-size:clamp(22px,3vw,28px);letter-spacing:-.02em;margin-bottom:4px}
+h2{font-size:18px;margin:28px 0 8px}
+.lead{color:var(--muted);max-width:72ch;margin-bottom:14px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.btn{border:1px solid var(--line);background:var(--surface2);padding:7px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px}
+.tag.calc{background:var(--accent-soft);color:var(--accent)}
+.tag.est{background:var(--est-soft);color:var(--est)}
+.tag.src{background:var(--src-soft);color:var(--src)}
+.tag.self{background:var(--self-soft);color:var(--self)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 14px;cursor:pointer;font-weight:600;font-size:13px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.new{outline:2px dashed var(--self);outline-offset:4px;border-radius:10px}
+.note{font-size:12px;color:var(--self);margin-top:4px}
+
+/* profile card */
+.q{display:grid;grid-template-columns:1fr 190px;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0}
+.q .dim{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.q select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.know{display:flex;gap:12px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.know b{font-size:20px}
+
+/* role card */
+.role{display:grid;grid-template-columns:1fr 290px;gap:0}
+.role .left{padding-right:20px;min-width:0}
+.role .right{border-left:1px solid var(--line);padding-left:20px;display:flex;flex-direction:column;gap:12px}
+.role h3{font-size:19px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.role h3 .code{font-size:13px;font-weight:400;color:var(--muted)}
+.bar{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin:4px 0}
+.bar i{display:block;height:100%;border-radius:99px}
+.bar.skill i{background:var(--accent)}
+.bar.ai i{background:var(--est)}
+.bar.all i{background:var(--ok)}
+.lbl{font-size:12.5px;color:var(--muted)}
+.big{font-size:34px;font-weight:800;line-height:1.1}
+.mid{font-size:22px;font-weight:700;line-height:1.1}
+.blk{padding-bottom:10px;border-bottom:1px solid var(--line)}
+.blk:last-child{border-bottom:0;padding-bottom:0}
+.overall{background:var(--ok-soft);border-radius:10px;padding:10px 12px}
+.overall .big{color:var(--ok)}
+.how{font-size:12px;color:var(--muted);margin-top:4px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media (max-width:760px){
+  .role{grid-template-columns:1fr}
+  .role .left{padding-right:0}
+  .role .right{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:12px;margin-top:12px}
+  .q{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="mockbar">MOCKUP for your review · numbers are sample data · dashed outline = new</div>
+<main>
+<h1>Overall match: mockup</h1>
+<p class="lead">Part A is the new last card of the profile. Part B is a role card on the matching screen. Change the
+answers or the scenario: the numbers below update so you can see how Overall match moves.</p>
+
+<h2>A · Profile: new last card “Using AI”</h2>
+<div class="card new">
+  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
+    <b>Using AI</b>
+    <span class="tiny muted">Step 6 of 6 · optional</span>
+  </div>
+  <p class="small muted" style="margin:4px 0 8px">Four short questions about how you use AI. They add your AI know-how to the Overall match.</p>
+  <div id="qs"></div>
+  <div class="know">
+    <span class="lbl">Your AI know-how</span>
+    <b id="knowPct">–</b>
+    <span class="tiny muted" id="knowHow"></span>
+  </div>
+  <p class="tiny muted" style="margin-top:8px">Source: questions based on the four parts of the
+    <a href="https://doi.org/10.54675/JKJB9835" target="_blank" rel="noopener">UNESCO AI Competency Framework for Students (2024)</a>
+    · your answers stay in this browser, never stored on the server</p>
+</div>
+
+<h2 style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">B · Matching: role card
+  <span class="seg" id="seg"><button data-s="moderate" class="on">Moderate AI</button><button data-s="rapid">Rapid AI</button></span>
+</h2>
+<div id="cards" style="display:grid;gap:14px"></div>
+
+<h2>What changes, in short</h2>
+<div class="card small">
+  <ul style="padding-left:18px;display:grid;gap:4px">
+    <li>The purple AI bar moves from the left side to the right column.</li>
+    <li>New <b>Overall match</b> under Skill Match: <b>Skill Match × (100% − AI touch) + AI know-how × AI touch</b>.</li>
+    <li><b>AI touch</b> comes from data: Moderate = share of the job's tasks seen in real AI use (Anthropic Economic Index); Rapid = ILO exposure score.</li>
+    <li>Skill Match never changes. Overall can change when you switch Moderate ↔ Rapid.</li>
+    <li>No AI data → Overall = Skill Match. AI questions not answered → no Overall, a button to answer them.</li>
+    <li>Roles are sorted by Overall match when it exists.</li>
+  </ul>
+</div>
+</main>
+
+<script>
+const QS = [
+  { dim: 'Human-centred mindset', text: 'I decide when to use AI and when not to, and I stay responsible for the result' },
+  { dim: 'Ethics of AI', text: 'I check AI answers for mistakes and bias, and keep private data out of AI tools' },
+  { dim: 'AI techniques and applications', text: 'I use AI tools (e.g. ChatGPT, Copilot) for real work or study tasks' },
+  { dim: 'AI system design', text: 'I have built or set up something with AI (a prompt flow, a model, an automation)' },
+]
+const answers = ['yes', 'yes', 'yes', 'no']
+// SAMPLE roles. aiTouch = share of the job AI touches (0-1) per scenario; null = no AI data.
+const ROLES = [
+  { title: 'Information Technology Auditor', code: '2519-02', onet: 'Database Architects (15-1243.00)', skill: 8,
+    ai: { moderate: { touch: 0.55, src: 'Anthropic Economic Index' }, rapid: { touch: 0.62, src: 'ILO WP140, gradient 3' } } },
+  { title: 'Software Developer', code: '2512-01', onet: 'Software Developers (15-1252.00)', skill: 64,
+    ai: { moderate: { touch: 0.71, src: 'Anthropic Economic Index' }, rapid: { touch: 0.58, src: 'ILO WP140, gradient 3' } } },
+  { title: 'Landscape Gardener', code: '6113-03', onet: 'Landscaping and Groundskeeping Workers (37-3011.00)', skill: 41,
+    ai: { moderate: null, rapid: { touch: 0.08, src: 'ILO WP140, not exposed' } } },
+]
+let scenario = 'moderate'
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+const pct = (x) => Math.round(x * 100) / 100
+
+function know() {
+  const answered = answers.filter((a) => a !== 'skip')
+  if (!answered.length) return null
+  return { pct: Math.round((answered.filter((a) => a === 'yes').length / answered.length) * 100), yes: answered.filter((a) => a === 'yes').length, n: answered.length }
+}
+
+function renderQs() {
+  document.getElementById('qs').innerHTML = QS.map((q, i) => `
+    <div class="q"><div><div class="dim">${i + 1} · ${esc(q.dim)}</div><div>${esc(q.text)}</div></div>
+    <select data-i="${i}">
+      <option value="skip"${answers[i] === 'skip' ? ' selected' : ''}>Prefer not to say</option>
+      <option value="yes"${answers[i] === 'yes' ? ' selected' : ''}>Yes</option>
+      <option value="no"${answers[i] === 'no' ? ' selected' : ''}>No</option>
+    </select></div>`).join('')
+  document.querySelectorAll('#qs select').forEach((s) => s.addEventListener('change', (e) => { answers[+e.target.dataset.i] = e.target.value; update() }))
+}
+
+function card(r, k) {
+  const a = r.ai[scenario]
+  let overall
+  if (!k) {
+    overall = `<div class="overall new" style="background:var(--surface2)"><div class="lbl">Overall match</div>
+      <p class="small" style="margin:4px 0 8px">Answer 4 short AI questions to see your overall match.</p>
+      <button class="btn sm pri">Answer AI questions</button></div>`
+  } else if (!a) {
+    overall = `<div class="overall new"><div class="lbl">Overall match</div><div class="big">${r.skill}%</div>
+      <div class="bar all"><i style="width:${r.skill}%"></i></div>
+      <div class="how">No AI data for this job in this scenario, so Overall = Skill Match.</div></div>`
+  } else {
+    const o = pct(r.skill * (1 - a.touch) + k.pct * a.touch)
+    overall = `<div class="overall new"><div class="lbl">Overall match <span class="tag calc">calculated</span></div><div class="big">${Math.round(o)}%</div>
+      <div class="bar all"><i style="width:${o}%"></i></div>
+      <div class="how">${r.skill}% skills × ${pct(1 - a.touch)} + ${k.pct}% AI know-how × ${pct(a.touch)} = ${o}%</div></div>`
+  }
+  const aiBlock = a
+    ? `<div class="blk new"><div class="lbl">AI touches this job <span class="tag est">estimate</span></div>
+        <div class="mid" style="color:var(--est)">${Math.round(a.touch * 100)}%</div>
+        <div class="bar ai"><i style="width:${a.touch * 100}%"></i></div>
+        <div class="tiny muted">${esc(a.src)}</div></div>`
+    : `<div class="blk new"><div class="lbl">AI touches this job</div><div class="small muted">No AI data in this scenario</div></div>`
+  return `<div class="card role">
+    <div class="left">
+      <h3>${esc(r.title)} <span class="code">MASCO ${esc(r.code)} · <a href="#">eMASCO page</a></span></h3>
+      <p class="small muted">Compared with O*NET job <b style="color:var(--ink)">${esc(r.onet)}</b></p>
+      <p class="small" style="margin-top:8px">SDG <span class="tag src">SDG 9</span> <span class="muted">team draft, not yet reviewed</span></p>
+      <p class="tiny muted" style="margin-top:6px">(The purple AI bar that used to sit here has moved to the right.)</p>
+      <div class="btns"><button class="btn">Show outlook and details</button><button class="btn pri">Choose this role</button><button class="btn">Plan my study pathway</button></div>
+    </div>
+    <div class="right">
+      <div class="blk"><div class="lbl">Skill Match <span class="tag calc">calculated</span></div>
+        <div class="mid">${r.skill}%</div><div class="bar skill"><i style="width:${r.skill}%"></i></div>
+        <div class="tiny muted">from O*NET levels and your profile · never changes with the scenario</div></div>
+      ${aiBlock}
+      ${overall}
+    </div></div>`
+}
+
+function update() {
+  const k = know()
+  document.getElementById('knowPct').textContent = k ? k.pct + '%' : '–'
+  document.getElementById('knowHow').textContent = k ? `${k.yes} Yes of ${k.n} answered` : 'no questions answered yet'
+  const sorted = [...ROLES].sort((x, y) => {
+    const ov = (r) => { const a = r.ai[scenario]; return k && a ? r.skill * (1 - a.touch) + k.pct * a.touch : r.skill }
+    return ov(y) - ov(x)
+  })
+  document.getElementById('cards').innerHTML = sorted.map((r) => card(r, k)).join('') +
+    `<p class="tiny muted">Sorted by Overall match. Sample roles; real role list has 1,812.</p>`
+}
+
+document.getElementById('seg').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return
+  scenario = b.dataset.s
+  document.querySelectorAll('#seg button').forEach((x) => x.classList.toggle('on', x === b))
+  update()
+})
+renderQs(); update()
+</script>
+</body>
+</html>

@@ -20,6 +20,8 @@ A user with a confirmed profile sees Malaysian eMASCO roles ranked inside clear 
 - a **Skill Match %** whose reason fits in one sentence ("You meet 9.2 of 12.1 needed levels for Software
   Developers, so fit is 76%") and a You vs Needed chart;
 - **what would raise it** (the items with the biggest gaps, in points);
+- an **Overall match** that adds the user's AI know-how where AI touches the job (M17, section 5a), beside the
+  unchanged Skill Match;
 - a **job outlook** for the chosen AI scenario (Moderate / Rapid), as separate sourced parts, never blended;
 - **SDG tags** with one-line reasons (every team draft shown now, rejected ones hidden: M16), and an SDG contribution for the role the user chooses.
 
@@ -45,6 +47,7 @@ names its source and date; a role with no official data says so instead of guess
 | M15 | MASCO ↔ ISCO-08 | No official table exists (checked 30 Oct). A MASCO 2020 unit group links to the ISCO-08 unit group with the **same 4-digit code**, only when that code exists in ISCO-08 (the codes in the BLS ISCO-08 file). Source shown: the MASCO 2020 publication's statement that it follows ISCO, plus "owner decision, 30 Oct 2026". Every path labels this step "code match, not an official table" |
 | M14 | Mockup | `docs/mockup-matching.html` approved by the owner (30 Oct): matching on the existing "Career matching" tab (`#match`), SDG contribution on the existing "SDG contribution" tab (`#sdg`), chart items in O\*NET importance order (first 8, "Show all"), Skill Match above the details on phones |
 | M16 | SDG tags shown now (31 Oct) | Replaces "only owner-approved links": every team-draft link in `data/sdg/links.json` is shown at once on cards, in the SDG filter and on `#sdg`, labelled "team draft, not yet reviewed"; a link the owner approved in `#admin` shows "team draft, approved by owner on <date>"; a rejected link is hidden ("revise" = not reviewed). The path contribution counts every shown link. Each tag and goal row links to the goal's UN page `https://sdgs.un.org/goals/goal<N>`. Admin review is unchanged |
+| M17 | Overall match (31 Oct) | Adds **AI know-how** and an **Overall match** beside the Skill Match (section 5a). Four yes/no questions, one per dimension of the UNESCO AI Competency Framework for Students (2024), on a new last card "Using AI" of the profile. Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch, where AI touch comes from the scenario's data (no invented split). The Skill Match itself is unchanged. The purple AI bar moves to the right column. Mockup `docs/mockup-overall-match.html` approved by the owner (31 Oct) |
 | M12 | Career interests | Not used in v1 (O\*NET marks the values "AI/Expert"; no official cut-off) |
 | M13 | Diagram | Claude drafts `docs/architecture-matching.html`; the owner approves it |
 
@@ -105,6 +108,47 @@ Worked example (the owner's chart, used as a test): needed 2, 2, 2, 1.2, 2.85, 2
 Match". Profile items of other kinds (software, work styles, work activities) are listed as "not used in the %" and
 shown against the job's "also asked" lists. Unknown ids are listed as "not used in matching".
 
+## 5a. AI know-how and Overall match (M17, `shared/matching/overall.js`, pure)
+
+**Questions** (profile, new last card "Using AI", optional). One per dimension of the UNESCO *AI competency framework
+for students* (2024, https://doi.org/10.54675/JKJB9835, CC BY-SA 3.0 IGO). The wording is the team's, labelled
+"based on" the framework:
+
+1. Human-centred mindset: "I decide when to use AI and when not to, and I stay responsible for the result"
+2. Ethics of AI: "I check AI answers for mistakes and bias, and keep private data out of AI tools"
+3. AI techniques and applications: "I use AI tools (e.g. ChatGPT, Copilot) for real work or study tasks"
+4. AI system design: "I have built or set up something with AI (a prompt flow, a model, an automation)"
+
+Each is a drop-down: **Prefer not to say** (default), Yes, No. Stored in the profile as
+`aiUse: {mindset, ethics, apply, design}` with values `yes`, `no` or `null`. Old profiles without `aiUse` read as all
+`null`. Like the rest of the profile it lives in the browser; the server uses it and drops it.
+
+**AI know-how K** = Yes answers ÷ answered questions × 100. No question answered → K is missing.
+
+**AI touch T** (0–1) for the job, from the scenario's own data (section 6):
+
+- Moderate: Anthropic Economic Index, the share of the best O\*NET job's tasks with observed AI use
+  (`observedShare` ÷ 100).
+- Rapid: ILO WP140 mean exposure score for the ISCO-08 code (`mean_score_2025`, 0–1).
+
+**Overall match** = S × (1 − T) + K × T, where S is the Skill Match; rounded to a whole number. Where AI barely touches
+the job, Overall stays close to S; where AI touches much of it, K counts more. No invented split.
+
+| Case | Overall |
+|---|---|
+| S missing (thin profile or broken chain) | none |
+| K missing | none; button "Answer 4 AI questions to see your overall match" |
+| T missing for this scenario | = S, note "No AI data for this job in this scenario, so Overall = Skill Match" |
+| S provisional | Overall is provisional too |
+
+The Skill Match never changes; the Overall can change with the scenario. Bands are unchanged. Inside a band, roles sort
+by Overall high to low where it exists, else by Skill Match, then title.
+
+**Card (right column, top to bottom)**: Skill Match (as now); "AI touches this job T%" with the purple bar, its source
+and an "estimate" tag (moved from the left column); **Overall match** with its bar and the sum written out
+("64% skills × 0.29 + 75% AI know-how × 0.71 = 72%"). The AI questions card shows "Your AI know-how K% (y Yes of n
+answered)" and the UNESCO source line.
+
 ## 6. Outlook, scenarios and bands (`shared/matching/outlook.js`, pure)
 
 **Scenario parameter "AI adoption speed"** (labelled estimate):
@@ -123,7 +167,7 @@ No invented factor. The scenario never changes the Skill Match.
 - **In-demand software**: O\*NET "in demand" flags for the best O\*NET job (US job ads, software only), ✓ when the
   profile has it.
 
-**Bands** (per scenario; inside a band, Skill Match high to low, then title):
+**Bands** (per scenario; inside a band, Overall match high to low where it exists, else Skill Match, then title; M17):
 
 1. **Job ads growing or steady, AI mostly helps** — DOSM `rising` or `stable` with sufficient evidence, AI data present,
    band 2 rule not met.
@@ -157,7 +201,9 @@ O\*NET; it still appears when its eMASCO code matches a past job or role of inte
 
 - `POST /api/matching` `{profile, lang}` → for every role: code, title, URL, best O\*NET job, Skill Match (or the
   reason it is missing), provisional, in-your-field, band per scenario, SDG goals, `sdgReviewed` (goal → date the owner approved all its links), `ai`
-  (`moderate: {available, automationPct}`, `rapid: {available, exposurePct, gradient}` for the closed card); plus sources and dates. The profile is
+  (`moderate: {available, automationPct, touchPct}`, `rapid: {available, exposurePct, gradient, touchPct}` for the closed card),
+  `aiKnowHow` (K or null, once per answer) and `overallMatch` per scenario (`{moderate, rapid}`, each
+  `{percent, provisional, noAiData}` or null; M17); plus sources and dates. The profile is
   validated, used and dropped: never stored or logged.
 - `POST /api/matching/role` `{profile, code}` → the full card detail: items, chart data, raise list, chain path, outlook
   parts for both scenarios, also-asked lists, SDG tags.
@@ -186,6 +232,9 @@ Test first (Vitest) for each unit; Python unit tests for each pipeline script wi
 - `chain.js`: full path; each missing step; one ISCO code to several O\*NET jobs; best-job choice and ties.
 - `outlook.js`: each band in each scenario; insufficient DOSM; missing AI data; band-move banner list.
 - `sdg.js`: every link not rejected is shown (M16), approved ones dated; group inheritance; path count; filter.
+- `overall.js` (M17): K from answers (all skipped → missing; 3 Yes of 4 → 75%; 1 Yes of 2 answered → 50%); the
+  mockup example (S 64, K 75, T 0.71 → 72); T missing → Overall = S; S missing or K missing → none; provisional
+  carried; sort order inside a band. Profile: `aiUse` saved and read back; old profiles read as all `null`.
 - Routes: real app on a random port; profile never logged; thin profile; unknown ids.
 - Browser check on `127.0.0.2:3200` (desktop and 360 px): scenario switch, why-this-match chart, choose a role, SDG
   panel, judge change test moves bands.
@@ -202,3 +251,7 @@ Test first (Vitest) for each unit; Python unit tests for each pipeline script wi
   shows "not available" and the owner is asked.
 - **DOSM break review** (Radar open point) decides how many roles leave band 4.
 - Out of scope: study plan and courses, career interests, HR view, any meaning or embedding model.
+- **M17 build start**: `main` has moved on since this branch merged (Study Pathway, Radar charts). Before building M17,
+  bring `main` into this branch (owner's OK, as for any merge) so the profile form and match screen are the current ones.
+- **M17 risk**: where AI touches much of a job, a strong AI know-how can lift a low Skill Match a lot (mockup: 8% skills
+  → about 45% overall). The owner accepted this rule; the written-out sum on the card shows why.

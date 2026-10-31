@@ -222,6 +222,7 @@ export default {
   occInterests: "Pekerjaan yang anda minati",
   occAttribution: "Data O*NET: Jabatan Buruh A.S., CC BY 4.0. Perkataan serupa tidak menjadikan dua pekerjaan sama — anda yang memilih.",
   cvLead: "Kami mencadangkan pendidikan, pekerjaan dan kemahiran anda daripada CV. Anda yang tentukan apa yang kekal.",
+  cvLastUpdate: "Kemas kini terakhir: 1 Nov 2026",
   cvPrivacy: "CV anda dibaca oleh AI DeepSeek (disimpan di China) untuk meningkatkan ketepatan. Anda menyemak semuanya sebelum ia disimpan.",
   cvDrag: "Seret CV anda ke sini atau",
   cvChoose: "Pilih fail",

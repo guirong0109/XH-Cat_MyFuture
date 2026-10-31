@@ -2820,6 +2820,11 @@
       "time": "31 Oct",
       "step": "Merge claude/future-radar: source card at the bottom",
       "detail": "Your OK. The OpenAlex card and View data sources sit below the Radar tabs. Conflicts: status.json (kept both logs), build-record.html (rebuilt)."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Live site futures.grong.my serves main",
+      "detail": "Owner asked to host main live: Cloudflare Tunnel compare-futures to localhost:3300 (launch entry main-live, TRUST_PROXY=1, DEEPSEEK_API_KEY from the branch folder .env). How to start and stop it is in CLAUDE.md. npm test 1717 passed"
     }
   ]
 }

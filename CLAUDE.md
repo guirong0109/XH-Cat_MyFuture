@@ -105,5 +105,14 @@ python -m unittest discover pipeline/tests   # expect 49 OK
   The CV reader uses the same DeepSeek account under `CV_LLM_KEY`; set both names to use both features.
 - Usable: English only (said on screen), title, http(s) link, date within 30 days, repeats removed, kept by the check,
   newest 25 per field. No profile data reaches the server or DeepSeek. News never changes matching, Radar or SDG.
-- Owner's hosting plan: Cloudflare Tunnel from the owner's computer at `futures.grong.my`; the procedure (owner steps
-  1-3, Claude creates the tunnel only after the owner's yes) is in the branch `CLAUDE.md`.
+
+## Live site: https://futures.grong.my (since 31 Oct 2026)
+- **main is served live** from the owner's computer through the Cloudflare Tunnel `compare-futures` (config
+  `C:\Users\guiro\.cloudflared\compare-futures.yml` → `http://localhost:3300`), no router port forwarding.
+- Start: launch entry `main-live` (this folder's `server/index.js`, port 3300, `TRUST_PROXY=1`, main's `.env` then
+  `C:\Users\guiro\XH_Cat_Final\.env` for `DEEPSEEK_API_KEY`), then in its own terminal tab
+  `cloudflared tunnel --config C:\Users\guiro\.cloudflared\compare-futures.yml run compare-futures`. Stop: Ctrl-C in
+  that tab. The site is up only while both run and the computer is awake; the news refreshes every 3 hours meanwhile.
+- Run only one news server with the key at a time (not also the branch's `futures-real`), or refreshes are paid twice.
+- CV AI reading is off on the live site until `CV_LLM_KEY` is set (same DeepSeek key, paid; ask first).
+- Full procedure and history: branch `claude/compare-futures` `CLAUDE.md`.

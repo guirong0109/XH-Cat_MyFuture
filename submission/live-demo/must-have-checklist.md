@@ -1,0 +1,28 @@
+# Must-have checklist (judges' six demo stages)
+
+Checked on a local copy of `main` (same code as the live site) on 1 Nov 2026 with the Aina CV, no AI key.
+Status: **Met**, **Partly**, **Not shown**.
+
+| Stage | Must-have | Where in the app (screen + label) | Status | What to say |
+|---|---|---|---|---|
+| 1 Tell us about yourself | CV upload drives results | **Upload my CV** → receipt **READY FOR REVIEW · UNVERIFIED UNTIL YOU CONFIRM** → **Edit in the form** | Met | "The CV fills the form; Aina's skills, job and diploma come from her file." |
+| 1 | Form as alternative | **I do not have a CV — continue manually** (five parts) | Met | "No CV? The same profile from a short form." |
+| 1 | Not pre-filled; user confirms | Items tagged **From your CV · please check** with the CV quote; **UNVERIFIED** until **Confirm my profile** | Met | "Nothing counts until she confirms it." |
+| 2 Future Skills Radar | Rising skills / topics, with source + date | **EXPLORE ALL TRENDS** → "Research momentum by AI topic", labels **RISING** / **STABLE**, "Source: OpenAlex ... Fetched 2026-10-30 07:33 UTC"; role details **Software asked** "· in demand" (O\*NET In Demand flags) | Partly | "Rising AI research topics and in-demand software, each with source and date." |
+| 2 | Declining skills | Skill-change sections are off the Radar page since 31 Oct (code kept) | Not shown | Do not claim it. If asked: "Skill changes between O\*NET releases exist in the code but are off the page." |
+| 2 | Rising / declining roles | **Career matching** groups **Job ads growing or steady, AI mostly helps** and **Fewer job ads** (DOSM 2026 Q2, "group level, not this job") | Partly | On real data most roles sit in **Not enough evidence yet** (possible DOSM break in 2025 Q3, waiting for review). Say so. |
+| 2 | AI change for your jobs | **FOR YOU** → "How AI is used in your jobs' tasks" (Anthropic Economic Index release_2026_06_26) + ILO WP140 line | Met | "Which of her job's tasks AI does or helps with." |
+| 2 | Judges change the data, results change | Judges cannot change the data live (admin taken off for the final, 1 Nov). Results follow the data: trends are official datasets with source and date on screen, rebuilt by the `pipeline/` scripts (DOSM workbook read by `server/radar/dosmTable.js`); AI news refreshes every 3 hours. Live proof of the mechanism: **Moderate AI / Rapid AI** banner "... moved N roles ... Skill Match numbers did not change." | Not shown (admin taken off) | "When DOSM publishes a new quarter, the trend is recalculated by the rule on screen and roles move between groups; the Skill Match stays the same. The scenario switch shows that live." |
+| 3 Get matched | Ranked roles | Four groups; inside a group, roles sort by **Overall match**, else Skill Match | Met | "Ranked inside each outlook group." |
+| 3 | Explainable match score | "You meet 7.9 of 103.9 needed levels ... so fit is 8%." · **CALCULATED from O\*NET levels and your profile** · **Why this match?** chart You vs Needed + table | Met | Read the sentence aloud. |
+| 3 | Reasons | **Why this match?** → "How this role reaches O\*NET" (official chain); band reason under each group; **AI touches this job** ESTIMATE | Met | "Every step of the link is an official table." |
+| 3 | Skills gap | **What would raise it**: "Learn Computers and Electronics to expert +6 PTS" | Met | "Exactly what raises her score, and by how much." |
+| 4 Follow a pathway | Ordered steps | **STUDY PATHWAY** → **Part 2 · Skills to build**, numbered, "Biggest gap first" | Met | "Step 1 is the biggest gain." |
+| 4 | Time estimates | No hours or weeks anywhere; the form no longer asks **Hours a week you can learn** | Not shown | "We show no hours because no course has a sourced duration; we won't invent one. Each step shows its size in Skill Match points instead." |
+| 4 | Real free / low-cost resources (e.g. HRD Corp) | Courses such as **e-LATiH (HRD Corp)** "Working with Computers and Devices with Microsoft ↗ · checked 2026-10-31"; "More on e-LATiH (HRD Corp), Coursera, edX, Khan Academy, Microsoft Learn, Google Skills"; MQA-accredited programmes | Met | "Real pages, checked on 31 Oct, including HRD Corp's e-LATiH." |
+| 5 SDG contribution | Every role tagged to an SDG with a reason | Card **SDG** tag ("SDG 9 team draft, not yet reviewed"), links to sdgs.un.org; reason as hover text; details show the target (e.g. SDG 9.C) | Met (reason is hover text) | "Each tag has a reason; point at it." Roles without a link say **SDG not tagged yet**. |
+| 5 | Every skill tagged to an SDG | **What would raise it** shows a target per skill (SDG 9.C, 4.6, 3.4) | Partly | Only skills in the gap list show their tag. |
+| 5 | Chosen path's contribution shown | The SDG contribution section was removed on 1 Nov (owner). **Show roles linked to** filter stays; the organisation view's team plan shows "touch {links} links across {goals} goals" (account needed) | Not shown (personal) | "We count links with reasons, never an impact score; the filter shows roles linked to a goal." |
+| 6 Compare futures | 2+ scenarios | **AI scenario ESTIMATE**: **Moderate AI** (AI use observed today) / **Rapid AI** (full potential exposure) | Met | "Two futures: AI as used today vs full potential." |
+| 6 | Scenarios shift results | Banner "Switching to Rapid AI moved 376 roles ... Skill Match numbers did not change." (local count); AI line and Overall match change | Met | Read the banner. |
+| 6 | Labelled estimates | **ESTIMATE** tag on the scenario switch and every AI number; sources Anthropic Economic Index / ILO WP140 | Met | "Both labelled ESTIMATE with their source." |

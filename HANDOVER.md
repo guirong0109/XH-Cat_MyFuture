@@ -23,6 +23,7 @@ scenario comparison.
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
 | Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
 | CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
+| Radar: "Your profile" card removed (owner request) | `claude/future-radar` | merged 2026-10-31 | Done; 1426 tests pass; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -184,7 +185,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1425 passed
+npm test          # expect 1426 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

@@ -215,19 +215,6 @@ function sourcesList(t, sources) {
   </details>`
 }
 
-function profileCard(t, rel, data) {
-  if (!rel) return `<div class="card rd-profile"><h2>${esc(t('rdYourProfile'))}</h2>${hint(t)}</div>`
-  const fields = rel.fields.map((f) => `<li>${esc(`${f.code} · ${f.title ?? f.code}`)}</li>`).join('')
-  const roles = rel.occupations.map((o) => `<li>${esc(o.title ?? o.code)} <span class="tiny muted">${esc(`${o.source === 'emasco' ? 'eMASCO' : 'O*NET'} ${o.code} · ${t(`rdRole_${o.role}`)}`)}</span> ${srcLink(jobLink(data, o))}</li>`).join('')
-  const interests = rel.interests.map((i) => `<li>${esc(i.name)}</li>`).join('')
-  const col = (title, list, note = '') => `<div class="rd-mini"><b>${esc(t(title))}</b>${list ? `<ul class="rd-list small">${list}</ul>` : `<p class="small muted">${DASH}</p>`}${note}</div>`
-  return `<div class="card rd-profile"><h2>${esc(t('rdYourProfile'))}</h2>
-    <div class="grid g3">${col('rdFieldsLabel', fields)}${col('rdRolesLabel', roles)}${col('rdInterestsLabel', interests, `<p class="tiny muted">${esc(t('rdInterestsNote'))}</p>`)}</div>
-    <p class="tiny muted" style="margin-top:8px">${esc(t('rdProfileNote'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></p>
-    ${rel.groups.length + rel.axes.length ? '' : hint(t)}
-  </div>`
-}
-
 function banners(t, state, data) {
   const u = ui(state)
   const out = []
@@ -893,7 +880,6 @@ export function radarView({ t, state, data }) {
     ${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}
     ${onetSourceCards(data.sources, t, data.states)}
     ${sourcesList(t, data.sources ?? [])}
-    ${profileCard(t, rel, data)}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>
     ${drawer(t, state, data)}</div>`

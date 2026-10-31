@@ -126,6 +126,8 @@ Interactions:
 - **P2** - Existing, found in this check: the "Your profile" card still shows "Add your field of study or roles to
   see what relates to you" for a profile that has an O*NET role. That hint looks only at DOSM groups and topics, so it
   now contradicts the two new cards. For the owner to decide (same family as N1).
+  **Settled 31 Oct 2026:** the owner asked to remove the "Your profile" card; it is gone (checked in the browser at
+  radar.localhost:3210: no card, no console errors from the Radar).
 - **P3** - The dashed earlier-year line (Hot Technologies) cannot be seen yet: only one yearly snapshot is served, and the
   chart says "One year so far".
 - **P4** - The eMASCO code chain works at the 4-digit unit, so every eMASCO role in one unit gives the same chart. The

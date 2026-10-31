@@ -271,8 +271,8 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 /* Future Skills Radar (D22): small additions on the app's own tokens */
 .rd .rd-status{margin:14px 0 8px}
 .rd .rd-src-card h3{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
-.rd .rd-profile,.rd .rd-sec{margin-top:14px}
-.rd .rd-sec>h2,.rd .rd-profile>h2,.rd-drawer h2{margin-top:0}
+.rd .rd-sec{margin-top:14px}
+.rd .rd-sec>h2,.rd-drawer h2{margin-top:0}
 .rd .rd-sources{margin:6px 0 4px}
 .rd .rd-tabs{margin:22px 0 8px}
 .rd .rd-tabs button{flex-direction:column;align-items:flex-start;gap:0;white-space:normal;text-align:left}

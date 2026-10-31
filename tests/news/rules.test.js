@@ -1,6 +1,6 @@
 // AI news rules (spec §5, plan Task 1): the query, the usable check, repeats, merge and the For-you fields. Pure code.
 import { describe, expect, it } from 'vitest'
-import { LANGUAGE, MAX_AGE_DAYS, MAX_ITEMS, QUERY_MAX, buildQuery, forYouFields, mergeItems, usableItem } from '../../shared/news/rules.js'
+import { LANGUAGE, MAX_AGE_DAYS, MAX_ITEMS, QUERY_MAX, buildQuery, forYouFields, mergeItems, newItems, usableItem } from '../../shared/news/rules.js'
 
 const runAt = new Date('2026-10-31T06:00:00Z')
 const raw = (o = {}) => ({ title: 'AI tutors in schools', url: 'https://news.example.com/a', site_name: 'Example News', date: '2026-10-30T00:00:00+00:00', snippet: 'Short text', rerank_score: 2, ...o })
@@ -76,6 +76,33 @@ describe('news rules', () => {
       if (out[i - 1].date === out[i].date) expect(out[i - 1].url < out[i].url).toBe(true)
     }
     expect(out.every((i) => i.foundAt === runAt.toISOString())).toBe(true)
+  })
+
+  describe('Amendment 1: a trailing site name does not make a new headline', () => {
+    const base = 'AI is coming to construction sites. But does it make workers safer?'
+    const two = (a, b) => mergeItems([], [usableItem(raw({ title: a, url: 'https://a.com/1' }), runAt), usableItem(raw({ title: b, url: 'https://b.com/2' }), runAt)], runAt)
+
+    it.each([' | News', ' - CNBC', ' – Site', ' — The Star'])('"%s" at the end is the same story', (suffix) => {
+      const out = two(base, base + suffix)
+      expect(out).toHaveLength(1)
+      expect(out[0].title).toBe(base)
+    })
+
+    it('an ending longer than 40 characters is kept as part of the headline', () => {
+      expect(two('Big news', 'Big news - ' + 'x'.repeat(41))).toHaveLength(2)
+    })
+
+    it('a short ending after " - " is read as a site name (the 40-character rule, accepted)', () => {
+      expect(two('Rust', 'Rust - the language')).toHaveLength(1)
+    })
+  })
+
+  it('newItems gives the found items that repeat neither a kept item nor an earlier found one', () => {
+    const kept = [{ ...usableItem(raw(), runAt), checked: true }]
+    const repeat = usableItem(raw({ url: 'https://other.com/x', title: 'AI tutors in schools | Daily' }), runAt)
+    const fresh = usableItem(raw({ url: 'https://n.com/1', title: 'New story' }), runAt)
+    const copy = usableItem(raw({ url: 'https://n.com/1?utm_medium=y', title: 'Other words' }), runAt)
+    expect(newItems(kept, [repeat, fresh, copy], runAt)).toEqual([fresh])
   })
 
   it('forYouFields gives each broad field once in profile order, ignoring 00, 99 and junk', () => {

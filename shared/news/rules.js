@@ -49,27 +49,40 @@ const linkKey = (value) => {
   const query = params.length ? `?${new URLSearchParams(params)}` : ''
   return `${url.hostname.toLowerCase()}${url.pathname.replace(/\/+$/, '')}${query}`
 }
-// Same headline: lower case, punctuation, symbols and spaces collapsed.
-const headlineKey = (title) => title.toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, ' ').trim()
+// A trailing site name (Amendment 1): the text after the last " | ", " - ", " – " or " — ", at most 40 characters.
+const SITE_ENDING = /\s+[|\-–—]\s+[^|\-–—]{1,40}$/u
+// Same headline: without a trailing site name; lower case, punctuation, symbols and spaces collapsed.
+const headlineKey = (title) => title.replace(SITE_ENDING, '').toLowerCase().replace(/[\p{P}\p{S}\s]+/gu, ' ').trim()
+
+// Walks items in order and keeps the first of each repeat (same link or same headline); seen carries the keys.
+function firstOfEach(items, runAt, seen = { links: new Set(), headlines: new Set() }) {
+  const out = []
+  for (const item of items) {
+    if (!item || typeof item.title !== 'string' || !webAddress(item.url) || !withinAge(item.date, runAt)) continue
+    const link = linkKey(item.url)
+    const headline = headlineKey(item.title)
+    if (seen.links.has(link) || seen.headlines.has(headline)) continue
+    seen.links.add(link)
+    seen.headlines.add(headline)
+    out.push(item)
+  }
+  return out
+}
 
 // The kept list after a run: kept items first, then the new ones (found at runAt); the first of a repeat stays; the age
 // rule again; newest first, ties by address; at most 25.
 export function mergeItems(kept, found, runAt) {
-  const links = new Set()
-  const headlines = new Set()
-  const out = []
-  const all = [...(kept ?? []), ...(found ?? []).map((item) => ({ ...item, foundAt: runAt.toISOString() }))]
-  for (const item of all) {
-    if (!item || !webAddress(item.url) || !withinAge(item.date, runAt)) continue
-    const link = linkKey(item.url)
-    const headline = headlineKey(item.title)
-    if (links.has(link) || headlines.has(headline)) continue
-    links.add(link)
-    headlines.add(headline)
-    out.push(item)
-  }
+  const out = firstOfEach([...(kept ?? []), ...(found ?? []).map((item) => ({ ...item, foundAt: runAt.toISOString() }))], runAt)
   out.sort((a, b) => Date.parse(b.date) - Date.parse(a.date) || (a.url < b.url ? -1 : a.url > b.url ? 1 : 0))
   return out.slice(0, MAX_ITEMS)
+}
+
+// The found items that repeat neither a kept item nor an earlier found one, in found order (Amendment 1: only these are
+// sent to the relevance check). The age rule applies; nothing is added to the items.
+export function newItems(kept, found, runAt) {
+  const seen = { links: new Set(), headlines: new Set() }
+  firstOfEach(kept ?? [], runAt, seen)
+  return firstOfEach(found ?? [], runAt, seen)
 }
 
 // The broad study fields (01-10) of the profile's fields of study, each once, in profile order. Browser only.

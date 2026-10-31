@@ -484,7 +484,12 @@
         },
         {
           "title": "Implementation plan",
-          "sub": "10 tasks; waiting for your review",
+          "sub": "10 tasks; you chose subagent-driven",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "docs/mockup-pathway.html; waiting for your review",
           "status": "stop"
         }
       ]
@@ -532,7 +537,7 @@
     "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
   ],
   "waiting": [
-    "Study Pathway: review the plan docs/superpowers/plans/2026-10-31-study-pathway.md and choose how it is run",
+    "Study Pathway: review the mockup docs/mockup-pathway.html before the build starts",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -1321,6 +1326,11 @@
       "time": "31 Oct",
       "step": "Study Pathway: spec approved, plan written (your request)",
       "detail": "10 tasks: O*NET education data, sites, steps, route, picks, API, admin review, screen, fill of all skills and fields, browser check; the Learning roadmap placeholder tab becomes Study pathway"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup (your request)",
+      "detail": "Software Developer and Accountant with real O*NET skills, levels and fields of study; sample levels, picks and education %; checked desktop and 375 px"
     }
   ]
 }

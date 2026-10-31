@@ -2739,6 +2739,11 @@
       "time": "31 Oct",
       "step": "News A1: final review fixes",
       "detail": "Opus review of Amendment 1: no Critical; 2 Important fixed with tests that failed first: the site-name rule no longer merges different articles (no digits in the ending, at least 4 words left), and a check sends at most 50 items, new results first. 5 minor notes deferred for the owner (      Tests  1563 passed (1563))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Owner hosting procedure recorded",
+      "detail": "CLAUDE.md: the news refreshes every 3 hours on every host (owner); Cloudflare Tunnel procedure for futures.grong.my (owner steps 1-3, Claude step 4 after the owner's yes); owner asked to push to main (      Tests  1563 passed (1563))"
     }
   ]
 }

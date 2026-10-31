@@ -21,6 +21,31 @@ files; the owner decides on merge (into `claude/career-matching` first).
 - Code: `shared/news/rules.js`, `server/news/`, `public/js/screens/futures.js`, `public/js/newsApi.js`. Tests:
   `tests/news/`. Browser results: `docs/news/acceptance.md`. Local check with a fake search and check:
   `scripts/news-local.mjs`.
+- **The news refreshes every 3 hours (owner, 31 Oct). Keep it that way on every host.** The timer lives in the
+  running server (`news.start()` in `server/index.js`); a host that sleeps stops it, and the first visit after the due
+  time starts the refresh instead (`wakeIfDue`). Never lengthen the interval or turn the refresh off without the owner.
+
+## Owner's hosting procedure: Cloudflare Tunnel with a fixed link (31 Oct 2026)
+The owner hosts from their own computer through a Cloudflare Tunnel (no router port forwarding), on the domain
+**grong.my**, planned address **futures.grong.my** (the bare domain keeps what it shows today). Free on Cloudflare's
+side; DeepSeek still costs about US$4-6 a month. The computer must stay on and awake for the link and the 3-hour
+refresh to work.
+1. **Owner:** add `grong.my` to Cloudflare (dashboard → Add a domain → Free plan); check the scanned DNS records keep
+   the current site (`103.7.9.22`) and any MX (email) records.
+2. **Owner:** at the `.my` registrar, replace the name servers with the two Cloudflare ones; wait until Cloudflare
+   shows grong.my **Active** (minutes to 48 hours).
+3. **Owner:** sign `cloudflared` in to grong.my. An old `cert.pem` (January, another domain) blocks login, so rename it
+   first, never delete it (the 3 old tunnels `ci4-tunnel`, `mmustudent-tunnel`, `tpl_project` run on their own
+   `.json` files and are not touched):
+   `Rename-Item "$env:USERPROFILE\.cloudflared\cert.pem" "cert-old-2026-01.pem"`, then `cloudflared tunnel login` and
+   pick grong.my.
+4. **Claude, only after the owner's yes:** `cloudflared tunnel create compare-futures`; `cloudflared tunnel route dns
+   compare-futures futures.grong.my` (one DNS record); a config that sends `futures.grong.my` to
+   `http://localhost:3200`; start the app with the owner's `.env` (key) and `TRUST_PROXY=1`, then
+   `cloudflared tunnel run compare-futures`; check the public link in the browser.
+5. Keep strong admin keys set (`RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`, `RADAR_SESSION_SECRET`) once the app is public.
+State on 31 Oct: `cloudflared` 2025.8.1 is installed (an update to 2026.10.7 is offered); steps 1-3 are with the owner;
+step 4 not started.
 
 ## Base branch: `claude/career-matching`
 Its spec `docs/superpowers/specs/2026-10-30-career-matching-design.md` and diagram `docs/architecture-matching.html`

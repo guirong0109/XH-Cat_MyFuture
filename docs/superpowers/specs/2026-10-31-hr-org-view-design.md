@@ -1,7 +1,6 @@
 # Organisation View (HR and career centres) — Design
 
-Date: 2026-10-31 · Branch `hr-branch` (from `main` at `d4286d6`) · Status: approved in brainstorming (5 sections),
-waiting for written-spec review.
+Date: 2026-10-31 · Branch `hr-branch` (from `main` at `d4286d6`) · Status: **approved by the owner on 31 Oct 2026**
 
 Inputs: the Domain 1 Finalist Guide (good-to-have "Employer / HR view: a workforce-level skills-gap heatmap and
 reskilling plan for a team or company"; user groups "HR and learning-and-development managers" and "TVET and

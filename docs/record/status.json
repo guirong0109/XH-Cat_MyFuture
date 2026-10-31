@@ -510,18 +510,18 @@
         },
         {
           "title": "O3 Spec",
-          "sub": "docs/superpowers/specs/2026-10-31-hr-org-view-design.md, waiting for owner review",
-          "status": "stop"
+          "sub": "docs/superpowers/specs/2026-10-31-hr-org-view-design.md, approved by owner 31 Oct",
+          "status": "done"
         },
         {
           "title": "O4 Mockup",
-          "sub": "docs/mockup-org.html, sample data, waiting for owner review",
-          "status": "stop"
+          "sub": "docs/mockup-org.html, every button works, sample data",
+          "status": "done"
         },
         {
           "title": "O5 Diagram",
-          "sub": "docs/architecture-org.html, after the spec is approved",
-          "status": "todo"
+          "sub": "docs/architecture-org.html, waiting for owner approval",
+          "status": "stop"
         },
         {
           "title": "O6 Build",
@@ -1669,6 +1669,11 @@
       "time": "31 Oct",
       "step": "Organisation view spec and mockup (hr-branch)",
       "detail": "Prototype checked against the Finalist Guide; owner decisions O1-O8 (roster and join link, current and target role, matching's sums, skills-only sharing, server works out team numbers, HR and career centres with HR first); spec and sample-data mockup written. npm test 833 passed; mockup checked in the browser at 127.0.0.2:3201, desktop and 360 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: spec approved, diagram drafted (hr-branch)",
+      "detail": "Owner approved the spec; mockup buttons all work; architecture diagram drafted for approval. npm test 833 passed; diagram checked in the browser"
     }
   ]
 }

@@ -1,7 +1,4 @@
-> [!IMPORTANT]
-> ## 📁 Submission Documents
-> **The filled SDC 2026 forms are in [`submission/`](submission/).** The blank templates are in the
-> [SDC Google Drive folder](https://drive.google.com/drive/folders/1xw7c2aN8N-at8hPEULzkcU76e_FFb0Ef).
+
 
 ---
 

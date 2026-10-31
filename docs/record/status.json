@@ -671,6 +671,11 @@
           "status": "done"
         },
         {
+          "title": "O6k Employee share screen",
+          "sub": "join link, exact list HR will see incl. role, share / update / stop",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1985,6 +1990,11 @@
       "time": "31 Oct",
       "step": "O6j HR screens (hr-branch)",
       "detail": "Task 9 reviewed, 1 fix round; browser check of setup and heatmap on real data; npm test 1222 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6k Employee share screen (hr-branch)",
+      "detail": "Task 10 reviewed (security), 1 fix round; browser check of join and share; npm test 1250 passed"
     }
   ]
 }

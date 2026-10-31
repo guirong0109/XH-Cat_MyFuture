@@ -88,6 +88,15 @@ describe('org store', () => {
     expect(people.find((p) => p.displayName === 'Budi').skills).toEqual([])
   })
 
+  it('writes nothing when one person group cannot be resolved', async () => {
+    const { d1, store } = await setup()
+    const org = await store.createOrg('u1', { name: 'A', type: 'hr' })
+    const bad = { people: [{ name: 'A1', group: 'Ops', currentCode: null, skills: [] }, { name: 'B1', group: 'Nowhere', currentCode: null, skills: [] }], newGroups: ['Ops'] }
+    await expectOrgError(store.importPeople(org.id, bad), 'not_found', 404)
+    expect(await store.groups(org.id)).toEqual([])
+    expect((await d1.query('SELECT COUNT(*) AS c FROM org_people')).rows[0].c).toBe(0)
+  })
+
   it('updates and deletes people; ids from another org give 404', async () => {
     const { store } = await setup()
     const a = await store.createOrg('u1', { name: 'A', type: 'hr' })

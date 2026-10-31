@@ -92,6 +92,9 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
 
   async function importPeople(orgId, preview) {
     const byName = new Map((await groups(orgId)).map((g) => [g.name, g.id]))
+    // check every person's group before writing anything, so a bad row leaves nothing half-imported
+    const known = new Set([...byName.keys(), ...(preview.newGroups ?? [])])
+    if (preview.people.some((person) => !known.has(person.group))) throw new OrgError('not_found', 404)
     let groupsAdded = 0
     for (const name of preview.newGroups ?? []) {
       if (byName.has(name)) continue

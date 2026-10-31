@@ -21,26 +21,42 @@ function evidenceFits(a, b) {
   return false
 }
 
-const sameRecord = (rules, ai, main) => {
-  const a = norm(rules.extraction?.evidence)
-  const b = norm(ai.extraction?.evidence)
-  if (evidenceFits(a, b)) return true
+const sameByEvidence = (rules, ai) => evidenceFits(norm(rules.extraction?.evidence), norm(ai.extraction?.evidence))
+
+// Equal main field, unless a second identity field (job employer, education institution) is filled in on both and differs.
+const sameByMain = (rules, ai, main, second) => {
   const m = norm(rules[main])
-  return Boolean(m) && m === norm(ai[main])
+  if (!m || m !== norm(ai[main])) return false
+  if (!second) return true
+  const a = norm(rules[second])
+  const b = norm(ai[second])
+  return !a || !b || a === b
 }
 
 // Joins one list. Returns the new list and, for each matched AI record, the rules record it was matched to.
-function joinList(rulesList, aiList, { main, fields, path, uncertain, onFilled }) {
+// AI records are matched to the rules records only (never to an AI record added before): first every AI record by its
+// quote, then the ones left by an equal main field. A rules record is matched at most once.
+function joinList(rulesList, aiList, { main, second, fields, path, uncertain, onFilled }) {
   const list = rulesList.map((record) => ({ ...record, extraction: record.extraction ? { ...record.extraction } : record.extraction }))
   const used = new Set()
+  const target = aiList.map(() => -1)
+  const pass = (fits) => aiList.forEach((ai, k) => {
+    if (target[k] >= 0) return
+    const i = rulesList.findIndex((record, at) => !used.has(at) && fits(record, ai))
+    if (i >= 0) {
+      target[k] = i
+      used.add(i)
+    }
+  })
+  pass(sameByEvidence)
+  pass((record, ai) => sameByMain(record, ai, main, second))
   const matches = []
-  for (const ai of aiList) {
-    const i = list.findIndex((record, at) => !used.has(at) && sameRecord(record, ai, main))
+  for (const [k, ai] of aiList.entries()) {
+    const i = target[k]
     if (i < 0) {
       list.push({ ...ai, extraction: ai.extraction ? { ...ai.extraction } : ai.extraction })
       continue
     }
-    used.add(i)
     const record = list[i]
     matches.push({ ai, rules: record })
     for (const field of fields) {
@@ -63,11 +79,11 @@ export function mergeDrafts({ profile, uncertain }, aiProfile) {
   if (!aiProfile) return { profile, uncertain }
   const flags = [...uncertain]
   const education = joinList(profile.education.records, aiProfile.education.records, {
-    main: 'qualification', fields: ['qualification', 'fieldOfStudy', 'institution'], path: 'education.records', uncertain: flags,
+    main: 'qualification', second: 'institution', fields: ['qualification', 'fieldOfStudy', 'institution'], path: 'education.records', uncertain: flags,
     onFilled: (record, field) => { if (field === 'qualification') record.level = levelOf(record.qualification) },
   })
   const jobs = joinList(profile.employment.records, aiProfile.employment.records, {
-    main: 'jobTitle', fields: ['jobTitle', 'employer'], path: 'employment.records', uncertain: flags,
+    main: 'jobTitle', second: 'employer', fields: ['jobTitle', 'employer'], path: 'employment.records', uncertain: flags,
   })
   const projects = joinList(profile.projects, aiProfile.projects, {
     main: 'title', fields: ['title', 'description'], path: 'projects', uncertain: flags,

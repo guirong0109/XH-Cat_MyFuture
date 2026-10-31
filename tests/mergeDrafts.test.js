@@ -213,4 +213,58 @@ describe('mergeDrafts', () => {
     const merged = mergeDrafts(result(build((p) => { p.skills = [r] })), build((p) => { p.skills = [a] }))
     expect(merged.profile.skills.map((s) => s.canonicalId)).toEqual(['onet:a', 'onet:b'])
   })
+
+  describe('records with the same main field', () => {
+    const maybank = job('Intern', 'Maybank', rulesEx('Intern at Maybank Berhad 2020'))
+    const petronas = job('Intern', 'Petronas', rulesEx('Intern at Petronas Dagangan 2021'))
+
+    it('two jobs with the same title in swapped order each keep their own employer', () => {
+      const merged = mergeDrafts(
+        result(build((p) => { p.employment.records = [maybank, petronas] })),
+        build((p) => { p.employment.records = [job('Intern', 'Petronas', aiEx('Intern at Petronas Dagangan')), job('Intern', 'Maybank', aiEx('Intern at Maybank Berhad'))] }),
+      )
+      const jobs = merged.profile.employment.records
+      expect(jobs.map((j) => j.employer)).toEqual(['Maybank', 'Petronas'])
+      expect(jobs.every((j) => !j.extraction.aiDiffers)).toBe(true)
+      expect(merged.uncertain).toEqual([])
+    })
+
+    it('rules employer empty, two AI jobs with that title: the one whose quote matches fills it', () => {
+      const r = job('Intern', '', rulesEx('Intern at Petronas Dagangan 2021'))
+      const merged = mergeDrafts(
+        result(build((p) => { p.employment.records = [r] })),
+        build((p) => { p.employment.records = [job('Intern', 'Maybank', aiEx('Intern at Maybank Berhad')), job('Intern', 'Petronas', aiEx('Intern at Petronas Dagangan'))] }),
+      )
+      const jobs = merged.profile.employment.records
+      expect(jobs).toHaveLength(2)
+      expect(jobs[0].employer).toBe('Petronas')
+      expect(jobs[0].extraction.aiFilled).toEqual(['employer'])
+      expect(jobs[1]).toMatchObject({ jobTitle: 'Intern', employer: 'Maybank' })
+      expect(jobs[1].extraction.method).toBe('ai')
+    })
+
+    it('same title, different employers and no matching quote: separate records', () => {
+      const merged = mergeDrafts(
+        result(build((p) => { p.employment.records = [maybank] })),
+        build((p) => { p.employment.records = [job('Intern', 'Petronas', aiEx('Intern, Petronas'))] }),
+      )
+      expect(merged.profile.employment.records.map((j) => j.employer)).toEqual(['Maybank', 'Petronas'])
+      expect(merged.uncertain).toEqual([])
+    })
+
+    it('same qualification, different institutions and no matching quote: separate records', () => {
+      const r = edu('Diploma', 'UTM', rulesEx('Diploma, UTM 2018'))
+      const a = edu('Diploma', 'UiTM', aiEx('Diploma from UiTM'))
+      const merged = mergeDrafts(result(build((p) => { p.education.records = [r] })), build((p) => { p.education.records = [a] }))
+      expect(merged.profile.education.records.map((e) => e.institution)).toEqual(['UTM', 'UiTM'])
+    })
+
+    it('an AI record never matches an AI-only record added before it', () => {
+      const merged = mergeDrafts(
+        result(build(() => {})),
+        build((p) => { p.employment.records = [job('Barista', 'Cafe', aiEx('Barista at Cafe')), job('Barista', '', aiEx('Barista in 2019'))] }),
+      )
+      expect(merged.profile.employment.records).toHaveLength(2)
+    })
+  })
 })

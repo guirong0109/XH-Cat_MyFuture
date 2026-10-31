@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Organisation View Mockup</title>
+<!-- MOCKUP for owner review. eMASCO role titles and codes and O*NET skill/knowledge names and needed levels are real
+     (data/emasco/role_details.json, data/onet/requirements.tsv, O*NET 31.0). Every person, count, gap, band, course
+     pick and SDG link here is SAMPLE data, not a calculation. Spec:
+     docs/superpowers/specs/2026-10-31-hr-org-view-design.md -->
+<style>
+:root{
+  --bg:#f5f6f2;--surface:#ffffff;--surface2:#eef1ec;--ink:#16201b;--muted:#5a6761;--line:#dce2db;
+  --accent:#0f766e;--accent-ink:#ffffff;--accent-soft:#dff3ef;
+  --src:#1d4ed8;--src-soft:#dbe7fe;--est:#6d28d9;--est-soft:#ece5fd;
+  --self:#a16207;--self-soft:#fdf1c7;--bad:#b91c1c;--bad-soft:#fde2e2;--ok:#15803d;--ok-soft:#dcf7e4;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--bad:#fca5a5;--bad-soft:#3b1717;--ok:#86efac;--ok-soft:#14321f;--shadow:none}}
+:root[data-theme="dark"]{
+  --bg:#0f1412;--surface:#171e1b;--surface2:#1f2824;--ink:#e7eeea;--muted:#9aa8a1;--line:#2c3732;
+  --accent:#2dd4bf;--accent-ink:#06201c;--accent-soft:#123630;
+  --src:#93b4fb;--src-soft:#1b2944;--est:#c4b5fd;--est-soft:#2a2245;
+  --self:#facc15;--self-soft:#352c0e;--bad:#fca5a5;--bad-soft:#3b1717;--ok:#86efac;--ok-soft:#14321f;--shadow:none}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink)}
+button,select,input{font:inherit;color:inherit}
+a{color:var(--accent)}
+.mockbar{background:var(--self-soft);color:var(--self);font-size:12.5px;text-align:center;padding:6px 16px;border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-weight:700}.brand span{color:var(--accent)}
+.top .sp{flex:1}
+main{padding:24px clamp(16px,4vw,48px) 60px;max-width:1100px;margin:0 auto;min-width:0}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:0 0 22px;scrollbar-width:none}
+.tabs button{border:0;background:none;padding:10px 12px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs .n{font-size:11px;width:18px;height:18px;border-radius:99px;display:grid;place-items:center;background:var(--surface2)}
+.tabs button.on .n{background:var(--accent);color:var(--accent-ink)}
+h1{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;margin-bottom:6px}
+h2{font-size:18px;margin:24px 0 6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+h3{font-size:15px;margin-bottom:4px}
+.lead{color:var(--muted);max-width:72ch;margin-bottom:14px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.side{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+@media (max-width:820px){.side{grid-template-columns:1fr}}
+.btn{border:1px solid var(--line);background:var(--surface2);padding:7px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn:hover{border-color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:var(--surface2);padding:7px 14px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;vertical-align:middle;white-space:nowrap}
+.t-src{background:var(--src-soft);color:var(--src)}.t-est{background:var(--est-soft);color:var(--est)}
+.t-self{background:var(--self-soft);color:var(--self)}.t-ok{background:var(--ok-soft);color:var(--ok)}
+.t-bad{background:var(--bad-soft);color:var(--bad)}.t-none{background:var(--surface2);color:var(--muted);border:1px dashed var(--line)}
+.src{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:baseline;margin-top:8px}
+.src b{color:var(--src)}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:12px;font-size:13.5px;margin:10px 0}
+.b-info{background:var(--src-soft);color:var(--ink)}.b-warn{background:var(--self-soft);color:var(--ink)}.b-est{background:var(--est-soft);color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.field label{font-weight:600}
+.input{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 10px;width:100%}
+.table-wrap{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
+.heat{border-collapse:separate;border-spacing:4px;min-width:640px}
+.heat th{text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom;padding:4px}
+.heat th.rh{text-align:left;font-size:13px;color:var(--ink);vertical-align:middle;padding-left:0}
+.heat td{border:0;text-align:center;border-radius:10px;padding:8px 4px;cursor:pointer;min-width:84px;font-size:13px}
+.heat td b{display:block;font-size:15px}
+.heat td small{display:block;font-size:11px;color:var(--muted)}
+.heat td.sel{outline:2px solid var(--accent);outline-offset:1px}
+.heat td.blank{background:transparent;border:1px dashed var(--line);cursor:default;color:var(--muted)}
+.c0{background:var(--ok-soft)}.c1{background:color-mix(in srgb,var(--bad) 14%,var(--surface))}
+.c2{background:color-mix(in srgb,var(--bad) 32%,var(--surface))}.c3{background:color-mix(in srgb,var(--bad) 52%,var(--surface))}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}
+.bar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--surface2);margin:6px 0}
+.bar i{display:block;height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--muted)}
+.steps{list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:s}
+.steps>li{counter-increment:s;padding-left:38px;position:relative}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:26px;height:26px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:700;display:grid;place-items:center;font-size:13px}
+.links{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.links a{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;text-decoration:none;background:var(--surface)}
+.band{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.band div{border-radius:10px;padding:8px;text-align:center;font-size:12px;background:var(--surface2)}
+.band b{display:block;font-size:20px}
+.b1{background:var(--ok-soft)!important}.b2{background:var(--est-soft)!important}.b3{background:var(--bad-soft)!important}
+.sdg{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:6px;color:#fff;font-weight:800;font-size:13px}
+.view{display:none}.view.on{display:block}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="mockbar">MOCKUP for review · role titles, codes and O*NET skill names and needed levels are real · every person, count, gap, band, course and SDG link is <b>sample data</b>, not a calculation</div>
+<div class="top">
+  <div class="brand">FutureReady <span>MY</span></div>
+  <span class="tag t-src">Organisation · HR</span>
+  <div class="sp"></div>
+  <div class="seg" role="group" aria-label="Organisation type">
+    <button class="on" data-type="hr">HR / L&amp;D</button><button data-type="centre">Career centre</button>
+  </div>
+  <select class="input" style="width:auto" aria-label="Language"><option>EN</option><option>BM</option><option>中文</option></select>
+  <button class="btn sm" id="theme">Dark</button>
+</div>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="on" data-v="setup"><span class="n">1</span>Setup</button>
+    <button data-v="people"><span class="n">2</span><span data-w="People">People</span></button>
+    <button data-v="heat"><span class="n">3</span>Heatmap</button>
+    <button data-v="plan"><span class="n">4</span><span data-w="Team plan">Team plan</span></button>
+    <button data-v="outlook"><span class="n">5</span>Outlook &amp; SDG</button>
+  </div>
+
+  <!-- 1 SETUP -->
+  <section class="view on" id="v-setup">
+    <h1>Set up your organisation</h1>
+    <p class="lead">One account manages one organisation. This helps plan training. It does not make hiring decisions.</p>
+    <div class="grid g2" style="align-items:start">
+      <div class="card stack">
+        <div class="field"><label for="on">Organisation name</label><input class="input" id="on" value="Sample Logistics Sdn Bhd"></div>
+        <div class="field"><label>Type</label><div class="seg"><button class="on" data-type="hr">HR / L&amp;D manager</button><button data-type="centre">TVET / university career centre</button></div></div>
+        <span class="tiny muted">Type changes the words (department ↔ programme, staff ↔ student). Career centres have no current role: gaps are against the target role only.</span>
+      </div>
+      <div class="card stack">
+        <h3><span data-w="Departments">Departments</span> and target roles</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th data-w="Department">Department</th><th>Target role (optional)</th></tr></thead>
+          <tbody>
+            <tr><td data-g="0">Finance</td><td>Data Analyst <span class="muted tiny">eMASCO 2524-02</span></td></tr>
+            <tr><td data-g="1">Customer Service</td><td><span class="muted">None set</span></td></tr>
+            <tr><td data-g="2">Operations</td><td>Supply Chain and Logistics Management Manager <span class="muted tiny">1214-04</span></td></tr>
+          </tbody></table></div>
+        <div class="row"><input class="input" style="flex:1;min-width:140px" placeholder="Add a department"><button class="btn sm">Add</button></div>
+        <div class="src"><b>Source:</b> target roles from eMASCO (MOHR), crawled 23 Oct 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 PEOPLE -->
+  <section class="view" id="v-people">
+    <h1 data-w="People">People</h1>
+    <p class="lead">Add people by uploading a roster of made-up people, or by sending a join link to a real employee who then shares their own skills.</p>
+    <div class="grid g2" style="align-items:start">
+      <div class="card stack">
+        <h3>Upload a roster (CSV)</h3>
+        <div class="banner b-warn"><b>Use synthetic (made-up) people only.</b></div>
+        <div class="row"><button class="btn">Choose file…</button><a href="#" class="small">Download template</a><a href="#" class="small">Use the sample roster</a></div>
+        <div class="card" style="background:var(--surface2);box-shadow:none">
+          <b class="small">Preview: sample-roster-hr.csv</b> <span class="tag t-none">nothing saved yet</span>
+          <dl class="kv" style="margin-top:8px"><dt>Rows accepted</dt><dd>58</dd><dt>Rows rejected</dt><dd>2: "Row 14: role code 9999-99 is not in eMASCO" · "Row 31: level 'very good' is not basic / good / expert / not assessed"</dd><dt>Not recognised, not counted</dt><dd>"Excel wizardry" (row 22)</dd></dl>
+          <div class="row" style="margin-top:8px"><button class="btn pri sm">Import 58 rows</button><button class="btn sm">Cancel</button></div>
+        </div>
+      </div>
+      <div class="card stack">
+        <h3>Join link</h3>
+        <div class="grid g2"><div class="field"><label data-w="Department">Department</label><select class="input"><option>Finance</option><option>Customer Service</option><option>Operations</option></select></div>
+        <div class="field hr-only"><label>Current role</label><select class="input"><option>Accountant · 2411-01</option></select></div></div>
+        <button class="btn">Make a join link</button>
+        <div class="banner b-info"><div><b>Copy this link now, it is shown once.</b><br><span class="tiny" style="word-break:break-all">https://futureready.example/#join=Q3x…k9</span><br><span class="tiny muted">Single use · expires in 7 days · the app sends no email</span></div></div>
+      </div>
+    </div>
+    <h2><span data-w="Staff">Staff</span> <span class="muted small">12 people · 1 left out of the sums</span></h2>
+    <div class="card"><div class="table-wrap"><table>
+      <thead><tr><th>Name</th><th data-w="Department">Department</th><th class="hr-only">Current role</th><th class="num hr-only">Skill Match now</th><th class="num">Skill Match target</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Aisyah R. <span class="tag t-self">provisional</span></td><td>Finance</td><td class="hr-only">Accountant</td><td class="num hr-only">71%</td><td class="num">48%</td><td><span class="tag t-src">shared by the employee</span><div class="tiny muted">31 Oct 2026</div></td></tr>
+        <tr><td>Staff 02</td><td>Finance</td><td class="hr-only">Accountant</td><td class="num hr-only">64%</td><td class="num">41%</td><td><span class="tag t-none">entered by HR</span></td></tr>
+        <tr><td>Staff 03</td><td>Customer Service</td><td class="hr-only">Customer Service Manager</td><td class="num hr-only">58%</td><td class="num muted">no target</td><td><span class="tag t-none">entered by HR</span></td></tr>
+        <tr><td>Staff 04</td><td>Operations</td><td class="hr-only">Store Executive</td><td class="num hr-only" colspan="1"><span class="tag t-bad">not available</span></td><td class="num">39%</td><td><span class="tag t-none">entered by HR</span></td></tr>
+      </tbody></table></div>
+      <p class="note">"Not available": Store Executive (2182-03) stops at the step "MASCO → ISCO-08: no same 4-digit code". Left out of the current-role sums, never guessed. HR sees only shared skills and levels, never a CV, matches or pathways.</p>
+      <div class="src"><b>Source:</b> Skill Match from career matching (O*NET 31.0 skills and knowledge, importance ≥ 3.0) · code chain eMASCO → ISCO-08 → SOC → O*NET</div>
+    </div>
+  </section>
+
+  <!-- 3 HEATMAP -->
+  <section class="view" id="v-heat">
+    <h1>Skill-gap heatmap</h1>
+    <p class="lead">Each cell: how many people whose role needs this item are short of the needed level, and the average levels short. Columns: most people short first.</p>
+    <div class="card row" style="justify-content:space-between">
+      <div class="row"><span class="small muted">Compare against</span><div class="seg"><button class="on hr-only">Current role</button><button>Target role</button></div></div>
+      <div class="legend"><span><i class="c0"></i>No one short</span><span><i class="c1"></i>Under 1 level</span><span><i class="c2"></i>1 to 2</span><span><i class="c3"></i>2 or more</span><span><i style="border:1px dashed var(--line)"></i>Not needed</span></div>
+    </div>
+    <div class="grid side" style="margin-top:14px;align-items:start">
+      <div class="card"><div class="table-wrap"><table class="heat">
+        <thead><tr><th></th><th>Economics and Accounting</th><th>Computers and Electronics</th><th>Mathematics (knowledge)</th><th>Customer and Personal Service</th><th>Critical Thinking</th><th>Writing</th></tr></thead>
+        <tbody>
+          <tr><th class="rh" data-g="0">Finance<br><small class="muted">5 people</small></th>
+            <td class="c2 sel" data-cell="fin-econ"><b>4 of 5</b><small>avg 1.4 short</small></td><td class="c1"><b>3 of 5</b><small>0.8</small></td><td class="c1"><b>2 of 5</b><small>0.6</small></td><td class="c1"><b>2 of 5</b><small>0.5 · provisional</small></td><td class="c0"><b>0 of 5</b><small>0.0</small></td><td class="c1"><b>1 of 5</b><small>0.3</small></td></tr>
+          <tr><th class="rh" data-g="1">Customer Service<br><small class="muted">4 people</small></th>
+            <td class="blank">not needed</td><td class="c2"><b>3 of 4</b><small>1.2</small></td><td class="c1"><b>2 of 4</b><small>0.7</small></td><td class="c1"><b>1 of 4</b><small>0.4</small></td><td class="c1"><b>2 of 4</b><small>0.6</small></td><td class="c1"><b>1 of 4</b><small>0.2</small></td></tr>
+          <tr><th class="rh" data-g="2">Operations<br><small class="muted">3 people · 1 left out</small></th>
+            <td class="c3"><b>2 of 2</b><small>2.3</small></td><td class="c2"><b>2 of 2</b><small>1.6</small></td><td class="c1"><b>1 of 2</b><small>0.9</small></td><td class="c0"><b>0 of 2</b><small>0.0</small></td><td class="c1"><b>1 of 2</b><small>0.5</small></td><td class="blank">not needed</td></tr>
+        </tbody></table></div>
+        <div class="row" style="justify-content:space-between;margin-top:8px"><span class="tiny muted">Columns 1–6 of 21</span><div class="row"><button class="btn sm">‹</button><button class="btn sm">›</button></div></div>
+      </div>
+      <div class="card stack">
+        <span class="tiny muted">Selected cell</span>
+        <h3>Finance · Economics and Accounting</h3>
+        <dl class="kv"><dt>Role</dt><dd>Accountant (2411-01) → O*NET Accountants and Auditors (13-2011.00)</dd><dt>Needed level</dt><dd>5.8 of 7 (expert still leaves a gap)</dd><dt>Levels short</dt><dd>7.0 in total · 1.4 on average</dd></dl>
+        <div><div class="bar"><i style="width:20%;background:var(--ok)"></i><i style="width:40%;background:var(--self)"></i><i style="width:20%;background:var(--bad)"></i><i style="width:20%;background:var(--est)"></i></div>
+        <div class="legend"><span><i style="background:var(--ok)"></i>Met 1</span><span><i style="background:var(--self)"></i>Below 2</span><span><i style="background:var(--bad)"></i>Missing 1</span><span><i style="background:var(--est)"></i>Not assessed 1</span></div></div>
+        <div class="banner b-warn tiny">1 person has this "not assessed yet": counted as meeting the level, so this cell is provisional (same rule as career matching).</div>
+        <button class="btn pri">Make a team plan for Finance</button>
+        <div class="src"><b>Source:</b> O*NET 31.0 Skills and Knowledge (CC BY 4.0) · levels from shared skills and the HR roster</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 PLAN -->
+  <section class="view" id="v-plan">
+    <h1>Team plan</h1>
+    <div class="card row">
+      <div class="field"><label data-w="Department">Department</label><select class="input"><option>Finance</option></select></div>
+      <div class="field"><label>Role</label><select class="input"><option>Target: Data Analyst (2524-02)</option><option class="hr-only">Current: Accountant (2411-01)</option></select></div>
+      <span class="tag t-self" style="align-self:flex-end;margin-bottom:6px">progress is self-reported</span>
+    </div>
+    <div class="grid side" style="margin-top:14px;align-items:start">
+      <div class="card">
+        <ol class="steps">
+          <li><div class="row" style="justify-content:space-between"><h3>Computers and Electronics</h3><select class="input" style="width:auto;padding:3px 8px"><option>Planned</option><option>In progress</option><option>Done</option></select></div>
+            <p class="small">5 people short (2 missing, 3 below) · 9.5 levels short · good → expert</p>
+            <div class="links"><a href="#">e-LATiH · (team pick)</a><a href="#">Microsoft Learn · (team pick)</a></div>
+            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a><a href="#">Microsoft Learn</a><a href="#">Google Skills</a></div>
+            <p class="tiny muted">Time: see each course page.</p></li>
+          <li><div class="row" style="justify-content:space-between"><h3>Mathematics (knowledge)</h3><select class="input" style="width:auto;padding:3px 8px"><option>In progress</option></select></div>
+            <p class="small">4 people short (0 missing, 4 below) · 5.2 levels short · good → expert</p>
+            <div class="links"><a href="#">Khan Academy · (team pick)</a></div>
+            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a><a href="#">Khan Academy</a></div></li>
+          <li><div class="row" style="justify-content:space-between"><h3>Active Learning</h3><select class="input" style="width:auto;padding:3px 8px"><option>Planned</option></select></div>
+            <p class="small">3 people short (3 missing) · 6.6 levels short · → good</p>
+            <div class="banner b-info tiny">No team pick yet. Use the search links below.</div>
+            <div class="links"><span class="tiny muted">More on:</span><a href="#">e-LATiH</a><a href="#">Coursera</a><a href="#">edX</a></div></li>
+        </ol>
+        <p class="note">Order: most people short first, then most levels short. No hours are shown: no data file in the app has a sourced course duration.</p>
+      </div>
+      <div class="card stack">
+        <h3>For whom</h3>
+        <p class="small">Finance, 5 people, against <b>Data Analyst</b> (eMASCO 2524-02 → O*NET Data Scientists 15-2051.00).</p>
+        <dl class="kv"><dt>Steps</dt><dd>9 skills with gaps</dd><dt>Planned</dt><dd>7</dd><dt>In progress</dt><dd>2</dd><dt>Done</dt><dd>0</dd></dl>
+        <div class="src"><b>Sources:</b> gaps from career matching (O*NET 31.0) · courses from the study pathway's team picks, each opened in a browser, with site and date checked · search links open each site's own search</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 OUTLOOK & SDG -->
+  <section class="view" id="v-outlook">
+    <h1>Outlook and SDG</h1>
+    <div class="card row" style="justify-content:space-between">
+      <div class="row"><span class="small muted">AI adoption scenario</span><div class="seg" id="scen"><button class="on" data-s="m">Moderate AI</button><button data-s="r">Rapid AI</button></div></div>
+      <span class="tag t-est">ESTIMATES</span>
+    </div>
+    <div class="banner b-est small">Scenarios change only these counts. They never change anyone's gaps, the heatmap or the plan order.</div>
+    <div class="grid g3">
+      <div class="card"><h3 data-g="0">Finance</h3><span class="tiny muted hr-only">by current role</span>
+        <div class="band"><div class="b1"><b data-m="2" data-r="1">2</b>1 · growing, AI helps</div><div class="b2"><b data-m="1" data-r="3">1</b>2 · AI may change much</div><div class="b3"><b>0</b>3 · fewer ads</div><div><b data-m="2" data-r="1">2</b>4 · not enough evidence</div></div></div>
+      <div class="card"><h3 data-g="1">Customer Service</h3><span class="tiny muted hr-only">by current role</span>
+        <div class="band"><div class="b1"><b>0</b>1</div><div class="b2"><b data-m="1" data-r="4">1</b>2</div><div class="b3"><b>0</b>3</div><div><b data-m="3" data-r="0">3</b>4</div></div></div>
+      <div class="card"><h3 data-g="2">Operations</h3><span class="tiny muted hr-only">by current role · 1 left out</span>
+        <div class="band"><div class="b1"><b>0</b>1</div><div class="b2"><b>0</b>2</div><div class="b3"><b>0</b>3</div><div><b>2</b>4</div></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Moved between Moderate and Rapid</h3>
+      <p class="small">Customer Service: 3 people, band 4 → 2 (Customer Service Manager: ILO GenAI exposure gradient high in Rapid). Finance: 2 people, band 4 → 2.</p>
+      <div class="src"><b>Sources:</b> Moderate = Anthropic Economic Index (release 2026-06-26, May 2026 slice) · Rapid = ILO WP140 GenAI exposure · job ads = DOSM online vacancies by MASCO major group, "group level, not this job" · each with its date</div>
+    </div>
+    <h2>SDG contribution of the plan <span class="tag t-none">potential, not measured</span></h2>
+    <div class="card">
+      <p class="small">Finance's planned skills (target Data Analyst) touch <b>5 links</b> across 3 goals. A count of links with reasons, never a score.</p>
+      <div class="stack" style="margin-top:10px">
+        <div class="row"><span class="sdg" style="background:#C5192D">4</span><div class="small"><b>2 links</b> · 4.4 "Computers and Electronics: ICT skill named in target 4.4" <span class="tag t-none">team draft, not yet reviewed</span></div></div>
+        <div class="row"><span class="sdg" style="background:#A21942">8</span><div class="small"><b>2 links</b> · 8.2 "Data analysis raises productivity" <span class="tag t-ok">approved by owner on 31 Oct 2026</span></div></div>
+        <div class="row"><span class="sdg" style="background:#FD6925">9</span><div class="small"><b>1 link</b> · 9.5 "Builds local technical capacity" <span class="tag t-none">team draft, not yet reviewed</span></div></div>
+      </div>
+      <div class="src"><b>Source:</b> SDG links (team drafts per MASCO sub-major group and O*NET item, M16) · UN SDG targets API · goal pages sdgs.un.org</div>
+    </div>
+  </section>
+</main>
+<script>
+const W={hr:{'People':'People','Staff':'Staff','Departments':'Departments','Department':'Department','Team plan':'Team plan',g:['Finance','Customer Service','Operations']},
+  centre:{'People':'Students','Staff':'Students','Departments':'Programmes','Department':'Programme','Team plan':'Cohort plan',g:['Diploma in Accounting','Diploma in Logistics','Certificate in Retail']}}
+let type='hr'
+function applyType(){
+  document.querySelectorAll('[data-type]').forEach(b=>b.classList.toggle('on',b.dataset.type===type))
+  document.querySelectorAll('[data-w]').forEach(el=>{el.textContent=W[type][el.dataset.w]??el.dataset.w})
+  document.querySelectorAll('[data-g]').forEach(el=>{const n=el.querySelector('small');el.firstChild.textContent=W[type].g[+el.dataset.g];if(n&&el.tagName==='TH'){}})
+  document.querySelectorAll('.hr-only').forEach(el=>el.style.display=type==='hr'?'':'none')
+  document.querySelector('.top .t-src').textContent=type==='hr'?'Organisation · HR':'Organisation · Career centre'
+}
+document.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>{type=b.dataset.type;applyType()})
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b))
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v))
+})
+document.querySelectorAll('#scen button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#scen button').forEach(x=>x.classList.toggle('on',x===b))
+  document.querySelectorAll('[data-m]').forEach(el=>el.textContent=b.dataset.s==='m'?el.dataset.m:el.dataset.r)
+})
+const th=document.getElementById('theme')
+const isDark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches
+th.textContent=isDark()?'Light':'Dark'
+th.onclick=()=>{const d=isDark();document.documentElement.dataset.theme=d?'light':'dark';th.textContent=d?'Dark':'Light'}
+applyType()
+</script>
+</body>
+</html>

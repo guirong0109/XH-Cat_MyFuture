@@ -15,6 +15,8 @@ export function keepSuggestion(profile, i) {
   const suggestion = original?.aiSuggestion
   if (!suggestion) return profile
   const dropped = dropSuggestion(profile, i)
+  // A malformed saved suggestion is only dropped.
+  if (typeof suggestion !== 'object' || typeof suggestion.id !== 'string' || typeof suggestion.name !== 'string') return dropped
   if (profile.skills.some((skill) => skill.canonicalId === suggestion.id)) return dropped
   const added = levelFromUse({
     ...makeSkill({

@@ -62,8 +62,10 @@ export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' 
 }
 
 // usedIn: the jobs and projects the skill was used in, by title ({ kind: 'job' | 'project', title }); none = other skills.
-export function makeSkill({ name, originalText = name, canonicalId = null, category = null, source, extraction = null, usedIn = [] }) {
+// match: only the short-form link ('short_form': SQL, MS Excel) is kept, so the screen can show "SQL -> name (O*NET)".
+export function makeSkill({ name, originalText = name, canonicalId = null, category = null, source, extraction = null, usedIn = [], match = null }) {
   return {
+    ...(match === 'short_form' ? { match } : {}),
     name,
     originalText,
     canonicalId,

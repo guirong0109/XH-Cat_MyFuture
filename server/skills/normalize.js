@@ -63,12 +63,13 @@ export function createNormalizer({ catalogue, semantic = null, cutoff = null }) 
       for (let size = words.length - 1; size >= 1; size--) {
         for (let start = 0; start + size <= words.length; start++) {
           const hit = catalogue.byName.get(words.slice(start, start + size).join(' '))
-          if (hit) return result(originalText, hit, 'word')
+          // a knowledge area links by its exact name only (spec 3.1)
+          if (hit && !hit.id.startsWith('onet:kn:')) return result(originalText, hit, 'word')
         }
       }
       // catalogue names that contain the whole input as whole words
       const pool = catalogue.byWord.get(words[0]) ?? []
-      const holders = pool.filter((entry) => containsWords(wordsOf(entry.name), words))
+      const holders = pool.filter((entry) => !entry.id.startsWith('onet:kn:') && containsWords(wordsOf(entry.name), words))
       // One or several longer names: the user picks ("pick standard term"); a longer name is never linked silently.
       if (holders.length) {
         const candidates = holders.sort((a, b) => b.occupations - a.occupations || a.name.length - b.name.length).slice(0, MAX_CANDIDATES)

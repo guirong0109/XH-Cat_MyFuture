@@ -46,12 +46,12 @@ from a certificate line; a project's whole line becomes its title. Project accur
 
 ## 4. AI suggestion — `server/cv/aiReadPrompt.js`, `server/cv/aiRead.js`, `server/cv/mergeDrafts.js`
 
-1. **Request.** Each skill in the reply gets a new optional field `onet`: one name copied from the list of the 68
-   O\*NET skill and knowledge names (35 skills, 33 knowledge areas), sent in the system prompt, or empty. The prompt
+1. **Request.** Each skill in the reply gets a new optional field `onet`: one name copied from the list of the 67
+   unique O\*NET skill and knowledge names (35 skills, 33 knowledge areas; Mathematics is both, and the skill wins), sent in the system prompt, or empty. The prompt
    says: pick the one name whose meaning is closest to how the CV shows the skill; leave it empty when none is close;
    never invent a name. The skill's `evidence` is the quote for the suggestion too. A skill described only in a job
    or project line ("built models in Python") may be returned with that line as evidence.
-2. **Checks (server).** A suggestion is kept only when its `onet` is **exactly** one of the 68 names (letter case
+2. **Checks (server).** A suggestion is kept only when its `onet` is **exactly** one of the 67 unique names (letter case
    ignored) and the skill itself passed `keepQuoted`. The id comes from our list, never from the AI. A suggestion is
    dropped when it names the skill's own id or an id already linked on another skill in the draft.
 3. **Shape.** The skill carries `aiSuggestion: { id, name, evidence }`. Its own `canonicalId` is unchanged (so

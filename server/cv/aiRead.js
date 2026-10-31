@@ -40,7 +40,7 @@ export function shapeProblem(reply) {
       if (!entry || typeof entry !== 'object') return `${list}[${i}] ${entry === null ? 'null' : typeof entry}`
       for (const f of fields) {
         const value = entry[f]
-        if (typeof value !== 'string' && !(OPTIONAL.has(f) && value === undefined)) return `${list}[${i}].${f} ${value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value}`
+        if (typeof value !== 'string' && !(OPTIONAL.has(f) && (value === undefined || value === null))) return `${list}[${i}].${f} ${value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value}`
       }
     }
   }
@@ -73,7 +73,7 @@ export function keepQuoted(reply, cvText) {
         const value = String(entry[key] ?? '').trim()
         return key === 'evidence' || UNCHECKED.has(key) || cv.includes(norm(value)) ? value : ''
       }
-      fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || entry[key] !== undefined).map((key) => [key, checked(key)])))
+      fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || (entry[key] !== undefined && entry[key] !== null)).map((key) => [key, checked(key)])))
     }
   }
   return { fields, dropped }
@@ -113,7 +113,9 @@ const parse = (text) => {
 }
 
 export function createAiReader({ provider, fetchImpl = fetch, normalizer, catalogue, now = () => new Date(), timeoutMs = AI_TIMEOUT_MS, perHour = 20 }) {
-  const linkable = new Map(ONET_LINKABLE(catalogue).map((entry) => [nameKey(entry.name), entry]))
+  // One entry per name; the first wins, and skills come before knowledge areas (Mathematics is both: the skill wins).
+  const linkable = new Map()
+  for (const entry of ONET_LINKABLE(catalogue)) if (!linkable.has(nameKey(entry.name))) linkable.set(nameKey(entry.name), entry)
   const prompt = systemPrompt([...new Set([...linkable.values()].map((entry) => entry.name))].sort((a, b) => a.localeCompare(b)))
   const perAddress = createWindowLimiter({ limit: perHour, windowMs: HOUR_MS, now })
 

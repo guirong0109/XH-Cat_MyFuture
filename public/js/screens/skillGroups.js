@@ -164,8 +164,9 @@ function card(ctx, group) {
   // Skills added from a field-of-study suggestion say where the suggestion came from (once per field).
   const fields = new Map(group.skills.filter(({ skill }) => skill.suggestedFrom).map(({ skill }) => [skill.suggestedFrom.code, skill.suggestedFrom]))
   const sources = [...fields.values()].map((from) => `<p class="tiny muted">${esc(t('suggestFrom', { field: from.title, source: `O*NET ${from.onetVersion ?? ''}`.trim() }))}</p>`).join('')
-  const suggestions = group.skills.map(({ skill, i }) => suggestion(t, skill, i)).join('')
-  const body = `${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${suggestions}${sources}${editing ? editView(t, group) : ''}`
+  // Shown once per card: in Edit mode the rows of the edit view carry them. Other skills show them outside the fold.
+  const suggestions = editing ? '' : group.skills.map(({ skill, i }) => suggestion(t, skill, i)).join('')
+  const body = `${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${isOther ? '' : suggestions}${sources}${editing ? editView(t, group) : ''}`
   if (!isOther) return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${actions}</div>
     ${sub ? `<p class="grp-sub">${esc(sub)}</p>` : ''}${quote}${body}${search}</section>`
   // Other skills: the search and the suggestions stay open; the skills themselves are folded until "Show".
@@ -174,7 +175,7 @@ function card(ctx, group) {
     ? `<button class="fold" data-act="otherFold" aria-expanded="${open}">${esc(open ? t('otherHide') : t('otherShow', { n: group.skills.length }))}</button>${open ? body : ''}`
     : ''
   return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${group.skills.length ? actions : ''}</div>
-    <p class="grp-sub">${esc(sub)}</p>${search}${fieldSuggestions(ctx)}${fold}</section>`
+    <p class="grp-sub">${esc(sub)}</p>${search}${fieldSuggestions(ctx)}${suggestions}${fold}</section>`
 }
 
 // What the CV gave, counted, with one button to check every card at once.

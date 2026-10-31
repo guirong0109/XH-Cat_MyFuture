@@ -661,6 +661,11 @@
           "status": "done"
         },
         {
+          "title": "O6i Sample roster",
+          "sub": "12 made-up staff, real role codes and O*NET skills + knowledge, manifest",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1965,6 +1970,11 @@
       "time": "31 Oct",
       "step": "O6h Join links and sharing (hr-branch)",
       "detail": "Task 7 reviewed clean (security review); npm test 1175 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6i Sample roster (hr-branch)",
+      "detail": "Task 8 reviewed, 1 fix round (rosters accept knowledge items); npm test 1183 passed"
     }
   ]
 }

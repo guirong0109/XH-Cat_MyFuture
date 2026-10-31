@@ -1346,4 +1346,40 @@ export default {
   ogSdgLinkMany: "{count} pautan", // translation: owner review
   ogGoalLabel: "Matlamat PBB {goal}", // translation: owner review
   ogSrcSdg: "Pautan SDG: draf pasukan bagi setiap kumpulan MASCO dan item O*NET, dipaparkan serta-merta, setiap satu dilabel “belum disemak” atau “diluluskan oleh pemilik” · API sasaran SDG PBB · halaman matlamat sdgs.un.org", // translation: owner review
+  // Employee share screen
+  shNeedAccount: "Log masuk atau buat akaun untuk berkongsi kemahiran anda dengan organisasi", // translation: owner review
+  shTitle: "Kongsi kemahiran saya dengan {org}", // translation: owner review
+  shGroupLine: "Anda menyertai {group}.", // translation: owner review
+  shSees: "{org} akan melihat tepat ini sahaja (tiada CV, tiada padanan, tiada laluan):", // translation: owner review
+  shColSkill: "Kemahiran atau pengetahuan (O*NET)", // translation: owner review
+  shColLevel: "Tahap", // translation: owner review
+  shLevel_basic: "asas", // translation: owner review
+  shLevel_good: "baik", // translation: owner review
+  shLevel_expert: "pakar", // translation: owner review
+  shLevel_not_assessed: "Belum dinilai", // translation: owner review
+  shNotShared: "Tidak dikongsi:", // translation: owner review
+  shNotOnet: "bukan item kemahiran atau pengetahuan O*NET", // translation: owner review
+  shNoSkills: "Profil ini belum mempunyai item kemahiran atau pengetahuan O*NET untuk dikongsi.", // translation: owner review
+  shProfile: "Profil tersimpan yang mana?", // translation: owner review
+  shProfileOpt: "Disimpan {date}", // translation: owner review
+  shNoProfile: "Anda belum ada profil tersimpan. Bina satu dengan alat CV atau borang, kemudian buka pautan semula.", // translation: owner review
+  shBuild: "Bina profil", // translation: owner review
+  shName: "Nama yang HR akan lihat", // translation: owner review
+  shShare: "Kongsi kemahiran saya", // translation: owner review
+  shUpdate: "Kemas kini kemahiran dikongsi", // translation: owner review
+  shStop: "Berhenti berkongsi", // translation: owner review
+  shNoLink: "Buka pautan sertai yang HR beri untuk berkongsi kemahiran anda. Tiada apa dikongsi sehingga anda memilih.", // translation: owner review
+  shAlready: "Anda berkongsi dengan {org} ({group}) sebagai {name}.", // translation: owner review
+  shDone: "Dikongsi. {org} kini boleh melihat kemahiran di atas.", // translation: owner review
+  shUpdated: "Dikemas kini. {org} kini melihat kemahiran di atas.", // translation: owner review
+  shStopped: "Anda berhenti berkongsi. Nama dan kemahiran anda dibuang daripada organisasi.", // translation: owner review
+  shStopConfirm: "Berhenti berkongsi dan buang nama dan kemahiran anda daripada organisasi?", // translation: owner review
+  shNameNeeded: "Taip nama yang HR patut lihat.", // translation: owner review
+  shChecking: "Menyemak apa yang akan dikongsi…", // translation: owner review
+  shSrc: "profil tersimpan anda, disimpan {date} · item kemahiran dan pengetahuan O*NET 31.0 sahaja", // translation: owner review
+  shErr_link_expired: "Pautan ini telah tamat tempoh atau sudah digunakan. Minta HR untuk pautan baru.", // translation: owner review
+  shErr_own_organisation: "Ini organisasi anda sendiri, jadi tiada apa untuk disertai.", // translation: owner review
+  shErr_no_share: "Anda tidak berkongsi dengan mana-mana organisasi.", // translation: owner review
+  shErr_too_many_attempts: "Terlalu banyak percubaan. Cuba lagi dalam beberapa minit.", // translation: owner review
+  shErr_not_found: "Profil itu tidak ditemui. Pilih yang lain.", // translation: owner review
 }

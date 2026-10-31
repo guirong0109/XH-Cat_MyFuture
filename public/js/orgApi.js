@@ -54,3 +54,12 @@ export async function searchRoles(term) {
   if (!out.ok) return out
   return { ok: true, data: (out.data?.candidates ?? []).filter((c) => c.source === 'emasco') }
 }
+
+// ---- employee side: join link and sharing. The token goes in the body only, never in an address or a log.
+export const joinOrg = (token) => api('POST', '/api/org/join', { token })
+export const listProfiles = () => api('GET', '/api/profiles')
+// What would be shared from this profile: nothing is saved and the link is not used.
+export const previewShare = ({ profileId }) => api('PUT', '/api/org/share', { profileId, dryRun: true })
+export const putShare = ({ token, displayName, profileId }) => api('PUT', '/api/org/share', token ? { token, displayName, profileId } : { displayName, profileId })
+export const getShare = () => api('GET', '/api/org/share')
+export const stopShare = () => api('DELETE', '/api/org/share')

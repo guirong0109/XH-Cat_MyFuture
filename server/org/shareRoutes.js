@@ -73,10 +73,12 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
   }))
 
   router.put('/api/org/share', requireUser, jsonBody('4kb'), guard(async (request, response) => {
-    if (!shares.hit(request.ip)) return tooMany(response)
+    // dryRun: the same answer, nothing saved, the link not used (so it is not counted against the attempts either)
+    const dryRun = request.body?.dryRun === true
+    if (!dryRun && !shares.hit(request.ip)) return tooMany(response)
     const { token, profileId } = request.body ?? {}
     const displayName = text(request.body?.displayName)
-    if (!displayName || typeof profileId !== 'string' || !profileId) return bad(response)
+    if ((!dryRun && !displayName) || typeof profileId !== 'string' || !profileId) return bad(response)
     if (token !== undefined && token !== null && (typeof token !== 'string' || !token || token.length > MAX_TOKEN)) return expired(response)
     const profileSkills = await loadProfileSkills(request.user.id, profileId)
     if (!profileSkills) return sendError(response, 404, 'not_found', 'No such profile.')
@@ -95,6 +97,7 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
       seen.add(match[1])
       shared.push({ key: match[1], name, level: LEVELS.includes(skill.proficiency) ? skill.proficiency : 'not_assessed' })
     }
+    if (dryRun) return response.json({ shared, notShared })
     await store.share(request.user.id, { token: token ?? undefined, displayName, skills: shared.map((s) => ({ key: s.key, level: s.level })) })
     return response.json({ shared, notShared })
   }))

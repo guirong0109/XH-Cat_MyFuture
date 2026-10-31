@@ -8,11 +8,23 @@ const SEARCH_MIN = 2
 // Category C or D: signed in → the organisation screen; otherwise the access screen with a note.
 export const orgEntry = (state) => (state?.account?.status === 'in' ? { screen: 'org', note: null } : { screen: 'access', note: 'ogNeedAccount' })
 
+// The join link: `#join=<token>`. The token is read once at load, kept in memory only (never in the saved state, never
+// logged) and removed from the address bar at once.
+const JOIN_HASH = /^#join=([A-Za-z0-9_-]{1,200})$/
+export const takeJoinToken = (hash) => JOIN_HASH.exec(String(hash ?? ''))?.[1] ?? null
+export function consumeJoinHash(location, history) {
+  const token = takeJoinToken(location?.hash)
+  if (token) history.replaceState(null, '', `${location.pathname ?? '/'}${location.search ?? ''}`)
+  return token
+}
+
 const fresh = () => ({ status: 'loading', tab: 'setup', view: 'current', scenario: 'moderate', page: 0, sel: null, data: null, team: null, teamError: false, message: null, titles: {} })
 const field = (id) => globalThis.document?.getElementById(id)?.value ?? ''
 
 export function createOrgActions({ state, render, api, t, go = () => {} }) {
   let teamRun = 0
+  let previewRun = 0
+  let joinToken = null // employee join link: memory only
   const org = () => (state.org ??= fresh())
   const say = (kind, text) => { org().message = { kind, text } }
   const errText = (code) => (t(`ogErr_${code}`) === `ogErr_${code}` ? t('ogErr_other') : t(`ogErr_${code}`))
@@ -108,7 +120,112 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     render()
   }
 
+
+  // ---- employee: join link and sharing (state.share, never saved in the browser)
+  const sh = () => (state.share ??= { status: 'loading', join: null, joinError: null, existing: null, profiles: null, profileId: null, displayName: '', preview: null, message: null })
+  const shErr = (code) => (t(`shErr_${code}`) === `shErr_${code}` ? errText(code) : t(`shErr_${code}`))
+  const shSay = (kind, text) => { sh().message = { kind, text } }
+
+  async function previewShare() {
+    const s = sh()
+    if (!s.profileId) return
+    const run = ++previewRun
+    s.preview = null
+    render()
+    const out = await api.previewShare({ profileId: s.profileId })
+    if (run !== previewRun) return
+    if (out.ok) {
+      s.preview = out.data
+      if (s.message?.kind === 'bad') s.message = null
+    } else {
+      shSay('bad', shErr(out.code))
+    }
+    render()
+  }
+
+  async function loadShare() {
+    const s = sh()
+    const [joined, profiles, mine] = await Promise.all([joinToken ? api.joinOrg(joinToken) : null, api.listProfiles(), api.getShare()])
+    if ([joined, profiles, mine].some((out) => out && !out.ok && out.code === 'not_signed_in')) {
+      state.account = { status: 'none', user: null }
+      state.accessNote = 'shNeedAccount'
+      state.share = null
+      return go('access')
+    }
+    if ([joined, profiles, mine].some((out) => out && !out.ok && out.code === 'accounts_unavailable')) {
+      state.share = { status: 'off' }
+      return render()
+    }
+    s.join = joined?.ok ? joined.data : null
+    s.joinError = joined && !joined.ok ? joined.code : null
+    // a link that cannot be used any more is forgotten, so signing in again does not bring it back
+    if (s.joinError) joinToken = null
+    s.existing = mine?.ok ? mine.data ?? null : null
+    s.profiles = profiles?.ok ? profiles.data?.profiles ?? [] : []
+    s.profileId = s.profiles[0]?.id ?? null
+    s.displayName = s.existing?.displayName ?? ''
+    s.status = 'ready'
+    render()
+    if (s.join || s.existing) await previewShare()
+  }
+
   const actions = {
+
+    // ---- employee share screen
+    shareEnsure: async () => {
+      if (state.screen !== 'share') return
+      const status = state.account?.status
+      if (status === 'off') {
+        state.share = { status: 'off' }
+        return
+      }
+      if (status === 'none') {
+        state.accessNote = 'shNeedAccount'
+        await Promise.resolve()
+        return go('access')
+      }
+      if (status !== 'in' || state.share) return
+      sh()
+      await loadShare()
+    },
+    shareDo: async () => {
+      const s = sh()
+      const name = field('shName').trim()
+      s.displayName = name
+      if (!name) {
+        shSay('bad', t('shNameNeeded'))
+        return render()
+      }
+      if (!s.profileId) return
+      const out = await api.putShare({ token: joinToken ?? undefined, displayName: name, profileId: s.profileId })
+      if (!out.ok) {
+        if (out.code === 'link_expired') joinToken = null
+        shSay('bad', shErr(out.code))
+        return render()
+      }
+      const updated = Boolean(s.existing)
+      joinToken = null // the link is used now
+      s.preview = out.data
+      const mine = await api.getShare()
+      s.existing = mine.ok ? mine.data ?? null : s.existing
+      s.joinError = null
+      shSay('ok', t(updated ? 'shUpdated' : 'shDone', { org: s.join?.orgName ?? s.existing?.orgName ?? '' }))
+      render()
+    },
+    shareStop: async () => {
+      if (!confirmed(t('shStopConfirm'))) return
+      const out = await api.stopShare()
+      const s = sh()
+      if (!out.ok) {
+        shSay('bad', shErr(out.code))
+        return render()
+      }
+      s.existing = null
+      s.join = null
+      s.preview = null
+      shSay('ok', t('shStopped'))
+      render()
+    },
     // Called by every render of #org: signed-in users load their organisation once; others are sent to sign in.
     orgEnsure: async () => {
       if (state.screen !== 'org') return
@@ -319,6 +436,17 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
       api.updatePerson(d.orgMove, { groupId: el.value }).then((out) => (out.ok ? load() : fail(out)))
       return true
     }
+    if (el?.id === 'shProfile') {
+      const s = sh()
+      s.displayName = field('shName') || s.displayName
+      s.profileId = String(el.value ?? '')
+      previewShare()
+      return true
+    }
+    if (el?.id === 'shName') {
+      sh().displayName = String(el.value ?? '')
+      return true
+    }
     if (el?.id === 'ogFile') {
       const file = el.files?.[0]
       if (file) {
@@ -341,5 +469,5 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     return false
   }
 
-  return { actions, onChange }
+  return { actions, onChange, startJoin: (token) => { joinToken = token }, joinPending: () => Boolean(joinToken) }
 }

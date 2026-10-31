@@ -224,6 +224,26 @@ describe('routes', () => {
     expect(mine.body).toMatchObject({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini Synth' })
   })
 
+  it('dryRun answers the same lists, saves nothing and does not use the link', async () => {
+    const { owner, invite } = await setupOrg()
+    const emp = await newUser()
+    const profileId = await saveProfile(emp)
+    const dry = await call('PUT', '/api/org/share', { token: invite.body.token, profileId, dryRun: true }, emp.cookie)
+    expect(dry.status).toBe(200)
+    expect(dry.body.shared).toEqual([{ key: 'el:2.A.1.a', name: 'Reading Comprehension', level: 'good' }, { key: 'kn:2.C.1.b', name: 'Biology', level: 'not_assessed' }])
+    expect(dry.body.notShared).toHaveLength(2)
+    expect((await call('GET', '/api/org/share', null, emp.cookie)).body).toBeNull()
+    const org = await call('GET', '/api/org', null, owner.cookie)
+    expect(org.body.people).toHaveLength(0)
+    // the link still works afterwards
+    const real = await call('PUT', '/api/org/share', { token: invite.body.token, displayName: 'Aini Synth', profileId }, emp.cookie)
+    expect(real.status).toBe(200)
+    expect(real.body.shared).toEqual(dry.body.shared)
+    // another user's profile is still 404 on a dry run
+    const other = await newUser()
+    expect((await call('PUT', '/api/org/share', { profileId, dryRun: true }, other.cookie)).status).toBe(404)
+  })
+
   it('re-using the token -> 410 link_expired with the message', async () => {
     const { invite } = await setupOrg()
     const a = await newUser()

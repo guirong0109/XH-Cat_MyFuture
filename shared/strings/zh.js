@@ -1346,4 +1346,40 @@ export default {
   ogSdgLinkMany: "{count} 条链接", // translation: owner review
   ogGoalLabel: "联合国目标 {goal}", // translation: owner review
   ogSrcSdg: "SDG 链接：团队按 MASCO 大组和 O*NET 项目起草，立即显示，并标明“尚未审核”或“已获负责人批准”· 联合国 SDG 目标 API · 目标页面 sdgs.un.org", // translation: owner review
+  // Employee share screen
+  shNeedAccount: "请登录或创建账户，以便与您的机构分享技能", // translation: owner review
+  shTitle: "与 {org} 分享我的技能", // translation: owner review
+  shGroupLine: "您将加入 {group}。", // translation: owner review
+  shSees: "{org} 只会看到以下内容（没有简历、匹配结果或发展路径）：", // translation: owner review
+  shColSkill: "技能或知识（O*NET）", // translation: owner review
+  shColLevel: "等级", // translation: owner review
+  shLevel_basic: "基础", // translation: owner review
+  shLevel_good: "良好", // translation: owner review
+  shLevel_expert: "精通", // translation: owner review
+  shLevel_not_assessed: "尚未评估", // translation: owner review
+  shNotShared: "不分享：", // translation: owner review
+  shNotOnet: "不是 O*NET 技能或知识项目", // translation: owner review
+  shNoSkills: "此档案还没有可分享的 O*NET 技能或知识项目。", // translation: owner review
+  shProfile: "使用哪个已保存的档案？", // translation: owner review
+  shProfileOpt: "保存于 {date}", // translation: owner review
+  shNoProfile: "您还没有已保存的档案。请先用简历或表单工具建立一个，然后再打开链接。", // translation: owner review
+  shBuild: "建立档案", // translation: owner review
+  shName: "人力资源部将看到的名字", // translation: owner review
+  shShare: "分享我的技能", // translation: owner review
+  shUpdate: "更新已分享的技能", // translation: owner review
+  shStop: "停止分享", // translation: owner review
+  shNoLink: "请打开人力资源部给您的加入链接来分享技能。在您选择之前不会分享任何内容。", // translation: owner review
+  shAlready: "您正以“{name}”的名字与 {org}（{group}）分享。", // translation: owner review
+  shDone: "已分享。{org} 现在可以看到以上技能。", // translation: owner review
+  shUpdated: "已更新。{org} 现在看到以上技能。", // translation: owner review
+  shStopped: "您已停止分享。您的名字和技能已从机构中移除。", // translation: owner review
+  shStopConfirm: "停止分享，并从机构中移除您的名字和技能吗？", // translation: owner review
+  shNameNeeded: "请输入人力资源部应看到的名字。", // translation: owner review
+  shChecking: "正在检查将分享的内容…", // translation: owner review
+  shSrc: "您已保存的档案，保存于 {date} · 仅限 O*NET 31.0 技能和知识项目", // translation: owner review
+  shErr_link_expired: "此链接已过期或已被使用。请向人力资源部索取新链接。", // translation: owner review
+  shErr_own_organisation: "这是您自己的机构，无需加入。", // translation: owner review
+  shErr_no_share: "您目前没有与任何机构分享。", // translation: owner review
+  shErr_too_many_attempts: "尝试次数过多，请几分钟后再试。", // translation: owner review
+  shErr_not_found: "找不到该档案，请选择其他档案。", // translation: owner review
 }

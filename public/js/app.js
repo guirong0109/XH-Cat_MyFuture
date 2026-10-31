@@ -11,6 +11,7 @@ import returning from './screens/returning.js'
 import access from './screens/access.js'
 import category from './screens/category.js'
 import org from './screens/org.js'
+import orgShare from './screens/orgShare.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
 import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
@@ -32,7 +33,7 @@ import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
 import * as orgApi from './orgApi.js'
-import { createOrgActions, orgEntry } from './orgActions.js'
+import { consumeJoinHash, createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
@@ -40,7 +41,7 @@ import { linkedFields } from './components/fieldSuggestions.js'
 import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
-const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
+const SCREENS = { welcome, returning, access, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
 // Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
 const ALIAS = { roadmap: 'pathway' }
@@ -78,7 +79,7 @@ function persist() {
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, org: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, org: null, share: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -911,9 +912,9 @@ async function accountCall(kind) {
     state.profile = mergeCareerFields(latest.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
-    return go('summary')
+    return go(orgView.joinPending() ? 'share' : 'summary')
   }
-  go('category')
+  go(orgView.joinPending() ? 'share' : 'category')
 }
 
 // After Confirm: always on this device; also in the account when signed in.
@@ -1075,6 +1076,7 @@ function render() {
   if (screen === 'match' || screen === 'sdg') ensureMatch()
   if (screen === 'pathway') ensurePathway()
   if (screen === 'org') actions.orgEnsure()
+  if (screen === 'share') actions.shareEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
@@ -1225,7 +1227,10 @@ if (previous) {
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
 if (resumeChoice(previous) === 'ask') resumeTo = screenOf(previous.screen)
-state.screen = screenOf(startScreen(previous, location.hash))
+// A join link (#join=<token>) is read once, kept in memory only and removed from the address bar at once.
+const joinToken = consumeJoinHash(location, history)
+if (joinToken) orgView.startJoin(joinToken)
+state.screen = joinToken ? 'share' : screenOf(startScreen(previous, location.hash))
 // #roadmap opens #pathway: the address shows the new name.
 if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()

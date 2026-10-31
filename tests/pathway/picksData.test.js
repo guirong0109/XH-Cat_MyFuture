@@ -3,6 +3,7 @@
 import { readFileSync, existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { coverage } from '../../shared/pathway/picks.js'
+import { educationFor } from '../../shared/pathway/route.js'
 import { loadPathwayData } from '../../server/pathway/data.js'
 
 const REPORT = new URL('../../docs/pathway/fill-report.md', import.meta.url)
@@ -41,6 +42,10 @@ describe('Study Pathway team picks data', async () => {
   it('loads the real data files without error', () => {
     expect(data.picks.length).toBeGreaterThan(0)
     expect(data.itemKeys.size).toBe(68)
+  })
+
+  it('the four jobs whose kept education rows are all 0% show no "In the US" line', () => {
+    for (const code of ['25-1125.00', '29-1229.06', '47-5013.00', '51-4051.00']) expect(educationFor(data.education, code)).toBeNull()
   })
 
   it('every skill and knowledge item has a course pick or is in the fill report', () => {

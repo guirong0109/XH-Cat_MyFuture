@@ -58,4 +58,7 @@ describe('educationFor', () => {
     expect(educationFor([row('J', '6', '90.00', 'Y')], 'J')).toBeNull()
     expect(educationFor([row('J', '6', '90.00')], 'K')).toBeNull()
   })
+  it('is null when every row kept is 0% (the answer is in suppressed rows; e.g. O*NET 25-1125.00)', () => {
+    expect(educationFor([row('J', '6', '0.00'), row('J', '7', '0.00'), row('J', '8', '100.00', 'Y')], 'J')).toBeNull()
+  })
 })

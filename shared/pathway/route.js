@@ -48,5 +48,7 @@ export function educationFor(rows, onetCode) {
     .map((r) => ({ category: Number(r.category), label: r.label, percent: Number(r.percent) }))
     .sort((a, b) => a.category - b.category)
   const best = Math.max(...all.map((r) => r.percent))
+  // Every kept row 0%: the real answer is in the suppressed rows, so there is nothing to show.
+  if (!(best > 0)) return null
   return { top: all.filter((r) => r.percent === best), all, suppressedLeftOut: mine.length - kept.length }
 }

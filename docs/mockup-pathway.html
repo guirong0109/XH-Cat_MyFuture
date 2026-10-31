@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Study Pathway Mockup</title>
-<!-- MOCKUP for owner review. Real: role titles and codes (eMASCO), O*NET jobs, skill names, importance and needed
-     levels (O*NET 31.0 requirements.tsv), fields of study and CIP programmes (Statistics Canada + O*NET crosswalk),
-     the six search-link patterns (checked 31 Oct 2026). SAMPLE: your levels, education percentages, every named
-     course, programme and professional pick, review dates and progress. Spec:
-     docs/superpowers/specs/2026-10-31-study-pathway-design.md -->
+<!-- MOCKUP for owner review. Real, each checked on 31 Oct 2026: role titles and codes and the qualification (eMASCO),
+     O*NET jobs, skills, importance and needed levels (O*NET 31.0 requirements.tsv), US education levels (O*NET 31.0
+     Education.txt), fields of study and CIP programmes (Statistics Canada + O*NET crosswalk), every course, programme
+     and professional-body link (opened in a browser), the six search-link patterns. SAMPLE: the profile (skill levels,
+     field of study) and progress. Spec: docs/superpowers/specs/2026-10-31-study-pathway-design.md -->
 <style>
 :root{
   --bg:#f5f6f2;--surface:#ffffff;--surface2:#eef1ec;--ink:#16201b;--muted:#5a6761;--line:#dce2db;
@@ -100,7 +100,7 @@ table{width:100%;border-collapse:collapse;font-size:12.5px}
 th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--muted);font-weight:600}
 .tw{overflow-x:auto}
-.states{margin-top:34px;border:2px dashed var(--self);border-radius:14px;padding:14px 18px;background:var(--self-soft)}
+.states{margin-top:34px;display:block;border:2px dashed var(--self);border-radius:14px;padding:14px 18px;background:var(--self-soft)}
 .states .card{margin-top:10px}
 .hidden{display:none!important}
 .admrow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
@@ -115,7 +115,7 @@ th{color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
-<div class="mockbar">MOCKUP for owner review · roles, O*NET skills and needed levels, fields of study and search links are <b>real</b> · your levels, education %, every named course / programme / body, review dates and progress are <b>SAMPLE</b></div>
+<div class="mockbar">MOCKUP for owner review · everything here is <b>real</b> and every link was opened on 31 Oct 2026 · only the <b>profile</b> (your skill levels and field of study) is a sample</div>
 <div class="top">
   <div class="brand">FutureReady <span>MY</span></div>
   <div class="sp"></div>
@@ -141,7 +141,8 @@ th{color:var(--muted);font-weight:600}
 
     <div class="tiny muted">Your roles (added with “Plan my study pathway” in Career matching)</div>
     <div class="targets" id="targets"></div>
-    <div class="src" style="border:0;margin-top:2px">Your profile is sent to work this out and is never stored. Saved roles and progress stay on this device.</div>
+    <div class="src" style="border:0;margin-top:2px">Profile used: <b>Bachelor's degree · Software and applications development (ISCED-F 0613)</b> · 15 O*NET skills and knowledge
+      (2 “Not assessed yet”) <span class="tag t-self">sample profile</span> · Your profile is sent to work this out and is never stored. Saved roles and progress stay on this device.</div>
 
     <div id="pw"></div>
   </section>
@@ -149,58 +150,62 @@ th{color:var(--muted);font-weight:600}
   <!-- ================= ADMIN ================= -->
   <section id="v-admin" class="hidden">
     <h1>Admin: pathway picks</h1>
-    <p class="lead">Each named course, programme, professional body and search word the team added. Approve adds your date to the label;
-      reject hides it from users; revise sends it back to “not yet reviewed”. Same keys and store as the SDG review.</p>
+    <p class="lead">Each named course, programme and professional body the team added. Approve adds your date to the label users see;
+      reject hides it from users; revise sends it back to “not yet reviewed”. Same keys and store as the SDG review.
+      <b>Try it:</b> approve one here, then open Study pathway.</p>
     <div class="card" id="adm"></div>
   </section>
 
   <!-- ================= OTHER STATES ================= -->
-  <div class="states">
-    <b>Other states (how the screen looks when data is missing)</b>
-    <div class="card"><h3>Thin profile <span class="tag t-none">no skill with an O*NET id</span></h3>
-      <p class="small">Part 1 (study route) shows as usual. Part 2 says: <i>“We can't list the skills to build yet: add skills with a level to your profile.”</i> <a href="#">Add skills</a></p></div>
-    <div class="card"><h3>Broken code chain <span class="tag t-bad">not available</span></h3>
-      <p class="small">Machine Learning/AI Engineer (MASCO 2519-03): <i>“Not available: SOC 2018 15-1299 ‘Computer Occupations, All Other’ → O*NET: an ‘All Other’ code has no O*NET skill data.”</i> Neither part is shown.</p></div>
-    <div class="card"><h3>Role removed from the data <span class="tag t-bad">not found</span></h3>
-      <p class="small">The tab stays with <i>“This role is not in the current data.”</i> and its <b>remove</b> button.</p></div>
-    <div class="card"><h3>No role saved yet</h3>
-      <p class="small"><i>“Choose a role in Career matching and press ‘Plan my study pathway’.”</i> <a href="#">Go to Career matching</a></p></div>
-    <div class="card"><h3>In Career matching</h3>
-      <p class="small">Each role card's disabled “Study plan not available yet” button becomes <button class="btn sm pri" type="button">Plan my study pathway</button>
-        (adds the role here and opens this tab). The old “Learning roadmap” tab is this “Study pathway” tab.</p></div>
-  </div>
+  <details class="states">
+    <summary><b>When data is missing</b> (rare cases, shown here for completeness)</summary>
+    <div class="card"><h3>Profile with no O*NET skills</h3>
+      <p class="small">Part 1 (study route) shows as usual. Part 2 says: <i>“We can't list the skills to build yet: add skills with a level to your profile.”</i></p></div>
+    <div class="card"><h3>Role with no O*NET data</h3>
+      <p class="small">Machine Learning/AI Engineer (MASCO 2519-03): <i>“Not available: SOC 2018 15-1299 ‘Computer Occupations, All Other’ has no O*NET skill data.”</i></p></div>
+    <div class="card"><h3>Role removed from the data · no role saved yet</h3>
+      <p class="small"><i>“This role is not in the current data.”</i> with its remove button · <i>“Choose a role in Career matching and press ‘Plan my study pathway’.”</i></p></div>
+  </details>
 </main>
 
 <script>
-// ---------- real search-link patterns (checked in a browser, 31 Oct 2026) ----------
+// ---------- search-link patterns, each opened with a real word on 31 Oct 2026 ----------
 const SITES = [
-  { id: 'elatih', name: 'e-LATiH', q: 'https://elatih.hrdcorp.gov.my/courses?order=None&categories=&levels=&languages=&start_duration=&end_duration=&content_provider=&ratings=&version=&start_price=&end_price=&course=' },
-  { id: 'coursera', name: 'Coursera', q: 'https://www.coursera.org/search?query=' },
-  { id: 'edx', name: 'edX', q: 'https://www.edx.org/search?q=' },
-  { id: 'khan', name: 'Khan Academy', q: 'https://www.khanacademy.org/search?page_search_query=' },
-  { id: 'mslearn', name: 'Microsoft Learn', q: 'https://learn.microsoft.com/en-us/training/browse/?terms=' },
-  { id: 'google', name: 'Google Skills', q: 'https://www.skills.google/catalog?keywords=' },
+  { name: 'e-LATiH', q: 'https://elatih.hrdcorp.gov.my/courses?order=None&categories=&levels=&languages=&start_duration=&end_duration=&content_provider=&ratings=&version=&start_price=&end_price=&course=' },
+  { name: 'Coursera', q: 'https://www.coursera.org/search?query=' },
+  { name: 'edX', q: 'https://www.edx.org/search?q=' },
+  { name: 'Khan Academy', q: 'https://www.khanacademy.org/search?page_search_query=' },
+  { name: 'Microsoft Learn', q: 'https://learn.microsoft.com/en-us/training/browse/?terms=' },
+  { name: 'Google Skills', q: 'https://www.skills.google/catalog?keywords=' },
 ]
 const MQR = 'https://www2.mqa.gov.my/mqr/english/ecarianakr.cfm'
 const LV = { basic: 2, good: 4, expert: 6 }
 
-// ---------- real O*NET items (31.0): [key, name, importance, needed]; you = SAMPLE level word, or 'na' (not assessed), or null (missing) ----------
+// ---------- SAMPLE profile: one set of levels, used for every role ('na' = not assessed yet) ----------
+const PROFILE = {
+  'kn:2.C.3.a': 'good', 'el:2.A.2.a': 'good', 'el:2.B.4.e': 'good', 'kn:2.C.4.a': 'basic', 'kn:2.C.1.e': 'na',
+  'el:2.A.1.a': 'good', 'el:2.A.2.b': 'na', 'el:2.A.1.b': 'good', 'el:2.B.2.i': 'good', 'kn:2.C.7.a': 'expert',
+  'el:2.A.1.c': 'good', 'el:2.A.1.d': 'good', 'el:2.B.5.a': 'good', 'el:2.A.2.d': 'good', 'el:2.B.1.b': 'basic',
+}
+const YOUR_FIELD = '0613'
+
+// ---------- real data. O*NET 31.0 items [key, name, importance, needed]; education = O*NET 31.0 Education.txt (RL) ----------
 const ROLES = {
   '2512-01': {
     title: 'Software Developer', masco: '2512-01', onet: '15-1252.00', onetTitle: 'Software Developers', added: '31 Oct 2026',
-    edu: [['Bachelor’s degree', 63], ['Associate’s degree', 12], ['Post-baccalaureate certificate', 9], ['Master’s degree', 8], ['Some college courses', 5], ['High school diploma', 3]],
+    emascoQual: 'Bachelor’s degree or equivalent',
+    edu: { date: '08/2025', rows: [['Bachelor’s degree', 84.8], ['Associate’s degree or other 2-year degree', 5.07], ['Master’s degree', 4.52], ['High school diploma or equivalent', 3.13], ['Post-secondary certificate', 1.67], ['Post-baccalaureate certificate', 0.81]] },
     items: [
-      ['kn:2.C.3.a', 'Computers and Electronics', 4.75, 6.23, 'good'], ['el:2.A.2.a', 'Critical Thinking', 3.88, 4.12, 'good'],
-      ['el:2.B.4.e', 'Judgment and Decision Making', 3.62, 3.75, 'good'], ['kn:2.C.4.a', 'Mathematics', 3.57, 4.55, 'basic'],
-      ['kn:2.C.1.e', 'Customer and Personal Service', 3.56, 4.12, 'na'], ['el:2.A.1.a', 'Reading Comprehension', 3.5, 4.25, 'good'],
-      ['el:2.A.2.b', 'Active Learning', 3.5, 3.62, 'na'], ['el:2.B.4.g', 'Systems Analysis', 3.5, 3.88, null],
-      ['el:2.A.1.b', 'Active Listening', 3.38, 3.88, 'good'], ['el:2.B.2.i', 'Complex Problem Solving', 3.38, 3.5, 'good'],
-      ['el:2.B.3.b', 'Technology Design', 3.38, 3.62, null], ['el:2.B.4.h', 'Systems Evaluation', 3.38, 4.12, null],
-      ['kn:2.C.7.a', 'English Language', 3.27, 3.63, 'expert'], ['el:2.A.1.c', 'Writing', 3.25, 3.62, 'good'],
-      ['el:2.A.1.d', 'Speaking', 3.12, 3.62, 'good'], ['el:2.B.5.a', 'Time Management', 3.12, 3.25, 'good'],
-      ['el:2.A.2.d', 'Monitoring', 3.0, 3.5, 'good'], ['el:2.B.1.b', 'Coordination', 3.0, 3.12, 'basic'],
+      ['kn:2.C.3.a', 'Computers and Electronics', 4.75, 6.23], ['el:2.A.2.a', 'Critical Thinking', 3.88, 4.12],
+      ['el:2.B.4.e', 'Judgment and Decision Making', 3.62, 3.75], ['kn:2.C.4.a', 'Mathematics', 3.57, 4.55],
+      ['kn:2.C.1.e', 'Customer and Personal Service', 3.56, 4.12], ['el:2.A.1.a', 'Reading Comprehension', 3.5, 4.25],
+      ['el:2.A.2.b', 'Active Learning', 3.5, 3.62], ['el:2.B.4.g', 'Systems Analysis', 3.5, 3.88],
+      ['el:2.A.1.b', 'Active Listening', 3.38, 3.88], ['el:2.B.2.i', 'Complex Problem Solving', 3.38, 3.5],
+      ['el:2.B.3.b', 'Technology Design', 3.38, 3.62], ['el:2.B.4.h', 'Systems Evaluation', 3.38, 4.12],
+      ['kn:2.C.7.a', 'English Language', 3.27, 3.63], ['el:2.A.1.c', 'Writing', 3.25, 3.62],
+      ['el:2.A.1.d', 'Speaking', 3.12, 3.62], ['el:2.B.5.a', 'Time Management', 3.12, 3.25],
+      ['el:2.A.2.d', 'Monitoring', 3.0, 3.5], ['el:2.B.1.b', 'Coordination', 3.0, 3.12],
     ],
-    // real fields of study (ISCED-F 2013) reached through CIP -> O*NET; [code, title, partial, [CIP codes and titles]]
     fields: [
       ['0613', 'Software and applications development and analysis', false, ['11.0104 Informatics', '11.0201 Computer programming/programmer, general', '11.0202 Computer programming, specific applications', '11.0203 Computer programming, vendor/product certification', '11.0701 Computer science', '14.0901 Computer engineering, general (partial)', '14.0903 Computer software engineering', '15.1204 Computer software technology/technician']],
       ['0610', 'Information and Communication Technologies (ICTs) not further defined', false, ['11.0103 Information technology']],
@@ -213,11 +218,21 @@ const ROLES = {
   },
   '2411-01': {
     title: 'Accountant', masco: '2411-01', onet: '13-2011.00', onetTitle: 'Accountants and Auditors', added: '31 Oct 2026',
-    edu: [['Bachelor’s degree', 71], ['Master’s degree', 14], ['Associate’s degree', 8], ['Post-baccalaureate certificate', 7]],
+    emascoQual: 'Bachelor’s degree or equivalent',
+    edu: null, // O*NET 31.0 has no Education.txt rows for 13-2011.00
     items: [
-      ['kn:2.C.1.c', 'Economics and Accounting', 4.38, 5.76, 'good'], ['el:2.A.1.a', 'Reading Comprehension', 3.88, 3.88, 'good'],
-      ['kn:2.C.7.a', 'English Language', 3.62, 4.46, 'expert'], ['el:2.A.1.b', 'Active Listening', 3.5, 3.62, 'good'],
-      ['el:2.A.1.c', 'Writing', 3.5, 3.75, 'basic'], ['el:2.A.2.a', 'Critical Thinking', 3.5, 3.5, 'good'],
+      ['kn:2.C.1.c', 'Economics and Accounting', 4.38, 5.76], ['el:2.A.1.a', 'Reading Comprehension', 3.88, 3.88],
+      ['kn:2.C.7.a', 'English Language', 3.62, 4.46], ['el:2.A.1.b', 'Active Listening', 3.5, 3.62],
+      ['el:2.A.1.c', 'Writing', 3.5, 3.75], ['el:2.A.2.a', 'Critical Thinking', 3.5, 3.5],
+      ['el:2.B.2.i', 'Complex Problem Solving', 3.5, 3.5], ['el:2.B.4.e', 'Judgment and Decision Making', 3.5, 3.5],
+      ['kn:2.C.4.a', 'Mathematics', 3.48, 4.69], ['el:2.A.1.d', 'Speaking', 3.38, 3.75],
+      ['el:2.A.1.e', 'Mathematics', 3.38, 3.38], ['kn:2.C.8.b', 'Law and Government', 3.34, 4.14],
+      ['kn:2.C.1.a', 'Administration and Management', 3.31, 4.28], ['kn:2.C.1.e', 'Customer and Personal Service', 3.28, 4.18],
+      ['el:2.A.2.b', 'Active Learning', 3.25, 3.25], ['el:2.A.2.d', 'Monitoring', 3.25, 3.62],
+      ['el:2.B.1.a', 'Social Perceptiveness', 3.25, 3.25], ['kn:2.C.1.b', 'Administrative', 3.24, 4.52],
+      ['kn:2.C.3.a', 'Computers and Electronics', 3.14, 3.97], ['el:2.B.1.c', 'Persuasion', 3.12, 3.25],
+      ['el:2.B.1.f', 'Service Orientation', 3.12, 3.38], ['el:2.B.5.a', 'Time Management', 3.12, 3.25],
+      ['el:2.B.1.b', 'Coordination', 3.0, 3.12],
     ],
     fields: [
       ['0411', 'Accounting and taxation', false, ['52.0301 Accounting', '52.0303 Auditing', '52.1601 Taxation']],
@@ -226,69 +241,100 @@ const ROLES = {
     ],
   },
 }
-const ACC_NOTE = 'Accountant shows only the first 6 of its 23 O*NET items in this mockup.'
 
-// ---------- SAMPLE team picks (names and links NOT checked; the real build stores only picks opened in a browser) ----------
+// ---------- team picks: real pages, each opened in a browser on 31 Oct 2026 (name, link, date only) ----------
+const E = 'https://elatih.hrdcorp.gov.my/courses-details/'
+const C = 'https://www.coursera.org/learn/'
+const P = (site, name, url) => ({ site, name, url, approved: null })
 const PICKS = {
-  'kn:2.C.3.a': [['e-LATiH', 'Sample: Computer hardware and networking basics', '31 Oct 2026'], ['Coursera', 'Sample: Introduction to computer systems', null]],
-  'kn:2.C.4.a': [['Khan Academy', 'Sample: Linear algebra', '31 Oct 2026'], ['e-LATiH', 'Basic Statistics For Practical Time Series Analysis', null]],
-  'el:2.B.4.g': [['Microsoft Learn', 'Sample: Analyse requirements for a software system', null]],
-  'el:2.B.3.b': [['edX', 'Sample: Software design and architecture', null]],
-  'el:2.B.4.h': [],
-  'el:2.A.1.a': [['e-LATiH', 'Sample: Reading technical documents', null]],
-  'el:2.B.1.b': [['e-LATiH', 'Sample: Working across teams', null]],
-  'kn:2.C.1.e': [['e-LATiH', 'Sample: Customer service basics', null]],
-  'el:2.A.2.b': [['Coursera', 'Sample: Learning how to learn', null]],
-  'kn:2.C.1.c': [['e-LATiH', 'Sample: Financial accounting fundamentals', null], ['Khan Academy', 'Sample: Accounting and financial statements', null]],
-  'el:2.A.1.c': [['Coursera', 'Sample: Business writing', null]],
-  'el:2.A.2.a': [['e-LATiH', 'Sample: Critical thinking skills for professionals', null]],
+  'el:2.B.4.g': [P('Coursera', 'Introduction to Systems Analysis', C + 'introduction-to-systems-analysis'), P('Coursera', 'IT Systems Design and Analysis', C + 'it-systems-design-and-analysis')],
+  'el:2.B.4.h': [P('e-LATiH', 'Importance Of Static Testing in Achieving A High Roi', E + 'importance-of-static-testing-in-achieving-a-high-roi'), P('Coursera', 'Introduction to Software Testing', C + 'introduction-software-testing')],
+  'el:2.B.3.b': [P('Coursera', 'Software Architecture', C + 'software-architecture')],
+  'kn:2.C.4.a': [P('e-LATiH', 'Basic Statistics For Practical Time Series Analysis', E + 'basic-statistics-for-practical-time-series-analysis'), P('Coursera', 'Mathematics for Computer Science', C + 'mathematics-for-computer-science')],
+  'el:2.A.1.e': [P('e-LATiH', 'Basic Statistics For Practical Time Series Analysis', E + 'basic-statistics-for-practical-time-series-analysis')],
+  'kn:2.C.3.a': [P('e-LATiH', 'Working with Computers and Devices with Microsoft', E + 'working-with-computers-and-devices-with-microsoft'), P('e-LATiH', 'Basics of Network Addresses', E + 'basics-of-network-addresses')],
+  'el:2.A.1.a': [P('e-LATiH', 'Improving Your English Through Reading And Writing', E + 'improving-your-english-through-reading-and-writing')],
+  'el:2.A.2.a': [P('e-LATiH', 'Critical Thinking Skills for Professionals', E + 'critical-thinking-skills-for-professionals'), P('Coursera', 'Critical Thinking Skills for University Success', C + 'critical-thinking-skills')],
+  'el:2.B.1.b': [P('e-LATiH', 'Building High Performing Teams', E + 'building-high-performing-teams'), P('e-LATiH', 'Collaboration: Let\'s Win Together', E + 'collaboration-let-s-win-together')],
+  'kn:2.C.1.e': [P('e-LATiH', 'Introduction To Customer Service', E + 'introduction-to-customer-service'), P('e-LATiH', 'Customer Service Basics', E + 'customer-service-basics')],
+  'el:2.B.1.f': [P('e-LATiH', 'Customer Service Basics', E + 'customer-service-basics')],
+  'el:2.A.2.b': [P('e-LATiH', 'Learning How to Learn', E + 'learning-how-to-learn-1'), P('Coursera', 'Learning How to Learn: Powerful mental tools to help you master tough subjects', C + 'learning-how-to-learn')],
+  'kn:2.C.1.c': [P('e-LATiH', 'Introduction to Fundamental Accounting', E + 'introduction-to-fundamental-accounting'), P('Coursera', 'Introduction to Financial Accounting', C + 'wharton-accounting')],
+  'el:2.A.1.c': [P('e-LATiH', 'English for Business Writing', E + 'english-for-business-writing'), P('e-LATiH', 'Better Business Writing in English', E + 'better-business-writing-in-english')],
+  'el:2.A.1.b': [P('e-LATiH', 'Listening Skills', E + 'listening-skills'), P('e-LATiH', 'Power Of Effective Listening', E + 'power-of-effective-listening')],
+  'kn:2.C.8.b': [P('e-LATiH', 'Contract Drafting 101 (Contract Law)', E + 'contract-drafting-101-contract-law')],
+  'kn:2.C.1.a': [P('e-LATiH', 'Basics of Project Management', E + 'basics-of-project-management')],
+  'el:2.B.1.a': [P('e-LATiH', 'Emotional Intelligence at Work', E + 'emotional-intelligence-at-work')],
+  'kn:2.C.1.b': [P('e-LATiH', 'Microsoft Office Basics', E + 'microsoft-office-basics'), P('e-LATiH', 'Top Practical Advanced Excel Functions for Office Admin', E + 'top-practical-advanced-excel-functions-for-office-admin')],
+  'el:2.B.1.c': [P('e-LATiH', 'Using The Art Of Persuasion', E + 'using-the-art-of-persuasion')],
+  'field:0613': [P('e-LATiH', 'Basic of Programming', E + 'basic-of-programming'), P('e-LATiH', 'Python - Basics to Brilliance in HD', E + 'python-basics-to-brilliance-in-hd'), P('Coursera', 'Programming for Everybody (Getting Started with Python)', C + 'python')],
+  'field:0411': [P('e-LATiH', 'Introduction to Fundamental Accounting', E + 'introduction-to-fundamental-accounting'), P('e-LATiH', 'Understanding Corporate Tax in Malaysia', E + 'understanding-corporate-tax-in-malaysia')],
 }
-const PROGRAMMES = {
-  '0613': { acc: [['Sample: Bachelor of Computer Science (Software Engineering) (Hons)', 'Sample University A', 'R2/0613/6/0000', '31 Oct 2026'], ['Sample: Diploma in Information Technology', 'Sample Polytechnic B', 'R/0613/4/0000', null]], prof: [['Sample: professional body for software engineers', 'Sample body', null]] },
-  '0610': { acc: [['Sample: Diploma in Computing', 'Sample College C', 'R/0610/4/0000', null]], prof: [] },
-  '0411': { acc: [['Sample: Bachelor of Accounting (Hons)', 'Sample University D', 'R2/0411/6/0000', '31 Oct 2026']], prof: [['Chartered Accountant (CA) membership', 'Malaysian Institute of Accountants (MIA)', null], ['ACCA Qualification', 'ACCA', null]] },
-  '0419': { acc: [], prof: [] },
+// Accredited programmes and professional bodies, from the institution's or body's own page.
+const PROG = {
+  '0613': {
+    acc: [
+      { name: 'Bachelor of Computer Science with Honours (Software Engineering)', inst: 'Universiti Malaysia Sabah (UMS)', ref: null, url: 'https://fki.ums.edu.my/index.php/what-we-offer/undergraduate/uh6481001', approved: null },
+      { name: 'Bachelor of Computer Science (Software Engineering) with Honours', inst: 'Universiti Teknologi Malaysia (UTM)', ref: null, url: 'https://comp.utm.my/secjh/', approved: null },
+    ],
+    prof: [
+      { name: 'Professional Technologist (Ts.), ICT technology field', inst: 'Malaysia Board of Technologists (MBOT)', url: 'https://www.mbot.org.my/registration/professional-technologists', approved: null },
+    ],
+  },
+  '0411': {
+    acc: [
+      { name: 'Bachelor of Accounting with Honours', inst: 'Universiti Malaysia Sabah (UMS)', ref: null, url: 'https://www.ums.edu.my/fpep/index.php/what-we-offer/undergraduates/uh6344001-accounting', approved: null },
+    ],
+    prof: [
+      { name: 'Chartered Accountant, C.A.(M)', inst: 'Malaysian Institute of Accountants (MIA)', url: 'https://mia.org.my/how-to-become-a-c-a-m/', approved: null },
+      { name: 'The ACCA Qualification', inst: 'ACCA (Malaysia)', url: 'https://www.accaglobal.com/my/en/qualifications/glance/acca.html', approved: null },
+    ],
+  },
 }
-const FIELD_COURSES = { '0613': [['freeCodeCamp', 'Sample: Scientific computing with Python', null]], '0411': [['edX', 'Sample: Introduction to accounting', null]] }
 
-// ---------- SAMPLE state ----------
+// ---------- state ----------
 let targets = ['2512-01', '2411-01']
 let active = '2512-01'
-const progress = { 'kn:2.C.4.a': 'started', 'el:2.A.1.a': 'done' } // per skill: shared by every pathway
-const YOUR_FIELD = '0613'
+const progress = { 'kn:2.C.4.a': 'started', 'el:2.B.4.g': 'started' } // per skill, shared by every pathway
 let view = 'pathway'
+const TODAY = '31 Oct 2026'
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
 const word = (n) => (n <= 2 ? 'basic' : n <= 4 ? 'good' : 'expert')
-const review = (date) => (date ? `<span class="tag t-ok">team draft · approved by owner on ${date}</span>` : '<span class="tag t-self">team draft · not yet reviewed</span>')
+const ext = (url, text) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(text)} ↗</a>`
+const review = (p) => (p.approved ? `<span class="tag t-ok">approved by owner on ${p.approved}</span>` : '<span class="tag t-self">team draft · not yet reviewed</span>')
 const more = (q) => `<div class="more"><span class="muted">More on</span>${SITES.map((s) => `<a href="${s.q}${encodeURIComponent(q)}" target="_blank" rel="noopener">${s.name} ↗</a>`).join('')}</div>`
-const pickList = (list, note) => (list && list.length
-  ? `<ul class="picks">${list.map(([site, name, d]) => `<li><span class="site">${esc(site)}</span><a href="#" onclick="return false" title="sample link">${esc(name)} ↗</a> ${review(d)} <span class="tiny muted">checked 31 Oct 2026</span></li>`).join('')}</ul>`
-  : `<p class="small muted">${note}</p>`)
+const courseList = (list) => (list && list.length
+  ? `<ul class="picks">${list.map((p) => `<li><span class="site">${esc(p.site)}</span>${ext(p.url, p.name)} ${review(p)} <span class="tiny muted">checked ${TODAY}</span></li>`).join('')}</ul>`
+  : '<p class="small muted">No team pick yet; use the search links below.</p>')
 
 function stepsOf(role) {
-  const rows = role.items.map(([key, name, importance, needed, you]) => {
+  const rows = role.items.map(([key, name, importance, needed]) => {
+    const you = PROFILE[key] ?? null
     const pts = you === 'na' ? needed : you ? LV[you] : 0
     const status = you === 'na' ? 'not_assessed' : you == null ? 'missing' : pts >= needed ? 'met' : 'below'
-    return { key, name, importance, needed, you, pts, status, gap: Math.max(0, needed - pts) }
+    return { key, name, importance, needed, you, status, gap: Math.max(0, needed - pts) }
   })
   const total = rows.reduce((t, r) => t + r.needed, 0)
   const gaps = rows.filter((r) => r.status === 'missing' || r.status === 'below').map((r) => ({ ...r, points: Math.round((r.gap / total) * 100) }))
     .sort((a, b) => b.points - a.points || (a.key < b.key ? -1 : 1))
-  return { gaps, na: rows.filter((r) => r.status === 'not_assessed'), met: rows.filter((r) => r.status === 'met'), total }
+  const met = rows.filter((r) => r.status === 'met')
+  const metPts = rows.reduce((t, r) => t + Math.min(r.status === 'not_assessed' ? r.needed : r.you && r.you !== 'na' ? LV[r.you] : 0, r.needed), 0)
+  return { gaps, na: rows.filter((r) => r.status === 'not_assessed'), met, total, pct: Math.round((metPts / total) * 100) }
 }
 
 function progBtns(key) {
   const s = progress[key]
   return `<div class="prog"><button class="btn sm${s === 'started' ? ' on' : ''}" data-prog="${key}" data-s="started" type="button">Started</button>
     <button class="btn sm${s === 'done' ? ' on' : ''}" data-prog="${key}" data-s="done" type="button">Done</button>
-    <span class="tag t-self">self-reported</span>${s === 'done' ? '<span class="tiny muted">Update your level in the profile to change your Skill Match.</span>' : ''}</div>`
+    <span class="tag t-self">self-reported</span>${s === 'done' ? '<span class="tiny muted">Done! Update your level in the profile to raise your Skill Match.</span>' : ''}</div>`
 }
 
 function renderTargets() {
   document.getElementById('targets').innerHTML = targets.map((c) => {
     const r = ROLES[c]
-    return `<div class="tgt${c === active ? ' on' : ''}"><button type="button" data-tgt="${c}">${esc(r.title)}<small>MASCO ${r.masco} · added ${r.added}</small></button><button class="rm" type="button" data-rm="${c}" aria-label="Remove ${esc(r.title)}">remove</button></div>`
+    const st = stepsOf(r)
+    return `<div class="tgt${c === active ? ' on' : ''}"><button type="button" data-tgt="${c}">${esc(r.title)}<small>MASCO ${r.masco} · Skill Match ${st.pct}% · ${st.gaps.length} to build</small></button><button class="rm" type="button" data-rm="${c}" aria-label="Remove ${esc(r.title)}">remove</button></div>`
   }).join('') || '<p class="small muted">No role yet. Choose one in Career matching and press “Plan my study pathway”.</p>'
 }
 
@@ -298,60 +344,60 @@ function renderPathway() {
   if (!active) { el.innerHTML = ''; return }
   const r = ROLES[active]
   const st = stepsOf(r)
-  const top = r.edu[0]
+  const done = st.gaps.filter((g) => progress[g.key] === 'done').length
+  const started = st.gaps.filter((g) => progress[g.key] === 'started').length
   el.innerHTML = `
   <div class="card">
-    <div class="row" style="justify-content:space-between">
-      <div><b>${esc(r.title)}</b> <span class="tiny muted">MASCO ${r.masco} · <a href="https://emasco.mohr.gov.my/masco/${r.masco}" target="_blank" rel="noopener">eMASCO page ↗</a></span></div>
-      <span class="tiny muted">Compared with O*NET job <b>${r.onetTitle}</b> (${r.onet}), the job Career matching used</span>
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div><h3 style="font-size:18px">${esc(r.title)}</h3><span class="tiny muted">MASCO ${r.masco} · ${ext('https://emasco.mohr.gov.my/masco/' + r.masco, 'eMASCO page')} · compared with O*NET job <b>${r.onetTitle}</b> (${r.onet}), the job Career matching used</span></div>
+      <div style="text-align:right"><div class="tiny muted">Skill Match now</div><div style="font-size:26px;font-weight:800">${st.pct}%</div><div class="tiny muted">${st.gaps.length} to build · ${started} started · ${done} done</div></div>
     </div>
-    ${active === '2411-01' ? `<p class="tiny muted" style="margin-top:6px">${ACC_NOTE}</p>` : ''}
   </div>
-  ${st.na.length ? `<div class="note warn"><b>Provisional:</b> ${st.na.length} skills are “Not assessed yet”, so we can't tell if you need them. <a href="#">Set your levels</a></div>` : ''}
+  ${st.na.length ? `<div class="note warn"><b>Provisional:</b> ${st.na.length} of your skills are “Not assessed yet”, so we can't tell if you need them. <a href="#">Set your levels</a></div>` : ''}
 
   <h2><span class="pn">Part 1</span> Study route</h2>
   <p class="small muted">What people in this job usually study, and where you can study it in Malaysia.</p>
 
   <div class="card">
-    <h3>Usual education level <span class="tag t-src">sourced · US data</span></h3>
-    <div class="edu"><span class="big">${top[0]}</span><span class="small muted">${top[1]}% of US workers in this job who were asked</span></div>
-    <details><summary>All education levels</summary>
-      ${r.edu.map(([l, p]) => `<div class="ebar"><span>${l}</span><span class="b"><i style="width:${p}%"></i></span><span>${p}%</span></div>`).join('')}
-    </details>
-    <div class="src">Source: O*NET 31.0, Education, Training, and Experience, “Required Level of Education” (US survey), CC BY 4.0 · <b>SAMPLE percentages in this mockup</b></div>
+    <h3>Usual education level</h3>
+    <div class="edu"><span class="big">${esc(r.emascoQual)}</span><span class="tag t-src">eMASCO, Malaysia</span><span class="tag t-est">proposal: not in the approved spec yet</span></div>
+    <p class="tiny muted" style="margin:2px 0 10px">The qualification eMASCO lists for MASCO ${r.masco} (${ext('https://emasco.mohr.gov.my/masco/' + r.masco, 'eMASCO page')}).</p>
+    ${r.edu ? `<div class="row"><b>In the US:</b> ${esc(r.edu.rows[0][0])}, ${r.edu.rows[0][1]}% of workers in this job who were asked <span class="tag t-src">sourced · US data</span></div>
+    <details><summary>All education levels (US)</summary>
+      ${r.edu.rows.map(([l, p]) => `<div class="ebar"><span>${esc(l)}</span><span class="b"><i style="width:${p}%"></i></span><span>${p}%</span></div>`).join('')}
+      <p class="tiny muted">Levels with 0% are not listed.</p>
+    </details>` : '<p class="small muted"><b>In the US:</b> O*NET has no education data for this job.</p>'}
+    <div class="src">Sources: eMASCO (MOHR), fetched 23 Oct 2026 · O*NET 31.0, Education (“Required Level of Education”, US survey${r.edu ? ', ' + r.edu.date : ''}), CC BY 4.0</div>
   </div>
 
   <div class="card">
     <h3>Fields of study that lead here <span class="tag t-src">sourced</span></h3>
     <p class="small muted">Read backwards through official tables: O*NET job → US/Canada study programmes (CIP) → UNESCO field of study (ISCED-F 2013).</p>
     ${r.fields.map(([code, title, partial, cips]) => {
-      const p = PROGRAMMES[code] ?? { acc: [], prof: [] }
-      const fc = FIELD_COURSES[code] ?? []
+      const p = PROG[code] ?? { acc: [], prof: [] }
       return `<div class="field${code === YOUR_FIELD ? ' yours' : ''}">
         <div class="fhead"><span class="code">ISCED-F ${code}</span><b>${esc(title)}</b>${code === YOUR_FIELD ? '<span class="tag t-ok">your field</span>' : ''}${partial ? '<span class="tag t-none">partial link</span>' : ''}</div>
-        <details><summary>${cips.length} study programme${cips.length > 1 ? 's' : ''} (CIP) that link this field to the job</summary><p class="tiny muted" style="margin-top:4px">${cips.map(esc).join(' · ')}</p></details>
-        <div class="sub">Accredited Malaysian programmes</div>
-        ${pickList(p.acc.map(([n, inst, ref, d]) => [inst + ' · MQR ' + ref, n, d]), 'No team pick yet.')}
-        <div class="more"><a href="${MQR}" target="_blank" rel="noopener">Search MQA register ↗</a><span class="muted">choose NEC field <b>${code}</b></span><span class="tag t-none">code match, not an official table</span></div>
-        ${p.prof.length ? `<div class="sub">Professional qualifications</div>${pickList(p.prof.map(([n, body, d]) => [body, n, d]))}` : ''}
-        <div class="sub">Courses for this field</div>
-        ${pickList(fc, 'No team pick yet.')}
+        <details><summary>${cips.length} study programme${cips.length > 1 ? 's' : ''} (CIP) link this field to the job</summary><p class="tiny muted" style="margin-top:4px">${cips.map(esc).join(' · ')}</p></details>
+        ${p.acc.length ? `<div class="sub">Accredited Malaysian programmes</div><ul class="picks">${p.acc.map((a) => `<li><span class="site">${esc(a.inst)}</span>${ext(a.url, a.name)} ${review(a)} <span class="tiny muted">MQA ref ${a.ref ? esc(a.ref) : 'not shown on the page'} · checked ${TODAY}</span></li>`).join('')}</ul>` : ''}
+        <div class="more"><a href="${MQR}" target="_blank" rel="noopener">${p.acc.length ? 'More in' : 'Find programmes in'} the MQA register ↗</a><span class="muted">choose NEC field <b>${code}</b></span><span class="tag t-none">code match, not an official table</span></div>
+        ${p.prof.length ? `<div class="sub">Professional qualifications</div><ul class="picks">${p.prof.map((a) => `<li><span class="site">${esc(a.inst)}</span>${ext(a.url, a.name)} ${review(a)} <span class="tiny muted">checked ${TODAY}</span></li>`).join('')}</ul>` : ''}
+        ${PICKS['field:' + code] ? `<div class="sub">Courses to start with</div>${courseList(PICKS['field:' + code])}` : ''}
         ${more(title.split(/[,(]/)[0].trim())}
       </div>`
     }).join('')}
-    <div class="src">Sources: Statistics Canada ISCED-F 2013 ↔ CIP Canada 2016 concordance (Open Licence) · O*NET Resource Center CIP 2020 ↔ O*NET-SOC 2019 crosswalk (CC BY 4.0) · MQA Malaysian Qualifications Register (link only) · team picks: name, link and date only</div>
+    <div class="src">Sources: Statistics Canada ISCED-F 2013 ↔ CIP Canada 2016 concordance (Open Licence) · O*NET Resource Center CIP 2020 ↔ O*NET-SOC 2019 crosswalk (CC BY 4.0) · programmes and bodies: the institution's or body's own page (link only) · MQA register (link only)</div>
   </div>
 
   <h2><span class="pn">Part 2</span> Skills to build</h2>
   <p class="small muted">The skills and knowledge this job needs (O*NET importance 3 or more) that you don't have yet at its level. Biggest gap first,
-    in the same points Career matching uses for “what would raise it”: gap ÷ all levels needed (${st.total.toFixed(2)}) × 100.</p>
+    in the points Career matching uses for “what would raise it”: gap ÷ all levels needed (${st.total.toFixed(2)}) × 100.</p>
 
   <div class="grouph">To build <span class="why">${st.gaps.length} skills</span></div>
   ${st.gaps.map((g, i) => `<div class="card step">
     <div class="no">${i + 1}</div>
     <div class="body"><h3>${esc(g.name)} <span class="tag t-none">${g.key.startsWith('kn') ? 'knowledge' : 'skill'}</span></h3>
       <div class="lvl">${g.status === 'missing' ? '<b>Not in your profile</b>' : `Your level <b>${g.you}</b>`} → needed <b>${word(g.needed)}</b> <span class="tiny muted">(O*NET level ${g.needed} of 7)</span>${g.needed > 6 ? ' <span class="tag t-none">expert still leaves a gap</span>' : ''}</div>
-      ${pickList(PICKS[g.key], 'No team pick yet.')}
+      ${courseList(PICKS[g.key])}
       ${more(g.name)}
     </div>
     <div class="pts"><b>+${g.points}</b><div class="tiny muted">points of Skill Match</div></div>
@@ -361,33 +407,44 @@ function renderPathway() {
   ${st.na.length ? `<div class="grouph">Level not assessed yet <span class="why">set your level to see if you need these</span></div>
   ${st.na.map((g) => `<div class="card step"><div class="no">?</div><div class="body"><h3>${esc(g.name)}</h3>
     <div class="lvl">Needed <b>${word(g.needed)}</b> · <a href="#">set your level in the profile</a></div>
-    ${pickList(PICKS[g.key], 'No team pick yet.')}${more(g.name)}</div><div></div>${progBtns(g.key)}</div>`).join('')}` : ''}
+    ${courseList(PICKS[g.key])}${more(g.name)}</div><div></div>${progBtns(g.key)}</div>`).join('')}` : ''}
 
   <details class="card"><summary>Already at the level (${st.met.length})</summary>
-    <ul class="picks" style="margin-top:8px">${st.met.map((m) => `<li>${esc(m.name)} <span class="tiny muted">your ${m.you} · needed ${word(m.needed)}</span></li>`).join('')}</ul>
+    <ul class="picks" style="margin-top:8px">${st.met.map((m) => `<li>${esc(m.name)} <span class="tiny muted">your level ${m.you} · needed ${word(m.needed)}</span></li>`).join('')}</ul>
   </details>
 
   <div class="card"><h3>Sources</h3><div class="tw"><table>
     <tr><th>What</th><th>Source</th><th>Date</th><th>Licence</th></tr>
     <tr><td>Needed levels, importance</td><td>O*NET 31.0 (via Career matching)</td><td>downloaded 30 Oct 2026</td><td>CC BY 4.0</td></tr>
     <tr><td>Role → O*NET job</td><td>eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O*NET (official chain)</td><td>30 Oct 2026</td><td>as Career matching</td></tr>
+    <tr><td>Education level</td><td>eMASCO qualification · O*NET 31.0 Education.txt</td><td>23 Oct 2026 · ${r.edu ? r.edu.date : 'none for this job'}</td><td>public reference · CC BY 4.0</td></tr>
     <tr><td>Fields of study</td><td>Statistics Canada · O*NET CIP crosswalk</td><td>30 Oct 2026</td><td>Open Licence · CC BY 4.0</td></tr>
-    <tr><td>Course and programme picks</td><td>FutureReady team (team draft; owner review in Admin)</td><td>date on each pick</td><td>links only</td></tr>
-    <tr><td>“More on” links</td><td>each site's own search (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills)</td><td>checked 31 Oct 2026</td><td>links only</td></tr>
+    <tr><td>Courses, programmes, bodies</td><td>FutureReady team picks (owner review in Admin)</td><td>checked ${TODAY}</td><td>links only</td></tr>
+    <tr><td>“More on” links</td><td>each site's own search</td><td>checked ${TODAY}</td><td>links only</td></tr>
   </table></div></div>`
 }
 
-function renderAdmin() {
-  const all = []
-  for (const [key, list] of Object.entries(PICKS)) for (const [site, name, d] of list) all.push({ what: 'course', for: key, site, name, d })
-  for (const [code, p] of Object.entries(PROGRAMMES)) {
-    for (const [name, inst, ref, d] of p.acc) all.push({ what: 'programme', for: 'field ' + code, site: inst + ' · MQR ' + ref, name, d })
-    for (const [name, body, d] of p.prof) all.push({ what: 'professional', for: 'field ' + code, site: body, name, d })
+function allPicks() {
+  const out = []
+  const seen = new Set()
+  for (const [key, list] of Object.entries(PICKS)) for (const p of list) {
+    if (seen.has(p)) continue
+    seen.add(p)
+    out.push({ p, what: 'course', site: p.site, forLabel: key.startsWith('field:') ? 'field ' + key.slice(6) : key })
   }
-  document.getElementById('adm').innerHTML = `<p class="small muted">${all.length} picks (SAMPLE) · filter: <b>not yet reviewed</b> first</p>` + all.slice(0, 8).map((p) => `<div class="admrow">
-    <div><span class="tag t-none">${p.what}</span> <b>${esc(p.name)}</b><div class="tiny muted">${esc(p.site)} · for ${esc(p.for)} · checked 31 Oct 2026 · <a href="#" onclick="return false">open link ↗</a></div>${review(p.d)}</div>
-    <div class="row"><button class="btn sm pri" type="button">Approve</button><button class="btn sm" type="button">Reject</button><button class="btn sm" type="button">Revise</button></div>
-  </div>`).join('') + '<p class="tiny muted" style="margin-top:8px">A note is optional; rejecting asks for one, like the SDG review.</p>'
+  for (const [code, g] of Object.entries(PROG)) {
+    for (const p of g.acc) out.push({ p, what: 'programme', site: p.inst, forLabel: 'field ' + code })
+    for (const p of g.prof) out.push({ p, what: 'professional', site: p.inst, forLabel: 'field ' + code })
+  }
+  return out
+}
+
+function renderAdmin() {
+  const all = allPicks()
+  document.getElementById('adm').innerHTML = `<p class="small muted">${all.length} picks · ${all.filter((x) => x.p.approved).length} approved · newest first</p>` + all.map((x, i) => `<div class="admrow">
+    <div><span class="tag t-none">${x.what}</span> <b>${esc(x.p.name)}</b><div class="tiny muted">${esc(x.site)} · for ${esc(x.forLabel)} · checked ${TODAY} · ${ext(x.p.url, 'open link')}</div>${review(x.p)}</div>
+    <div class="row"><button class="btn sm pri" type="button" data-appr="${i}">Approve</button><button class="btn sm" type="button" data-rev="${i}">Revise</button><button class="btn sm" type="button" disabled title="Reject asks for a note in the real build">Reject</button></div>
+  </div>`).join('')
 }
 
 function render() {
@@ -404,6 +461,8 @@ document.addEventListener('click', (e) => {
   else if (t.dataset.tgt) { active = t.dataset.tgt; render() }
   else if (t.dataset.rm) { targets = targets.filter((c) => c !== t.dataset.rm); if (active === t.dataset.rm) active = targets[0] ?? null; render() }
   else if (t.dataset.prog) { const k = t.dataset.prog; progress[k] = progress[k] === t.dataset.s ? undefined : t.dataset.s; render() }
+  else if (t.dataset.appr) { allPicks()[t.dataset.appr].p.approved = TODAY; render() }
+  else if (t.dataset.rev) { allPicks()[t.dataset.rev].p.approved = null; render() }
   else if (t.id === 'themeBtn') {
     const dark = document.documentElement.dataset.theme !== 'dark'
     document.documentElement.dataset.theme = dark ? 'dark' : 'light'; t.textContent = dark ? 'Light mode' : 'Dark mode'

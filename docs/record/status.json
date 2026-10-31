@@ -489,7 +489,7 @@
         },
         {
           "title": "Mockup",
-          "sub": "docs/mockup-pathway.html; waiting for your review",
+          "sub": "real state: 34 courses, 3 programmes, 3 bodies, all opened; waiting for your review",
           "status": "stop"
         }
       ]
@@ -1331,6 +1331,11 @@
       "time": "31 Oct",
       "step": "Study Pathway mockup (your request)",
       "detail": "Software Developer and Accountant with real O*NET skills, levels and fields of study; sample levels, picks and education %; checked desktop and 375 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup with the real state (your request)",
+      "detail": "real O*NET education levels (O*NET 31.0 renamed the file to Education.txt; spec and plan fixed), 34 courses and 6 programme/body pages opened in the browser; only the profile is a sample; eMASCO qualification shown as a proposal"
     }
   ]
 }

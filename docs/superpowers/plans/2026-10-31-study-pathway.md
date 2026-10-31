@@ -65,7 +65,7 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
 **Interfaces:**
 - Produces: `data/onet/education.tsv` with header `code	category	label	percent	suppress`, one row per job and
   category of element `2.D.1` "Required Level of Education", scale `RL`. `label` comes from
-  *Education, Training, and Experience Categories.txt* (Element ID `2.D.1`, Scale ID `RL`, Category → Category
+  *Education Categories.txt* (Element ID `2.D.1`, Scale ID `RL`, Category → Category
   Description). `suppress` is O\*NET's Recommend Suppress (`Y`/`N`).
 
 - [ ] **Step 1: Write the failing Python test** `test_education_rows` in `pipeline/tests/test_fetch_onet.py`: a fixture
@@ -74,15 +74,14 @@ adds the study route and picks; `POST /api/pathway` serves one role. Owner revie
   kept; the non-RL row is absent; the manifest lists `education.tsv` with its SHA-256.
 - [ ] **Step 2: Run** `python -m unittest pipeline.tests.test_fetch_onet -v` → the new test FAILS (no `education.tsv`).
 - [ ] **Step 3: Implement** in `pipeline/fetch_onet.py`: an `education.tsv` entry (`optional: True`) that keeps
-  `Element ID == "2.D.1"` and `Scale ID == "RL"` from *Education, Training, and Experience.txt* (columns `CODE`,
+  `Element ID == "2.D.1"` and `Scale ID == "RL"` from *Education.txt* (columns `CODE`,
   `Category`, `Data Value`, `Recommend Suppress`) and joins the label from the categories file. If `FILES` cannot
   express the join, add a small function beside `REQUIREMENTS` in the same style.
 - [ ] **Step 4: Run** `python -m unittest discover pipeline/tests` → 49 OK (48 + 1).
 - [ ] **Step 5: Run the script** `python pipeline/fetch_onet.py 31.0` (free download from onetcenter.org). Check the zip
   SHA-256 printed equals the one already in `data/SOURCES.md` (`6883548a…b23a9`) and that the other `data/onet/*.tsv`
   files are byte-identical (`git diff --stat data/onet` shows only `education.tsv` and `manifest.json`).
-- [ ] **Step 6: Add the `data/SOURCES.md` row** for `onet/education.tsv` (O\*NET 31.0, *Education, Training, and
-  Experience*, same zip and date, CC BY 4.0, "US survey data, shown as such").
+- [ ] **Step 6: Add the `data/SOURCES.md` row** for `onet/education.tsv` (O\*NET 31.0, *Education.txt*, same zip and date, CC BY 4.0, "US survey data, shown as such").
 - [ ] **Step 7: Run** `npm test` → 803 passed. **Commit** `feat: O*NET usual education level per job (education.tsv)`.
 
 ### Task 2: Course sites and the empty picks file

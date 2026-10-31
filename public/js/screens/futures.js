@@ -27,7 +27,10 @@ function item(t, i) {
 }
 
 function list(t, data, field) {
-  const source = `<p class="tiny muted">${esc(t('nwSource', { query: field.query, updated: when(t, field.searchedAt), next: when(t, data.nextRunAt) }))}<br>${esc(t('nwRules', { days: data.rules?.maxAgeDays, max: data.rules?.maxItems }))}</p>`
+  // Amendment 1: how the results were checked (N9), and how many the check dropped in the last run.
+  const dropped = Number.isInteger(field.dropped) && field.dropped > 0 ? ` · ${t('nwDropped', { n: field.dropped })}` : ''
+  const checked = data.checkedBy ? `<br>${esc(t('nwChecked', { model: data.checkedBy }) + dropped)}` : ''
+  const source = `<p class="tiny muted">${esc(t('nwSource', { query: field.query, updated: when(t, field.searchedAt), next: when(t, data.nextRunAt) }))}<br>${esc(t('nwRules', { days: data.rules?.maxAgeDays, max: data.rules?.maxItems }))}${checked}</p>`
   const failed = field.lastOutcome === 'failed' ? `<div class="banner b-warn"><div>${esc(t('nwFailed', { time: when(t, field.lastAttemptAt), from: when(t, field.searchedAt) }))}</div></div>` : ''
   const items = field.items?.length ? `<ul class="nw-items">${field.items.map((i) => item(t, i)).join('')}</ul>` : `<p class="muted">${esc(t('nwEmpty'))}</p>`
   return `<section class="nw-list"><h2>${esc(field.title)}</h2>${source}${failed}${items}</section>`

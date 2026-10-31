@@ -2724,6 +2724,11 @@
       "time": "31 Oct",
       "step": "News A1: relevance check in the refresh",
       "detail": "server/news/service.js: each field's new items (plus items kept before Amendment 1) go to the check once; kept ones marked checked, dropped and dropReasons recorded; no new item means no check; a failed check adds nothing (check_<code>), 401/402 stop the run; checks capped 10 per run and 80 per 24 h (memory and store, before each request, stop before searching a field with no check left); reply shows checked items only with checkedBy and dropped (      Tests  1550 passed (1550))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: screen lines",
+      "detail": "public/js/screens/futures.js: rules line says English articles only (N10); check line 'Checked by DeepSeek (model) as news about AI in this field' with the dropped count when above 0 (N9); strings nwRules, nwChecked, nwDropped in en/ms/zh (ms, zh: translation owner review) (      Tests  1556 passed (1556))"
     }
   ]
 }

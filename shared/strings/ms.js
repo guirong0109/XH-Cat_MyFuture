@@ -1476,7 +1476,7 @@ export default {
   nwPick: "Bidang", // translation: owner review
   nwYourField: "bidang anda", // translation: owner review
   nwSource: "Ditemui oleh DeepSeek Search untuk “{query}” · dikemas kini {updated} · muat semula seterusnya sekitar {next}", // translation: owner review
-  nwRules: "Disimpan: tajuk, pautan dan tarikh terbit dalam {days} hari lepas; ulangan dibuang; {max} terbaharu.", // translation: owner review
+  nwRules: "Disimpan: artikel bahasa Inggeris sahaja; tajuk, pautan dan tarikh terbit dalam {days} hari lepas; ulangan dibuang; {max} terbaharu.", // translation: owner review
   nwNever: "belum lagi", // translation: owner review
   nwFailed: "Tidak dapat dimuat semula pada {time}; menunjukkan senarai dari {from}.", // translation: owner review
   nwEmpty: "Belum ada berita ditemui untuk bidang ini.", // translation: owner review
@@ -1488,4 +1488,6 @@ export default {
   nwEditProfile: "Sunting profil", // translation: owner review
   nwExploreAll: "Teroka semua bidang", // translation: owner review
   nwPublished: "Diterbitkan {date}", // translation: owner review
+  nwChecked: "Disemak oleh DeepSeek ({model}) sebagai berita tentang AI dalam bidang ini", // translation: owner review
+  nwDropped: "{n} hasil dibuang kerana bukan berita.", // translation: owner review
 }

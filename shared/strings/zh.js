@@ -1476,7 +1476,7 @@ export default {
   nwPick: "领域", // translation: owner review
   nwYourField: "你的领域", // translation: owner review
   nwSource: "由 DeepSeek Search 搜索 “{query}” 找到 · 更新于 {updated} · 下次刷新约 {next}", // translation: owner review
-  nwRules: "保留：有标题、链接，且发布日期在最近 {days} 天内；已去除重复；最新 {max} 条。", // translation: owner review
+  nwRules: "保留：仅英文文章；有标题、链接，且发布日期在最近 {days} 天内；已去除重复；最新 {max} 条。", // translation: owner review
   nwNever: "尚未", // translation: owner review
   nwFailed: "{time} 未能刷新；显示 {from} 的列表。", // translation: owner review
   nwEmpty: "此领域暂未找到新闻。", // translation: owner review
@@ -1488,4 +1488,6 @@ export default {
   nwEditProfile: "编辑个人资料", // translation: owner review
   nwExploreAll: "浏览全部领域", // translation: owner review
   nwPublished: "发布于 {date}", // translation: owner review
+  nwChecked: "已由 DeepSeek（{model}）检查为此领域有关 AI 的新闻", // translation: owner review
+  nwDropped: "{n} 条结果因不是新闻而被去除。", // translation: owner review
 }

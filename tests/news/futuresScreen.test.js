@@ -102,6 +102,37 @@ describe('futures screen', () => {
     expect(html).not.toContain('javascript:')
   })
 
+  describe('Amendment 1: English only and how results were checked', () => {
+    const one = (top, field06 = {}) => view({ tab: 'you', field: null, data: reply({ top, '06': field06 }), loading: false, failed: false })
+
+    it('every list says English articles only', () => {
+      expect(one({})).toContain('Kept: English articles only; a title, a link and a publish date in the last 30 days; repeats removed; newest 25.')
+    })
+
+    it('shows the check line with the dropped count', () => {
+      expect(one({ checkedBy: 'deepseek-flash' }, { dropped: 7 })).toContain('Checked by DeepSeek (deepseek-flash) as news about AI in this field · 7 results dropped as not news.')
+    })
+
+    it('leaves the dropped part out when nothing was dropped', () => {
+      const html = one({ checkedBy: 'deepseek-flash' }, { dropped: 0 })
+      expect(html).toContain('Checked by DeepSeek (deepseek-flash) as news about AI in this field')
+      expect(html).not.toContain('dropped as not news')
+    })
+
+    it('an older reply without checkedBy has no check line', () => {
+      expect(one({})).not.toContain('Checked by DeepSeek')
+    })
+
+    it('the model name is escaped', () => {
+      expect(one({ checkedBy: '<b>x</b>' })).toContain('&lt;b&gt;x&lt;/b&gt;')
+    })
+
+    it('BM and Chinese say the articles are in English', () => {
+      expect(ms.nwRules).toMatch(/Inggeris/)
+      expect(zh.nwRules).toMatch(/英文/)
+    })
+  })
+
   it('every nw string exists in English, BM and Chinese', () => {
     const keys = Object.keys(en).filter((k) => k.startsWith('nw'))
     expect(keys.length).toBeGreaterThanOrEqual(19)

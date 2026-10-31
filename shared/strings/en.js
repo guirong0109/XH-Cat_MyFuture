@@ -1475,7 +1475,7 @@ export default {
   nwPick: "Field",
   nwYourField: "your field",
   nwSource: "Found by DeepSeek Search for “{query}” · updated {updated} · next refresh about {next}",
-  nwRules: "Kept: a title, a link and a publish date in the last {days} days; repeats removed; newest {max}.",
+  nwRules: "Kept: English articles only; a title, a link and a publish date in the last {days} days; repeats removed; newest {max}.",
   nwNever: "not yet",
   nwFailed: "Couldn't refresh at {time}; showing the list from {from}.",
   nwEmpty: "No news found yet for this field.",
@@ -1486,5 +1486,7 @@ export default {
   nwNoField: "Add your study field in your profile to see news for you.",
   nwEditProfile: "Edit profile",
   nwExploreAll: "Explore all fields",
-  nwPublished: "Published {date}",
+  nwPublished: "Published {date}",
+  nwChecked: "Checked by DeepSeek ({model}) as news about AI in this field",
+  nwDropped: "{n} results dropped as not news.",
 }

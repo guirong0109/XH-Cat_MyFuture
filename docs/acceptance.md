@@ -72,8 +72,10 @@ Browser check at http://cv.localhost:3260 with the key, synthetic CV "Hafiz Bin 
 - The AI added the skill "SQL" (shown "? SQL · not in skill list · Found by AI — check it") and the project
   "a mobile app for campus parking" (card tagged "Found by AI — check it"). Rules items kept "From your CV".
 - The education card showed "Qualification — AI read this as: Bachelor of Computer Science. Check it." This is a false
-  flag: the rules reader stores the label "Bachelor degree" for the same degree. Follow-up: do not flag a qualification
-  when `levelOf` of the AI text gives the same level.
+  flag: the rules reader stores the label "Bachelor degree" for the same degree. **Fixed the same evening:** a qualification
+  is no longer flagged when `levelOf` of the AI text gives the same level (`mergeDrafts` `sameMeaning`); re-run on the same
+  CV gave no flag and an empty `uncertain`, while the AI still added SQL and the project. A different level (e.g. Master
+  against a Bachelor label) is still flagged (tests in `tests/mergeDrafts.test.js`).
 
 ## Languages and screen sizes
 

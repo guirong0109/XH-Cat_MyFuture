@@ -81,6 +81,26 @@ describe('mergeDrafts', () => {
     expect(e.level).toBe('bachelor')
   })
 
+  it('education: no flag when the AI wording means the same level as the rules label', () => {
+    const line = 'Bachelor of Computer Science, Universiti Teknologi Malaysia, 2023'
+    const r = { ...edu('Bachelor degree', 'Universiti Teknologi Malaysia', rulesEx(line)), level: 'bachelor' }
+    const a = edu('Bachelor of Computer Science', 'Universiti Teknologi Malaysia', aiEx(line))
+    const merged = mergeDrafts(result(build((p) => { p.education.records = [r] })), build((p) => { p.education.records = [a] }))
+    const e = merged.profile.education.records[0]
+    expect(e.qualification).toBe('Bachelor degree')
+    expect(e.extraction.aiDiffers).toBeUndefined()
+    expect(merged.uncertain).toEqual([])
+  })
+
+  it('education: still flagged when the AI wording means a different level', () => {
+    const line = 'Master of Computer Science, Universiti Teknologi Malaysia, 2023'
+    const r = { ...edu('Bachelor degree', 'Universiti Teknologi Malaysia', rulesEx(line)), level: 'bachelor' }
+    const a = edu('Master of Computer Science', 'Universiti Teknologi Malaysia', aiEx(line))
+    const merged = mergeDrafts(result(build((p) => { p.education.records = [r] })), build((p) => { p.education.records = [a] }))
+    expect(merged.profile.education.records[0].extraction.aiDiffers).toEqual({ qualification: 'Master of Computer Science' })
+    expect(merged.uncertain).toEqual([{ path: 'education.records.0.qualification', reason: 'ai_differs', aiValue: 'Master of Computer Science' }])
+  })
+
   it('projects: description filled, certifications matched or appended', () => {
     const merged = mergeDrafts(
       result(build((p) => {

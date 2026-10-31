@@ -107,8 +107,8 @@ Each item below says what you will see and what to do.
 4. **P1 — DeepSeek is on (owner key in `.env`, 31 Oct); accuracy check done, model choice and one false flag left.**
    - **Done 31 Oct:** `eval-cv.mjs --ai` on `deepseek-flash` cost about $0.009 (results in `docs/eval-results.md` and
      `docs/acceptance.md`); "Found by AI" tags seen in the browser.
-   - **Left:** the qualification "AI read this as" flag fires whenever the rules label ("Bachelor degree") differs
-     from the CV wording; skip it when `levelOf` gives the same level. The owner may also try `deepseek-v4-pro`.
+   - **Fixed 31 Oct:** a qualification is not flagged "AI read this as" when the AI wording gives the same level as
+     the rules label (`sameMeaning` in `server/cv/mergeDrafts.js`). The owner may still try `deepseek-v4-pro`.
    - **How to re-run:** with `CV_LLM_KEY` in `.env` (ask first, it is paid), run
      `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai` (rules-only against rules + DeepSeek: precision,
      recall, F1, wrong-item rate, latency, tokens, cost at peak price). The owner then picks `deepseek-flash`
@@ -142,7 +142,7 @@ Each item below says what you will see and what to do.
 
 | Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
 |---|---|
-| `npm test` (= `vitest run`) | **43 files, 366 tests passed** on this branch (31 Oct) |
+| `npm test` (= `vitest run`) | **43 files, 368 tests passed** on this branch (31 Oct) |
 | `python -m unittest discover pipeline/tests` | **8 tests OK** |
 | `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
 | `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
@@ -253,7 +253,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 366 passed
+  npm test                                # expect 368 passed
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```

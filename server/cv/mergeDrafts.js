@@ -36,7 +36,7 @@ const sameByMain = (rules, ai, main, second) => {
 // Joins one list. Returns the new list and, for each matched AI record, the rules record it was matched to.
 // AI records are matched to the rules records only (never to an AI record added before): first every AI record by its
 // quote, then the ones left by an equal main field. A rules record is matched at most once.
-function joinList(rulesList, aiList, { main, second, fields, path, uncertain, onFilled }) {
+function joinList(rulesList, aiList, { main, second, fields, path, uncertain, onFilled, sameMeaning }) {
   const list = rulesList.map((record) => ({ ...record, extraction: record.extraction ? { ...record.extraction } : record.extraction }))
   const used = new Set()
   const target = aiList.map(() => -1)
@@ -66,7 +66,7 @@ function joinList(rulesList, aiList, { main, second, fields, path, uncertain, on
         record[field] = theirs
         record.extraction = { ...record.extraction, aiFilled: [...(record.extraction?.aiFilled ?? []), field] }
         onFilled?.(record, field)
-      } else if (mine.trim() && theirs.trim() && norm(mine) !== norm(theirs)) {
+      } else if (mine.trim() && theirs.trim() && norm(mine) !== norm(theirs) && !sameMeaning?.(record, field, theirs)) {
         record.extraction = { ...record.extraction, aiDiffers: { ...record.extraction?.aiDiffers, [field]: theirs } }
         uncertain.push({ path: `${path}.${i}.${field}`, reason: 'ai_differs', aiValue: theirs })
       }
@@ -81,6 +81,8 @@ export function mergeDrafts({ profile, uncertain }, aiProfile) {
   const education = joinList(profile.education.records, aiProfile.education.records, {
     main: 'qualification', second: 'institution', fields: ['qualification', 'fieldOfStudy', 'institution'], path: 'education.records', uncertain: flags,
     onFilled: (record, field) => { if (field === 'qualification') record.level = levelOf(record.qualification) },
+    // The rules store a label ("Bachelor degree") where the AI quotes the CV ("Bachelor of Computer Science"): same level, no flag.
+    sameMeaning: (record, field, theirs) => field === 'qualification' && Boolean(levelOf(theirs)) && levelOf(theirs) === (record.level || levelOf(record.qualification)),
   })
   const jobs = joinList(profile.employment.records, aiProfile.employment.records, {
     main: 'jobTitle', second: 'employer', fields: ['jobTitle', 'employer'], path: 'employment.records', uncertain: flags,

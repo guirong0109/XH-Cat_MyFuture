@@ -400,7 +400,7 @@
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Owner: choose deepseek-flash (tested) or try deepseek-v4-pro; fix the false qualification \"AI read this as\" flag"
+    "Owner: keep deepseek-flash (tested) or try deepseek-v4-pro"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1222,6 +1222,11 @@
       "time": "31 Oct",
       "step": "DeepSeek accuracy check and browser check with the key",
       "detail": "your key in .env; eval-cv --ai on deepseek-flash: 10 of 11 CVs read, skills recall 0.971 -> 1, studies and jobs 1, one wrong certificate (not shown: certificates are not asked), median 2.7 s, about $0.009; browser: 'Found by AI' on the SQL skill and the parking-app project; false 'AI read this as' on the qualification label (follow-up)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Fix: no false \"AI read this as\" on degree names",
+      "detail": "your request: the rules label 'Bachelor degree' and the AI's 'Bachelor of Computer Science' mean the same level, so no flag; a different level is still flagged. Test first (1 failed), then mergeDrafts sameMeaning; npm test 368 passed; browser re-run on the Hafiz CV: no flag, AI still added SQL and the project"
     }
   ]
 }

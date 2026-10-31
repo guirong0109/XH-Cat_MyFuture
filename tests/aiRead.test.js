@@ -65,6 +65,29 @@ describe('keepQuoted', () => {
     const { fields } = keepQuoted(REPLY, CV_TEXT)
     expect(fields.skills[0]).toEqual({ name: 'Microsoft Excel', evidence: 'monthly reports in Microsoft Excel' })
   })
+  it('a quote that is in the CV but does not contain the item is dropped', () => {
+    const { fields, dropped } = keepQuoted({ ...REPLY, skills: [{ name: 'Python', evidence: 'monthly reports in Microsoft Excel' }] }, CV_TEXT)
+    expect(fields.skills).toEqual([])
+    expect(dropped).toBe(1)
+  })
+  it('other fields that are not in the CV are blanked; those that are stay', () => {
+    const { fields } = keepQuoted({
+      ...REPLY,
+      jobs: [
+        { jobTitle: 'IT Support Executive', employer: 'Maybank', evidence: 'IT Support Executive at Acme' },
+        { jobTitle: 'IT Support Executive', employer: 'acme  SDN bhd', evidence: 'IT Support Executive at Acme Sdn Bhd' },
+      ],
+      education: [{ qualification: 'Master', fieldOfStudy: 'Information Technology', institution: 'Politeknik Ungku Omar', evidence: 'Information Technology, Politeknik Ungku Omar' }],
+    }, CV_TEXT)
+    expect(fields.jobs.map((j) => j.employer)).toEqual(['', 'acme  SDN bhd'])
+    expect(fields.education[0]).toEqual({ qualification: '', fieldOfStudy: 'Information Technology', institution: 'Politeknik Ungku Omar', evidence: 'Information Technology, Politeknik Ungku Omar' })
+  })
+  it('an invented qualification gives no level', async () => {
+    const education = [{ qualification: 'Master', fieldOfStudy: 'Information Technology', institution: '', evidence: 'Diploma in Information Technology' }]
+    const { reader } = setup({ fetchImpl: async () => reply(JSON.stringify({ ...REPLY, education })) })
+    const { profile } = await read(reader)
+    expect(profile.education.records[0]).toMatchObject({ qualification: '', fieldOfStudy: 'Information Technology', level: '' })
+  })
 })
 
 describe('providerFromEnv', () => {

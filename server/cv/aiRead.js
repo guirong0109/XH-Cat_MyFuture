@@ -38,7 +38,8 @@ const MAIN = { education: ['qualification', 'fieldOfStudy', 'institution'], jobs
 const MIN_EVIDENCE = 3
 
 // Keeps only the schema's fields (so levels, ids and codes go) of items whose evidence occurs in the CV word for word
-// and contains the item itself.
+// and contains the item itself. Every other field of a kept item (employer, the other education fields, ...) must occur
+// in the CV too, or it is left empty (usedIn is checked later against the kept titles).
 export function keepQuoted(reply, cvText) {
   const cv = norm(cvText)
   let dropped = 0
@@ -52,7 +53,11 @@ export function keepQuoted(reply, cvText) {
         dropped++
         continue
       }
-      fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || entry[key] !== undefined).map((key) => [key, String(entry[key] ?? '').trim()])))
+      const checked = (key) => {
+        const value = String(entry[key] ?? '').trim()
+        return key === 'evidence' || OPTIONAL.has(key) || cv.includes(norm(value)) ? value : ''
+      }
+      fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || entry[key] !== undefined).map((key) => [key, checked(key)])))
     }
   }
   return { fields, dropped }

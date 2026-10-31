@@ -2679,6 +2679,11 @@
       "time": "31 Oct",
       "step": "News: GET /api/news and refresh start",
       "detail": "server/news/routes.js (no input, no user data, wakes a late refresh, 503 news_unavailable on failure); createApp option news (default from env, never started there); server/index.js starts the 3-hour refresh after listen. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Compare futures screen",
+      "detail": "public/js/screens/futures.js (For you from the profile study fields in the browser, Explore all with a 10-field picker, source line with query, updated and next refresh in MYT and the rules, failed-refresh note, empty, off, loading, retry; DeepSeek text escaped, http(s) links only), public/js/newsApi.js, app.js wiring (news never saved), 19 nw strings in en/ms/zh (ms and zh: translation owner review). npm test 1505 passed"
     }
   ]
 }

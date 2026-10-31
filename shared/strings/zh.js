@@ -1468,4 +1468,24 @@ export default {
   shSrcHeld: "{org} 目前持有的内容，来自您上次的分享", // translation: owner review
   shAfterUpdate: "更新后，{org} 将看到：", // translation: owner review
   shMoves: "与 {org} 分享将停止您与 {other} 的分享。", // translation: owner review
+  // Compare futures: AI news (translation: owner review)
+  nwTitle: "AI 新闻", // translation: owner review
+  nwLead: "每个学习领域中有关 AI 的最新新闻，由 DeepSeek Search 查找，并按简单规则检查。", // translation: owner review
+  nwTabYou: "为你推荐", // translation: owner review
+  nwTabAll: "浏览全部", // translation: owner review
+  nwPick: "领域", // translation: owner review
+  nwYourField: "你的领域", // translation: owner review
+  nwSource: "由 DeepSeek Search 搜索 “{query}” 找到 · 更新于 {updated} · 下次刷新约 {next}", // translation: owner review
+  nwRules: "保留：有标题、链接，且发布日期在最近 {days} 天内；已去除重复；最新 {max} 条。", // translation: owner review
+  nwNever: "尚未", // translation: owner review
+  nwFailed: "{time} 未能刷新；显示 {from} 的列表。", // translation: owner review
+  nwEmpty: "此领域暂未找到新闻。", // translation: owner review
+  nwOff: "新闻已关闭：此服务器未设置 DeepSeek 密钥。", // translation: owner review
+  nwLoadFailed: "新闻无法加载。", // translation: owner review
+  nwRetry: "重试", // translation: owner review
+  nwLoading: "正在加载新闻…", // translation: owner review
+  nwNoField: "请在个人资料中添加你的学习领域，以查看为你推荐的新闻。", // translation: owner review
+  nwEditProfile: "编辑个人资料", // translation: owner review
+  nwExploreAll: "浏览全部领域", // translation: owner review
+  nwPublished: "发布于 {date}", // translation: owner review
 }

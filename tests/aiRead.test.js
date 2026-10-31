@@ -242,7 +242,7 @@ describe('O*NET suggestion and project description', () => {
     expect(profile.skills[0].name).toBe('Microsoft Excel')
   })
   it('an onet name not on the list gives no suggestion; the skill is kept', async () => {
-    const { profile } = await read(withReply([{ ...EXCEL, onet: 'Customer Service' }, { ...EXCEL, name: 'Microsoft Excel', onet: '' }]).reader)
+    const { profile } = await read(withReply([{ ...EXCEL, onet: 'Customer Service' }]).reader)
     expect(profile.skills).toHaveLength(1)
     expect(profile.skills[0]).not.toHaveProperty('aiSuggestion')
   })
@@ -269,6 +269,12 @@ describe('O*NET suggestion and project description', () => {
     }
     expect((await run('monthly reports')).projects[0].description).toBe('monthly reports')
     expect((await run('Won a national prize')).projects[0].description).toBe('')
+  })
+  it('a project without a description key is accepted and kept with description empty', async () => {
+    const projects = [{ title: 'IT Support Executive', evidence: 'IT Support Executive' }]
+    const { status, profile } = await read(withReply([EXCEL], projects).reader)
+    expect(status).toBe('ok')
+    expect(profile.projects[0]).toMatchObject({ title: 'IT Support Executive', description: '' })
   })
   it('keepQuoted does not check onet against the CV text', () => {
     const { fields } = keepQuoted({ ...REPLY, skills: [{ ...EXCEL, onet: 'Mathematics' }] }, CV_TEXT)

@@ -26,7 +26,9 @@ class ProviderError extends Error {
 
 const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
 // Fields a reply may leave out (replies from before they were asked for are still read).
-const OPTIONAL = new Set(['usedIn', 'onet'])
+const OPTIONAL = new Set(['usedIn', 'onet', 'description'])
+// Fields never checked against the CV text (description is optional but still checked).
+const UNCHECKED = new Set(['usedIn', 'onet'])
 
 // The reply must have the five lists of objects with string fields; anything else is a failed reply.
 // Returns where the shape first breaks (names and types only, never CV text), or null when it is right.
@@ -69,7 +71,7 @@ export function keepQuoted(reply, cvText) {
       }
       const checked = (key) => {
         const value = String(entry[key] ?? '').trim()
-        return key === 'evidence' || OPTIONAL.has(key) || cv.includes(norm(value)) ? value : ''
+        return key === 'evidence' || UNCHECKED.has(key) || cv.includes(norm(value)) ? value : ''
       }
       fields[list].push(Object.fromEntries(keys.filter((key) => !OPTIONAL.has(key) || entry[key] !== undefined).map((key) => [key, checked(key)])))
     }

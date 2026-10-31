@@ -116,7 +116,7 @@ describe('Radar strings', () => {
   it('every t(\'rd...\') used in existing Radar sources has a key in all three languages', () => {
     for (const file of radarSources()) {
       const text = readFileSync(join(root, file), 'utf8')
-      for (const m of text.matchAll(/['"`](rd[A-Za-z0-9_]+)['"`]/g)) {
+      for (const m of text.matchAll(/(?<!data-act=|data-form=)['"`](rd[A-Za-z0-9_]+)['"`]/g)) {
         for (const [name, table] of Object.entries(tables)) expect(table[m[1]], `${file}: ${name}.${m[1]}`).toBeTruthy()
       }
     }

@@ -88,3 +88,46 @@ rows 27-28 has `scrollWidth` = 360 in EN, BM and 中文.
   `reviews activate published`, `demo request failed: validation_failed`, `sign-in refused: not_allowed`). No keys,
   cookies or profile data.
 - Not run: admin "Refresh OpenAlex / Refresh DOSM" (they fetch from the live sources; not part of the acceptance list).
+
+---
+
+# Profile charts: browser check, 31 Oct 2026
+
+Date: 31 Oct 2026 · Branch `claude/future-radar` at `76f2ac0` · Spec `2026-10-31-radar-profile-charts-design.md` (D28-D33)
+
+## How it was run
+
+- `node server/index.js` (radar-trial, port 3210), opened on its own address
+  `http://check.radar.localhost:3210/#radar`, so its saved progress is separate from the owner's `radar.localhost`.
+  Guest, confirmed profiles set in local storage.
+- Widths: desktop and phone 375 px (light theme). Desktop dark theme. Languages: English, plus Bahasa Melayu for the AI card.
+
+## Results
+
+| Profile | Skills & Careers card | AI Impact card |
+|---|---|---|
+| O*NET 15-1252.00 Software Developers | 8 corners (1 Python ... 8 Linux). The Corners switch gives 8 / 16 / 30 / All (29); 30 rows listed. Rows read "814,960 O*NET Hot Technologies ads · 2025". Legend and the note "One year so far" shown | 8 corners T1-T8. "Generative AI exposure ... Gradient 3 for ISCO-08 2512 (mean task score 0.53)" with the ILO link. "8 of 17 O*NET tasks...". T1 row: "AI does it 69.12% · AI helps 30.88% · 0.20% of all conversations", release 2026-06-26, April-May 2026, Hugging Face link |
+| O*NET 13-2011.00 Accountants | 6 corners (Office 3,421,542; Excel 3,211,598; Outlook 1,712,260; PowerPoint 1,618,650; SAP 534,138; QuickBooks 174,071). The shape differs from the developer's | Not re-checked in the browser (covered by tests: 11 tasks) |
+| eMASCO 2512-02 IT Systems Architect | 8 corners. The code chain is printed: MASCO 2020 2512 → ISCO-08 2512 (code match, not an official table) → SOC 2010 15-1132, 15-1133 → SOC 2018 → O*NET 15-1252.00, 15-1253.00, each step with its source link. Note: eMASCO roles in the same 4-digit group share one O*NET link. Rows read "From: ... (eMASCO 2512-02)" | n/a |
+| O*NET 29-1141.00 Registered Nurses + eMASCO 1121-01 | "O*NET lists no in-demand software for Registered Nurses (29-1141.00) (O*NET database 30.3). No chart is drawn." and "Not available for eMASCO 1121-01: the code chain stops at MASCO 2020 1121 has no link in the next official table. No O*NET job is guessed." with its source | Bars instead of a polygon (2 tasks, T1 and T2, "under 0.01% of all conversations"). "Not exposed for ISCO-08 2221 Nursing Professionals (mean task score 0.25)". Same chain-stop note |
+
+Interactions:
+- Typing "git" in the skills search kept focus and the caret (caret 3). The list showed 10 Git and 19 GitHub with their
+  original list numbers.
+- Corner click jumping to its row, and Enter on a focused corner: covered by tests, not repeated by hand.
+- Phone 375 px, light: no sideways scroll on either tab (`scrollWidth` = `innerWidth`); the AI radar labels fit.
+- Desktop dark theme: both charts readable.
+- Malay: AI card headings and the exposure line are translated ("Bagaimana AI digunakan dalam tugas pekerjaan anda",
+  "Gred 3", "Bucu").
+
+## Notes (not failures)
+
+- **P1** - The "100%" ring label sits close to the T1 corner label on the AI radar. Small; not changed.
+- **P2** - Existing, found in this check: the "Your profile" card still shows "Add your field of study or roles to
+  see what relates to you" for a profile that has an O*NET role. That hint looks only at DOSM groups and topics, so it
+  now contradicts the two new cards. For the owner to decide (same family as N1).
+- **P3** - The dashed earlier-year line (Hot Technologies) cannot be seen yet: only one yearly snapshot is served, and the
+  chart says "One year so far".
+- **P4** - The eMASCO code chain works at the 4-digit unit, so every eMASCO role in one unit gives the same chart. The
+  screen says so. Limit set by the official tables (D29).
+- Not checked in the browser: BM and 中文 on the Skills card, the Accountant AI card, and a real keyboard Enter on a corner.

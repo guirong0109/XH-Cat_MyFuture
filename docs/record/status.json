@@ -496,6 +496,103 @@
     },
     {
       "id": "Step 13",
+      "name": "Radar charts that follow your profile (branch claude/future-radar)",
+      "tasks": [
+        {
+          "title": "Spec and plan",
+          "sub": "D28-D33 (skills chart, eMASCO code chain replaces D27, corners 8/16/30/All, AI task chart, no merge of main, not a score); mockup docs/radar/mockup/role-skill-chart.html",
+          "status": "done"
+        },
+        {
+          "title": "T1 Copied from main",
+          "sub": "code chain, AI data and bridge script copied from main d4286d6 (byte-identical except the header line and import path of chain.js and its test); hashes in data/radar/copied-from-main.json (D32); on a later merge main will hold a second copy of the walker (clean-up point)",
+          "status": "done"
+        },
+        {
+          "title": "T2 Your O*NET jobs",
+          "sub": "from roles, field and the eMASCO code chain; union of ISCO codes per job",
+          "status": "done"
+        },
+        {
+          "title": "T3 Skill corners",
+          "sub": "in-demand skills of your jobs with 2025 US job-ad counts; skillId pinned end to end",
+          "status": "done"
+        },
+        {
+          "title": "T4 AI task data",
+          "sub": "GET /api/radar/ai-tasks (reference data, not signals): Anthropic Economic Index tasks and ILO WP140",
+          "status": "done"
+        },
+        {
+          "title": "T5 Task corners",
+          "sub": "tasks of your job found in the Economic Index; AI does it / AI helps shares",
+          "status": "done"
+        },
+        {
+          "title": "T6 Chart component",
+          "sub": "radar with log or linear scale, keyboard corners, bar fallback; CSS variables only",
+          "status": "done"
+        },
+        {
+          "title": "T7 Skills & Careers chart",
+          "sub": "8 corners, switch 8/16/30/All, numbered list with search, code chain shown step by step",
+          "status": "done"
+        },
+        {
+          "title": "T8 AI Impact chart",
+          "sub": "task chart with ILO exposure gradient; topic chart shows your field's topics, View all six at the bottom",
+          "status": "done"
+        },
+        {
+          "title": "T9 Docs and browser check",
+          "sub": "Software Developer, Accountant, eMASCO 2512-02, Registered Nurse; 375 px in light theme, dark theme on desktop, BM on the AI card only (Skills card in BM/zh not checked); search keeps focus. Screenshots to add: docs/record/screens/profile-charts-skills-developer-dark.jpg, profile-charts-ai-developer-dark.jpg, profile-charts-ai-developer-375-light.jpg. 748 tests, pipeline 14 OK",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 14",
+      "name": "Study Pathway (branch claude/study-pathway)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main 6ac16f4, worktree XH_Cat_Final-pathway",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "15 decisions with you (P1-P15)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "approved by you (P1-P13)",
+          "status": "done"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "10 tasks; you chose subagent-driven",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "approved by you (real state)",
+          "status": "done"
+        },
+        {
+          "title": "Build T1-T10",
+          "sub": "10 tasks built, each reviewed; browser check passed",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "1 fix wave (NEC hint, MQA wording, US line, checks); re-review clean",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 15",
       "name": "Organisation view: HR and career centres (owner request)",
       "tasks": [
         {
@@ -524,8 +621,13 @@
           "status": "done"
         },
         {
+          "title": "O6a Up to date with main",
+          "sub": "main merged after the study pathway merge",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
-          "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (12 tasks); starts after study pathway is merged into main",
+          "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
         }
       ]
@@ -573,9 +675,11 @@
     "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed.",
     "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
     "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))",
-    "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))"
+    "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))",
+    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed."
   ],
   "waiting": [
+    "Study Pathway: review the team picks in #admin; fill the 60 missing MQA references",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -587,7 +691,8 @@
     "T28b: your review of the ATM intro (look, timing, receipt wording)",
     "T28c: your review of the roller counters",
     "T28: the section 2 column headings in BM and 中文 (ldTally1–3)",
-    "T28: the stages-built line in BM and 中文 (ldBuilt)"
+    "T28: the stages-built line in BM and 中文 (ldBuilt)",
+    "Profile charts: review the Bahasa Melayu and 中文 lines marked 'translation: owner review'; decide on the eMASCO same-4-digit-group limit; decide the 'Your profile' card hint that now contradicts the new cards; the dashed earlier-year line appears only after a second yearly Hot Technologies snapshot"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -657,7 +762,13 @@
     "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
     "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more",
     "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none",
-    "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode"
+    "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode",
+    "R1-R3 (profile charts): a job's ISCO codes = union on its chain vias, else its own; profileRadar numbers-only threshold 16 (AI card 10); /api/radar/ai-tasks is static reference data with a memoised loader and no manifest",
+    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
+    "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
+    "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
+    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken",
+    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged"
   ],
   "log": [
     {
@@ -1667,6 +1778,106 @@
     },
     {
       "time": "31 Oct",
+      "step": "Profile charts T9",
+      "detail": "browser check, contract, specs pointers, tools declaration, handover and build record; npm test 738 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts final review fixes",
+      "detail": "AI job switch becomes a drop-down above 4 jobs; B2 column wording follows D29; docs corrected (BLS done, copied-file wording, browser-check scope); ISCO and ILO messages split; bar labels keep the T prefix; confirmed-but-empty profile gets the add-to-profile hint; unavailable texts name their sources; tasks.tsv hash-checked; plain error reasons; npm test 748 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts phone fix",
+      "detail": "owner OK: the AI job drop-down, the list rows and long job-name links stay inside the card at 375 px (field 0413, 104 jobs; checked in the browser, no sideways scroll on either tab); npm test 751 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages and folds",
+      "detail": "owner OK: skills list, AI task list and the no-longer-in-demand fold show 10 rows a page with a page bar and Go to page box (row numbers keep counting, a chart corner opens its page, a search starts at page 1); jobs without in-demand software and each code chain become one-line folds with the source link beside them; No chart is drawn only when no corners exist; npm test 765 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages review fixes",
+      "detail": "pageForRow, parsePageArg, parsePageList and withPage are tested helpers used by the page actions; the dropped-skills fold can be closed again (open only right after one of its pages is chosen); Previous button label escaped; npm test 769 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/future-radar (profile charts)",
+      "detail": "owner OK: merged into main; conflicts kept both sides (matching and Radar CSS, strings, change handlers), main keeps its demo service and gains the AI task loader, duplicate SOURCES rows removed, main HANDOVER/CLAUDE kept short"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway design (your request)",
+      "detail": "checked MQA register and e-LATiH (no open licence; e-LATiH search links work, MQR links do not); spec and diagram written"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: more course sites (your change)",
+      "detail": "search links checked in the browser for 9 sites (6 work); spec and diagram updated with sites.json"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: all fields (your change)",
+      "detail": "search links per field of study; first fill widened to all skills and fields; fill report added"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: spec approved, plan written (your request)",
+      "detail": "10 tasks: O*NET education data, sites, steps, route, picks, API, admin review, screen, fill of all skills and fields, browser check; the Learning roadmap placeholder tab becomes Study pathway"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup (your request)",
+      "detail": "Software Developer and Accountant with real O*NET skills, levels and fields of study; sample levels, picks and education %; checked desktop and 375 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup with the real state (your request)",
+      "detail": "real O*NET education levels (O*NET 31.0 renamed the file to Education.txt; spec and plan fixed), 34 courses and 6 programme/body pages opened in the browser; only the profile is a sample; eMASCO qualification shown as a proposal"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway P14: eMASCO qualification (your decision)",
+      "detail": "spec, plan, diagram and mockup updated; the mockup's 'proposal' label removed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: mockup approved, build started (your decision)",
+      "detail": "P15 recorded; subagent-driven build of the 10 plan tasks begins"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T1 O*NET education data, T2 course sites, T3 steps, T4 study route, T5 picks rules, T6 /api/pathway (1 fix round: bad picks file now stops start-up); 879 tests pass"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T7 admin review of picks, T8 Study pathway screen (each 1 fix round); 913 tests pass; T9 fill started"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway Task 10: browser check, handover, build record",
+      "detail": "T9 fill done (68/68 skills with courses, 99 of 118 fields with an accredited programme). Browser check: 18 pass, admin and dark mode not run (docs/pathway/acceptance.md). 920 tests pass, pipeline 49 OK. Final whole-branch review next"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway final review",
+      "detail": "1 fix wave (NEC hint, MQA wording, US education line, pick checks, course order, sources table); re-review clean. Second browser check: admin approve/reject and thin profile pass. 936 tests pass, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged Study Pathway to main (your request)",
+      "detail": "merged claude/study-pathway into main after the Radar profile-charts merge; overlaps in app.js, styles, strings and the build record resolved by hand; main's short HANDOVER and CLAUDE updated; npm test 1088 passed, pipeline 49 OK; not pushed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Pushed main to GitHub (your request)",
+      "detail": "main 85ffce4..fec8a7a pushed; includes the Study Pathway merge"
+    },
+    {
+      "time": "31 Oct",
       "step": "Organisation view spec and mockup (hr-branch)",
       "detail": "Prototype checked against the Finalist Guide; owner decisions O1-O8 (roster and join link, current and target role, matching's sums, skills-only sharing, server works out team numbers, HR and career centres with HR first); spec and sample-data mockup written. npm test 833 passed; mockup checked in the browser at 127.0.0.2:3201, desktop and 360 px"
     },
@@ -1679,6 +1890,11 @@
       "time": "31 Oct",
       "step": "Organisation view: diagram approved, plan written (hr-branch)",
       "detail": "Owner approved the architecture diagram; implementation plan written (Tasks 0-12, career centre last). npm test 833 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: build started (hr-branch)",
+      "detail": "Study pathway merged into main; main merged into hr-branch (Task 0)"
     }
   ]
 }

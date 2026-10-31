@@ -2,7 +2,7 @@
 export default {
   welcome: 'Selamat datang', returning: 'Tetamu kembali', access: 'Tetamu atau akaun', category: 'Siapakah anda?', org: 'HR & TVET (pratonton)',
   source: 'CV atau manual', upload: 'Muat naik CV', form: 'Profil anda', review: 'Sahkan profil', summary: 'Ringkasan profil anda',
-  assess: 'Semakan kemahiran', radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', roadmap: 'Pelan pembelajaran', sdg: 'Sumbangan SDG', futures: 'Bandingkan masa depan',
+  assess: 'Semakan kemahiran', radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian', sdg: 'Sumbangan SDG', futures: 'Bandingkan masa depan',
   heroSub: 'Mulakan dengan diri anda hari ini: pengajian, kerja dan kemahiran, daripada CV atau borang ringkas.',
   themeToDark: 'Mod gelap', themeToLight: 'Mod cerah',
   langNote: 'Antara muka kekal dalam bahasa ini. Ia hanya berubah apabila anda memilih bahasa lain.',
@@ -316,7 +316,7 @@ export default {
   rdSkDropped: "Tidak lagi diperlukan",
   rdSkKept: "Masih diperlukan ({count})",
   rdSkNoFlags: "Tiada kemahiran ditandakan untuk pekerjaan ini dalam keluaran ini",
-  rdSkNoOnetLink: "Tiada pautan rasmi ke O*NET: senarai kemahiran tidak tersedia",
+  rdSkNoOnetLink: "Dicapai melalui rantaian kod rasmi: lihat 'Kemahiran yang diminta oleh pekerjaan anda' di atas.", // translation: owner review
   rdOnProfile: "Ada dalam profil anda",
   rdSkHot: "Menjadi Teknologi Hangat",
   rdSkHotDropped: "Tidak lagi Teknologi Hangat",
@@ -811,7 +811,7 @@ export default {
   mtApprovedOn: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
   mtChoose: "Pilih peranan ini", // translation: owner review
   mtChosen: "✓ Peranan dipilih", // translation: owner review
-  mtStudyPlan: "Pelan pembelajaran belum tersedia", // translation: owner review
+  mtStudyPlan: "Rancang laluan pengajian saya", // translation: owner review
   mtWhy: "Mengapa padanan ini?", // translation: owner review
   mtWhyNone: "Mengapa tiada Padanan Kemahiran?", // translation: owner review
   mtWhyNoneText: "Kami hanya memautkan peranan eMASCO kepada kemahiran O*NET melalui jadual kod rasmi, tidak pernah dengan meneka daripada tajuk. Untuk peranan ini satu langkah belum ada pautan:", // translation: owner review
@@ -991,4 +991,181 @@ export default {
   introStage: "Kisah ATM: sebuah ATM mencetak resit dengan persoalan di bawah.",
   introSkip: "Langkau pengenalan",
   introReplay: "Main semula kisah ATM",
+  rdChange_versions: "versi", // translation: owner review
+  rdSkChartTitle: "Kemahiran yang diminta oleh pekerjaan anda", // translation: owner review
+  rdSkChartTag: "Iklan kerja AS · O*NET", // translation: owner review
+  rdCorners: "Bucu", // translation: owner review
+  rdCornersAll: "Semua ({n})", // translation: owner review
+  rdSkSearch: "Cari {n} kemahiran anda", // translation: owner review
+  rdSkShown: "{shown} daripada {n} · dinomborkan mengikut iklan kerja AS {year}", // translation: owner review
+  rdSkFrom: "Daripada", // translation: owner review
+  rdSkNew: "baharu dalam {release}", // translation: owner review
+  rdSkNoCount: "tiada bilangan iklan AS", // translation: owner review
+  rdSkNoMatch: "Tiada kemahiran sepadan dengan carian ini", // translation: owner review
+  rdSkDroppedFold: "Tidak lagi dalam permintaan ({n}), digugurkan antara O*NET {previous} dan {current}", // translation: owner review
+  rdSkNone: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}). Tiada carta dilukis.", // translation: owner review
+  rdChainBroken: "Tidak tersedia untuk eMASCO {code}: rantaian kod berhenti di {step}. Tiada pekerjaan O*NET diteka.", // translation: owner review
+  rdChainPath: "Rantaian kod", // translation: owner review
+  rdSkOneYear: "Satu tahun setakat ini: garisan putus-putus tahun terdahulu muncul dengan bilangan tahunan seterusnya.", // translation: owner review
+  rdSkLegend: "Iklan kerja AS {year} yang meminta kemahiran ini (skala log) · titik berongga = baharu dalam permintaan", // translation: owner review
+  rdSkSource: "Data AS, bukan Malaysia · kemahiran perisian sahaja · bilangan iklan kerja, bukan skor", // translation: owner review
+  rdConfirmFirst: "Sahkan profil anda untuk melihat kemahiran yang diminta oleh pekerjaan anda.", // translation: owner review
+  rdChainSameUnit: "Peranan eMASCO dalam kumpulan 4 digit yang sama berkongsi satu pautan O*NET, jadi menunjukkan kemahiran yang sama.", // translation: owner review
+  rdPages: "Halaman", // translation: owner review
+  rdPrevPage: "Halaman sebelumnya", // translation: owner review
+  rdNextPage: "Halaman seterusnya", // translation: owner review
+  rdPageN: "Halaman {page}", // translation: owner review
+  rdGoToPage: "Pergi ke halaman", // translation: owner review
+  rdGo: "Pergi", // translation: owner review
+  rdShowingRows: "Menunjukkan {from}–{to} daripada {n}", // translation: owner review
+  rdSkNoneFold: "{n} daripada pekerjaan anda tidak menyenaraikan perisian dalam permintaan (pangkalan data O*NET {release})", // translation: owner review
+  rdSkNoneOne: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}).", // translation: owner review
+  rdSkNoneSome: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoneSome1: "Pekerjaan ini tidak menambah sudut.", // translation: owner review
+  rdSkNoChart: "Tiada carta dilukis.", // translation: owner review
+  rdChainFold: "Rantaian kod untuk eMASCO {code}: {n} langkah rasmi", // translation: owner review
+  rdSkAds: "iklan", // translation: owner review
+  rdSkAria: "{n}. {name}: {count} iklan kerja AS pada {year}", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} tiada pautan dalam jadual rasmi seterusnya", // translation: owner review
+  rdChainStop_pending: "{system} {codes}: jadual rasmi seterusnya belum dibina", // translation: owner review
+  rdChainStop_invalid: "{codes} bukan kod unit MASCO 4 digit", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}: pekerjaan O*NET yang dipautkan tiada data kemahiran", // translation: owner review
+  rdSkLicence: "Data O*NET ialah CC BY 4.0 · iklan kerja AS (Lightcast melalui O*NET)", // translation: owner review
+  rdAiChartTitle: "Bagaimana AI digunakan dalam tugas pekerjaan anda", // translation: owner review
+  rdAiChartTag: "penggunaan sebenar · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "Pendedahan kepada AI generatif bagi {job}: {gradient} untuk ISCO-08 {isco} {title} (purata skor tugas {mean})", // translation: owner review
+  rdAiGrad_G4: "Gred 4 (pendedahan tertinggi)", // translation: owner review
+  rdAiGrad_G3: "Gred 3", // translation: owner review
+  rdAiGrad_G2: "Gred 2", // translation: owner review
+  rdAiGrad_G1: "Gred 1", // translation: owner review
+  rdAiGrad_minimal: "Pendedahan minimum", // translation: owner review
+  rdAiGrad_not_exposed: "Tidak terdedah", // translation: owner review
+  rdAiNoIsco: "tiada kod ISCO-08 ditemui untuk pekerjaan ini, jadi pendedahan ILO tidak tersedia", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} tiada baris dalam jadual ILO WP140, jadi pendedahan ILO tidak tersedia", // translation: owner review
+  rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
+  rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
+  rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
+  rdAiNone: "Tiada satu pun daripada {total} tugas O*NET pekerjaan ini muncul dalam data perbualan AI. Tiada carta dilukis.", // translation: owner review
+  rdAiLoading: "Memuatkan data tugas AI…", // translation: owner review
+  rdAiUnavailable: "Data tugas AI tidak tersedia (sumber: Anthropic Economic Index, ILO WP140).", // translation: owner review
+  rdAiSource: "cara AI digunakan hari ini, bukan ramalan kehilangan pekerjaan, dan bukan skor", // translation: owner review
+  rdJob: "Pekerjaan", // translation: owner review
+  rdTopicsOwn: "Topik penyelidikan AI yang dipautkan kepada bidang anda", // translation: owner review
+  rdTopicsViewAll: "Lihat kesemua enam topik", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index: CC-BY · ILO WP140: CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "Bidang anda dipautkan kepada kurang daripada 3 topik, jadi bar dipaparkan.", // translation: owner review
+  rdAiConfirmFirst: "Sahkan profil anda untuk melihat bagaimana AI digunakan dalam tugas pekerjaan anda.", // translation: owner review
+  rdAiUnder: "kurang daripada 0.01", // translation: owner review
+  rdPickTitle: "Pilihan laluan pengajian", // translation: owner review
+  rdPickTag: "Draf pasukan: semakan pemilik", // translation: owner review
+  rdPickNote: "Setiap pilihan ialah kursus, program atau kata carian yang dipilih pasukan untuk satu kemahiran, item pengetahuan atau bidang pengajian. Skrin Laluan Pengajian menunjukkan setiap pilihan sehingga anda menolaknya; yang diluluskan menunjukkan tarikh anda. Sumber setiap pilihan ialah pautannya sendiri.", // translation: owner review
+  rdPickNotReviewed: "belum disemak", // translation: owner review
+  rdPickOpen: "Buka pautan (tab baharu)", // translation: owner review
+  rdPickNone: "Belum ada pilihan.", // translation: owner review
+  rdPickTypeCourse: "Kursus", // translation: owner review
+  rdPickTypeProgramme: "Program", // translation: owner review
+  rdPickTypeSearchWord: "Kata carian", // translation: owner review
+  rdPickColType: "Jenis", // translation: owner review
+  rdPickColFor: "Untuk", // translation: owner review
+  rdPickColSite: "Laman, institusi atau badan", // translation: owner review
+  rdPickColName: "Nama", // translation: owner review
+  rdPickColChecked: "Tarikh disemak", // translation: owner review
+  pwLead: "Untuk setiap peranan yang anda pilih dalam Padanan kerjaya: apa yang biasanya dipelajari untuknya, dan kemahiran yang masih anda perlukan, jurang terbesar dahulu. Setiap kursus ialah halaman sebenar di laman webnya sendiri; pasukan memilihnya dan pemilik menyemaknya. Tiada apa di sini mengubah Padanan Kemahiran anda.", // translation: owner review
+  pwYourRoles: "Peranan anda (ditambah dengan “Rancang laluan pengajian saya” dalam Padanan kerjaya)", // translation: owner review
+  pwNoTarget: "Belum ada peranan. Pilih satu dalam Padanan kerjaya dan tekan “Rancang laluan pengajian saya”.", // translation: owner review
+  pwGoMatch: "Pergi ke Padanan kerjaya", // translation: owner review
+  pwRemove: "buang", // translation: owner review
+  pwRemoveLabel: "Buang {title}", // translation: owner review
+  pwTabMatch: "Padanan Kemahiran {percent}%", // translation: owner review
+  pwTabNoMatch: "Padanan Kemahiran tidak tersedia", // translation: owner review
+  pwCounts: "{build} untuk dibina · {started} dimulakan · {done} selesai", // translation: owner review
+  pwProfileUsed: "Profil yang digunakan:", // translation: owner review
+  pwProfileSkills: "{count} kemahiran dan pengetahuan O*NET ({na} “Belum dinilai”)", // translation: owner review
+  pwNeverStored: "Profil anda dihantar untuk mengira ini dan tidak pernah disimpan. Peranan dan kemajuan yang disimpan kekal pada peranti ini.", // translation: owner review
+  pwLoading: "Mengira laluan…", // translation: owner review
+  pwError: "Laluan tidak dapat dimuatkan.", // translation: owner review
+  pwRetry: "Cuba lagi", // translation: owner review
+  pwNotFound: "Tidak dijumpai: peranan ini tiada dalam data semasa.", // translation: owner review
+  pwComparedWith: "dibandingkan dengan pekerjaan O*NET", // translation: owner review
+  pwComparedTail: "pekerjaan yang digunakan oleh Padanan kerjaya", // translation: owner review
+  pwSkillMatchNow: "Padanan Kemahiran sekarang", // translation: owner review
+  pwProvTitle: "Sementara:", // translation: owner review
+  pwProvText: "{count} daripada kemahiran anda “Belum dinilai”, jadi kami tidak dapat pastikan sama ada anda memerlukannya.", // translation: owner review
+  pwSetLevels: "Tetapkan tahap anda", // translation: owner review
+  pwPart: "Bahagian {n}", // translation: owner review
+  pwPart1Title: "Laluan pengajian", // translation: owner review
+  pwPart1Lead: "Apa yang biasanya dipelajari oleh orang dalam pekerjaan ini, dan di mana anda boleh mempelajarinya di Malaysia.", // translation: owner review
+  pwEduTitle: "Tahap pendidikan biasa", // translation: owner review
+  pwEmascoTag: "eMASCO, Malaysia", // translation: owner review
+  pwEmascoNone: "eMASCO tidak menyenaraikan kelayakan untuk peranan ini", // translation: owner review
+  pwEmascoWhat: "Kelayakan yang disenaraikan oleh eMASCO untuk MASCO {code}", // translation: owner review
+  pwInUs: "Di AS:", // translation: owner review
+  pwInUsText: "{label}, {percent}% pekerja dalam pekerjaan ini yang ditanya", // translation: owner review
+  pwUsTag: "bersumber · data AS", // translation: owner review
+  pwUsNone: "O*NET tiada data pendidikan untuk pekerjaan ini.", // translation: owner review
+  pwEduAll: "Semua tahap pendidikan (AS)", // translation: owner review
+  pwEduZero: "Tahap dengan 0% tidak disenaraikan.", // translation: owner review
+  pwEduSuppressed: "{count} baris yang ditandakan O*NET sebagai tidak boleh dipercayai tidak dimasukkan.", // translation: owner review
+  pwSrcLabel: "Sumber:", // translation: owner review
+  pwSrcMqr: "Daftar MQA (pautan sahaja)", // translation: owner review
+  pwFieldsTitle: "Bidang pengajian yang membawa ke sini", // translation: owner review
+  pwSourced: "bersumber", // translation: owner review
+  pwFieldsLead: "Dibaca secara terbalik melalui jadual rasmi: pekerjaan O*NET → program pengajian AS/Kanada (CIP) → bidang pengajian UNESCO (ISCED-F 2013).", // translation: owner review
+  pwFieldsNone: "Tiada bidang pengajian dalam jadual rasmi untuk pekerjaan ini.", // translation: owner review
+  pwYourField: "bidang anda", // translation: owner review
+  pwPartial: "pautan separa", // translation: owner review
+  pwCips: "{count} program pengajian (CIP) menghubungkan bidang ini dengan pekerjaan", // translation: owner review
+  pwCipPartial: "separa", // translation: owner review
+  pwAccredited: "Program Malaysia yang diakreditasi", // translation: owner review
+  pwMqaRef: "Rujukan MQA {ref}", // translation: owner review
+  pwMqaRefNone: "Rujukan MQA belum direkodkan", // translation: owner review
+  pwChecked: "disemak {date}", // translation: owner review
+  pwApprovedOn: "diluluskan oleh pemilik pada {date}", // translation: owner review
+  pwNoProgPick: "Belum ada pilihan pasukan; gunakan pautan daftar MQA di bawah.", // translation: owner review
+  pwNoPick: "Belum ada pilihan pasukan; gunakan pautan carian di bawah.", // translation: owner review
+  pwMqrMore: "Lagi dalam daftar MQA", // translation: owner review
+  pwMqrFind: "Cari program dalam daftar MQA", // translation: owner review
+  pwMqrNec: "pilih bidang NEC {code}", // translation: owner review
+  pwMqrNecField: "pilih bidang NEC untuk {title}", // translation: owner review
+  pwNecChecked: "kod NEC disemak dalam MQR", // translation: owner review
+  pwCodeMatch: "padanan kod, bukan jadual rasmi", // translation: owner review
+  pwProfessional: "Kelayakan profesional", // translation: owner review
+  pwFieldCourses: "Kursus untuk bermula", // translation: owner review
+  pwMoreOn: "Lagi di", // translation: owner review
+  pwPart2Title: "Kemahiran untuk dibina", // translation: owner review
+  pwPart2Lead: "Kemahiran dan pengetahuan yang diperlukan pekerjaan ini (kepentingan O*NET 3 atau lebih) yang belum anda miliki pada tahapnya. Jurang terbesar dahulu, dalam mata yang digunakan Padanan kerjaya untuk “apa yang akan menaikkannya”: jurang ÷ semua tahap yang diperlukan ({total}) × 100.", // translation: owner review
+  pwToBuild: "Untuk dibina", // translation: owner review
+  pwSkillsCount: "{count} kemahiran", // translation: owner review
+  pwNoGaps: "Tiada apa untuk dibina: anda memenuhi setiap tahap yang diperlukan pekerjaan ini.", // translation: owner review
+  pwKind_kn: "pengetahuan", // translation: owner review
+  pwKind_el: "kemahiran", // translation: owner review
+  pwYourLevel: "Tahap anda", // translation: owner review
+  pwNotInProfile: "Tiada dalam profil anda", // translation: owner review
+  pwNeededWord: "diperlukan", // translation: owner review
+  pwOnetLevel: "(tahap O*NET {level} daripada 7)", // translation: owner review
+  pwPoints: "mata Padanan Kemahiran", // translation: owner review
+  pwStarted: "Dimulakan", // translation: owner review
+  pwDone: "Selesai", // translation: owner review
+  pwSelf: "dilaporkan sendiri", // translation: owner review
+  pwDoneNote: "Selesai! Kemas kini tahap anda dalam profil untuk menaikkan Padanan Kemahiran anda.", // translation: owner review
+  pwNaTitle: "Tahap belum dinilai", // translation: owner review
+  pwNaWhy: "tetapkan tahap anda untuk melihat sama ada anda memerlukannya", // translation: owner review
+  pwNeeded: "Diperlukan", // translation: owner review
+  pwSetLevel: "tetapkan tahap anda dalam profil", // translation: owner review
+  pwMetTitle: "Sudah mencapai tahap ({count})", // translation: owner review
+  pwMetLine: "tahap anda {you} · diperlukan {needed}", // translation: owner review
+  pwThin: "Kami belum dapat menyenaraikan kemahiran untuk dibina: tambah kemahiran beserta tahap pada profil anda.", // translation: owner review
+  pwAddSkills: "Tambah kemahiran pada profil anda", // translation: owner review
+  pwSourcesTitle: "Sumber", // translation: owner review
+  pwColWhat: "Apa", // translation: owner review
+  pwColSource: "Sumber", // translation: owner review
+  pwColDate: "Tarikh", // translation: owner review
+  pwColLicence: "Lesen", // translation: owner review
+  pwSrc_onet: "Tahap diperlukan, kepentingan, pendidikan AS", // translation: owner review
+  pwSrc_bridge: "Peranan → pekerjaan O*NET (rantaian rasmi)", // translation: owner review
+  pwSrc_emasco: "Kelayakan Malaysia", // translation: owner review
+  pwSrc_fields: "Bidang pengajian", // translation: owner review
+  pwSrc_picks: "Kursus, program, badan", // translation: owner review
+  pwSrc_site: "Pautan “Lagi di” (carian laman itu sendiri)", // translation: owner review
+  pwLinksOnly: "pautan sahaja", // translation: owner review
 }

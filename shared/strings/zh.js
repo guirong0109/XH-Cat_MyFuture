@@ -2,7 +2,7 @@
 export default {
   welcome: '欢迎', returning: '回访访客', access: '访客或账户', category: '你是哪一类用户？', org: 'HR 与 TVET（预览）',
   source: '简历或手动填写', upload: '上传简历', form: '你的资料', review: '确认资料', summary: '你的资料摘要',
-  assess: '技能熟练度评估', radar: '未来技能雷达', match: '职业匹配', roadmap: '学习路线', sdg: 'SDG 贡献', futures: '比较未来情景',
+  assess: '技能熟练度评估', radar: '未来技能雷达', match: '职业匹配', pathway: '学习路径', sdg: 'SDG 贡献', futures: '比较未来情景',
   heroSub: '从今天的你开始：你的学历、工作和技能，来自简历或简短表格。',
   themeToDark: '深色模式', themeToLight: '浅色模式',
   langNote: '界面会保持这种语言，只有在你选择其他语言时才会改变。',
@@ -316,7 +316,7 @@ export default {
   rdSkDropped: "不再有需求",
   rdSkKept: "仍有需求（{count}）",
   rdSkNoFlags: "此版本中没有为这个职业标出任何技能",
-  rdSkNoOnetLink: "没有与 O*NET 的官方对应：无法提供技能列表",
+  rdSkNoOnetLink: "通过官方代码链对应：见上方「你的职业所要求的技能」。", // translation: owner review
   rdOnProfile: "在您的个人资料中",
   rdSkHot: "成为热门技术",
   rdSkHotDropped: "不再是热门技术",
@@ -811,7 +811,7 @@ export default {
   mtApprovedOn: "团队草稿，所有者于 {date} 批准", // translation: owner review
   mtChoose: "选择此职位", // translation: owner review
   mtChosen: "✓ 已选职位", // translation: owner review
-  mtStudyPlan: "学习计划暂不可用", // translation: owner review
+  mtStudyPlan: "规划我的学习路径", // translation: owner review
   mtWhy: "为什么是这个匹配？", // translation: owner review
   mtWhyNone: "为什么没有技能匹配？", // translation: owner review
   mtWhyNoneText: "我们只通过官方代码表将 eMASCO 职位关联到 O*NET 技能，从不根据名称猜测。此职位有一步还没有关联：", // translation: owner review
@@ -991,4 +991,181 @@ export default {
   introStage: "ATM 故事：一台 ATM 打印出一张凭条，上面写着下面的问题。",
   introSkip: "跳过开场",
   introReplay: "重播 ATM 故事",
+  rdChange_versions: "版本", // translation: owner review
+  rdSkChartTitle: "你的职业所要求的技能", // translation: owner review
+  rdSkChartTag: "美国招聘广告 · O*NET", // translation: owner review
+  rdCorners: "顶点", // translation: owner review
+  rdCornersAll: "全部（{n}）", // translation: owner review
+  rdSkSearch: "在你的 {n} 项技能中搜索", // translation: owner review
+  rdSkShown: "{shown} / {n} · 按 {year} 年美国招聘广告数编号", // translation: owner review
+  rdSkFrom: "来自", // translation: owner review
+  rdSkNew: "{release} 新增", // translation: owner review
+  rdSkNoCount: "无美国广告数", // translation: owner review
+  rdSkNoMatch: "没有技能符合此搜索", // translation: owner review
+  rdSkDroppedFold: "不再有需求（{n}），在 O*NET {previous} 与 {current} 之间被移除", // translation: owner review
+  rdSkNone: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。不绘制图表。", // translation: owner review
+  rdChainBroken: "eMASCO {code} 无法显示：代码链在 {step} 处中断。不会猜测 O*NET 职业。", // translation: owner review
+  rdChainPath: "代码链", // translation: owner review
+  rdSkOneYear: "目前只有一年：下一次年度统计后会出现前一年的虚线。", // translation: owner review
+  rdSkLegend: "{year} 年要求该技能的美国招聘广告数（对数刻度）· 空心点 = 新增需求", // translation: owner review
+  rdSkSource: "美国数据，非马来西亚 · 仅限软件技能 · 招聘广告数量，不是分数", // translation: owner review
+  rdConfirmFirst: "请先确认你的个人资料，以查看你的职业所要求的技能。", // translation: owner review
+  rdChainSameUnit: "同一 4 位数组别的 eMASCO 职位共用一个 O*NET 链接，因此显示相同的技能。", // translation: owner review
+  rdPages: "页码", // translation: owner review
+  rdPrevPage: "上一页", // translation: owner review
+  rdNextPage: "下一页", // translation: owner review
+  rdPageN: "第 {page} 页", // translation: owner review
+  rdGoToPage: "跳到页", // translation: owner review
+  rdGo: "前往", // translation: owner review
+  rdShowingRows: "显示第 {from}–{to} 项，共 {n} 项", // translation: owner review
+  rdSkNoneFold: "您的 {n} 个职业没有列出热门软件（O*NET 数据库 {release}）", // translation: owner review
+  rdSkNoneOne: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。", // translation: owner review
+  rdSkNoneSome: "这些职业不增加角点。", // translation: owner review
+  rdSkNoneSome1: "这个职业不增加角点。", // translation: owner review
+  rdSkNoChart: "不绘制图表。", // translation: owner review
+  rdChainFold: "eMASCO {code} 的代码链：{n} 个官方步骤", // translation: owner review
+  rdSkAds: "则广告", // translation: owner review
+  rdSkAria: "{n}. {name}：{year} 年 {count} 则美国招聘广告", // translation: owner review
+  rdChainStop_no_row: "{system} {codes} 在下一份官方对照表中没有对应项", // translation: owner review
+  rdChainStop_pending: "{system} {codes}：下一份官方对照表尚未建立", // translation: owner review
+  rdChainStop_invalid: "{codes} 不是 4 位数的 MASCO 单位代码", // translation: owner review
+  rdChainStop_no_onet_data: "{system} {codes}：所链接的 O*NET 职业没有技能数据", // translation: owner review
+  rdSkLicence: "O*NET 数据为 CC BY 4.0 · 美国招聘广告（Lightcast，经由 O*NET）", // translation: owner review
+  rdAiChartTitle: "您工作中的任务如何使用 AI", // translation: owner review
+  rdAiChartTag: "实际使用情况 · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "{job} 的生成式 AI 暴露程度：ISCO-08 {isco} {title} 为{gradient}（任务平均分 {mean}）", // translation: owner review
+  rdAiGrad_G4: "第 4 级（暴露程度最高）", // translation: owner review
+  rdAiGrad_G3: "第 3 级", // translation: owner review
+  rdAiGrad_G2: "第 2 级", // translation: owner review
+  rdAiGrad_G1: "第 1 级", // translation: owner review
+  rdAiGrad_minimal: "极低暴露", // translation: owner review
+  rdAiGrad_not_exposed: "无暴露", // translation: owner review
+  rdAiNoIsco: "未找到此工作的 ISCO-08 代码，因此无法提供 ILO 暴露度", // translation: owner review
+  rdAiNoIloRow: "ISCO-08 {isco} 在 ILO WP140 表中没有对应行，因此无法提供 ILO 暴露度", // translation: owner review
+  rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
+  rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
+  rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
+  rdAiNone: "此工作的 {total} 项 O*NET 任务都没有出现在 AI 对话数据中。不绘制图表。", // translation: owner review
+  rdAiLoading: "正在加载 AI 任务数据…", // translation: owner review
+  rdAiUnavailable: "AI 任务数据不可用（来源：Anthropic Economic Index、ILO WP140）。", // translation: owner review
+  rdAiSource: "今天 AI 的使用方式，不是对失业的预测，也不是分数", // translation: owner review
+  rdJob: "工作", // translation: owner review
+  rdTopicsOwn: "与您的领域相关的 AI 研究主题", // translation: owner review
+  rdTopicsViewAll: "查看全部六个主题", // translation: owner review
+  rdAiLicence: "Anthropic Economic Index：CC-BY · ILO WP140：CC BY 4.0", // translation: owner review
+  rdFewOwnAxes: "您的领域关联的主题少于 3 个，因此显示为条形图。", // translation: owner review
+  rdAiConfirmFirst: "请确认您的个人资料，以查看 AI 如何用于您工作中的任务。", // translation: owner review
+  rdAiUnder: "低于 0.01", // translation: owner review
+  rdPickTitle: "学习路径推荐项", // translation: owner review
+  rdPickTag: "团队草稿：负责人审核", // translation: owner review
+  rdPickNote: "每个推荐项是团队为某项技能、知识或学习领域选出的课程、专业或搜索词。在您拒绝之前，学习路径页面会显示每个推荐项；获批的显示您的批准日期。每个推荐项的来源就是它自己的链接。", // translation: owner review
+  rdPickNotReviewed: "尚未审核", // translation: owner review
+  rdPickOpen: "打开链接（新标签页）", // translation: owner review
+  rdPickNone: "暂无推荐项。", // translation: owner review
+  rdPickTypeCourse: "课程", // translation: owner review
+  rdPickTypeProgramme: "专业", // translation: owner review
+  rdPickTypeSearchWord: "搜索词", // translation: owner review
+  rdPickColType: "类型", // translation: owner review
+  rdPickColFor: "适用于", // translation: owner review
+  rdPickColSite: "网站、院校或机构", // translation: owner review
+  rdPickColName: "名称", // translation: owner review
+  rdPickColChecked: "核查日期", // translation: owner review
+  pwLead: "针对你在职业匹配中选择的每个职位：从事该工作的人通常学什么，以及你仍需要的技能，差距最大的排在最前。每门课程都是其网站上的真实页面；由团队挑选，由负责人审核。这里的任何内容都不会改变你的技能匹配度。", // translation: owner review
+  pwYourRoles: "你的职位（在职业匹配中通过“规划我的学习路径”添加）", // translation: owner review
+  pwNoTarget: "还没有职位。请在职业匹配中选择一个，然后点击“规划我的学习路径”。", // translation: owner review
+  pwGoMatch: "前往职业匹配", // translation: owner review
+  pwRemove: "移除", // translation: owner review
+  pwRemoveLabel: "移除 {title}", // translation: owner review
+  pwTabMatch: "技能匹配度 {percent}%", // translation: owner review
+  pwTabNoMatch: "技能匹配度不可用", // translation: owner review
+  pwCounts: "{build} 项待提升 · {started} 项已开始 · {done} 项已完成", // translation: owner review
+  pwProfileUsed: "使用的档案：", // translation: owner review
+  pwProfileSkills: "{count} 项 O*NET 技能和知识（{na} 项“尚未评估”）", // translation: owner review
+  pwNeverStored: "你的档案仅用于计算此结果，从不保存。已保存的职位和进度只留在此设备上。", // translation: owner review
+  pwLoading: "正在计算学习路径…", // translation: owner review
+  pwError: "无法加载学习路径。", // translation: owner review
+  pwRetry: "重试", // translation: owner review
+  pwNotFound: "未找到：此职位不在当前数据中。", // translation: owner review
+  pwComparedWith: "对比的 O*NET 职业", // translation: owner review
+  pwComparedTail: "即职业匹配所用的职业", // translation: owner review
+  pwSkillMatchNow: "当前技能匹配度", // translation: owner review
+  pwProvTitle: "暂定：", // translation: owner review
+  pwProvText: "你有 {count} 项技能“尚未评估”，因此我们无法判断你是否需要提升它们。", // translation: owner review
+  pwSetLevels: "设置你的水平", // translation: owner review
+  pwPart: "第 {n} 部分", // translation: owner review
+  pwPart1Title: "学习路线", // translation: owner review
+  pwPart1Lead: "从事这项工作的人通常学什么，以及在马来西亚哪里可以学。", // translation: owner review
+  pwEduTitle: "通常的教育程度", // translation: owner review
+  pwEmascoTag: "eMASCO，马来西亚", // translation: owner review
+  pwEmascoNone: "eMASCO 未列出此职位的资历要求", // translation: owner review
+  pwEmascoWhat: "eMASCO 为 MASCO {code} 列出的资历", // translation: owner review
+  pwInUs: "在美国：", // translation: owner review
+  pwInUsText: "{label}，占受访的该职业从业者的 {percent}%", // translation: owner review
+  pwUsTag: "有来源 · 美国数据", // translation: owner review
+  pwUsNone: "O*NET 没有该职业的教育数据。", // translation: owner review
+  pwEduAll: "所有教育程度（美国）", // translation: owner review
+  pwEduZero: "占比为 0% 的程度未列出。", // translation: owner review
+  pwEduSuppressed: "O*NET 标记为不可靠的 {count} 行已略去。", // translation: owner review
+  pwSrcLabel: "来源：", // translation: owner review
+  pwSrcMqr: "MQA 名册（仅链接）", // translation: owner review
+  pwFieldsTitle: "通往此职位的学习领域", // translation: owner review
+  pwSourced: "有来源", // translation: owner review
+  pwFieldsLead: "通过官方对照表反向查找：O*NET 职业 → 美国/加拿大学习课程（CIP）→ 联合国教科文组织学习领域（ISCED-F 2013）。", // translation: owner review
+  pwFieldsNone: "官方对照表中没有通往该职业的学习领域。", // translation: owner review
+  pwYourField: "你的领域", // translation: owner review
+  pwPartial: "部分对应", // translation: owner review
+  pwCips: "{count} 个学习课程（CIP）将此领域与该职业相连", // translation: owner review
+  pwCipPartial: "部分", // translation: owner review
+  pwAccredited: "马来西亚认证课程", // translation: owner review
+  pwMqaRef: "MQA 编号 {ref}", // translation: owner review
+  pwMqaRefNone: "MQA 编号尚未记录", // translation: owner review
+  pwChecked: "{date} 核查", // translation: owner review
+  pwApprovedOn: "负责人于 {date} 批准", // translation: owner review
+  pwNoProgPick: "团队尚未挑选；请使用下方的 MQA 名册链接。", // translation: owner review
+  pwNoPick: "团队尚未挑选；请使用下方的搜索链接。", // translation: owner review
+  pwMqrMore: "在 MQA 名册中查看更多", // translation: owner review
+  pwMqrFind: "在 MQA 名册中查找课程", // translation: owner review
+  pwMqrNec: "选择 NEC 领域 {code}", // translation: owner review
+  pwMqrNecField: "选择 {title} 对应的 NEC 领域", // translation: owner review
+  pwNecChecked: "NEC 代码已在 MQR 中核对", // translation: owner review
+  pwCodeMatch: "按代码对应，非官方对照表", // translation: owner review
+  pwProfessional: "专业资格", // translation: owner review
+  pwFieldCourses: "入门课程", // translation: owner review
+  pwMoreOn: "更多：", // translation: owner review
+  pwPart2Title: "待提升的技能", // translation: owner review
+  pwPart2Lead: "该职业需要（O*NET 重要性 3 或以上）而你尚未达到其水平的技能和知识。差距最大的排在最前，使用职业匹配“怎样提高”所用的分数：差距 ÷ 所需总水平（{total}）× 100。", // translation: owner review
+  pwToBuild: "待提升", // translation: owner review
+  pwSkillsCount: "{count} 项技能", // translation: owner review
+  pwNoGaps: "无需提升：你已达到该职业要求的每个水平。", // translation: owner review
+  pwKind_kn: "知识", // translation: owner review
+  pwKind_el: "技能", // translation: owner review
+  pwYourLevel: "你的水平", // translation: owner review
+  pwNotInProfile: "不在你的档案中", // translation: owner review
+  pwNeededWord: "需要", // translation: owner review
+  pwOnetLevel: "（O*NET 水平 {level}，满分 7）", // translation: owner review
+  pwPoints: "技能匹配度分数", // translation: owner review
+  pwStarted: "已开始", // translation: owner review
+  pwDone: "已完成", // translation: owner review
+  pwSelf: "自我报告", // translation: owner review
+  pwDoneNote: "完成！在档案中更新你的水平，即可提高技能匹配度。", // translation: owner review
+  pwNaTitle: "水平尚未评估", // translation: owner review
+  pwNaWhy: "设置你的水平，看看是否需要提升这些", // translation: owner review
+  pwNeeded: "需要", // translation: owner review
+  pwSetLevel: "在档案中设置你的水平", // translation: owner review
+  pwMetTitle: "已达到水平（{count}）", // translation: owner review
+  pwMetLine: "你的水平 {you} · 需要 {needed}", // translation: owner review
+  pwThin: "我们暂时无法列出待提升的技能：请在档案中添加带水平的技能。", // translation: owner review
+  pwAddSkills: "在档案中添加技能", // translation: owner review
+  pwSourcesTitle: "来源", // translation: owner review
+  pwColWhat: "内容", // translation: owner review
+  pwColSource: "来源", // translation: owner review
+  pwColDate: "日期", // translation: owner review
+  pwColLicence: "许可", // translation: owner review
+  pwSrc_onet: "所需水平、重要性、美国教育程度", // translation: owner review
+  pwSrc_bridge: "职位 → O*NET 职业（官方代码链）", // translation: owner review
+  pwSrc_emasco: "马来西亚资历", // translation: owner review
+  pwSrc_fields: "学习领域", // translation: owner review
+  pwSrc_picks: "课程、学位课程、专业机构", // translation: owner review
+  pwSrc_site: "“更多”链接（该网站自己的搜索）", // translation: owner review
+  pwLinksOnly: "仅链接", // translation: owner review
 }

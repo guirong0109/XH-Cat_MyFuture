@@ -5,7 +5,7 @@ that branch. This file keeps only what matters across the whole project.
 
 ## Goal
 FutureReady MY is a career-planning app for Malaysia, built for the Domain 1 finalist round. A user builds a
-**confirmed, structured profile** (from a CV or a form). Later modules use it: matching, learning roadmap, SDG and
+**confirmed, structured profile** (from a CV or a form). Later modules use it: matching, study pathway, SDG and
 scenario comparison.
 
 ## Modules on `main`
@@ -18,7 +18,9 @@ scenario comparison.
 | Future Skills Radar Round 1 + skill trends from O\*NET | `claude/future-radar` | merged 2026-10-30 | Done; 651 tests pass; whole-branch reviews fixed |
 | Career matching, AI scenarios and SDG links | `claude/career-matching` | merged 2026-10-31 | Done; 803 tests pass; checked in the browser |
 | Landing page (ATM intro, guide figures, roller counters) | `claude/website-interface` | merged 2026-10-31 | Merged as built; 829 tests pass; checked in the browser |
-| Learning roadmap and the rest of the journey | not started | — | Next |
+| Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
+| Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
+| SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
 - **Screen `#radar`**, two tabs: Skills & Careers (first) and AI Impact. By default it shows only what relates to
@@ -32,6 +34,14 @@ scenario comparison.
   (`docs/radar/contract.md`); `GET /api/radar/export` is its input.
 - **Owner decides:** field ↔ AI topic links (16 proposals, pending until approved in `#admin`) and possible DOSM
   structural breaks (4, incl. 2025 Q3, which blocks most group comparisons until reviewed or until 2026 Q3).
+- **Charts follow the profile (D28–D33, 31 Oct):** Skills & Careers opens with the in-demand O\*NET software skills of
+  the user's own jobs (O\*NET roles, field-of-study jobs, eMASCO roles through the code chain), sized by 2025 US job-ad
+  counts. AI Impact opens with the user's O\*NET tasks and how often AI does them (Anthropic Economic Index) plus the
+  ILO WP140 exposure gradient; the six-topic chart below shows the field's approved topics. Long lists show 10 rows a
+  page with a page bar; long notes fold. Counts and shares only, never a score. `GET /api/radar/ai-tasks` takes no
+  parameters, so the profile never leaves the browser.
+- **Two copies of the chain walker:** `shared/radar/chain.js` is a copy of `shared/matching/chain.js` (only its header
+  line differs; hashes in `data/radar/copied-from-main.json`). Merge them into one module at a later clean-up.
 
 ## Profile form since 2026-10-30 (owner requests)
 - **Search as you type:** skills (O\*NET), roles of interest (O\*NET + eMASCO) and field of study (UNESCO
@@ -61,9 +71,17 @@ scenario comparison.
   "translation: owner review"); decide a "rising" rule for Hot Technology counts when the 2026 window appears;
   accept or trim ~10.8 MB of bundled O\*NET snapshots; find an official source that MASCO 2020 major groups match
   ISCO-08.
+- **Radar profile charts:** review the new BM and 中文 lines ("translation: owner review"); eMASCO roles in one 4-digit
+  MASCO group show the same chart (the chain works at that level); the "Your profile" card still says "Add your field
+  of study or roles" for a profile with only O\*NET roles; copy the three browser-check screenshots into
+  `docs/record/screens/` (blocked by a permission check for Claude).
 - **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
   approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
   OK for a new package).
+- **Study pathway:** review the team picks in `#admin` (none approved yet; a note is required per decision); fill
+  the 60 accredited picks that have no MQA reference yet (the scripted MQR query works, see the branch handover);
+  review BM and 中文 pathway wording; professional bodies not linked (law, architecture and town planning,
+  veterinary, social work); a few weaker course fits.
 
 ## Career matching (since 2026-10-31, details: branch `claude/career-matching`)
 - **Screen `#match`** lists eMASCO roles (pages of 10) with a Skill Match chart, an outlook under two AI scenarios
@@ -88,8 +106,22 @@ scenario comparison.
   later what changes in the ATM section; do not alter it until then.**
 - Its stage list still says only the profile is built; radar and matching exist now. Owner to decide the wording.
 
-## Next module: learning roadmap (not started)
-It can reuse the confirmed profile and the matching result (`skillMatch`, gaps per O\*NET element).
+## Study pathway (since 2026-10-31, details: branch `claude/study-pathway`)
+- **Screen `#pathway`** (the old "Learning roadmap" tab; `#roadmap` opens it). "Plan my study pathway" on a `#match`
+  card saves the role; several roles, one tab each. Design: `docs/superpowers/specs/2026-10-31-study-pathway-design.md`
+  (P1–P16), `docs/architecture-pathway.html`, approved mockup `docs/mockup-pathway.html`.
+- **Part 1, study route:** eMASCO's qualification first, O\*NET's US education level under it; fields of study read
+  backwards through the official ISCED-F ↔ CIP ↔ O\*NET tables, each with accredited Malaysian programmes,
+  professional bodies and starter courses. 99 of 118 fields have a programme; the other 19 are in
+  `docs/pathway/fill-report.md` with the sources searched.
+- **Part 2, skills to build:** matching's own gap points (`POST /api/pathway` reuses `matching.role()`), biggest
+  first, each with team-picked courses (all 68 O\*NET items) and "More on <site>" search links. Started / Done per
+  skill, saved in the browser; it never changes the Skill Match.
+- **Team picks** (`data/pathway/picks.json`, sites in `sites.json`): only name, link, date checked, plus
+  institution and MQA reference or body; nothing invented; names copied from the page heading. Owner review in
+  `#admin` (approve / reject with a note); approved picks show the date; no "team draft" word on `#pathway` (P15).
+- **NEC hint:** a field code is shown only where it is known (P16); MQA's register cannot be linked, only searched.
+- A bad picks file stops the server at start-up and names the pick. The profile is never stored or logged.
 
 **No scoring method from the old project.**
 
@@ -107,12 +139,12 @@ It can reuse the confirmed profile and the matching result (`skillMatch`, gaps p
 ## Commands
 ```bash
 npm install
-npm test          # expect 829 passed
+npm test          # expect 1088 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
-python -m unittest discover pipeline/tests   # expect 48 OK
+python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain
 node scripts/radar-bootstrap.mjs             # rebuild the bundled Radar data (see docs/radar/deploy.md)
-python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas)
+python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas, education)
 python pipeline/fetch_isced.py               # rebuild data/isced (fields of study + CIP bridge)
 ```
 Every data file, its source, date and licence: `data/SOURCES.md`.
@@ -127,7 +159,8 @@ Every data file, its source, date and licence: `data/SOURCES.md`.
 
 ## Repository
 - `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
-- Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`)
-  and `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`). `main` is also checked out as a worktree at
+- Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`),
+  `claude/career-matching` (in `C:\Users\guiro\XH_Cat_Final`) and `claude/study-pathway` (worktree
+  `C:\Users\guiro\XH_Cat_Final-pathway`). `main` is also checked out as a worktree at
   `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
 - Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.

@@ -91,6 +91,26 @@ def work_activities(archive):
     return out_name, (header, rows)
 
 
+# Usual education level per job: element 2.D.1 "Required Level of Education", scale RL (share of workers per category,
+# US survey data). The label of each category comes from "Education Categories.txt".
+EDUCATION = ("education.tsv", ["code", "category", "label", "percent", "suppress"], "Education.txt", "Education Categories.txt")
+
+
+def education(archive):
+    out_name, header, data, categories = EDUCATION
+    if not find(archive, data) or not find(archive, categories):
+        return None
+    label_of = {clean(row.get("Category")): clean(row.get("Category Description")) for row in read_table(archive, categories)
+                if row.get("Element ID") == "2.D.1" and row.get("Scale ID") == "RL"}
+    rows = []
+    for row in read_table(archive, data):
+        if row.get("Element ID") != "2.D.1" or row.get("Scale ID") != "RL":
+            continue
+        category = clean(row.get("Category"))
+        rows.append((clean(row.get(CODE)), category, label_of.get(category, ""), clean(row.get("Data Value")), clean(row.get("Recommend Suppress"))))
+    return out_name, (header, rows)
+
+
 def requirements(archive):
     out_name, header, kinds = REQUIREMENTS
     found = [(kind, name) for kind, names in kinds for name in names if find(archive, name)]
@@ -148,7 +168,7 @@ def write_snapshot(zip_bytes, out_dir, version, source_url, now=None):
                     seen.add(out)
                     rows.append(out)
         tables[out_name] = (spec["header"], rows)
-    for extra in (work_activities(archive), requirements(archive)):
+    for extra in (work_activities(archive), requirements(archive), education(archive)):
         if extra:
             tables[extra[0]] = extra[1]
     os.makedirs(out_dir, exist_ok=True)

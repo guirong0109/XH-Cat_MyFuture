@@ -721,4 +721,24 @@ export default {
   rdChainStop_invalid: "{codes} 不是 4 位数的 MASCO 单位代码", // translation: owner review
   rdChainStop_no_onet_data: "{system} {codes}：所链接的 O*NET 职业没有技能数据", // translation: owner review
   rdSkLicence: "O*NET 数据为 CC BY 4.0 · 美国招聘广告（Lightcast，经由 O*NET）", // translation: owner review
+  rdAiChartTitle: "您工作中的任务如何使用 AI", // translation: owner review
+  rdAiChartTag: "实际使用情况 · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "{job} 的生成式 AI 暴露程度：ISCO-08 {isco} {title} 为{gradient}（任务平均分 {mean}）", // translation: owner review
+  rdAiGrad_G4: "第 4 级（暴露程度最高）", // translation: owner review
+  rdAiGrad_G3: "第 3 级", // translation: owner review
+  rdAiGrad_G2: "第 2 级", // translation: owner review
+  rdAiGrad_G1: "第 1 级", // translation: owner review
+  rdAiGrad_minimal: "极低暴露", // translation: owner review
+  rdAiGrad_not_exposed: "无暴露", // translation: owner review
+  rdAiNoIsco: "代码链上没有 ISCO-08 代码，因此不可用", // translation: owner review
+  rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
+  rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
+  rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
+  rdAiNone: "此工作的 {total} 项 O*NET 任务都没有出现在 AI 对话数据中。不绘制图表。", // translation: owner review
+  rdAiLoading: "正在加载 AI 任务数据…", // translation: owner review
+  rdAiUnavailable: "AI 任务数据不可用。", // translation: owner review
+  rdAiSource: "今天 AI 的使用方式，不是对失业的预测，也不是分数", // translation: owner review
+  rdJob: "工作", // translation: owner review
+  rdTopicsOwn: "与您的领域相关的 AI 研究主题", // translation: owner review
+  rdTopicsViewAll: "查看全部六个主题", // translation: owner review
 }

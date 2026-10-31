@@ -721,4 +721,24 @@ export default {
   rdChainStop_invalid: "{codes} bukan kod unit MASCO 4 digit", // translation: owner review
   rdChainStop_no_onet_data: "{system} {codes}: pekerjaan O*NET yang dipautkan tiada data kemahiran", // translation: owner review
   rdSkLicence: "Data O*NET ialah CC BY 4.0 · iklan kerja AS (Lightcast melalui O*NET)", // translation: owner review
+  rdAiChartTitle: "Bagaimana AI digunakan dalam tugas pekerjaan anda", // translation: owner review
+  rdAiChartTag: "penggunaan sebenar · Anthropic Economic Index", // translation: owner review
+  rdAiExposure: "Pendedahan kepada AI generatif bagi {job}: {gradient} untuk ISCO-08 {isco} {title} (purata skor tugas {mean})", // translation: owner review
+  rdAiGrad_G4: "Gred 4 (pendedahan tertinggi)", // translation: owner review
+  rdAiGrad_G3: "Gred 3", // translation: owner review
+  rdAiGrad_G2: "Gred 2", // translation: owner review
+  rdAiGrad_G1: "Gred 1", // translation: owner review
+  rdAiGrad_minimal: "Pendedahan minimum", // translation: owner review
+  rdAiGrad_not_exposed: "Tidak terdedah", // translation: owner review
+  rdAiNoIsco: "tiada kod ISCO-08 pada rantaian, jadi tidak tersedia", // translation: owner review
+  rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
+  rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
+  rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
+  rdAiNone: "Tiada satu pun daripada {total} tugas O*NET pekerjaan ini muncul dalam data perbualan AI. Tiada carta dilukis.", // translation: owner review
+  rdAiLoading: "Memuatkan data tugas AI…", // translation: owner review
+  rdAiUnavailable: "Data tugas AI tidak tersedia.", // translation: owner review
+  rdAiSource: "cara AI digunakan hari ini, bukan ramalan kehilangan pekerjaan, dan bukan skor", // translation: owner review
+  rdJob: "Pekerjaan", // translation: owner review
+  rdTopicsOwn: "Topik penyelidikan AI yang dipautkan kepada bidang anda", // translation: owner review
+  rdTopicsViewAll: "Lihat kesemua enam topik", // translation: owner review
 }

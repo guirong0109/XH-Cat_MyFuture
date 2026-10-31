@@ -138,9 +138,17 @@ async function openEvidence(kind, id, signalId) {
   setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
   document.getElementById('radarDrawer')?.focus()
 }
+// The AI task data is static reference data (no manifest, no profile): fetched once, when the AI tab is first shown.
+async function loadAiTasks() {
+  state.radar = { ...radarUi(), aiTasks: { loading: true } }
+  const out = await radarApi.aiTasks()
+  state.radar = { ...radarUi(), aiTasks: out.ok ? { ok: true, data: out.data } : { ok: false, code: out.code } }
+  if (state.screen === 'radar') render()
+}
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
+  if (r.tab === 'ai' && !r.aiTasks) loadAiTasks()
 }
 // After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
 // changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
@@ -312,11 +320,21 @@ function update(profile) {
 
 const actions = {
   // Radar: Skills & Careers is the first tab and opens by default (D21).
-  radarTab: (tab) => setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null }),
+  radarTab: (tab) => {
+    setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })
+    if (tab === 'ai' && !radarUi().aiTasks) loadAiTasks()
+  },
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),
   // Skills card: how many corners, and a corner or list number picked (highlights its row and scrolls to it).
   skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
+  // AI tasks card: which job, how many corners, and a corner picked (highlights its row and scrolls to it).
+  aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null }),
+  aiCorners: (n) => setRadar({ corners: { sk: 8, ...radarUi().corners, ai: n === 'all' ? 'all' : [8, 16].includes(Number(n)) ? Number(n) : 8 } }),
+  aiCorner: (n) => {
+    setRadar({ aiHl: Number(n) })
+    document.getElementById(`rd-ai-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
   skCorner: (n) => {
     setRadar({ hl: Number(n), q: '' })
     document.getElementById(`rd-sk-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })

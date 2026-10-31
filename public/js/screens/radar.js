@@ -12,7 +12,7 @@ import { evidencePanel, fmtDate, fmtInt, fmtPct, fmtSignedPct, numLink, safeUrl,
 import { relevantItems } from '../../../shared/radar/relevance.js'
 import { makeBridge } from '../../../shared/radar/bridge.js'
 import { makeChain } from '../../../shared/radar/chain.js'
-import { filterItems, profileJobs, skillCorners } from '../../../shared/radar/profileCharts.js'
+import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
 import { profileRadar } from '../components/charts/profileRadar.js'
 
 // ---------- reference data and relevance ----------
@@ -104,7 +104,7 @@ const LEVEL_KEYS = { broad: 'rdLevel_broad', narrow: 'rdLevel_narrow', detailed:
 
 function viewAll(t, state, tab) {
   const on = viewAllOn(state, tab)
-  return `<div class="rd-viewall"><button class="btn" data-act="viewAll" data-arg="${tab}" aria-pressed="${on}">${esc(t(on ? 'rdViewMine' : 'rdViewAll'))}</button>
+  return `<div class="rd-viewall"><button class="btn" data-act="viewAll" data-arg="${tab}" aria-pressed="${on}">${esc(t(on ? 'rdViewMine' : tab === 'ai' ? 'rdTopicsViewAll' : 'rdViewAll'))}</button>
   <div class="tiny muted">${esc(t(tab === 'ai' ? 'rdViewAllAi' : 'rdViewAllSk'))}</div></div>`
 }
 
@@ -251,18 +251,18 @@ export function aiTab({ t, state, data }) {
   const allAxes = data.ai?.axes ?? []
   const ai = data.ai ?? {}
 
-  // A2: all six axes (global evidence); the user's linked axes highlighted (approved links only).
-  const chartAxes = allAxes.map((a) => {
+  // A2: the user's linked topics (approved links only); all six with View all or without a link (global evidence).
+  const chartAxes = sc.axes.map((a) => {
     const cur = momentumOf(a, mode)?.current
     return { axisId: a.axisId, label: axisLabel(a, t, lang), value: finite(cur?.value), state: cur?.state ?? 'invalid', capped: Boolean(cur?.capped), ratio: finite(cur?.ratio), smallCounts: Boolean(cur?.smallCounts), highlighted: sc.ownAxes.has(a.axisId) }
   })
-  const comparison = allAxes.map((a) => finite(momentumOf(a, mode)?.comparison?.value))
+  const comparison = sc.axes.map((a) => finite(momentumOf(a, mode)?.comparison?.value))
   const validCount = chartAxes.filter((a) => a.value !== null).length
-  const win = allAxes.map((a) => momentumOf(a, mode)?.current).find((c) => c?.baselineYear)
-  const cmpWin = allAxes.map((a) => momentumOf(a, mode)?.comparison).find((c) => c?.baselineYear)
+  const win = sc.axes.map((a) => momentumOf(a, mode)?.current).find((c) => c?.baselineYear)
+  const cmpWin = sc.axes.map((a) => momentumOf(a, mode)?.comparison).find((c) => c?.baselineYear)
   const winText = (w) => (w ? `${w.baselineYear} → ${w.recentYear}` : DASH)
 
-  const rows = allAxes.map((a) => {
+  const rows = sc.axes.map((a) => {
     const cur = momentumOf(a, mode)?.current
     const link = axisLink(a)
     const index = finite(cur?.value) !== null
@@ -277,6 +277,7 @@ export function aiTab({ t, state, data }) {
 
   const a2 = `<div class="card rd-sec" data-sec="A2">
     <h2>${esc(t('rdA2Title'))} ${tag('est', t('rdTagResearch'))}</h2>
+    ${sc.mine ? `<p class="small"><b>${esc(t('rdTopicsOwn'))}</b></p>` : ''}
     <p class="tiny muted">${esc(t('rdTooltip'))}</p>
     <div class="row rd-controls"><span class="seg" role="group" aria-label="${esc(t('rdMomentum'))}">
       <button class="${mode === 'count' ? 'on' : ''}" data-act="radarMode" data-arg="count" aria-pressed="${mode === 'count'}">${esc(t('rdMetricCount'))}</button><button class="${mode === 'share' ? 'on' : ''}" data-act="radarMode" data-arg="share" aria-pressed="${mode === 'share'}">${esc(t('rdMetricShare'))}</button>
@@ -323,7 +324,7 @@ export function aiTab({ t, state, data }) {
   }
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
-  return `${sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  return `${sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''}${aiTasksCard({ t, state, data })}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -463,6 +464,21 @@ function chainPaths(t, jobs) {
   return `${lines.join('')}<p class="tiny muted">${esc(t('rdChainSameUnit'))}</p>`
 }
 
+// "Not available for eMASCO {code}" notes: the step where the chain stops, worded from its kind in the user's
+// language (the English reason stays as a tooltip), with that step's official source link.
+function chainNotes(t, data, broken) {
+  const stepWords = (m) => {
+    const key = `rdChainStop_${m.kind}`
+    const text = t(key, { system: m.from?.system ?? '', codes: (m.from?.codes ?? []).join(', ') })
+    return text === key ? m.reason : text
+  }
+  const stopLink = (m) => {
+    const url = (data.refs?.bridge?.steps ?? []).find((x) => x.id === m.id)?.source?.url
+    return url ? ` ${srcLink({ label: t('rdEvSource'), url })}` : ''
+  }
+  return broken.map((b) => `<div class="rd-note small" title="${esc(b.missingStep.reason ?? '')}">${esc(t('rdChainBroken', { code: b.code, step: stepWords(b.missingStep) }))}${stopLink(b.missingStep)}</div>`).join('')
+}
+
 export function skillsChartCard({ t, state, data }) {
   const head = `<h2>${esc(t('rdSkChartTitle'))} ${tag('src', t('rdSkChartTag'))}</h2>`
   const wrapCard = (body) => `<div class="card rd-sec" data-sec="SK">${head}${body}</div>`
@@ -480,17 +496,7 @@ export function skillsChartCard({ t, state, data }) {
   const releaseId = sc.release?.current?.id ?? DASH
   const hotLink = (sk.sourceLinks ?? []).find((l) => /hot_tech/.test(l?.url ?? '')) ?? { label: 'O*NET Hot Technologies', url: HOT_URL }
 
-  // The step where the chain stops, worded from its kind in the user's language; the English reason stays as a tooltip.
-  const stepWords = (m) => {
-    const key = `rdChainStop_${m.kind}`
-    const text = t(key, { system: m.from?.system ?? '', codes: (m.from?.codes ?? []).join(', ') })
-    return text === key ? m.reason : text
-  }
-  const stopLink = (m) => {
-    const url = (data.refs?.bridge?.steps ?? []).find((x) => x.id === m.id)?.source?.url
-    return url ? ` ${srcLink({ label: t('rdEvSource'), url })}` : ''
-  }
-  const notes = broken.map((b) => `<div class="rd-note small" title="${esc(b.missingStep.reason ?? '')}">${esc(t('rdChainBroken', { code: b.code, step: stepWords(b.missingStep) }))}${stopLink(b.missingStep)}</div>`).join('')
+  const notes = chainNotes(t, data, broken)
   const none = sc.noSkills.length
     ? `<div class="rd-note small">${esc(t('rdSkNone', { job: '\u0001', release: releaseId })).replace('\u0001', sc.noSkills.map(summaryLink).join(', '))}</div>`
     : ''
@@ -544,6 +550,78 @@ export function skillsChartCard({ t, state, data }) {
   const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · O*NET ${esc(releaseId)}${sc.release?.current?.month ? ` (${esc(sc.release.current.month)})` : ''} · ${esc(sc.window?.label ?? DASH)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))} · ${esc(t('rdSkLicence'))} · ${esc(t('rdSkSource'))}</p>`
 
   return wrapCard(`${notes}${chainPaths(t, jobs)}${none}${noJobs}${chart}${list}${dropped}${src}`)
+}
+
+// ---------- AI tasks card: how AI is used in the tasks of the user's jobs (profile charts spec D31-D32) ----------
+// Worked out here in the browser from the confirmed profile and the public AI task answer; nothing is sent.
+// The numbers are shares of observed AI conversations (Anthropic Economic Index), not a forecast and not a score.
+
+const AI_CORNER_CHOICES = [8, 16, 'all']
+const AI_SCALE = { kind: 'linear', min: 0, max: 100 }
+const AI_RINGS = [{ value: 25, label: '25%' }, { value: 50, label: '50%', dashed: true }, { value: 75, label: '75%' }, { value: 100, label: '100%' }]
+const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
+
+export function aiTasksCard({ t, state, data }) {
+  const wrapCard = (body) => `<div class="card rd-sec" data-sec="AI"><h2>${esc(t('rdAiChartTitle'))} ${tag('est', t('rdAiChartTag'))}</h2>${body}</div>`
+  const rel = relevance(state, data)
+  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  const u = ui(state)
+  const got = u.aiTasks
+  if (!got || got.loading) return wrapCard(`<p class="small muted"><span class="spin"></span> ${esc(t('rdAiLoading'))}</p>`)
+  const ai = got.ok ? got.data : null
+  if (!ai || ai.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdAiUnavailable'))}</p>`)
+
+  const refs = refsFor(data.refs)
+  const { jobs, broken } = profileJobs(rel, { chain: refs.chain, onetTitle: refs.onetTitle })
+  const notes = chainNotes(t, data, broken)
+  if (!jobs.length) return wrapCard(`${notes}${broken.length ? '' : hint(t)}`)
+
+  const idx = Number.isInteger(u.aiJob) && u.aiJob >= 0 && u.aiJob < jobs.length ? u.aiJob : 0
+  const job = jobs[idx]
+  const jobName = job.title ?? job.code
+  const switchBar = jobs.length > 1
+    ? `<div class="rd-tools"><span class="small muted">${esc(t('rdJob'))}</span><span class="seg" role="group" aria-label="${esc(t('rdJob'))}">${jobs.map((j, i) => `<button class="${i === idx ? 'on' : ''}" data-act="aiJob" data-arg="${i}" aria-pressed="${i === idx}">${esc(j.title ?? j.code)}</button>`).join('')}</span></div>`
+    : ''
+  const jobLine = `<p class="small">${summaryLink(job)}${viaText(job) ? ` <span class="tiny">(${esc(viaText(job))})</span>` : ''}</p>`
+
+  const { items, total, ilo } = taskCorners(job, ai, { iscoOf: refs.bridge.iscoOf })
+  const link = (pattern) => (ai.sourceLinks ?? []).find((l) => pattern.test(l?.url ?? ''))
+  const iloLink = link(/doi\.org/) ?? { label: 'ILO WP140', url: 'https://doi.org/10.54394/HETP0387' }
+  const aeiLink = link(/huggingface\.co\/datasets\/Anthropic\/EconomicIndex$/) ?? { label: 'Anthropic Economic Index', url: AEI_URL }
+  const gradient = (g) => { const key = `rdAiGrad_${g}`; const text = t(key); return text === key ? g : text }
+  const exposure = ilo.length
+    ? ilo.map((r) => `<p class="small">${esc(t('rdAiExposure', { job: jobName, gradient: gradient(r.gradient), isco: r.isco, title: r.title, mean: r.mean.toFixed(2) }))} ${srcLink(iloLink)}</p>`).join('')
+    : `<p class="small">${esc(`${jobName}: ${t('rdAiNoIsco')}`)}</p>`
+
+  const release = `${ai.release ?? DASH} · ${ai.dataPeriod ?? DASH}`
+  let chart = ''
+  let list = ''
+  if (!items.length) {
+    chart = `<div class="rd-note small">${esc(t('rdAiNone', { total }))}</div>`
+  } else {
+    const numbered = items.map((it, i) => ({ ...it, n: i + 1 }))
+    const choice = AI_CORNER_CHOICES.includes(u.corners?.ai) ? u.corners.ai : 8
+    const k = choice === 'all' ? numbered.length : Math.min(choice, numbered.length)
+    const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) })
+    const points = numbered.slice(0, k).map((it) => ({
+      id: String(it.n),
+      label: it.text,
+      value: it.automation,
+      valueText: `${it.automation}%`,
+      aria: `${it.n}. ${it.text}: ${rowText(it)}`,
+    }))
+    const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span>
+      <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
+      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, t })}</div>
+      <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
+    list = `<ul class="rd-rank-list">${numbered.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">${it.n}</span>
+      <span>${esc(it.text)}<div class="tiny muted">${esc(rowText(it))}</div></span>
+      <span class="rd-rc tiny muted">${esc(release)} ${srcLink(aeiLink)}</span></li>`).join('')}</ul>`
+  }
+
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(ai.sourceLinks ?? []).map(srcLink).join(' ')} · ${esc(release)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(ai.fetchedAt))} · ${esc(t('rdAiSource'))}</p>`
+  return wrapCard(`${notes}${chainPaths(t, jobs)}${switchBar}${jobLine}${exposure}${chart}${list}${src}`)
 }
 
 // After a render the search box is a new element: put the focus and the caret back where the user was typing.

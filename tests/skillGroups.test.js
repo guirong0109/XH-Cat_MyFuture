@@ -216,7 +216,7 @@ describe('the AI O*NET suggestion: Keep and Remove, and short-form links', () =>
     p.skills = [{ ...makeSkill({ name: 'Model building', source: 'cv_ai', usedIn }), aiSuggestion: suggestion }]
     return p
   }
-  it('the chip area and the edit row show the suggestion, its source and Keep / Remove', () => {
+  it('the card shows the suggestion once, in the chip area or (in Edit mode) the edit row, with its source and Keep / Remove', () => {
     const p = withSuggestion()
     for (const html of [cvPage(p), cvPage(p, { groupEdit: 'job|0' })]) {
       expect(html).toContain('AI suggests: Programming — from “built models in Python”. Check it.')

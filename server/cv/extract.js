@@ -102,14 +102,16 @@ function employment(rows, hasSection, extraction, now) {
 // A project line often holds the title and a short description ("Attendance dashboard built with React").
 // Split at " - ", " – " or ": " (the separator is dropped), else at the first split word with at least two words
 // (for 使用: two characters) before it; the description then starts with the split word.
-const PROJECT_SEPARATOR = /\s+[-\u2013]\s+|:\s+/
+const PROJECT_SEPARATOR = /\s+[-\u2013]\s+|:\s+/g
+// A separator followed by a year, "Jan 2023" or "Present" is part of a date range, not the title/description split.
+const DATE_START = /^(?:\d{4}\b|\d{1,2}[/.-]\d{4}\b|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}\b|(?:present|now|current|sekarang|kini)\b)/i
 const PROJECT_SPLIT_WORD = /\s(built with|built using|using|with|dengan|menggunakan)(?=\s)/gi
 const USE_WORD_ZH = '\u4f7f\u7528'
 export function splitProject(line) {
   const text = line.trim()
-  const sep = PROJECT_SEPARATOR.exec(text)
-  if (sep && sep.index > 0 && text.slice(sep.index + sep[0].length).trim()) {
-    return { title: text.slice(0, sep.index).trim(), description: text.slice(sep.index + sep[0].length).trim() }
+  for (const sep of text.matchAll(PROJECT_SEPARATOR)) {
+    const after = text.slice(sep.index + sep[0].length).trim()
+    if (sep.index > 0 && after && !DATE_START.test(after)) return { title: text.slice(0, sep.index).trim(), description: after }
   }
   let at = -1
   for (const m of text.matchAll(PROJECT_SPLIT_WORD)) {

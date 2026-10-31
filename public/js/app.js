@@ -2,7 +2,7 @@
 // Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
-import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
+import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
 import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
@@ -70,7 +70,7 @@ function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
-  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -102,6 +102,8 @@ async function loadSuggestions() {
 }
 
 function go(screen) {
+  // Get started on the landing page: a saved session is offered first (Welcome back).
+  if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
   showSection()
@@ -528,9 +530,14 @@ const actions = {
     }
     go(k === 'C' || k === 'D' ? 'org' : 'source')
   },
-  resume: () => go(resumeTo ?? 'source'),
+  resume: () => {
+    const to = resumeTo ?? 'source'
+    resumeTo = null
+    go(to)
+  },
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
+    resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('access')
   },
@@ -542,6 +549,7 @@ const actions = {
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
@@ -1046,12 +1054,8 @@ if (previous) {
 }
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
-if (resumeChoice(previous) === 'ask') {
-  resumeTo = previous.screen
-  state.screen = 'returning'
-} else if (location.hash) {
-  state.screen = location.hash.slice(1)
-}
+if (resumeChoice(previous) === 'ask') resumeTo = previous.screen
+state.screen = startScreen(previous, location.hash)
 render()
 // Who is signed in (the session cookie is HttpOnly, so ask the server).
 // Which optional services the server has (e.g. whether a temporary CV copy is kept).

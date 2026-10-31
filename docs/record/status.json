@@ -1623,6 +1623,11 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "closing block bottom edge cut into triangles (zigzag); npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Landing page always first (main)",
+      "detail": "Opening the site address always shows the landing page; a saved guest session is kept and offered (Welcome back) after Get started. npm test 833 passed; checked in the browser"
     }
   ]
 }

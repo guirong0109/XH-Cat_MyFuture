@@ -4,7 +4,7 @@ import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const FILES = {
-  'skills.tsv': 'element_id\telement\tcode\timportance\n2.A.1.a\tReading Comprehension\t15-2051.00\t4.00\n2.A.1.a\tReading Comprehension\t43-9021.00\t3.00\n',
+  'skills.tsv': 'element_id\telement\tcode\timportance\n2.A.1.a\tReading Comprehension\t15-2051.00\t4.00\n2.A.1.a\tReading Comprehension\t43-9021.00\t3.00\n2.A.1.e\tMathematics\t15-2051.00\t4.00\n',
   'software.tsv': [
     'example\telement_id\telement\tcode',
     'Python\t2.E.5.c\tDevelopment environment software\t15-2051.00',
@@ -17,6 +17,11 @@ const FILES = {
     'JavaScript\t2.E.5.c\tDevelopment environment software\t15-1252.00',
     'Treasury Communications System\t2.E.1.a\tCommunications software\t15-1252.00',
     'Petra Geology\t2.E.3.a\tScientific software\t15-1252.00',
+    'Structured query language SQL\t2.E.5.a\tDatabase software\t15-1243.00',
+    'Structured query language SQL\t2.E.5.a\tDatabase software\t15-1299.00',
+    'Structure query language SQL\t2.E.5.a\tDatabase software\t15-1299.00',
+    'Alpha Beta AB\t2.E.5.a\tDatabase software\t15-2051.00',
+    'Apple Banana AB\t2.E.5.a\tDatabase software\t15-2051.00',
   ].join('\n') + '\n',
   'occupations.tsv': 'code\ttitle\tdescription\n15-2051.00\tData Scientists\tDevelop methods.\n15-2051.01\tBusiness Intelligence Analysts\tProduce reports.\n43-9021.00\tData Entry Keyers\tEnter data.\n15-1252.00\tSoftware Developers\tBuild software.\n',
   'interest_areas.tsv': [
@@ -26,7 +31,13 @@ const FILES = {
     '1.B.3.aa\tHealth Care Service\t43-9021.00\t1.20',
   ].join('\n') + '\n',
   'work_styles.tsv': 'element_id\telement\tcode\tvalue\n1.D.1.a\tLeadership Orientation\t15-2051.00\t1.25\n',
-  'knowledge.tsv': 'element_id\telement\tcode\timportance\n2.C.9.b\tCommunications and Media\t15-2051.00\t3.10\n',
+  'knowledge.tsv': [
+    'element_id\telement\tcode\timportance',
+    '2.C.9.b\tCommunications and Media\t15-2051.00\t3.10',
+    '2.C.1.e\tCustomer and Personal Service\t43-9021.00\t4.20',
+    '2.C.1.e\tCustomer and Personal Service\t15-2051.00\t2.00',
+    '2.C.4.a\tMathematics\t15-2051.00\t3.50',
+  ].join('\n') + '\n',
   'work_activities.tsv': [
     'element_id\telement\tcode',
     '4.A.4.a.2.i.1\tCommunicate with customers about orders.\t43-9021.00',

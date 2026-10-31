@@ -30,7 +30,7 @@ const post = (url, body) => fetch(base + url, { method: 'POST', headers: { 'Cont
 
 describe('skill and profile routes', () => {
   it('normalize maps known skills, offers candidates and keeps unknown ones', async () => {
-    const response = await post('/api/skills/normalize', { texts: ['Python 3', 'SQL', 'Weaving'] })
+    const response = await post('/api/skills/normalize', { texts: ['Python 3', 'Server', 'Weaving'] })
     expect(response.status).toBe(200)
     const { skills } = await response.json()
     expect(skills[0].canonicalId).toBe('onet:tech:python')

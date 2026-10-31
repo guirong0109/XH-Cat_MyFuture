@@ -68,14 +68,14 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(byName['Reading Comprehension'].canonicalId).toBe('onet:el:2.A.1.a')
     expect(byName['Microsoft Excel']).toMatchObject({ canonicalId: 'onet:tech:microsoft excel', extraction: { evidence: 'Built monthly reports in Microsoft Excel for the sales team' } })
     expect(byName['Underwater welding'].canonicalId).toBe(null)
-    expect(byName.SQL.candidates.length).toBeGreaterThan(1)
+    expect(byName['Structured query language SQL']).toMatchObject({ canonicalId: 'onet:tech:structured query language sql', originalText: 'SQL' })
     expect(uncertain).toContainEqual({ path: expect.stringMatching(/^skills\.\d+$/), reason: 'unknown_skill' })
   })
 
   it('a sentence under Skills is not split into skills (only catalogue names in it count)', async () => {
     const lines = ['SKILLS', 'Python, SQL', 'I worked with the team and managed the reports in Microsoft Excel for the staff']
     const { profile } = await extractProfile({ lines, language: 'en', interfaceLanguage: 'en', catalogue, normalizer, now: NOW })
-    expect(profile.skills.map((s) => s.name).sort()).toEqual(['Microsoft Excel', 'Python', 'SQL'])
+    expect(profile.skills.map((s) => s.name).sort()).toEqual(['Microsoft Excel', 'Python', 'Structured query language SQL'])
   })
 
   it('a one-word software name as the first word of a sentence is not a skill (like "Chef at Hilton")', async () => {

@@ -213,6 +213,11 @@
           "title": "T28 The landing page look on the CV screens",
           "sub": "cream page · serif headlines · mono labels · thin rules · ATM drop zone · receipts",
           "status": "done"
+        },
+        {
+          "title": "T28b No language chooser on the welcome screen",
+          "sub": "the dropdown at the top right is enough",
+          "status": "done"
         }
       ]
     }
@@ -251,7 +256,8 @@
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
     "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels",
-    "Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)"
+    "Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)",
+    "Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -817,6 +823,16 @@
       "time": "31 Oct",
       "step": "Task 28",
       "detail": "6 tests first (failed), then styles.css rewritten and 4 screens given receipt / ATM classes; npm test 238 passed; checked in headless Chrome at 1440 px and 390 px, light and dark, no sideways scroll"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove the language chooser from the first screen; the dropdown at the top right is enough"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28b",
+      "detail": "test first (failed), then the chooser removed from welcome.js; npm test 239 passed; checked at 1440 px and 390 px"
     }
   ]
 }

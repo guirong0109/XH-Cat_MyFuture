@@ -3,6 +3,7 @@ data/isced/*.tsv text eol=lf
 data/isced/source/* -text
 data/radar/source/* -text
 data/radar/*.json text eol=lf
+data/pathway/*.json text eol=lf
 data/radar/bundle/** -text
 tests/fixtures/*.html -text
 data/ai/* text eol=lf

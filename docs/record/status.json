@@ -549,6 +549,47 @@
           "status": "done"
         }
       ]
+    },
+    {
+      "id": "Step 14",
+      "name": "Study Pathway (branch claude/study-pathway)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main 6ac16f4, worktree XH_Cat_Final-pathway",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "15 decisions with you (P1-P15)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "approved by you (P1-P13)",
+          "status": "done"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "10 tasks; you chose subagent-driven",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "approved by you (real state)",
+          "status": "done"
+        },
+        {
+          "title": "Build T1-T10",
+          "sub": "10 tasks built, each reviewed; browser check passed",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "1 fix wave (NEC hint, MQA wording, US line, checks); re-review clean",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -597,6 +638,7 @@
     "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed."
   ],
   "waiting": [
+    "Study Pathway: merged to main locally; push to GitHub needs your OK; review the team picks in #admin",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -680,7 +722,12 @@
     "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more",
     "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none",
     "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode",
-    "R1-R3 (profile charts): a job's ISCO codes = union on its chain vias, else its own; profileRadar numbers-only threshold 16 (AI card 10); /api/radar/ai-tasks is static reference data with a memoised loader and no manifest"
+    "R1-R3 (profile charts): a job's ISCO codes = union on its chain vias, else its own; profileRadar numbers-only threshold 16 (AI card 10); /api/radar/ai-tasks is static reference data with a memoised loader and no manifest",
+    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
+    "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
+    "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
+    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken",
+    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged"
   ],
   "log": [
     {
@@ -1717,6 +1764,71 @@
       "time": "31 Oct",
       "step": "Merge claude/future-radar (profile charts)",
       "detail": "owner OK: merged into main; conflicts kept both sides (matching and Radar CSS, strings, change handlers), main keeps its demo service and gains the AI task loader, duplicate SOURCES rows removed, main HANDOVER/CLAUDE kept short"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway design (your request)",
+      "detail": "checked MQA register and e-LATiH (no open licence; e-LATiH search links work, MQR links do not); spec and diagram written"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: more course sites (your change)",
+      "detail": "search links checked in the browser for 9 sites (6 work); spec and diagram updated with sites.json"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: all fields (your change)",
+      "detail": "search links per field of study; first fill widened to all skills and fields; fill report added"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: spec approved, plan written (your request)",
+      "detail": "10 tasks: O*NET education data, sites, steps, route, picks, API, admin review, screen, fill of all skills and fields, browser check; the Learning roadmap placeholder tab becomes Study pathway"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup (your request)",
+      "detail": "Software Developer and Accountant with real O*NET skills, levels and fields of study; sample levels, picks and education %; checked desktop and 375 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup with the real state (your request)",
+      "detail": "real O*NET education levels (O*NET 31.0 renamed the file to Education.txt; spec and plan fixed), 34 courses and 6 programme/body pages opened in the browser; only the profile is a sample; eMASCO qualification shown as a proposal"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway P14: eMASCO qualification (your decision)",
+      "detail": "spec, plan, diagram and mockup updated; the mockup's 'proposal' label removed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: mockup approved, build started (your decision)",
+      "detail": "P15 recorded; subagent-driven build of the 10 plan tasks begins"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T1 O*NET education data, T2 course sites, T3 steps, T4 study route, T5 picks rules, T6 /api/pathway (1 fix round: bad picks file now stops start-up); 879 tests pass"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T7 admin review of picks, T8 Study pathway screen (each 1 fix round); 913 tests pass; T9 fill started"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway Task 10: browser check, handover, build record",
+      "detail": "T9 fill done (68/68 skills with courses, 99 of 118 fields with an accredited programme). Browser check: 18 pass, admin and dark mode not run (docs/pathway/acceptance.md). 920 tests pass, pipeline 49 OK. Final whole-branch review next"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway final review",
+      "detail": "1 fix wave (NEC hint, MQA wording, US education line, pick checks, course order, sources table); re-review clean. Second browser check: admin approve/reject and thin profile pass. 936 tests pass, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged Study Pathway to main (your request)",
+      "detail": "merged claude/study-pathway into main after the Radar profile-charts merge; overlaps in app.js, styles, strings and the build record resolved by hand; main's short HANDOVER and CLAUDE updated; npm test 1088 passed, pipeline 49 OK; not pushed"
     }
   ]
 }

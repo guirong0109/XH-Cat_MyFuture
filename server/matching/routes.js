@@ -14,12 +14,12 @@ const LIMIT = '64kb'
 const LIST_FIELDS = [['skills'], ['education', 'records'], ['employment', 'records'], ['occupationMappings']]
 const plainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
 
-const badRequest = (response) => sendError(response, 400, 'bad_request', 'The request is not valid.')
+export const badRequest = (response) => sendError(response, 400, 'bad_request', 'The request is not valid.')
 
 // JSON body of at most 64 kB; any reading error (bad JSON, too large) is a bad request.
-const body = (request, response, next) => express.json({ limit: LIMIT })(request, response, (error) => (error ? badRequest(response) : next()))
+export const body = (request, response, next) => express.json({ limit: LIMIT })(request, response, (error) => (error ? badRequest(response) : next()))
 
-function validProfile(profile) {
+export function validProfile(profile) {
   if (!plainObject(profile)) return false
   for (const [first, second] of LIST_FIELDS) {
     const parent = profile[first]

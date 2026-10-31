@@ -1,3 +1,4 @@
+import hashlib
 import io
 import json
 import os
@@ -59,6 +60,19 @@ def zip_31():
             ("O*NET-SOC Code", "Task ID", "DWA Element ID", "Date", "Domain Source"),
             ("15-2051.00", "1", "4.A.2.a.4.i.3", "07/2014", "Analyst"),
             ("15-2051.00", "2", "4.A.2.a.4.i.3", "07/2014", "Analyst")))
+        archive.writestr("db_31_0_text/Education.txt", table(
+            ("O*NET-SOC Code", "Element ID", "Element Name", "Scale ID", "Category", "Data Value", "N", "Standard Error", "Lower CI Bound", "Upper CI Bound", "Recommend Suppress", "Date", "Domain Source"),
+            ("15-2051.00", "2.D.1", "Required Level of Education", "RL", "1", "0.00", "20", "0", "0", "0", "N", "05/2026", "Incumbent"),
+            ("15-2051.00", "2.D.1", "Required Level of Education", "RL", "6", "84.80", "20", "5", "60", "95", "Y", "05/2026", "Incumbent"),
+            ("15-2051.00", "2.D.1", "Required Level of Education", "RL", "12", "15.20", "20", "5", "2", "30", "N", "05/2026", "Incumbent"),
+            ("15-2051.00", "2.D.1", "Required Level of Education", "PT", "1", "9.99", "20", "0", "0", "0", "N", "05/2026", "Incumbent"),
+            ("11-1011.00", "2.D.1", "Required Level of Education", "RL", "6", "50.00", "20", "5", "30", "70", "N", "05/2026", "Incumbent")))
+        archive.writestr("db_31_0_text/Education Categories.txt", table(
+            ("Element ID", "Element Name", "Scale ID", "Scale Name", "Category", "Category Description"),
+            ("2.D.1", "Required Level of Education", "RL", "Required Level of Education", "1", "Less than a High School Diploma"),
+            ("2.D.1", "Required Level of Education", "RL", "Required Level of Education", "6", "Bachelor's Degree"),
+            ("2.D.1", "Required Level of Education", "RL", "Required Level of Education", "12", "Post-Doctoral Training"),
+            ("2.D.1", "Required Level of Education", "PT", "Post-Secondary Certificate", "1", "Wrong scale")))
     return buffer.getvalue()
 
 
@@ -148,6 +162,19 @@ class FetchOnetTests(unittest.TestCase):
             "kn\t2.C.1.a\tAdmin\t15-2051.00\t\t1.00\tN\tN",
         ])
 
+    def test_education_rows(self):
+        self.assertEqual(lines(self.dir, "education.tsv"), [
+            "code\tcategory\tlabel\tpercent\tsuppress",
+            "15-2051.00\t1\tLess than a High School Diploma\t0.00\tN",
+            "15-2051.00\t6\tBachelor's Degree\t84.80\tY",
+            "15-2051.00\t12\tPost-Doctoral Training\t15.20\tN",
+            "11-1011.00\t6\tBachelor's Degree\t50.00\tN",
+        ])
+        with open(os.path.join(self.dir, "manifest.json"), encoding="utf-8") as handle:
+            manifest = json.load(handle)
+        with open(os.path.join(self.dir, "education.tsv"), "rb") as handle:
+            self.assertEqual(manifest["files"]["education.tsv"], hashlib.sha256(handle.read()).hexdigest())
+
     def test_tasks_table(self):
         self.assertEqual(lines(self.dir, "tasks.tsv"), ["task_id\tcode\ttask", "8823\t15-2051.00\tAnalyze data and report.", "8824\t15-2051.00\tBuild models."])
 
@@ -178,7 +205,7 @@ class FetchOnetTests(unittest.TestCase):
         self.assertEqual(manifest["licence"], "CC BY 4.0")
         self.assertEqual(manifest["downloadedAt"], "2026-10-29")
         self.assertIn("CC BY 4.0", manifest["attribution"])
-        self.assertEqual(sorted(manifest["files"]), ["interest_areas.tsv", "job_titles.tsv", "knowledge.tsv", "occupations.tsv", "requirements.tsv", "skills.tsv", "software.tsv", "tasks.tsv", "work_activities.tsv", "work_styles.tsv"])
+        self.assertEqual(sorted(manifest["files"]), ["education.tsv", "interest_areas.tsv", "job_titles.tsv", "knowledge.tsv", "occupations.tsv", "requirements.tsv", "skills.tsv", "software.tsv", "tasks.tsv", "work_activities.tsv", "work_styles.tsv"])
         self.assertTrue(all(len(value) == 64 for value in manifest["files"].values()))
 
     def test_missing_file_in_zip_raises(self):

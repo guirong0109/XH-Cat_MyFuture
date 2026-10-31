@@ -29,9 +29,9 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 955 passed
+npm install && npm test     # expect 1088 passed
 npm start                   # http://localhost:3200
-python -m unittest discover pipeline/tests   # expect 48 OK
+python -m unittest discover pipeline/tests   # expect 49 OK
 ```
 
 ## Future Skills Radar (details: branch `claude/future-radar`)
@@ -50,3 +50,13 @@ python -m unittest discover pipeline/tests   # expect 48 OK
   missing step, never a guess.
 - Only show SDG links as the owner decided (M16: team drafts labelled, rejected hidden); never approve on the
   owner's behalf. The profile sent to `/api/matching` is never stored or logged.
+
+## Study pathway (details: branch `claude/study-pathway`)
+- Code in `shared/pathway/`, `server/pathway/`, `public/js/screens/pathway.js`, `pathwayParts.js`, `pathwayApi.js`.
+- Gap points are matching's own (`POST /api/pathway` calls `matching.role()`); no new maths, no language model.
+- Team picks (`data/pathway/picks.json`): only name, link, date (+ institution and MQA ref, or body); never invent a
+  link, name or MQA reference; copy the page's main heading (a leading programme code is dropped). Keep the manifest
+  hash in step; a bad picks file stops start-up.
+- eMASCO qualification first, O\*NET US level under it (P14). No "team draft" word on `#pathway` (P15). The NEC code
+  is shown only where known (P16). Never approve picks on the owner's behalf.
+- Forbidden keys: score, weight, rank, opportunit. The profile sent to `/api/pathway` is never stored or logged.

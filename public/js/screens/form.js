@@ -6,6 +6,7 @@ import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
 import { GOALS } from './goal.js'
+import { PERSONAL } from './category.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
@@ -55,19 +56,18 @@ function interestField({ t, profile, state }) {
   return `<div class="field"><label for="f-interest">${esc(t('fInterests'))}</label>${chips}${control}</div>`
 }
 
-// Career goal: the four goals from the start of the journey. A profile saved with an older goal keeps it as an option.
+// Career goal and "Which describes you best?" offer the answers of the goal and Who are you? screens. A profile saved
+// with an older answer keeps it as an extra option.
 export const OLD_GOALS = { first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' }
-function goalOptions(profile) {
-  const value = profile.preferences.careerGoal?.value
-  return [...GOALS.map(([v, label]) => [v, label]), ...(OLD_GOALS[value] ? [[value, OLD_GOALS[value]]] : [])]
-}
+export const OLD_CATEGORIES = { working_adult: 'optWorking', graduate_switcher: 'optGraduate' }
+const withOld = (options, old, field) => [...options.map(([v, label]) => [v, label]), ...(old[field?.value] ? [[field.value, old[field.value]]] : [])]
 
 const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
 
 function study(ctx) {
   const { t } = ctx
   return [
-    field(ctx, { path: 'userCategory', label: t('fCategory'), options: [['working_adult', 'optWorking'], ['graduate_switcher', 'optGraduate']] }),
+    field(ctx, { path: 'userCategory', label: t('fCategory'), options: withOld(PERSONAL, OLD_CATEGORIES, ctx.profile.userCategory) }),
     field(ctx, { path: 'education.educationStatus', label: t('fEduStatus'), options: [['studying', 'optStudying'], ['graduated', 'optGraduated'], ['not_studying', 'optNotStudying']] }),
     field(ctx, { path: 'education.highestQualification', label: t('fHighest'), options: QUALIFICATIONS }),
     recordsField({ ...ctx, listPath: 'education.records', fields: [['qualification', 'qualification'], ['fieldOfStudy', 'fieldOfStudy'], ['institution', 'institution'], ['year', 'year']], addLabel: t('addEducation'), custom: { fieldOfStudy: (record, i) => fieldOfStudy(ctx, record, i) } }),
@@ -126,7 +126,7 @@ function prefs(ctx) {
   return [
     interestField(ctx),
     `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
-    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: goalOptions(profile) }),
+    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: withOld(GOALS, OLD_GOALS, profile.preferences.careerGoal) }),
     field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
     field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
   ].join('')

@@ -152,13 +152,15 @@ const actions = {
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
+  // Personal answers are the profile's userCategory; C and D are the organisation preview.
   category: (k) => {
     state.category = k
-    if (k === 'A' || k === 'B') {
+    const org = k === 'C' || k === 'D'
+    if (!org) {
       state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
-      state.profile = setField(state.profile, 'userCategory', val(k === 'A' ? 'working_adult' : 'graduate_switcher'))
+      state.profile = setField(state.profile, 'userCategory', val(k))
     }
-    go(k === 'C' || k === 'D' ? 'org' : 'source')
+    go(org ? 'org' : 'source')
   },
   resume: () => go(resumeTo ?? 'source'),
   startNew: () => {

@@ -2,6 +2,7 @@
 import { improveWithAi } from '../components/improveWithAi.js'
 import { esc, tag } from '../ui.js'
 import { GOALS } from './goal.js'
+import { PERSONAL } from './category.js'
 
 const get = (object, path) => path.split('.').reduce((node, key) => (node == null ? undefined : node[key]), object)
 
@@ -28,7 +29,7 @@ export function skillTags(t, skill) {
 }
 
 const OPTION_KEYS = {
-  userCategory: { working_adult: 'optWorking', graduate_switcher: 'optGraduate' },
+  userCategory: { ...Object.fromEntries(PERSONAL.map(([value, label]) => [value, label])), working_adult: 'optWorking', graduate_switcher: 'optGraduate' },
   'education.educationStatus': { studying: 'optStudying', graduated: 'optGraduated', not_studying: 'optNotStudying' },
   'education.highestQualification': { spm: 'optSPM', stpm: 'optSTPM', certificate: 'optCertificate', diploma: 'optDiploma', bachelor: 'optDegree', master: 'optMaster', phd: 'optPhD' },
   'employment.status': { employed: 'optEmployed', unemployed: 'optUnemployed', self_employed: 'optSelf', student: 'optStudent' },

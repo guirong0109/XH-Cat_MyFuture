@@ -9,7 +9,8 @@ export const val = (value) => ({ state: 'value', value })
 export const SKILL_SOURCES = ['cv_rules', 'cv_semantic', 'cv_ai', 'user_input']
 export const LEVELS = ['basic', 'good', 'expert']
 export const PROFICIENCY_STATUS = ['not_assessed', 'self_reported', 'assessed']
-export const USER_CATEGORIES = ['working_adult', 'graduate_switcher']
+// Who are you? (owner, 31 Oct): the first four. The last two are the earlier answers, kept so saved profiles stay valid.
+export const USER_CATEGORIES = ['fresh_graduate', 'student', 'underemployed', 'unemployed', 'working_adult', 'graduate_switcher']
 export const FORBIDDEN_FIELDS = ['age', 'gender', 'ethnicity', 'religion', 'maritalStatus', 'photo', 'address', 'icNumber']
 
 const CV_SOURCES = new Set(['cv_rules', 'cv_semantic', 'cv_ai'])

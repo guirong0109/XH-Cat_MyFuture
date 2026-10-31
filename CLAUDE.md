@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 251 passed
+npm test                                          # Vitest, expect 257 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -68,6 +68,9 @@ Browser pane launch configs (`.claude/launch.json`):
   - `preferences.careerGoal` takes the four goals of the goal screen (`GOALS` in `public/js/screens/goal.js`: `where_i_stand`,
     `find_direction`, `switch_career`, `grow_field`). Old values (`first_job`, `improve`, `change`, `explore_ai`) still
     display (`OLD_GOALS` in `form.js`); don't convert them silently.
+  - `userCategory` takes the four "Who are you?" answers (`PERSONAL` in `public/js/screens/category.js`: `fresh_graduate`,
+    `student`, `underemployed`, `unemployed`); `working_adult` and `graduate_switcher` stay valid for saved profiles
+    (`USER_CATEGORIES`, `OLD_CATEGORIES`). Don't edit `catA`/`catB` strings: `main`'s landing page uses them.
   - Every list and suggestion shows its source on screen (owner: "highly important").
   - The skill search also offers O\*NET work styles, knowledge areas and work activities (`catalogue.more`). They are
     kept out of `byName`/`byWord`, so CV matching stays as measured. Don't merge them in without re-running the CV eval.

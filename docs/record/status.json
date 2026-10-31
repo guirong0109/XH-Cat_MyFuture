@@ -243,6 +243,11 @@
           "title": "T28g Goal question",
           "sub": "Where I stand · Find a direction · Switch career · Grow in my field",
           "status": "done"
+        },
+        {
+          "title": "T28h Who are you? options",
+          "sub": "Fresh graduate · Student · Underemployed · Unemployed",
+          "status": "done"
         }
       ]
     }
@@ -287,7 +292,8 @@
     "Task 28d: your report that 'For myself' and 'For my organisation' did not look like buttons - the big choices (also on Who are you? and the CV-or-form screen) are now outlined buttons with round corners, an arrow in a circle and a solid shadow; on hover they turn ink with a lime arrow, and a click presses them down. Preview choices (C, D) have a dashed outline (Tests 243 passed)",
     "Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
     "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
-    "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)"
+    "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
+    "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -334,7 +340,9 @@
     "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet",
     "T28c: the organisation path still ends at the existing preview (C, D need an account and are not built) - cost: nothing works yet for organisations, as before",
     "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up",
-    "T28g: the one-line explanation under each goal was written by Claude, not given by you - cost: please check or reword it"
+    "T28g: the one-line explanation under each goal was written by Claude, not given by you - cost: please check or reword it",
+    "T28h: 'Working adult' is no longer offered at the start (not in your list) - cost: an employed person who is not underemployed has no matching option; tell me if one should be added",
+    "T28h: the one-line explanation under each option was written by Claude - cost: please check or reword it"
   ],
   "log": [
     {
@@ -921,6 +929,16 @@
       "time": "31 Oct",
       "step": "Task 28g",
       "detail": "5 tests first (failed: no goal screen), then goal.js, app.js, accountBox.js, form.js, review.js and the wording files; npm test 251 passed; clicked through as a guest and with a new account (accounts test server), at 1440 px and 390 px, light and dark; checked that nothing on main reads the old goal values"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "Who are you? options: Fresh graduate, Student, Underemployed, Unemployed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28h",
+      "detail": "8 tests first (failed), then category.js, app.js, org.js, form.js, review.js, profileSchema.js and the wording files; npm test 257 passed; clicked through to Confirm as a guest and with a new account (accounts test server restarted): 'Saved to your account (version 1)'"
     }
   ]
 }

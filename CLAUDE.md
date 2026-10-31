@@ -2,7 +2,7 @@
 
 Read `HANDOVER.md` here first, then the spec `docs/superpowers/specs/2026-10-31-study-pathway-design.md`, the diagram
 `docs/architecture-pathway.html` and the mockup `docs/mockup-pathway.html`. They are approved and bind the build: add
-nothing they do not state. All 10 plan tasks are built; the final whole-branch review is next. Do not touch main's
+nothing they do not state. All 10 plan tasks are built; the final review fix wave is done. Do not touch main's
 files; the owner decides on merge.
 
 ## Rules (from `main`, all still apply)
@@ -32,6 +32,10 @@ files; the owner decides on merge.
   percentages ("In the US"). It shows even when the code chain is broken.
 - P15: no "team draft" word on `#pathway`. An unreviewed pick has no review label; an approved pick shows "approved by
   owner on <date>"; a rejected pick is hidden. `#admin` keeps "not yet reviewed".
+- NEC hint (Ruling 15): a code is shown only outside ISCED 061x/071x/073x ("code match, not an official table"), plus
+  the two pairs confirmed by name in MQR (0611 to 0614, 0712 to 0717; "NEC code checked in MQR"); otherwise "choose the
+  NEC field for <field title>". Add a pair only when it was checked by name in MQR.
+- A pick without an MQA reference says "MQA ref not recorded yet" (Ruling 16).
 - Picks are reviewed in `#admin`; never approve or reject on the owner's behalf.
 - The profile sent to `/api/pathway` is never stored or logged. Targets and progress live in the browser only.
 - The pathway uses no language model. Its forbidden keys are score, weight, rank, opportunit; the Skill Match key is
@@ -49,7 +53,7 @@ files; the owner decides on merge.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 920 passed
+npm install && npm test     # expect 936 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```

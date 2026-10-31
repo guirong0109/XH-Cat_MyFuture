@@ -1,13 +1,16 @@
 # Study Pathway: acceptance
 
-Date: 31 Oct 2026 · Branch `claude/study-pathway` at `7e039d7` (before this docs commit)
+Date: 31 Oct 2026 · First check at `7e039d7`; second check after the final fix wave at `f90ce52`
 
 ## Test counts
 
 | Suite | Command | Result |
 |---|---|---|
-| App tests (Vitest) | `npm test` | 920 passed (73 files) |
+| App tests (Vitest) | `npm test` | 936 passed (73 files) |
 | Python pipeline tests | `python -m unittest discover pipeline/tests` | 49 tests, OK |
+
+The second check (rows 19, 19b and 21) ran on a `localhost` name with a local-only env file (generated test keys,
+`RADAR_STORE=memory`; values never committed), address `http://pathway.localhost:3241`.
 
 ## How the browser check was run
 
@@ -43,19 +46,25 @@ Date: 31 Oct 2026 · Branch `claude/study-pathway` at `7e039d7` (before this doc
 | 16 | API: Accountant 2411-01 gives qualification "Bachelor's degree or equivalent", US education Bachelor's Degree 77.48% (from the O\*NET job matching chose), fields 0411 (your field) with 1 programme and 2 professional bodies, 0412, 0419 | Pass |
 | 17 | API: broken chain, Legislator 1111-01: `reason: chain_broken`, missing step "the linked O\*NET jobs have no skill data", `route` and `steps` null, `qualification` present (text null: eMASCO lists none for this role; the screen says so) | Pass |
 | 18 | API: unknown role gives 404 | Pass |
+| 19 | `#admin` "Study pathway picks" card lists picks with "not yet reviewed"; a decision without a note is refused ("A reviewer note is required for every decision. Nothing was sent."); approve "Basic of Programming" (c-field-0613-1) with a note gives "Decision saved."; reject "Python - Basics to Brilliance in HD" (c-field-0613-2) with a note gives "Decision saved." and the admin row shows "Rejected browser check · 2026-10-31" | Pass |
+| 19b | `#pathway` after those decisions: "Basic of Programming" shows "approved by owner on 2026-10-31"; the rejected Python course is no longer shown; still no "team draft" or "not yet reviewed" text on `#pathway` | Pass |
+| 21 | Thin profile on screen (all three skills removed, profile confirmed again): Part 1 (eMASCO qualification, study route) still shows; Part 2 says "We can't list the skills to build yet: add skills with a level to your profile." with an "Add skills to your profile" button; header and tab say "Skill Match not available" | Pass |
 
 ## Not run
 
 | # | Check | Why |
 |---|---|---|
-| 19 | `#admin` approve and reject a pick | Not run in the browser. This trial server has no admin key (`RADAR_ADMIN_KEY`), so admin is not available here. Covered by `tests/pathway/picksAdmin.test.js` (11 tests). |
 | 20 | Dark mode | Not inspected by eye. All `.pw-*` colours use the app's CSS variables (task 8 review). |
 
-Also not covered in the browser run: the 360 px width was checked at 375 px (the phone preset), and a thin profile
-(no percentage) was not tried on the screen.
+Also not covered: the 360 px width was checked at 375 px (the phone preset).
 
-## Finding A (for the final review)
+The trial approval and rejection in rows 19 and 19b were kept in a memory store (`RADAR_STORE=memory`), so they are gone.
+No pick is approved yet.
 
-The MQA hint "choose NEC field <ISCED code>" uses the ISCED code. Malaysia's NEC code differs for some fields (for
-example ISCED 0611 is NEC 0614, and 0712 is NEC 0717), so the hint is wrong for those fields. It is in the build
-ledger and is to be fixed in the final whole-branch review: map the code or drop it.
+## Finding A: fixed
+
+The MQA hint "choose NEC field <ISCED code>" used the ISCED code, which differs from Malaysia's NEC code for some fields
+(ISCED 0611 is NEC 0614, 0712 is NEC 0717). Fixed in commit 8877fa3 (Ruling 15): a code is shown only outside ISCED
+061x/071x/073x, plus the two pairs confirmed by name in MQR (0611 to 0614, 0712 to 0717, shown with "NEC code checked in
+MQR"); otherwise the hint says "choose the NEC field for <field title>". Covered by route and screen tests; not
+re-checked by eye in the browser.

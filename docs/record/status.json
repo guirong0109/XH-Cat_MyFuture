@@ -496,6 +496,11 @@
           "title": "Build T1-T10",
           "sub": "10 tasks built, each reviewed; browser check passed",
           "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "1 fix wave (NEC hint, MQA wording, US line, checks); re-review clean",
+          "status": "done"
         }
       ]
     }
@@ -549,7 +554,7 @@
     "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
     "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
     "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check",
-    "Study Pathway: review the team picks in #admin; final whole-branch review next"
+    "Study Pathway: decide on merge to main; review team picks in #admin"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1368,6 +1373,11 @@
       "time": "31 Oct",
       "step": "Study Pathway Task 10: browser check, handover, build record",
       "detail": "T9 fill done (68/68 skills with courses, 99 of 118 fields with an accredited programme). Browser check: 18 pass, admin and dark mode not run (docs/pathway/acceptance.md). 920 tests pass, pipeline 49 OK. Final whole-branch review next"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway final review",
+      "detail": "1 fix wave (NEC hint, MQA wording, US education line, pick checks, course order, sources table); re-review clean. Second browser check: admin approve/reject and thin profile pass. 936 tests pass, pipeline 49 OK"
     }
   ]
 }

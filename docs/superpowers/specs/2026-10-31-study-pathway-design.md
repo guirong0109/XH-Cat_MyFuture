@@ -51,8 +51,9 @@ so instead of guessing.
 | P10 | First fill (changed by P13) | **All** fields and skills, not a demo subset: at least one named course for each of the 68 O\*NET skill and knowledge items, from the sites of P12 (e-LATiH first, then the others); for each field of study that reaches O\*NET (118 of 124), at least one accredited Malaysian programme and, where the field has one, its Malaysian professional body. Roughly 300–500 links, each opened in a browser. Where no real one is found, the screen shows "no team pick yet" plus the search links |
 | P11 | Diagram | Claude drafts `docs/architecture-pathway.html`; the owner approves it |
 | P12 | More sites (owner, 31 Oct, after the first spec) | Not only e-LATiH and MQA. Four groups: global course sites, tech-company learning, Malaysian platforms, professional bodies. Sites whose search can be linked (checked in a browser) get a "More on <site>" search link on every skill step; the others give named team picks only. No link is invented: every site and pick is real and opened in a browser before it is added |
-| P14 | Malaysian qualification (owner, 31 Oct, after the mockup) | The usual education level shows eMASCO's own qualification for the role first (e.g. "Bachelor's degree or equivalent", already in `data/emasco/role_details.json`, 1,785 of 1,814 roles), labelled "eMASCO, Malaysia"; O\*NET's US percentages follow as "In the US". O\*NET 31.0 has education rows for 758 of its 1,016 jobs, so about 258 have none (e.g. Accountants and Auditors), so this keeps the line filled. It needs no O\*NET job, so it shows even when the code chain is broken |
+| P14 | Malaysian qualification (owner, 31 Oct, after the mockup) | The usual education level shows eMASCO's own qualification for the role first (e.g. "Bachelor's degree or equivalent", already in `data/emasco/role_details.json`, 1,785 of 1,814 roles), labelled "eMASCO, Malaysia"; O\*NET's US percentages follow as "In the US". O\*NET 31.0 has education rows for 758 of its 1,016 jobs; about 258 have none (e.g. Accountants and Auditors). This keeps the line filled. It needs no O\*NET job, so it shows even when the code chain is broken |
 | P13 | All fields (owner, 31 Oct) | Python and accounting were examples only. Every field of study gets "More on <site>" search links too (the field name as search word), as every skill does, and the first fill (P10) covers all fields and all skills |
+| P16 | NEC hint (final review, 31 Oct) | In the MQR hint a code is shown only for fields outside ISCED 061x/071x/073x (labelled "code match, not an official table"). Two pairs confirmed by name in MQR are shown with "NEC code checked in MQR": ISCED 0611 as NEC 0614, ISCED 0712 as NEC 0717. Every other field in 061x/071x/073x shows "choose the NEC field for <field title>" with no code. A pick with no MQA reference shows "MQA ref not recorded yet" |
 
 ## 3. What the course sites allow (checked 31 Oct 2026)
 
@@ -145,7 +146,7 @@ For the same O\*NET job:
   marked "your field". No field: "no field of study in the official tables for this job".
 - **Malaysian programmes**: under each field, its shown team picks of kind `accredited` (name, institution, MQR
   reference number, link to the institution's page, date checked, review label), then a link to the MQR search page
-  with "choose NEC field <code>", labelled "code match, not an official table". No pick: "no team pick yet".
+  with the NEC hint (P16): "choose NEC field <code>" labelled "code match, not an official table" for a code outside ISCED 061x/071x/073x; "choose NEC field <code>" labelled "NEC code checked in MQR" for 0611 (NEC 0614) and 0712 (NEC 0717); otherwise "choose the NEC field for <field title>". An accredited pick without an MQA reference shows "MQA ref not recorded yet". No pick: "no team pick yet".
 - **Professional qualifications**: under each field, its shown team picks of kind `professional` (body, qualification
   name, link to the body's page, date checked, review label), e.g. MIA or ACCA under accounting. None: the line is
   left out.
@@ -225,7 +226,7 @@ Test first (Vitest) for each unit; a Python unit test for the `fetch_onet.py` ch
 - **Review the team picks** in `#admin` (P9).
 - **Licences**: neither MQA nor e-LATiH gives an open licence, and the other sites are not open data either; the app
   stores only names, links and dates and links out. Written permission from MQA or HRD Corp would allow more; that is the owner's call.
-- **NEC ↔ ISCED-F**: no official table found; the MQR hint is labelled "code match, not an official table".
+- **NEC ↔ ISCED-F**: no official table found; the MQR hint follows P16 (code shown only outside ISCED 061x/071x/073x, labelled "code match, not an official table"; two pairs checked by name in MQR).
 - **Links go stale**: each pick and search link shows the date it was checked; a stale pick is fixed in `picks.json`,
   a broken search link is set to null in `sites.json`.
 - **Not every search fits every skill**: a "More on <site>" link is shown for every skill, so a tech site may find

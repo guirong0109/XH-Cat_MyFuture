@@ -1,13 +1,14 @@
 # HANDOVER — `claude/study-pathway` (detailed)
 
-Updated 2026-10-31 (all 10 plan tasks built). Branch from `main` at `6ac16f4`. `main` keeps a short version of this
+Updated 2026-10-31 (all 10 plan tasks built; final review fix wave done). Branch from `main` at `6ac16f4`. `main` keeps a short version of this
 file; on merge, put only the important points there and do not overwrite it with this one.
 
 ## State
-- **All 10 plan tasks are built and reviewed** (920 Vitest tests, 49 pipeline tests). A **final whole-branch review is
-  next**, then the owner decides on merge. Nothing is pushed or merged.
-- Browser check done by the controller on 31 Oct: 18 checks pass, admin and dark mode not run
-  (`docs/pathway/acceptance.md`).
+- **All 10 plan tasks are built and reviewed** (936 Vitest tests, 49 pipeline tests). The final whole-branch review
+  found items that were fixed in one fix wave (NEC hint, MQA wording, US education line, pick checks, course order,
+  sources table, SOURCES row); the re-review was clean. The owner decides on merge. Nothing is pushed or merged.
+- Browser check done by the controller on 31 Oct, twice: all checks pass, including admin (approve and reject) and a
+  thin profile; only dark mode was not inspected by eye (`docs/pathway/acceptance.md`).
 - Spec: `docs/superpowers/specs/2026-10-31-study-pathway-design.md`; plan: `docs/superpowers/plans/2026-10-31-study-pathway.md`;
   diagram: `docs/architecture-pathway.html`; approved mockup: `docs/mockup-pathway.html`; fill report:
   `docs/pathway/fill-report.md`.
@@ -65,25 +66,31 @@ linked institution page's main heading, minus a leading code. Details are in the
 
 ## Commands
 ```bash
-npm install && npm test     # expect 920 passed
+npm install && npm test     # expect 936 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
 
+## Fixed in the final review
+- **NEC-vs-ISCED code hint (Finding A)**, commit 8877fa3, Ruling 15: a code is shown only outside ISCED 061x/071x/073x
+  ("code match, not an official table"), plus 0611 to 0614 and 0712 to 0717 ("NEC code checked in MQR"); otherwise
+  "choose the NEC field for <field title>". Covered by tests; not re-checked by eye.
+- Picks without an MQA reference say "MQA ref not recorded yet" (Ruling 16).
+
 ## Open points for the owner
-- **Review all team picks in `#admin`.** Nothing is approved yet. The weaker course fits are listed in the build
-  ledger (for example items 2.B.3.c, 2.C.4.g and 2.C.10).
+- **Review all team picks in `#admin`.** None is approved yet; the trial approvals were kept in a memory store and are
+  gone. The weaker course fits are listed in the build ledger (for example items 2.B.3.c, 2.C.4.g and 2.C.10).
+- **Fill the 60 missing MQA references from MQR.** Deferred by Ruling 16; the scripted MQR query works.
 - **BM / 中文 wording** of the new strings (marked "translation: owner review").
-- **NEC-vs-ISCED code hint (Finding A):** the MQA hint "choose NEC field <code>" uses the ISCED code, which differs
-  for some fields (0611 is NEC 0614, 0712 is NEC 0717). To be fixed in the final review.
+- **NEC codes hidden inside ISCED 061x/071x/073x** that the team matched by name: they show no code on the screen
+  (help only).
 - **Professional bodies not linked:** law, architecture and town planning, veterinary, social work (recorded in the
   fill report).
-- **60 earlier accredited picks have no MQA ref** though some pages print one; decide whether to fill (final review).
 - **Licence permission** from MQA and HRD Corp is optional; only name, link and date are kept.
 
 ## Not switched on
-- Admin needs the server keys as before (`RADAR_ADMIN_KEY`, `RADAR_SESSION_SECRET`). Without them `#admin` is not
-  available, so the pick review cannot be used until they are set.
+- Admin needs the server keys as before (`RADAR_ADMIN_KEY`, `RADAR_SESSION_SECRET`). Without them
+  `#admin` is not available, so the pick review cannot be used until they are set.
 - Dark mode was not inspected by eye. Nothing is pushed.
 
 ## Earlier work on `main`

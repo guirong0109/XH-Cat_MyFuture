@@ -310,8 +310,10 @@ describe('loadPathwayData', () => {
 
   it('a course pick on a site with no search link carries the site name (siteName from sites.json)', async () => {
     const fcc = { id: 'freecodecamp', name: 'freeCodeCamp', group: 'global', home: 'https://www.freecodecamp.org/', terms: 'https://www.freecodecamp.org/news/terms-of-service/', search: null, searchCheckedAt: null, hosts: ['www.freecodecamp.org'] }
-    const pick = { id: 'c-fcc', for: 'kn:2.C.3.a', site: 'freecodecamp', name: 'Responsive Web Design', link: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/', checkedAt: '2026-10-31' }
-    const dir = await makePathwayFixture({ sites: { ...SITES, sites: [...SITES.sites, fcc] }, picks: { ...PICKS, courses: [...PICKS.courses, pick] } })
+    const ol = { id: 'openlearning', name: 'OpenLearning', group: 'malaysian', home: 'https://www.openlearning.com/', terms: 'https://solutions.openlearning.com/terms-of-service', search: null, searchCheckedAt: null, hosts: ['www.openlearning.com'] }
+    const pick = { id: 'c-fcc', for: 'kn:2.C.3.a', site: 'freecodecamp', name: 'Responsive Web Design', link: 'https://www.freecodecamp.org/learn/2022/responsive-web-design/', checkedAt: '2026-10-29' }
+    const older = { ...pick, id: 'c-fcc-2', link: 'https://www.freecodecamp.org/learn/javascript/', checkedAt: '2026-10-20' }
+    const dir = await makePathwayFixture({ sites: { ...SITES, sites: [...SITES.sites, fcc, ol] }, picks: { ...PICKS, courses: [...PICKS.courses, pick, older] } })
     try {
       await start({ dataDir: dir.dir })
       const { status, body } = await post('/api/pathway', { profile: FULL, code: FIXTURE.fullRole })
@@ -319,8 +321,10 @@ describe('loadPathwayData', () => {
       const courses = body.steps.gaps.find((g) => g.key === 'kn:2.C.3.a').courses
       expect(courses.find((c) => c.id === 'c-fcc')).toMatchObject({ site: 'freecodecamp', siteName: 'freeCodeCamp' })
       expect(courses.find((c) => c.id === PATHWAY.course)).toMatchObject({ site: 'elatih', siteName: 'e-LATiH (HRD Corp)' })
-      // a site with no search link gives no "More on" link and no source row
+      // a site with no search link gives no "More on" link; it has a source row (home page, newest pick date) when it has a course pick
       expect(body.steps.gaps[0].search.map((l) => l.site)).not.toContain('freecodecamp')
+      expect(body.sources.filter((s) => s.id.startsWith('site:')).map((s) => s.id)).toEqual(['site:elatih', 'site:coursera', 'site:freecodecamp'])
+      expect(body.sources.find((s) => s.id === 'site:freecodecamp')).toEqual({ id: 'site:freecodecamp', name: 'freeCodeCamp', url: 'https://www.freecodecamp.org/', date: '2026-10-29', licence: null })
       expect(body.sources.find((s) => s.id === 'pathway-picks').name).toBe('FutureReady team picks (owner review in Admin)')
     } finally {
       await dir.cleanup()

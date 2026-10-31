@@ -44,6 +44,18 @@ describe('Study Pathway team picks data', async () => {
     expect(data.itemKeys.size).toBe(68)
   })
 
+  it('the sources table names every site with a search link or a course pick, with its home page and a date', () => {
+    const used = new Set(data.picks.filter((p) => p.type === 'course').map((p) => p.site))
+    const expected = data.sites.filter((s) => s.search || used.has(s.id))
+    const siteSources = data.sources.filter((s) => s.id.startsWith('site:'))
+    expect(siteSources.map((s) => s.id)).toEqual(expected.map((s) => `site:${s.id}`))
+    for (const site of expected) {
+      const src = siteSources.find((s) => s.id === `site:${site.id}`)
+      expect(src).toMatchObject({ name: site.name, url: site.home })
+      expect(src.date).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    }
+  })
+
   it('the four jobs whose kept education rows are all 0% show no "In the US" line', () => {
     for (const code of ['25-1125.00', '29-1229.06', '47-5013.00', '51-4051.00']) expect(educationFor(data.education, code)).toBeNull()
   })

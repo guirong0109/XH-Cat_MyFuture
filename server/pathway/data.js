@@ -106,6 +106,10 @@ export async function loadPathwayData(dataDir) {
   const picksFile = parseJson('pathway/picks.json', await checkedText(dataDir, 'pathway/picks.json', pathwayManifest))
   const picks = checked('pathway/picks.json', () => checkPicks(picksFile, sites, { itemKeys, fieldCodes })).map((p) => ({ ...p, hash: pickHash(p) }))
 
+  // Every site with a search link or at least one course pick is a source; a site with no search link is dated by its
+  // newest course pick.
+  const pickDate = new Map()
+  for (const p of picks) if (p.type === 'course' && !(pickDate.get(p.site) >= p.checkedAt)) pickDate.set(p.site, p.checkedAt)
   // The bridge is read (not checked) as matching reads it; only its build date is used here.
   const bridge = await readJson(dataDir, 'radar/occupation-bridge.json')
   const [statcan, crosswalk] = Array.isArray(iscedManifest.sources) ? iscedManifest.sources : []
@@ -117,7 +121,7 @@ export async function loadPathwayData(dataDir) {
     iscedSource('isced-cip', statcan),
     iscedSource('cip-onet', crosswalk),
     { id: PICKS_SOURCE, name: 'FutureReady team picks (owner review in Admin)', url: null, date: pathwayManifest.builtAt ?? null, licence: null },
-    ...sites.filter((s) => s.search).map((s) => ({ id: `site:${s.id}`, name: s.name, url: s.home, date: s.searchCheckedAt ?? null, licence: null })),
+    ...sites.filter((s) => s.search || pickDate.has(s.id)).map((s) => ({ id: `site:${s.id}`, name: s.name, url: s.home, date: s.searchCheckedAt ?? pickDate.get(s.id) ?? null, licence: null })),
   ]
 
   return { education, qualifications, routeIndex, sites, picks, itemKeys, itemNames, fieldTitles, fieldCodes, sources }

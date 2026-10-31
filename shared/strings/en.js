@@ -28,6 +28,8 @@ export default {
   catD: 'TVET or university career centre', catDText: 'Guide students at institution level. Account required.',
   useTitle: 'Who is it for?', usePersonal: 'For myself', usePersonalText: 'Build your own profile and see where your skills can take you.',
   useOrg: 'For my organisation', useOrgText: 'HR teams, and TVET or university career centres. A preview for now; account required.',
+  accessOrgTitle: 'Sign up to use it for your organisation', accessOrgLead: 'Organisation tools need an account. Create one, or sign in if you already have one.',
+  acOrgOff: 'Accounts are not available on this server yet, so organisation tools cannot be opened.', useMyself: 'Use it for myself instead',
   preview: 'Account · preview',
   orgBanner: 'Under development — not working yet.',
   orgBannerText: 'This organisational view is a design preview. Nothing here is real or saved.',

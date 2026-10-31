@@ -110,7 +110,8 @@ function update(profile) {
 const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   use: (kind) => { state.use = kind; go('access') },
-  guest: () => { state.access = 'guest'; go('category') },
+  // An organisation needs an account: no guest way in.
+  guest: () => { if (state.use === 'org') return go('access'); state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
   acLogout: async () => {

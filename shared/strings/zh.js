@@ -28,6 +28,8 @@ export default {
   catD: 'TVET 或大学就业中心', catDText: '在机构层面指导学生。需要账户。',
   useTitle: '为谁使用？', usePersonal: '个人使用', usePersonalText: '建立你自己的档案，看看你的技能能带你走向哪里。',
   useOrg: '机构使用', useOrgText: 'HR 团队，以及 TVET 或大学就业中心。目前仅为预览；需要账户。',
+  accessOrgTitle: '注册账户，供你的机构使用', accessOrgLead: '机构工具需要账户。请创建账户；如已有账户，请登录。',
+  acOrgOff: '此服务器暂未开放账户功能，因此无法打开机构工具。', useMyself: '改为个人使用',
   preview: '账户 · 预览',
   orgBanner: '开发中——尚不可用。',
   orgBannerText: '此机构视图是设计预览。这里的内容都不是真实的，也不会保存。',

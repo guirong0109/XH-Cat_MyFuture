@@ -45,6 +45,7 @@ import { pathwayRoutes } from './pathway/routes.js'
 import { createOrgStore } from './org/store.js'
 import { createOrgService } from './org/service.js'
 import { orgRoutes } from './org/routes.js'
+import { shareRoutes } from './org/shareRoutes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 export const DATA_DIR = path.join(ROOT, 'data')
@@ -186,6 +187,18 @@ export function createApp({
       return roleCodes
     }
     app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadRoleCodes, log: console.error, now }))
+    // Own saved profile only (another user's id reads as missing). Returns the skills list or null.
+    const loadProfileSkills = async (userId, profileId) => {
+      const { rows } = await d1.query('SELECT json FROM profiles WHERE id = ? AND user_id = ?', [profileId, userId])
+      if (!rows[0]) return null
+      try {
+        const skills = JSON.parse(rows[0].json)?.skills
+        return Array.isArray(skills) ? skills : []
+      } catch {
+        return []
+      }
+    }
+    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, log: console.error, now }))
   }
   if (radar) {
     let aiTasksPromise = null

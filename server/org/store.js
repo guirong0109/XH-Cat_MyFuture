@@ -1,6 +1,6 @@
 // Organisation store on D1: org, groups, people, skills and plan steps. Every query uses ? parameters.
-// Any id that is not in the given org gives OrgError('not_found', 404). Invites and shares are added later.
-import { randomUUID } from 'node:crypto'
+// Any id that is not in the given org gives OrgError('not_found', 404). Join links hold only the SHA-256 of the token.
+import { createHash, randomBytes, randomUUID } from 'node:crypto'
 
 export class OrgError extends Error {
   constructor(code, status) {
@@ -10,6 +10,9 @@ export class OrgError extends Error {
     this.status = status
   }
 }
+
+const INVITE_MS = 7 * 24 * 3600 * 1000
+const hashOf = (token) => createHash('sha256').update(token).digest('hex')
 
 const toOrg = (r) => ({ id: r.id, name: r.name, type: r.type, createdAt: r.created_at })
 
@@ -145,10 +148,98 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
     )
   }
 
+  // ---- join links and shares. The token is returned once; only its SHA-256 is stored.
+  async function createInvite(orgId, { groupId, currentCode = null }) {
+    await requireGroup(orgId, groupId)
+    const token = randomBytes(32).toString('base64url')
+    const expiresAt = new Date(now().getTime() + INVITE_MS).toISOString()
+    await d1.query(
+      'INSERT INTO org_invites (id, org_id, group_id, current_code, token_hash, expires_at, used_at) VALUES (?, ?, ?, ?, ?, ?, NULL)',
+      [newId(), orgId, groupId, currentCode, hashOf(token), expiresAt],
+    )
+    return { token, expiresAt }
+  }
+
+  async function inviteOf(token) {
+    if (typeof token !== 'string' || !token) return null
+    const { rows } = await d1.query(
+      `SELECT i.id, i.org_id, o.name AS org_name, o.owner_id, i.group_id, g.name AS group_name, i.current_code, i.expires_at, i.used_at
+         FROM org_invites i JOIN orgs o ON o.id = i.org_id JOIN org_groups g ON g.id = i.group_id WHERE i.token_hash = ?`,
+      [hashOf(token)],
+    )
+    const r = rows[0]
+    if (!r) return null
+    return {
+      inviteId: r.id, orgId: r.org_id, orgName: r.org_name, ownerId: r.owner_id, groupId: r.group_id, groupName: r.group_name,
+      currentCode: r.current_code, expiresAt: r.expires_at, usedAt: r.used_at,
+    }
+  }
+
+  async function replaceSkills(personId, skills) {
+    await d1.query('DELETE FROM org_skills WHERE person_id = ?', [personId])
+    for (const skill of skills) {
+      await d1.query('INSERT OR REPLACE INTO org_skills (person_id, item_key, level) VALUES (?, ?, ?)', [personId, skill.key, skill.level])
+    }
+  }
+
+  async function sharedPerson(userId) {
+    const { rows } = await d1.query(
+      `SELECT p.id, p.display_name, g.name AS group_name, o.name AS org_name FROM org_people p
+         JOIN org_groups g ON g.id = p.group_id JOIN orgs o ON o.id = p.org_id
+        WHERE p.user_id = ? AND p.source = 'shared' ORDER BY p.added_at DESC, p.id LIMIT 1`,
+      [userId],
+    )
+    return rows[0] ?? null
+  }
+
+  async function share(userId, { token, displayName, skills }) {
+    if (token !== undefined && token !== null) {
+      const invite = await inviteOf(token)
+      if (!invite || invite.usedAt || invite.expiresAt <= stamp()) throw new OrgError('link_expired', 410)
+      if (invite.ownerId === userId) throw new OrgError('own_organisation', 409)
+      // claim the link first: only one caller can flip used_at from NULL
+      const claim = await d1.query('UPDATE org_invites SET used_at = ? WHERE id = ? AND used_at IS NULL', [stamp(), invite.inviteId])
+      if (claim.changes !== 1) throw new OrgError('link_expired', 410)
+      const { rows } = await d1.query('SELECT id FROM org_people WHERE org_id = ? AND user_id = ?', [invite.orgId, userId])
+      let personId = rows[0]?.id
+      if (personId) {
+        await d1.query('UPDATE org_people SET group_id = ?, display_name = ?, current_code = ?, source = ? WHERE id = ?', [invite.groupId, displayName, invite.currentCode, 'shared', personId])
+      } else {
+        personId = newId()
+        await d1.query(
+          'INSERT INTO org_people (id, org_id, group_id, display_name, current_code, source, user_id, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [personId, invite.orgId, invite.groupId, displayName, invite.currentCode, 'shared', userId, stamp()],
+        )
+      }
+      await replaceSkills(personId, skills)
+      return { personId }
+    }
+    const existing = await sharedPerson(userId)
+    if (!existing) throw new OrgError('no_share', 404)
+    await d1.query('UPDATE org_people SET display_name = ? WHERE id = ?', [displayName, existing.id])
+    await replaceSkills(existing.id, skills)
+    return { personId: existing.id }
+  }
+
+  async function shareOf(userId) {
+    const person = await sharedPerson(userId)
+    if (!person) return null
+    const { rows } = await d1.query('SELECT item_key, level FROM org_skills WHERE person_id = ? ORDER BY item_key', [person.id])
+    return {
+      orgName: person.org_name, groupName: person.group_name, displayName: person.display_name,
+      skills: rows.map((r) => ({ key: r.item_key, level: r.level })),
+    }
+  }
+
+  async function stopSharing(userId) {
+    await d1.query("DELETE FROM org_people WHERE user_id = ? AND source = 'shared'", [userId])
+  }
+
   return {
     createOrg, orgOf, renameOrg, deleteOrg,
     groups, addGroup, updateGroup, deleteGroup,
     people, importPeople, updatePerson, deletePerson,
     planSteps, setPlanStep,
+    createInvite, inviteOf, share, shareOf, stopSharing,
   }
 }

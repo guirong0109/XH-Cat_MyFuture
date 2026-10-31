@@ -765,36 +765,46 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
 })
 
 describe('status cards (spec §11.1, §12)', () => {
-  it('the OpenAlex card and View data sources sit at the bottom, below the tab panel, on both tabs (owner, 31 Oct)', () => {
+  // Owner, 1 Nov: one "Sources behind this page" table at the bottom, the same design as Career Matching.
+  const srcTable = (html) => {
+    const start = html.indexOf('<div class="card mt-sources rd-srclist">')
+    return start < 0 ? '' : html.slice(start, html.indexOf('</table>', start))
+  }
+  const srcRows = (html) => [...srcTable(html).matchAll(/<tr><td>([^<]*)<\/td><td>([\s\S]*?)<\/td><\/tr>/g)].map((m) => [unesc(m[1]), unesc(m[2])])
+
+  it('the sources table sits at the bottom, below the tab panel, on both tabs, with no old cards or drop-down', () => {
     for (const radar of [{}, { tab: 'ex' }]) {
       const html = view(ownProfile(), radar)
       const panelEnd = html.indexOf('</section>', html.indexOf('id="radarPanel"'))
       expect(panelEnd).toBeGreaterThan(-1)
-      expect(html.indexOf('<div class="rd-srcgrid">')).toBeGreaterThan(panelEnd)
-      expect(html.indexOf('<details class="rd-sources">')).toBeGreaterThan(panelEnd)
-      expect(html.indexOf('role="tablist"')).toBeLessThan(html.indexOf('<div class="rd-srcgrid">'))
+      expect(html.indexOf('<div class="card mt-sources rd-srclist">')).toBeGreaterThan(panelEnd)
+      expect(unesc(srcTable(html))).toContain(`<h3>${t('rdSrcBehind')}</h3>`)
+      expect(html).not.toContain('<details class="rd-sources">')
+      expect(html).not.toContain('<div class="rd-srcgrid">')
+      for (const gone of ['Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot'), 'rd-onet-card']) expect(html, gone).not.toContain(gone)
     }
   })
 
-  it('only the source the page shows is listed: one OpenAlex card and OpenAlex alone in View data sources (D48)', () => {
-    for (const radar of [{}, { tab: 'ex' }]) {
-      const html = view(ownProfile(), radar)
-      const start = html.indexOf('<div class="rd-srcgrid">')
-      expect(start).toBeGreaterThan(-1)
-      const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1]).filter((c) => !c.includes('<fieldset>'))
-      expect(cards).toHaveLength(1)
-      const c = cards[0]
-      expect(unesc(c.match(/<h3>([^<]*)<\/h3>/)[1])).toContain('OpenAlex')
-      // name with its source link in the head, availability as a tag, the facts as label-value pairs
-      expect(c).toMatch(/<header class="rd-srccard-head"><h3>[^<]+<\/h3> <a href="https:\/\//)
-      expect(c).toContain('<span class="pill ok" aria-label="Availability: Data available">Data available</span>')
-      expect(c).toContain('<dl class="rd-srccard-facts">')
-      for (const gone of ['Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot'), 'rd-onet-card']) expect(html, gone).not.toContain(gone)
-      const list = html.slice(html.indexOf('<details class="rd-sources">'), html.indexOf('</details>', html.indexOf('<details class="rd-sources">')))
-      const names = [...list.matchAll(/<tr><td><b>([^<]*)<\/b>/g)].map((m) => unesc(m[1]))
-      expect(names).toHaveLength(1)
-      expect(names[0]).toContain('OpenAlex')
-    }
+  it('lists the three sources the page uses, each with its https link, licence and dates', () => {
+    const rows = srcRows(view(ownProfile(), { tab: 'ex' }))
+    expect(rows.map((r) => r[0])).toEqual([t('rdSrcRowPapers'), t('rdSrcRowAei'), t('rdSrcRowIlo')])
+    const [papers, aei, ilo] = rows.map((r) => r[1])
+    const oa = data.sources.find((s) => s.sourceId === 'openalex')
+    expect(papers).toMatch(/^<a href="https:\/\/openalex\.org"/)
+    for (const bit of [oa.policy, oa.observationPeriod, '2026-10-30', t('rdAvail_data'), data.manifestId]) expect(papers, bit).toContain(bit)
+    expect(aei).toMatch(/^<a href="https:\/\/huggingface\.co\/datasets\/Anthropic\/EconomicIndex"/)
+    expect(aei).toContain('CC BY')
+    expect(ilo).toMatch(/^<a href="https:\/\/doi\.org\/10\.54394\/HETP0387"/)
+    expect(ilo).toContain('CC BY 4.0')
+    expect(srcTable(view(ownProfile()))).not.toMatch(/\bnull\b|NaN|undefined/)
+    for (const lang of ['ms', 'zh']) for (const k of ['rdSrcBehind', 'rdSrcRowPapers', 'rdSrcRowAei', 'rdSrcRowIlo']) expect(translate(lang, k)).not.toBe(k)
+  })
+
+  it('once the AI task data is loaded, its release and period are in the Anthropic row', () => {
+    const ai = { release: 'release_2026_06_26', dataPeriod: 'April-May 2026', fetchedAt: '2026-10-30T10:00:00Z', sourceLinks: [] }
+    const aei = srcRows(view(ownProfile(), { aiTasks: { ok: true, data: ai } }))[1][1]
+    expect(aei).toContain('release_2026_06_26')
+    expect(aei).toContain('April-May 2026')
   })
 
   it('the admin screen keeps both OpenAlex and DOSM cards (statusCards default)', () => {

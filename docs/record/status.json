@@ -2935,6 +2935,11 @@
       "time": "1 Nov",
       "step": "Radar: AI tasks chart shows all tasks; conclusion card above Research momentum",
       "detail": "Owner's request. The 'Tasks shown' 8 / 16 / All switch is removed from 'How AI is used in your jobs' tasks': every task in the Anthropic Economic Index for the job is drawn. New conclusion card (data-sec AC) above 'Research momentum by AI topic': the 3 fastest-rising and 3 slowest topics by the same Research Momentum Index, each with its OpenAlex paper counts and link; follows the Paper counts / Share switch; says it counts papers, not jobs; fewer than 2 topics with an index shows a note. Real OpenAlex numbers only (the owner's sample picture used placeholders). Tests first in tests/radar/radarScreen.test.js; checked in the browser on localhost:3400 in light and dark mode."
+    },
+    {
+      "time": "1 Nov",
+      "step": "Radar: \"Sources behind this page\" table in the Career Matching design",
+      "detail": "Owner's request with a picture of the matching sources table. The OpenAlex status card and the 'View data sources' drop-down at the bottom of the Radar are replaced by one table: Research papers per AI topic (OpenAlex, CC0, observation period, fetched date, availability, active manifest), AI use in job tasks (Anthropic Economic Index, release and period once loaded, CC BY data / MIT code) and AI exposure of jobs (ILO WP140, CC BY 4.0), each with its link. The admin screen keeps its status cards. Tests first; checked in the browser on localhost:3400 at desktop and phone width."
     }
   ]
 }

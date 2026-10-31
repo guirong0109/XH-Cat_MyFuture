@@ -425,6 +425,7 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .mt-tw{overflow-x:auto;max-width:100%;margin-top:12px}
 .mt-tw table{font-size:12.5px}
 .mt-sources{margin-top:26px}
+.rd-srclist .rd-src{font-size:inherit;font-family:inherit;text-transform:none;letter-spacing:normal;white-space:normal;overflow-wrap:anywhere}
 .mt-sdghead{justify-content:space-between}
 .mt-sdgttl{font-size:18px}
 .mt-sdgrow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid var(--line)}

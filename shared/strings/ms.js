@@ -306,9 +306,11 @@ export default {
   rdTabFYq: "Penggunaan AI anda dan penyelidikan berkaitan bidang anda", // translation: owner review
   rdTabEX: "Terokai semua trend", // translation: owner review
   rdTabEXq: "Penyelidikan AI merentas keenam-enam topik", // translation: owner review
-  rdViewSources: "Lihat sumber data",
+  rdSrcBehind: "Sumber di sebalik halaman ini", // translation: owner review
+  rdSrcRowPapers: "Kertas penyelidikan bagi setiap topik AI", // translation: owner review
+  rdSrcRowAei: "Penggunaan AI dalam tugas kerja (AI Sederhana)", // translation: owner review
+  rdSrcRowIlo: "Pendedahan pekerjaan kepada AI (AI Pantas)", // translation: owner review
   rdSourcesTitle: "Sumber data",
-  rdSourcesNote: "Setiap sumber dikemas kini mengikut jadualnya sendiri. Tarikh yang ditunjukkan ialah tarikh yang dilaporkan oleh sumber.",
   rdViewAll: "Lihat semua",
   rdViewMine: "Kembali ke profil saya sahaja",
   rdViewAllAi: "Menunjukkan setiap topik AI. Secara lalai, tiada apa di luar profil anda ditunjukkan.",
@@ -600,7 +602,6 @@ export default {
   rdApprovedAt: "diluluskan pada peringkat {level}",
   rdViaField: "Dipautkan kepada bidang anda {field} (diluluskan pada peringkat {level})",
   rdNextRelease: "keluaran seterusnya {date} (anggaran: setiap suku tahun, dari tarikh penerbitan terakhir)", // translation: owner review
-  rdSourcePolicy: "Polisi penggunaan",
   rdRole_held: "pekerjaan yang pernah disandang",
   rdRole_interest: "peranan yang diminati",
   rdRole_job: "pekerjaan",

@@ -230,14 +230,21 @@ export function onetSourceCards(sources, t, states = {}) {
   return cards.length ? `<div class="rd-srcgrid">${cards.join('')}</div>` : ''
 }
 
-function sourcesList(t, sources) {
-  const rows = sources.map((s) => `<tr><td><b>${esc(s.name)}</b><div class="tiny">${(s.links ?? []).map(srcLink).join(' · ')}</div></td>
-    <td class="small">${esc(s.measures ?? DASH)}</td><td class="small">${esc(s.policy ?? DASH)}</td>
-    <td class="small">${esc(s.observationPeriod ?? DASH)}<div class="tiny muted">${esc(t('rdEvFetched'))}: ${esc(fmtDate(s.fetchedAt))}</div></td></tr>`).join('')
-  return `<details class="rd-sources"><summary>${esc(t('rdViewSources'))}</summary>
-    <p class="tiny muted">${esc(t('rdSourcesNote'))}</p>
-    <div class="rd-scroll"><table><tr><th>${esc(t('rdEvSource'))}</th><th>${esc(t('rdEvMetric'))}</th><th>${esc(t('rdSourcePolicy'))}</th><th>${esc(t('rdObsPeriod'))}</th></tr>${rows}</table></div>
-  </details>`
+// The sources behind the Radar page (owner, 1 Nov 2026): one table in the Career Matching design, one row per source
+// the page uses, each with its link, licence and dates. Every text goes through esc().
+const ILO_WP140 = { label: 'ILO Working Paper 140, Generative AI and Jobs: A 2025 update (Gmyrek et al.)', url: 'https://doi.org/10.54394/HETP0387' }
+function sourcesTable(t, state, data) {
+  const join = (bits) => bits.filter((b) => b && b !== DASH).map((b) => esc(b)).join(' · ')
+  const row = (label, link, bits) => `<tr><td>${esc(label)}</td><td>${srcLink(link)}${bits.length ? ` · ${join(bits)}` : ''}</td></tr>`
+  const oa = (data.sources ?? []).find((s) => s.sourceId === 'openalex') ?? {}
+  const st = data.states?.openalex ?? {}
+  const ai = state?.radar?.aiTasks?.ok ? state.radar.aiTasks.data ?? {} : {}
+  const rows = [
+    row(t('rdSrcRowPapers'), { label: oa.name ?? 'OpenAlex', url: 'https://openalex.org' }, [oa.policy, oa.observationPeriod, `${t('rdEvFetched')} ${fmtDate(oa.fetchedAt ?? st.lastSuccessAt)}`, dim(t, 'Avail', st.availability), `${t('rdManifestId')}: ${data.manifestId ?? DASH}`]),
+    row(t('rdSrcRowAei'), { label: 'Anthropic Economic Index, Hugging Face dataset Anthropic/EconomicIndex', url: AEI_URL }, [ai.release, ai.dataPeriod, 'CC BY (data); code MIT, per the dataset README', ai.fetchedAt ? `${t('rdEvFetched')} ${fmtDate(ai.fetchedAt)}` : '']),
+    row(t('rdSrcRowIlo'), ILO_WP140, ['CC BY 4.0']),
+  ]
+  return `<div class="card mt-sources rd-srclist"><h3>${esc(t('rdSrcBehind'))}</h3><div class="mt-tw"><table class="small"><tbody>${rows.join('')}</tbody></table></div></div>`
 }
 
 function banners(t, state, data) {
@@ -972,8 +979,7 @@ export function radarView({ t, state, data }) {
   return `<div class="rd">${head}${banners(t, state, data)}
     ${tabBar}
     <section class="rd-tab" role="tabpanel" id="radarPanel" aria-labelledby="rdtab-${tab}">${body}</section>
-    <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ, ids: ['openalex'] })}</div>
-    ${sourcesList(t, (data.sources ?? []).filter((s) => s.sourceId === 'openalex'))}
+    ${sourcesTable(t, state, data)}
     ${drawer(t, state, data)}</div>`
 }
 

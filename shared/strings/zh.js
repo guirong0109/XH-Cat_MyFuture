@@ -306,9 +306,11 @@ export default {
   rdTabFYq: "您的 AI 使用情况以及与您领域相关的研究", // translation: owner review
   rdTabEX: "探索所有趋势", // translation: owner review
   rdTabEXq: "六个主题的 AI 研究", // translation: owner review
-  rdViewSources: "查看数据来源",
+  rdSrcBehind: "本页的数据来源", // translation: owner review
+  rdSrcRowPapers: "各人工智能主题的研究论文", // translation: owner review
+  rdSrcRowAei: "工作任务中的人工智能使用（中速 AI）", // translation: owner review
+  rdSrcRowIlo: "工作受人工智能影响的程度（快速 AI）", // translation: owner review
   rdSourcesTitle: "数据来源",
-  rdSourcesNote: "每个来源按自己的计划更新。显示的日期是来源自己报告的日期。",
   rdViewAll: "查看全部",
   rdViewMine: "只看与我的资料相关的内容",
   rdViewAllAi: "显示所有人工智能主题。默认不显示您资料之外的内容。",
@@ -600,7 +602,6 @@ export default {
   rdApprovedAt: "在{level}层级获批",
   rdViaField: "与您的领域 {field} 关联（在{level}层级获批）",
   rdNextRelease: "下次发布 {date}（估计：按季度，从上次发布日期推算）", // translation: owner review
-  rdSourcePolicy: "使用政策",
   rdRole_held: "曾任职位",
   rdRole_interest: "感兴趣的职位",
   rdRole_job: "工作",

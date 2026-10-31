@@ -22,8 +22,8 @@ describe('skill catalogue', () => {
     expect(catalogue.version).toBe('31.0')
     expect(catalogue.entries.map((e) => e.id).sort()).toEqual([
       'onet:el:2.A.1.a', 'onet:el:2.A.1.e', 'onet:kn:2.C.1.e', 'onet:kn:2.C.4.a', 'onet:kn:2.C.9.b',
-      'onet:tech:alpha beta ab', 'onet:tech:apple banana ab', 'onet:tech:javascript', 'onet:tech:microsoft excel', 'onet:tech:microsoft sql server', 'onet:tech:oracle java',
-      'onet:tech:petra geology', 'onet:tech:python', 'onet:tech:structure query language sql', 'onet:tech:structured query language sql', 'onet:tech:treasury communications system',
+      'onet:tech:alpha beta ab', 'onet:tech:apple banana ab', 'onet:tech:flutter', 'onet:tech:google', 'onet:tech:javascript', 'onet:tech:microsoft excel', 'onet:tech:microsoft sql server', 'onet:tech:node.js', 'onet:tech:oracle java',
+      'onet:tech:petra geology', 'onet:tech:php', 'onet:tech:python', 'onet:tech:react', 'onet:tech:structure query language sql', 'onet:tech:structured query language sql', 'onet:tech:treasury communications system',
     ])
     expect(catalogue.entries.find((e) => e.id === 'onet:tech:python').category).toBe('Development environment software')
     expect(catalogue.entries.find((e) => e.id === 'onet:kn:2.C.1.e')).toMatchObject({ category: 'O*NET knowledge', occupations: 1 })

@@ -99,6 +99,28 @@ function employment(rows, hasSection, extraction, now) {
   return { records, years: months ? Math.round((months / 12) * 10) / 10 : null, owner }
 }
 
+// A project line often holds the title and a short description ("Attendance dashboard built with React").
+// Split at " - ", " – " or ": " (the separator is dropped), else at the first split word with at least two words
+// (for 使用: two characters) before it; the description then starts with the split word.
+const PROJECT_SEPARATOR = /\s+[-\u2013]\s+|:\s+/
+const PROJECT_SPLIT_WORD = /\s(built with|built using|using|with|dengan|menggunakan)(?=\s)/gi
+const USE_WORD_ZH = '\u4f7f\u7528'
+export function splitProject(line) {
+  const text = line.trim()
+  const sep = PROJECT_SEPARATOR.exec(text)
+  if (sep && sep.index > 0 && text.slice(sep.index + sep[0].length).trim()) {
+    return { title: text.slice(0, sep.index).trim(), description: text.slice(sep.index + sep[0].length).trim() }
+  }
+  let at = -1
+  for (const m of text.matchAll(PROJECT_SPLIT_WORD)) {
+    if (text.slice(0, m.index).trim().split(/\s+/).length >= 2) { at = m.index + 1; break }
+  }
+  const zh = text.indexOf(USE_WORD_ZH)
+  if (zh >= 2 && (at === -1 || zh < at)) at = zh
+  if (at === -1) return { title: text, description: '' }
+  return { title: text.slice(0, at).trim(), description: text.slice(at).trim() }
+}
+
 // Projects: a short line is a project's title; a description line (above) belongs to the project before it.
 // owner: row index → project index, as for jobs.
 function projectRecords(rows, extraction) {
@@ -110,7 +132,7 @@ function projectRecords(rows, extraction) {
     if (records.length && DESCRIBES(line)) {
       const project = records[records.length - 1]
       project.description = [project.description, described(line)].filter(Boolean).join(' ')
-    } else records.push({ title: line, description: '', userConfirmed: false, extraction: extraction('section', line, 0.9) })
+    } else records.push({ ...splitProject(line), userConfirmed: false, extraction: extraction('section', line, 0.9) })
     owner.set(i, records.length - 1)
   })
   return { records, owner }
@@ -135,7 +157,8 @@ async function skillsFromRules(rows, catalogue, normalizer, extraction) {
     }
   }
   for (const { line, section, heading } of rows) {
-    if (heading) continue
+    // Certificate and education lines name issuers and schools, not software the person used.
+    if (heading || section === 'certifications' || section === 'education') continue
     const words = wordsOf(line)
     const original = line.split(/\s+/)
     const listLike = section === 'skills' || LIST_SEPARATOR.test(line)

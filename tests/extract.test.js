@@ -175,3 +175,52 @@ describe('skills are linked to the job or project they were used in (owner, 31 O
     expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
   })
 })
+
+describe('certificates stay out of the software scan; projects split into title and description (31 Oct)', () => {
+  const read = (lines) => extractProfile({ lines, language: 'en', interfaceLanguage: 'en', catalogue, normalizer, now: NOW })
+  const names = (profile) => profile.skills.map((s) => s.name)
+
+  it('a certificate line gives no skill but is still a certification', async () => {
+    const { profile } = await read(['CERTIFICATIONS', 'Google Data Analytics Certificate, 2023'])
+    expect(names(profile)).not.toContain('Google')
+    expect(profile.certifications.map((c) => c.name)).toEqual(['Google Data Analytics Certificate, 2023'])
+  })
+
+  it('an education line adds no software skill', async () => {
+    const { profile } = await read(['EDUCATION', 'Diploma in Information Technology, Politeknik Ungku Omar, Python'])
+    expect(names(profile)).not.toContain('Python')
+  })
+
+  it('splits at a split word; the description starts with it; skills carry the split title', async () => {
+    const { profile } = await read(['PROJECTS', 'Student attendance dashboard built with React and Node.js'])
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([['Student attendance dashboard', 'built with React and Node.js']])
+    for (const name of ['React', 'Node.js']) {
+      expect(profile.skills.find((s) => s.name === name)).toMatchObject({ usedIn: [{ kind: 'project', title: 'Student attendance dashboard' }], proficiency: 'good' })
+    }
+  })
+
+  it('no split word: title unchanged, description empty', async () => {
+    const { profile } = await read(['PROJECTS', 'Library booking app in JavaScript'])
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([['Library booking app in JavaScript', '']])
+  })
+
+  it('splits at a separator, dropping it', async () => {
+    const { profile } = await read(['PROJECTS', 'Weather app - built using Flutter'])
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([['Weather app', 'built using Flutter']])
+  })
+
+  it('splits Malay and English split words', async () => {
+    const { profile } = await read(['PROJECTS', 'Sistem tempahan dengan PHP', 'Chat bot with Python'])
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([['Sistem tempahan', 'dengan PHP'], ['Chat bot', 'with Python']])
+  })
+
+  it('does not split when only one word precedes the split word', async () => {
+    const { profile } = await read(['PROJECTS', 'App using Java'])
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([['App using Java', '']])
+  })
+
+  it('later description lines join after the split description', async () => {
+    const { profile } = await read(['PROJECTS', 'Weather app - built using Flutter', '• Shows the forecast for seven days'])
+    expect(profile.projects[0].description).toBe('built using Flutter Shows the forecast for seven days')
+  })
+})

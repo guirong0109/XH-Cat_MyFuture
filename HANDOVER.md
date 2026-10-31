@@ -22,6 +22,7 @@ scenario comparison.
 | Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
 | Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
+| CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1423 tests pass after the merge; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -62,6 +63,22 @@ scenario comparison.
 - **Every list shows its source on screen.** The owner calls this highly important; keep it for anything new.
 - **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
   and not used yet.
+
+## CV and profile screens since 2026-10-31 (owner requests, details: branch `claude/cv-profile-module`)
+- **Look:** the app screens use the landing page's design (cream, serif headlines, mono labels, thin rules, ATM and
+  receipts). Main's matching, Radar, pathway and organisation screens keep their rules, now in the same colours.
+- **Start:** "Who is it for?" → personal: guest or account, then "What is your goal?" (4 goals), then CV or form;
+  organisation: account only (no guest), then C/D and the organisation view. Sign-in notes from the organisation
+  view skip the question.
+- **Profile:** five sections — Education (qualification + field of study dropdowns), Employment background (job title
+  + years), Skills and proficiency, Interests (career interests only), Using AI. "Review and confirm" is on the last
+  section. No certificates or training; projects are kept as cards in Skills.
+- **Skills:** a card per job and project with the skills used there, "Other skills" folded. A skill used in a job or
+  project starts at **Good** (tag "From your projects"; the owner's rule) — matching counts it as Good.
+- **After a CV:** only "Edit in the form"; the qualification level and field of study come prechosen ("Chosen from
+  your CV … check it is right").
+- **Merge note:** on a Windows checkout with `core.autocrlf=true`, `tests/radar/copiedFromMain.test.js` fails 2 checks
+  (line endings change the files' SHA-256); the files themselves are unchanged.
 
 ## Open points for the owner
 - **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
@@ -113,8 +130,8 @@ scenario comparison.
   `shared/matching/overall.js`.
 
 ## Landing page (since 2026-10-31, details: branch `claude/website-interface`)
-- The welcome screen is now the landing page. Its "Get started" buttons open the sign-in / guest choice
-  (`access`); every other screen is the app as before.
+- The welcome screen is now the landing page. Its "Get started" buttons open "Who is it for?" (for myself / for my
+  organisation), then the guest or account choice (`access`).
 - The 3D ATM intro (three.js 0.186.1, served from `node_modules`, no CDN) stays as built. **The owner will say
   later what changes in the ATM section; do not alter it until then.**
 - Its stage list still says only the profile is built; radar and matching exist now. Owner to decide the wording.

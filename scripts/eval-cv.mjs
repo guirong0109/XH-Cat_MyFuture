@@ -81,7 +81,8 @@ async function main() {
     const handled = entry.expectedError ? out.error === entry.expectedError : !out.error
     const found = out.profile ? foundFields(out.profile) : { skills: [], qualifications: [], jobs: [], certifications: [] }
     const scores = Object.fromEntries(FIELDS.map((f) => [f, scoreField(entry.expected[f], found[f])]))
-    const levels = out.profile ? out.profile.skills.filter((s) => s.proficiency !== null).length : 0
+    // Only Good for a skill used in a job or project (owner, 31 Oct) may come from a CV.
+    const levels = out.profile ? out.profile.skills.filter((s) => s.proficiency !== null && s.proficiencyStatus !== 'from_projects').length : 0
     const withId = out.profile ? out.profile.skills.filter((s) => s.canonicalId).length : 0
     results.push({ entry, out, ms, handled, found, scores, levels, withId })
   }
@@ -107,7 +108,7 @@ async function main() {
     '',
     `- Wrong-item rate (extra items ÷ items found, all fields): **${round(FIELDS.reduce((n, f) => n + totals[f].fp, 0) / Math.max(1, FIELDS.reduce((n, f) => n + totals[f].tp + totals[f].fp, 0)))}**`,
     `- Skills linked to an O*NET id: **${withId} of ${skillsFound}** found skills (the rest stay "not in our list yet" for the user).`,
-    `- Skill levels set by extraction: **${results.reduce((n, r) => n + r.levels, 0)}** (must be 0).`,
+    `- Skill levels set by extraction, other than Good for a skill used in a job or project: **${results.reduce((n, r) => n + r.levels, 0)}** (must be 0).`,
     `- Failure rate (a CV not handled as expected): **${failures.length} of ${set.cases.length}**${failures.length ? ` (${failures.map((r) => r.entry.id).join(', ')})` : ''}. The scanned CV is expected to fail with \`scanned_no_ocr\`.`,
     `- Latency per CV (build + read + extract, in-process): median **${median(results.map((r) => r.ms))} ms**, slowest ${Math.max(...results.map((r) => r.ms))} ms.`,
     '',

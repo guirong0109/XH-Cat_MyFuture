@@ -1,3 +1,4 @@
+// GET /api/fields → { source, version, downloadedAt, fields } (every ISCED-F 2013 field, for the dropdown).
 // GET /api/fields/search?q= → { source, version, downloadedAt, candidates } (ISCED-F 2013 fields of study).
 // GET /api/fields/:code/skills → { field, jobs, isced, onet, suggestions } (skills typical of the field's O*NET jobs).
 import express from 'express'
@@ -8,6 +9,15 @@ const unavailable = (response) => sendError(response, 503, 'fields_unavailable',
 
 export function fieldRoutes({ loadIsced, loadFieldSkills }) {
   const router = express.Router()
+  router.get('/api/fields', async (request, response) => {
+    try {
+      const isced = await loadIsced()
+      return response.json({ source: 'isced', version: isced.manifest.version, downloadedAt: isced.manifest.downloadedAt, fields: isced.list() })
+    } catch (error) {
+      if (!(error instanceof IscedUnavailable)) throw error
+      return unavailable(response)
+    }
+  })
   router.get('/api/fields/search', async (request, response) => {
     const q = typeof request.query.q === 'string' ? request.query.q.trim() : ''
     if (q.length < 2 || q.length > 100) return sendError(response, 400, 'bad_query', 'Search with 2 to 100 characters.')

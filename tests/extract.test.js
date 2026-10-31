@@ -85,15 +85,22 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(await names(['PROJECTS', 'Python, JavaScript'])).toEqual(['Python', 'JavaScript'])
   })
 
+  it('each qualification comes with its level already chosen for the dropdown (owner, 31 Oct)', async () => {
+    const { profile } = await run()
+    expect(profile.education.records.map((r) => [r.qualification, r.level])).toEqual([['Diploma', 'diploma'], ['Bachelor degree', 'bachelor']])
+  })
+
   it('reads certificates and projects as unconfirmed records', async () => {
     const { profile } = await run()
     expect(profile.certifications.map((c) => c.name)).toEqual(['Google Data Analytics Certificate, 2023'])
     expect(profile.projects.map((p) => p.title)).toContain('Student attendance dashboard')
   })
 
-  it('never sets a level and the draft validates', async () => {
+  it('sets no level, except Good (from_projects) for a skill used in a job or project; the draft validates', async () => {
     const { profile } = await run()
-    expect(profile.skills.every((s) => s.proficiency === null && s.proficiencyStatus === 'not_assessed')).toBe(true)
+    const levels = Object.fromEntries(profile.skills.map((s) => [s.name, `${s.proficiency}/${s.proficiencyStatus}`]))
+    expect(levels['Microsoft Excel']).toBe('good/from_projects')
+    for (const [name, level] of Object.entries(levels)) if (name !== 'Microsoft Excel') expect(level, name).toBe('null/not_assessed')
     expect(profile).toMatchObject({ profileStatus: 'draft', inputMethod: 'cv', cvLanguage: 'en', interfaceLanguage: 'ms' })
     expect(profile.dataProvenance.extractionModel).toBe(EXTRACTOR_VERSION)
     expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
@@ -114,5 +121,57 @@ describe('extractProfile (L1, L2, L4)', () => {
     const { profile } = await extractProfile({ lines: ['Python Microsoft Excel, '.repeat(45000)], language: 'en', interfaceLanguage: 'en', catalogue, normalizer, semanticStep: null, now: NOW })
     expect(Date.now() - started).toBeLessThan(2000)
     expect(profile.skills.length).toBeGreaterThan(0)
+  })
+})
+
+describe('skills are linked to the job or project they were used in (owner, 31 Oct)', () => {
+  const GROUPED = [
+    'EXPERIENCE',
+    'Data Analyst Intern, Retail company, Jun 2025 - Dec 2025',
+    '• Built weekly sales reports in Microsoft Excel for store managers',
+    'IT Support, Acme Sdn Bhd, Jan 2024 - May 2025',
+    'Wrote small office tools in Python and kept the laptops running',
+    'PROJECTS',
+    'Flood Risk Prediction Model',
+    '• Trained a model in Python on public rainfall data',
+    'Campus FAQ Assistant',
+    'Built a chatbot in JavaScript and Python that answers student questions.',
+    'SKILLS',
+    'Python, Reading Comprehension, Oracle Java',
+  ]
+  const grouped = () => extractProfile({ lines: GROUPED, language: 'en', interfaceLanguage: 'en', catalogue, normalizer, now: NOW })
+  const usedIn = (profile, name) => profile.skills.find((s) => s.name === name)?.usedIn
+
+  it('a project is a short title line; the bullet or sentence lines under it are its description, without the bullets', async () => {
+    const { profile } = await grouped()
+    expect(profile.projects.map((p) => [p.title, p.description])).toEqual([
+      ['Flood Risk Prediction Model', 'Trained a model in Python on public rainfall data'],
+      ['Campus FAQ Assistant', 'Built a chatbot in JavaScript and Python that answers student questions.'],
+    ])
+  })
+
+  it('a job keeps the lines under it as its description', async () => {
+    const { profile } = await grouped()
+    expect(profile.employment.records.map((j) => j.description)).toEqual([
+      'Built weekly sales reports in Microsoft Excel for store managers',
+      'Wrote small office tools in Python and kept the laptops running',
+    ])
+  })
+
+  it('each skill lists every job and project it was found under; Skills-section-only skills list none', async () => {
+    const { profile } = await grouped()
+    expect(usedIn(profile, 'Microsoft Excel')).toEqual([{ kind: 'job', title: 'Data Analyst Intern' }])
+    expect(usedIn(profile, 'JavaScript')).toEqual([{ kind: 'project', title: 'Campus FAQ Assistant' }])
+    expect(usedIn(profile, 'Python')).toEqual([
+      { kind: 'job', title: 'IT Support' },
+      { kind: 'project', title: 'Flood Risk Prediction Model' },
+      { kind: 'project', title: 'Campus FAQ Assistant' },
+    ])
+    expect(usedIn(profile, 'Oracle Java')).toEqual([])
+    expect(usedIn(profile, 'Reading Comprehension')).toEqual([])
+    const level = (name) => profile.skills.find((s) => s.name === name)
+    expect(level('Python')).toMatchObject({ proficiency: 'good', proficiencyStatus: 'from_projects', userConfirmed: false })
+    expect(level('Oracle Java')).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
+    expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
   })
 })

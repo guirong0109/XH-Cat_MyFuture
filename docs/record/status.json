@@ -197,6 +197,11 @@
           "title": "T26 Better skill search",
           "sub": "work styles · knowledge · work activities · general first",
           "status": "done"
+        },
+        {
+          "title": "T27 Architecture diagram",
+          "sub": "data lineage · every source and how it links",
+          "status": "done"
         }
       ]
     },
@@ -696,6 +701,137 @@
           "status": "todo"
         }
       ]
+    },
+    {
+      "id": "CV-Step 9",
+      "name": "CV branch · Interface redesign (your request)",
+      "tasks": [
+        {
+          "title": "CV T28 The landing page look on the CV screens",
+          "sub": "cream page · serif headlines · mono labels · thin rules · ATM drop zone · receipts",
+          "status": "done"
+        },
+        {
+          "title": "CV T28b No language chooser on the welcome screen",
+          "sub": "the dropdown at the top right is enough",
+          "status": "done"
+        },
+        {
+          "title": "CV T28c First question: personal or organisation",
+          "sub": "For myself → A, B · For my organisation → C, D (preview)",
+          "status": "done"
+        },
+        {
+          "title": "CV T28d Choices look like buttons",
+          "sub": "outline · round corners · arrow in a circle · press-down shadow",
+          "status": "done"
+        },
+        {
+          "title": "CV T28e No Sign in link on the welcome screen",
+          "sub": "sign in after choosing, or from the top bar",
+          "status": "done"
+        },
+        {
+          "title": "CV T28f Organisations need an account",
+          "sub": "personal: guest or account · organisation: sign up or sign in only",
+          "status": "done"
+        },
+        {
+          "title": "CV T28g Goal question",
+          "sub": "Where I stand · Find a direction · Switch career · Grow in my field",
+          "status": "done"
+        },
+        {
+          "title": "CV T28h Who are you? options",
+          "sub": "Fresh graduate · Student · Underemployed · Unemployed",
+          "status": "done"
+        },
+        {
+          "title": "CV T28i Who you are moves into the profile",
+          "sub": "start: personal / organisation → guest or account → goal → CV · profile opens with 4 buttons",
+          "status": "done"
+        },
+        {
+          "title": "CV T28j Small buttons in one row",
+          "sub": "Which describes you best? · radio dot · explanation on hover",
+          "status": "done"
+        },
+        {
+          "title": "CV T28k No 'Current education status'",
+          "sub": "removed from the form and the receipt",
+          "status": "done"
+        },
+        {
+          "title": "CV T28l One list of qualifications",
+          "sub": "level → field of study dropdown (124 ISCED-F fields) · highest worked out",
+          "status": "done"
+        },
+        {
+          "title": "CV T28m Qualifications: only level and major",
+          "sub": "no Highest qualification · Add a qualification first · no institution or year",
+          "status": "done"
+        },
+        {
+          "title": "CV T28n No certificates, training or projects",
+          "sub": "profile has 4 sections · CV finds for them left out",
+          "status": "done"
+        },
+        {
+          "title": "CV T28o First section renamed Education",
+          "sub": "EN Education · BM Pendidikan · 中文 教育",
+          "status": "done"
+        },
+        {
+          "title": "CV T28p No 'Current employment status'",
+          "sub": "removed from Employment background and the receipt",
+          "status": "done"
+        },
+        {
+          "title": "CV T28q Jobs: title, then years",
+          "sub": "first job ready · years as a number box with arrows · nothing else asked",
+          "status": "done"
+        },
+        {
+          "title": "CV T28r 'Career preferences' is now 'Interests'",
+          "sub": "last profile section renamed · BM Minat · 中文 兴趣",
+          "status": "done"
+        },
+        {
+          "title": "CV T28s Interests: one question",
+          "sub": "only Career interests and fields · goal asked at the start only",
+          "status": "done"
+        },
+        {
+          "title": "CV T28t Review and confirm on Interests only",
+          "sub": "sections 1-3 move on with Next · Review and confirm on the last section",
+          "status": "done"
+        },
+        {
+          "title": "CV T28u Skill level as a toggle bar",
+          "sub": "Not assessed yet | Basic | Good | Expert · one press picks",
+          "status": "done"
+        },
+        {
+          "title": "CV T28v Skills grouped under jobs and projects",
+          "sub": "a card per job and project · Others · Looks right / Confirm all · projects back",
+          "status": "done"
+        },
+        {
+          "title": "CV T28w Used in a job or project = Good",
+          "sub": "level set automatically, tagged 'From your projects' · Other skills folded",
+          "status": "done"
+        },
+        {
+          "title": "CV T28x After the CV: only 'Edit in the form'",
+          "sub": "no Review and confirm or Upload another file on the CV result",
+          "status": "done"
+        },
+        {
+          "title": "CV T28y CV qualification and field prechosen",
+          "sub": "level from the CV reader · field from the ISCED search · 'Check it is right'",
+          "status": "done"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -741,7 +877,33 @@
     "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
     "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))",
     "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))",
-    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed."
+    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed.",
+    "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels",
+    "CV Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)",
+    "CV Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)",
+    "CV Task 28c: your request - the first screen asks who it is for: 'For myself' or 'For my organisation' (replaces Get started; Sign in stays as a link). 'Who are you?' then shows only the matching choices (A, B or C, D); someone who signs in without answering sees all four. New wording in EN, BM and 中文 (Tests 242 passed)",
+    "CV Task 28d: your report that 'For myself' and 'For my organisation' did not look like buttons - the big choices (also on Who are you? and the CV-or-form screen) are now outlined buttons with round corners, an arrow in a circle and a solid shadow; on hover they turn ink with a lime arrow, and a click presses them down. Preview choices (C, D) have a dashed outline (Tests 243 passed)",
+    "CV Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
+    "CV Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
+    "CV Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
+    "CV Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
+    "CV Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)",
+    "CV Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)",
+    "CV Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)",
+    "CV Task 28l: your request - 'Highest qualification' and 'Add a qualification' asked the same thing; they are now one list. Each qualification starts with a level dropdown (SPM … PhD); once chosen, Field of study appears as a dropdown of all 124 UNESCO ISCED-F 2013 fields grouped by broad area (your choice), with Institution and Year. The highest qualification is worked out from the list and shown under it. Words from a CV stay visible ('As written: …') until the user picks. New read-only server route GET /api/fields sends the whole list (your OK); nothing else in the backend changed (Tests 269 passed)",
+    "CV Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
+    "CV Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)",
+    "CV Task 28o: your request - the first profile section '01 Study and experience' is now '01 Education' (BM Pendidikan, 中文 教育) (Tests 272 passed)",
+    "CV Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)",
+    "CV Task 28q: your request - Employment background opens with a first job ready: Job title, then Years of work experience for that job as a number box with up/down arrows (0-60, always visible). '+ Add a job' adds more. Nothing else is asked (your choice): no employer, period, industries or overall years; a CV may still fill those and the receipt then shows them. The 'Find the standard occupation' button under a job title stays (it links the job for matching). The receipt shows each job with its years (Tests 282 passed)",
+    "CV Task 28r: your request - the last profile section 'Career preferences' is now '04 Interests' (BM Minat, 中文 兴趣). Only the name changed; the questions inside are the same (Tests 283 passed)",
+    "CV Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)",
+    "CV Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)",
+    "CV Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
+    "CV Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
+    "CV Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)",
+    "CV Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)",
+    "CV Task 28y: your request - after a CV upload, the Education dropdowns come prechosen, so the user only checks them: the qualification level from what the CV reader recognised (e.g. 'Bachelor of ...' = Bachelor degree), and the field of study as the first match of the existing ISCED-F field search for the CV words (e.g. 'Computer Science' = Software and applications development and analysis, 0613, through the Statistics Canada CIP link). Under it: 'Chosen from your CV: “Computer Science”. Check it is right.' instead of 'Choose the matching one'. When nothing matches, the dropdown stays empty with the CV words, as before. The AI re-read does the same (Tests 320 passed)"
   ],
   "waiting": [
     "Study Pathway: review the team picks in #admin; fill the 60 missing MQA references",
@@ -833,7 +995,14 @@
     "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
     "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
     "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken",
-    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged"
+    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged",
+    "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet",
+    "T28c: the organisation path still ends at the existing preview (C, D need an account and are not built) - cost: nothing works yet for organisations, as before",
+    "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up",
+    "T28g: the one-line explanation under each goal was written by Claude, not given by you - cost: please check or reword it",
+    "T28h: 'Working adult' is no longer offered at the start (not in your list) - cost: an employed person who is not underemployed has no matching option; tell me if one should be added",
+    "T28h: the one-line explanation under each option was written by Claude - cost: please check or reword it",
+    "T28j: the explanation under each option is hover text now - cost: phones do not show it"
   ],
   "log": [
     {
@@ -2080,6 +2249,266 @@
       "time": "31 Oct",
       "step": "Organisation view: judge test source label (hr-branch)",
       "detail": "In a judge Trend Change Test session the Outlook no longer names DOSM as the job-ad source and says the job-ad groups use test data. npm test 1297 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 27",
+      "detail": "architecture diagram updated with the architecture-diagram skill; every label checked to fit in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "design the interface of the CV branch in the landing page look; don't touch the backend"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28",
+      "detail": "6 tests first (failed), then styles.css rewritten and 4 screens given receipt / ATM classes; npm test 238 passed; checked in headless Chrome at 1440 px and 390 px, light and dark, no sideways scroll"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove the language chooser from the first screen; the dropdown at the top right is enough"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28b",
+      "detail": "test first (failed), then the chooser removed from welcome.js; npm test 239 passed; checked at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the first thing: ask whether the user wants it for personal use or for an organisation"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28c",
+      "detail": "3 tests first (2 failed), then welcome.js, category.js, app.js and the three wording files; npm test 242 passed; both paths clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "'For myself' and 'For my organisation' do not look like buttons; make them intuitive"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28d",
+      "detail": "test first (failed), then the choice style in styles.css; npm test 243 passed; checked at 1440 px and 390 px, light and dark, with the mouse over a button"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove the Sign in button on the welcome screen"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28e",
+      "detail": "test first (failed), then the link removed from welcome.js; npm test 243 passed; checked at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your rule",
+      "detail": "personal can continue as guest or sign up; organisations should sign up to use the system"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28f",
+      "detail": "3 tests first (2 failed), then access.js, app.js and the wording files; npm test 246 passed; clicked through in Chrome with accounts off (this server) and on (local in-memory accounts server): organisation sign-up leads to Who are you? with C and D only"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "after guest or sign-up, ask the user's goal: Where I stand? Find a direction. Switch career. Grow in my field."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "the goal question comes before 'Who are you?'; the form's Career goal uses the same four goals"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28g",
+      "detail": "5 tests first (failed: no goal screen), then goal.js, app.js, accountBox.js, form.js, review.js and the wording files; npm test 251 passed; clicked through as a guest and with a new account (accounts test server), at 1440 px and 390 px, light and dark; checked that nothing on main reads the old goal values"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "Who are you? options: Fresh graduate, Student, Underemployed, Unemployed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28h",
+      "detail": "8 tests first (failed), then category.js, app.js, org.js, form.js, review.js, profileSchema.js and the wording files; npm test 257 passed; clicked through to Confirm as a guest and with a new account (accounts test server restarted): 'Saved to your account (version 1)'"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the start is personal / organisation, goal, upload CV; then the profile; the profile first asks Which describes you best? with 4 buttons (Student, Fresh graduate, Underemployed, Unemployed) instead of a dropdown"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28i",
+      "detail": "tests rewritten first (5 failed), then category.js (organisations only), choiceField in fields.js, form.js, review.js, app.js (goal → source; choose action) and styles.css; npm test 257 passed; clicked through in Chrome at 1440 px and 390 px, light and dark: choosing Underemployed saves it, Prefer not to say clears it"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the buttons are too big; make them small and keep them in the same row"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28j",
+      "detail": "tests first (3 failed), then choiceField in fields.js and the .options / .option styles; npm test 258 passed; checked at 1440 px (one row) and 390 px (two rows), light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove Current education status"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28k",
+      "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 260 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "Highest qualification and Add a qualification clash; combine them: choose the qualification from a dropdown, then a field-of-study dropdown pops up"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Checked",
+      "detail": "no error in the page when choosing a highest qualification and adding one: the two questions only duplicate each other"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choice",
+      "detail": "field of study as a dropdown of all 124 fields (needs one small read-only server route)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28l",
+      "detail": "tests first (11 failed), then GET /api/fields (isced.js, routes/fields.js), form.js (one qualification list), app.js (level creates the first row; highest worked out; field dropdown), review.js and the wording files; npm test 269 passed; test servers restarted; clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your correction",
+      "detail": "remove Highest qualification; the user clicks Add a qualification, then sees the qualification and the field of study (major); no institution or year"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28m",
+      "detail": "tests rewritten first (6 failed), then form.js, review.js, app.js and the wording files; npm test 268 passed; clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove certificate and project from the profile"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "remove the whole section, training too; leave out what a CV finds for them"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28n",
+      "detail": "3 tests first (failed), then form.js (sections, dropNotAsked), app.js (CV draft and AI re-read), review.js; npm test 271 passed; a synthetic CV with a certificate and a project uploaded in Chrome: server read 1 + 1, profile kept 0 + 0 and all 4 skills"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "rename 01 Study and experience to 01 Education"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28o",
+      "detail": "test first (failed), then the three wording files; npm test 272 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "remove Current employment status from Employment background"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28p",
+      "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 274 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "in Employment background, first Job title, then years of work experience for that job title, as a number box with arrows"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "nothing else (no employer, period, industries, overall years); the first job shows straight away"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28q",
+      "detail": "tests first (8 failed), then form.js (jobRow, toYears), app.js (typing creates the first job; years as a number), review.js, styles.css (arrows always visible) and the wording files; npm test 282 passed; in Chrome: typed a job title, 3 arrow presses saved 3 years, a second job saved"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28r",
+      "detail": "your request: rename career preferences to Interests; test first (1 failed), then the wording files (en Interests, ms Minat, zh 兴趣); npm test 283 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28s",
+      "detail": "your request: in Interests keep only Career interests and fields; tests first (3 failed), then form.js (prefs is the interest field only; SECTION_FIELDS[3] empty) and review.js (location and hours only when saved earlier); npm test 285 passed; in Chrome tab 04 shows only Career interests and fields"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28t",
+      "detail": "your request: Review and confirm only on Interests; test first (1 failed), then form.js (last section shows Review and confirm, the others Next as the main button); npm test 286 passed; in Chrome sections 1-3 show Back | Next, section 4 Back | Review and confirm, which opens the receipt"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28u",
+      "detail": "your request: skill level as a toggle bar; tests first (3 failed), then form.js (levelBar), app.js (level action replaces the dropdown handler), styles.css (.toggle); npm test 289 passed; in Chrome: Good and Expert picked and saved as self-reported, Not assessed yet resets; light, dark and phone width checked"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "Skills and proficiency is too messy: list the skills under each project and job (your picture); skills not in a project go to Others"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "bring projects back; change the CV reader to note where each skill was used; estimate levels (rule still to come from you); confirm per card"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28v",
+      "detail": "tests first (CV reader 3, AI re-read 1, screen 16 failed), then server/cv/extract.js (job and project descriptions, usedIn per skill), server/skills/normalize.js (mergeSkills joins usedIn), server/cv/reextract.js + reextractPrompt.js (usedIn, optional in replies), shared/profileSchema.js (makeSkill usedIn, checked when present), public/js/screens/skillGroups.js (cards), form.js, app.js (Looks right, Confirm all, Edit, + add skill, rename and remove keep links), styles.css, wording in en/ms/zh; npm test 310 passed; eval-cv 11 CVs 0 failures; in Chrome a CV with 1 job and 2 projects: Python under both projects, Looks right, + add skill (JavaScript), level Good, Confirm all; light, dark and phone width checked"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your rule",
+      "detail": "show which skills were used in which project, and set the level of those skills as strong automatically; your choices: strong = Good; every skill in a job or project card; tagged 'From your projects', user can change; Other skills folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28w",
+      "detail": "tests first (9 failed), then shared/profileSchema.js (from_projects status, levelFromUse, the CV-level check allows only Good for a used skill), server/cv/extract.js and reextract.js (levelFromUse after merging), scripts/eval-cv.mjs (counts only other levels), skillGroups.js (Good on linking, back on unlinking, tag, Other skills fold), review.js (receipt tag), app.js (fold opens when a skill is added to Others), styles.css, wording in en/ms/zh; npm test 314 passed; eval-cv 0 failures, 0 other levels; in Chrome every project skill showed Good with the tag and Other skills was folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28x",
+      "detail": "your request: after uploading a CV, leave only Edit in the form, because the extraction is never correct; test first (1 failed), then upload.js; npm test 315 passed; in Chrome the CV result shows one button, Edit in the form"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28y",
+      "detail": "your request: prechoose the qualification and field of study from the CV so the user just checks; tests first (4 failed), then server/cv/patterns.js (levelOf), extract.js and reextract.js (level), public/js/cvPrechoose.js (first ISCED search match, via cv_match), app.js (upload and AI re-read), form.js ('Chosen from your CV … Check it is right'), wording in en/ms/zh; npm test 320 passed; eval-cv 0 failures; in Chrome a CV with 'Bachelor of Computer Science' and 'Diploma in Accounting' showed Bachelor degree + Software and applications development and analysis, Diploma + Accounting and taxation"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/cv-profile-module",
+      "detail": "your request: merge the refined CV branch into main; conflicts in app.js, access.js, form.js, org.js, welcome.js, styles.css and the docs resolved (see HANDOVER.md); npm test and a browser check before the commit"
     }
   ]
 }

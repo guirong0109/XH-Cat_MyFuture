@@ -100,7 +100,12 @@ function fieldBlock(t, names, f) {
     ? `<ul class="pw-picks">${acc.map((p) => pickItem(t, p.institution ?? '', p, p.mqrRef ? t('pwMqaRef', { ref: p.mqrRef }) : t('pwMqaRefNone'))).join('')}</ul>`
     : `<p class="small muted">${esc(t('pwNoProgPick'))}</p>`
   const mqr = f.mqr ?? {}
-  const register = `<div class="pw-more">${ext(mqr.url, `${t(acc.length ? 'pwMqrMore' : 'pwMqrFind')} ↗`)}<span class="muted">${esc(t('pwMqrNec', { code: mqr.nec ?? f.code }))}</span>${tag('mt-none', t('pwCodeMatch'))}</div>`
+  // No NEC code where MQR numbers the field differently (the field is named instead); a code checked by name in MQR
+  // has its own label; otherwise the code is the field's own (code match, not an official table).
+  const nec = mqr.nec
+    ? `<span class="muted">${esc(t('pwMqrNec', { code: mqr.nec }))}</span>${tag('mt-none', t(mqr.necChecked ? 'pwNecChecked' : 'pwCodeMatch'))}`
+    : `<span class="muted">${esc(t('pwMqrNecField', { title: f.title ?? f.code }))}</span>`
+  const register = `<div class="pw-more">${ext(mqr.url, `${t(acc.length ? 'pwMqrMore' : 'pwMqrFind')} ↗`)}${nec}</div>`
   const profList = prof.length ? `${sub(t('pwProfessional'))}<ul class="pw-picks">${prof.map((p) => pickItem(t, p.body ?? p.institution ?? '', p)).join('')}</ul>` : ''
   const courses = arr(f.courses).length ? `${sub(t('pwFieldCourses'))}${courseList(t, names, f.courses)}` : ''
   return `<div class="pw-field${f.yours ? ' pw-yours' : ''}">

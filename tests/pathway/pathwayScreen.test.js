@@ -64,7 +64,7 @@ const ANSWER = {
       {
         code: '0611', title: 'Computer use', partial: true, yours: false,
         cips: [{ code: '11.0802', title: 'Data modelling/warehousing and database administration', partial: true }],
-        programmes: [], professional: [], courses: [], search: search('Computer use'), mqr: { url: MQR, nec: '0611' },
+        programmes: [], professional: [], courses: [], search: search('Computer use'), mqr: { url: MQR, nec: '0614', necChecked: true },
       },
       {
         code: '0613', title: 'Software and applications development and analysis', partial: false, yours: true,
@@ -75,7 +75,7 @@ const ANSWER = {
         ],
         professional: [{ id: 'p3', field: '0613', kind: 'professional', name: 'Professional Technologist (Ts.)', link: 'https://www.mbot.org.my/', checkedAt: '2026-10-31', body: 'MBOT', type: 'programme', for: 'field:0613', approvedAt: null }],
         courses: [{ id: 'c3', for: 'field:0613', site: 'elatih', name: 'Basic of Programming', link: 'https://elatih.hrdcorp.gov.my/courses-details/basic-of-programming', checkedAt: '2026-10-31', type: 'course', approvedAt: null }],
-        search: search('Software and applications development and analysis'), mqr: { url: MQR, nec: '0613' },
+        search: search('Software and applications development and analysis'), mqr: { url: MQR, nec: null, necChecked: false },
       },
     ],
   },
@@ -190,9 +190,23 @@ describe('Study pathway screen', () => {
     expect(f0613).toContain('href="https://www.coursera.org/search?query=Software%20and%20applications%20development%20and%20analysis"')
     // MQA register: link, NEC field code, the label
     expect(f0613).toContain(`href="${MQR}"`)
-    expect(text(f0613)).toContain('choose NEC field 0613')
-    expect(text(f0611)).toContain('choose NEC field 0611')
+    // no NEC code (MQR numbers this range differently): the field's title, no code-match tag
+    expect(text(f0613)).toContain('choose the NEC field for Software and applications development and analysis')
+    expect(text(f0613)).not.toContain('choose NEC field')
+    expect(text(f0613)).not.toContain('code match, not an official table')
+    // a pair checked by name in MQR: the NEC code and its own label, no code-match tag
+    expect(text(f0611)).toContain('choose NEC field 0614')
+    expect(text(f0611)).toContain('NEC code checked in MQR')
+    expect(text(f0611)).not.toContain('code match, not an official table')
+  })
+
+  it('a field whose code is used as the NEC code keeps the "code match, not an official table" label', () => {
+    const f = { ...ANSWER.route.fields[0], code: '0411', title: 'Accounting and taxation', mqr: { url: MQR, nec: '0411', necChecked: false } }
+    const a = { ...ANSWER, route: { ...ANSWER.route, fields: [f] } }
+    const s = text(view({ targets: [target(a.code, a.title)], active: a.code, answers: { [a.code]: a } }))
+    expect(s).toContain('choose NEC field 0411')
     expect(s).toContain('code match, not an official table')
+    expect(s).not.toContain('NEC code checked in MQR')
   })
 
   it('never says "team draft" or "not yet reviewed" on #pathway (P15), in any language', () => {

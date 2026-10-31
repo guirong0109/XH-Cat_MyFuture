@@ -978,6 +978,8 @@ export default {
   pwMqrMore: "在 MQA 名册中查看更多", // translation: owner review
   pwMqrFind: "在 MQA 名册中查找课程", // translation: owner review
   pwMqrNec: "选择 NEC 领域 {code}", // translation: owner review
+  pwMqrNecField: "选择 {title} 对应的 NEC 领域", // translation: owner review
+  pwNecChecked: "NEC 代码已在 MQR 中核对", // translation: owner review
   pwCodeMatch: "按代码对应，非官方对照表", // translation: owner review
   pwProfessional: "专业资格", // translation: owner review
   pwFieldCourses: "入门课程", // translation: owner review

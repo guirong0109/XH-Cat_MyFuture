@@ -978,6 +978,8 @@ export default {
   pwMqrMore: "Lagi dalam daftar MQA", // translation: owner review
   pwMqrFind: "Cari program dalam daftar MQA", // translation: owner review
   pwMqrNec: "pilih bidang NEC {code}", // translation: owner review
+  pwMqrNecField: "pilih bidang NEC untuk {title}", // translation: owner review
+  pwNecChecked: "kod NEC disemak dalam MQR", // translation: owner review
   pwCodeMatch: "padanan kod, bukan jadual rasmi", // translation: owner review
   pwProfessional: "Kelayakan profesional", // translation: owner review
   pwFieldCourses: "Kursus untuk bermula", // translation: owner review

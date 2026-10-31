@@ -10,7 +10,7 @@ import { createFileStore } from '../../server/radar/store/file.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import { recordReview } from '../../server/radar/reviews.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
-import { createPathwayServiceFromEnv } from '../../server/pathway/service.js'
+import { createPathwayServiceFromEnv, necFor } from '../../server/pathway/service.js'
 import { PathwayDataError, checkPathwayData, loadPathwayData, pickHash } from '../../server/pathway/data.js'
 import { FIXTURE, fixtureReferences } from '../helpers/matchingFixture.js'
 import { PATHWAY, PICKS, SITES, makePathwayFixture } from '../helpers/pathwayFixture.js'
@@ -127,7 +127,9 @@ describe('POST /api/pathway', () => {
     expect(f0613.programmes.map((p) => [p.id, p.institution, p.mqrRef])).toEqual([[PATHWAY.accredited, 'Universiti Malaya', 'MQA/FA1234']])
     expect(f0613.professional.map((p) => [p.id, p.body])).toEqual([[PATHWAY.professional, 'MBOT']])
     expect(f0613.courses).toEqual([])
-    expect(f0613.mqr).toEqual({ url: PATHWAY.mqrUrl, nec: '0613' })
+    // MQR NEC hint: 0613 is in a range MQR numbers differently and has no checked pair -> no code; 0611 -> NEC 0614 (checked by name)
+    expect(f0613.mqr).toEqual({ url: PATHWAY.mqrUrl, nec: null, necChecked: false })
+    expect(f0611.mqr).toEqual({ url: PATHWAY.mqrUrl, nec: '0614', necChecked: true })
     expect(f0613.search[1].url).toBe('https://www.coursera.org/search?query=Software%20and%20applications%20development%20and%20analysis')
     // sources: every source used, each with id, name, url, date and licence
     const ids = a.sources.map((s) => s.id)
@@ -249,6 +251,19 @@ describe('POST /api/pathway', () => {
     await start({ store })
     const { body } = await post('/api/pathway', { profile: FULL, code: FIXTURE.fullRole })
     expect(body.steps.gaps[0].courses.map((c) => c.id)).toEqual([PATHWAY.course])
+  })
+})
+
+describe('necFor (MQR NEC code for an ISCED-F field)', () => {
+  it('gives no code in the ranges MQR numbers differently (061x, 071x, 073x) unless the pair was checked by name in MQR', () => {
+    for (const code of ['0612', '0613', '0713', '0714', '0716', '0731', '0732']) expect(necFor(code)).toEqual({ nec: null, necChecked: false })
+    expect(necFor('0611')).toEqual({ nec: '0614', necChecked: true })
+    expect(necFor('0712')).toEqual({ nec: '0717', necChecked: true })
+  })
+  it("gives the field's own code elsewhere (code match)", () => {
+    expect(necFor('0411')).toEqual({ nec: '0411', necChecked: false })
+    expect(necFor('0721')).toEqual({ nec: '0721', necChecked: false })
+    expect(necFor('0910')).toEqual({ nec: '0910', necChecked: false })
   })
 })
 

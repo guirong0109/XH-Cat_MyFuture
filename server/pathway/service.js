@@ -14,6 +14,18 @@ import { SDG_TTL_MS, once } from '../matching/service.js'
 import { loadPathwayData } from './data.js'
 
 export const MQR_URL = 'https://www2.mqa.gov.my/mqr/english/ecarianakr.cfm'
+// The NEC field to choose in MQR for an ISCED-F field. NEC codes read like ISCED-F codes, but MQR numbers 0611-0614,
+// 0712-0717 and 0731-0734 differently (e.g. NEC 0712 Electricity and energy, 0716 Civil engineering, 0732 Urban and
+// Regional Planning), so no code is given there (the screen names the field instead), except the pairs the team checked
+// by name in MQR on 2026-10-31 (.superpowers/sdd/2026-10-31-study-pathway/task-9-fix-report.md): ISCED 0611 Computer
+// use = NEC 0614 Computer Use; ISCED 0712 Environmental protection technology = NEC 0717. Elsewhere: the same code
+// (code match, not an official table).
+const NEC_CHECKED = { '0611': '0614', '0712': '0717' }
+const NEC_DIFFERS = /^07[13]|^061/
+export function necFor(code) {
+  if (Object.hasOwn(NEC_CHECKED, code)) return { nec: NEC_CHECKED[code], necChecked: true }
+  return { nec: NEC_DIFFERS.test(String(code)) ? null : code, necChecked: false }
+}
 // Pick decisions are read from the review store at most once a minute, as the SDG decisions are.
 export const PICKS_TTL_MS = SDG_TTL_MS
 const arr = (v) => (Array.isArray(v) ? v : [])
@@ -66,7 +78,7 @@ export function createPathwayService({ loadData, matching, store = null, now = (
         professional: programmes.filter((p) => p.kind === 'professional'),
         courses: coursesFor(shown, key, data.sites),
         search: searchFor(shown, key, f.title, data.sites),
-        mqr: { url: MQR_URL, nec: f.code },
+        mqr: { url: MQR_URL, ...necFor(f.code) },
       }
     })
     return { education: educationFor(data.education, onetCode), fields }

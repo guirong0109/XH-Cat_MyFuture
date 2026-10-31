@@ -978,6 +978,8 @@ export default {
   pwMqrMore: "More in the MQA register",
   pwMqrFind: "Find programmes in the MQA register",
   pwMqrNec: "choose NEC field {code}",
+  pwMqrNecField: "choose the NEC field for {title}",
+  pwNecChecked: "NEC code checked in MQR",
   pwCodeMatch: "code match, not an official table",
   pwProfessional: "Professional qualifications",
   pwFieldCourses: "Courses to start with",

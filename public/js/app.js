@@ -17,7 +17,7 @@ import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
-import radarScreen, { keepCaret, staleRadar } from './screens/radar.js'
+import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -108,7 +108,7 @@ function go(screen) {
 // The screen keeps the manifest id it loaded and sends it on every follow-up call (spec §6.5, Review Focus 4).
 const radarUi = () => (state.radar ??= {})
 function setRadar(patch) {
-  state.radar = { ...radarUi(), ...patch }
+  state.radar = { ...radarUi(), openDrop: false, ...patch }
   render()
 }
 // Each load gets a number; a load that ends after a newer one started (or after the data went stale) is dropped.
@@ -329,27 +329,27 @@ const actions = {
   // Skills card: how many corners, and a corner or list number picked (highlights its row and scrolls to it).
   skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
   // AI tasks card: which job, how many corners, and a corner picked (highlights its row and scrolls to it).
-  aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null, pages: { ...radarUi().pages, ai: 1 } }),
+  aiJob: (i) => setRadar({ aiJob: Math.max(0, Number(i) || 0), aiHl: null, pages: withPage(radarUi().pages, 'ai', 1) }),
   aiCorners: (n) => setRadar({ corners: { sk: 8, ...radarUi().corners, ai: n === 'all' ? 'all' : [8, 16].includes(Number(n)) ? Number(n) : 8 } }),
   // A corner opens the page of its row (10 rows a page; the list is whole again for the skills list), then highlights it.
   aiCorner: (n) => {
-    setRadar({ aiHl: Number(n), pages: { ...radarUi().pages, ai: Math.ceil(Number(n) / 10) || 1 } })
+    setRadar({ aiHl: Number(n), pages: withPage(radarUi().pages, 'ai', pageForRow(n)) })
     document.getElementById(`rd-ai-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
   },
   skCorner: (n) => {
-    setRadar({ hl: Number(n), q: '', pages: { ...radarUi().pages, sk: Math.ceil(Number(n) / 10) || 1 } })
+    setRadar({ hl: Number(n), q: '', pages: withPage(radarUi().pages, 'sk', pageForRow(n)) })
     document.getElementById(`rd-sk-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
   },
   // A page of a long list: "<list>:<page>" (list = sk | ai | skDrop). The screen shows the last page when past it.
   rdPage: (arg) => {
-    const m = /^(sk|ai|skDrop):(\d{1,6})$/.exec(String(arg ?? ''))
-    if (!m) return
-    setRadar({ pages: { ...radarUi().pages, [m[1]]: Math.max(1, Number(m[2])) } })
-    document.querySelector(`.rd-pager [data-arg^="${m[1]}:"][aria-current="page"]`)?.focus()
+    const got = parsePageArg(arg)
+    if (!got) return
+    setRadar({ pages: withPage(radarUi().pages, got.list, got.page), openDrop: got.list === 'skDrop' })
+    document.querySelector(`.rd-pager [data-arg^="${got.list}:"][aria-current="page"]`)?.focus()
   },
   // The "Go to page" box of one list.
   rdPageGo: (list) => {
-    if (!/^(sk|ai|skDrop)$/.test(String(list ?? ''))) return
+    if (!parsePageList(list)) return
     const page = Number.parseInt(document.getElementById(`rdGo-${list}`)?.value ?? '', 10)
     if (Number.isFinite(page) && page >= 1) actions.rdPage(`${list}:${Math.min(page, 999999)}`)
   },
@@ -790,7 +790,7 @@ document.addEventListener('input', (event) => {
   if (event.target.hasAttribute?.('data-radar-search')) {
     if (event.isComposing) return // wait for compositionend (pinyin and other input methods)
     const pos = event.target.selectionStart ?? event.target.value.length
-    setRadar({ q: event.target.value, pages: { ...radarUi().pages, sk: 1 } })
+    setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
     return keepCaret(pos)
   }
   const search = event.target.dataset?.search
@@ -803,7 +803,7 @@ document.addEventListener('input', (event) => {
 })
 document.addEventListener('compositionend', (event) => {
   if (!event.target.hasAttribute?.('data-radar-search')) return
-  setRadar({ q: event.target.value, pages: { ...radarUi().pages, sk: 1 } })
+  setRadar({ q: event.target.value, pages: withPage(radarUi().pages, 'sk', 1) })
   keepCaret(event.target.selectionStart ?? event.target.value.length)
 })
 document.addEventListener('keydown', (event) => {

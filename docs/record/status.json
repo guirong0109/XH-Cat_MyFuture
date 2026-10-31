@@ -1159,6 +1159,11 @@
       "time": "31 Oct",
       "step": "Radar pages and folds",
       "detail": "owner OK: skills list, AI task list and the no-longer-in-demand fold show 10 rows a page with a page bar and Go to page box (row numbers keep counting, a chart corner opens its page, a search starts at page 1); jobs without in-demand software and each code chain become one-line folds with the source link beside them; No chart is drawn only when no corners exist; npm test 765 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages review fixes",
+      "detail": "pageForRow, parsePageArg, parsePageList and withPage are tested helpers used by the page actions; the dropped-skills fold can be closed again (open only right after one of its pages is chosen); Previous button label escaped; npm test 769 passed"
     }
   ]
 }

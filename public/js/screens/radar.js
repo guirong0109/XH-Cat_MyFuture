@@ -458,6 +458,17 @@ export function pageOf(page, count, size = PAGE_SIZE) {
   const p = Number.parseInt(page, 10)
   return Number.isFinite(p) ? Math.min(Math.max(p, 1), last) : 1
 }
+// The page that holds list row n (1-based).
+export const pageForRow = (n, size = PAGE_SIZE) => Math.max(1, Math.ceil(Number(n) / size) || 1)
+// "<list>:<page>" from a page button; null when it is not one.
+export function parsePageArg(arg) {
+  const m = /^(sk|ai|skDrop):(\d{1,6})$/.exec(String(arg ?? ''))
+  return m ? { list: m[1], page: Math.max(1, Number(m[2])) } : null
+}
+// The list name of a Go to page form; null when it is not one.
+export const parsePageList = (list) => (/^(sk|ai|skDrop)$/.test(String(list ?? '')) ? String(list) : null)
+// The pages object with one list moved to a page (the others kept).
+export const withPage = (pages, list, page) => ({ ...(pages ?? {}), [list]: page })
 // The page numbers to show: first, last, current +-1, with '…' where pages are skipped.
 export function pageItems(current, last) {
   const nums = [...new Set([1, current - 1, current, current + 1, last])].filter((n) => n >= 1 && n <= last).sort((a, b) => a - b)
@@ -472,7 +483,7 @@ export function pageItems(current, last) {
 function pager(t, list, current, count) {
   const last = Math.max(1, Math.ceil(count / PAGE_SIZE))
   const btn = (page, label, aria, extra = '') => `<button type="button" class="btn sm rd-pg" data-act="rdPage" data-arg="${esc(`${list}:${page}`)}" aria-label="${esc(aria)}"${extra}>${esc(label)}</button>`
-  const off = (label, aria) => `<button type="button" class="btn sm rd-pg" aria-label="${esc(aria)}" disabled>${label}</button>`
+  const off = (label, aria) => `<button type="button" class="btn sm rd-pg" aria-label="${esc(aria)}" disabled>${esc(label)}</button>`
   const prev = current > 1 ? btn(current - 1, '‹', t('rdPrevPage')) : off('‹', t('rdPrevPage'))
   const next = current < last ? btn(current + 1, '›', t('rdNextPage')) : off('›', t('rdNextPage'))
   const nums = pageItems(current, last).map((n) => (n === '…' ? '<span class="rd-gap-dots" aria-hidden="true">…</span>' : btn(n, String(n), t('rdPageN', { page: n }), n === current ? ' aria-current="page"' : ''))).join('')
@@ -601,10 +612,10 @@ export function skillsChartCard({ t, state, data }) {
       <ul class="rd-rank-list">${pg.slice.map(row).join('') || `<li class="rd-row"><span></span><span class="small muted">${esc(t('rdSkNoMatch'))}</span><span></span></li>`}</ul>${pg.bar}`
   }
 
-  // The fold stays open once a page of it has been chosen (the screen is redrawn on every click).
+  // The fold is open right after one of its pages was chosen (openDrop); any other action lets it be closed.
   const dpg = paged(t, 'skDrop', sc.dropped, u.pages?.skDrop)
   const dropped = sc.dropped.length
-    ? `<details class="rd-fold"${u.pages && 'skDrop' in u.pages ? ' open' : ''}><summary class="small">${esc(t('rdSkDroppedFold', { n: sc.dropped.length, previous: sc.release?.previous?.id ?? DASH, current: releaseId }))}</summary>
+    ? `<details class="rd-fold"${u.openDrop ? ' open' : ''}><summary class="small">${esc(t('rdSkDroppedFold', { n: sc.dropped.length, previous: sc.release?.previous?.id ?? DASH, current: releaseId }))}</summary>
       <ul class="rd-rank-list">${dpg.slice.map((d) => `<li class="rd-row"><span class="rd-rn">–</span><span>${esc(d.example)}<div class="tiny muted">${fromLine(t, d.jobs)}</div></span><span></span></li>`).join('')}</ul>${dpg.bar}</details>`
     : ''
 

@@ -10,7 +10,7 @@ import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
 import { usageText } from '../../shared/radar/profileCharts.js'
-import { aiTab, keepCaret, onetSourceCards, pageItems, pageOf, radarView, skillsChartCard, skillsTab, statusCards } from '../../public/js/screens/radar.js'
+import { aiTab, keepCaret, onetSourceCards, pageForRow, pageItems, pageOf, parsePageArg, parsePageList, radarView, skillsChartCard, skillsTab, statusCards, withPage } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import { esc as esc_ } from '../../public/js/ui.js'
@@ -634,6 +634,8 @@ describe('Skills card on Skills & Careers', () => {
     for (const radar of [{}, { corners: { sk: 'all' } }]) {
       const pages = [1, 2, 3, 4].map((p) => rowNumbers(card(dev(), { ...radar, pages: { sk: p } })))
       expect(pages[0]).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+      expect(pages[1]).toEqual(Array.from({ length: 10 }, (_, i) => i + 11))
+      expect([...pages[0], ...pages[1], ...pages[2]]).toEqual(Array.from({ length: 30 }, (_, i) => i + 1))
       expect(pages[2]).toEqual(Array.from({ length: 10 }, (_, i) => i + 21))
       expect(pages[3]).toEqual(pages[2]) // past the last page shows the last page
     }
@@ -993,7 +995,7 @@ describe('AI Impact card', () => {
     let st = { tab: 'ai' }
     const radarUi = () => st
     const setRadar = (patch) => { st = { ...st, ...patch } }
-    const [job, corn] = src.map((x) => new Function('radarUi', 'setRadar', `return ${x}`)(radarUi, setRadar))
+    const [job, corn] = src.map((x) => new Function('radarUi', 'setRadar', 'withPage', `return ${x}`)(radarUi, setRadar, withPage))
     job('1')
     corn('16')
     corn('all')
@@ -1071,12 +1073,21 @@ describe('Pages and folds on the Radar charts', () => {
     expect(skillsChartCard(ctx(jobs('13-2011.00')))).not.toContain('rd-pagerow')
   })
   it('a search shows page 1 of the results and the numbers stay the original ones', () => {
-    // (the action sets pages.sk to 1 when the text changes; the screen keeps the numbers of the whole list)
-    const all = [1, 2, 3, 4].flatMap((p) => rowNums(sk({ pages: { sk: p } })))
-    const hit = rowNums(sk({ q: 'a' }))
+    const devSk = (radar) => rowNums(sk(radar, jobs('15-1252.00')))
+    const all = [1, 2, 3].flatMap((p) => devSk({ pages: { sk: p } }))
+    // a stale page 2 with a short result list is clamped to page 1 of the results
+    const hit = devSk({ q: 'git' })
     expect(hit.length).toBeGreaterThan(0)
+    expect(hit.length).toBeLessThanOrEqual(10)
+    expect(devSk({ q: 'git', pages: { sk: 2 } })).toEqual(hit)
     expect(hit.every((n) => all.includes(n))).toBe(true)
-    expect(hit[0]).toBeGreaterThanOrEqual(1)
+    // the text-change action sets the page to 1 (pure helper used by app.js)
+    expect(withPage({ sk: 3, ai: 2 }, 'sk', 1)).toEqual({ sk: 1, ai: 2 })
+    expect(withPage(undefined, 'ai', 1)).toEqual({ ai: 1 })
+    // the numbers on a page of a long result list stay the original ones
+    const long = devSk({ q: 'a', pages: { sk: 1 } })
+    expect(long.length).toBeGreaterThan(0)
+    expect(long.every((n) => all.includes(n))).toBe(true)
   })
   it('the AI task list is paged when a job has more than 10 tasks', async () => {
     const out = await radarApi.aiTasks({ base })
@@ -1091,14 +1102,44 @@ describe('Pages and folds on the Radar charts', () => {
     expect(p1).toContain('data-act="rdPage" data-arg="ai:2"')
     expect(aiHtml({ pages: { ai: 2 } })).toContain('<li id="rd-ai-11"')
   })
+  it('pageForRow gives the page that holds a row; the corner opens it and highlights the row', () => {
+    expect(pageForRow(1)).toBe(1)
+    expect(pageForRow(10)).toBe(1)
+    expect(pageForRow(11)).toBe(2)
+    expect(pageForRow(15)).toBe(2)
+    expect(pageForRow(30)).toBe(3)
+    expect(pageForRow(0)).toBe(1)
+    expect(pageForRow('x')).toBe(1)
+    const html = sk({ hl: 15, pages: { sk: pageForRow(15) } })
+    expect(rowNums(html)).toContain(15)
+    expect(html.match(/<li id="rd-sk-15"[^>]*>/)[0]).toContain('hl')
+  })
+  it('page arguments are validated: bad lists, bad pages and extra text are rejected', () => {
+    expect(parsePageArg('sk:2')).toEqual({ list: 'sk', page: 2 })
+    expect(parsePageArg('skDrop:0')).toEqual({ list: 'skDrop', page: 1 })
+    expect(parsePageArg('ai:999999')).toEqual({ list: 'ai', page: 999999 })
+    for (const bad of ['', undefined, null, 'sk', 'sk:', 'sk:x', 'sk:-1', 'sk:1000000', 'other:2', 'sk:2:3', ' sk:2', 'sk:2 ', 'SK:2', '__proto__:2']) expect(parsePageArg(bad), String(bad)).toBeNull()
+    for (const ok of ['sk', 'ai', 'skDrop']) expect(parsePageList(ok)).toBe(ok)
+    for (const bad of ['', undefined, 'sk:2', 'x', 'SK', 'sk ']) expect(parsePageList(bad), String(bad)).toBeNull()
+  })
+  it('the dropped-skills fold is open only right after one of its pages was chosen, so it can be closed', () => {
+    const open = (radar) => /<details class="rd-fold"( open)?><summary class="small">/.exec(sk(radar, jobs('15-1252.00')))
+    expect(open({})[1]).toBeUndefined()
+    expect(open({ pages: { skDrop: 2 } })[1]).toBeUndefined()
+    expect(open({ pages: { skDrop: 2 }, openDrop: true })[1]).toBe(' open')
+  })
+  it('the disabled previous button label is escaped', () => {
+    expect(sk()).toMatch(/aria-label="Previous page" disabled>‹<\/button>/)
+  })
   it('app wiring: page actions, corner pages, search and job reset', () => {
     expect(app).toMatch(/rdPage: \(arg\)/)
     expect(app).toMatch(/rdPageGo: \(list\)/)
-    expect(app).toContain('(sk|ai|skDrop)')
-    expect(app).toMatch(/skCorner: [\s\S]*?pages:/)
-    expect(app).toMatch(/aiCorner: [\s\S]*?pages:/)
+    expect(app).toContain('pageForRow(n)')
+    expect(app).not.toMatch(/\/ 10/)
+    expect(app).toMatch(/skCorner: [\s\S]*?withPage\(/)
+    expect(app).toMatch(/aiCorner: [\s\S]*?withPage\(/)
     expect(app).toMatch(/aiJob: [^\n]*pages:/)
-    expect(app).toMatch(/setRadar\(\{ q: event\.target\.value, pages:/)
+    expect(app).toMatch(/setRadar\(\{ q: event\.target\.value, pages: withPage\(/)
   })
   it('the page bar has its own rd- styles with variables only', () => {
     for (const c of ['.rd-pagerow', '.rd-pager', '.rd-pg', '.rd-goto', '.rd-gap-dots']) expect(css).toContain(c)

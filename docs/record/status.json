@@ -666,6 +666,11 @@
           "status": "done"
         },
         {
+          "title": "O6j HR screens",
+          "sub": "setup, people, heatmap, team plan, outlook and SDG; role titles",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1975,6 +1980,11 @@
       "time": "31 Oct",
       "step": "O6i Sample roster (hr-branch)",
       "detail": "Task 8 reviewed, 1 fix round (rosters accept knowledge items); npm test 1183 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6j HR screens (hr-branch)",
+      "detail": "Task 9 reviewed, 1 fix round; browser check of setup and heatmap on real data; npm test 1222 passed"
     }
   ]
 }

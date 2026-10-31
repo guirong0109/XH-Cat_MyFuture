@@ -695,4 +695,25 @@ export default {
   rdChange_breaks: "perubahan struktur", // translation: owner review
   rdChange_revisions: "semakan semula", // translation: owner review
   rdChange_versions: "versi", // translation: owner review
+  rdSkChartTitle: "Kemahiran yang diminta oleh pekerjaan anda", // translation: owner review
+  rdSkChartTag: "Iklan kerja AS · O*NET", // translation: owner review
+  rdCorners: "Bucu", // translation: owner review
+  rdCornersAll: "Semua ({n})", // translation: owner review
+  rdSkSearch: "Cari {n} kemahiran anda", // translation: owner review
+  rdSkShown: "{shown} daripada {n} · dinomborkan mengikut iklan kerja AS {year}", // translation: owner review
+  rdSkFrom: "Daripada", // translation: owner review
+  rdSkNew: "baharu dalam {release}", // translation: owner review
+  rdSkNoCount: "tiada bilangan iklan AS", // translation: owner review
+  rdSkNoMatch: "Tiada kemahiran sepadan dengan carian ini", // translation: owner review
+  rdSkDroppedFold: "Tidak lagi dalam permintaan ({n}), digugurkan antara O*NET {previous} dan {current}", // translation: owner review
+  rdSkNone: "O*NET tidak menyenaraikan perisian dalam permintaan untuk {job} (pangkalan data O*NET {release}). Tiada carta dilukis.", // translation: owner review
+  rdChainBroken: "Tidak tersedia untuk eMASCO {code}: rantaian kod berhenti di {step}. Tiada pekerjaan O*NET diteka.", // translation: owner review
+  rdChainPath: "Rantaian kod", // translation: owner review
+  rdSkOneYear: "Satu tahun setakat ini: garisan putus-putus tahun terdahulu muncul dengan bilangan tahunan seterusnya.", // translation: owner review
+  rdSkLegend: "Iklan kerja AS {year} yang meminta kemahiran ini (skala log) · titik berongga = baharu dalam permintaan", // translation: owner review
+  rdSkSource: "Data AS, bukan Malaysia · kemahiran perisian sahaja · bilangan iklan kerja, bukan skor", // translation: owner review
+  rdConfirmFirst: "Sahkan profil anda untuk melihat kemahiran yang diminta oleh pekerjaan anda.", // translation: owner review
+  rdChainSameUnit: "Peranan eMASCO dalam kumpulan 4 digit yang sama berkongsi satu pautan O*NET, jadi menunjukkan kemahiran yang sama.", // translation: owner review
+  rdSkAds: "iklan", // translation: owner review
+  rdSkAria: "{n}. {name}: {count} iklan kerja AS pada {year}", // translation: owner review
 }

@@ -17,7 +17,7 @@ import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
-import radarScreen, { staleRadar } from './screens/radar.js'
+import radarScreen, { keepCaret, staleRadar } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -315,6 +315,12 @@ const actions = {
   radarTab: (tab) => setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null }),
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),
+  // Skills card: how many corners, and a corner or list number picked (highlights its row and scrolls to it).
+  skCorners: (n) => setRadar({ corners: { ai: 8, ...radarUi().corners, sk: n === 'all' ? 'all' : [8, 16, 30].includes(Number(n)) ? Number(n) : 8 } }),
+  skCorner: (n) => {
+    setRadar({ hl: Number(n), q: '' })
+    document.getElementById(`rd-sk-${Number(n)}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  },
   radarLine: (axisId) => {
     const hidden = new Set(radarUi().hidden ?? [])
     if (hidden.has(axisId)) hidden.delete(axisId)
@@ -747,6 +753,12 @@ async function runSearch(kind, key, term) {
   show()
 }
 document.addEventListener('input', (event) => {
+  // Radar skills card: the search box filters the list as you type; focus and caret come back after the redraw.
+  if (event.target.hasAttribute?.('data-radar-search')) {
+    const pos = event.target.selectionStart ?? event.target.value.length
+    setRadar({ q: event.target.value })
+    return keepCaret(pos)
+  }
   const search = event.target.dataset?.search
   if (!search) return
   const [kind, ...rest] = search.split('|')

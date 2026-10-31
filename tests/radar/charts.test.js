@@ -139,6 +139,22 @@ describe('profileRadar', () => {
     expect(svg).not.toContain('<polygon')
     expect(count(svg, /role="button"/g)).toBe(2)
   })
+  it('bar fallback shows valueText instead of the bare number', () => {
+    const items = mk(2); items[0].valueText = '3,211,598 ads'
+    const svg = profileRadar(base({ items }))
+    expect(svg).toContain('>3,211,598 ads<')
+    expect(svg).not.toContain(`>${String(items[0].value)}<`)
+    expect(svg).not.toContain('NaN')
+  })
+  it('bar fallback wraps a long label to two lines inside the viewBox', () => {
+    const items = mk(2); items[0].label = 'A very long software skill name that would run far off the left edge of the chart'
+    const svg = profileRadar(base({ items }))
+    const row = svg.match(/data-arg="s0"[\s\S]*?<\/g>/)[0]
+    expect(count(row, /<tspan/g)).toBeLessThanOrEqual(2)
+    expect(row).toContain('…')
+    expect(row).not.toContain('off the left edge')
+    for (const l of row.match(/<tspan[^>]*>([^<]*)<\/tspan>/g)) expect(l.replace(/<[^>]+>/g, '').length).toBeLessThanOrEqual(32)
+  })
   it('no hex colours; est colour uses var(--est)', () => {
     expect(profileRadar(base({ colour: 'est' }))).not.toMatch(/#[0-9a-f]{3,6}\b/i)
     expect(profileRadar(base({ colour: 'est' }))).toContain('var(--est)')

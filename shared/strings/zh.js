@@ -695,4 +695,25 @@ export default {
   rdChange_breaks: "断点", // translation: owner review
   rdChange_revisions: "修订", // translation: owner review
   rdChange_versions: "版本", // translation: owner review
+  rdSkChartTitle: "你的职业所要求的技能", // translation: owner review
+  rdSkChartTag: "美国招聘广告 · O*NET", // translation: owner review
+  rdCorners: "顶点", // translation: owner review
+  rdCornersAll: "全部（{n}）", // translation: owner review
+  rdSkSearch: "在你的 {n} 项技能中搜索", // translation: owner review
+  rdSkShown: "{shown} / {n} · 按 {year} 年美国招聘广告数编号", // translation: owner review
+  rdSkFrom: "来自", // translation: owner review
+  rdSkNew: "{release} 新增", // translation: owner review
+  rdSkNoCount: "无美国广告数", // translation: owner review
+  rdSkNoMatch: "没有技能符合此搜索", // translation: owner review
+  rdSkDroppedFold: "不再有需求（{n}），在 O*NET {previous} 与 {current} 之间被移除", // translation: owner review
+  rdSkNone: "O*NET 没有列出 {job} 的热门软件（O*NET 数据库 {release}）。不绘制图表。", // translation: owner review
+  rdChainBroken: "eMASCO {code} 无法显示：代码链在 {step} 处中断。不会猜测 O*NET 职业。", // translation: owner review
+  rdChainPath: "代码链", // translation: owner review
+  rdSkOneYear: "目前只有一年：下一次年度统计后会出现前一年的虚线。", // translation: owner review
+  rdSkLegend: "{year} 年要求该技能的美国招聘广告数（对数刻度）· 空心点 = 新增需求", // translation: owner review
+  rdSkSource: "美国数据，非马来西亚 · 仅限软件技能 · 招聘广告数量，不是分数", // translation: owner review
+  rdConfirmFirst: "请先确认你的个人资料，以查看你的职业所要求的技能。", // translation: owner review
+  rdChainSameUnit: "同一 4 位数组别的 eMASCO 职位共用一个 O*NET 链接，因此显示相同的技能。", // translation: owner review
+  rdSkAds: "则广告", // translation: owner review
+  rdSkAria: "{n}. {name}：{year} 年 {count} 则美国招聘广告", // translation: owner review
 }

@@ -29,40 +29,46 @@ function frac(scale, v) {
   return Math.min(1, Math.max(0, (x - min) / (max - min)))
 }
 
-// Greedy wrap of words to LINE characters, at most LINES lines; the last line ends with … when text is cut.
-function wrap(text) {
+// Greedy wrap of words to `line` characters, at most `max` lines; the last line ends with … when text is cut.
+function wrap(text, line = LINE, max = LINES) {
   const lines = []
   let cur = ''
   const words = String(text).split(/\s+/).filter(Boolean)
   for (let k = 0; k < words.length; k++) {
     const w = words[k]
-    if (cur && (cur + ' ' + w).length > LINE) {
+    if (cur && (cur + ' ' + w).length > line) {
       lines.push(cur)
       cur = w
-      if (lines.length === LINES) break
+      if (lines.length === max) break
     } else cur = cur ? `${cur} ${w}` : w
   }
-  if (lines.length < LINES && cur) lines.push(cur)
+  if (lines.length < max && cur) lines.push(cur)
   const used = lines.join(' ').split(/\s+/).length
-  if (used < words.length) lines[lines.length - 1] = `${lines[lines.length - 1].slice(0, LINE - 1)}…`
-  return lines.map((l) => (l.length > LINE + 4 ? `${l.slice(0, LINE + 3)}…` : l))
+  if (used < words.length) lines[lines.length - 1] = `${lines[lines.length - 1].slice(0, line - 1)}…`
+  return lines.map((l) => (l.length > line + 4 ? `${l.slice(0, line + 3)}…` : l))
 }
 
 const attrs = (it, act) => `role="button" tabindex="0" data-act="${esc(act)}" data-arg="${esc(it.id)}" aria-label="${esc(it.aria)}"`
 
+const BAR_LINE = 28 // characters of a bar label per line (the label column is 182 wide)
+const BAR_LINES = 2
+
 function barFallback(items, scale, act, label, c) {
   const rowH = 34
-  const x0 = 200
-  const bw = 200
+  const x0 = 190
+  const bw = 130
   let g = ''
   items.forEach((it, i) => {
     const y = 12 + i * rowH
     const f = frac(scale, it.value)
+    const lines = wrap(it.label, BAR_LINE, BAR_LINES)
+    const ty = y + 14 - ((lines.length - 1) * 12) / 2
+    const val = wrap(it.valueText ?? fmt(it.value), 22, 1)[0] ?? ''
     g += `<g class="rd-barrow" ${attrs(it, act)}>`
-    g += `<text x="${x0 - 8}" y="${y + 14}" text-anchor="end" style="fill:var(--ink);font-size:12px">${esc(it.label)}</text>`
+    g += `<text x="${x0 - 8}" y="${p1(ty)}" text-anchor="end" style="fill:var(--ink);font-size:12px">${lines.map((l, k) => `<tspan x="${x0 - 8}" dy="${k === 0 ? 0 : 12}">${esc(l)}</tspan>`).join('')}</text>`
     g += `<rect x="${x0}" y="${y}" width="${bw}" height="18" rx="3" style="fill:var(--surface);stroke:var(--line)"/>`
     g += `<rect x="${x0}" y="${y}" width="${p1(bw * f)}" height="18" rx="3" style="fill:${it.hollow ? 'var(--surface)' : c};stroke:${c};stroke-width:2"/>`
-    g += `<text x="${x0 + bw + 8}" y="${y + 14}" style="fill:var(--ink);font-size:11px">${esc(fmt(it.value))}</text>`
+    g += `<text x="${x0 + bw + 8}" y="${y + 14}" style="fill:var(--ink);font-size:11px">${esc(val)}</text>`
     g += '</g>'
   })
   const h = 24 + items.length * rowH

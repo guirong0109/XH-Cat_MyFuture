@@ -174,3 +174,23 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .rd-cell:focus,.rd-sec textarea:focus,.rd-sec input:focus{outline:2px solid var(--accent);outline-offset:1px}
 .rd-judge-grid{align-items:start;margin-top:10px}
 .rd-sec h3{margin:14px 0 4px;font-size:14px}
+
+/* Radar skills card (profile charts): numbered list, tools row, notes */
+.rd-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.rd-tools input{flex:1;min-width:180px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.rd-tools input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.rd-rank-list{list-style:none;margin:8px 0 0;border-top:1px solid var(--line)}
+.rd-rank-list .rd-row{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;padding:8px 2px;border-bottom:1px solid var(--line);align-items:baseline;overflow-wrap:anywhere}
+.rd-rank-list .rd-row.hl{background:var(--accent-soft)}
+.rd-rn{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.rd-rc{font-variant-numeric:tabular-nums;white-space:nowrap}
+.rd-newmark{font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;background:var(--ok-soft);color:var(--ok);white-space:nowrap}
+.rd-note{padding:12px;border-radius:10px;background:var(--surface2);margin-top:10px}
+.rd-path{margin-top:6px;overflow-wrap:anywhere}
+.rd-path code{font-size:11.5px}
+.rd-legend-line{text-align:center}
+.rd-fold{margin-top:12px}
+.rd-radar,.rd-bars{display:block;height:auto;overflow:visible}
+.rd-radar [role=button],.rd-bars [role=button]{cursor:pointer}
+.rd-radar [role=button]:focus-visible circle{stroke-width:4}
+.rd-radar [role=button]:focus-visible,.rd-bars [role=button]:focus-visible{outline:2px solid var(--accent)}

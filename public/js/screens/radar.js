@@ -11,6 +11,9 @@ import { DASH, finite, fmt, fmtSigned } from '../components/charts/format.js'
 import { evidencePanel, fmtDate, fmtInt, fmtPct, fmtSignedPct, numLink, safeUrl, signalLink, srcLink, statusTag } from '../components/evidencePanel.js'
 import { relevantItems } from '../../../shared/radar/relevance.js'
 import { makeBridge } from '../../../shared/radar/bridge.js'
+import { makeChain } from '../../../shared/radar/chain.js'
+import { filterItems, profileJobs, skillCorners } from '../../../shared/radar/profileCharts.js'
+import { profileRadar } from '../components/charts/profileRadar.js'
 
 // ---------- reference data and relevance ----------
 
@@ -24,6 +27,7 @@ function refsFor(r) {
     topics: r.topics ?? [],
     fieldTopics: r.fieldTopics ?? [],
     bridge: makeBridge(r.bridge),
+    chain: makeChain(r.bridge),
     fieldName: (code) => fields.get(code)?.title ?? null,
     fieldJobs: (code) => fields.get(code)?.jobs ?? [],
     onetTitle: (code) => onetTitles.get(code) ?? null,
@@ -432,6 +436,114 @@ function onetColumn({ t, state, data, rel, lang }) {
     ${jobs}${hot}${postings}${srcline}</div><!--col-->`
 }
 
+// ---------- Skills card: the skills the user's jobs ask for (profile charts spec D28-D30) ----------
+// Worked out here in the browser from the confirmed profile and the public skills answer; nothing is sent.
+// The list number is shown, never stored; the numbers are US job-ad counts (O*NET Hot Technologies), not a score.
+
+const CORNER_CHOICES = [8, 16, 30, 'all']
+const SK_SCALE = { kind: 'log', min: 10000, max: 5000000 }
+const SK_RINGS = [{ value: 10000, label: '10k' }, { value: 100000, label: '100k' }, { value: 1000000, label: '1M' }]
+const HOT_URL = 'https://www.onetonline.org/search/hot_tech/'
+const summaryLink = (j) => srcLink({ label: j.title ? `${j.title} (${j.code})` : j.code, url: `https://www.onetonline.org/link/summary/${encodeURIComponent(j.code)}` })
+
+// How a job reached the profile, when it is not the user's own O*NET role: "eMASCO 2512-02", "ISCED-F 0613".
+function viaText(job) {
+  const parts = (job.via ?? []).map((v) => (v.kind === 'chain' ? `eMASCO ${v.from.code}` : v.kind === 'field' ? `ISCED-F ${v.from.code}` : null))
+  return [...new Set(parts.filter(Boolean))].join(', ')
+}
+const fromLine = (t, jobs) => `${esc(t('rdSkFrom'))}: ${jobs.map((j) => `${summaryLink(j)}${viaText(j) ? ` <span class="tiny">(${esc(viaText(j))})</span>` : ''}`).join(' · ')}`
+
+// The code chain of each eMASCO role that reached O*NET jobs, every step with its official source.
+function chainPaths(t, jobs) {
+  const roles = new Map()
+  for (const j of jobs) for (const v of j.via) if (v.kind === 'chain' && !roles.has(v.from.code)) roles.set(v.from.code, v)
+  if (!roles.size) return ''
+  const step = (st) => `${esc(st.from.system)} <code>${esc(st.from.codes.join(', '))}</code> → ${esc(st.to.system)} <code>${esc(st.to.codes.join(', '))}</code>${st.label ? ` <span>(${esc(st.label)})</span>` : ''}${st.source ? ` ${srcLink({ label: st.source.name.split(/[,:]/)[0], url: st.source.url })}` : ''}`
+  const lines = [...roles.values()].map((v) => `<div class="rd-path tiny muted"><b>${esc(t('rdChainPath'))}</b> · eMASCO ${esc(v.from.code)}: ${v.path.map(step).join(' · ')}</div>`)
+  return `${lines.join('')}<p class="tiny muted">${esc(t('rdChainSameUnit'))}</p>`
+}
+
+export function skillsChartCard({ t, state, data }) {
+  const head = `<h2>${esc(t('rdSkChartTitle'))} ${tag('src', t('rdSkChartTag'))}</h2>`
+  const wrapCard = (body) => `<div class="card rd-sec" data-sec="SK">${head}${body}</div>`
+  const rel = relevance(state, data)
+  if (!rel) return wrapCard(`<div class="hint">${esc(t('rdConfirmFirst'))} <button class="btn sm ghost" data-go="form">${esc(t('rdEditProfile'))}</button></div>`)
+  const sk = data.skills
+  if (!sk || sk.state !== 'data') return wrapCard(`<p class="small muted">${esc(t('rdUnavailable'))}</p>`)
+
+  const refs = refsFor(data.refs)
+  const onetTitle = (code) => refs.onetTitle(code) ?? sk.changes?.[code]?.title ?? null
+  const { jobs, broken } = profileJobs(rel, { chain: refs.chain, onetTitle })
+  const sc = skillCorners(jobs, sk)
+  const u = ui(state)
+  const year = sc.window?.year ?? DASH
+  const releaseId = sc.release?.current?.id ?? DASH
+  const hotLink = (sk.sourceLinks ?? []).find((l) => /hot_tech/.test(l?.url ?? '')) ?? { label: 'O*NET Hot Technologies', url: HOT_URL }
+
+  const notes = broken.map((b) => `<div class="rd-note small">${esc(t('rdChainBroken', { code: b.code, step: b.missingStep.reason }))}</div>`).join('')
+  const none = sc.noSkills.length
+    ? `<div class="rd-note small">${esc(t('rdSkNone', { job: '\u0001', release: releaseId })).replace('\u0001', sc.noSkills.map(summaryLink).join(', '))}</div>`
+    : ''
+  const noJobs = !jobs.length && !broken.length ? hint(t) : ''
+
+  // Numbered by US job ads; no-count skills come last. The list number is the corner number.
+  const numbered = sc.items.map((it, i) => ({ ...it, n: i + 1 }))
+  const withCount = numbered.filter((it) => it.postings !== null)
+  let chart = ''
+  if (withCount.length) {
+    const choice = CORNER_CHOICES.includes(u.corners?.sk) ? u.corners.sk : 8
+    const k = choice === 'all' ? withCount.length : Math.min(choice, withCount.length)
+    const items = withCount.slice(0, k).map((it) => {
+      const count = fmtInt(it.postings)
+      return {
+        id: String(it.n),
+        label: it.example,
+        value: it.postings,
+        previous: it.previousPostings,
+        hollow: it.isNew,
+        valueText: `${count} ${t('rdSkAds')}`,
+        aria: `${t('rdSkAria', { n: it.n, name: it.example, count, year })}${it.isNew ? `, ${t('rdSkNew', { release: releaseId })}` : ''}`,
+      }
+    })
+    const seg = CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="skCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: withCount.length }) : String(c))}</button>`).join('')
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span></div>
+      <div class="rd-chart">${profileRadar({ items, scale: SK_SCALE, rings: SK_RINGS, act: 'skCorner', label: `${t('rdSkChartTitle')} · ${year}`, colour: 'accent', t })}</div>
+      <p class="tiny muted rd-legend-line">${esc(t('rdSkLegend', { year }))}</p>
+      ${sc.firstSnapshot ? `<p class="tiny muted rd-legend-line">${esc(t('rdSkOneYear'))}</p>` : ''}`
+  }
+
+  let list = ''
+  if (numbered.length) {
+    const q = String(u.q ?? '')
+    const shown = filterItems(numbered, q)
+    const row = (it) => {
+      const count = it.postings === null ? `<span class="tiny muted">${esc(t('rdSkNoCount'))}</span>` : `${numLink(fmtInt(it.postings), hotLink)} <span class="tiny muted">${esc(t('rdSkAds'))}</span>`
+      return `<li id="rd-sk-${it.n}" class="rd-row${u.hl === it.n ? ' hl' : ''}"><span class="rd-rn">${it.n}</span>
+        <span><b>${esc(it.example)}</b>${it.isNew ? ` <span class="rd-newmark">${esc(t('rdSkNew', { release: releaseId }))}</span>` : ''}<div class="tiny muted">${fromLine(t, it.jobs)}</div></span>
+        <span class="rd-rc small">${count}</span></li>`
+    }
+    list = `<div class="rd-tools"><input id="rd-sk-q" type="search" data-radar-search="sk" value="${esc(q)}" placeholder="${esc(t('rdSkSearch', { n: numbered.length }))}" aria-label="${esc(t('rdSkSearch', { n: numbered.length }))}"><span class="tiny muted">${esc(t('rdSkShown', { shown: shown.length, n: numbered.length, year }))}</span></div>
+      <ul class="rd-rank-list">${shown.map(row).join('') || `<li class="rd-row"><span></span><span class="small muted">${esc(t('rdSkNoMatch'))}</span><span></span></li>`}</ul>`
+  }
+
+  const dropped = sc.dropped.length
+    ? `<details class="rd-fold"><summary class="small">${esc(t('rdSkDroppedFold', { n: sc.dropped.length, previous: sc.release?.previous?.id ?? DASH, current: releaseId }))}</summary>
+      <ul class="rd-rank-list">${sc.dropped.map((d) => `<li class="rd-row"><span class="rd-rn">–</span><span>${esc(d.example)}<div class="tiny muted">${fromLine(t, d.jobs)}</div></span><span></span></li>`).join('')}</ul></details>`
+    : ''
+
+  const src = `<p class="tiny muted rd-srcline">${esc(t('rdEvSource'))}: ${(sk.sourceLinks ?? []).map(srcLink).join(' ')} · O*NET ${esc(releaseId)}${sc.release?.current?.month ? ` (${esc(sc.release.current.month)})` : ''} · ${esc(sc.window?.label ?? DASH)} · ${esc(t('rdEvFetched'))} ${esc(fmtDate(sk.fetchedAt))} · ${esc(t('rdSkSource'))}</p>`
+
+  return wrapCard(`${notes}${chainPaths(t, jobs)}${none}${noJobs}${chart}${list}${dropped}${src}`)
+}
+
+// After a render the search box is a new element: put the focus and the caret back where the user was typing.
+export function keepCaret(pos, doc = document) {
+  const box = doc.querySelector('[data-radar-search]')
+  if (!box) return
+  box.focus()
+  box.setSelectionRange(pos, pos)
+}
+
 export function skillsTab({ t, state, data }) {
   const lang = state?.lang ?? 'en'
   const rel = relevance(state, data)
@@ -543,7 +655,7 @@ export function skillsTab({ t, state, data }) {
     <div class="row" style="margin-top:10px"><button class="btn pri" data-go="match">${esc(t('rdB6Next'))}</button></div>
   </div>`
 
-  return `${sc.mine ? '' : `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>`}${b1}${b2}${b5}${b6}${viewAll(t, state, 'sk')}`
+  return `${sc.mine ? '' : `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>`}${skillsChartCard({ t, state, data })}${b1}${b2}${b5}${b6}${viewAll(t, state, 'sk')}`
 }
 
 // ---------- evidence drawer ----------

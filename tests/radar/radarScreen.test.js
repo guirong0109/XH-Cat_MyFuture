@@ -9,7 +9,7 @@ import { createMemoryStore } from '../../server/radar/store/memory.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import * as radarApi from '../../public/js/radarApi.js'
-import { aiTab, onetSourceCards, radarView, skillsTab, statusCards } from '../../public/js/screens/radar.js'
+import { aiTab, keepCaret, onetSourceCards, radarView, skillsChartCard, skillsTab, statusCards } from '../../public/js/screens/radar.js'
 import { evidencePanel, ruleVars } from '../../public/js/components/evidencePanel.js'
 import { t as translate } from '../../shared/i18n.js'
 import { esc as esc_ } from '../../public/js/ui.js'
@@ -592,5 +592,142 @@ describe('status cards (spec §11.1, §12)', () => {
     }
     expect(translate('ms', 'rdNextRelease', { date: 'D' })).toMatch(/anggaran/)
     expect(translate('zh', 'rdNextRelease', { date: 'D' })).toMatch(/估计/)
+  })
+})
+
+// ---------- Skills card (profile charts plan, task 7) ----------
+describe('Skills card on Skills & Careers', () => {
+  const job = (source, code, title) => profile({ occupationMappings: [{ term: 'x', kind: 'job', chosen: { source, code, title } }] })
+  const dev = () => job('onet', '15-1252.00', 'Software Developers')
+  const acc = () => job('onet', '13-2011.00', 'Accountants and Auditors')
+  const nurse = () => job('onet', '29-1141.00', 'Registered Nurses')
+  const card = (prof, radar = {}, d = linked()) => skillsChartCard(ctx(prof, radar, d))
+  const corners = (html) => [...html.matchAll(/data-act="skCorner" data-arg="(\d+)"/g)].map((m) => Number(m[1]))
+  const rowNumbers = (html) => [...html.matchAll(/<li id="rd-sk-(\d+)"/g)].map((m) => Number(m[1]))
+  const rows = (html) => html.match(/<li id="rd-sk-\d+"[\s\S]*?<\/li>/g) ?? []
+
+  it('is the first card of Skills & Careers', () => {
+    const html = skillsTab(ctx(dev()))
+    expect(html.indexOf('data-sec="SK"')).toBeGreaterThanOrEqual(0)
+    expect(html.indexOf('data-sec="SK"')).toBeLessThan(html.indexOf('data-sec="B1"'))
+    expect(html).toContain(t('rdSkChartTitle'))
+    expect(html).toContain(t('rdSkChartTag'))
+  })
+  it('developer and accountant get different corners; the accountant has 6 and Excel shows 3,211,598', () => {
+    const d = card(dev())
+    const a = card(acc())
+    expect(corners(a)).toHaveLength(6)
+    expect(unesc(d)).toContain('Python')
+    expect(unesc(a)).not.toContain('Python')
+    expect(rows(a).find((li) => li.includes('Microsoft Excel'))).toContain('3,211,598')
+  })
+  it('default 8 corners; 16; all = 29 with-count skills; the list always has 30 rows numbered 1 to 30', () => {
+    const d8 = card(dev())
+    expect(corners(d8)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+    expect(corners(card(dev(), { corners: { sk: 16 } }))).toHaveLength(16)
+    const all = card(dev(), { corners: { sk: 'all' } })
+    expect(corners(all)).toHaveLength(29)
+    for (const html of [d8, all]) expect(rowNumbers(html)).toEqual(Array.from({ length: 30 }, (_, i) => i + 1))
+    expect(d8).toContain('<polygon')
+    expect(d8).toMatch(/data-arg="8"[^>]*aria-pressed="true"/)
+    expect(all).toContain(t('rdCornersAll', { n: 29 }))
+  })
+  it('the corner switch buttons call skCorners', () => {
+    const html = card(dev())
+    for (const n of [8, 16, 30, 'all']) expect(html).toContain(`data-act="skCorners" data-arg="${n}"`)
+  })
+  it('search keeps the original list numbers', () => {
+    const html = card(dev(), { q: 'git' })
+    const nums = rowNumbers(html)
+    expect(nums.length).toBeGreaterThan(0)
+    expect(nums.length).toBeLessThan(30)
+    const full = rowNumbers(card(dev()))
+    expect(nums.every((n) => full.includes(n))).toBe(true)
+    for (const li of rows(html)) expect(unesc(li.match(/<b>([^<]*)<\/b>/)[1]).toLowerCase()).toContain('git')
+    expect(html).toContain('data-radar-search')
+    expect(html).toContain(t('rdSkShown', { shown: nums.length, n: 30, year: '2025' }))
+    expect(card(dev(), { q: 'zzzz' })).toContain(t('rdSkNoMatch'))
+  })
+  it('a highlighted corner marks its row', () => {
+    const html = card(dev(), { hl: 3 })
+    expect(html.match(/<li id="rd-sk-3"[^>]*>/)[0]).toContain('hl')
+    expect(html.match(/<li id="rd-sk-4"[^>]*>/)[0]).not.toContain('hl')
+  })
+  it('rows show where each skill comes from, a no-count mark, and the Hot Technologies link on counts', () => {
+    const html = card(dev())
+    expect(html).toContain(`${t('rdSkFrom')}:`)
+    expect(html).toContain('https://www.onetonline.org/link/summary/15-1252.00')
+    expect(html).toContain(t('rdSkNoCount'))
+    expect(rows(html)[0]).toMatch(/<a href="https:\/\/www\.onetonline\.org\/search\/hot_tech\/"/)
+  })
+  it('the nurse (no in-demand software) gets the explanation with the O*NET summary link and no chart', () => {
+    const html = card(nurse())
+    expect(unesc(html)).toContain('O*NET lists no in-demand software for')
+    expect(unesc(html)).toContain('(O*NET database 30.3). No chart is drawn.')
+    expect(html).toContain('https://www.onetonline.org/link/summary/29-1141.00')
+    expect(html).not.toContain('<polygon')
+    expect(corners(html)).toHaveLength(0)
+  })
+  it('eMASCO 1121-01 shows the chain stop and no guessed job', () => {
+    const html = card(job('emasco', '1121-01', 'Chief Executive'))
+    expect(unesc(html)).toContain('Not available for eMASCO 1121-01: the code chain stops at')
+    expect(unesc(html)).toContain('MASCO unit 1121')
+    expect(html).not.toContain('<polygon')
+    expect(html).not.toContain('data-act="skCorner"')
+  })
+  it('eMASCO 2512-02 shows the code chain with step source links and the shared-unit note', () => {
+    const html = card(job('emasco', '2512-02', 'Software Developer'))
+    expect(html).toContain(t('rdChainPath'))
+    expect(html).toContain('https://www.bls.gov/soc/isco_soc_crosswalk.xls')
+    expect(html).toContain(t('rdChainSameUnit'))
+    expect(html).toContain('15-1253.00')
+    expect(unesc(html)).toContain('eMASCO 2512-02')
+  })
+  it('a draft profile is asked to confirm first and no chart is drawn', () => {
+    const html = card({ ...dev(), profileStatus: 'draft' })
+    expect(html).toContain(t('rdConfirmFirst'))
+    expect(html).toContain('data-go="form"')
+    expect(html).not.toContain('<polygon')
+    expect(card(null)).toContain(t('rdConfirmFirst'))
+  })
+  it('first snapshot shows the one-year note; sources, window label and legend are on the card', () => {
+    expect(data.skills.postings.firstSnapshot).toBe(true)
+    const html = card(dev())
+    expect(html).toContain(t('rdSkOneYear'))
+    expect(html).toContain('https://www.onetcenter.org/database.html')
+    expect(html).toContain('https://www.onetonline.org/search/hot_tech/')
+    expect(html).toContain(data.skills.postings.window.label)
+    expect(html).toContain(t('rdSkLegend', { year: '2025' }))
+    expect(html).toContain(t('rdSkSource'))
+    const later = { ...linked(), skills: { ...data.skills, postings: { ...data.skills.postings, firstSnapshot: false } } }
+    expect(card(dev(), {}, later)).not.toContain(t('rdSkOneYear'))
+  })
+  it('dropped skills sit in a fold with the release numbers', () => {
+    const html = card(dev())
+    const fold = html.match(/<details[\s\S]*?<\/details>/)[0]
+    expect(fold).toContain(t('rdSkDroppedFold', { n: 4, previous: '30.2', current: '30.3' }))
+    expect(card(nurse())).not.toContain('<details')
+  })
+  it('has no score, weight, rank or opportunity wording', () => {
+    // The class name rd-rank-list is styling only; no visible text, data attribute or id carries these words.
+    expect(card(dev(), { corners: { sk: 'all' } }).replace(/class="[^"]*"/g, '')).not.toMatch(/weight|rank|opportunit/i)
+  })
+  it('keepCaret focuses the search box and restores the caret', () => {
+    const calls = []
+    const box = { focus: () => calls.push('focus'), setSelectionRange: (a, b) => calls.push(['range', a, b]) }
+    keepCaret(3, { querySelector: (sel) => (sel === '[data-radar-search]' ? box : null) })
+    expect(calls).toEqual(['focus', ['range', 3, 3]])
+    expect(() => keepCaret(2, { querySelector: () => null })).not.toThrow()
+  })
+  it('every new string exists in en, ms and zh with the review comment', () => {
+    const keys = ['rdSkChartTitle', 'rdSkChartTag', 'rdCorners', 'rdCornersAll', 'rdSkSearch', 'rdSkShown', 'rdSkFrom', 'rdSkNew', 'rdSkNoCount', 'rdSkNoMatch', 'rdSkDroppedFold', 'rdSkNone', 'rdChainBroken', 'rdChainPath', 'rdSkOneYear', 'rdSkLegend', 'rdSkSource', 'rdConfirmFirst', 'rdChainSameUnit', 'rdSkAds', 'rdSkAria']
+    for (const lang of ['en', 'ms', 'zh']) {
+      const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')
+      for (const key of keys) {
+        const line = lines.find((l) => l.trimStart().startsWith(`${key}:`))
+        expect(line, `${lang}.${key}`).toBeTruthy()
+        if (lang !== 'en') expect(line, `${lang}.${key}`).toMatch(/\/\/ translation: owner review\r?$/)
+      }
+    }
   })
 })

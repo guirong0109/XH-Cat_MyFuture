@@ -428,6 +428,26 @@ describe('two tabs (D43-D47)', () => {
     expect(html).not.toMatch(/\bnull\b|NaN|undefined/)
   })
 
+  it('Explore shows all six topics with no View all; the linked topic keeps its tag (D45)', () => {
+    const html = view(ownProfile(), { tab: 'ex' })
+    const pn = panel(html)
+    const a2 = section(pn, 'A2')
+    expect(new Set([...a2.matchAll(/data-act="axis" data-arg="([a-z]+)"/g)].map((m) => m[1])).size).toBe(6)
+    expect(lineLabels(pn).split(', ')).toHaveLength(6)
+    const row = (id) => (a2.match(new RegExp(`<tr><td><button[^>]*data-arg="${id}"[\\s\\S]*?</tr>`)) ?? [''])[0]
+    expect(row('language')).toContain(t('rdFromProfile'))
+    expect(row('robotics')).toBeTruthy()
+    expect(row('robotics')).not.toContain(t('rdFromProfile'))
+    expect(pn).not.toContain('data-act="viewAll"')
+    expect(pn).not.toContain(t('rdGlobalView'))
+    expect(pn).not.toContain(t('rdTopicsOwn'))
+  })
+
+  it('the evidence panel opens from Explore (Review Focus 5)', () => {
+    const html = view(ownProfile(), { tab: 'ex', open: { kind: 'axis', id: 'language' } })
+    expect(html).toContain('id="radarDrawer"')
+  })
+
   it('tab names in BM and 中文 are marked for owner review', () => {
     for (const lang of ['ms', 'zh']) {
       const lines = readFileSync(`shared/strings/${lang}.js`, 'utf8').split('\n')

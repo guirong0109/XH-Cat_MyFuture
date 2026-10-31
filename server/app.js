@@ -37,6 +37,8 @@ import { matchingAdminRoutes } from './matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from './matching/service.js'
 import { matchingRoutes } from './matching/routes.js'
 import { pathwayAdminRoutes } from './pathway/adminRoutes.js'
+import { loadPathwayData } from './pathway/data.js'
+import { once } from './matching/service.js'
 import { createPathwayServiceFromEnv } from './pathway/service.js'
 import { pathwayRoutes } from './pathway/routes.js'
 
@@ -67,6 +69,8 @@ export function createApp({
   pathway = undefined,
   // Pathway data already loaded by the start-up check (server/index.js), so it is not read twice; null = load on first use.
   pathwayData = null,
+  // The read behind the one pathway loader (a test counts its calls); default loadPathwayData.
+  pathwayRead = loadPathwayData,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -161,7 +165,9 @@ export function createApp({
   const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
   app.use(matchingRoutes({ matching: matchingService }))
   // The pathway reuses matching's role answer, so its numbers are matching's; the profile is never stored or logged.
-  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, data: pathwayData, matching: matchingService, store: radar?.store ?? null, now })
+  // One loader for the service and the admin routes: the start-up data, else one read (a failed read is tried again).
+  const pathwayLoad = pathwayData ? async () => pathwayData : once(() => pathwayRead(dataDir))
+  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, loadData: pathwayLoad, matching: matchingService, store: radar?.store ?? null, now })
   app.use(pathwayRoutes({ pathway: pathwayService }))
   if (radar) {
     app.use(radarRoutes({ radar }))
@@ -171,7 +177,7 @@ export function createApp({
     // A decision drops the matching service's cached SDG decisions, so the next matching answer shows it.
     app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir, onDecision: () => matchingService?.sdgDecided?.() }))
     // Owner decisions on the Study Pathway picks, in the same store; a decision drops the pathway service cached ones.
-    app.use(pathwayAdminRoutes({ radar, access: radarAccess, now, dataDir, loadData: pathwayData ? async () => pathwayData : null, onDecision: () => pathwayService?.picksDecided?.() }))
+    app.use(pathwayAdminRoutes({ radar, access: radarAccess, now, dataDir, loadData: pathwayLoad, onDecision: () => pathwayService?.picksDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)

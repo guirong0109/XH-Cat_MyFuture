@@ -13,7 +13,7 @@ import { createFileStore } from '../../server/radar/store/file.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import { radarSessionRoutes } from '../../server/radar/adminRoutes.js'
 import { loadReviews } from '../../server/radar/reviews.js'
-import { pickHash } from '../../server/pathway/data.js'
+import { loadPathwayData, pickHash } from '../../server/pathway/data.js'
 import { pathwayAdminRoutes } from '../../server/pathway/adminRoutes.js'
 import { adminView } from '../../public/js/screens/radarAdmin.js'
 import { t as translate } from '../../shared/i18n.js'
@@ -61,11 +61,11 @@ async function listen(app) {
 }
 
 // dir: the data dir ('data' = the real one, needed by demo sign-in; its picks file is empty).
-async function start({ store = createMemoryStore(), writable = true, onDecision, dir = fixture.dir } = {}) {
+async function start({ store = createMemoryStore(), writable = true, onDecision, dir = fixture.dir, appOptions = {}, withService = true } = {}) {
   const radar = createRadarService({ store: writable ? store : null, bundleStore, references: async () => references, ingestor: null, now, log: () => {} })
   const calls = { decided: 0 }
   const pathway = { pathway: async () => null, picksDecided: () => { calls.decided += 1; onDecision?.() } }
-  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), dataDir: dir, pathway, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }))
+  await listen(createApp({ radar, radarAccess: createRadarAccess({ env: ENV, now }), dataDir: dir, ...(withService ? { pathway } : {}), ...appOptions, d1: null, tempStore: null, llmProviders: [], onetLive: null, now }))
   return { store, calls }
 }
 
@@ -255,6 +255,49 @@ describe('/api/admin/pathway/picks', () => {
     const got = await call('GET', ROUTE, { session })
     expect(got.body.picks[0]).toMatchObject({ status: 'pending', reviewedAt: null })
     expect(logs.join(' ')).not.toContain('secret reviewer words')
+  })
+})
+
+describe('one pathway data loader for the service and the admin routes', () => {
+  const counting = (fn = (dir) => loadPathwayData(dir)) => {
+    const state = { reads: 0 }
+    return { state, read: async (dir) => { state.reads += 1; return fn(dir, state.reads) } }
+  }
+
+  it('two GETs and one POST read the pathway data once (no injected service)', async () => {
+    const { state, read } = counting()
+    await start({ withService: false, appOptions: { pathwayRead: read } })
+    const session = await login()
+    expect((await call('GET', ROUTE, { session })).status).toBe(200)
+    expect((await call('GET', ROUTE, { session })).status).toBe(200)
+    expect((await call('POST', ROUTE, { session, body: { id: PATHWAY.course, decision: 'approved' } })).status).toBe(201)
+    expect(state.reads).toBe(1)
+  })
+
+  it('a failed read is not kept: 503 data_unavailable, then the next request reads again', async () => {
+    const { state, read } = counting(async (dir, n) => {
+      if (n === 1) throw new Error('disk gone')
+      return loadPathwayData(dir)
+    })
+    await start({ withService: false, appOptions: { pathwayRead: read } })
+    const session = await login()
+    const bad = await call('GET', ROUTE, { session })
+    expect(bad.status).toBe(503)
+    expect(bad.body.error.code).toBe('data_unavailable')
+    expect((await call('GET', ROUTE, { session })).status).toBe(200)
+    expect(state.reads).toBe(2)
+  })
+
+  it('with the start-up pathwayData, admin lists exactly those picks and nothing is read from disk', async () => {
+    const data = await loadPathwayData(fixture.dir)
+    const only = { ...data, picks: data.picks.filter((p) => p.id === PATHWAY.professional) }
+    const { state, read } = counting()
+    // dir: 'data' has no picks of its own, so any disk read would show other picks.
+    await start({ withService: false, dir: 'data', appOptions: { pathwayData: only, pathwayRead: read } })
+    const session = await login()
+    const got = await call('GET', ROUTE, { session })
+    expect(got.body.picks.map((p) => p.id)).toEqual([PATHWAY.professional])
+    expect(state.reads).toBe(0)
   })
 })
 

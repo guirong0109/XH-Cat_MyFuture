@@ -107,8 +107,9 @@ export function createPathwayService({ loadData, matching, store = null, now = (
 // The app's pathway service: data from dataDir (loaded once), or the data the start-up check already loaded
 // (server/index.js), matching's role answer, the Radar review store.
 // No matching service -> no pathway service (the route answers 503 not_configured).
-export function createPathwayServiceFromEnv({ dataDir, data = null, matching, store = null, now = () => new Date(), log } = {}) {
+// loadData: the one shared loader (server/app.js gives the same one to the admin routes); else made here from data / dataDir.
+export function createPathwayServiceFromEnv({ dataDir, data = null, loadData: shared = null, matching, store = null, now = () => new Date(), log } = {}) {
   if (!matching) return null
-  const loadData = data ? async () => data : once(() => loadPathwayData(dataDir))
+  const loadData = shared ?? (data ? async () => data : once(() => loadPathwayData(dataDir)))
   return createPathwayService({ loadData, matching, store, now, ...(log ? { log } : {}) })
 }

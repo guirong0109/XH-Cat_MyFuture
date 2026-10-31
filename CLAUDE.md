@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 274 passed
+npm test                                          # Vitest, expect 282 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -65,6 +65,9 @@ Browser pane launch configs (`.claude/launch.json`):
     year in the form (`education.highestQualification` stays in the schema for saved profiles).
   - The profile has four sections (owner, 31 Oct): no certificates, training or projects. What a CV or the AI re-read
     finds for them is dropped in the browser (`dropNotAsked` in `form.js`); don't bring them back without the owner.
+  - Jobs (owner, 31 Oct): each `employment.records[]` row is the job title, then `years` (a number 0-60, `toYears` in
+    `form.js`), plus the standard-occupation finder. No employer, period, industries or overall years in the form; the
+    first job shows before it exists and typing creates it (`app.js`).
   - Skills and roles of interest are picked with `searchPicker` (search as you type). Nothing is
     linked silently: typed or CV wording stays unlinked until the user picks.
   - Skills suggested from a linked field of study (`GET /api/fields/:code/skills`, rule "typical of the field") are only

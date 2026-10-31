@@ -33,7 +33,7 @@ describe('"Prefer not to say" is the default answer, not a checkbox', () => {
 
   it('opening a section saves its unanswered fields as "prefer not to say"; answers stay', () => {
     const profile = setField(emptyProfile(), 'employment.status', val('employed'))
-    const out = declineUnanswered(profile, SECTION_FIELDS[1])
+    const out = declineUnanswered(profile, ['employment.status', 'employment.yearsOfExperience'])
     expect(out.employment.status).toEqual(val('employed'))
     expect(out.employment.yearsOfExperience).toEqual(DECLINED)
     expect(out.userCategory).toEqual({ state: 'empty' })

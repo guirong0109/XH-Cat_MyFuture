@@ -288,6 +288,11 @@
           "title": "T28p No 'Current employment status'",
           "sub": "removed from Employment background and the receipt",
           "status": "done"
+        },
+        {
+          "title": "T28q Jobs: title, then years",
+          "sub": "first job ready · years as a number box with arrows · nothing else asked",
+          "status": "done"
         }
       ]
     }
@@ -341,7 +346,8 @@
     "Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
     "Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)",
     "Task 28o: your request - the first profile section '01 Study and experience' is now '01 Education' (BM Pendidikan, 中文 教育) (Tests 272 passed)",
-    "Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)"
+    "Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)",
+    "Task 28q: your request - Employment background opens with a first job ready: Job title, then Years of work experience for that job as a number box with up/down arrows (0-60, always visible). '+ Add a job' adds more. Nothing else is asked (your choice): no employer, period, industries or overall years; a CV may still fill those and the receipt then shows them. The 'Find the standard occupation' button under a job title stays (it links the job for matching). The receipt shows each job with its years (Tests 282 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -1083,6 +1089,21 @@
       "time": "31 Oct",
       "step": "Task 28p",
       "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 274 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "in Employment background, first Job title, then years of work experience for that job title, as a number box with arrows"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "nothing else (no employer, period, industries, overall years); the first job shows straight away"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28q",
+      "detail": "tests first (8 failed), then form.js (jobRow, toYears), app.js (typing creates the first job; years as a number), review.js, styles.css (arrows always visible) and the wording files; npm test 282 passed; in Chrome: typed a job title, 3 arrow presses saved 3 years, a second job saved"
     }
   ]
 }

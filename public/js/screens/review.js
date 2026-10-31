@@ -47,9 +47,9 @@ export function profileTable(t, profile) {
     ${get(profile, 'education.highestQualification')?.state === 'value' ? field('education.highestQualification', 'fHighest') : ''}
     ${row(t('qualification'), records(profile.education.records, (r) => [r.level ? `${t(levelLabel(r.level))}${r.qualification ? ` (${r.qualification})` : ''}` : r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${get(profile, 'employment.status')?.state === 'value' ? field('employment.status', 'fEmpStatus') : ''}
-    ${field('employment.yearsOfExperience', 'fYears')}
-    ${row(t('fIndustries'), list(profile.employment.industries))}
-    ${row(t('jobTitle'), records(profile.employment.records, (r) => [r.jobTitle, r.employer, r.period].filter(Boolean).join(' · ')))}
+    ${get(profile, 'employment.yearsOfExperience')?.state === 'value' ? field('employment.yearsOfExperience', 'fYears') : ''}
+    ${profile.employment.industries?.length ? row(t('fIndustries'), list(profile.employment.industries)) : ''}
+    ${row(t('jobTitle'), records(profile.employment.records, (r) => [r.jobTitle, r.employer, r.period, r.years != null && r.years !== '' ? t('jobYears', { n: r.years }) : ''].filter(Boolean).join(' · ')))}
     ${row(t('secSkills'), profile.skills.length ? profile.skills.map((s) => `<div><b>${esc(s.name)}</b> ${s.canonicalId ? `<span class="tiny muted">${esc(s.canonicalId)}</span>` : `<span class="tiny muted">${esc(t('skillUnknown'))}</span>`} ${skillTags(t, s)}</div>`).join('') : tag('unv', t('none')))}
     ${profile.certifications?.length ? row(t('certName'), records(profile.certifications, (r) => [r.name, r.issuer, r.year].filter(Boolean).join(' · '))) : ''}
     ${profile.training?.length ? row(t('trainingName'), records(profile.training, (r) => [r.name, r.year].filter(Boolean).join(' · '))) : ''}

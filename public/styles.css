@@ -175,6 +175,8 @@ details summary{cursor:pointer;font:500 11.5px var(--mono);letter-spacing:.08em;
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
 .field input[type=checkbox]{width:auto;padding:0}
 input[type=checkbox]{accent-color:var(--ink)}
+/* number boxes (years of work experience): the up/down arrows stay visible, not only on hover */
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1;height:28px;cursor:pointer}
 select[data-level]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:5px 10px;font-size:12.5px}
 
 /* search pickers (skills, roles of interest, field of study): a paper list under the box */

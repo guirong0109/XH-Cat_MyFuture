@@ -119,6 +119,7 @@ export default {
   skillSource: "Kemahiran: O*NET {version} (Jabatan Buruh A.S., CC BY 4.0)",
   fieldSource: "Bidang: UNESCO ISCED-F 2013. Nama program: Statistics Canada (CIP 2016).",
   qualChoose: 'Pilih tahap', fieldChoose: 'Pilih bidang', asWritten: 'Seperti ditulis: “{text}”. Pilih yang sepadan.',
+  jobYears: '{n} tahun',
   fieldListSource: 'Sumber: UNESCO {version}, {n} bidang.',
   suggestClick: "Klik kemahiran untuk menambahnya ke senarai anda. Halakan tetikus padanya untuk melihat sebabnya dicadangkan.",
   suggestGroupSkills: "Kemahiran",

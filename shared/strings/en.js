@@ -119,6 +119,7 @@ export default {
   skillSource: "Skills: O*NET {version} (U.S. Department of Labor, CC BY 4.0)",
   fieldSource: "Fields: UNESCO ISCED-F 2013. Programme names: Statistics Canada (CIP 2016).",
   qualChoose: 'Choose a level', fieldChoose: 'Choose a field', asWritten: 'As written: “{text}”. Choose the matching one.',
+  jobYears: '{n} years',
   fieldListSource: 'Source: UNESCO {version}, {n} fields.',
   suggestClick: "Click a skill to add it to your list. Point at it to see why it is suggested.",
   suggestGroupSkills: "Skills",

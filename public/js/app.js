@@ -14,7 +14,7 @@ import category from './screens/category.js'
 import org from './screens/org.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTION_FIELDS, SECTIONS, dropNotAsked } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
@@ -33,7 +33,7 @@ const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
   'education.records': { level: '', qualification: '', fieldOfStudy: '', institution: '', year: '' },
-  'employment.records': { jobTitle: '', employer: '', period: '' },
+  'employment.records': { jobTitle: '', years: null },
   certifications: { name: '', issuer: '', year: '' },
   training: { name: '', year: '' },
   projects: { title: '', description: '' },
@@ -441,7 +441,10 @@ function onChange(target) {
   if (d.list) return update(setField(state.profile, d.list, target.value.split(',').map((s) => s.trim()).filter(Boolean)))
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
-    return update(setField(state.profile, `${listPath}.${i}.${key}`, target.value))
+    let profile = state.profile
+    // The first job is on screen before it exists: typing in it creates it.
+    if (listPath === 'employment.records' && Number(i) >= profile.employment.records.length) profile = addRecord(profile, listPath, { ...NEW_RECORD[listPath] })
+    return update(setField(profile, `${listPath}.${i}.${key}`, key === 'years' ? toYears(target.value) : target.value))
   }
   // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.
   if (d.fieldPick !== undefined) {

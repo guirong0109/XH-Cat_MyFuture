@@ -1,7 +1,7 @@
 // Case B (manual entry) and Case C editing: the profile form in five sections. Free movement between sections;
 // every change is saved as partial progress by app.js.
 import { esc, tag } from '../ui.js'
-import { choiceField, cvNote, listField, recordsField, reviewToggle, stateField } from '../components/fields.js'
+import { choiceField, cvNote, reviewToggle, stateField } from '../components/fields.js'
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
@@ -12,7 +12,7 @@ export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
   ['userCategory'],
-  ['employment.yearsOfExperience'],
+  [],
   [],
   ['preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek'],
 ]
@@ -105,15 +105,35 @@ function study(ctx) {
   ].join('')
 }
 
-function work(ctx) {
+// Years of work experience in a job: a number from 0 to 60 (part years allowed); anything else is left empty.
+export function toYears(raw) {
+  const text = String(raw ?? '').trim()
+  if (!text) return null
+  const n = Number(text)
+  return Number.isFinite(n) && n >= 0 && n <= 60 ? n : null
+}
+
+// One job (owner, 31 Oct): the job title, then its years of work experience (a number box with arrows). The
+// standard-occupation finder links the title for matching. Employer, period and industries are not asked; a CV may
+// still fill them, and the receipt then shows them. saved: false for the first job shown before any exists.
+function jobRow(ctx, record, i, saved) {
   const { t, state } = ctx
-  const extra = (record, i) => linkedLine(t, record.occupation, `job|${i}`)
-    + (record.jobTitle ? occupationPicker({ t, key: `job|${i}`, term: record.jobTitle, result: state.occ?.[`job|${i}`], busy: state.occBusy === `job|${i}` }) : '')
-  return [
-    field(ctx, { path: 'employment.yearsOfExperience', label: t('fYears'), kind: 'number' }),
-    listField({ ...ctx, path: 'employment.industries', label: t('fIndustries') }),
-    recordsField({ ...ctx, listPath: 'employment.records', fields: [['jobTitle', 'jobTitle'], ['employer', 'employer'], ['period', 'period']], addLabel: t('addJob'), extra }),
-  ].join('')
+  const title = `<div class="field"><label for="jt-${i}">${esc(t('jobTitle'))}</label><input id="jt-${i}" data-rec="employment.records|${i}|jobTitle" value="${esc(record.jobTitle ?? '')}"></div>`
+  const years = `<div class="field"><label for="jy-${i}">${esc(t('fYears'))}</label><input id="jy-${i}" type="number" min="0" max="60" step="1" inputmode="numeric" data-rec="employment.records|${i}|years" value="${esc(record.years ?? '')}"></div>`
+  const link = saved
+    ? linkedLine(t, record.occupation, `job|${i}`) + (record.jobTitle ? occupationPicker({ t, key: `job|${i}`, term: record.jobTitle, result: state.occ?.[`job|${i}`], busy: state.occBusy === `job|${i}` }) : '')
+    : ''
+  const tools = saved
+    ? `<div class="row">${reviewToggle(t, `employment.records.${i}`, record)}<span style="flex:1"></span><button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="employment.records|${i}">${esc(t('remove'))}</button></div>`
+    : ''
+  return `<div class="card">${cvNote(t, record)}<div class="grid g2">${title}${years}</div>${link}${tools}</div>`
+}
+
+function work(ctx) {
+  const { t, profile } = ctx
+  const records = profile.employment.records
+  const rows = (records.length ? records : [{}]).map((record, i) => jobRow(ctx, record, i, records.length > 0)).join('')
+  return `${rows}<button class="btn sm" data-act="addRec" data-arg="employment.records">${esc(t('addJob'))}</button>`
 }
 
 function skills(ctx) {

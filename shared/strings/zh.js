@@ -119,6 +119,7 @@ export default {
   skillSource: "技能：O*NET {version}（美国劳工部，CC BY 4.0）",
   fieldSource: "领域：联合国教科文组织 ISCED-F 2013。专业名称：加拿大统计局（CIP 2016）。",
   qualChoose: '选择学历层次', fieldChoose: '选择学科领域', asWritten: '原文：“{text}”。请选择对应的一项。',
+  jobYears: '{n} 年',
   fieldListSource: '来源：UNESCO {version}，共 {n} 个领域。',
   suggestClick: "点击技能即可加入你的列表。将鼠标移到技能上可查看推荐原因。",
   suggestGroupSkills: "技能",

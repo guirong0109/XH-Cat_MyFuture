@@ -120,3 +120,22 @@ Code: a new pure component `public/js/components/charts/taskScatter.js`; `aiTask
 `public/js/screens/radar.js` uses it instead of `profileRadar` (which stays for the skills chart). Tests: the scale
 mapping (including the under-0.01 % band and 100 %), the 50 % line, labels, keyboard attributes, no score or rank
 words, and the card using the scatter for 1, 2 and many tasks (the spider web needed 3).
+
+## 10. Added the same day: two tabs, For You and Explore all trends (D43-D48)
+
+The owner's request (31 Oct 2026): split the Radar into two tabs, put the 10 questions first in For You, keep only the
+research charts in Explore all trends, and remove the rest from the page. Settled in conversation, one question at a time.
+
+| # | Decision |
+|---|---|
+| D43 | **Two tabs, For You and Explore all trends**, replacing "Skills & Careers" and "AI Impact" (replaces D21's tab names and order). For You is first in the tab bar. The source cards and the sources list stay above the tabs. |
+| D44 | **For You:** until the AI usage question is answered or skipped, the tab shows only the question card (the gate of D36 now covers this tab only; Explore all trends opens straight away). After Continue or Skip it shows the "Change my AI use answers" button at the top, then "How AI is used in your job's tasks" (the scatter, D40), then "What the research signals say for you". Nothing else. |
+| D45 | **Explore all trends:** only "Research momentum by AI topic" and "Research papers per year", showing **all six topics by default**; no "View all" switch in this tab (replaces D2 for this tab and the "View all six topics" of D31). Topics linked to the user's field keep their "from your profile" tag. |
+| D46 | **Which tab opens first:** Explore all trends when the profile's career goal is "Switch career" (`preferences.careerGoal` = `switch_career`); For You for everyone else, including no profile or no goal. Read in the browser; nothing is sent. A tab the user picks stays picked while they use the page (screen state only, not saved). |
+| D47 | **Removed from the page:** "Skills your jobs ask for", "Change in share of Malaysian online job advertisements", "Rising, declining and emerging skills", "Your fields of study", "What this means for you", and that tab's "View all". Their code, data and server routes stay in the project; the admin and judge screens are unchanged. |
+| D48 | **Only sources shown on the page are listed:** the source cards and the "View data sources" list show OpenAlex only (DOSM and both O\*NET sources are no longer on the page). The Anthropic Economic Index and ILO stay named, with links, inside the scatter card. The admin screen keeps all its source cards. |
+
+Code: `radarView` in `public/js/screens/radar.js` (tabs, default tab, gate inside For You, which sources it lists);
+the For You and Explore bodies reuse the existing AI tasks card, A5, A2 and A1 builders. Tests: tab names and order,
+the default tab for `switch_career` and for other or missing goals, the gate only in For You, the exact sections in
+each tab (and none of the removed ones), all six topics in Explore with no View all, and only the OpenAlex source card.

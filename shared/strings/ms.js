@@ -1084,6 +1084,12 @@ export default {
   rdAiShown: "{n} daripada {total} tugas O*NET bagi pekerjaan ini muncul dalam perbualan AI; disusun mengikut kekerapan", // translation: owner review
   rdAiRow: "AI melakukannya {auto}% · AI membantu {aug}% · {usage}% daripada semua perbualan", // translation: owner review
   rdAiLegend: "Setiap titik: bahagian perbualan AI tugas ini yang AI melakukan tugas itu. Selebihnya AI membantu seseorang. Cincin putus-putus = separuh-separuh.", // translation: owner review
+  // Radar: AI tasks scatter (D40-D42)
+  rdAiScX: "AI melakukan tugas itu (% perbualan AI tugas ini)", // translation: owner review
+  rdAiScUp: "Lebih kerap digunakan (bahagian semua perbualan AI, skala log)", // translation: owner review
+  rdAiScHelps: "AI kebanyakannya membantu", // translation: owner review
+  rdAiScDoes: "AI kebanyakannya melakukan tugas itu", // translation: owner review
+  rdAiScUnder: "bawah 0.01%", // translation: owner review
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "Untuk perkara yang manakah anda menggunakan AI?", // translation: owner review
   rdAiAskSub: "Tandakan semua yang berkaitan. Ini tidak mengubah apa yang ditunjukkan oleh Radar.", // translation: owner review

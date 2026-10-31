@@ -1084,6 +1084,12 @@ export default {
   rdAiShown: "此工作的 {total} 项 O*NET 任务中有 {n} 项出现在 AI 对话中；按出现频率排序", // translation: owner review
   rdAiRow: "AI 代为完成 {auto}% · AI 协助 {aug}% · 占全部对话的 {usage}%", // translation: owner review
   rdAiLegend: "每个点：该任务的 AI 对话中由 AI 完成任务的比例。其余是 AI 协助人完成。虚线圈 = 各占一半。", // translation: owner review
+  // Radar: AI tasks scatter (D40-D42)
+  rdAiScX: "由 AI 完成任务（占该任务 AI 对话的 %）", // translation: owner review
+  rdAiScUp: "使用更频繁（占全部 AI 对话的比例，对数刻度）", // translation: owner review
+  rdAiScHelps: "AI 主要是协助", // translation: owner review
+  rdAiScDoes: "AI 主要是完成任务", // translation: owner review
+  rdAiScUnder: "低于 0.01%", // translation: owner review
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "您在以下哪些方面使用 AI？", // translation: owner review
   rdAiAskSub: "请勾选所有适用项。这不会改变雷达显示的内容。", // translation: owner review

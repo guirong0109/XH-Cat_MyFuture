@@ -1083,6 +1083,12 @@ export default {
   rdAiShown: "{n} of {total} O*NET tasks of this job appear in AI conversations; ordered by how often",
   rdAiRow: "AI does it {auto}% · AI helps {aug}% · {usage}% of all conversations",
   rdAiLegend: "Each point: share of this task's AI conversations where AI does the task. The rest is AI helping a person. Dashed ring = half and half.",
+  // Radar: AI tasks scatter (D40-D42)
+  rdAiScX: "AI does the task (% of this task's AI conversations)",
+  rdAiScUp: "Used more often (share of all AI conversations, log scale)",
+  rdAiScHelps: "AI mostly helps",
+  rdAiScDoes: "AI mostly does the task",
+  rdAiScUnder: "under 0.01%",
   // Radar: "Which of these do you use AI for?" (D34-D39); categories are the owner's own list
   rdAiAskTitle: "Which of these do you use AI for?",
   rdAiAskSub: "Tick all that apply. This does not change what the Radar shows.",

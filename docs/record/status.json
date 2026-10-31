@@ -638,7 +638,7 @@
     "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed."
   ],
   "waiting": [
-    "Study Pathway: merged to main locally; push to GitHub needs your OK; review the team picks in #admin",
+    "Study Pathway: review the team picks in #admin; fill the 60 missing MQA references",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -1829,6 +1829,11 @@
       "time": "31 Oct",
       "step": "Merged Study Pathway to main (your request)",
       "detail": "merged claude/study-pathway into main after the Radar profile-charts merge; overlaps in app.js, styles, strings and the build record resolved by hand; main's short HANDOVER and CLAUDE updated; npm test 1088 passed, pipeline 49 OK; not pushed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Pushed main to GitHub (your request)",
+      "detail": "main 85ffce4..fec8a7a pushed; includes the Study Pathway merge"
     }
   ]
 }

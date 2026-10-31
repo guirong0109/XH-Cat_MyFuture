@@ -26,11 +26,6 @@ export default {
   catC: 'Pengurus HR / Pembelajaran & Pembangunan', catCText: 'Rancang latihan semula untuk pasukan. Akaun diperlukan.',
   catD: 'Pusat kerjaya TVET atau universiti', catDText: 'Bimbing pelajar di peringkat institusi. Akaun diperlukan.',
   preview: 'Akaun · pratonton',
-  orgBanner: 'Sedang dibangunkan — belum berfungsi.',
-  orgBannerText: 'Paparan organisasi ini ialah pratonton reka bentuk. Tiada apa di sini yang sebenar atau disimpan.',
-  orgTitle: 'Alat untuk pasukan dan pelajar',
-  orgLead: 'Dirancang untuk organisasi: pelan latihan semula untuk pasukan atau kumpulan pelajar.',
-  orgTryIndividual: 'Cuba laluan individu',
   sourceTitle: 'Adakah anda mempunyai CV atau resume yang ingin dimuat naik?',
   sourceLead: 'Memuat naik CV adalah pilihan. Kedua-dua cara menghasilkan profil yang sama.',
   sourceUpload: 'Muat naik CV saya', sourceUploadText: 'PDF atau DOCX, sehingga 10 MB. Anda menyemak semua yang kami temui sebelum ia dikira.',
@@ -1168,4 +1163,187 @@ export default {
   pwSrc_picks: "Kursus, program, badan", // translation: owner review
   pwSrc_site: "Pautan “Lagi di” (carian laman itu sendiri)", // translation: owner review
   pwLinksOnly: "pautan sahaja", // translation: owner review
+  // Organisation view (HR and career centres) (translation: owner review)
+  ogNeedAccount: "Akaun diperlukan untuk alat organisasi", // translation: owner review
+  ogLoading: "Memuatkan organisasi anda…", // translation: owner review
+  ogLoadError: "Organisasi anda tidak dapat dimuatkan.", // translation: owner review
+  ogRetry: "Cuba lagi", // translation: owner review
+  ogOff: "Akaun tidak tersedia pada pelayan ini, jadi alat organisasi tidak boleh digunakan.", // translation: owner review
+  ogErr_other: "Sesuatu tidak kena. Cuba lagi.", // translation: owner review
+  ogErr_network: "Tiada sambungan. Cuba lagi.", // translation: owner review
+  ogErr_not_signed_in: "Log masuk semula untuk meneruskan.", // translation: owner review
+  ogErr_exists: "Anda sudah mempunyai organisasi.", // translation: owner review
+  ogErr_group_exists: "Kumpulan dengan nama ini sudah wujud.", // translation: owner review
+  ogErr_group_has_people: "Pindahkan atau buang orang dalam kumpulan ini dahulu.", // translation: owner review
+  ogErr_unknown_role: "Kod peranan itu tiada dalam eMASCO.", // translation: owner review
+  ogErr_preview_expired: "Pratonton ini telah tamat tempoh. Semak fail itu semula.", // translation: owner review
+  ogErr_too_large: "Fail senarai melebihi 1 MB.", // translation: owner review
+  ogErr_bad_header: "Baris pertama mestilah: name,group,current_role_code,skill,level", // translation: owner review
+  ogErr_not_utf8: "Fail senarai mestilah teks UTF-8.", // translation: owner review
+  ogErr_not_csv: "Fail senarai bukan CSV yang sah.", // translation: owner review
+  ogErr_bad_request: "Semak nilai dan cuba lagi.", // translation: owner review
+  ogTab_setup: "Persediaan", // translation: owner review
+  ogTab_heat: "Peta haba", // translation: owner review
+  ogTab_outlook: "Tinjauan & SDG", // translation: owner review
+  og_dept_hr: "Jabatan", // translation: owner review
+  og_dept_centre: "Program", // translation: owner review
+  og_depts_hr: "Jabatan", // translation: owner review
+  og_depts_centre: "Program", // translation: owner review
+  og_people_hr: "Orang", // translation: owner review
+  og_people_centre: "Pelajar", // translation: owner review
+  og_staff_hr: "Kakitangan", // translation: owner review
+  og_staff_centre: "Pelajar", // translation: owner review
+  og_plan_hr: "Pelan pasukan", // translation: owner review
+  og_plan_centre: "Pelan kohort", // translation: owner review
+  og_person_hr: "kakitangan", // translation: owner review
+  og_person_centre: "pelajar", // translation: owner review
+  og_addgroup_hr: "Tambah jabatan", // translation: owner review
+  og_addgroup_centre: "Tambah program", // translation: owner review
+  og_type_hr: "Pengurus HR / L&D", // translation: owner review
+  og_type_centre: "Pusat kerjaya TVET / universiti", // translation: owner review
+  ogSetupTitle: "Sediakan organisasi anda", // translation: owner review
+  ogSetupLead: "Satu akaun mengurus satu organisasi.", // translation: owner review
+  ogHiring: "Ini membantu merancang latihan. Ia tidak membuat keputusan pengambilan pekerja.", // translation: owner review
+  ogOrgName: "Nama organisasi", // translation: owner review
+  ogType: "Jenis", // translation: owner review
+  ogTypeNote: "Jenis menukar perkataan (jabatan ↔ program, kakitangan ↔ pelajar). Pusat kerjaya tiada peranan semasa: jurang hanya dibandingkan dengan peranan sasaran.", // translation: owner review
+  ogCreate: "Cipta organisasi", // translation: owner review
+  ogSave: "Simpan nama", // translation: owner review
+  ogSaved: "Disimpan.", // translation: owner review
+  ogDeleteOrg: "Padam organisasi", // translation: owner review
+  ogDeleteOrgConfirm: "Padam organisasi ini dan semua orang di dalamnya? Ini tidak boleh dibatalkan.", // translation: owner review
+  ogGroupsTitle: "{groups} dan peranan sasaran", // translation: owner review
+  ogTargetRole: "Peranan sasaran (pilihan)", // translation: owner review
+  ogNoTarget: "Tiada ditetapkan", // translation: owner review
+  ogChange: "Tukar", // translation: owner review
+  ogRemove: "Buang", // translation: owner review
+  ogRemoveTarget: "Buang peranan sasaran", // translation: owner review
+  ogAddGroupBtn: "Tambah", // translation: owner review
+  ogRoleSearchLabel: "Cari peranan eMASCO", // translation: owner review
+  ogRoleSearchHint: "Taip tajuk kerja, kemudian tekan Enter", // translation: owner review
+  ogRoleNone: "Tiada peranan eMASCO ditemui.", // translation: owner review
+  ogRoleFail: "Carian peranan gagal. Cuba lagi.", // translation: owner review
+  ogSrcSetup: "peranan sasaran daripada eMASCO (MOHR), dirayapi 23 Okt 2026", // translation: owner review
+  ogSource: "Sumber:", // translation: owner review
+  ogPeopleLead: "Tambah orang dengan memuat naik senarai orang rekaan, atau dengan menghantar pautan sertai kepada pekerja sebenar yang kemudian berkongsi kemahirannya sendiri.", // translation: owner review
+  ogUploadTitle: "Muat naik senarai (CSV)", // translation: owner review
+  ogSynthetic: "Gunakan orang sintetik (rekaan) sahaja", // translation: owner review
+  ogChooseFile: "Pilih fail…", // translation: owner review
+  ogUseSample: "Guna senarai contoh", // translation: owner review
+  ogPreviewOf: "Pratonton: {name}", // translation: owner review
+  ogNothingSaved: "belum ada yang disimpan", // translation: owner review
+  ogAccepted: "Baris diterima", // translation: owner review
+  ogRejected: "Baris ditolak", // translation: owner review
+  ogUnrecognised: "Tidak dikenali, tidak dikira", // translation: owner review
+  ogNewGroups: "Kumpulan baharu akan dicipta", // translation: owner review
+  ogRowReason: "Baris {row}: {reason}", // translation: owner review
+  ogRowSkill: "“{skill}” (baris {row})", // translation: owner review
+  ogImport: "Import {count} baris", // translation: owner review
+  ogCancel: "Batal", // translation: owner review
+  ogImported: "{people} orang ditambah.", // translation: owner review
+  ogNothingSavedMsg: "Tiada apa yang disimpan.", // translation: owner review
+  ogInviteTitle: "Pautan sertai", // translation: owner review
+  ogInviteRole: "Peranan semasa (pilihan)", // translation: owner review
+  ogMakeLink: "Buat pautan sertai", // translation: owner review
+  ogLinkOnce: "Salin pautan ini sekarang, ia hanya dipaparkan sekali.", // translation: owner review
+  ogLinkNote: "Sekali guna · tamat dalam 7 hari · aplikasi tidak menghantar e-mel", // translation: owner review
+  ogCopy: "Salin pautan", // translation: owner review
+  ogCopied: "Pautan disalin.", // translation: owner review
+  ogCopyFail: "Pilih pautan dan salin.", // translation: owner review
+  ogStaffCount: "{count} {people}", // translation: owner review
+  ogLeftOutCount: "{count} dikecualikan daripada jumlah", // translation: owner review
+  ogColName: "Nama", // translation: owner review
+  ogColRole: "Peranan semasa", // translation: owner review
+  ogColNow: "Padanan Kemahiran kini", // translation: owner review
+  ogColTarget: "Padanan Kemahiran sasaran", // translation: owner review
+  ogColSource: "Sumber", // translation: owner review
+  ogNoPeople: "Tambah orang dengan senarai atau pautan sertai", // translation: owner review
+  ogNoGroups: "Tambah {dept} dalam Persediaan dahulu.", // translation: owner review
+  ogNA: "tidak tersedia", // translation: owner review
+  ogNoTargetShort: "tiada sasaran", // translation: owner review
+  ogProvisional: "sementara", // translation: owner review
+  ogSrcShared: "dikongsi oleh pekerja", // translation: owner review
+  ogSrcRoster: "dimasukkan oleh HR", // translation: owner review
+  ogRemovePerson: "Buang {name}", // translation: owner review
+  ogMovePerson: "{dept} bagi {name}", // translation: owner review
+  ogReason_chain_broken: "Tidak tersedia: {name} ({code}) terhenti pada langkah “{step}”. Dikecualikan daripada jumlah, tidak pernah diteka.", // translation: owner review
+  ogReason_unknown_role: "Tidak tersedia: {name} ({code}): padanan kerjaya tidak mengenali peranan ini. Dikecualikan daripada jumlah.", // translation: owner review
+  ogReason_no_known_skill: "Tidak tersedia: {name} belum mempunyai kemahiran yang diketahui, jadi tiada Padanan Kemahiran. Dikecualikan daripada jumlah.", // translation: owner review
+  ogPeopleNote: "HR hanya melihat kemahiran dan tahap yang dikongsi, tidak pernah CV, padanan atau laluan.", // translation: owner review
+  ogSrcPeople: "Padanan Kemahiran daripada padanan kerjaya (kemahiran dan pengetahuan O*NET 31.0, kepentingan ≥ 3.0) · rantaian kod eMASCO → ISCO-08 → SOC → O*NET", // translation: owner review
+  ogTeamError: "Angka pasukan tidak dapat dimuatkan.", // translation: owner review
+  ogHeatTitle: "Peta haba jurang kemahiran", // translation: owner review
+  ogHeatLead: "Setiap sel: berapa ramai orang yang perannya memerlukan item ini tidak mencapai tahap diperlukan, dan purata tahap yang kurang. Lajur: paling ramai kekurangan dahulu.", // translation: owner review
+  ogCompare: "Bandingkan dengan", // translation: owner review
+  ogCurrent: "Peranan semasa", // translation: owner review
+  ogTarget: "Peranan sasaran", // translation: owner review
+  ogLegend0: "Tiada yang kurang", // translation: owner review
+  ogLegend1: "Kurang 1 tahap", // translation: owner review
+  ogLegend2: "1 hingga 2", // translation: owner review
+  ogLegend3: "2 atau lebih", // translation: owner review
+  ogLegendNone: "Tidak diperlukan", // translation: owner review
+  ogCellOf: "{n} daripada {m}", // translation: owner review
+  ogCellAvg: "purata kurang {avg}", // translation: owner review
+  ogCellProv: "sementara", // translation: owner review
+  ogNotNeeded: "tidak diperlukan", // translation: owner review
+  ogNoTargetRole: "tiada peranan sasaran", // translation: owner review
+  ogCols: "Lajur {from}–{to} daripada {total}", // translation: owner review
+  ogPrev: "Lajur sebelumnya", // translation: owner review
+  ogNext: "Lajur seterusnya", // translation: owner review
+  ogLeftOut: "{count} dikecualikan daripada jumlah: rantaian kod peranan terputus, atau tiada kemahiran diketahui. Mereka disenaraikan di bawah {people}.", // translation: owner review
+  ogLeftOutGroup: "{count} dikecualikan", // translation: owner review
+  ogHeatEmpty: "Belum ada jurang untuk dipaparkan.", // translation: owner review
+  ogCellTitle: "Sel dipilih", // translation: owner review
+  ogCellHint: "Klik sel berwarna untuk melihat siapa yang kurang dan sebabnya.", // translation: owner review
+  ogCellRole: "Peranan", // translation: owner review
+  ogCellShort: "Tahap kurang", // translation: owner review
+  ogCellShortVal: "{total} jumlah · {avg} purata", // translation: owner review
+  ogMet: "Dipenuhi", // translation: owner review
+  ogBelow: "Di bawah", // translation: owner review
+  ogMissing: "Tiada", // translation: owner review
+  ogNotAssessed: "Belum dinilai", // translation: owner review
+  ogCellProvNote: "{count} dengan “belum dinilai”: dikira memenuhi tahap, jadi sel ini sementara (peraturan sama seperti padanan kerjaya).", // translation: owner review
+  ogMakePlan: "Buat pelan untuk {group}", // translation: owner review
+  ogSrcHeat: "Kemahiran dan Pengetahuan O*NET 31.0 (CC BY 4.0) · tahap daripada kemahiran yang dikongsi dan senarai HR", // translation: owner review
+  ogPlanFor: "Untuk siapa", // translation: owner review
+  ogPlanForText: "{group}, {count} {people}, berbanding {kind} {code}.", // translation: owner review
+  ogSelfReported: "kemajuan dilaporkan sendiri", // translation: owner review
+  ogPlanNoRoleTarget: "Pilih peranan sasaran untuk kumpulan ini dalam Persediaan untuk melihat jurang.", // translation: owner review
+  ogPlanNoRoleCurrent: "Tiada sesiapa dalam kumpulan ini mempunyai peranan semasa.", // translation: owner review
+  ogPlanNone: "Tiada sesiapa dalam kumpulan ini yang kurang untuk peranan ini.", // translation: owner review
+  ogStepLine: "{short} orang kurang ({missing} tiada, {below} di bawah) · {levels} tahap kurang · tingkatkan ke {to}", // translation: owner review
+  ogStepLineOne: "1 orang kurang ({missing} tiada, {below} di bawah) · {levels} tahap kurang · tingkatkan ke {to}", // translation: owner review
+  ogStillShort: "(tahap pakar masih meninggalkan jurang)", // translation: owner review
+  ogNoPick: "Belum ada pilihan pasukan. Guna pautan carian di bawah.", // translation: owner review
+  ogTime: "Masa: lihat halaman setiap kursus.", // translation: owner review
+  ogStatus_planned: "Dirancang", // translation: owner review
+  ogStatus_in_progress: "Sedang berjalan", // translation: owner review
+  ogStatus_done: "Selesai", // translation: owner review
+  ogStatusOf: "Status {name}", // translation: owner review
+  ogSteps: "Langkah", // translation: owner review
+  ogStepsSkills: "{count} kemahiran dengan jurang", // translation: owner review
+  ogPlanOrder: "Susunan: paling ramai kekurangan dahulu, kemudian paling banyak tahap kurang. Tiada jam dipaparkan: tiada fail data dalam aplikasi mempunyai tempoh kursus yang bersumber.", // translation: owner review
+  ogSrcPlan: "jurang daripada padanan kerjaya (O*NET 31.0) · kursus daripada pilihan pasukan laluan pengajian, setiap satu dibuka dalam pelayar, dengan laman dan tarikh disemak · pautan carian membuka carian setiap laman", // translation: owner review
+  ogOutlookTitle: "Tinjauan dan SDG", // translation: owner review
+  ogScenario: "Senario penggunaan AI", // translation: owner review
+  ogEstimates: "anggaran", // translation: owner review
+  ogScenarioNote: "Senario hanya mengubah kiraan ini. Ia tidak pernah mengubah jurang sesiapa, peta haba atau susunan pelan.", // translation: owner review
+  ogByCurrent: "mengikut peranan semasa", // translation: owner review
+  ogByTarget: "mengikut peranan sasaran", // translation: owner review
+  ogBand1: "1 · berkembang, AI membantu", // translation: owner review
+  ogBand2: "2 · AI mungkin mengubah banyak", // translation: owner review
+  ogBand3: "3 · iklan berkurang", // translation: owner review
+  ogBand4: "4 · bukti tidak mencukupi", // translation: owner review
+  ogMovedTitle: "Berpindah antara Sederhana dan Pantas", // translation: owner review
+  ogMovedLine: "{group}: {count} orang, band {from} → {to}", // translation: owner review
+  ogMovedNone: "Tiada sesiapa berpindah band antara Sederhana dan Pantas.", // translation: owner review
+  ogSrcOutlook: "Sederhana = Anthropic Economic Index · Pantas = pendedahan GenAI ILO WP140 · iklan kerja = kekosongan dalam talian DOSM mengikut kumpulan utama MASCO, “peringkat kumpulan, bukan kerja ini” · setiap satu dengan tarikhnya", // translation: owner review
+  ogSdgTitle: "Sumbangan SDG pelan", // translation: owner review
+  ogSdgFor: "Untuk", // translation: owner review
+  ogSdgLine: "Kemahiran yang dirancang untuk {group} menyentuh {links} pautan merentasi {goals} matlamat. Kiraan pautan dengan sebab, bukan skor.", // translation: owner review
+  ogSdgNone: "Belum ada pautan SDG untuk kumpulan ini.", // translation: owner review
+  ogSdgLinkOne: "{count} pautan", // translation: owner review
+  ogSdgLinkMany: "{count} pautan", // translation: owner review
+  ogGoalLabel: "Matlamat PBB {goal}", // translation: owner review
+  ogSrcSdg: "Pautan SDG: draf pasukan bagi setiap kumpulan MASCO dan item O*NET, dipaparkan serta-merta, setiap satu dilabel “belum disemak” atau “diluluskan oleh pemilik” · API sasaran SDG PBB · halaman matlamat sdgs.un.org", // translation: owner review
 }

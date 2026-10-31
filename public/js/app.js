@@ -31,6 +31,8 @@ import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
+import * as orgApi from './orgApi.js'
+import { createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
@@ -76,7 +78,7 @@ function persist() {
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
   // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
-  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, org: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -112,6 +114,7 @@ function go(screen) {
   if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
+  if (screen !== 'access') state.accessNote = null
   showSection()
   state.message = null
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
@@ -664,7 +667,13 @@ const actions = {
       state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
       state.profile = setField(state.profile, 'userCategory', val(k === 'A' ? 'working_adult' : 'graduate_switcher'))
     }
-    go(k === 'C' || k === 'D' ? 'org' : 'source')
+    if (k === 'C' || k === 'D') {
+      // organisation tools need an account
+      const entry = orgEntry(state)
+      state.accessNote = entry.note
+      return go(entry.screen)
+    }
+    go('source')
   },
   resume: () => {
     const to = resumeTo ?? 'source'
@@ -873,7 +882,10 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions, matchActions, pathwayActions)
+// Organisation view (HR and career centres): its actions live in orgActions.js; the proxy keeps them on the current state.
+const orgState = new Proxy({}, { get: (_, key) => state[key], set: (_, key, value) => { state[key] = value; return true } })
+const orgView = createOrgActions({ state: orgState, render, api: orgApi, t, go })
+Object.assign(actions, adminActions, matchActions, pathwayActions, orgView.actions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -1062,6 +1074,7 @@ function render() {
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
   if (screen === 'pathway') ensurePathway()
+  if (screen === 'org') actions.orgEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
@@ -1125,6 +1138,7 @@ document.addEventListener('change', (event) => {
   if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
+  if (orgView.onChange(event.target)) return
   onChange(event.target)
 })
 // Search pickers: search while typing, after a short pause; only the list is redrawn, so typing goes on.

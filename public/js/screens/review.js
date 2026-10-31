@@ -44,7 +44,7 @@ export function profileTable(t, profile) {
   return `<table>
     ${field('userCategory', 'fCategory')}
     ${get(profile, 'education.educationStatus')?.state === 'value' ? field('education.educationStatus', 'fEduStatus') : ''}
-    ${field('education.highestQualification', 'fHighest')}
+    ${get(profile, 'education.highestQualification')?.state === 'value' ? field('education.highestQualification', 'fHighest') : ''}
     ${row(t('qualification'), records(profile.education.records, (r) => [r.level ? `${t(levelLabel(r.level))}${r.qualification ? ` (${r.qualification})` : ''}` : r.qualification, r.field ? `${r.fieldOfStudy} (ISCED-F ${r.field.code})` : r.fieldOfStudy, r.institution, r.year].filter(Boolean).join(' · ')))}
     ${field('employment.status', 'fEmpStatus')}
     ${field('employment.yearsOfExperience', 'fYears')}

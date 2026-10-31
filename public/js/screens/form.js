@@ -10,7 +10,7 @@ import { GOALS } from './goal.js'
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
 export const SECTION_FIELDS = [
-  ['userCategory', 'education.highestQualification'],
+  ['userCategory'],
   ['employment.status', 'employment.yearsOfExperience'],
   [],
   [],
@@ -57,13 +57,8 @@ export const WHO = [
 ]
 const withOld = (options, old, field) => [...options, ...(old[field?.value] ? [[field.value, old[field.value]]] : [])]
 
-// Qualification levels, lowest to highest. The highest level in the list is the profile's highest qualification.
+// Qualification levels, lowest to highest.
 export const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
-export function highestLevel(records) {
-  let best = -1
-  for (const record of records ?? []) best = Math.max(best, QUALIFICATIONS.findIndex(([value]) => value === record?.level))
-  return best < 0 ? null : QUALIFICATIONS[best][0]
-}
 export const levelLabel = (value) => QUALIFICATIONS.find(([v]) => v === value)?.[1]
 const asWritten = (t, text) => `<div class="tiny" style="color:var(--self)">${esc(t('asWritten', { text }))}</div>`
 
@@ -85,29 +80,21 @@ function fieldSelect({ t, state }, record, i) {
   return `<div class="field"><label for="fs-${i}">${esc(t('fieldOfStudy'))}</label>${control}${typed}${hint}</div>`
 }
 
-// One qualification: the level first; once it is chosen, the field of study, institution and year.
-// saved: false for the first row shown before any qualification exists (choosing its level creates it).
-function qualificationRow(ctx, record, i, saved) {
+// One qualification (owner, 31 Oct): the level and the field of study (major), nothing else. Institution and year are
+// not asked; a CV may still fill them, and the receipt then shows them.
+function qualificationRow(ctx, record, i) {
   const { t } = ctx
   const level = `<div class="field"><label for="ql-${i}">${esc(t('qualification'))}</label>
     <select id="ql-${i}" data-rec="education.records|${i}|level"><option value="">${esc(t('qualChoose'))}</option>${QUALIFICATIONS.map(([v, key]) => `<option value="${v}"${record.level === v ? ' selected' : ''}>${esc(t(key))}</option>`).join('')}</select>
     ${!record.level && record.qualification ? asWritten(t, record.qualification) : ''}</div>`
-  const input = (key) => `<div class="field"><label for="q${key}-${i}">${esc(t(key))}</label><input id="q${key}-${i}" data-rec="education.records|${i}|${key}" value="${esc(record[key] ?? '')}"></div>`
-  const more = record.level ? `<div class="grid g2">${input('institution')}${input('year')}</div>` : ''
-  const tools = saved
-    ? `<div class="row">${reviewToggle(t, `education.records.${i}`, record)}<span style="flex:1"></span><button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="education.records|${i}">${esc(t('remove'))}</button></div>`
-    : ''
-  return `<div class="card">${cvNote(t, record)}<div class="grid g2">${level}${record.level ? fieldSelect(ctx, record, i) : ''}</div>${more}${tools}</div>`
+  const tools = `<div class="row">${reviewToggle(t, `education.records.${i}`, record)}<span style="flex:1"></span><button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="education.records|${i}">${esc(t('remove'))}</button></div>`
+  return `<div class="card">${cvNote(t, record)}<div class="grid g2">${level}${fieldSelect(ctx, record, i)}</div>${tools}</div>`
 }
 
 function qualifications(ctx) {
   const { t, profile } = ctx
-  const records = profile.education.records
-  const rows = (records.length ? records : [{}]).map((record, i) => qualificationRow(ctx, record, i, records.length > 0)).join('')
-  const top = highestLevel(records)
-  const highest = top ? `<p class="tiny muted" style="margin:4px 0 12px">${esc(t('highestAuto', { level: t(levelLabel(top)) }))}</p>` : ''
-  const add = records.length ? `<button class="btn sm" data-act="addRec" data-arg="education.records">${esc(t('addEducation'))}</button>` : ''
-  return `${rows}${highest}${add}`
+  const rows = profile.education.records.map((record, i) => qualificationRow(ctx, record, i)).join('')
+  return `${rows}<button class="btn sm" data-act="addRec" data-arg="education.records">${esc(t('addEducation'))}</button>`
 }
 
 function study(ctx) {

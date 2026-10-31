@@ -25,7 +25,7 @@ describe('the profile opens with "Which describes you best?" as four buttons', (
     const html = study(asUser(null))
     expect(picked(html)).toEqual(['student', 'fresh_graduate', 'underemployed', 'unemployed'])
     expect(html).not.toContain('id="f-userCategory"')
-    expect(html.indexOf('fCategory')).toBeLessThan(html.indexOf('data-rec="education.records|0|level"'))
+    expect(html.indexOf('fCategory')).toBeLessThan(html.indexOf('addEducation'))
     expect(html).toContain('<div class="options" role="radiogroup"')
     expect(html).not.toContain('class="grid g2" role="radiogroup"')
     for (const lang of ['en', 'ms', 'zh']) {

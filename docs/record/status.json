@@ -626,6 +626,31 @@
           "status": "done"
         },
         {
+          "title": "O6b D1 tables",
+          "sub": "six tables, cascade on delete",
+          "status": "done"
+        },
+        {
+          "title": "O6c Roster check",
+          "sub": "CSV reading, row checks, file line numbers",
+          "status": "done"
+        },
+        {
+          "title": "O6d Team sums",
+          "sub": "shared/org/team.js: cells, plan order, bands, SDG count",
+          "status": "done"
+        },
+        {
+          "title": "O6e Organisation store",
+          "sub": "D1 reads and writes, import checks groups first",
+          "status": "done"
+        },
+        {
+          "title": "O6f Team service",
+          "sub": "per person matching + pathway, then team sums",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1895,6 +1920,31 @@
       "time": "31 Oct",
       "step": "Organisation view: build started (hr-branch)",
       "detail": "Study pathway merged into main; main merged into hr-branch (Task 0)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6b D1 tables (hr-branch)",
+      "detail": "Task 1 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6c Roster check (hr-branch)",
+      "detail": "Task 2 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6d Team sums (hr-branch)",
+      "detail": "Task 3 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6e Organisation store (hr-branch)",
+      "detail": "Task 4 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6f Team service (hr-branch)",
+      "detail": "Task 5 reviewed clean; npm test 1137 passed"
     }
   ]
 }

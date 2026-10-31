@@ -1,264 +1,234 @@
-# HANDOVER — branch `claude/cv-profile-module` (CV extraction and structured profile module)
+# HANDOVER — `main` (important points only)
 
-Written 2026-10-29 at the end of the session that built this module. This is the detailed handover for this
-feature branch. `main` has a short version with only the important points.
-Repository: `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
+Updated 2026-10-31. Every feature branch has a detailed `HANDOVER.md` and `CLAUDE.md`. Read those for the work in
+that branch. This file keeps only what matters across the whole project.
 
----
+## Goal
+FutureReady MY is a career-planning app for Malaysia, built for the Domain 1 finalist round. A user builds a
+**confirmed, structured profile** (from a CV or a form). Later modules use it: matching, study pathway, SDG and
+scenario comparison.
 
-## 1. The task and the ultimate goal
+## Modules on `main`
+| Module | Branch (detailed docs there) | Merged | State |
+|---|---|---|---|
+| CV extraction and structured profile | `claude/cv-profile-module` | PR #1, `301c10e`, 2026-10-29 | Done; 179 tests pass; final review fixed |
+| Search pickers, field of study, skill suggestions, career interests (owner requests) | `claude/cv-profile-module` | merge `05b72c9`, pushed 2026-10-30 | Done; checked in the browser |
+| Fix: skill search finds everyday skills | `claude/cv-profile-module` | merged 2026-10-30 | Done; 232 tests pass; CV eval unchanged |
+| Light mode by default, switch to dark | `main` | 2026-10-30 | Done |
+| Future Skills Radar Round 1 + skill trends from O\*NET | `claude/future-radar` | merged 2026-10-30 | Done; 651 tests pass; whole-branch reviews fixed |
+| Career matching, AI scenarios and SDG links | `claude/career-matching` | merged 2026-10-31 | Done; 803 tests pass; checked in the browser |
+| Landing page (ATM intro, guide figures, roller counters) | `claude/website-interface` | merged 2026-10-31 | Merged as built; 829 tests pass; checked in the browser |
+| Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
+| Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
+| Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
+| Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
+| CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
+| Radar: "Your profile" card removed; source details as four cards (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1429 tests pass; checked in the browser |
+| DeepSeek reads every CV next to the rules reader (merged draft, "Found by AI" tags; consent re-read removed) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1481 tests pass after the merge; whole-branch review fixed; checked with the owner's key and real CV |
+| Radar: AI usage question (10 owner categories), AI tasks scatter, two tabs For You / Explore all trends (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1535 tests pass after the merge; whole-branch reviews fixed; checked in the browser |
+| Compare futures: AI news per study field (DeepSeek Search every 3 hours, DeepSeek relevance check, English only) | `claude/compare-futures` | merged 2026-10-31 | Done; 1673 tests pass after the merge; whole-branch reviews fixed; checked with the owner's key |
+| SDG contribution page | not started | — | Next |
 
-**Product:** FutureReady MY, a career-planning app for Malaysia. It is built for the "Domain 1" finalist round, and the
-owner's guide is `Domain 1 - Finalist Guide.md`, which is not in this repo.
+## Compare futures: AI news (since 2026-10-31)
+- **Screen `#futures` → AI news:** For you (the profile's study fields) and Explore all (10 ISCED-F broad fields),
+  up to 25 items each with link, site, date and snippet; every list names DeepSeek Search, the query, the update
+  time, the next refresh, "English articles only" and how many results the check dropped.
+- **Refreshes every 3 hours (owner rule).** Paid DeepSeek: about US$4-6 a month, hard caps 80 searches and 80
+  checks a day. Key `DEEPSEEK_API_KEY` (the CV reader uses `CV_LLM_KEY`).
+- **Waits on the owner:** BM / 中文 wording, the search words per field (Natural sciences keeps few items), and the
+  Cloudflare Tunnel set-up for `futures.grong.my` (procedure in the branch `CLAUDE.md`).
 
-**This branch** builds the first module: **CV Extraction and Structured Profile**. A user ends with a
-**confirmed, structured profile**: studies, jobs, skills with O\*NET ids and levels (or an explicit "not assessed"),
-certificates, projects, preferences, occupation links with source and version, and provenance. They get there in
-one of three ways:
-- **Case A:** upload a CV.
-- **Case B:** fill in a form.
-- **Case C:** review and confirm.
+## Future Skills Radar (since 2026-10-30)
+- **Screen `#radar`**, two tabs since 31 Oct (D43-D48): **For You** (first; the AI usage question until answered or
+  skipped, then the AI tasks scatter and research signals for you) and **Explore all trends** (research momentum and
+  papers per year, all six topics; opens first for the goal "Switch career"). The Skills & Careers sections (skills
+  chart, DOSM job ads, skill changes, fields, what it means) are off the page; their code and data stay. Worked out in
+  the browser from the confirmed profile. Every number links to its
+  source and date. Admin `#admin` and judge test `#judge` use server keys (`RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`,
+  `RADAR_SESSION_SECRET`); keys never reach the browser.
+- **Sources:** OpenAlex (AI research papers per topic), DOSM (Malaysian online job ads by MASCO major group),
+  O\*NET skill flags (which software skills US job ads ask for, compared between releases) and O\*NET Hot
+  Technologies (US job-ad counts, yearly snapshots).
+- **No scores, weights or rankings.** The Radar publishes `radar-signal/v1` for the later matching module
+  (`docs/radar/contract.md`); `GET /api/radar/export` is its input.
+- **Owner decides:** field ↔ AI topic links (16 proposals, pending until approved in `#admin`) and possible DOSM
+  structural breaks (4, incl. 2025 Q3, which blocks most group comparisons until reviewed or until 2026 Q3).
+- **Charts follow the profile (D28–D33, 31 Oct):** Skills & Careers opens with the in-demand O\*NET software skills of
+  the user's own jobs (O\*NET roles, field-of-study jobs, eMASCO roles through the code chain), sized by 2025 US job-ad
+  counts. AI Impact opens with the user's O\*NET tasks and how often AI does them (Anthropic Economic Index) plus the
+  ILO WP140 exposure gradient; the six-topic chart below shows the field's approved topics. Long lists show 10 rows a
+  page with a page bar; long notes fold. Counts and shares only, never a score. `GET /api/radar/ai-tasks` takes no
+  parameters, so the profile never leaves the browser.
+- **Two copies of the chain walker:** `shared/radar/chain.js` is a copy of `shared/matching/chain.js` (only its header
+  line differs; hashes in `data/radar/copied-from-main.json`). Merge them into one module at a later clean-up.
 
-**Ultimate goal:** the confirmed profile is the input for the next modules: matching, learning roadmap, SDG and
-scenario comparison. Those modules are not built. The CV spec's acceptance criterion is "real changes to the
-confirmed profile produce explainable changes in career guidance". Until matching exists, this module proves that the
-profile, its JSON and the summary change (spec §11 adaptation).
+## Profile form since 2026-10-30 (owner requests)
+- **Search as you type:** skills (O\*NET), roles of interest (O\*NET + eMASCO) and field of study (UNESCO
+  ISCED-F 2013). Nothing is linked silently.
+- **"Prefer not to say" is the default** of every optional field (a dropdown, no checkbox). Skill level starts on
+  "Not assessed yet".
+- **Field of study → O\*NET** through official tables only: ISCED-F → CIP (Statistics Canada) → O\*NET jobs (O\*NET
+  crosswalk). 118 of 124 fields reach O\*NET. Originals are kept in `data/isced/source/`.
+- **Skills suggested from the field of study:** "typical of the field" (more common in its jobs than overall).
+  They are click-to-add chips, never added automatically. This is not matching and gives no score.
+- **"Career interests and fields"** is one list: the 41 O\*NET interest areas, several allowed.
+  `preferredCareerFields` is gone; old profiles are converted.
+- **Skill search covers more than software.** It also searches O\*NET work styles (e.g. Leadership Orientation),
+  knowledge areas and work activities, with general skills before software products. These lists are for search
+  only, so CV reading is unchanged. O\*NET's wording is needed: "Cooperation", not "teamwork".
+- **Every list shows its source on screen.** The owner calls this highly important; keep it for anything new.
+- **O\*NET interest-area values (1–7)** are marked "AI/Expert" by O\*NET (05/2026). They are kept for matching
+  and not used yet.
 
-**Binding documents (read in this order):**
-1. `docs/superpowers/specs/2026-10-29-cv-profile-module-design.md`: the spec. It is authoritative and aligned to the
-   owner's architecture diagram.
-2. `docs/superpowers/plans/2026-10-29-cv-profile-module.md`: the plan, 18 tasks plus Review Focus.
-3. The owner's diagram: `C:/Users/guiro/XH-Cat_Domain1/docs/architecture-cv-profile.html`. Read it only; that
-   folder is another project.
-4. The starting UI: `docs/mockup-journey.html`. The look will be redesigned at the final stage.
+## CV and profile screens since 2026-10-31 (owner requests, details: branch `claude/cv-profile-module`)
+- **Look:** the app screens use the landing page's design (cream, serif headlines, mono labels, thin rules, ATM and
+  receipts). Main's matching, Radar, pathway and organisation screens keep their rules, now in the same colours.
+- **Start:** "Who is it for?" → personal: guest or account, then "What is your goal?" (4 goals), then CV or form;
+  organisation: account only (no guest), then C/D and the organisation view. Sign-in notes from the organisation
+  view skip the question.
+- **Profile:** five sections — Education (qualification + field of study dropdowns), Employment background (job title
+  + years), Skills and proficiency, Using AI, Interests (career interests only). "Review and confirm" is on the last
+  section, Interests. No certificates or training; projects are kept as cards in Skills.
+- **Skills:** a card per job and project with the skills used there, "Other skills" folded. A skill used in a job or
+  project starts at **Good** (tag "From your projects"; the owner's rule) — matching counts it as Good.
+- **After a CV:** only "Edit in the form"; the qualification level and field of study come prechosen ("Chosen from
+  your CV … check it is right").
+- **DeepSeek reads every CV (31 Oct, owner decision):** the rules reader and DeepSeek (`deepseek-flash`, thinking off)
+  read the CV together and the server merges them: rules win, the AI fills empty fields and adds missed items (tag
+  "Found by AI — check it"; "AI read this as …" when it read a field differently). The upload screen says the CV is read
+  by DeepSeek (stored in China). If the AI fails or takes over 40 s, the rules draft comes with a note. Checked with the
+  owner's key on 10 synthetic CVs (about $0.0034) and the owner's real CV. The consent "AI re-read", compare view,
+  Claude backup and the R2 CV copy were removed. **PDPA:** fine for synthetic data; check Malaysia's PDPA cross-border
+  rules before real users.
+- **Merge note:** on a Windows checkout with `core.autocrlf=true`, `tests/radar/copiedFromMain.test.js` fails 2 checks
+  (line endings change the files' SHA-256); the files themselves are unchanged.
 
-The older documents are SUPERSEDED. Do not follow them:
-- `docs/superpowers/specs/2026-10-29-futureready-final-design.md`
-- `docs/superpowers/specs/2026-10-29-cv-profile-design.md`
-- `docs/superpowers/plans/2026-10-29-futureready-final.md`
+## Open points for the owner
+- **Weak skill suggestions can appear.** The rule has no minimum gap above the average, e.g. Accounting → Programming
+  (1.76 against 1.60). Adding a minimum gap is the owner's call.
+- **Field-of-study names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search
+  in English.
+- **The reason for a suggested skill is hover text,** so phones don't show it. Revisit at the visual redesign.
+- **Radar:** review the 16 field ↔ topic proposals and 4 possible breaks; review BM and 中文 Radar wording (marked
+  "translation: owner review"); decide a "rising" rule for Hot Technology counts when the 2026 window appears;
+  accept or trim ~10.8 MB of bundled O\*NET snapshots; find an official source that MASCO 2020 major groups match
+  ISCO-08.
+- **Radar profile charts:** review the new BM and 中文 lines ("translation: owner review"); eMASCO roles in one 4-digit
+  MASCO group show the same chart (the chain works at that level); copy the three browser-check screenshots into
+  `docs/record/screens/` (blocked by a permission check for Claude).
+- **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
+  approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
+  OK for a new package). Overall match: the page's sources table has no UNESCO row yet (shown on the questions page);
+  zh mixes 您/你.
+- **Tests:** since the 31 Oct merges, a plain `npm test` sometimes fails a few unrelated server tests under load;
+  `npx vitest run --maxWorkers=3` is green. Decide a worker limit or timeout in the test settings.
+- **Study pathway:** review the team picks in `#admin` (none approved yet; a note is required per decision); fill
+  the 60 accredited picks that have no MQA reference yet (the scripted MQR query works, see the branch handover);
+  review BM and 中文 pathway wording; professional bodies not linked (law, architecture and town planning,
+  veterinary, social work); a few weaker course fits.
+- **Organisation view:** D1 keys and price before any trial with real accounts; one roster import on real D1 not yet timed; review BM and 中文 org
+  wording; small wording points in `docs/org/acceptance.md` ("raise to X", "1 people").
 
----
+## Career matching (since 2026-10-31, details: branch `claude/career-matching`)
+- **Screen `#match`** lists eMASCO roles (pages of 10) with a Skill Match chart, an outlook under two AI scenarios
+  and SDG tags; screen `#sdg` shows the SDG links. Design: `docs/superpowers/specs/2026-10-30-career-matching-design.md`
+  and `docs/architecture-matching.html`.
+- **Skill Match** = Σ min(you, needed) ÷ Σ needed over O\*NET skills + knowledge with importance ≥ 3.0. Levels: basic
+  2, good 4, expert 6; "Not assessed yet" meets the level and marks the result provisional. No language model.
+- **Official code chain only:** eMASCO → ISCO-08 → SOC 2010 → SOC 2018 → O\*NET (`data/radar/occupation-bridge.json`,
+  BLS crosswalks kept in `data/radar/source/`). MASCO → ISCO uses the same 4-digit code where ISCO has it, labelled
+  "code match, not an official table". A broken chain says "not available" and names the missing step. 1261 of
+  1812 roles have a Skill Match; Malaysian-only groups (e.g. 1121) stay unavailable.
+- **Scenarios:** Moderate AI = Anthropic Economic Index observed use; Rapid AI = ILO WP140 exposure. Trends and
+  scenarios set the outlook and one of four bands, never the Skill Match.
+- **SDG:** team drafts shown with a UN goal link; rejected links hidden; approved links dated. The path contribution
+  is a count of links with reasons, never a score.
+- The profile sent to `/api/matching` is never stored or logged. Forbidden keys: score, weight, rank, opportunit.
+- **Overall match (M17, 31 Oct):** profile section 4 "Using AI" asks 4 yes/no questions based on the UNESCO AI
+  competency framework for students (2024, https://doi.org/10.54675/JKJB9835). AI know-how = Yes ÷ answered.
+  Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch; AI touch = share of the job's tasks seen in AI use
+  (Moderate, Anthropic) or the ILO exposure score (Rapid). The Skill Match and the bands never change; inside a band
+  roles sort by Overall. No answers → an "Answer AI questions" button; no AI data → Overall = Skill Match. Code
+  `shared/matching/overall.js`.
 
-## 2. What is done, and where
+## Landing page (since 2026-10-31, details: branch `claude/website-interface`)
+- The welcome screen is now the landing page. Its "Get started" buttons open "Who is it for?" (for myself / for my
+  organisation), then the guest or account choice (`access`).
+- The 3D ATM intro (three.js 0.186.1, served from `node_modules`, no CDN) stays as built. **The owner will say
+  later what changes in the ATM section; do not alter it until then.**
+- Its stage list still says only the profile is built; radar and matching exist now. Owner to decide the wording.
 
-All 18 plan tasks are done. Task 12 (L3) was built but **switched off by the owner's choice**. There was a final
-whole-branch review by a fresh reviewer: 0 Critical, 7 Important and 11 Minor findings, all fixed, each with a test
-that failed first. The branch was merged into `main` via PR #1
-(`https://github.com/guirong0109/XH-Cat_MyFuture/pull/1`, merge commit `301c10e`).
+## Study pathway (since 2026-10-31, details: branch `claude/study-pathway`)
+- **Screen `#pathway`** (the old "Learning roadmap" tab; `#roadmap` opens it). "Plan my study pathway" on a `#match`
+  card saves the role; several roles, one tab each. Design: `docs/superpowers/specs/2026-10-31-study-pathway-design.md`
+  (P1–P16), `docs/architecture-pathway.html`, approved mockup `docs/mockup-pathway.html`.
+- **Part 1, study route:** eMASCO's qualification first, O\*NET's US education level under it; fields of study read
+  backwards through the official ISCED-F ↔ CIP ↔ O\*NET tables, each with accredited Malaysian programmes,
+  professional bodies and starter courses. 99 of 118 fields have a programme; the other 19 are in
+  `docs/pathway/fill-report.md` with the sources searched.
+- **Part 2, skills to build:** matching's own gap points (`POST /api/pathway` reuses `matching.role()`), biggest
+  first, each with team-picked courses (all 68 O\*NET items) and "More on <site>" search links. Started / Done per
+  skill, saved in the browser; it never changes the Skill Match.
+- **Team picks** (`data/pathway/picks.json`, sites in `sites.json`): only name, link, date checked, plus
+  institution and MQA reference or body; nothing invented; names copied from the page heading. Owner review in
+  `#admin` (approve / reject with a note); approved picks show the date; no "team draft" word on `#pathway` (P15).
+- **NEC hint:** a field code is shown only where it is known (P16); MQA's register cannot be linked, only searched.
+- A bad picks file stops the server at start-up and names the pick. The profile is never stored or logged.
 
-| Area | Files |
-|---|---|
-| Server entry, app wiring | `server/index.js` (PORT 3200), `server/app.js` (`createApp({...})`, all optional services injected) |
-| Errors | `server/errors.js`: one shape `{error:{code,message,retryable}}` |
-| CV pipeline (Case A) | `server/cv/validateFile.js` → `readText.js` (pdfjs-dist legacy build, ≤300 lines, ≤20,000 chars, ≤500 chars/line) → `detectLanguage.js` → `extract.js` (L1 sections, L2 rules + O\*NET names, L4 merge; `EXTRACTOR_VERSION='cv-1.0'`) with `patterns.js`; route `server/routes/cv.js` `POST /api/cv/extract` (raw body, 45 s timeout) |
-| L3 semantic match (off) | `server/cv/semantic.js` (RunPod OpenAI-compatible `/embeddings`, warm-up at start), `scripts/model-eval.mjs`, `testing/model-eval-set.json` (61 terms), `docs/model-eval.md` ("Not run") |
-| Skills | `server/skills/onetSkills.js` (catalogue ids `onet:tech:<name>`, `onet:el:<element id>`), `server/skills/normalize.js`, `server/routes/skills.js` `POST /api/skills/normalize` |
-| Occupations | `server/occupations/{onetLive,cache,onetSnapshot,lookup}.js`, `server/routes/occupations.js` `GET /api/occupations/search?q=`; order live → cached (cached live answer, else snapshot) → eMASCO alternative → failed |
-| Accounts / storage | `server/auth.js` (scrypt, `fr_session` cookie, sign-in limit 10 per 15 min), `server/routes/auth.js`, `server/store/d1.js` + `migrations.sql`, `server/store/r2.js` (SigV4), `server/rateLimit.js`, `server/routes/profiles.js` (validate, save, list, get, PATCH with version → 409, mappings) |
-| DeepSeek reads every CV (31 Oct, owner decision; spec `docs/superpowers/specs/2026-10-31-cv-ai-reading-design.md`) | `server/cv/aiRead.js` (one chat call, `response_format: json_object`, thinking off, 40 s, 20 reads per hour per address, every item must quote the CV, CV text never logged), `aiReadPrompt.js`, `mergeDrafts.js` (rules win; the AI fills empty fields and adds missed items; a different AI value gives `extraction.aiDiffers` and an uncertain `ai_differs`; same item = evidence on word boundaries of at least 8 characters (tried first for every AI item), else an equal main field unless the employer or institution is filled in on both and differs; AI items match rules items only; skills by O\*NET id when both have one, else normalised name). `server/routes/cv.js` runs both readers together and waits for the AI only for the time left on the 45 s upload clock (500 ms margin); warnings `ai_unavailable`, `ai_limit`; `extractor.layers` gains `ai` and `extractor.model` when merged. Browser: upload notice (en/ms/zh), tag "Found by AI — check it", "<field> — AI read this as: … Check it." and "<field>: filled in by AI — check it." lines, fallback line on the ready receipt. `mergeDraft` now keeps repeated draft items. Failure logs name the cause (`timeout after N ms`, `cut_off`, `bad_json`, `bad_body`, `bad_shape <list>[i].<field> <type>`), never CV text. Tests: 372 pass |
-| Removed on 31 Oct | `POST /api/cv/reextract`, `reextract.js`, `reextractPrompt.js`, the consent box, the compare view (`improveWithAi.js`, `compareView.js`), the Claude backup, `CV_LLM_BACKUP_*`, the R2 upload copy and its `cv-temp` deletes, `features.tempCopy`, `tempStore` in `createApp`. `server/store/r2.js` stays but the CV flow no longer uses it |
-| Shared (browser + server + tests) | `shared/profileSchema.js`, `shared/profileState.js`, `shared/flow.js`, `shared/guestStore.js` (localStorage key `futureready-profile-v1`), `shared/i18n.js`, `shared/strings/{en,ms,zh}.js` (same keys, enforced by a test) |
-| Browser (ES modules, no build) | `public/index.html`, `public/styles.css`, `public/js/app.js` (state, router, all actions), `public/js/{api,cvApi,accountApi,ui}.js`, `public/js/screens/*.js`, `public/js/components/*.js` |
-| Data | `data/onet/*.tsv` + `manifest.json` (O\*NET 31.0, SHA-256 checked), `data/emasco/occupations.json` (1,766), `data/isced/*.tsv` + `manifest.json` (ISCED-F 2013, 124 fields, CIP bridge to O\*NET), `data/SOURCES.md` |
-| Career interests and fields (30 Oct, owner request) | `data/onet/interest_areas.tsv` (from `pipeline/fetch_onet.py`), `server/interests/interestAreas.js`, `GET /api/interests`, `interestField` in `public/js/screens/form.js`, `mergeCareerFields` in `shared/profileState.js` |
-| Skills from field of study (30 Oct, owner request) | `server/fields/fieldSkills.js`, route `GET /api/fields/:code/skills` in `server/routes/fields.js`, `public/js/components/fieldSuggestions.js` (Skills section) |
-| Search pickers (30 Oct, owner request) | `public/js/components/searchPicker.js`; APIs `GET /api/skills/search` (`searchSkills` in `server/skills/onetSkills.js`) and `GET /api/fields/search` (`server/fields/isced.js`, `server/routes/fields.js`); roles reuse `/api/occupations/search`, now matching word starts |
-| Pipeline | `pipeline/fetch_onet.py`, `pipeline/fetch_isced.py`, `pipeline/tests/test_fetch_onet.py`, `pipeline/tests/test_fetch_isced.py` |
-| Evaluation | `scripts/eval-cv.mjs`, `testing/eval-cvs.json` (11 synthetic CVs), `docs/eval-results.md` |
-| Docs | `README.md` (run, settings, owner setup), `docs/acceptance.md`, `docs/tools-declaration.md`, `docs/build-record.html` (step-by-step build record, generated), `docs/architecture-cv-branch.html` (diagram of this branch: every file by layer, git history, service status) |
-| Look (31 Oct, owner request) | `public/styles.css` (landing page design language: cream, serif, mono, thin rules), fonts in `public/index.html`, receipt / ATM classes in `welcome.js`, `upload.js`, `review.js`, `summary.js`; checks in `tests/appLook.test.js`. No roller counters yet: these screens have no real counts |
-| First question (31 Oct, owner request) | `welcome.js` asks "For myself" or "For my organisation" (`data-act="use"`, `state.use`); organisations then pick C or D in `category.js` (personal users: see "Which describes you best?" below); no Sign in link there (owner): sign in on the next screen or from the top bar. `access.js`: personal = guest or account; organisation = account only (no guest; `guest` action refuses `state.use === 'org'`); without accounts on the server it says so (`acOrgOff`) and offers "Use it for myself instead"; strings `useTitle`, `usePersonal(Text)`, `useOrg(Text)`; tests `tests/useChoice.test.js` |
-| Goal question (31 Oct, owner request) | `public/js/screens/goal.js` after guest / account for personal users (`afterAccess()` in `app.js`; organisations go to `category`), then "Who are you?". Saved as `preferences.careerGoal`; the form offers the same four goals. Tests `tests/goal.test.js`. The one-line texts under the goals are Claude's wording, for the owner to check |
-| Which describes you best? (31 Oct, owner requests) | Start = personal / organisation → guest or account → goal → CV or form; `category.js` ("Who are you?") is for organisations only (C, D). Personal users answer at the top of the profile form: four buttons (`WHO` in `form.js`, `choiceField` in `fields.js`, action `choose`): Student, Fresh graduate, Underemployed, Unemployed, plus a "Prefer not to say" pill. Saved as `userCategory`; `USER_CATEGORIES` in `shared/profileSchema.js` accepts them plus the two old values. Strings `catGrad`, `catStudent`, `catUnder`, `catUnemp` (+ `Text`); `catA`/`catB` left for `main`'s landing page. Tests `tests/category.test.js`. No "Working adult" option any more (owner's list) |
-| No education status (31 Oct, owner request) | "Current education status" removed from the form (`form.js`) and the receipt (`review.js`, shown only if an earlier profile has an answer). `education.educationStatus` stays in `shared/profileSchema.js` for saved profiles |
-| Qualifications (31 Oct, owner requests) | `form.js` `qualifications()`: "+ Add a qualification" adds a row with only the level (`QUALIFICATIONS`) and the field of study (major): a dropdown of all ISCED-F fields by broad area, from the read-only `GET /api/fields` (`server/routes/fields.js`, `isced.list()`). No highest qualification (shown on the receipt only for a profile saved earlier with one), no institution, no year. Tests `tests/qualifications.test.js` |
-| No certificates, training or projects (31 Oct, owner request) | `SECTIONS` in `form.js` has four sections. `dropNotAsked` empties `certifications`, `training` and `projects` in the CV draft, rules and AI alike (`app.js`); the server's CV reader still finds them. The receipt shows them only for an earlier saved profile. Tests `tests/noCertificates.test.js` |
-| No employment status (31 Oct, owner request) | "Current employment status" removed from the form (`form.js`) and the receipt (`review.js`, shown only if an earlier profile has an answer). `employment.status` stays in `shared/profileSchema.js` for saved profiles |
-| Jobs: title then years (31 Oct, owner request) | `form.js` `jobRow()`/`work()`: Job title, then Years of work experience for that job (`years`, number box with arrows, `toYears`); the first job is on screen straight away and typing creates it; the occupation finder stays. Employer, period, industries and `employment.yearsOfExperience` are no longer asked (the receipt shows them only when a CV or earlier profile has them). Tests `tests/employment.test.js` |
-| Last section renamed (31 Oct, owner request) | `secPrefs` reads "Interests" (BM "Minat", 中文 "兴趣"); the key and the questions inside are unchanged |
-| Interests: one question (31 Oct, owner request) | `form.js` `prefs` is only `interestField` (Career interests and fields); career goal (asked on the goal screen), occupations of interest, work location and learning hours are not asked; the receipt shows location and hours only when saved earlier. Main's radar also reads occupations of interest |
-| Review and confirm on Interests only (31 Oct, owner request) | `form.js`: sections 1-3 end with Back and Next (main button); only the last section shows Review and confirm |
-| Skill level toggle bar (31 Oct, owner request) | `form.js` `levelBar()`: `.toggle` radiogroup of Not assessed yet / Basic / Good / Expert, `data-act="level" data-arg="<i>|<level>"`; `app.js` `level` action (empty = not assessed) |
-| Skills grouped under jobs and projects (31 Oct, owner request) | `skills[].usedIn = [{ kind: 'job'|'project', title }]`, set by the CV reader (lines under a job or project) and the DeepSeek reader (`usedIn` field); `public/js/screens/skillGroups.js` draws a card per job and project plus Others, with Looks right / Confirm all / Edit (level bar) / + add skill. Links are by title: renaming keeps them, removing moves skills to Others. Projects are back (`NOT_ASKED` = certificates, training). |
-| Used in a job or project = Good (31 Oct, owner rule) | `levelFromUse()` in `shared/profileSchema.js`: a skill with `usedIn` and not yet rated gets `proficiency: 'good'`, `proficiencyStatus: 'from_projects'` (tag "From your projects"); losing every link resets it; a user's level is never changed. Applied by the CV reader, the DeepSeek reader and `linkSkill`/`unlinkPlace`. Main's matching reads this level. Other skills are folded (`state.otherOpen`) |
-| CV result: only Edit in the form (31 Oct, owner request) | `upload.js` `ready()`: one main button to the form; no Review and confirm or Upload another file there, because the CV reading is never fully correct |
-| CV qualification and field prechosen (31 Oct, owner request) | CV reader sets `education.records[].level` (the AI never does) (`levelOf` in `server/cv/patterns.js`); `public/js/cvPrechoose.js` sets `field` to the first `/api/fields/search` match for the CV words (`via: 'cv_match'`, `term`) before the draft is merged; the form shows "Chosen from your CV … Check it is right" |
-| Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
+## Organisation view (since 2026-10-31, details: branch `hr-branch`)
+- **Screen `#org`** for category C (HR / L&D) and D (TVET / university career centre); account needed (D1). One
+  account owns one organisation. Design: `docs/superpowers/specs/2026-10-31-hr-org-view-design.md` (O1–O8),
+  `docs/architecture-org.html`, mockup `docs/mockup-org.html`, browser results `docs/org/acceptance.md`.
+- **People in two ways:** a roster CSV of made-up people (checked and previewed before import; names already in the
+  organisation refused) or a one-time join link (32 random bytes, only its hash stored, 7 days) with which an
+  employee shares **skills only** (O\*NET skill/knowledge + level, group, role, name). One share per employee; they
+  see exactly what HR holds and can update or stop.
+- **Numbers are matching's:** each person goes through `matching.role()` for their current and target role;
+  `shared/org/team.js` only counts and sums. Heatmap cells, a team plan per role (pathway courses, no hours), band
+  counts under Moderate / Rapid AI and an SDG link count (never a score). Scenarios change only the band counts.
+- Tables `orgs`, `org_groups`, `org_people`, `org_skills`, `org_invites`, `org_plan_steps` (cascade delete). Nothing
+  personal is logged; team results are never stored.
 
----
+**No scoring method from the old project.**
 
-## 3. Where it is stuck, and what to do next (by priority)
+## What is not switched on yet (needs the owner's keys or OK)
+- **`ONET_API_KEY`:** live O\*NET search. Until then the lookup uses the bundled O\*NET 31.0 snapshot, marked
+  "cached".
+- **Cloudflare D1 (`D1_*`) and R2 (`R2_*`):** without them, accounts say "not available" and guests still work
+  fully. The organisation view needs D1 (check Cloudflare's current D1 price and tell the owner first). Local
+  trial: `node scripts/serve-local-accounts.mjs` (in-memory stand-ins).
+- **Radar storage and refresh:** a deployed Radar needs R2 settings (`RADAR_STORE`, `R2_*`) and a free OpenAlex key;
+  `RADAR_STORE=memory` is for local trials only and forgets everything on restart. See `docs/radar/deploy.md`. No
+  host chosen yet (owner's price decision).
+- **RunPod endpoint:** L3 skill matching. Ask the owner to approve the price first.
+- **DeepSeek (`CV_LLM_KEY`):** set in the owner's own `.env` on the CV branch; a deployed server needs it too (paid per
+  use, about $0.0003 per CV).
 
-**No failing tests and no open errors.** The jam is that external services are not configured.
-Each item below says what you will see and what to do.
+## Commands
+```bash
+npm install
+npm test          # expect 1535 passed
+npm start         # http://localhost:3200, reads .env if present (copy .env.example)
+python -m unittest discover pipeline/tests   # expect 49 OK
+python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain
+node scripts/radar-bootstrap.mjs             # rebuild the bundled Radar data (see docs/radar/deploy.md)
+python pipeline/fetch_onet.py 31.0           # rebuild data/onet (jobs, skills, software, interest areas, education)
+python pipeline/fetch_isced.py               # rebuild data/isced (fields of study + CIP bridge)
+```
+Every data file, its source, date and licence: `data/SOURCES.md`.
 
-1. **P1 — Accounts show "Accounts are not available on this server."**
-   - **Cause:** no Cloudflare D1 settings. `createD1FromEnv()` returns null, and `/api/auth/*` answers
-     503 `accounts_unavailable`.
-   - **Do:** get the owner's `D1_ACCOUNT_ID`, `D1_DATABASE_ID` and `D1_TOKEN` and put them in `.env` (copy
-     `.env.example`). Then create the tables once:
-     `node --env-file-if-exists=.env -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"`.
-   - **To test without Cloudflare:** run `node scripts/serve-local-accounts.mjs`, which uses an in-memory SQLite
-     stand-in on port 3100, or 3201 via the launch config `cvaccounts`.
-3. **P2 — Occupation lookup always says "From O\*NET snapshot 31.0 (cached, 2026-10-29)".**
-   - **Cause:** there is no `ONET_API_KEY`, so the warning is `no_api_key`.
-   - **Do:** the owner registers a free key at https://services.onetcenter.org and sets `ONET_API_KEY`.
-   - API base `https://api-v2.onetcenter.org`, `X-API-Key` header, path `/online/search?keyword=`.
-4. **P1 — DeepSeek is on (owner key in `.env`, 31 Oct); accuracy check done, model choice and one false flag left.**
-   - **Done 31 Oct:** `eval-cv.mjs --ai` on `deepseek-flash` cost about $0.009 (results in `docs/eval-results.md` and
-     `docs/acceptance.md`); "Found by AI" tags seen in the browser.
-   - **Fixed 31 Oct:** a qualification is not flagged "AI read this as" when the AI wording gives the same level as
-     the rules label (`sameMeaning` in `server/cv/mergeDrafts.js`). The owner may still try `deepseek-v4-pro`.
-   - **How to re-run:** with `CV_LLM_KEY` in `.env` (ask first, it is paid), run
-     `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai` (rules-only against rules + DeepSeek: precision,
-     recall, F1, wrong-item rate, latency, tokens, cost at peak price). The owner then picks `deepseek-flash`
-     (default) or `deepseek-v4-pro`. Also upload one synthetic CV in the browser to see the "Found by AI" tags.
-   - **PDPA:** the CV text is sent to DeepSeek in China. Fine for synthetic data. Check Malaysia's PDPA
-     cross-border rules before real users.
-5. **P3 — L3 is off; extraction warnings say `semantic_unavailable`.**
-   - The owner chose to skip it.
-   - To enable: create a RunPod embedding endpoint (`BAAI/bge-m3`; the 16 GB pool showed $0.58/h while running;
-     **ask for the price OK first**) and set `SEMANTIC_URL`, `SEMANTIC_KEY` and `SEMANTIC_MODEL`.
-   - Then run `node scripts/model-eval.mjs` and set `SEMANTIC_CUTOFF` to the cutoff it writes to
-     `docs/model-eval.md`.
-6. **P3 — Known extraction misses** (`docs/eval-results.md`, left as measured, not tuned):
-   - "Google" is taken from the certificate line "Google Data Analytics Certificate, 2023".
-   - "Oracle Database" is taken from a Malay certificate line.
-   - "QuickBooks Online" is not in O\*NET 31.0.
-   - "MS Excel" stays a second, unknown skill next to "Microsoft Excel"; L3 would fix this.
-7. **P4 — Visual redesign at the final stage.** The owner's plan: the screens currently use the mockup's look, so
-   keep logic out of markup.
-8. **P4 — Next module: matching.** It is not started. CV spec §12 "Profile modified" and §13 Tests 3 and 7 are
-   accepted only in adapted form until it exists. It must consume the confirmed profile JSON:
-   - skills with `canonicalId` and `proficiency`;
-   - `employment.records[].occupation.code`;
-   - `occupationMappings`;
-   - `preferences`.
-   **No scoring method from the old project.**
+## Rules that apply to every branch
+- **Branches:** one branch per feature. Each branch keeps a detailed `HANDOVER.md` and `CLAUDE.md`. On every merge
+  to `main`, put only the important points into these two files.
+- Follow the owner's architecture diagrams exactly. Add nothing they do not state, such as extra limits.
+- Use no scoring method from the previous project. Don't use the `C:/Users/guiro/XH-Cat_Domain1` folder as a
+  template.
+- Ask the owner before anything paid, and before merge, push, PR or force-push.
 
----
-
-## 4. Commands run and results (last run 2026-10-29)
-
-| Command (from `C:\Users\guiro\XH_Cat_Final`) | Result |
-|---|---|
-| `npm test` (= `vitest run`) | **43 files, 372 tests passed** on this branch (31 Oct) |
-| `python -m unittest discover pipeline/tests` | **8 tests OK** |
-| `python pipeline/fetch_isced.py` | 124 ISCED-F fields, 118 linked to O\*NET (run 30 Oct from files downloaded by hand) |
-| `node scripts/eval-cv.mjs` | 11 CVs, 0 failures. Skills P 0.917 / R 0.971 / F1 0.943; qualifications, jobs and certificates 1.0; median 3–4 ms per CV; 0 levels set |
-| `node scripts/model-eval.mjs` | **Not run.** It needs `SEMANTIC_*`, which the owner skipped |
-| `python docs/record/build_record.py` | writes `docs/build-record.html` (20/21 done; T12 skipped) |
-| `npm start` | server on http://localhost:3200; reads `.env` if present (`node --env-file-if-exists=.env`) |
-| Browser acceptance | Recorded in `docs/acceptance.md`, all pass. Test 1 in BM, desktop; Test 2 and refresh in 中文 at 360 px; error exits in EN; Tests 3, 4, 5, 6 and 7 |
-
----
-
-## 5. Pitfalls, wrong assumptions, and attempts not to repeat
-
-**Owner rules (do not break):**
-- **Do not use the `C:/Users/guiro/XH-Cat_Domain1` folder as a template.** Only data files were copied from it
-  (eMASCO). Do not copy its code or its scoring.
-- **No scoring or matching method from the previous project.**
-- **Follow the owner's diagram exactly.** Add nothing it does not state. Example: I added per-address limits on
-  sign-up, upload and search; the owner said "This dont limit" and they were removed (commit `372adad`). Only the
-  spec's limits exist: sign-in 10 per 15 min; AI reading 20 per hour per address.
-- **Anything paid needs the owner's OK on the price first,** including RunPod endpoints.
-- **Integration (merge, push, PR) is the owner's decision.** Force-push only with an explicit OK.
-
-**Search pickers and "Prefer not to say" (30 Oct):**
-- **The owner chose the field-of-study list:** ISCED-F 2013 + O\*NET via the CIP files. O\*NET 31.0 itself has no
-  field-of-study data: element 2.D.2 "Instructional Program Required" has no rows. Don't look for it again.
-- **The bridge is stored only.** `isced_cip.tsv` and `cip_onet.tsv` are for the matching module. CIP Canada 2016 and
-  CIP 2020 are joined on equal codes only, so 6 fields have no O\*NET link.
-- **Field names are English only.** There is no official BM or 中文 list; the BM and 中文 hint says to search in English.
-- **The picker redraws only its list (`#pick-<key>`), not the page,** so the input keeps focus. A full `render()`
-  while typing would lose the cursor.
-- **"Prefer not to say" default:** `showSection()` in `app.js` runs `declineUnanswered` for the open section.
-  `isUntouched` ignores declined fields on purpose, so a CV draft or an account profile can still fill them.
-- **Skill suggestions use the owner's rule B ("typical of the field").** There is no minimum gap above the average, so
-  weak ones can appear, e.g. Accounting → Programming 1.76 against 1.60. Changing the rule is the owner's call.
-- **Suggestions are click-to-add chips (owner, 30 Oct).** The owner found a ticked list with reasons too long. The
-  reason is the chip's hover text; 8 show first.
-- **Test in the browser on an address nobody else uses** (e.g. `127.0.0.2:3200`). The owner may click in any Browser
-  pane tab, including `localhost`, `127.0.0.1` and `[::1]`. Each address has its own saved progress. Never edit
-  localStorage in a tab the owner has touched. On 30 Oct a test script did that in the `[::1]` tab: it set career
-  interests to "Data" and "Finance" and told the owner.
-- **The skill search used to look broken for everyday words** ("pet" → IHS Petra, "leadership" → nothing): the
-  catalogue was software products plus 36 basic skills. Work styles, knowledge areas and work activities are now
-  in the search (`catalogue.more`), ordered general-first. O\*NET's own wording is needed ("Cooperation", not
-  "teamwork").
-- **Sources on screen are a must (owner: "highly important").** Any new list or suggestion must say where its data
-  comes from.
-- **Screenshots in the Browser pane can lag behind clicks.** Read state with `javascript_tool` before deciding
-  that something failed.
-
-**Technical traps that already bit:**
-- **Bash heredocs break on apostrophes in this environment.** Write scripts with the Write tool into the scratchpad
-  (`C:\Users\guiro\AppData\Local\Temp\claude\C--Users-guiro-XH-Cat-Final\<session>\scratchpad\`) and run them with
-  `python <file>`.
-- **Inline `python - <<'EOF'` that writes JS turns `'\n'` into a real line break.** Check with `vitest` after.
-- **pdfjs-dist in Node needs `standardFontDataUrl`,** a path with forward slashes and a trailing slash, and
-  `await task.destroy()`, not `doc.destroy()`. See the top of `server/cv/readText.js`.
-- **Chinese headings like 技能 and 证书 have only 2 characters.** The reader keeps lines with ≥3 letters or ≥2 Han
-  characters. Don't raise this threshold.
-- **A long pasted paragraph must not stop reading.** Lines are cut to 500 characters and the reader continues.
-  Don't change it back to `break`.
-- **Normaliser:** a catalogue name that merely *contains* the input is offered as a candidate and never linked
-  silently ("Teamwork" must not become "Digital Crew Teamwork Project Manager").
-- **One-word software names** count only when capitalised. Inside a sentence, the first word is skipped ("Chef at
-  Hilton…"). In list-like lines (with `, ; • | / ·`) or the Skills section, any position counts.
-- **An outage is never `no_match`:** live failed plus zero snapshot hits gives state `cached`, with 0 candidates and
-  a `live_failed:*` warning.
-- **Sign-out clears browser storage** (shared computers). A version conflict (409) offers "Load the saved version".
-  Don't remove either.
-- **`safeLocalStorage()`** in `shared/guestStore.js`: reading `window.localStorage` itself throws when site data is
-  blocked. Never touch `globalThis.localStorage` directly.
-- **Old entries in `.claude/launch.json`** (`mockup`, `app-test`, `app-accounts`) point at the Domain1 folder.
-  **Use `cvmodule` (3200), `cvaccounts` (3201) and `record` (8766).**
-- **Browser testing:**
-  - The owner clicks in tab-9 of the Browser pane; run scripted checks in another tab.
-  - `preferences.careerGoal` is a `<select>`: set an option value such as `change`, not free text.
-  - A reload wipes `window.*` test variables.
-  - A reload with saved progress shows the "Welcome back" screen first.
-- **Line endings:** `.gitattributes` keeps `data/onet/*.tsv` in LF so the manifest hashes match on Windows. The
-  "LF will be replaced by CRLF" warnings on other files are harmless.
-- **GitHub history:** the GitHub repo started with its own "Initial commit" (Apache-2.0 `LICENSE`, `a970dae`). It was
-  merged in, not overwritten.
-
----
-
-## 6. Workspace state (2026-10-29, end of session)
-
-- **Branches** (all pushed, nothing uncommitted, no stash):
-  - `main` at `301c10e` (merge of PR #1), tracking `origin/main`.
-  - `claude/cv-profile-module` at `88b8ae0`, tracking `origin/claude/cv-profile-module`. It holds this detailed
-    HANDOVER.md and CLAUDE.md once committed.
-- **Remote:** `origin` = `https://github.com/guirong0109/XH-Cat_MyFuture.git`. `gh` is logged in as `guirong0109`.
-- **Git-ignored and local only:**
-  - `node_modules/`
-  - `.env` (does not exist yet)
-  - `data/cache/` (cached live O\*NET answers)
-  - `.claude/` (launch configs)
-  - `.superpowers/sdd/2026-10-29-cv-profile-module/`: the execution ledger `progress.md` with every `Ruling:` line,
-    and the review package. It is safe to delete; its content is summarised in `docs/build-record.html`.
-- **Environment:**
-  - Node ≥ 22.12 required (`package.json` engines); built on **Node 24.16.0**. `node:sqlite` is used by the D1
-    stand-in.
-  - Python 3, built on 3.14.0, standard library only.
-  - Dependencies: `express ^5.3.0` and `pdfjs-dist ^6.4.299`; dev `vitest ^5.0.5`. Install with `npm install`.
-- **Settings:** all optional. They are listed in `.env.example` and the README:
-  `ONET_API_KEY`, `D1_*`, `SEMANTIC_*`, `CV_LLM_URL`, `CV_LLM_KEY`, `CV_LLM_MODEL` (DeepSeek), `CV_MAX_MB`, `TRUST_PROXY`, `PORT`.
-- **Start working:**
-  ```bash
-  cd /c/Users/guiro/XH_Cat_Final
-  git checkout claude/cv-profile-module && git pull
-  npm install
-  npm test                                # expect 372 passed
-  npm start                               # http://localhost:3200
-  node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
-  ```
-- **Branch documentation rule (owner):**
-  - Every branch keeps a detailed `HANDOVER.md` and `CLAUDE.md` for its feature.
-  - `main` keeps short versions with only the important points.
-  - On every merge to `main`, carry the important points into main's two files. Do not overwrite them with the
-    branch's detailed ones.
+## Repository
+- `C:\Users\guiro\XH_Cat_Final`, GitHub `https://github.com/guirong0109/XH-Cat_MyFuture` (private).
+- Branches: `main`, `claude/cv-profile-module`, `claude/future-radar` (worktree `C:\Users\guiro\XH_Cat_Final-radar`),
+  `claude/career-matching`, `claude/compare-futures` (in `C:\Users\guiro\XH_Cat_Final`), `claude/study-pathway` (worktree
+  `C:\Users\guiro\XH_Cat_Final-pathway`) and `hr-branch` (worktree `C:\Users\guiro\XH_Cat_Final-hr`). `main` is also checked out as a worktree at
+  `C:\Users\guiro\XH_Cat_Final-main`; merge there, since `git checkout main` fails in the first folder.
+- Node ≥ 22.12 (built on 24.16.0), Python 3 for `pipeline/`.

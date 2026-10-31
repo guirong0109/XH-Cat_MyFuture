@@ -36,7 +36,7 @@ describe('fake D1 (node:sqlite with the real migrations)', () => {
     const db = createFakeD1()
     await db.migrate()
     const { rows } = await db.query("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name")
-    expect(rows.map((r) => r.name)).toEqual(['profiles', 'sessions', 'users'])
+    expect(rows.map((r) => r.name)).toEqual(['org_groups', 'org_invites', 'org_people', 'org_plan_steps', 'org_skills', 'orgs', 'profiles', 'sessions', 'users'])
     await db.query('INSERT INTO users (id, email, pass_hash, pass_salt, language, created_at) VALUES (?, ?, ?, ?, ?, ?)', ['u1', 'a@b.c', 'h', 's', 'en', 't'])
     await db.query('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)', ['k', 'u1', 't'])
     await db.query('INSERT INTO profiles (id, user_id, version, status, json, updated_at) VALUES (?, ?, ?, ?, ?, ?)', ['p1', 'u1', 1, 'confirmed', '{}', 't'])

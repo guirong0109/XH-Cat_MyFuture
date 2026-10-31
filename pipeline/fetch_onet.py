@@ -58,7 +58,18 @@ FILES = {
                       "keep": lambda row: row.get("Scale ID") == "IM", "sources": [
         ("Knowledge.txt", ["Element ID", "Element Name", CODE, "Data Value"]),
     ]},
+    # Task statements: the job's own task list, joined to Anthropic task rows through the task id.
+    "tasks.tsv": {"header": ["task_id", "code", "task"], "optional": True, "sources": [
+        ("Task Statements.txt", ["Task ID", CODE, "Task"]),
+    ]},
 }
+
+# Requirements: importance (IM) and level (LV) of each skill or knowledge element per job, joined into one row.
+# kind "el" = Essential/Transferable Skills (older Skills.txt), "kn" = Knowledge.
+REQUIREMENTS = ("requirements.tsv", ["kind", "element_id", "element", "code", "importance", "level", "suppress", "not_relevant"], [
+    ("el", ["Essential Skills.txt", "Transferable Skills.txt", "Skills.txt"]),
+    ("kn", ["Knowledge.txt"]),
+])
 
 # Work activities (detailed work activities, DWA) per job: "Tasks to DWAs" gives job and activity id, "GWAs to IWAs to
 # DWAs" gives the activity name. Written once per job and activity.
@@ -78,6 +89,50 @@ def work_activities(archive):
         seen.add(key)
         rows.append((key[0], name_of[key[0]], key[1]))
     return out_name, (header, rows)
+
+
+# Usual education level per job: element 2.D.1 "Required Level of Education", scale RL (share of workers per category,
+# US survey data). The label of each category comes from "Education Categories.txt".
+EDUCATION = ("education.tsv", ["code", "category", "label", "percent", "suppress"], "Education.txt", "Education Categories.txt")
+
+
+def education(archive):
+    out_name, header, data, categories = EDUCATION
+    if not find(archive, data) or not find(archive, categories):
+        return None
+    label_of = {clean(row.get("Category")): clean(row.get("Category Description")) for row in read_table(archive, categories)
+                if row.get("Element ID") == "2.D.1" and row.get("Scale ID") == "RL"}
+    rows = []
+    for row in read_table(archive, data):
+        if row.get("Element ID") != "2.D.1" or row.get("Scale ID") != "RL":
+            continue
+        category = clean(row.get("Category"))
+        rows.append((clean(row.get(CODE)), category, label_of.get(category, ""), clean(row.get("Data Value")), clean(row.get("Recommend Suppress"))))
+    return out_name, (header, rows)
+
+
+def requirements(archive):
+    out_name, header, kinds = REQUIREMENTS
+    found = [(kind, name) for kind, names in kinds for name in names if find(archive, name)]
+    if not found:
+        return None
+    rows = {}
+    for kind, name in found:
+        for row in read_table(archive, name):
+            scale = row.get("Scale ID")
+            if scale not in ("IM", "LV"):
+                continue
+            key = (kind, clean(row.get("Element ID")), clean(row.get("Element Name")), clean(row.get(CODE)))
+            entry = rows.setdefault(key, {"IM": "", "LV": "", "flags": [], "not_relevant": ""})
+            entry[scale] = clean(row.get("Data Value"))
+            entry["flags"].append(clean(row.get("Recommend Suppress")))
+            if scale == "LV":
+                entry["not_relevant"] = clean(row.get("Not Relevant"))
+    out = []
+    for key, entry in rows.items():
+        suppress = "Y" if "Y" in entry["flags"] else ("N" if "N" in entry["flags"] else "")
+        out.append(key + (entry["IM"], entry["LV"], suppress, entry["not_relevant"]))
+    return out_name, (header, out)
 
 
 def find(archive, name):
@@ -113,9 +168,9 @@ def write_snapshot(zip_bytes, out_dir, version, source_url, now=None):
                     seen.add(out)
                     rows.append(out)
         tables[out_name] = (spec["header"], rows)
-    activities = work_activities(archive)
-    if activities:
-        tables[activities[0]] = activities[1]
+    for extra in (work_activities(archive), requirements(archive), education(archive)):
+        if extra:
+            tables[extra[0]] = extra[1]
     os.makedirs(out_dir, exist_ok=True)
     hashes = {}
     for out_name, (header, rows) in tables.items():

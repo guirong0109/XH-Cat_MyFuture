@@ -13,14 +13,14 @@ const withLists = () => ({
 })
 
 describe('no certificates or training in the profile; projects came back (owner, 31 Oct)', () => {
-  it('the profile has four sections: education, employment, skills, interests', () => {
-    expect(SECTIONS).toEqual(['secStudy', 'secWork', 'secSkills', 'secPrefs'])
+  it('the profile has five sections: education, employment, skills, using AI (career matching), interests', () => {
+    expect(SECTIONS).toEqual(['secStudy', 'secWork', 'secSkills', 'secAi', 'secPrefs'])
     expect(SECTION_FIELDS).toHaveLength(SECTIONS.length)
     for (let section = 0; section < SECTIONS.length; section += 1) {
       const html = page(section)
       for (const key of ['addCert', 'addTraining', 'secCerts']) expect(html).not.toContain(key)
     }
-    expect(page(3)).toContain('fInterests')
+    expect(page(SECTIONS.indexOf('secPrefs'))).toContain('fInterests')
   })
 
   it('certificates and training a CV or the AI re-read finds are left out; projects and everything else stay', () => {
@@ -60,10 +60,10 @@ describe('section names', () => {
 
 describe('Interests asks only "Career interests and fields"', () => {
   it('no occupations of interest, career goal, work location or learning hours', () => {
-    const html = page(3)
+    const html = page(SECTIONS.indexOf('secPrefs'))
     expect(html).toContain('fInterests')
     for (const gone of ['occInterests', 'data-search="interest|interest"', 'fGoal', 'fLocation', 'fHours', 'preferences.careerGoal', 'preferences.preferredWorkLocation', 'preferences.preferredLearningHoursPerWeek']) expect(html).not.toContain(gone)
-    expect(SECTION_FIELDS[3]).toEqual([])
+    expect(SECTION_FIELDS[SECTIONS.indexOf('secPrefs')]).toEqual([])
   })
 
   it('the receipt shows work location and learning hours only when a profile saved earlier has them', async () => {

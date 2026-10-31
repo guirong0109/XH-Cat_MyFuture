@@ -8,18 +8,23 @@ const t = (key) => key
 const choices = (html) => [...html.matchAll(/data-act="category" data-arg="(\w+)"/g)].map(([, k]) => k)
 
 describe('first question: personal or organisation', () => {
-  it('the welcome screen asks who it is for, with a choice for myself and one for my organisation', () => {
-    const html = welcome({ t })
+  it('the landing page leads on to the question: who it is for, for myself or for my organisation', () => {
+    expect(welcome({ t, state: { lang: 'en' } })).toContain('data-go="access"')
+    const html = access({ t, state: {} })
     expect(html).toContain('useTitle')
     expect(html).toContain('data-act="use" data-arg="personal"')
     expect(html).toContain('data-act="use" data-arg="org"')
-    expect(html).not.toContain('>start')
-    expect(html).not.toContain('signin')
-    expect(html).not.toContain('data-go="access"')
+    expect(html).not.toContain('data-act="guest"')
     for (const lang of ['en', 'ms', 'zh']) {
-      const page = welcome({ t: (key, vars) => translate(lang, key, vars) })
+      const page = access({ t: (key, vars) => translate(lang, key, vars), state: {} })
       for (const key of ['useTitle', 'usePersonal', 'usePersonalText', 'useOrg', 'useOrgText']) expect(page).toContain(translate(lang, key))
     }
+  })
+
+  it('sent to sign in from a join link or the organisation tools, the question is skipped', () => {
+    expect(access({ t, state: { accessNote: 'shNeedAccount' } })).toContain('data-act="guest"')
+    expect(access({ t, state: { accessNote: 'ogNeedAccount' } })).toContain('accessOrgTitle')
+    expect(access({ t, state: { accessNote: 'ogNeedAccount' } })).not.toContain('data-act="use" data-arg="org"')
   })
 
   it('organisations then choose C or D on "Who are you?"', () => {

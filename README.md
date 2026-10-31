@@ -40,11 +40,57 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
 |---|---|
 | `ONET_API_KEY` | Live O\*NET Web Services search (free key from https://services.onetcenter.org). Without it the lookup answers from the snapshot |
 | `D1_ACCOUNT_ID`, `D1_DATABASE_ID`, `D1_TOKEN` | Accounts and saved profiles in Cloudflare D1 |
+| `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Durable Radar state in Cloudflare R2 (see the Radar section). The CV flow does not use R2 |
 | `SEMANTIC_URL`, `SEMANTIC_KEY`, `SEMANTIC_MODEL`, `SEMANTIC_CUTOFF` | L3 semantic match (RunPod embedding endpoint, cutoff from Model Eval) |
 | `CV_LLM_KEY` | Turns on DeepSeek AI reading of every CV, next to the rules reader. The CV text goes to DeepSeek (servers in China). Without it: rules only |
 | `CV_LLM_URL`, `CV_LLM_MODEL` | DeepSeek address (default `https://api.deepseek.com/chat/completions`) and model (default `deepseek-flash`) |
 | `CV_MAX_MB` | Upload limit (default 10) |
 | `TRUST_PROXY` | Behind a reverse proxy: number of proxy hops, so the sign-in and AI reading limits count each visitor, not the proxy |
+
+## Future Skills Radar (branch `claude/future-radar`)
+
+Two tabs at `#radar` — Skills & Careers and AI Impact — built from OpenAlex research counts and DOSM Job Market
+Insights, linked to the user's own confirmed profile. No scores or rankings. Spec:
+`docs/superpowers/specs/2026-10-30-future-radar-round1-design.md`; acceptance: `docs/radar/acceptance.md`;
+deployment notes: `docs/radar/deploy.md`; contract for Matching: `docs/radar/contract.md`.
+
+```bash
+npm start                                   # #radar serves the bundled data in data/radar/bundle/ (read-only)
+npm test                                    # all tests, Radar included (568)
+python -m unittest discover pipeline/tests  # Python pipeline tests, Radar bridge included (11)
+node scripts/radar-bootstrap.mjs            # rebuild the bundle: OpenAlex fetched live (no key), DOSM from the kept workbook
+python pipeline/fetch_radar_bridge.py       # rebuild the O*NET -> MASCO major group bridge from the kept files
+```
+
+| Setting | What it turns on |
+|---|---|
+| `RADAR_ADMIN_KEY`, `RADAR_DEMO_KEY`, `RADAR_SESSION_SECRET` | `#admin` (reviews, refresh, status) and `#judge` (Trend Change Test). The two keys must differ; the secret needs 32+ bytes |
+| `R2_*` (above) | Durable Radar state under `prod/` and judge sessions under `demo/`; without R2 the Radar is read-only |
+| `OPENALEX_API_KEY` | Admin refresh of OpenAlex on a deployed server (`NODE_ENV=production`) |
+| `RADAR_STORE=memory` | Local development only: admin and judge writes kept in memory, lost on restart; refused in production |
+
+## Career matching (branch `claude/career-matching`)
+
+Two tabs, `#match` and `#sdg`. Percentages and the chart appear only once the two BLS files are saved (see the end of
+this section). From a confirmed profile it lists Malaysian eMASCO roles and shows, for each one:
+- **Skill Match**: the levels you meet divided by the levels the job needs (O\*NET skills and knowledge), with a
+  sentence, a You-versus-Needed chart and "What would raise it". It is never changed by trends or AI.
+- **Outlook**, kept apart from the percentage: job-ad trend of the role's group (DOSM, group level only), AI in two
+  scenarios (Moderate: observed use, Anthropic Economic Index; Rapid: potential, ILO WP140), in-demand software.
+- **Four bands** per scenario, and **SDG links** (team draft, shown only after the owner approves each link in `#admin`).
+
+The two routes from a role to O\*NET jobs and from a profile to roles:
+1. **Official code chain**: eMASCO, ISCO-08, SOC 2010, SOC 2018, O\*NET. No word matching, no model, no guess; a broken
+   chain says which step is missing.
+2. **Your field**: ISCED-F field of study, CIP, O\*NET, shown first as "In your field".
+
+Data comes from eMASCO, O\*NET 31.0, ILO WP140, the Anthropic Economic Index, DOSM (through the Radar) and the UN SDG
+API; every file, date and licence is in `data/SOURCES.md`. The profile sent to `/api/matching` is never stored or logged.
+
+**What waits on the owner:** the two BLS crosswalk files (until saved in `data/radar/source/`, Skill Match, the chain,
+Rapid AI and "In your field" say "not available yet"), approval of the SDG links, the review of the DOSM 2025 Q3 break,
+and the BM / 中文 wording review. Spec: `docs/superpowers/specs/2026-10-30-career-matching-design.md`; diagram:
+`docs/architecture-matching.html`; browser check: `docs/matching/acceptance.md`.
 
 ## Setting up the outside services (owner)
 
@@ -56,8 +102,12 @@ node scripts/serve-local-accounts.mjs   # http://localhost:3100 (PORT to change)
       node --env-file-if-exists=.env -e "import('./server/store/d1.js').then(m => m.createD1FromEnv().migrate())"
       ```
       The Node command reads the `D1_*` settings from `.env`.
-2. **O\*NET Web Services:** register for a free key and set `ONET_API_KEY`.
-3. **RunPod (optional, billed per second while running):**
+2. **Cloudflare R2 (for the Radar):**
+   1. Create a bucket and an R2 API token (access key id and secret), then set the four `R2_*` settings.
+   2. The Radar keeps its state under `prod/` and `demo/`. The CV flow no longer stores anything in R2 (31 Oct).
+3. **O\*NET Web Services:** register for a free key and set `ONET_API_KEY`.
+4. **DeepSeek (paid per use, about $0.0003 per CV):** create an API key at DeepSeek and set `CV_LLM_KEY` in `.env`.
+5. **RunPod (optional, billed per second while running):**
    1. Create a serverless endpoint for the embedding model (`BAAI/bge-m3`) behind the OpenAI-compatible route, then set the `SEMANTIC_*` settings.
    2. For L3, run `node scripts/model-eval.mjs` and set `SEMANTIC_CUTOFF` to the cutoff it writes into `docs/model-eval.md`.
 4. **DeepSeek (optional, paid per use, about $0.004 per CV at peak price):** make an API key at https://platform.deepseek.com and set `CV_LLM_KEY`. Compare rules-only with rules + AI on the 11 synthetic CVs: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`.

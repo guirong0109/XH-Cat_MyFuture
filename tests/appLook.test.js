@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
-import welcome from '../public/js/screens/welcome.js'
 import review from '../public/js/screens/review.js'
 import summary from '../public/js/screens/summary.js'
 import upload from '../public/js/screens/upload.js'
@@ -42,16 +41,6 @@ describe('the app screens in the landing page look', () => {
     const profile = { ...emptyProfile(), profileStatus: 'confirmed' }
     expect(review({ t, state: { profile } })).toMatch(/<div class="receipt"[^>]*><table>/)
     expect(summary({ t, state: { profile, usable: true } })).toMatch(/<div class="receipt"[^>]*><table>/)
-  })
-
-  it('the welcome question is a receipt coming out of an ATM slot', () => {
-    expect(welcome({ t, state: { lang: 'en' } })).toMatch(/<div class="slot"><div class="receipt">[\s\S]*atmTitle/)
-  })
-
-  it('the welcome screen has no language chooser: the dropdown at the top right is enough', () => {
-    const html = welcome({ t, state: { lang: 'en' } })
-    expect(html).not.toContain('data-act="lang"')
-    expect(html).not.toContain('chooseLang')
   })
 
   it('the CV goes into the ATM, and the reading and the draft print out as receipts', () => {

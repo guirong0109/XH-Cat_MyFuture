@@ -104,3 +104,41 @@ describe('profile schema', () => {
     expect(hasUsableSkill(p)).toBe(true)
   })
 })
+
+describe('aiTasks (D38)', () => {
+  const D = '2026-10-31'
+  const errs = (aiTasks) => validateProfile({ ...emptyProfile(), aiTasks }).errors
+  it('a new profile has no aiTasks key', () => expect('aiTasks' in emptyProfile()).toBe(false))
+  it('accepts no key, null, skipped, answered and answered with none', () => {
+    for (const v of [undefined, null, { status: 'skipped', date: D }, { status: 'answered', picked: ['writing', 'automation'], date: D }, { status: 'answered', picked: [], date: D }]) {
+      expect(errs(v), JSON.stringify(v)).toEqual([])
+    }
+  })
+  it('rejects an aiTasks that is not a plain object', () => {
+    for (const bad of ['answered', ['writing'], 5]) expect(errs(bad)).toContainEqual({ path: 'aiTasks', code: 'bad_type' })
+  })
+  it('rejects a bad status', () => expect(errs({ status: 'maybe', date: D })).toContainEqual({ path: 'aiTasks.status', code: 'bad_enum' }))
+  it('rejects bad picks: unknown, duplicate, out of order, with skipped, missing with answered', () => {
+    expect(errs({ status: 'answered', picked: ['nope'], date: D })).toContainEqual({ path: 'aiTasks.picked', code: 'bad_enum' })
+    expect(errs({ status: 'answered', picked: ['data', 'data'], date: D })).toContainEqual({ path: 'aiTasks.picked', code: 'bad_enum' })
+    expect(errs({ status: 'answered', picked: ['data', 'writing'], date: D })).toContainEqual({ path: 'aiTasks.picked', code: 'bad_enum' })
+    expect(errs({ status: 'skipped', picked: [], date: D })).toContainEqual({ path: 'aiTasks.picked', code: 'bad_type' })
+    expect(errs({ status: 'answered', date: D })).toContainEqual({ path: 'aiTasks.picked', code: 'bad_type' })
+  })
+  it('rejects a bad or missing date', () => {
+    expect(errs({ status: 'skipped', date: '31/10/2026' })).toContainEqual({ path: 'aiTasks.date', code: 'bad_type' })
+    expect(errs({ status: 'skipped' })).toContainEqual({ path: 'aiTasks.date', code: 'bad_type' })
+  })
+})
+
+describe('aiUse (M17)', () => {
+  it('a new profile has aiUse all null', () => expect(emptyProfile().aiUse).toEqual({ mindset: null, ethics: null, apply: null, design: null }))
+  it('accepts a profile without aiUse (saved before M17)', () => { const p = emptyProfile(); delete p.aiUse; expect(validateProfile(p).ok).toBe(true) })
+  it('rejects a bad aiUse value', () => {
+    const p = { ...emptyProfile(), aiUse: { mindset: 'maybe', ethics: null, apply: null, design: null } }
+    expect(validateProfile(p).errors).toContainEqual({ path: 'aiUse.mindset', code: 'bad_enum' })
+  })
+  it('rejects an aiUse that is not a plain object', () => {
+    for (const bad of ['yes', ['yes'], 5]) expect(validateProfile({ ...emptyProfile(), aiUse: bad }).errors).toContainEqual({ path: 'aiUse', code: 'bad_type' })
+  })
+})

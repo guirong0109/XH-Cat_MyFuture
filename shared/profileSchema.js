@@ -1,5 +1,6 @@
 // The structured profile that Case A (CV) and Case B (manual) both produce. Used by the browser, the server and the tests.
 // Spec: docs/superpowers/specs/2026-10-29-cv-profile-module-design.md §4 (CV spec §7.1).
+import { aiTasksErrors } from './aiTasks.js'
 
 // Three states for an optional field: no information, "prefer not to say", or a value.
 export const EMPTY = Object.freeze({ state: 'empty' })
@@ -55,6 +56,7 @@ export function emptyProfile({ inputMethod = 'manual', interfaceLanguage = 'en' 
     },
     assessment: { status: 'incomplete', completedAt: null },
     occupationMappings: [],
+    aiUse: { mindset: null, ethics: null, apply: null, design: null },
     dataProvenance: { profileReviewedByUser: false, occupationalSources: [], extractionModel: null },
   }
 }
@@ -133,6 +135,18 @@ export function validateProfile(profile) {
   }
   for (const path of LISTS) if (!Array.isArray(get(profile, path))) errors.push({ path, code: 'bad_type' })
   if (Array.isArray(profile.skills)) profile.skills.forEach((skill, i) => checkSkill(skill, i, errors))
+  // aiUse (M17) is optional: profiles saved before it have none. Each answer is yes, no or unanswered.
+  if (profile.aiUse !== undefined) {
+    if (!profile.aiUse || typeof profile.aiUse !== 'object' || Array.isArray(profile.aiUse)) errors.push({ path: 'aiUse', code: 'bad_type' })
+    else {
+      for (const key of ['mindset', 'ethics', 'apply', 'design']) {
+        const v = profile.aiUse[key]
+        if (v !== undefined && v !== null && v !== 'yes' && v !== 'no') errors.push({ path: `aiUse.${key}`, code: 'bad_enum' })
+      }
+    }
+  }
+  // aiTasks (Radar D38) is optional: "Which of these do you use AI for?", skipped or answered.
+  if (profile.aiTasks !== undefined && profile.aiTasks !== null) errors.push(...aiTasksErrors(profile.aiTasks))
   if (!['draft', 'confirmed'].includes(profile.profileStatus)) errors.push({ path: 'profileStatus', code: 'bad_enum' })
   return { ok: errors.length === 0, errors }
 }

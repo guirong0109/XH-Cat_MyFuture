@@ -207,130 +207,627 @@
     },
     {
       "id": "Step 9",
-      "name": "Interface redesign (your request)",
+      "name": "Future Skills Radar (branch claude/future-radar)",
       "tasks": [
         {
-          "title": "T28 The landing page look on the CV screens",
+          "title": "Branch",
+          "sub": "claude/future-radar from main (928f4a7)",
+          "status": "done"
+        },
+        {
+          "title": "R0 Mockup",
+          "sub": "docs/mockup-radar.html (sample data); reviewed, feedback taken into the spec",
+          "status": "done"
+        },
+        {
+          "title": "R0 Source check",
+          "sub": "OpenAlex API + DOSM quarterly Excel confirmed usable",
+          "status": "done"
+        },
+        {
+          "title": "R0 Index analysis",
+          "sub": "log2, k = 20 approved (docs/radar/index-analysis.md)",
+          "status": "done"
+        },
+        {
+          "title": "R0 Threshold calibration",
+          "sub": "DOSM pp + breaks, OpenAlex limits (docs/radar/threshold-analysis.md)",
+          "status": "done"
+        },
+        {
+          "title": "R0 Round 1 spec",
+          "sub": "approved by you 30 Oct (docs/superpowers/specs/2026-10-30-future-radar-round1-design.md)",
+          "status": "done"
+        },
+        {
+          "title": "R0 Implementation plan",
+          "sub": "21 tasks (docs/superpowers/plans/2026-10-30-future-radar-round1.md) · run with reviews per task",
+          "status": "done"
+        },
+        {
+          "title": "T1 Mockup v2",
+          "sub": "approved by you 30 Oct: Skills & Careers first (D21), main app design (D22)",
+          "status": "done"
+        },
+        {
+          "title": "T2 Config + Momentum Index",
+          "sub": "radar-config/v1; log2, k = 20",
+          "status": "done"
+        },
+        {
+          "title": "T3 Workbook reader",
+          "sub": "own xlsx reader; real DOSM Q2 2026 table by cell address",
+          "status": "done"
+        },
+        {
+          "title": "T4 OpenAlex trend rules",
+          "sub": "direction, volatility, evidence",
+          "status": "done"
+        },
+        {
+          "title": "T5 DOSM shares + breaks",
+          "sub": "pp change, possible structural breaks, share rules",
+          "status": "done"
+        },
+        {
+          "title": "T6 Snapshots",
+          "sub": "shape, validation, diff (new vs revision vs removed)",
+          "status": "done"
+        },
+        {
+          "title": "T7 Reference data",
+          "sub": "topics, field-topic proposals, occupation bridge, personal relevance",
+          "status": "done"
+        },
+        {
+          "title": "T8 Contract + pipeline",
+          "sub": "radar-signal/v1, runPipeline, dependency report",
+          "status": "done"
+        },
+        {
+          "title": "T9 OpenAlex adapter",
+          "sub": "key, rate limit, failures",
+          "status": "done"
+        },
+        {
+          "title": "T10 DOSM adapter",
+          "sub": "release discovery from the official listing, download",
+          "status": "done"
+        },
+        {
+          "title": "T11 Storage",
+          "sub": "memory, file, R2 list + conditional writes",
+          "status": "done"
+        },
+        {
+          "title": "T12 Ingestion",
+          "sub": "immutable snapshots, atomic manifest activation",
+          "status": "done"
+        },
+        {
+          "title": "T13 Bundled snapshots",
+          "sub": "real OpenAlex + DOSM data in data/radar/bundle/",
+          "status": "done"
+        },
+        {
+          "title": "T14 Public API",
+          "sub": "manifest consistency, five answer states",
+          "status": "done"
+        },
+        {
+          "title": "T15 Admin access",
+          "sub": "signed sessions, CSRF, admin review API, cleanup",
+          "status": "done"
+        },
+        {
+          "title": "T16 Judge test",
+          "sub": "Trend Change Test, Scenario A and B, reset",
+          "status": "done"
+        },
+        {
+          "title": "T17 Strings",
+          "sub": "EN / BM / 中文",
+          "status": "done"
+        },
+        {
+          "title": "T18 Charts",
+          "sub": "SVG radar, lines, diverging bars; keyboard and text labels",
+          "status": "done"
+        },
+        {
+          "title": "T19 Radar screen",
+          "sub": "Skills & Careers and AI Impact, evidence panel",
+          "status": "done"
+        },
+        {
+          "title": "T20 Admin + judge screens",
+          "sub": "#admin and #judge",
+          "status": "done"
+        },
+        {
+          "title": "Integration fixes",
+          "sub": "source links {label, url}; OpenAlex reference id; dev-store banner on every screen; DOSM listing titles as break evidence",
+          "status": "done"
+        },
+        {
+          "title": "T21 Acceptance + docs",
+          "sub": "browser 27/28 pass (F1 phone width open); deploy notes; handover",
+          "status": "done"
+        },
+        {
+          "title": "Final review + fixes",
+          "sub": "whole-branch review: ready; 7 fixes (360 px phone, Radar reload after admin, judge sign-out, estimate label, mappingVersion, docs, npm test) · 568 tests",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 10",
+      "name": "Radar skill trends from O*NET (branch claude/future-radar)",
+      "tasks": [
+        {
+          "title": "T1 Flag snapshots and change signals",
+          "sub": "shared/radar/onetSkills.js · D25 rule · 151 added / 219 dropped, 5 newly Hot",
+          "status": "done"
+        },
+        {
+          "title": "T2 O*NET release source",
+          "sub": "zip adapter · both skills file names · 404 and bad zip handled",
+          "status": "done"
+        },
+        {
+          "title": "T3 Hot Technologies source",
+          "sub": "page parser, fail-closed · 176 technologies · first snapshot, no direction",
+          "status": "done"
+        },
+        {
+          "title": "T4 Ingest, manifest, admin refresh, bundle",
+          "sub": "four sources · release must be newer · bundled 30.2 / 30.3 / 31.0 + Hot page",
+          "status": "done"
+        },
+        {
+          "title": "T5 Public API and export",
+          "sub": "GET /api/radar/skills · references.onetSkills",
+          "status": "done"
+        },
+        {
+          "title": "T6 Skills & Careers screen",
+          "sub": "O*NET column · both labels · On your profile · eMASCO message · every number linked",
+          "status": "done"
+        },
+        {
+          "title": "T7 Admin and source cards",
+          "sub": "two refresh rows · four source cards · error texts in three languages",
+          "status": "done"
+        },
+        {
+          "title": "T8 Judge Scenario C",
+          "sub": "one In Demand flag changes for Software Developers · production untouched",
+          "status": "done"
+        },
+        {
+          "title": "T9 Docs and records",
+          "sub": "SOURCES, contract, deploy, tools declaration, handover, build record · 643 tests",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 11",
+      "name": "Career Matching (branch claude/career-matching)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main b24660e",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "15 decisions with you (M1-M15)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "approved",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "approved (sample data)",
+          "status": "done"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "16 tasks; approved, running",
+          "status": "done"
+        },
+        {
+          "title": "Data T1-T8",
+          "sub": "eMASCO, O*NET levels, chain, ILO, Anthropic, SDG",
+          "status": "done"
+        },
+        {
+          "title": "Engine T9-T12",
+          "sub": "chain, fit, outlook, SDG; each reviewed",
+          "status": "done"
+        },
+        {
+          "title": "API + screens T13-T15",
+          "sub": "matching API, tabs, admin; each reviewed",
+          "status": "done"
+        },
+        {
+          "title": "Acceptance T16",
+          "sub": "browser check A1-A13, docs, handover; 766 tests, pipeline 48 OK",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "whole-branch review, then your decision on merge",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "Step 12",
+      "name": "Website interface (your request)",
+      "tasks": [
+        {
+          "title": "T27 Branch",
+          "sub": "claude/website-interface from main",
+          "status": "done"
+        },
+        {
+          "title": "T28 Landing page",
+          "sub": "Editorial Dopamine · guide figures with sources",
+          "status": "stop"
+        },
+        {
+          "title": "T28b ATM intro (three.js)",
+          "sub": "receipt prints, tears, flies to the middle",
+          "status": "stop"
+        },
+        {
+          "title": "T28c Roller counters",
+          "sub": "digit wheels in a recessed window",
+          "status": "stop"
+        },
+        {
+          "title": "T29 Restyle the app",
+          "sub": "profile screens in the same look",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "Step 13",
+      "name": "Radar charts that follow your profile (branch claude/future-radar)",
+      "tasks": [
+        {
+          "title": "Spec and plan",
+          "sub": "D28-D33 (skills chart, eMASCO code chain replaces D27, corners 8/16/30/All, AI task chart, no merge of main, not a score); mockup docs/radar/mockup/role-skill-chart.html",
+          "status": "done"
+        },
+        {
+          "title": "T1 Copied from main",
+          "sub": "code chain, AI data and bridge script copied from main d4286d6 (byte-identical except the header line and import path of chain.js and its test); hashes in data/radar/copied-from-main.json (D32); on a later merge main will hold a second copy of the walker (clean-up point)",
+          "status": "done"
+        },
+        {
+          "title": "T2 Your O*NET jobs",
+          "sub": "from roles, field and the eMASCO code chain; union of ISCO codes per job",
+          "status": "done"
+        },
+        {
+          "title": "T3 Skill corners",
+          "sub": "in-demand skills of your jobs with 2025 US job-ad counts; skillId pinned end to end",
+          "status": "done"
+        },
+        {
+          "title": "T4 AI task data",
+          "sub": "GET /api/radar/ai-tasks (reference data, not signals): Anthropic Economic Index tasks and ILO WP140",
+          "status": "done"
+        },
+        {
+          "title": "T5 Task corners",
+          "sub": "tasks of your job found in the Economic Index; AI does it / AI helps shares",
+          "status": "done"
+        },
+        {
+          "title": "T6 Chart component",
+          "sub": "radar with log or linear scale, keyboard corners, bar fallback; CSS variables only",
+          "status": "done"
+        },
+        {
+          "title": "T7 Skills & Careers chart",
+          "sub": "8 corners, switch 8/16/30/All, numbered list with search, code chain shown step by step",
+          "status": "done"
+        },
+        {
+          "title": "T8 AI Impact chart",
+          "sub": "task chart with ILO exposure gradient; topic chart shows your field's topics, View all six at the bottom",
+          "status": "done"
+        },
+        {
+          "title": "T9 Docs and browser check",
+          "sub": "Software Developer, Accountant, eMASCO 2512-02, Registered Nurse; 375 px in light theme, dark theme on desktop, BM on the AI card only (Skills card in BM/zh not checked); search keeps focus. Screenshots to add: docs/record/screens/profile-charts-skills-developer-dark.jpg, profile-charts-ai-developer-dark.jpg, profile-charts-ai-developer-375-light.jpg. 748 tests, pipeline 14 OK",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 14",
+      "name": "Study Pathway (branch claude/study-pathway)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main 6ac16f4, worktree XH_Cat_Final-pathway",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "15 decisions with you (P1-P15)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "approved by you (P1-P13)",
+          "status": "done"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "10 tasks; you chose subagent-driven",
+          "status": "done"
+        },
+        {
+          "title": "Mockup",
+          "sub": "approved by you (real state)",
+          "status": "done"
+        },
+        {
+          "title": "Build T1-T10",
+          "sub": "10 tasks built, each reviewed; browser check passed",
+          "status": "done"
+        },
+        {
+          "title": "Final review",
+          "sub": "1 fix wave (NEC hint, MQA wording, US line, checks); re-review clean",
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "id": "Step 15",
+      "name": "Organisation view: HR and career centres (owner request)",
+      "tasks": [
+        {
+          "title": "O1 Branch",
+          "sub": "hr-branch from main, folder XH_Cat_Final-hr",
+          "status": "done"
+        },
+        {
+          "title": "O2 Guide check",
+          "sub": "prototype checked against the Finalist Guide (docs/hr/guide-check.md)",
+          "status": "done"
+        },
+        {
+          "title": "O3 Spec",
+          "sub": "docs/superpowers/specs/2026-10-31-hr-org-view-design.md, approved by owner 31 Oct",
+          "status": "done"
+        },
+        {
+          "title": "O4 Mockup",
+          "sub": "docs/mockup-org.html, every button works, sample data",
+          "status": "done"
+        },
+        {
+          "title": "O5 Diagram",
+          "sub": "docs/architecture-org.html, approved by owner 31 Oct",
+          "status": "done"
+        },
+        {
+          "title": "O6a Up to date with main",
+          "sub": "main merged after the study pathway merge",
+          "status": "done"
+        },
+        {
+          "title": "O6b D1 tables",
+          "sub": "six tables, cascade on delete",
+          "status": "done"
+        },
+        {
+          "title": "O6c Roster check",
+          "sub": "CSV reading, row checks, file line numbers",
+          "status": "done"
+        },
+        {
+          "title": "O6d Team sums",
+          "sub": "shared/org/team.js: cells, plan order, bands, SDG count",
+          "status": "done"
+        },
+        {
+          "title": "O6e Organisation store",
+          "sub": "D1 reads and writes, import checks groups first",
+          "status": "done"
+        },
+        {
+          "title": "O6f Team service",
+          "sub": "per person matching + pathway, then team sums",
+          "status": "done"
+        },
+        {
+          "title": "O6g Owner routes",
+          "sub": "organisation, groups, roster preview/import, team, plan steps",
+          "status": "done"
+        },
+        {
+          "title": "O6h Join links and sharing",
+          "sub": "hashed single-use links, skills-only share, stop sharing",
+          "status": "done"
+        },
+        {
+          "title": "O6i Sample roster",
+          "sub": "12 made-up staff, real role codes and O*NET skills + knowledge, manifest",
+          "status": "done"
+        },
+        {
+          "title": "O6j HR screens",
+          "sub": "setup, people, heatmap, team plan, outlook and SDG; role titles",
+          "status": "done"
+        },
+        {
+          "title": "O6k Employee share screen",
+          "sub": "join link, exact list HR will see incl. role, share / update / stop",
+          "status": "done"
+        },
+        {
+          "title": "O6l Career centre type",
+          "sub": "programmes and students, target roles only, centre sample roster",
+          "status": "done"
+        },
+        {
+          "title": "O6m Handover and browser check",
+          "sub": "docs/org/acceptance.md, branch HANDOVER.md and CLAUDE.md, tools declaration",
+          "status": "done"
+        },
+        {
+          "title": "O6n Final whole-branch review",
+          "sub": "7 important + 7 smaller findings fixed and re-checked; one judge-test source label left for the owner",
+          "status": "done"
+        },
+        {
+          "title": "O6 Build",
+          "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
+          "status": "todo"
+        }
+      ]
+    },
+    {
+      "id": "CV-Step 9",
+      "name": "CV branch · Interface redesign (your request)",
+      "tasks": [
+        {
+          "title": "CV T28 The landing page look on the CV screens",
           "sub": "cream page · serif headlines · mono labels · thin rules · ATM drop zone · receipts",
           "status": "done"
         },
         {
-          "title": "T28b No language chooser on the welcome screen",
+          "title": "CV T28b No language chooser on the welcome screen",
           "sub": "the dropdown at the top right is enough",
           "status": "done"
         },
         {
-          "title": "T28c First question: personal or organisation",
+          "title": "CV T28c First question: personal or organisation",
           "sub": "For myself → A, B · For my organisation → C, D (preview)",
           "status": "done"
         },
         {
-          "title": "T28d Choices look like buttons",
+          "title": "CV T28d Choices look like buttons",
           "sub": "outline · round corners · arrow in a circle · press-down shadow",
           "status": "done"
         },
         {
-          "title": "T28e No Sign in link on the welcome screen",
+          "title": "CV T28e No Sign in link on the welcome screen",
           "sub": "sign in after choosing, or from the top bar",
           "status": "done"
         },
         {
-          "title": "T28f Organisations need an account",
+          "title": "CV T28f Organisations need an account",
           "sub": "personal: guest or account · organisation: sign up or sign in only",
           "status": "done"
         },
         {
-          "title": "T28g Goal question",
+          "title": "CV T28g Goal question",
           "sub": "Where I stand · Find a direction · Switch career · Grow in my field",
           "status": "done"
         },
         {
-          "title": "T28h Who are you? options",
+          "title": "CV T28h Who are you? options",
           "sub": "Fresh graduate · Student · Underemployed · Unemployed",
           "status": "done"
         },
         {
-          "title": "T28i Who you are moves into the profile",
+          "title": "CV T28i Who you are moves into the profile",
           "sub": "start: personal / organisation → guest or account → goal → CV · profile opens with 4 buttons",
           "status": "done"
         },
         {
-          "title": "T28j Small buttons in one row",
+          "title": "CV T28j Small buttons in one row",
           "sub": "Which describes you best? · radio dot · explanation on hover",
           "status": "done"
         },
         {
-          "title": "T28k No 'Current education status'",
+          "title": "CV T28k No 'Current education status'",
           "sub": "removed from the form and the receipt",
           "status": "done"
         },
         {
-          "title": "T28l One list of qualifications",
+          "title": "CV T28l One list of qualifications",
           "sub": "level → field of study dropdown (124 ISCED-F fields) · highest worked out",
           "status": "done"
         },
         {
-          "title": "T28m Qualifications: only level and major",
+          "title": "CV T28m Qualifications: only level and major",
           "sub": "no Highest qualification · Add a qualification first · no institution or year",
           "status": "done"
         },
         {
-          "title": "T28n No certificates, training or projects",
+          "title": "CV T28n No certificates, training or projects",
           "sub": "profile has 4 sections · CV finds for them left out",
           "status": "done"
         },
         {
-          "title": "T28o First section renamed Education",
+          "title": "CV T28o First section renamed Education",
           "sub": "EN Education · BM Pendidikan · 中文 教育",
           "status": "done"
         },
         {
-          "title": "T28p No 'Current employment status'",
+          "title": "CV T28p No 'Current employment status'",
           "sub": "removed from Employment background and the receipt",
           "status": "done"
         },
         {
-          "title": "T28q Jobs: title, then years",
+          "title": "CV T28q Jobs: title, then years",
           "sub": "first job ready · years as a number box with arrows · nothing else asked",
           "status": "done"
         },
         {
-          "title": "T28r 'Career preferences' is now 'Interests'",
+          "title": "CV T28r 'Career preferences' is now 'Interests'",
           "sub": "last profile section renamed · BM Minat · 中文 兴趣",
           "status": "done"
         },
         {
-          "title": "T28s Interests: one question",
+          "title": "CV T28s Interests: one question",
           "sub": "only Career interests and fields · goal asked at the start only",
           "status": "done"
         },
         {
-          "title": "T28t Review and confirm on Interests only",
+          "title": "CV T28t Review and confirm on Interests only",
           "sub": "sections 1-3 move on with Next · Review and confirm on the last section",
           "status": "done"
         },
         {
-          "title": "T28u Skill level as a toggle bar",
+          "title": "CV T28u Skill level as a toggle bar",
           "sub": "Not assessed yet | Basic | Good | Expert · one press picks",
           "status": "done"
         },
         {
-          "title": "T28v Skills grouped under jobs and projects",
+          "title": "CV T28v Skills grouped under jobs and projects",
           "sub": "a card per job and project · Others · Looks right / Confirm all · projects back",
           "status": "done"
         },
         {
-          "title": "T28w Used in a job or project = Good",
+          "title": "CV T28w Used in a job or project = Good",
           "sub": "level set automatically, tagged 'From your projects' · Other skills folded",
           "status": "done"
         },
         {
-          "title": "T28x After the CV: only 'Edit in the form'",
+          "title": "CV T28x After the CV: only 'Edit in the form'",
           "sub": "no Review and confirm or Upload another file on the CV result",
           "status": "done"
         },
         {
-          "title": "T28y CV qualification and field prechosen",
+          "title": "CV T28y CV qualification and field prechosen",
           "sub": "level from the CV reader · field from the ISCED search · 'Check it is right'",
           "status": "done"
         }
@@ -370,37 +867,60 @@
     "Task 24: your request — every list and suggestion names its source on screen (O*NET 31.0, UNESCO ISCED-F 2013, Statistics Canada, O*NET CIP crosswalk, eMASCO); each suggested skill shows its field and source",
     "Task 25: your request — 'Career interests' and 'Preferred career fields' are one field with a dropdown of the 41 O*NET 31.0 interest areas; several allowed as chips with ×; 'Prefer not to say' when none; older saved profiles keep their typed entries (Tests 229 passed, pipeline 8 OK)",
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
+    "Future Skills Radar: branch claude/future-radar from main; clickable mockup docs/mockup-radar.html (tabs AI Impact and Skills & Careers, sections A1-A5 and B1-B6, source status and refresh, filters with unsupported ones disabled and explained, evidence panel, Trend Change Test demo panel; every number is sample data). Checked in the browser at desktop and 375 px. Waiting for your review before any code.",
+    "Future Skills Radar design (brainstorming with you, 30 Oct): rounds agreed; own-fields default with View all; six OpenAlex axes approved; Research Momentum Index log2 k = 20 approved on real data; DOSM share in pp with possible-break detection; thresholds calibrated on real data; admin/judge keys, R2, manifest publishing; Round 1 spec written with a 29-item test plan. No Radar code yet.",
+    "Future Skills Radar Round 1 built: plan tasks 1-21 done, each reviewed, plus integration fixes (source links, OpenAlex reference id, dev-store banner on every screen, DOSM release titles as break evidence). Tests 556 passed (Vitest), pipeline 11 OK. Browser acceptance in EN / BM / 中文, desktop and 375 px: 27 of 28 checks pass; one failure (Skills & Careers wider than a phone screen because one DOSM link does not wrap). docs/radar/acceptance.md, docs/radar/deploy.md, handover updated. Nothing deployed, pushed or merged.",
+    "Future Skills Radar Round 1: final whole-branch review said ready after small fixes; the fix round made the Radar fit a 360 px phone, reload after admin decisions, free a judge slot on sign-out, label the next DOSM release as an estimate, record field-topic decisions in mappingVersion, and keep npm test clean (568 tests, pipeline 11 OK). Nothing pushed.",
+    "Radar skill trends: the Skills & Careers tab now shows which software and technology skills became or stopped being 'In Demand' in US job ads (O*NET 30.2 to 30.3; 31.0 unchanged), plus Hot Technologies posting counts, each with its source link and both labels 'US job ads, not Malaysian' and 'Software and technology skills only'. Admin can refresh both O*NET sources; judges get Scenario C. 643 tests, pipeline 11 OK. Nothing pushed.",
+    "Career Matching: spec docs/superpowers/specs/2026-10-30-career-matching-design.md and diagram docs/architecture-matching.html written; branch HANDOVER.md and CLAUDE.md detailed",
+    "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed.",
+    "Task 28: landing page on the welcome screen — hero, the guide's three figures with their sources, the six stages (only the profile marked working), data counts checked against data/ by tests, principles, audiences; EN / BM / 中文 (Tests  237 passed (237))",
+    "Task 28b: opening scene in three.js 0.186.1 (your OK) — a 3D ATM prints the ATM story on a receipt in EN / BM / 中文, the receipt tears off and flies to the middle, then the page rises; skip button and Esc, replay button, skipped for \"reduce motion\" or without WebGL, safety timer (Tests  242 passed (242))",
+    "Task 28c: the seven landing numbers are mechanical roller counters: digit wheels in a recessed window, lower digits spin more turns, overshoot and rebound; carry on across page redraws; plain value for screen readers and with reduce motion (Tests  247 passed (247))",
+    "Radar charts that follow your profile: Skills & Careers opens with the in-demand software skills of your jobs (US job ads, 8 corners, switch to 16/30/All, numbered list with search); eMASCO roles reach O*NET only through the official code chain, every step shown (D29 replaces D27); AI Impact opens with how AI is used in your job's tasks (Anthropic Economic Index) and the ILO exposure gradient. Files copied from main d4286d6 (D32). Checked in the browser (4 profiles; 375 px light, dark on desktop). 748 tests, pipeline 14 OK. Nothing pushed.",
     "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels",
-    "Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)",
-    "Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)",
-    "Task 28c: your request - the first screen asks who it is for: 'For myself' or 'For my organisation' (replaces Get started; Sign in stays as a link). 'Who are you?' then shows only the matching choices (A, B or C, D); someone who signs in without answering sees all four. New wording in EN, BM and 中文 (Tests 242 passed)",
-    "Task 28d: your report that 'For myself' and 'For my organisation' did not look like buttons - the big choices (also on Who are you? and the CV-or-form screen) are now outlined buttons with round corners, an arrow in a circle and a solid shadow; on hover they turn ink with a lime arrow, and a click presses them down. Preview choices (C, D) have a dashed outline (Tests 243 passed)",
-    "Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
-    "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
-    "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
-    "Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
-    "Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)",
-    "Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)",
-    "Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)",
-    "Task 28l: your request - 'Highest qualification' and 'Add a qualification' asked the same thing; they are now one list. Each qualification starts with a level dropdown (SPM … PhD); once chosen, Field of study appears as a dropdown of all 124 UNESCO ISCED-F 2013 fields grouped by broad area (your choice), with Institution and Year. The highest qualification is worked out from the list and shown under it. Words from a CV stay visible ('As written: …') until the user picks. New read-only server route GET /api/fields sends the whole list (your OK); nothing else in the backend changed (Tests 269 passed)",
-    "Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
-    "Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)",
-    "Task 28o: your request - the first profile section '01 Study and experience' is now '01 Education' (BM Pendidikan, 中文 教育) (Tests 272 passed)",
-    "Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)",
-    "Task 28q: your request - Employment background opens with a first job ready: Job title, then Years of work experience for that job as a number box with up/down arrows (0-60, always visible). '+ Add a job' adds more. Nothing else is asked (your choice): no employer, period, industries or overall years; a CV may still fill those and the receipt then shows them. The 'Find the standard occupation' button under a job title stays (it links the job for matching). The receipt shows each job with its years (Tests 282 passed)",
-    "Task 28r: your request - the last profile section 'Career preferences' is now '04 Interests' (BM Minat, 中文 兴趣). Only the name changed; the questions inside are the same (Tests 283 passed)",
-    "Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)",
-    "Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)",
-    "Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
-    "Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
-    "Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)",
-    "Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)",
-    "Task 28y: your request - after a CV upload, the Education dropdowns come prechosen, so the user only checks them: the qualification level from what the CV reader recognised (e.g. 'Bachelor of ...' = Bachelor degree), and the field of study as the first match of the existing ISCED-F field search for the CV words (e.g. 'Computer Science' = Software and applications development and analysis, 0613, through the Statistics Canada CIP link). Under it: 'Chosen from your CV: “Computer Science”. Check it is right.' instead of 'Choose the matching one'. When nothing matches, the dropdown stays empty with the CV words, as before. The AI re-read does the same (Tests 320 passed)"
+    "CV Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)",
+    "CV Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)",
+    "CV Task 28c: your request - the first screen asks who it is for: 'For myself' or 'For my organisation' (replaces Get started; Sign in stays as a link). 'Who are you?' then shows only the matching choices (A, B or C, D); someone who signs in without answering sees all four. New wording in EN, BM and 中文 (Tests 242 passed)",
+    "CV Task 28d: your report that 'For myself' and 'For my organisation' did not look like buttons - the big choices (also on Who are you? and the CV-or-form screen) are now outlined buttons with round corners, an arrow in a circle and a solid shadow; on hover they turn ink with a lime arrow, and a click presses them down. Preview choices (C, D) have a dashed outline (Tests 243 passed)",
+    "CV Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
+    "CV Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
+    "CV Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)",
+    "CV Task 28h: your request - 'Who are you?' for personal users offers Fresh graduate, Student, Underemployed and Unemployed (replacing Working adult and Fresh graduate or career switcher); organisations keep C and D. The answer is the profile's 'Which describes you best?', and the form offers the same four; profiles saved with an old answer keep it. The profile rules (shared/profileSchema.js, also used by the server when saving) accept the four new values and still the two old ones. The landing-page wording on main (catA, catB) is untouched; new wording in EN, BM and 中文 (Tests 257 passed)",
+    "CV Task 28i: your request - the start is now For myself or organisation → guest or account → goal → CV or form; personal users are no longer asked 'Who are you?' at the start (organisations still pick C or D there). The profile opens with 'Which describes you best?' as four big buttons - Student, Fresh graduate, Underemployed, Unemployed - instead of a dropdown, with a 'Prefer not to say' pill under them (on until one is chosen; the default stays). A profile saved with an old answer shows it as a fifth button (Tests 257 passed)",
+    "CV Task 28j: your request - the four 'Which describes you best?' buttons are small and sit in one row (two per row on a phone, where four do not fit): a radio dot that turns lime when chosen, the same press-down shadow; the one-line explanation is now the hover text (Tests 258 passed)",
+    "CV Task 28k: your request - 'Current education status' is no longer asked in the profile and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 260 passed)",
+    "CV Task 28l: your request - 'Highest qualification' and 'Add a qualification' asked the same thing; they are now one list. Each qualification starts with a level dropdown (SPM … PhD); once chosen, Field of study appears as a dropdown of all 124 UNESCO ISCED-F 2013 fields grouped by broad area (your choice), with Institution and Year. The highest qualification is worked out from the list and shown under it. Words from a CV stay visible ('As written: …') until the user picks. New read-only server route GET /api/fields sends the whole list (your OK); nothing else in the backend changed (Tests 269 passed)",
+    "CV Task 28m: your correction - no Highest qualification at all (not asked, not worked out; the receipt shows it only for a profile saved earlier with one). The user clicks '+ Add a qualification', which shows just Qualification (level) and Field of study (major), both dropdowns; no institution or year (a CV may still fill them, and the receipt then shows them) (Tests 268 passed)",
+    "CV Task 28n: your request - the 'Certifications and Projects' section is removed, training included (your choice): the profile has four sections (Study, Employment, Skills, Career preferences). Certificates, training and projects found in a CV or by the AI re-read are left out in the browser (your choice), so the profile never holds something the user cannot see or edit; the server's CV reader is unchanged. The receipt shows those rows only for a profile saved earlier with some (Tests 271 passed)",
+    "CV Task 28o: your request - the first profile section '01 Study and experience' is now '01 Education' (BM Pendidikan, 中文 教育) (Tests 272 passed)",
+    "CV Task 28p: your request - 'Current employment status' is no longer asked in Employment background and no longer shown on the receipt. The field stays in the profile rules so profiles saved earlier still save and load; an earlier answer still shows on the receipt. The CV reader never filled it (Tests 274 passed)",
+    "CV Task 28q: your request - Employment background opens with a first job ready: Job title, then Years of work experience for that job as a number box with up/down arrows (0-60, always visible). '+ Add a job' adds more. Nothing else is asked (your choice): no employer, period, industries or overall years; a CV may still fill those and the receipt then shows them. The 'Find the standard occupation' button under a job title stays (it links the job for matching). The receipt shows each job with its years (Tests 282 passed)",
+    "CV Task 28r: your request - the last profile section 'Career preferences' is now '04 Interests' (BM Minat, 中文 兴趣). Only the name changed; the questions inside are the same (Tests 283 passed)",
+    "CV Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)",
+    "CV Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)",
+    "CV Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
+    "CV Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
+    "CV Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)",
+    "CV Task 28x: your request - after a CV is read, the result shows only 'Edit in the form' (the main button), because the reading is never fully correct; 'Review and confirm' and 'Upload another file' are gone from that screen (Tests 315 passed)",
+    "CV Task 28y: your request - after a CV upload, the Education dropdowns come prechosen, so the user only checks them: the qualification level from what the CV reader recognised (e.g. 'Bachelor of ...' = Bachelor degree), and the field of study as the first match of the existing ISCED-F field search for the CV words (e.g. 'Computer Science' = Software and applications development and analysis, 0613, through the Statistics Canada CIP link). Under it: 'Chosen from your CV: “Computer Science”. Check it is right.' instead of 'Choose the matching one'. When nothing matches, the dropdown stays empty with the CV words, as before. The AI re-read does the same (Tests 320 passed)"
   ],
   "waiting": [
+    "Study Pathway: review the team picks in #admin; fill the 60 missing MQA references",
+    "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Owner: keep deepseek-flash (tested) or try deepseek-v4-pro"
+    "Skill trends: when the 2026 Hot Technologies window appears, you decide the rule that turns two counts into rising or falling (D24); until then direction stays empty",
+    "Skill trends: review the Bahasa Melayu and 中文 texts marked 'translation: owner review'; decide whether to trim the 10.8 MB of bundled O*NET snapshots; reset judge sessions after deploying",
+    "Career Matching: approve the SDG links in admin; review the DOSM 2025 Q3 break; review the BM/中文 wording; optional: decide whether the ILO file's ISCO-08 code list may be used for the M15 check",
+    "T28: your review of the landing page, its wording and the BM / 中文 translations",
+    "T28b: your review of the ATM intro (look, timing, receipt wording)",
+    "T28c: your review of the roller counters",
+    "T28: the section 2 column headings in BM and 中文 (ldTally1–3)",
+    "T28: the stages-built line in BM and 中文 (ldBuilt)",
+    "Profile charts: review the Bahasa Melayu and 中文 lines marked 'translation: owner review'; decide on the eMASCO same-4-digit-group limit; decide the 'Your profile' card hint that now contradicts the new cards; the dashed earlier-year line appears only after a second yearly Hot Technologies snapshot",
+    "DeepSeek on a deployed server: set CV_LLM_KEY there (paid per use); check Malaysia PDPA before real CVs",
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -439,6 +959,44 @@
     "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list",
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
+    "D25: a release is compared with the most recent earlier release whose flags differ, both release numbers shown (31.0 equals 30.3, so the comparison is 30.2 to 30.3) - cost: a quiet release shows the last change again",
+    "R1: the bootstrap script may read the three O*NET zips from a local folder (ONET_ZIP_DIR); the recorded URL and SHA-256 stay the official ones - cost: a small extra code path in a build script",
+    "Career matching: its own forbidden-key pattern (score, weight, rank, opportunit); the key is skillMatch - cost: one regex",
+    "Career matching: the judge test may inject signals through a service option if the demo base gives no sufficient direction - cost: less end-to-end testing of that path",
+    "Career matching: downloads named in the plan were approved with the plan - cost: none",
+    "Career matching: role_details.json keeps 1,814 entries; the list shows the 1,812 with a title - cost: a filter",
+    "Career matching: O*NET rows marked Recommend Suppress are left out and the screen says so - cost: a few core items missing from some percentages",
+    "Career matching: ILO gradient G3 closes a gap in the plan's reading of Table 5; no real row affected - cost: none today",
+    "Career matching: Anthropic task usage is the file's pct; only the latest monthly slice (May 2026) is kept - cost: one filter",
+    "Career matching: UN SDG API asked per goal with includechildren=true - cost: one query flag",
+    "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
+    "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
+    "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
+    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page",
+    "T28: the three figures (56%, 26%, 600,000+) are quoted from the Finalist Guide with their original source named — cost: we did not check the Hays guide or the MOSTI statement ourselves",
+    "T28: stages 2–6 say \"Next module · not built yet\" — cost: the page promises less than the final journey until those modules exist",
+    "T28: fonts (Geist, Instrument Serif) load from Google Fonts — cost: one outside request per visit; without it the page falls back to system fonts",
+    "T28b: the receipt prints only the ATM story already on the page (draft copy) and today's date — no new history or numbers",
+    "T28b: three.js is served from our own server, not a CDN, so the intro also works offline — cost: about 1.5 MB to download on the first visit (not compressed)",
+    "T28b: the intro plays on every full page load (about 7 s, skippable) — cost: repeat visitors see it again unless they skip",
+    "T28b: the receipt waits in the middle until the user clicks Continue (or anywhere, Enter, Space, Esc); the safety timer only ends an intro that stalls before the receipt arrives — cost: a visitor who leaves the tab sees the receipt until they come back",
+    "T28b: the question section is printed on the receipt and hidden on the page after the intro; it shows at the top of the page when there is no intro (reduce motion, no WebGL, load failure)",
+    "T28b: the ATM stage is the first section of the page (not an overlay); the ATM waits until the user clicks Print, and the receipt stays pinned in the middle; the hero is the second section — cost: a visitor who never clicks never sees the receipt (the story is still read out to screen readers)",
+    "T28b: once the receipt is pinned, the headline and its two buttons rise in beside it in the same first section (below it on narrow screens); Replay replaces the scroll cue",
+    "T28: the gap section shows 56% and 26% on one 0-100% scale with the 30-point gap marked Calculated; heading: \"More people use AI at work than have been trained for it.\" (follows from the two quoted figures)",
+    "T28: section 2 is one quiet ledger — numbers in ink on the roller counters, no coloured cards, pink only for the calculated 30-point gap; both sources in one footnote — cost: the guide figures lose their pink / blue / lime colours",
+    "T28: section 2 shows the three figures side by side (heading, counter, caption), no bars; a pink bracket under 56% and 26% carries the calculated 30-point gap — cost: the gap is told in words, no longer drawn to scale",
+    "T28c: counter tiles are shaded drums (dark top and bottom, light middle, a seam) with bold Geist digits, also in The data — cost: those numbers no longer use the serif face; the new column headings (EN / BM / 中文) are my wording",
+    "T28: How it works gets a retro pixel layer (pixel icons, pixel numbers, notched square cards, a level path in the live card), drawn as SVG in components/pixel.js with no new font - cost: the icons are my own drawings; in dark mode the live card stays a dark screen",
+    "T28: How it works drops the pixel layer for the black-and-white look of section 2 (hairline ledger, stage numbers on roller counters, a six-cell gauge); components/pixel.js removed - cost: none of the six stages carries a colour any more",
+    "T28: footer after your reference: dark band with a scalloped edge, the about line, a large FutureReady wordmark with a line-drawn ATM mascot (my drawing), the language switch in place of social icons (we have no accounts to link), the O*NET licence line kept - cost: none",
+    "T28: Who it is for after your reference: stacked pastel file folders with numbered tabs and the title on a green front folder with a binder clip - cost: colour returns in this one section; the paper colours stay the same in dark mode",
+    "R1-R3 (profile charts): a job's ISCO codes = union on its chain vias, else its own; profileRadar numbers-only threshold 16 (AI card 10); /api/radar/ai-tasks is static reference data with a memoised loader and no manifest",
+    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links",
+    "Study Pathway P12 (owner, 31 Oct): more course sites than e-LATiH and MQA - global, tech-company, Malaysian, professional bodies; searchable sites (e-LATiH, Coursera, edX, Khan Academy, Microsoft Learn, Google Skills) get a search link per skill, the rest named team picks only; no invented links",
+    "Study Pathway P13 (owner, 31 Oct): all fields, not examples - every field of study gets search links like every skill; first fill covers all 68 skills and all 118 fields (none found is reported, never invented)",
+    "Study Pathway P14 (owner, 31 Oct): the usual education level shows eMASCO's own qualification first (Malaysia), then O*NET's US percentages; it also shows when the code chain is broken",
+    "Study Pathway P15 (owner, 31 Oct): no 'team draft' word on #pathway in the first build; approved picks still show the owner's date; #admin review unchanged",
     "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet",
     "T28c: the organisation path still ends at the existing preview (C, D need an account and are not built) - cost: nothing works yet for organisations, as before",
     "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up",
@@ -955,6 +1513,746 @@
     },
     {
       "time": "30 Oct",
+      "step": "Light/dark switch (main)",
+      "detail": "Light is the default; header button switches to dark and the choice is remembered in this browser. npm test 236 passed; checked in the browser"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar mockup",
+      "detail": "docs/mockup-radar.html from your Future Skills Radar spec; sample data only; no code yet"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Source check",
+      "detail": "OpenAlex works (free budget, key optional); DOSM quarterly Excel by major group since 2019 Q3"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Index analysis",
+      "detail": "linear capped 21/48, log k=20 4/48; you approved k = 20"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Threshold calibration",
+      "detail": "breaks 2020 Q2/Q3, 2021 Q3, 2025 Q3; DOSM 1.0 pp + 10%; OpenAlex 1.25/0.80"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Round 1 spec",
+      "detail": "written and committed; waiting for your review"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Spec approved; plan written",
+      "detail": "21 test-first tasks; mockup v2 first, screens after your mockup OK"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar T1-T20 + integration fixes",
+      "detail": "All plan tasks built test first and reviewed; fixes for source links, OpenAlex reference id, dev-store banner and DOSM listing evidence"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar T21 acceptance",
+      "detail": "Tests 556 passed, pipeline 11 OK; browser 27/28 pass (F1: phone width on Skills & Careers); deploy notes, handover, README, tools declaration"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Final review and fixes",
+      "detail": "ready; 7 fixes; 568 tests pass; local trial at radar.localhost:3210"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Request (summary)",
+      "detail": "add O*NET skill trends to the Radar: which software skills became or stopped being in demand"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Radar skill trends spec",
+      "detail": "D23-D27 written; comparison rule, only changes as signals, eMASCO jobs with no O*NET link say so"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T1-T3",
+      "detail": "flag snapshots and signals (30.2 to 30.3: 151 added, 219 dropped, 5 newly Hot, 0 dropped Hot); release adapter; Hot Technologies parser"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T4-T5",
+      "detail": "ingest and admin refresh for both sources; bundle with 30.2 / 30.3 / 31.0 and the Hot page; GET /api/radar/skills and export"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T6-T8",
+      "detail": "Skills & Careers O*NET column, admin refresh rows and source cards, judge Scenario C"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends T9",
+      "detail": "sources, contract, deploy notes, tools declaration, handover and build record; npm test 643 passed, pipeline 11 OK"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Skill trends final review fixes",
+      "detail": "bootstrap rebuild skips active releases; O*NET source cards show state; not-newer refresh keeps its slot; safe source link; source registry names no release; tests for encoded ids and revised Hot counts; npm test 647 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Request (summary)",
+      "detail": "career matching like the old screens (look only), using eMASCO, Finalist Guide, data on main"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching brainstorming",
+      "detail": "official code chain; levels met / needed (your chart); skills + knowledge; Moderate = Anthropic observed use, Rapid = ILO potential; 4 bands; SDG team draft you approve"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching spec + diagram",
+      "detail": "written and committed; waiting for your review; npm test 651 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching mockup",
+      "detail": "docs/mockup-matching.html approved (sample data)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Data sources checked",
+      "detail": "no official MASCO-ISCO table: same 4-digit code by your decision (M15); ILO file from the lead author's repository; Anthropic release 2026-06-26; importance cut-off reworded"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching plan",
+      "detail": "16 test-first tasks written; waiting for your review"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching data T1-T8",
+      "detail": "eMASCO 1814 entries; O*NET levels 61,880 rows; chain step by same code (pending until BLS files); ILO 427 jobs; Anthropic 2,710 tasks; 17 goals / 169 targets; 126 SDG draft links; each task reviewed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T9",
+      "detail": "code chain from eMASCO to O*NET; a broken chain names the missing step"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T10",
+      "detail": "Skill Match = levels met over levels needed, 'What would raise it' as a share of all needed levels"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T11",
+      "detail": "outlook parts and four bands per AI scenario; trends never change the percentage"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching engine T12",
+      "detail": "SDG links with your decisions stored in the Radar review store"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching API T13",
+      "detail": "/api/matching: profile used, never stored or logged; Rapid AI uses the ISCO code from the chain only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching screens T14",
+      "detail": "Career matching and SDG contribution tabs"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching admin T15",
+      "detail": "your review of SDG links in #admin (approve or reject, note required)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching acceptance T16",
+      "detail": "browser check A1-A13 in docs/matching/acceptance.md; docs, sources, tools declaration, handover; 766 tests, pipeline 48 OK; waits on BLS files, SDG approvals, DOSM break review, BM/中文 review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching final review fixes",
+      "detail": "matching reloads after trend, judge or SDG changes with a 'trend data changed' banner; SDG decisions cached 60 s and dropped on each decision; missing chain step worded in EN/BM/中文; small fixes (level names, SDG card error, no-profile SDG tab, links file error); npm test 777 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching wording fix (your screenshot)",
+      "detail": "banner says no role moved instead of 0 role(s): none; 1 role / N roles; missing steps say they wait for the BLS crosswalk files; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "BLS crosswalk files saved (your OK)",
+      "detail": "both files fetched and kept in data/radar/source/; chain rebuilt: 1,261 of 1,812 roles reach O*NET and show a Skill Match; 540 Malaysian-only codes say no ISCO-08 match; npm test 781 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching UI round (your 5 approved changes)",
+      "detail": "short banner naming the groups; 10 roles per page with page buttons and Go to page; Show/Hide outlook and details with three boxes and a Why fold; AI line with a bar on every card; all SDG team drafts shown with a UN goal link (M16); npm test 800 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Matching UI round review fixes",
+      "detail": "SDG links source name and all binding documents (CLAUDE.md, diagram, spec, SOURCES.md, HANDOVER) now state M16; npm test 800 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Matching UI round checked in the browser",
+      "detail": "short group banner, pages of 10, open/close details, AI bar on cards, all SDG drafts with UN links (M16); SDG filter width fixed (long UN goal titles had widened the page); npm test 801 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Software asked box (your request)",
+      "detail": "count line, 8 chips (yours first, then in demand), the rest behind '+ N more' / 'Show fewer'; npm test 803 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged career matching to main (your request)",
+      "detail": "branch pushed to GitHub; merged into main; main's short HANDOVER and CLAUDE updated; npm test 803 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "front page + restyled app; \"Editorial Dopamine\" look; use the Finalist Guide"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "npm test 237 passed; screenshots at 1440 px and 390 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choices",
+      "detail": "ATM story first: ATM prints, paper goes to the middle, then the page; three.js; reference anthnyung.com/yc"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 242 passed; screenshots of each phase at 1440 px and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "removed the line \"Career foresight for Malaysia\": the product is not for Malaysian users only"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your choice",
+      "detail": "numbers as mechanical roller counters in a recessed window, lower digits faster, overshoot and rebound"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28c",
+      "detail": "npm test 247 passed; roll checked in Chrome at 15% speed (wheels independent, overshoot visible)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "each digit in its own recessed window (not one joined window); separators between windows; npm test 248 passed"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "lighter shading on the roller counter windows"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "question section on the receipt, receipt waits in the middle until the user clicks; page headline stays outside the paper"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 248 passed; checked in Chrome: receipt holds 4 s+, Continue focused, click shows the page; no-intro shows the question at the top"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "ATM waits for a click; pinned receipt is the first section; the headline section comes after scrolling"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 249 passed; checked in Chrome at 1440 and 500 px: idle 3 s without printing, click prints, receipt pinned, scroll cue reaches the hero"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "headline + buttons beside the pinned receipt in one section; Replay instead of Scroll; the gap figures as a redesigned second section"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28b",
+      "detail": "npm test 251 passed; checked in Chrome at 1440 and 500 px: idle, print, pinned + headline, gap bars grow, Replay returns to the waiting ATM; no-3D shows an HTML receipt"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Fix",
+      "detail": "restored the styles of How it works, The data, Principles, Who it is for, closing and footer (deleted by mistake with the section 2 redesign); renamed the gap scale ticks (clashed with .lp-ticks); test guards every section style"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "section 2 had too many elements and clashing styles (retro counters vs colourful cards); too much space above it"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "section 2 redesigned as a ruled ledger; space above it cut from 128 to 64 px; npm test 252 passed; checked in Chrome at 1440 and 500 px, light and dark; How it works and The data unchanged"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "section 2 laid out like your reference (three columns), no bars for 56% and 26%; roller tiles more 3D, digit set inside"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "npm test 252 passed; checked in Chrome at 1440, 720 and 500 px, light and dark; The data counters still fit their cards"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the sign on top of the ATM reads ATM (was FutureReady MY); checked in Chrome"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works looked too simple; add pixel, retro elements"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "pixel icons, pixel numbers, notched cards with stepped hover, level path with the player on stage 1; npm test 257 passed; checked in Chrome at 1440 and 500 px, light and dark"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "How it works too long; big gap between sections 2 and 3"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "live card one wide low row, the five next stages in one row; space between sections 2 and 3 about 105 px (was about 256); fixed the live card showing half width on mid screens; npm test 257 passed; checked in Chrome at 1440, 820 and 500 px"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "remove the six-stage strip under the first section (How it works already shows the stages)"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "strip and its styles removed; test checks the stages are listed once; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "roll back the coloured section 2; keep the black and white version"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "reverted a2edfdd; section 2 back to the black and white three columns"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Your change",
+      "detail": "the pixel look is too far from the site; give section 3 the retro look of section 2, keep its layout"
+    },
+    {
+      "time": "30 Oct",
+      "step": "Task 28",
+      "detail": "section 3 as a hairline ledger with roller-counter numbers, no colour; npm test 255 passed; checked in Chrome at 1440 and 500 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "roll back the 3D roadmap"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "reverted 66866d3; section 3 back to the white card and the five-column ledger"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "no animation for the stage numbers 01-06"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "stage numbers stay on the drum tiles but do not roll (counter without a key); npm test 256 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "stage numbers without the roller tiles; stages 02-06 as a text banner under the white card, no descriptions"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "plain serif stage number, banner of the five next stages (number + short name); npm test 255 passed; checked in Chrome at 1440 and 500 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer like your reference image"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "new footer; npm test 256 passed; checked in Chrome at 1440 and 390 px, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block not as a separate box; join it to the footer like your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block is the dark top of the footer panel, its bottom edge cut into scallops; footer band removed; npm test 257 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "Who it is for in the stacked file folder design of your reference"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "four audience folders + front title folder; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer to the full screen width, not a card"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block and footer span the full width, content lined up with the page; npm test 258 passed; checked in Chrome at 1440 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "closing block background black"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block solid black (glow and grid removed), black in dark mode too; npm test 258 passed; checked in Chrome, light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the folder design from the title For people at a turning point"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "title back to a plain section heading above the four audience folders; front folder and binder clip removed; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove all folder design from Who it is for"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "Who it is for back to the plain ruled list (same styles as before the folders); npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer background the same as the page background"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "footer on the page cream instead of paper; npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "remove the white cards in The data"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "The data counts without cards, thin rules between them like section 2; npm test 258 passed; checked in Chrome at 1440 and 820 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "navigation bar did not stretch to the full width"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Fix",
+      "detail": "nav background spans the full screen width, its content lined up with the page (shared --edge); npm test 258 passed; checked in Chrome at 1653 and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your change",
+      "detail": "footer edge as triangles instead of circles"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "closing block bottom edge cut into triangles (zigzag); npm test 258 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Landing page always first (main)",
+      "detail": "Opening the site address always shows the landing page; a saved guest session is kept and offered (Welcome back) after Get started. npm test 833 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts T9",
+      "detail": "browser check, contract, specs pointers, tools declaration, handover and build record; npm test 738 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts final review fixes",
+      "detail": "AI job switch becomes a drop-down above 4 jobs; B2 column wording follows D29; docs corrected (BLS done, copied-file wording, browser-check scope); ISCO and ILO messages split; bar labels keep the T prefix; confirmed-but-empty profile gets the add-to-profile hint; unavailable texts name their sources; tasks.tsv hash-checked; plain error reasons; npm test 748 passed, pipeline 14 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Profile charts phone fix",
+      "detail": "owner OK: the AI job drop-down, the list rows and long job-name links stay inside the card at 375 px (field 0413, 104 jobs; checked in the browser, no sideways scroll on either tab); npm test 751 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages and folds",
+      "detail": "owner OK: skills list, AI task list and the no-longer-in-demand fold show 10 rows a page with a page bar and Go to page box (row numbers keep counting, a chart corner opens its page, a search starts at page 1); jobs without in-demand software and each code chain become one-line folds with the source link beside them; No chart is drawn only when no corners exist; npm test 765 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar pages review fixes",
+      "detail": "pageForRow, parsePageArg, parsePageList and withPage are tested helpers used by the page actions; the dropped-skills fold can be closed again (open only right after one of its pages is chosen); Previous button label escaped; npm test 769 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/future-radar (profile charts)",
+      "detail": "owner OK: merged into main; conflicts kept both sides (matching and Radar CSS, strings, change handlers), main keeps its demo service and gains the AI task loader, duplicate SOURCES rows removed, main HANDOVER/CLAUDE kept short"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway design (your request)",
+      "detail": "checked MQA register and e-LATiH (no open licence; e-LATiH search links work, MQR links do not); spec and diagram written"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: more course sites (your change)",
+      "detail": "search links checked in the browser for 9 sites (6 work); spec and diagram updated with sites.json"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: all fields (your change)",
+      "detail": "search links per field of study; first fill widened to all skills and fields; fill report added"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: spec approved, plan written (your request)",
+      "detail": "10 tasks: O*NET education data, sites, steps, route, picks, API, admin review, screen, fill of all skills and fields, browser check; the Learning roadmap placeholder tab becomes Study pathway"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup (your request)",
+      "detail": "Software Developer and Accountant with real O*NET skills, levels and fields of study; sample levels, picks and education %; checked desktop and 375 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway mockup with the real state (your request)",
+      "detail": "real O*NET education levels (O*NET 31.0 renamed the file to Education.txt; spec and plan fixed), 34 courses and 6 programme/body pages opened in the browser; only the profile is a sample; eMASCO qualification shown as a proposal"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway P14: eMASCO qualification (your decision)",
+      "detail": "spec, plan, diagram and mockup updated; the mockup's 'proposal' label removed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway: mockup approved, build started (your decision)",
+      "detail": "P15 recorded; subagent-driven build of the 10 plan tasks begins"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T1 O*NET education data, T2 course sites, T3 steps, T4 study route, T5 picks rules, T6 /api/pathway (1 fix round: bad picks file now stops start-up); 879 tests pass"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway build",
+      "detail": "T7 admin review of picks, T8 Study pathway screen (each 1 fix round); 913 tests pass; T9 fill started"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway Task 10: browser check, handover, build record",
+      "detail": "T9 fill done (68/68 skills with courses, 99 of 118 fields with an accredited programme). Browser check: 18 pass, admin and dark mode not run (docs/pathway/acceptance.md). 920 tests pass, pipeline 49 OK. Final whole-branch review next"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway final review",
+      "detail": "1 fix wave (NEC hint, MQA wording, US education line, pick checks, course order, sources table); re-review clean. Second browser check: admin approve/reject and thin profile pass. 936 tests pass, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged Study Pathway to main (your request)",
+      "detail": "merged claude/study-pathway into main after the Radar profile-charts merge; overlaps in app.js, styles, strings and the build record resolved by hand; main's short HANDOVER and CLAUDE updated; npm test 1088 passed, pipeline 49 OK; not pushed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Pushed main to GitHub (your request)",
+      "detail": "main 85ffce4..fec8a7a pushed; includes the Study Pathway merge"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Overall match designed (M17, your request)",
+      "detail": "role count checked: all 1,812 eMASCO roles already shown (live eMASCO matches); mockup docs/mockup-overall-match.html approved; spec section 5a written: 4 UNESCO-based AI questions, Overall = Skill Match x (1 - AI touch) + AI know-how x AI touch; waiting for your spec review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 spec approved; plan written",
+      "detail": "docs/superpowers/plans/2026-10-31-overall-match.md: task 0 bring main in (your OK), 1 maths, 2 profile questions, 3 server, 4 card and list, 5 browser check and docs; waiting for your plan review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Brought main into the branch (Study Pathway, Radar charts)",
+      "detail": "merged origin/main; conflicts only in the build record (both sides kept); npm test 1088 tests (1087 pass here, 1 fails only from Windows CRLF line endings on a copied file), pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 1: Overall match maths",
+      "detail": "shared/matching/overall.js (readAiUse, aiKnowHow, overallMatch, sortValue); 17 new tests, npm test 1105 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 2: profile asks four AI questions",
+      "detail": "sixth profile card Using AI with four UNESCO-based yes/no drop-downs saved as profile.aiUse; schema checks it; EN/BM/zh strings; SOURCES.md row; npm test 1112 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 3: matching answers carry AI know-how and Overall",
+      "detail": "POST /api/matching adds aiKnowHow, touchPct per scenario and overallMatch per role; aiUse must be a plain object (400 otherwise); 6 new tests, npm test 1118 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 4: card shows AI touch and Overall match",
+      "detail": "Role card right column: Skill Match, then AI touches this job (purple bar, moved from the left), then Overall match with the sum written out; Answer AI questions button opens the form on the Using AI section; bands sort by Overall, then Skill Match; 8 new tests, npm test 1126 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 5: browser check, diagram and handover",
+      "detail": "browser check rows M1-M12 in docs/matching/acceptance.md (all pass; Moderate two-numbers note open); M17 path added to the diagram; HANDOVER.md, CLAUDE.md and SOURCES.md updated; npm test 1126 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 final review fixes",
+      "detail": "Moderate AI block shows one number (AI touch, bar and text agree); isUntouched counts AI answers; AI_SECTION constant and mAskAi test; zh/ms terms made consistent; diagram arrow and boundary; handover docs updated; npx vitest run --maxWorkers=3 1129 passed; pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merged Overall match (M17) to main (your request)",
+      "detail": "claude/career-matching pushed (fc071f2) and merged into main; main's short HANDOVER and CLAUDE updated; tests 1129 passed (vitest --maxWorkers=3), pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view spec and mockup (hr-branch)",
+      "detail": "Prototype checked against the Finalist Guide; owner decisions O1-O8 (roster and join link, current and target role, matching's sums, skills-only sharing, server works out team numbers, HR and career centres with HR first); spec and sample-data mockup written. npm test 833 passed; mockup checked in the browser at 127.0.0.2:3201, desktop and 360 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: spec approved, diagram drafted (hr-branch)",
+      "detail": "Owner approved the spec; mockup buttons all work; architecture diagram drafted for approval. npm test 833 passed; diagram checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: diagram approved, plan written (hr-branch)",
+      "detail": "Owner approved the architecture diagram; implementation plan written (Tasks 0-12, career centre last). npm test 833 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: build started (hr-branch)",
+      "detail": "Study pathway merged into main; main merged into hr-branch (Task 0)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6b D1 tables (hr-branch)",
+      "detail": "Task 1 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6c Roster check (hr-branch)",
+      "detail": "Task 2 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6d Team sums (hr-branch)",
+      "detail": "Task 3 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6e Organisation store (hr-branch)",
+      "detail": "Task 4 reviewed, 1 fix round"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6f Team service (hr-branch)",
+      "detail": "Task 5 reviewed clean; npm test 1137 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6g Owner routes (hr-branch)",
+      "detail": "Task 6 reviewed clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6h Join links and sharing (hr-branch)",
+      "detail": "Task 7 reviewed clean (security review); npm test 1175 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6i Sample roster (hr-branch)",
+      "detail": "Task 8 reviewed, 1 fix round (rosters accept knowledge items); npm test 1183 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6j HR screens (hr-branch)",
+      "detail": "Task 9 reviewed, 1 fix round; browser check of setup and heatmap on real data; npm test 1222 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6k Employee share screen (hr-branch)",
+      "detail": "Task 10 reviewed (security), 1 fix round; browser check of join and share; npm test 1250 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6l Career centre type (hr-branch)",
+      "detail": "Task 11 reviewed clean; npm test 1256 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6m Handover and browser check (hr-branch)",
+      "detail": "Task 12 reviewed clean; full browser run (HR and career centre, 360 px); npm test 1256, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6n Final whole-branch review (hr-branch)",
+      "detail": "Final review (most capable model) and one fix wave; npm test 1294 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: judge test source label (hr-branch)",
+      "detail": "In a judge Trend Change Test session the Outlook no longer names DOSM as the job-ad source and says the job-ad groups use test data. npm test 1297 passed"
+    },
+    {
+      "time": "30 Oct",
       "step": "Task 27",
       "detail": "architecture diagram updated with the architecture-diagram skill; every label checked to fit in the browser"
     },
@@ -965,7 +2263,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28",
+      "step": "CV Task 28",
       "detail": "6 tests first (failed), then styles.css rewritten and 4 screens given receipt / ATM classes; npm test 238 passed; checked in headless Chrome at 1440 px and 390 px, light and dark, no sideways scroll"
     },
     {
@@ -975,7 +2273,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28b",
+      "step": "CV Task 28b",
       "detail": "test first (failed), then the chooser removed from welcome.js; npm test 239 passed; checked at 1440 px and 390 px"
     },
     {
@@ -985,7 +2283,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28c",
+      "step": "CV Task 28c",
       "detail": "3 tests first (2 failed), then welcome.js, category.js, app.js and the three wording files; npm test 242 passed; both paths clicked through in Chrome at 1440 px and 390 px"
     },
     {
@@ -995,7 +2293,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28d",
+      "step": "CV Task 28d",
       "detail": "test first (failed), then the choice style in styles.css; npm test 243 passed; checked at 1440 px and 390 px, light and dark, with the mouse over a button"
     },
     {
@@ -1005,7 +2303,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28e",
+      "step": "CV Task 28e",
       "detail": "test first (failed), then the link removed from welcome.js; npm test 243 passed; checked at 1440 px and 390 px"
     },
     {
@@ -1015,7 +2313,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28f",
+      "step": "CV Task 28f",
       "detail": "3 tests first (2 failed), then access.js, app.js and the wording files; npm test 246 passed; clicked through in Chrome with accounts off (this server) and on (local in-memory accounts server): organisation sign-up leads to Who are you? with C and D only"
     },
     {
@@ -1030,7 +2328,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28g",
+      "step": "CV Task 28g",
       "detail": "5 tests first (failed: no goal screen), then goal.js, app.js, accountBox.js, form.js, review.js and the wording files; npm test 251 passed; clicked through as a guest and with a new account (accounts test server), at 1440 px and 390 px, light and dark; checked that nothing on main reads the old goal values"
     },
     {
@@ -1040,7 +2338,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28h",
+      "step": "CV Task 28h",
       "detail": "8 tests first (failed), then category.js, app.js, org.js, form.js, review.js, profileSchema.js and the wording files; npm test 257 passed; clicked through to Confirm as a guest and with a new account (accounts test server restarted): 'Saved to your account (version 1)'"
     },
     {
@@ -1050,7 +2348,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28i",
+      "step": "CV Task 28i",
       "detail": "tests rewritten first (5 failed), then category.js (organisations only), choiceField in fields.js, form.js, review.js, app.js (goal → source; choose action) and styles.css; npm test 257 passed; clicked through in Chrome at 1440 px and 390 px, light and dark: choosing Underemployed saves it, Prefer not to say clears it"
     },
     {
@@ -1060,7 +2358,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28j",
+      "step": "CV Task 28j",
       "detail": "tests first (3 failed), then choiceField in fields.js and the .options / .option styles; npm test 258 passed; checked at 1440 px (one row) and 390 px (two rows), light and dark"
     },
     {
@@ -1070,7 +2368,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28k",
+      "step": "CV Task 28k",
       "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 260 passed; checked in Chrome"
     },
     {
@@ -1090,7 +2388,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28l",
+      "step": "CV Task 28l",
       "detail": "tests first (11 failed), then GET /api/fields (isced.js, routes/fields.js), form.js (one qualification list), app.js (level creates the first row; highest worked out; field dropdown), review.js and the wording files; npm test 269 passed; test servers restarted; clicked through in Chrome at 1440 px and 390 px"
     },
     {
@@ -1100,7 +2398,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28m",
+      "step": "CV Task 28m",
       "detail": "tests rewritten first (6 failed), then form.js, review.js, app.js and the wording files; npm test 268 passed; clicked through in Chrome at 1440 px and 390 px"
     },
     {
@@ -1115,7 +2413,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28n",
+      "step": "CV Task 28n",
       "detail": "3 tests first (failed), then form.js (sections, dropNotAsked), app.js (CV draft and AI re-read), review.js; npm test 271 passed; a synthetic CV with a certificate and a project uploaded in Chrome: server read 1 + 1, profile kept 0 + 0 and all 4 skills"
     },
     {
@@ -1125,7 +2423,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28o",
+      "step": "CV Task 28o",
       "detail": "test first (failed), then the three wording files; npm test 272 passed"
     },
     {
@@ -1135,7 +2433,7 @@
     },
     {
       "time": "31 Oct",
-      "step": "Task 28p",
+      "step": "CV Task 28p",
       "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 274 passed; checked in Chrome"
     },
     {
@@ -1147,6 +2445,151 @@
       "time": "31 Oct",
       "step": "Your choices",
       "detail": "nothing else (no employer, period, industries, overall years); the first job shows straight away"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28q",
+      "detail": "tests first (8 failed), then form.js (jobRow, toYears), app.js (typing creates the first job; years as a number), review.js, styles.css (arrows always visible) and the wording files; npm test 282 passed; in Chrome: typed a job title, 3 arrow presses saved 3 years, a second job saved"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28r",
+      "detail": "your request: rename career preferences to Interests; test first (1 failed), then the wording files (en Interests, ms Minat, zh 兴趣); npm test 283 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28s",
+      "detail": "your request: in Interests keep only Career interests and fields; tests first (3 failed), then form.js (prefs is the interest field only; SECTION_FIELDS[3] empty) and review.js (location and hours only when saved earlier); npm test 285 passed; in Chrome tab 04 shows only Career interests and fields"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28t",
+      "detail": "your request: Review and confirm only on Interests; test first (1 failed), then form.js (last section shows Review and confirm, the others Next as the main button); npm test 286 passed; in Chrome sections 1-3 show Back | Next, section 4 Back | Review and confirm, which opens the receipt"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28u",
+      "detail": "your request: skill level as a toggle bar; tests first (3 failed), then form.js (levelBar), app.js (level action replaces the dropdown handler), styles.css (.toggle); npm test 289 passed; in Chrome: Good and Expert picked and saved as self-reported, Not assessed yet resets; light, dark and phone width checked"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "Skills and proficiency is too messy: list the skills under each project and job (your picture); skills not in a project go to Others"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "bring projects back; change the CV reader to note where each skill was used; estimate levels (rule still to come from you); confirm per card"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28v",
+      "detail": "tests first (CV reader 3, AI re-read 1, screen 16 failed), then server/cv/extract.js (job and project descriptions, usedIn per skill), server/skills/normalize.js (mergeSkills joins usedIn), server/cv/reextract.js + reextractPrompt.js (usedIn, optional in replies), shared/profileSchema.js (makeSkill usedIn, checked when present), public/js/screens/skillGroups.js (cards), form.js, app.js (Looks right, Confirm all, Edit, + add skill, rename and remove keep links), styles.css, wording in en/ms/zh; npm test 310 passed; eval-cv 11 CVs 0 failures; in Chrome a CV with 1 job and 2 projects: Python under both projects, Looks right, + add skill (JavaScript), level Good, Confirm all; light, dark and phone width checked"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your rule",
+      "detail": "show which skills were used in which project, and set the level of those skills as strong automatically; your choices: strong = Good; every skill in a job or project card; tagged 'From your projects', user can change; Other skills folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28w",
+      "detail": "tests first (9 failed), then shared/profileSchema.js (from_projects status, levelFromUse, the CV-level check allows only Good for a used skill), server/cv/extract.js and reextract.js (levelFromUse after merging), scripts/eval-cv.mjs (counts only other levels), skillGroups.js (Good on linking, back on unlinking, tag, Other skills fold), review.js (receipt tag), app.js (fold opens when a skill is added to Others), styles.css, wording in en/ms/zh; npm test 314 passed; eval-cv 0 failures, 0 other levels; in Chrome every project skill showed Good with the tag and Other skills was folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28x",
+      "detail": "your request: after uploading a CV, leave only Edit in the form, because the extraction is never correct; test first (1 failed), then upload.js; npm test 315 passed; in Chrome the CV result shows one button, Edit in the form"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV Task 28y",
+      "detail": "your request: prechoose the qualification and field of study from the CV so the user just checks; tests first (4 failed), then server/cv/patterns.js (levelOf), extract.js and reextract.js (level), public/js/cvPrechoose.js (first ISCED search match, via cv_match), app.js (upload and AI re-read), form.js ('Chosen from your CV … Check it is right'), wording in en/ms/zh; npm test 320 passed; eval-cv 0 failures; in Chrome a CV with 'Bachelor of Computer Science' and 'Diploma in Accounting' showed Bachelor degree + Software and applications development and analysis, Diploma + Accounting and taxation"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/cv-profile-module",
+      "detail": "your request: merge the refined CV branch into main; conflicts in app.js, access.js, form.js, org.js, welcome.js, styles.css and the docs resolved (see HANDOVER.md); npm test and a browser check before the commit"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28",
+      "detail": "6 tests first (failed), then styles.css rewritten and 4 screens given receipt / ATM classes; npm test 238 passed; checked in headless Chrome at 1440 px and 390 px, light and dark, no sideways scroll"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28b",
+      "detail": "test first (failed), then the chooser removed from welcome.js; npm test 239 passed; checked at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28c",
+      "detail": "3 tests first (2 failed), then welcome.js, category.js, app.js and the three wording files; npm test 242 passed; both paths clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28d",
+      "detail": "test first (failed), then the choice style in styles.css; npm test 243 passed; checked at 1440 px and 390 px, light and dark, with the mouse over a button"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28e",
+      "detail": "test first (failed), then the link removed from welcome.js; npm test 243 passed; checked at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28f",
+      "detail": "3 tests first (2 failed), then access.js, app.js and the wording files; npm test 246 passed; clicked through in Chrome with accounts off (this server) and on (local in-memory accounts server): organisation sign-up leads to Who are you? with C and D only"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28g",
+      "detail": "5 tests first (failed: no goal screen), then goal.js, app.js, accountBox.js, form.js, review.js and the wording files; npm test 251 passed; clicked through as a guest and with a new account (accounts test server), at 1440 px and 390 px, light and dark; checked that nothing on main reads the old goal values"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28h",
+      "detail": "8 tests first (failed), then category.js, app.js, org.js, form.js, review.js, profileSchema.js and the wording files; npm test 257 passed; clicked through to Confirm as a guest and with a new account (accounts test server restarted): 'Saved to your account (version 1)'"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28i",
+      "detail": "tests rewritten first (5 failed), then category.js (organisations only), choiceField in fields.js, form.js, review.js, app.js (goal → source; choose action) and styles.css; npm test 257 passed; clicked through in Chrome at 1440 px and 390 px, light and dark: choosing Underemployed saves it, Prefer not to say clears it"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28j",
+      "detail": "tests first (3 failed), then choiceField in fields.js and the .options / .option styles; npm test 258 passed; checked at 1440 px (one row) and 390 px (two rows), light and dark"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28k",
+      "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 260 passed; checked in Chrome"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28l",
+      "detail": "tests first (11 failed), then GET /api/fields (isced.js, routes/fields.js), form.js (one qualification list), app.js (level creates the first row; highest worked out; field dropdown), review.js and the wording files; npm test 269 passed; test servers restarted; clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28m",
+      "detail": "tests rewritten first (6 failed), then form.js, review.js, app.js and the wording files; npm test 268 passed; clicked through in Chrome at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28n",
+      "detail": "3 tests first (failed), then form.js (sections, dropNotAsked), app.js (CV draft and AI re-read), review.js; npm test 271 passed; a synthetic CV with a certificate and a project uploaded in Chrome: server read 1 + 1, profile kept 0 + 0 and all 4 skills"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28o",
+      "detail": "test first (failed), then the three wording files; npm test 272 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28p",
+      "detail": "2 tests first (failed), then form.js (question and section defaults) and review.js; npm test 274 passed; checked in Chrome"
     },
     {
       "time": "31 Oct",
@@ -1175,23 +2618,8 @@
     },
     {
       "time": "31 Oct",
-      "step": "Your request",
-      "detail": "Skills and proficiency is too messy: list the skills under each project and job (your picture); skills not in a project go to Others"
-    },
-    {
-      "time": "31 Oct",
-      "step": "Your choices",
-      "detail": "bring projects back; change the CV reader to note where each skill was used; estimate levels (rule still to come from you); confirm per card"
-    },
-    {
-      "time": "31 Oct",
       "step": "Task 28v",
       "detail": "tests first (CV reader 3, AI re-read 1, screen 16 failed), then server/cv/extract.js (job and project descriptions, usedIn per skill), server/skills/normalize.js (mergeSkills joins usedIn), server/cv/reextract.js + reextractPrompt.js (usedIn, optional in replies), shared/profileSchema.js (makeSkill usedIn, checked when present), public/js/screens/skillGroups.js (cards), form.js, app.js (Looks right, Confirm all, Edit, + add skill, rename and remove keep links), styles.css, wording in en/ms/zh; npm test 310 passed; eval-cv 11 CVs 0 failures; in Chrome a CV with 1 job and 2 projects: Python under both projects, Looks right, + add skill (JavaScript), level Good, Confirm all; light, dark and phone width checked"
-    },
-    {
-      "time": "31 Oct",
-      "step": "Your rule",
-      "detail": "show which skills were used in which project, and set the level of those skills as strong automatically; your choices: strong = Good; every skill in a job or project card; tagged 'From your projects', user can change; Other skills folded"
     },
     {
       "time": "31 Oct",
@@ -1207,6 +2635,31 @@
       "time": "31 Oct",
       "step": "Task 28y",
       "detail": "your request: prechoose the qualification and field of study from the CV so the user just checks; tests first (4 failed), then server/cv/patterns.js (levelOf), extract.js and reextract.js (level), public/js/cvPrechoose.js (first ISCED search match, via cv_match), app.js (upload and AI re-read), form.js ('Chosen from your CV … Check it is right'), wording in en/ms/zh; npm test 320 passed; eval-cv 0 failures; in Chrome a CV with 'Bachelor of Computer Science' and 'Diploma in Accounting' showed Bachelor degree + Software and applications development and analysis, Diploma + Accounting and taxation"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge CV branch into main",
+      "detail": "CV and profile owner round merged: landing page -> Who is it for? -> guest/account -> goal; form Education, Employment, Skills, Using AI, Interests; HR view kept. npm test 1427 passed, pipeline 49 OK; checked in the browser (personal and organisation paths)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Join the two CV merges on main",
+      "detail": "GitHub's merge kept (Who is it for? inside the guest/account step, join links skip it); kept from this computer: Using AI before Interests (Interests last), light by default (no follow-the-computer dark), Python cache files untracked. npm test 1425 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge main into the Radar branch",
+      "detail": "Your OK. Everything from main since the Radar charts merge came in (7f6763e); the Radar branch kept its detailed HANDOVER.md and CLAUDE.md. npm test 1425 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Remove the \"Your profile\" card from the Radar",
+      "detail": "Your request. Card, its note and its EN/BM/中文 strings removed; test first (079175a). npm test 1426 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar source details as cards",
+      "detail": "Your request. OpenAlex, DOSM and the two O*NET sources are four cards in the app look, two by two, one column on a phone; availability is a tag; nothing left out; test first (50564d6, bad5173). npm test 1429 passed; checked in the browser at 1280 px, 375 px and in dark mode"
     },
     {
       "time": "31 Oct",
@@ -1232,6 +2685,131 @@
       "time": "31 Oct",
       "step": "Fix: DeepSeek timed out on a real CV",
       "detail": "your real CV: AI step failed. Logs now name the cause; it was 'timeout after 15019 ms'. deepseek-flash thinks before answering (up to 60% hidden reasoning, 7-24 s); turned thinking off (about 2.7 s), shorter answer, limits 40 s AI / 45 s upload (your choice 'Both'), new wait text in en/ms/zh. Tests first; npm test 372 passed; eval --ai median 1.25 s, $0.0034; your CV read with no AI failure"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/cv-profile-module: DeepSeek reads every CV",
+      "detail": "Rules + DeepSeek merged into one draft (rules win, \"Found by AI\" tags), thinking off, 40 s AI / 45 s upload; consent re-read, compare view, Claude backup and R2 CV copy removed. Conflicts: server/app.js (kept Radar config), public/js/app.js (kept main persist list, dropped ai), docs. Tests in other modules switched from tempStore/llmProviders to aiProvider: null."
+    },
+    {
+      "time": "31 Oct",
+      "step": "AI usage question and AI tasks scatter",
+      "detail": "Your request. Spec D34-D42 and plan approved; built test first in 6 tasks: the question before the Radar (10 owner categories, Continue / Skip / Change, kept in the profile, profile stays confirmed) and the AI tasks chart as a scatter. Also fixed list rows squeezing text between 560 and 760 px. Checked in the browser at 1280, 588 and 360 px and in dark mode"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar two tabs: For You and Explore all trends",
+      "detail": "Your request. Spec D43-D48 approved; built test first: For You (questions, AI tasks scatter, research signals for you), Explore all trends (research momentum, papers per year, all six topics), Explore first for career switchers, five sections and three source cards off the page. npm test 1483 passed; checked in the browser at 1280 and 375 px and in dark mode"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/future-radar: AI usage question, AI tasks scatter, two tabs",
+      "detail": "Your OK. Radar question before For You (10 owner categories), AI tasks scatter, tabs For You / Explore all trends, only the OpenAlex source on the page. Conflicts: public/js/app.js (kept main imports, added aiTasks), docs (kept main short files, both build logs). npm test 1535 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge main into career-matching",
+      "detail": "Owner asked for main's new CV screen design on this branch. No conflicts; this branch keeps its detailed HANDOVER.md and CLAUDE.md. npm test 1425 passed (one earlier run had a reextract test time out under load; it passes alone and on the rerun); checked in the browser: new access screen, Career matching screen, /api/matching answers"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Compare futures: AI news design written",
+      "detail": "New branch claude/compare-futures from career-matching (d82267e). Owner approved the design in chat: DeepSeek Search API every 3 hours, 10 ISCED-F broad study fields, rule checks only, up to 25 items per field, For you from the profile in the browser, Explore all. Spec docs/superpowers/specs/2026-10-31-compare-futures-news-design.md and diagram docs/architecture-compare-futures.html wait for owner review. Cost about US$1.80 a month; no real search until the owner gives the key and the OK."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Compare futures: spec and diagram approved, build plan written",
+      "detail": "Owner approved the spec and the diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news.md: 6 tasks (field list and rules, DeepSeek client, refresh service with caps, GET /api/news, #futures screen, browser check and branch docs). Waits on the owner: plan review and the choice of how to build it."
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: field list and rules",
+      "detail": "data/news/fields.json (10 ISCED-F broad fields with search words, manifest hash, SOURCES.md entry for it and for DeepSeek Search); shared/news/rules.js (query, usable check, repeats, merge, top 25, For-you fields); server/news/fields.js loader. npm test 1454 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: DeepSeek Search client",
+      "detail": "server/news/deepseek.js: POST /v1/tools/search with count 50, one retry after 30 s for network, timeout, 408, 429, 5xx; error codes only, never the key. Tested with a fake fetch, no real search. npm test 1468 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: store and refresh service",
+      "detail": "server/news/store.js (R2 news/latest.json or local data/cache/news/latest.json; unreadable reads as empty) and server/news/service.js (3-hour timer, run at start when due, late request wakes it, one run at a time, caps 10 per run and 80 per 24 h kept in the store, failed field keeps its last list, 401/402 stop the run, snapshot per spec 7 with the age rule applied). Fake search only. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: GET /api/news and refresh start",
+      "detail": "server/news/routes.js (no input, no user data, wakes a late refresh, 503 news_unavailable on failure); createApp option news (default from env, never started there); server/index.js starts the 3-hour refresh after listen. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Compare futures screen",
+      "detail": "public/js/screens/futures.js (For you from the profile study fields in the browser, Explore all with a 10-field picker, source line with query, updated and next refresh in MYT and the rules, failed-refresh note, empty, off, loading, retry; DeepSeek text escaped, http(s) links only), public/js/newsApi.js, app.js wiring (news never saved), 19 nw strings in en/ms/zh (ms and zh: translation owner review). npm test 1505 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: browser check and branch docs",
+      "detail": "C1-C7 pass in the browser on futures.localhost:3270 (no key: news off) and :3271 (scripts/news-local.mjs, fake search, no DeepSeek call); BM strings and 375 px checked; docs/news/acceptance.md. HANDOVER.md and CLAUDE.md now describe claude/compare-futures. Real run waits on the owner (key and OK on about US$1.80 a month). npm test 1505 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: final review fixes",
+      "detail": "Opus whole-branch review: 1 Critical, 3 Important fixed, each with a test that failed first. The search count and last run now live in memory too (store write failures cannot reset them); each search is written down before it is made; an unreadable store means no search; a failed run waits 3 hours and the timer never crashes the server. 5 minor notes deferred for the owner. npm test 1510 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: first real DeepSeek run",
+      "detail": "Owner key in local .env (git-ignored). One refresh: 10 searches (at most US$0.0075), all 10 fields ok with 25 items, oldest item 3.9 days, 21-25 sites per field; C1-C3 pass on real data; server stopped after. Seen: day-level dates in UTC+8, some non-news pages and near-repeats pass the rules (owner to decide). docs/news/acceptance.md"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 spec and diagram",
+      "detail": "Owner approved in chat: N9 relevance check by DeepSeek deepseek-flash (thinking off, JSON, one request per field per run, new items only, not clearly kept = dropped; check fails = no new items), near-repeats by headline without a trailing site name, N10 English articles only on screen. Extra cost about US$2-4 a month, ceiling about US$6.50. Spec and diagram updated; waiting for owner review"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 build plan",
+      "detail": "Owner approved the amended spec and diagram. Plan docs/superpowers/plans/2026-10-31-compare-futures-news-amendment-1.md: 5 tasks (headline site-name rule, relevance check client, service integration with its own caps, screen lines, local and real run with docs)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: site-name repeat rule",
+      "detail": "shared/news/rules.js: headlines compared without a trailing site name (after | - – —, at most 40 characters); newItems(kept, found, runAt) gives only new found items for the relevance check (      Tests  1517 passed (1517))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: relevance check client",
+      "detail": "server/news/relevance.js: deepseek-flash, thinking off, JSON mode, temperature 0, max_tokens 1000; fixed prompt with field title and numbered headline, site, snippet (no links); only whole-number ids in keep are kept, reasons counted; blank or wrong answer retried once like network, timeout, 408, 429, 5xx; fake fetch only (      Tests  1539 passed (1539))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: relevance check in the refresh",
+      "detail": "server/news/service.js: each field's new items (plus items kept before Amendment 1) go to the check once; kept ones marked checked, dropped and dropReasons recorded; no new item means no check; a failed check adds nothing (check_<code>), 401/402 stop the run; checks capped 10 per run and 80 per 24 h (memory and store, before each request, stop before searching a field with no check left); reply shows checked items only with checkedBy and dropped (      Tests  1550 passed (1550))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: screen lines",
+      "detail": "public/js/screens/futures.js: rules line says English articles only (N10); check line 'Checked by DeepSeek (model) as news about AI in this field' with the dropped count when above 0 (N9); strings nwRules, nwChecked, nwDropped in en/ms/zh (ms, zh: translation owner review) (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: local check, real run and docs",
+      "detail": "C9 and the two lines pass with a fake search and check (scripts/news-local.mjs); real run with the owner key: 10 searches + 10 checks (about US$0.02), C8 pass (first-run junk gone, copies once); SOURCES.md chat model row, .env.example, acceptance.md, HANDOVER.md, CLAUDE.md. Pipeline 49 OK (      Tests  1556 passed (1556))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News A1: final review fixes",
+      "detail": "Opus review of Amendment 1: no Critical; 2 Important fixed with tests that failed first: the site-name rule no longer merges different articles (no digits in the ending, at least 4 words left), and a check sends at most 50 items, new results first. 5 minor notes deferred for the owner (      Tests  1563 passed (1563))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Owner hosting procedure recorded",
+      "detail": "CLAUDE.md: the news refreshes every 3 hours on every host (owner); Cloudflare Tunnel procedure for futures.grong.my (owner steps 1-3, Claude step 4 after the owner's yes); owner asked to push to main (      Tests  1563 passed (1563))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Merge claude/compare-futures into main",
+      "detail": "Owner asked to push to main. Compare futures AI news (DeepSeek Search every 3 hours, relevance check, English only) merged; conflicts resolved: app.js save keeps main's fields plus news: null (main removed state.ai); SOURCES.md keeps both DeepSeek sections; status.json merged as data; main's short CLAUDE.md and HANDOVER.md get the key points (3-hour refresh rule, CV_LLM_KEY vs DEEPSEEK_API_KEY, Cloudflare plan). Main removed tempStore, so createApp's news fallback no longer passes it. npm test 1673 passed, pipeline 49 OK. Browser check of main not run: the per-folder server limit was reached and the owner's news server stays running"
     }
   ]
 }

@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Future Skills Radar — mockup v2 (Round 1)</title>
+<!-- translation: owner review. All BM and 中文 labels in this file (I18N and AX labels) are illustrative translations that the owner must review before they go into the strings files. -->
+<style>
+:root{
+  --bg:#0b1324;--surface:#111c33;--surface2:#17254a;--line:#24345c;--ink:#e6edf7;--muted:#93a3c0;
+  --cyan:#22d3ee;--cyan-soft:#0e3a4a;--violet:#a78bfa;--violet-soft:#2b2350;
+  --green:#4ade80;--green-soft:#123a26;--red:#f87171;--red-soft:#3d1a1f;--orange:#fb923c;
+  --amber:#fbbf24;--amber-soft:#3a2e0e;--gray:#64748b;--gray-soft:#1e293b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+button,select,input,textarea{font:inherit;color:inherit}
+a{color:var(--cyan)}
+a.ev{font-size:11.5px;white-space:nowrap;margin-left:4px}
+.mockbar{background:var(--amber-soft);color:var(--amber);font-size:12.5px;text-align:center;padding:6px 16px;border-bottom:1px solid #5a4614}
+.top{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-weight:700}.brand span{color:var(--cyan)}
+.top .sp{flex:1}
+.journey{font-size:12px;color:var(--muted)}
+.journey b{color:var(--ink)}
+main{max-width:1180px;margin:0 auto;padding:24px clamp(16px,3vw,40px) 80px;min-width:0}
+h1{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.02em;line-height:1.15}
+h2{font-size:18px;margin-bottom:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h3{font-size:14.5px;margin-bottom:6px}
+.lead{color:var(--muted);max-width:72ch;margin:6px 0 2px}
+.muted{color:var(--muted)}.small{font-size:13px}.tiny{font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface2);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn:hover{border-color:var(--cyan)}
+.btn.pri{background:var(--cyan);border-color:var(--cyan);color:#04202a}
+.btn.sm{padding:4px 10px;font-size:12.5px}
+.btn.ghost{background:none;border-color:transparent;color:var(--cyan)}
+.btn:disabled{opacity:.5;cursor:default}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 0;flex-wrap:wrap}
+.tabs button{border:0;background:none;padding:11px 16px;cursor:pointer;font-weight:700;font-size:15px;color:var(--muted);border-bottom:3px solid transparent;text-align:left}
+.tabs button.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tabs .q{display:block;font-size:11.5px;font-weight:500}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;vertical-align:middle}
+.t-obs{background:var(--cyan-soft);color:var(--cyan)}
+.t-der{background:var(--violet-soft);color:var(--violet)}
+.t-res{background:#13294a;color:#93c5fd}
+.t-up{background:var(--green-soft);color:var(--green)}
+.t-down{background:var(--red-soft);color:var(--red)}
+.t-stable{background:var(--gray-soft);color:#cbd5e1}
+.t-emerg{background:var(--cyan-soft);color:var(--cyan)}
+.t-mixed,.t-warn,.t-sample{background:var(--amber-soft);color:var(--amber)}
+.t-none{background:var(--gray-soft);color:#cbd5e1;border:1px dashed var(--gray)}
+.src{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);margin-top:12px;padding-top:8px}
+.src b{color:var(--ink);font-weight:600}
+.note{font-size:13px;background:var(--surface2);border-left:3px solid var(--cyan);padding:8px 12px;border-radius:6px;margin:10px 0}
+.note.warn{border-left-color:var(--amber)}
+.section{margin-top:22px}
+.secnum{font-size:11px;font-weight:700;color:var(--cyan);border:1px solid var(--cyan);border-radius:6px;padding:1px 6px}
+.status{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:10px}
+.status .s{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;min-width:0}
+.status .s b{display:block;font-size:13.5px;margin-bottom:2px}
+.dims{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin-top:6px}
+.dims dt{color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:99px;margin-right:5px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:var(--surface2);padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--cyan);color:#04202a}
+.lang button{padding:4px 10px;font-size:12.5px}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--muted);font-size:11px;font-family:inherit}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;margin-top:8px;align-items:center}
+.legend svg{width:14px;height:14px;display:inline-block;vertical-align:middle}
+.legend button{background:none;border:1px solid var(--line);border-radius:99px;padding:2px 10px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.legend button.off{opacity:.35}
+.sw{width:12px;height:3px;border-radius:2px;display:inline-block}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+.brow{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:6px 12px;align-items:center;font-size:13px;padding:8px 6px;cursor:pointer;border-radius:8px;border-bottom:1px solid var(--line)}
+.brow:hover{background:var(--surface2)}
+.brow .nm{display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.btrack{position:relative;height:16px;background:var(--surface2);border-radius:4px}
+.btrack .mid{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--muted)}
+.bbar{position:absolute;top:2px;height:12px;border-radius:3px}
+.cols3{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--muted)}
+.kv dd{min-width:0;overflow-wrap:anywhere}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.mini{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;min-width:0}
+.mini b{display:block;font-size:14px;margin-bottom:3px}
+.viewall{margin-top:26px;text-align:center;border-top:1px dashed var(--line);padding-top:16px}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(0,0,0,.4);padding:20px;overflow-y:auto;transform:translateX(105%);visibility:hidden;transition:transform .2s,visibility 0s linear .2s;z-index:20}
+.drawer.open{transform:none;visibility:visible;transition-delay:0s}
+.drawer:focus{outline:none}
+.brow:focus-visible,.pt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.drawer .x{float:right}
+.drawer pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11.5px}
+.tip{position:fixed;z-index:30;max-width:300px;background:#0b1324;border:1px solid var(--cyan);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.5);pointer-events:none}
+.demo{margin-top:30px;border:2px dashed var(--amber);border-radius:14px;padding:18px;background:#141a2c}
+.demo input,.adm input,.adm textarea{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:5px 8px;max-width:100%}
+.demo input{width:110px}
+.adm input[type=text],.adm input[type=password],.adm textarea{width:100%}
+.diff td.ch{color:var(--amber);font-weight:700}
+.hidden{display:none!important}
+.sel{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:13px;max-width:100%}
+details.why{margin-top:8px;font-size:13px;background:var(--surface2);border-radius:8px;padding:8px 12px}
+details.why summary{cursor:pointer;font-weight:700;color:var(--cyan)}
+@media (max-width:700px){
+  .brow{grid-template-columns:1fr}
+  .tabs button{padding:10px 10px;font-size:14px}
+  .top{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){.drawer{transition:none}}
+</style>
+</head>
+<body>
+<div class="mockbar">MOCKUP — sample data. Layout only: values may follow the real analysis in docs/radar, but are labelled <b>sample</b> and nothing here is a live trend.</div>
+<div class="top">
+  <div class="brand">FutureReady <span>MY</span></div>
+  <div class="journey">Profile ✓ · Proficiency check ✓/skipped · <b>Future Skills Radar</b> · Career matching · Roadmap · Compare futures</div>
+  <div class="sp"></div>
+  <a class="btn sm" href="#" id="navRadar">Radar</a>
+  <a class="btn sm" href="#admin" id="navAdmin">Admin (#admin)</a>
+  <span class="seg lang" id="langSw" aria-label="Language"><button class="on" data-l="en">EN</button><button data-l="ms">BM</button><button data-l="zh">中文</button></span>
+</div>
+
+<!-- ================= RADAR PAGE ================= -->
+<main id="page-radar">
+  <h1 data-i18n="title">Future Skills Radar</h1>
+  <p class="lead" data-i18n="lead">Explore how artificial intelligence is changing work, skills and career opportunities.</p>
+  <p class="muted small" data-i18n="sub">Discover what is happening, inspect the evidence, and explore how these changes may relate to your future.</p>
+
+  <div class="status" id="status"></div>
+  <div class="row" style="margin-top:8px"><button class="btn sm ghost" onclick="openSources()" data-i18n="viewSources">View data sources</button></div>
+
+  <div class="card" style="margin-top:14px" id="profile"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="on" data-tab="ai" role="tab"><span data-i18n="tabAI">AI Impact</span><span class="q" data-i18n="tabAIq">How is AI changing the nature of work?</span></button>
+    <button data-tab="sk" role="tab"><span data-i18n="tabSK">Skills &amp; Careers</span><span class="q" data-i18n="tabSKq">Which skills and jobs are changing, and which matter to me?</span></button>
+  </div>
+
+  <!-- TAB A -->
+  <div id="tab-ai">
+    <div class="grid g2 section">
+      <div class="card">
+        <h2><span class="secnum">A2</span> <span data-i18n="radarTitle">Research momentum by AI topic</span> <span class="tag t-sample">Sample</span></h2>
+        <p class="muted small">Research Momentum Index (0–100): how fast research papers on each topic grew over 3 years. It is a chart value, not a prediction and not a "% AI advancement".
+          <button class="btn sm ghost" id="tipBtn" aria-label="What is this index?" onclick="tipIndex(event)">ⓘ</button></p>
+        <div class="row tiny" style="margin:8px 0">
+          <span class="seg" id="metric"><button class="on" data-m="count" data-i18n="mCount">Paper counts</button><button data-m="share" data-i18n="mShare">Share of Computer Science</button></span>
+          <label>Window <select id="radarY" class="sel"><option value="2025">2025 vs 2022</option><option value="2024">2024 vs 2021</option></select></label>
+          <label><input type="checkbox" id="radarCmp" checked> Show the year before (dashed)</label>
+        </div>
+        <div class="row tiny" style="margin:0 0 6px"><label>Mockup only: preview Service AI state <select id="prevSel" class="sel"><option value="normal">Normal</option><option value="small">Small counts (60 → 150)</option><option value="nobase">New activity (0 → 140)</option><option value="dropped">Dropped to zero (500 → 0)</option></select></label></div>
+        <div id="radar"></div>
+        <div class="legend"><span><svg width="14" height="14" viewBox="0 0 14 14" style="display:inline"><circle cx="7" cy="7" r="5" fill="#22d3ee"/></svg> Selected window</span><span><svg width="14" height="14" viewBox="0 0 14 14" style="display:inline"><circle cx="7" cy="7" r="5" fill="none" stroke="#22d3ee" stroke-width="2"/></svg> Small counts (under 100 papers in a year)</span><span><svg width="14" height="14" viewBox="0 0 14 14" style="display:inline"><circle cx="7" cy="7" r="5" fill="#64748b"/></svg> No index</span><span><span class="sw" style="border-top:2px dashed #94a3b8;background:none"></span> Year before</span><span class="muted">Click, or press Enter on a point, for the evidence</span></div>
+        <div id="radarField"></div>
+        <details class="why"><summary data-i18n="whyIdx">Why this index?</summary><p id="whyText"></p></details>
+        <div class="src" id="radarSrc"></div>
+      </div>
+      <div class="card">
+        <h2><span class="secnum">A1</span> Research papers per year <span class="tag t-res">Research signal</span> <span class="tag t-sample">Sample</span></h2>
+        <p class="muted small">Metric: <b>research papers per year (OpenAlex, counted by primary topic)</b>, 2015–2025. This is research activity, not hiring demand or an AI capability score.</p>
+        <div id="lines"></div>
+        <div class="legend" id="lineLegend"></div>
+        <div class="src" id="linesSrc"></div>
+      </div>
+    </div>
+    <div class="card section">
+      <h2><span class="secnum">A5</span> What the research signals say for you</h2>
+      <div id="aiSummary"></div>
+    </div>
+    <div class="viewall"><button class="btn" id="vaAi" onclick="toggleAll('ai')"></button><div class="tiny muted" style="margin-top:6px">Shows every AI topic. Nothing outside your profile is shown by default.</div></div>
+  </div>
+
+  <!-- TAB B -->
+  <div id="tab-sk" class="hidden">
+    <div class="card section">
+      <h2><span class="secnum">B1</span> <span data-i18n="b1Title">Change in share of Malaysian online job advertisements</span> <span class="tag t-obs">Observed</span> <span class="tag t-sample">Sample</span></h2>
+      <p class="muted small">By occupation group (MASCO major group), latest quarter 2026 Q2. Measured in percentage points (pp) of all online job advertisements. Click a row for the evidence.</p>
+      <div id="b1state"></div>
+      <div id="divbars"></div>
+      <div class="note small" id="b1ctx"></div>
+      <div class="src" id="b1src"></div>
+    </div>
+
+    <div class="card section">
+      <h2><span class="secnum">B2</span> Rising, declining and emerging skills <span class="tag t-sample">Sample</span></h2>
+      <p class="muted small">Three different kinds of signal, kept in separate columns and <b>never merged into one number</b>.</p>
+      <div class="cols3" id="skillcols"></div>
+    </div>
+
+    <div class="card section">
+      <h2><span class="secnum">B5</span> Your fields of study</h2>
+      <p class="muted small">Only the fields in your profile. Jobs come from the official crosswalk; DOSM figures are for the whole occupation group, not for each job inside it.</p>
+      <div id="fieldOut" class="grid g2"></div>
+      <div class="src">Source: <b>UNESCO ISCED-F 2013</b> → CIP (Statistics Canada) → <b>O*NET 31.0</b> · <b>eMASCO (MASCO 2020)</b> <a class="ev" href="https://uis.unesco.org/en/topic/international-standard-classification-education-isced" target="_blank" rel="noopener">ISCED-F ↗</a> <a class="ev" href="https://www.onetcenter.org/crosswalks.html" target="_blank" rel="noopener">O*NET crosswalks ↗</a></div>
+    </div>
+
+    <div class="card section">
+      <h2><span class="secnum">B6</span> What this means for you</h2>
+      <div id="skSummary"></div>
+      <div class="row" style="margin-top:14px;justify-content:space-between"><div class="small muted">Career rankings are not part of this module yet. The next screen is a placeholder.</div><button class="btn pri" onclick="alert('Mockup: leads to the existing next-module placeholder.')">Continue to My Career Matches →</button></div>
+    </div>
+    <div class="viewall"><button class="btn" id="vaSk" onclick="toggleAll('sk')"></button><div class="tiny muted" style="margin-top:6px">Shows every DOSM occupation group and every AI topic.</div></div>
+  </div>
+
+  <!-- JUDGE PANEL -->
+  <div class="demo" id="demo">
+    <h2>Trend Change Test — judge panel <span class="tag t-warn">Testers only · synthetic data</span></h2>
+    <p class="small muted">Sign-in with the judge key; the session lasts 2 hours and is checked on every request. Changes apply only to your own synthetic copy (<code>demo/&lt;session&gt;</code>). Career rankings are not part of this module yet.</p>
+    <div class="grid g2" style="margin-top:12px">
+      <div>
+        <div class="row" style="margin-bottom:8px"><span class="seg" id="scen"><button class="on" data-s="A">Scenario A — normal change</button><button data-s="B">Scenario B — structural break</button></span></div>
+        <table>
+          <tr><th>Synthetic series</th><td>Online job adverts, 7 quarters (24Q4–26Q2) · 3 groups + total · fictional</td></tr>
+          <tr><th>Synthetic manifest</th><td id="dSnap">demo-m1</td></tr>
+          <tr class="sA"><th>Professionals 25Q2 (baseline)</th><td><input id="dA" type="number" value="43000"></td></tr>
+          <tr class="sA"><th>Professionals 26Q2 (latest)</th><td><input id="dB" type="number" value="48000"></td></tr>
+          <tr class="sB hidden"><th>Jump factor, latest quarter</th><td><input id="dF" type="number" step="0.1" value="2.2"> <span class="tiny muted">applied to the total and every group</span></td></tr>
+          <tr><th>Rule</th><td>Rising/Declining: net ≥ 1.0 pp and ≥ 10% relative, at least 2 of 3 clean steps agree (prototype setting)</td></tr>
+        </table>
+        <div class="row" style="margin-top:12px"><button class="btn pri" onclick="demoApply()">Apply and recalculate</button><button class="btn" onclick="demoReset()">Reset</button></div>
+        <div id="dErr" class="tiny" style="color:var(--red);margin-top:6px"></div>
+      </div>
+      <div id="dDiff" class="mini"><span class="muted">Scenario A: change a value (try 55000). Scenario B: apply a jump. The before/after report appears here.</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- ================= ADMIN PAGE ================= -->
+<main id="page-admin" class="hidden adm">
+  <h1>Radar admin</h1>
+  <p class="lead">Review field ↔ topic links and possible structural breaks, check ingestion, refresh a source. <span class="tag t-sample">Sample</span></p>
+  <div class="card section" id="login">
+    <h2>Sign in</h2>
+    <p class="small muted">Enter the admin key. The key is compared on the server; a signed cookie (<code>fr_radar</code>, HttpOnly, 60 minutes) is returned. Mockup: any text signs in and nothing is checked or stored.</p>
+    <div class="row" style="margin-top:8px"><input type="password" id="keyBox" placeholder="Admin key" aria-label="Admin key" style="max-width:320px"><button class="btn pri" onclick="adminIn()">Sign in</button></div>
+    <div class="tiny" id="loginMsg" style="color:var(--red);margin-top:6px"></div>
+  </div>
+  <div id="adminBody" class="hidden">
+    <div class="row section"><span class="tag t-obs">Signed in as admin · session ends in 59 min (sample)</span><button class="btn sm" onclick="adminOut()">Sign out</button><button class="btn sm" onclick="adminExport()">Export approved mappings and reviews (JSON)</button></div>
+
+    <div class="card section">
+      <h2>Field ↔ AI topic links <span class="tag t-warn">Mapping review</span></h2>
+      <p class="small muted">Proposals are <b>pending</b> until approved. Only approved links change highlighting on the Radar. A link on a broad or narrow field applies to every detailed field under it; a rejected detailed link overrides it.</p>
+      <label class="tiny muted">Reviewer note (required for every decision)<input type="text" id="mapNote" placeholder="Why?"></label>
+      <div class="tw"><table id="mapTbl"></table></div>
+      <div class="tiny" id="mapMsg" style="color:var(--red);margin-top:6px"></div>
+    </div>
+
+    <div class="card section">
+      <h2>Possible structural breaks <span class="tag t-warn">Break review</span></h2>
+      <p class="small muted">The rule flags a quarter when total job adverts move by 50% or more and at least 75% of groups move the same way by 40% or more. It cannot tell a real shock from a coverage change. A review is tied to the exact observations (hash) and stops applying if they change.</p>
+      <label class="tiny muted">Reviewer note (required)<input type="text" id="brkNote" placeholder="Evidence and reasoning"></label>
+      <label class="tiny muted">Evidence link<input type="text" id="brkLink" placeholder="https://…"></label>
+      <div class="tw"><table id="brkTbl"></table></div>
+      <div class="tiny" id="brkMsg" style="color:var(--red);margin-top:6px"></div>
+    </div>
+
+    <div class="grid g2 section">
+      <div class="card">
+        <h2>Ingestion status</h2>
+        <dl class="kv" style="margin:8px 0">
+          <dt>Active manifest</dt><dd>m-2026-10-30-01 (served from bundled data, read-only)</dd>
+          <dt>Previous manifest</dt><dd>none</dd>
+          <dt>Orphan objects</dt><dd>0 <button class="btn sm">Clean up</button></dd>
+          <dt>Publish conflicts</dt><dd>0</dd>
+        </dl>
+        <div class="tw"><table><tr><th>Time (UTC)</th><th>Source</th><th>Operation</th><th>Result</th></tr>
+          <tr><td>30 Oct 04:40</td><td>OpenAlex</td><td>fetch</td><td>ok · snapshot oa-s1</td></tr>
+          <tr><td>30 Oct 04:52</td><td>DOSM</td><td>fetch</td><td>ok · snapshot dosm-s1 (Q2 2026)</td></tr>
+          <tr><td>30 Oct 05:10</td><td>—</td><td>activate</td><td>ok · m-2026-10-30-01</td></tr></table></div>
+        <p class="tiny muted" style="margin-top:6px">Logs hold source, operation, error code, time and ids only. Never keys or full responses.</p>
+      </div>
+      <div class="card">
+        <h2>Refresh a source</h2>
+        <p class="small muted">Opening the Radar never fetches. Only an admin starts a refresh; at most once per 5 minutes per source.</p>
+        <div class="row" style="margin:8px 0"><label class="tiny muted">Simulate result <select id="simRes" class="sel"><option value="nonew">Checked — no new data</option><option value="openalex_key_missing">openalex_key_missing</option><option value="openalex_rate_limited">openalex_rate_limited</option><option value="dosm_dataset_missing">dosm_dataset_missing</option><option value="publish_conflict">publish_conflict</option></select></label></div>
+        <div class="row"><button class="btn" onclick="adminRefresh('OpenAlex')">Refresh OpenAlex</button><button class="btn" onclick="adminRefresh('DOSM')">Refresh DOSM</button></div>
+        <div id="refMsg" class="note small" style="display:none"></div>
+      </div>
+    </div>
+    <div class="card section"><h2>Decision history</h2><div class="tw"><table id="hist"></table></div></div>
+  </div>
+</main>
+
+<aside class="drawer" id="drawer" role="dialog" aria-label="Evidence" tabindex="-1" aria-live="polite"><button class="btn sm x" onclick="closeDrawer()">Close</button><div id="drawerBody"></div></aside>
+<div class="tip hidden" id="tip" role="tooltip"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n.toLocaleString('en');
+const S = { lang:'en', tab:'ai', all:{ai:false,sk:false}, metric:'count', prev:'normal', hidden:new Set(), admin:false };
+
+/* ---------- strings (BM / 中文 are illustrative; translation: owner review) ---------- */
+const I18N = {
+  en:{title:'Future Skills Radar',lead:'Explore how artificial intelligence is changing work, skills and career opportunities.',sub:'Discover what is happening, inspect the evidence, and explore how these changes may relate to your future.',
+    tabAI:'AI Impact',tabAIq:'How is AI changing the nature of work?',tabSK:'Skills & Careers',tabSKq:'Which skills and jobs are changing, and which matter to me?',
+    viewAll:'View all',viewMine:'Back to my profile only',viewSources:'View data sources',radarTitle:'Research momentum by AI topic',mCount:'Paper counts',mShare:'Share of Computer Science',
+    halved:'halved',same:'same',doubled:'doubled',four:'4×',b1Title:'Change in share of Malaysian online job advertisements',insuff:'Insufficient Comparable Evidence',ctx:'context only',whyIdx:'Why this index?'},
+  ms:{title:'Radar Kemahiran Masa Depan',lead:'Terokai bagaimana kecerdasan buatan mengubah pekerjaan, kemahiran dan peluang kerjaya.',sub:'Ketahui apa yang berlaku, semak bukti, dan lihat kaitannya dengan masa depan anda.',
+    tabAI:'Kesan AI',tabAIq:'Bagaimana AI mengubah sifat pekerjaan?',tabSK:'Kemahiran & Kerjaya',tabSKq:'Kemahiran dan pekerjaan mana yang berubah, dan mana yang penting kepada saya?',
+    viewAll:'Lihat semua',viewMine:'Kembali ke profil saya sahaja',viewSources:'Lihat sumber data',radarTitle:'Momentum penyelidikan mengikut topik AI',mCount:'Bilangan kertas',mShare:'Bahagian Sains Komputer',
+    halved:'separuh',same:'sama',doubled:'dua kali ganda',four:'4×',b1Title:'Perubahan dalam bahagian iklan pekerjaan dalam talian Malaysia',insuff:'Bukti Boleh Banding Tidak Mencukupi',ctx:'konteks sahaja',whyIdx:'Mengapa indeks ini?'},
+  zh:{title:'未来技能雷达',lead:'探索人工智能如何改变工作、技能和职业机会。',sub:'了解正在发生的变化，查看证据，并看看这些变化与你的未来有何关系。',
+    tabAI:'人工智能影响',tabAIq:'人工智能如何改变工作的性质？',tabSK:'技能与职业',tabSKq:'哪些技能和工作正在变化，哪些与我有关？',
+    viewAll:'查看全部',viewMine:'只看与我的资料相关的内容',viewSources:'查看数据来源',radarTitle:'按人工智能主题的研究势头',mCount:'论文数量',mShare:'计算机科学占比',
+    halved:'减半',same:'不变',doubled:'翻倍',four:'4倍',b1Title:'马来西亚在线招聘广告份额的变化',insuff:'可比证据不足',ctx:'仅供参考',whyIdx:'为什么用这个指数？'}
+};
+const tt = k => (I18N[S.lang] && I18N[S.lang][k]) || I18N.en[k] || k;
+const TIP = 'Research Momentum Index: how fast research papers on this topic grew over 3 years. 50 = same as before. Each doubling adds 20 points; each halving takes 20 away. It counts research papers — it does not measure jobs, hiring or how good the AI is.';
+const WHY = 'AI research often grows by doubling, so we use doublings, not percentages. That keeps fast-growing topics apart instead of all hitting the top. We always show the real paper counts too, because a small topic can grow fast from very few papers.';
+
+/* ---------- links ---------- */
+const U = {
+  oaTopic:id=>`https://openalex.org/${id}`,
+  oaQuery:id=>`https://api.openalex.org/works?filter=primary_topic.id:${id}&group_by=publication_year`,
+  oaCS:'https://api.openalex.org/works?filter=primary_topic.field.id:17&group_by=publication_year',
+  dosm:'https://open.dosm.gov.my/portal-main/release-archive/big-data-analytics-job-market-insights-q22026',
+  onet:'https://www.onetcenter.org/database.html',
+  emasco:'https://emasco.mohr.gov.my/'
+};
+const lk = (label,url) => `<a class="ev" href="${url}" target="_blank" rel="noopener">${label} ↗</a>`;
+
+/* ---------- sample data ---------- */
+const Y0 = 2015;
+const AX = [
+  {id:'language',t:'T10028',official:'Topic Modeling',sub:'Artificial Intelligence',label:{en:'Language Models & Text AI',ms:'Model Bahasa & AI Teks',zh:'语言模型与文本AI'},col:'#22d3ee',
+   ser:[3100,3600,4200,5100,5900,6758,7830,7939,10983,17379,25167],dir:'up',vol:'High',q:'Strong',
+   desc:'OpenAlex description (sample text): methods that find hidden themes in large collections of text.'},
+  {id:'genmedia',t:'T10775',official:'Generative Adversarial Networks and Image Synthesis',sub:'Computer Vision and Pattern Recognition',label:{en:'Generative Media AI',ms:'AI Media Generatif',zh:'生成式媒体AI'},col:'#a78bfa',
+   ser:[300,600,1200,2100,2900,3300,3600,3732,5200,7600,10899],dir:'up',vol:'Moderate',q:'Strong',desc:'OpenAlex description (sample text): generating and editing images with neural networks.'},
+  {id:'vision',t:'T12549',official:'Image and Object Detection Techniques',sub:'Computer Vision and Pattern Recognition',label:{en:'Computer Vision',ms:'Penglihatan Komputer',zh:'计算机视觉'},col:'#4ade80',
+   ser:[830,780,720,660,600,560,500,453,490,466,419],dir:'stable',vol:'Moderate',q:'Strong',narrow:true,desc:'OpenAlex description (sample text): detecting and locating objects in images.'},
+  {id:'robotics',t:'T10653',official:'Robot Manipulation and Learning',sub:'Control and Systems Engineering',label:{en:'Robotics',ms:'Robotik',zh:'机器人'},col:'#fb923c',
+   ser:[1500,1700,1900,2200,2500,2700,2900,3148,3900,4900,6086],dir:'up',vol:'Low',q:'Strong',desc:'OpenAlex description (sample text): robots that grasp, move and learn tasks.'},
+  {id:'automation',t:'T13287',official:'Robotic Process Automation Applications',sub:'Industrial and Manufacturing Engineering',label:{en:'Process Automation',ms:'Automasi Proses',zh:'流程自动化'},col:'#fbbf24',
+   ser:[150,230,360,500,650,800,930,1052,1600,2300,3333],dir:'up',vol:'Moderate',q:'Strong',desc:'OpenAlex description (sample text): software that automates routine business processes.'},
+  {id:'service',t:'T12128',official:'AI in Service Interactions',sub:'Artificial Intelligence',label:{en:'Service AI',ms:'AI Perkhidmatan',zh:'服务AI'},col:'#f472b6',
+   ser:[400,520,700,950,1200,1400,1600,1786,3000,5000,8114],dir:'up',vol:'High',q:'Strong',desc:'OpenAlex description (sample text): AI used in customer and service conversations.'}
+];
+const CS = [330000,355000,380000,410000,450000,490000,520000,551250,640000,790000,906207];
+const PREV = {small:{B:60,R:150},nobase:{B:0,R:140},dropped:{B:500,R:0}};
+const DIRM = {up:['t-up','▲ Rising'],down:['t-down','▼ Declining'],stable:['t-stable','● Stable'],emerg:['t-emerg','✦ Emerging'],mixed:['t-mixed','≈ Mixed / unclear'],none:['t-none','? Insufficient evidence'],icomp:['t-none','? Insufficient comparable evidence']};
+const dtag = d => `<span class="tag ${DIRM[d][0]}">${DIRM[d][1]}</span>`;
+const alabel = a => a.label[S.lang] || a.label.en;
+
+const PROFILE = {
+  fields:[{code:'0613',name:'Software and applications development and analysis'},{code:'0411',name:'Accounting and taxation'}],
+  roles:[{name:'Software Developers',emasco:'2512-01',onet:'15-1252.00',group:'2'}],
+  jobs:[{name:'General Office Clerks',emasco:'4110-01',group:'4'}],
+  interests:['Investigative','Realistic']
+};
+let MAPS = [
+  {id:'FT-001',code:'0613',axis:'language',reason:'Software development increasingly uses language models for code and documentation.',status:'approved'},
+  {id:'FT-002',code:'061',axis:'automation',reason:'ICT work includes building process-automation tools.',status:'approved'},
+  {id:'FT-003',code:'0613',axis:'robotics',reason:'Some software roles build robot control software.',status:'rejected'},
+  {id:'FT-004',code:'0411',axis:'automation',reason:'Accounting tasks are a main target of process automation.',status:'pending'},
+  {id:'FT-005',code:'0411',axis:'service',reason:'Accounting firms use service chat tools with clients.',status:'pending'}
+];
+const HIST = [];
+function levelName(code){ return code.length===2?'broad field':code.length===3?'narrow field':'detailed field'; }
+function linkOf(f,axisId){
+  const c = MAPS.filter(m=>m.axis===axisId && f.startsWith(m.code)).sort((a,b)=>b.code.length-a.code.length)[0];
+  return c && c.status==='approved' ? c : null;
+}
+function linkedAxes(){
+  const out = new Map();
+  PROFILE.fields.forEach(f=>AX.forEach(a=>{ const m=linkOf(f.code,a.id); if(m && !out.has(a.id)) out.set(a.id,{f,m}); }));
+  return out;
+}
+const shownAxes = tab => { const l=linkedAxes(); return (S.all[tab] || l.size===0) ? AX : AX.filter(a=>l.has(a.id)); };
+
+/* DOSM sample (shares follow docs/radar/threshold-analysis.md; counts derived from the real Technicians cell 86,512) */
+const TOTAL26 = Math.round(86512/0.1557);
+const GROUPS = [
+  {c:'1',n:'Managers',sh:15.83,pp:-1.51,pd:'stable'},
+  {c:'2',n:'Professionals',sh:51.47,pp:5.67,pd:'up'},
+  {c:'3',n:'Technicians & associate professionals',sh:15.57,pp:-7.07,pd:'down',cnt:86512},
+  {c:'4',n:'Clerical support workers',sh:7.27,pp:1.92,pd:'up'},
+  {c:'5',n:'Service & sales workers',sh:5.85,pp:0.36,pd:'stable'},
+  {c:'6',n:'Skilled agricultural workers',sh:0.02,pp:-0.01,pd:'stable'},
+  {c:'7',n:'Craft & related trades',sh:0.82,pp:-0.15,pd:'stable'},
+  {c:'8',n:'Plant & machine operators',sh:2.33,pp:-0.05,pd:'stable'},
+  {c:'9',n:'Elementary occupations',sh:0.84,pp:null,pd:'none',newCat:true}
+].map(g=>({...g,cnt:g.cnt||Math.round(g.sh/100*TOTAL26)}));
+function userGroups(){ return new Set(PROFILE.roles.map(r=>r.group).concat(PROFILE.jobs.map(j=>j.group))); }
+const shownGroups = () => S.all.sk ? GROUPS : GROUPS.filter(g=>userGroups().has(g.c));
+
+/* break flags (real rule results from the threshold analysis) */
+const BRK = [
+  {q:'2020 Q2',tot:'−61.2%',grp:'6/8',ev:'COVID-19 lockdown period (not assumed as the cause)',hash:'a41c…e07',dc:false,ds:false,cf:false,notes:[]},
+  {q:'2020 Q3',tot:'+288.9%',grp:'8/8',ev:'COVID-19 lockdown period (not assumed as the cause)',hash:'7be2…19d',dc:false,ds:false,cf:false,notes:[]},
+  {q:'2021 Q3',tot:'+112.7%',grp:'7/8',ev:'No reason given in the DOSM release',hash:'c93d…5a1',dc:false,ds:false,cf:false,notes:[]},
+  {q:'2025 Q3',tot:'+108.8%',grp:'8/8',ev:'DOSM listing title drops "… and My Job Profile" at this release (evidence, not a cause)',hash:'3f8a…b62',dc:false,ds:false,cf:false,notes:[]}
+];
+const brkStatus = b => b.cf?'confirmed':(b.dc&&b.ds)?'dismissed_counts + dismissed_shares':b.dc?'dismissed_counts':b.ds?'dismissed_shares':'unreviewed';
+const q3Cleared = () => BRK[3].ds && !BRK[3].cf;
+
+/* ---------- momentum ---------- */
+function mom(B,R,chk){
+  const small = Math.min(chk?chk[0]:B, chk?chk[1]:R) < 100;
+  if(B==null||R==null||B<0||R<0||isNaN(B)||isNaN(R)) return {state:'invalid'};
+  if(B===0&&R===0) return {state:'no_activity'};
+  if(B===0) return {state:'no_baseline'};
+  if(R===0) return {state:'dropped_to_zero'};
+  const ratio=R/B, raw=50+20*Math.log2(ratio), value=Math.max(0,Math.min(100,raw));
+  return {state:'ok',ratio,value:Math.round(value*10)/10,capped:raw>100||raw<0,small,raw};
+}
+const STATE_TXT = {no_baseline:'New activity — no baseline',dropped_to_zero:'Dropped to zero — check source',no_activity:'No activity',invalid:'No data'};
+function winCounts(a,Y){
+  const i=Y-Y0; let B=a.ser[i-3], R=a.ser[i];
+  if(a.id==='service' && S.prev!=='normal'){ B=PREV[S.prev].B; R=PREV[S.prev].R; }
+  return {B,R,bi:i-3,ri:i};
+}
+function momFor(a,Y){
+  const w=winCounts(a,Y);
+  if(S.metric==='share'){
+    const sb=w.B/CS[w.bi]*1000, sr=w.R/CS[w.ri]*1000;
+    return {...mom(sb,sr,[w.B,w.R]),w,sb,sr};
+  }
+  return {...mom(w.B,w.R),w};
+}
+
+/* ---------- status cards ---------- */
+function renderStatus(){
+  const dims = (rows)=>`<dl class="dims">${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
+  $('#status').innerHTML =
+   `<div class="s"><b><span class="dot" style="background:var(--green)"></span>OpenAlex ${lk('source','https://openalex.org/')}</b>Observation 2015–2025 (complete years) · Last fetch 30 Oct 2026 04:40 UTC · Manifest <b>m-2026-10-30-01</b> · Snapshot oa-s1
+     ${dims([['Availability','<span class="tag t-up">data</span>'],['Freshness','current'],['Refresh health','ok'],['Served from','bundled read-only'],['Evidence','6 of 6 sufficient']])}</div>`
+  +`<div class="s"><b><span class="dot" style="background:var(--amber)"></span>DOSM Job Market Insights ${lk('release Q2 2026',U.dosm)}</b>Observation 2026 Q2 · Published 18 Aug 2026 · Last fetch 30 Oct 2026 04:52 UTC · Manifest <b>m-2026-10-30-01</b> · Snapshot dosm-s1
+     ${dims([['Availability','<span class="tag t-up">data</span>'],['Freshness','current (next release due 17 Nov 2026)'],['Refresh health','ok'],['Served from','bundled read-only'],['Evidence','<span class="tag t-none">'+(q3Cleared()?'comparable after review':'insufficient comparable')+'</span>']])}</div>`;
+}
+function openSources(){
+  openDrawer(`<h2>Data sources</h2><p class="small muted">Each source updates on its own schedule. Dates are sample values.</p><div class="tw"><table><tr><th>Source</th><th>Used for</th><th>Refresh policy</th></tr>
+   <tr><td><b>OpenAlex</b> ${lk('openalex.org','https://openalex.org/')}</td><td>Research papers by AI topic</td><td>Admin refresh; stale after 14 days without a check</td></tr>
+   <tr><td><b>DOSM Job Market Insights</b> ${lk('release',U.dosm)}</td><td>Malaysian online job adverts by major group</td><td>Admin refresh when a later quarter is listed; stale 14 days after the expected release</td></tr>
+   <tr><td><b>O*NET 31.0</b> ${lk('onetcenter.org',U.onet)}</td><td>Jobs (reference)</td><td>Version-driven</td></tr>
+   <tr><td><b>eMASCO (MASCO 2020)</b> ${lk('emasco',U.emasco)}</td><td>Malaysian job codes (reference)</td><td>Version-driven</td></tr>
+   <tr><td><b>UNESCO ISCED-F 2013</b> ${lk('unesco.org','https://uis.unesco.org/')}</td><td>Fields of study (reference)</td><td>Version-driven</td></tr></table></div>`);
+}
+
+/* ---------- profile card ---------- */
+function renderProfile(){
+  const f = PROFILE.fields.map(x=>`<li>${x.code} ${x.name}</li>`).join('');
+  $('#profile').innerHTML = `<h2>Your profile <span class="tag t-sample">Sample</span></h2>
+   <div class="cols3" style="margin-top:6px">
+    <div class="mini"><b>Fields of study</b><ul style="padding-left:16px">${f}</ul></div>
+    <div class="mini"><b>Role of interest</b>${PROFILE.roles.map(r=>`${r.name}<div class="tiny muted">eMASCO ${r.emasco} · O*NET ${r.onet}</div>`).join('')}</div>
+    <div class="mini"><b>Job held</b>${PROFILE.jobs.map(r=>`${r.name}<div class="tiny muted">eMASCO ${r.emasco}</div>`).join('')}</div>
+    <div class="mini"><b>Interest areas</b>${PROFILE.interests.join(', ')}<div class="tiny muted">Listed, but not linked to occupation groups in Round 1.</div></div>
+   </div>
+   <p class="tiny muted" style="margin-top:8px">The page shows only what relates to this profile; "View all" is at the bottom of each tab. Matching is computed in your browser — nothing personal is sent to the server. <a href="#" onclick="return false">Edit profile</a></p>`;
+}
+
+/* ---------- A2 radar ---------- */
+const RING = [[30,'halved'],[50,'same'],[70,'doubled'],[90,'four']];
+function renderRadar(){
+  const wpx=$('#radar').clientWidth; if(!wpx) return; /* hidden tab: re-rendered when the AI tab is shown */
+  const sc=Math.max(1,Math.min(1.6,460/wpx)), narrow=sc>1.1, fs=Math.round(12*sc*10)/10, rfs=Math.round(10.5*sc*10)/10;
+  const Y=+$('#radarY').value, cmp=$('#radarCmp').checked, cx=230, cy=narrow?185:175, R=narrow?100:118, n=AX.length;
+  const wrap=(s,max)=>{ const out=[]; let cur=''; s.split(' ').forEach(w=>{ if(cur && (cur+' '+w).length>max){out.push(cur);cur=w;} else cur=cur?cur+' '+w:w; }); if(cur) out.push(cur); return out; };
+  const lnk=linkedAxes();
+  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n; return [cx+Math.cos(a)*R*v/100, cy+Math.sin(a)*R*v/100];};
+  let g='';
+  RING.forEach(([r,k])=>{ g+=`<polygon points="${AX.map((_,i)=>pt(i,r).join(',')).join(' ')}" fill="none" stroke="${r===50?'#3a4f82':'#24345c'}"${r===50?' stroke-dasharray="3 3"':''}/>`; });
+  RING.forEach(([r,k])=>{ const y=cy-R*r/100; g+=`<text x="${cx+4}" y="${y-2}" style="font-size:${rfs}px">${r} ${esc(tt(k))}</text>`; });
+  const res = AX.map(a=>momFor(a,Y));
+  AX.forEach((a,i)=>{
+    const [x,y]=pt(i,100), [lx,ly]=pt(i,122), on=lnk.has(a.id);
+    const anch = Math.abs(lx-cx)<8?'middle':(lx>cx?'start':'end');
+    const lbl = alabel(a), m=res[i];
+    g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#24345c"/>`;
+    const lines = narrow ? wrap(lbl+(on?' ★':''),12) : [lbl+(on?' ★':'')];
+    if(m.state!=='ok') wrap(STATE_TXT[m.state],narrow?16:40).forEach(s=>lines.push('§'+s));
+    const ts = lines.map((s,j)=>{ const st=s[0]==='§'; return `<tspan x="${lx}" dy="${j===0?0:fs+2}"${st?` style="fill:var(--amber);font-size:${Math.round(fs*.87*10)/10}px;font-weight:400"`:''}>${esc(st?s.slice(1):s)}</tspan>`; }).join('');
+    const ty = ly+4-(i===0?(lines.length-1)*(fs+2)+4:0);
+    g+=`<text x="${lx}" y="${ty}" text-anchor="${anch}" style="fill:${on?'#22d3ee':'var(--ink)'};font-weight:${on?700:400};font-size:${fs}px">${ts}</text>`;
+  });
+  const poly = (list)=>{ const p=list.map((m,i)=>m.state==='ok'?pt(i,m.value).join(','):null).filter(Boolean); return p.length>=3?p.join(' '):''; };
+  if(cmp){ const prevRes=AX.map(a=>momFor(a,Y-1)); const pp=poly(prevRes); if(pp) g+=`<polygon points="${pp}" fill="none" stroke="#94a3b8" stroke-dasharray="5 4" stroke-width="1.5"/>`; }
+  const pc=poly(res); if(pc) g+=`<polygon points="${pc}" fill="rgba(34,211,238,.18)" stroke="#22d3ee" stroke-width="2"/>`;
+  res.forEach((m,i)=>{
+    const a=AX[i];
+    let c, x, y;
+    if(m.state==='ok'){ [x,y]=pt(i,m.value); c = m.small ? `<circle cx="${x}" cy="${y}" r="6" fill="#0b1324" stroke="#22d3ee" stroke-width="2.5"/>` : `<circle cx="${x}" cy="${y}" r="6" fill="#22d3ee" stroke="#0b1324" stroke-width="2"/>`;
+      if(m.capped) c+=`<text x="${x+9}" y="${y-6}" style="fill:var(--amber);font-size:10px">≥ 5.7×</text>`; }
+    else { x=cx; y=cy; c=`<circle cx="${x}" cy="${y+ (i-2.5)*0}" r="6" fill="#64748b" stroke="#0b1324" stroke-width="2"/>`; }
+    g+=`<g class="pt" tabindex="0" role="button" style="cursor:pointer;outline:none" aria-label="${esc(alabel(a))}: ${m.state==='ok'?'index '+m.value:STATE_TXT[m.state]}" onclick="radarDetail(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();radarDetail(${i})}" onmouseenter="tipPt(event,${i})" onmouseleave="tipHide()" onfocus="tipPt(event,${i})" onblur="tipHide()"><circle cx="${x}" cy="${y}" r="15" fill="transparent"/>${c}</g>`;
+  });
+  const ok = res.filter(m=>m.state==='ok').length;
+  $('#radar').innerHTML = ok<3 ? `<div class="note warn small">Fewer than 3 axes have an index, so a bar chart would be shown instead of a radar (spec fallback).</div>` : `<svg viewBox="0 0 460 360" role="img" aria-label="Radar of Research Momentum Index for six AI topics">${g}</svg>`;
+  const parts = PROFILE.fields.map(f=>{
+    const ls = AX.map(a=>({a,m:linkOf(f.code,a.id)})).filter(x=>x.m);
+    return ls.length ? `<li><b>${f.code}</b> ${esc(f.name)}: ${ls.map(x=>`${esc(alabel(x.a))} <span class="tiny muted">(approved at ${levelName(x.m.code)} ${x.m.code}; ${x.m.id})</span>`).join(', ')}</li>`
+      : `<li><b>${f.code}</b> ${esc(f.name)}: <b>Insufficient verified connections for this field.</b> <span class="tiny muted">Links are proposed with reasons and need the owner's approval in #admin.</span></li>`;
+  }).join('');
+  $('#radarField').innerHTML = `<div class="note small">★ = linked to your fields through approved links. The six measured values do not change; only the emphasis does. All six topics are always drawn.<ul style="margin:6px 0 0 16px">${parts}</ul></div>`;
+  $('#whyText').textContent = WHY;
+  const mtxt = S.metric==='share' ? 'Share view: the same formula on each topic as a share of all Computer Science papers (OpenAlex field 17). Shown separately; never blended with the count index.' : 'Count view: papers counted by OpenAlex primary topic.';
+  $('#radarSrc').innerHTML = `Source: <b>OpenAlex</b> works by primary topic ${AX.map(a=>lk(a.t,U.oaTopic(a.t))).join(' ')} · ${mtxt} · Window ${Y-3}→${Y} (index = clamp(50 + 20·log2(R÷B), 0, 100)) · Fetched 30 Oct 2026 · Snapshot <b>oa-s1</b> · Method <b>log2-v1</b>`;
+}
+function tipText(i){
+  const Y=+$('#radarY').value, a=AX[i], m=momFor(a,Y), w=m.w;
+  const head = `<b>${esc(alabel(a))}</b><br>` + (m.state==='ok' ? `Index ${m.value} · ${fmt(w.B)} papers in ${Y-3} → ${fmt(w.R)} in ${Y} (×${m.ratio.toFixed(2)})${m.small?' · small counts':''}` : esc(STATE_TXT[m.state]) + ` · ${fmt(w.B)} → ${fmt(w.R)}`);
+  return head + `<br><span class="muted">${esc(TIP)}</span>`;
+}
+function placeTip(el,html){
+  const t=$('#tip'); t.innerHTML=html; t.classList.remove('hidden');
+  const r=el.getBoundingClientRect(), tw=t.offsetWidth, th=t.offsetHeight;
+  let left=Math.max(8,Math.min(innerWidth-tw-8,r.left+r.width/2-tw/2));
+  let top=r.top-th-8; if(top<8) top=r.bottom+8;
+  t.style.left=left+'px'; t.style.top=top+'px';
+}
+function tipPt(e,i){ placeTip(e.currentTarget,tipText(i)); }
+function tipHide(){ $('#tip').classList.add('hidden'); }
+function tipIndex(e){ const t=$('#tip'); if(!t.classList.contains('hidden')){tipHide();return;} placeTip(e.currentTarget,esc(TIP)); setTimeout(tipHide,6000); }
+function radarDetail(i){
+  const Y=+$('#radarY').value, a=AX[i], w=winCounts(a,Y), mc=mom(w.B,w.R), sb=w.B/CS[w.bi]*1000, sr=w.R/CS[w.ri]*1000, ms=mom(sb,sr,[w.B,w.R]);
+  const idx = m => m.state==='ok' ? `${m.value}${m.capped?' (capped, real ratio ×'+m.ratio.toFixed(2)+', shown as ≥ 5.7×)':''}` : STATE_TXT[m.state];
+  openDrawer(`<h2>${esc(alabel(a))}</h2>
+  <p class="small"><span class="tag t-der">Research Momentum Index ${mc.state==='ok'?mc.value:'—'}</span> ${dtag(a.dir)} <span class="tag t-sample">Sample</span></p>
+  <dl class="kv" style="margin-top:12px">
+   <dt>OpenAlex topic</dt><dd>${a.t} · official title <b>${esc(a.official)}</b> ${lk('openalex.org/'+a.t,U.oaTopic(a.t))}</dd>
+   <dt>Hierarchy</dt><dd>Subfield: ${esc(a.sub)}</dd>
+   <dt>Description</dt><dd>${esc(a.desc)}</dd>
+   <dt>Papers ${Y-3}</dt><dd>${fmt(w.B)} ${lk('query',U.oaQuery(a.t))}</dd>
+   <dt>Papers ${Y}</dt><dd>${fmt(w.R)} ${lk('query',U.oaQuery(a.t))}</dd>
+   <dt>Ratio R ÷ B</dt><dd>${mc.state==='ok'?mc.ratio.toFixed(2)+'×':'—'}</dd>
+   <dt>Formula</dt><dd>${mc.state==='ok'?`clamp(50 + 20 × log2(${fmt(w.R)} ÷ ${fmt(w.B)}), 0, 100) = ${idx(mc)}`:esc(STATE_TXT[mc.state])+' — no index is computed'}</dd>
+   <dt>Share of Computer Science</dt><dd>${sb.toFixed(2)}‰ → ${sr.toFixed(2)}‰ of ${fmt(CS[w.bi])} → ${fmt(CS[w.ri])} CS papers · share index ${idx(ms)} ${lk('CS query',U.oaCS)}</dd>
+   <dt>Computer Science context</dt><dd>Computer Science papers grew ${((CS[w.ri]/CS[w.bi]-1)*100).toFixed(0)}% over the same window, so part of every topic's growth is "CS grew".</dd>
+   <dt>Direction</dt><dd>${dtag(a.dir)} · rule: Rising if R÷B ≥ 1.25 and ≥ 2 of 3 yearly steps agree; Declining if ≤ 0.80 (prototype setting). The index never decides direction.</dd>
+   <dt>Volatility</dt><dd>${a.vol} · Evidence quality ${a.q}</dd>
+   <dt>Snapshot</dt><dd>oa-s1 · fetched 30 Oct 2026 · manifest m-2026-10-30-01 · method log2-v1 (k = 20)</dd></dl>
+  ${a.narrow?'<p class="note warn small">This is a narrow topic (about 400–800 papers a year). Most computer-vision work sits in other topics, so its counts are always shown.</p>':''}
+  ${(mc.state==='ok'&&mc.small)?'<p class="note warn small">Small counts: fewer than 100 papers in a year, so evidence is limited.</p>':''}
+  <p class="note small">${esc(TIP)}</p>`);
+}
+let lastW=0; window.addEventListener('resize',()=>{ const w=$('#radar').clientWidth; if(w&&w!==lastW){ lastW=w; renderRadar(); } });
+$('#radarY').onchange=renderRadar; $('#radarCmp').onchange=renderRadar;
+$('#prevSel').onchange=e=>{ S.prev=e.target.value; renderRadar(); renderLines(); renderAiSummary(); renderSkills(); };
+document.querySelectorAll('#metric button').forEach(b=>b.onclick=()=>{ S.metric=b.dataset.m; document.querySelectorAll('#metric button').forEach(x=>x.classList.toggle('on',x===b)); renderRadar(); });
+
+/* ---------- A1 lines ---------- */
+function renderLines(){
+  const list=shownAxes('ai'), W=560,H=260,L=52,B=30,T=14,max=30000, n=11;
+  const x=i=>L+i*(W-L-14)/(n-1), y=v=>H-B-(Math.min(v,max)/max)*(H-B-T);
+  let g='';
+  [0,10000,20000,30000].forEach(v=>{ g+=`<line x1="${L}" x2="${W-10}" y1="${y(v)}" y2="${y(v)}" stroke="#24345c"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v/1000}k</text>`; });
+  for(let i=0;i<n;i+=2){ g+=`<text x="${x(i)}" y="${H-10}" text-anchor="middle">${Y0+i}</text>`; }
+  list.forEach(a=>{ if(S.hidden.has(a.id)) return;
+    g+=`<polyline fill="none" stroke="${a.col}" stroke-width="2.2" points="${a.ser.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`;
+    a.ser.forEach((v,i)=>{ g+=`<circle cx="${x(i)}" cy="${y(v)}" r="3" fill="${a.col}"><title>${esc(alabel(a))} ${Y0+i}: ${fmt(v)} papers</title></circle>`; });
+  });
+  g+=`<text x="${L}" y="10" style="font-size:10px">research papers per year</text>`;
+  $('#lines').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Research papers per year by AI topic">${g}</svg>`;
+  $('#lineLegend').innerHTML=list.map(a=>`<button class="${S.hidden.has(a.id)?'off':''}" onclick="toggleLine('${a.id}')"><span class="sw" style="background:${a.col}"></span>${esc(alabel(a))}</button>`).join('');
+  $('#linesSrc').innerHTML=`Source: <b>OpenAlex</b> ${list.map(a=>lk(a.t+' counts',U.oaQuery(a.t))).join(' ')} · ${S.all.ai||linkedAxes().size===0?'all six topics':'topics linked to your fields'} · Complete years 2015–2025 · Fetched 30 Oct 2026 · Snapshot <b>oa-s1</b>`;
+}
+function toggleLine(id){ S.hidden.has(id)?S.hidden.delete(id):S.hidden.add(id); renderLines(); }
+
+/* ---------- A5 summary ---------- */
+function renderAiSummary(){
+  const l=linkedAxes(), Y=2025;
+  if(l.size===0){ $('#aiSummary').innerHTML = `<p class="small muted">Add your field of study or roles to see what relates to you. Showing the global view.</p>`; return; }
+  $('#aiSummary').innerHTML = `<ul style="list-style:none">${[...l.values()].map(({f,m})=>{ const a=AX.find(x=>x.id===m.axis), mm=momFor(a,Y), w=mm.w;
+    return `<li style="padding:8px 0;border-bottom:1px solid var(--line)"><b class="small">${esc(alabel(a))}</b> ${dtag(a.dir)}<div class="small">Linked to your field ${f.code} (${esc(f.name)}). Research papers: ${fmt(w.B)} in ${Y-3} → ${fmt(w.R)} in ${Y}${mm.state==='ok'?` (index ${mm.value})`:''}. ${lk('OpenAlex',U.oaQuery(a.t))}</div></li>`; }).join('')}</ul>
+   <p class="note small">These are research signals only. They say nothing about whether a job will grow or disappear.</p>`;
+}
+
+/* ---------- B1 bars ---------- */
+function renderDiv(){
+  const classified = q3Cleared();
+  $('#b1state').innerHTML = classified
+    ? `<div class="note small"><span class="tag t-sample">Preview after review</span> The 2025 Q3 possible break was dismissed for shares in #admin, so year-on-year comparisons are shown with a direction. Sample values.</div>`
+    : `<div class="note warn small"><span class="tag t-none">? ${esc(tt('insuff'))}</span> <b>Reason:</b> A possible structural break in 2025 Q3 makes year-on-year comparison unreliable until it is reviewed or until 2026 Q3 data arrives. Latest shares and counts are shown without a direction. ${lk('release page',U.dosm)} <a href="#admin" class="tiny">Open break review</a></div>`;
+  const max=8;
+  $('#divbars').innerHTML = shownGroups().map(g=>{
+    const idx = GROUPS.indexOf(g);
+    let right;
+    if(g.newCat) right = `<div class="tiny"><span class="tag t-none">? Insufficient evidence — new reporting category</span><br>Share ${g.sh.toFixed(2)}% · ${fmt(g.cnt)} adverts ${lk('DOSM',U.dosm)}</div>`;
+    else if(classified){
+      const w=Math.min(50,Math.abs(g.pp)/max*50), col=g.pd==='up'?'var(--green)':g.pd==='down'?'var(--red)':'#64748b';
+      right = `<div class="btrack"><div class="mid"></div><div class="bbar" style="background:${col};${g.pp>=0?`left:50%;width:${w}%`:`right:50%;width:${w}%`}"></div></div><div class="tiny"><b>${g.pp>0?'+':''}${g.pp.toFixed(2)} pp</b> ${dtag(g.pd)} · share ${g.sh.toFixed(2)}% · ${fmt(g.cnt)} adverts ${lk('DOSM',U.dosm)}</div>`;
+    } else {
+      right = `<div class="btrack"><div class="bbar" style="background:#475a85;left:0;width:${Math.min(100,g.sh/60*100)}%"></div></div><div class="tiny">Latest share <b>${g.sh.toFixed(2)}%</b> · <b>${fmt(g.cnt)}</b> adverts · change in pp: <span class="tag t-none">not classified</span> ${lk('DOSM',U.dosm)}</div>`;
+    }
+    return `<div class="brow" onclick="if(!event.target.closest('a,button'))divDetail(${idx})"><div class="nm"><button class="btn sm" style="text-align:left" onclick="divDetail(${idx})" aria-label="Evidence for ${g.c} ${esc(g.n)}">${g.c} · ${esc(g.n)}</button>${userGroups().has(g.c)?'<span class="tag t-obs">from your profile</span>':''}</div><div>${right}</div></div>`;
+  }).join('') + (classified?`<div class="tiny muted" style="display:flex;justify-content:space-between;margin-top:6px"><span>← smaller share</span><span>larger share →</span></div>`:'');
+  $('#b1ctx').innerHTML = `Quarter-on-quarter change in total online job advertisements — ${esc(tt('ctx'))}: <b>−11.4%</b> ${lk('DOSM',U.dosm)}<div class="tiny muted">DOSM's own figure for 2026 Q2 vs 2026 Q1. It is never used to classify a group, job or skill.</div>`;
+  $('#b1src').innerHTML = `Source: <b>DOSM Big Data Analytics: Job Market Insights</b>, Table 2 (major group) ${lk('Q2 2026 release',U.dosm)} · Observation 2026 Q2 · Published 18 Aug 2026 · Fetched 30 Oct 2026 · Snapshot <b>dosm-s1</b> · Method <b>dosm-share-v1</b> · Thresholds: 1.0 pp and 10% relative, ≥ 2 clean steps (prototype settings, not an official standard). Counts in this mockup are derived from the shares; sample.`;
+}
+function divDetail(i){ const g=GROUPS[i], cl=q3Cleared();
+  openDrawer(`<h2>${g.c} · ${esc(g.n)}</h2><p class="small">MASCO major group ${g.c} ${g.newCat?'<span class="tag t-none">? Insufficient evidence — new reporting category</span>':cl?dtag(g.pd):'<span class="tag t-none">? Insufficient comparable evidence</span>'} <span class="tag t-sample">Sample</span></p>
+  <dl class="kv" style="margin-top:12px">
+   <dt>Share 2026 Q2</dt><dd>${g.sh.toFixed(2)}% of all online job adverts ${lk('DOSM',U.dosm)}</dd>
+   <dt>Adverts 2026 Q2</dt><dd>${fmt(g.cnt)} of ${fmt(TOTAL26)} ${g.c==='3'?'(Technicians cell 86,512 as published)':'(derived for the mockup)'}</dd>
+   <dt>Share 2025 Q2</dt><dd>${g.pp==null||!cl?'Not compared — the two periods straddle the 2025 Q3 possible break':(g.sh-g.pp).toFixed(2)+'%'}</dd>
+   <dt>Change (YoY)</dt><dd>${g.pp==null||!cl?'—':(g.pp>0?'+':'')+g.pp.toFixed(2)+' pp'}</dd>
+   <dt>Rule</dt><dd>Material if |net| ≥ 1.0 pp and |relative| ≥ 10%; Rising/Declining needs ≥ 2 clean steps agreeing; else Stable or Mixed.</dd>
+   <dt>Breaks</dt><dd>2025 Q3 — ${brkStatus(BRK[3])}. Compared quarters straddle it.</dd>
+   <dt>Published</dt><dd>18 Aug 2026 · fetched 30 Oct 2026 · snapshot dosm-s1 · manifest m-2026-10-30-01</dd>
+   <dt>Jobs in this group</dt><dd>${[...PROFILE.roles,...PROFILE.jobs].filter(r=>r.group===g.c).map(r=>esc(r.name)+' (eMASCO '+r.emasco+', by code prefix)').join(', ')||'none from your profile'}</dd></dl>
+  <p class="note warn small">Limitations: online adverts from major private platforms only; group level, so not every role inside the group moves the same way. The release does not explain the 2025 Q3 jump.</p>`); }
+
+/* ---------- B2 skills ---------- */
+function renderSkills(){
+  const list=shownAxes('sk'), Y=2025;
+  const rows = list.map(a=>{ const m=momFor(a,Y), w=m.w; return `<tr><td>${esc(alabel(a))}<div class="tiny muted">${a.t} ${lk('OpenAlex',U.oaTopic(a.t))}</div></td><td>${dtag(a.dir)}<div class="tiny muted">${m.state==='ok'?'index '+m.value+' · ':''}${fmt(w.B)} → ${fmt(w.R)} papers</div></td></tr>`; }).join('');
+  $('#skillcols').innerHTML =
+   `<div class="mini"><b>Direct skill demand</b><span class="tag t-none">? Insufficient evidence</span><p class="tiny muted" style="margin:6px 0">Measured skill mentions in a dated job-advert dataset.</p><div class="note warn small">No verified Malaysian skill-mention series is connected. DOSM stops at nine occupation groups, so individual skill demand is not shown rather than guessed.</div></div>`
+  +`<div class="mini"><b>Derived skill-demand proxy</b><span class="tag t-none">Not produced</span><p class="tiny muted" style="margin:6px 0">Would estimate skill demand from job-advert counts.</p><div class="note warn small">Not produced in this round: group-level adverts cannot be turned into reliable skill weights.</div></div>`
+  +`<div class="mini"><b>AI research momentum</b><span class="tag t-res">Research</span><p class="tiny muted" style="margin:6px 0">Growth in research papers on six AI topics. Shows technology development, not hiring or skill demand.</p><div class="tw"><table><tr><th>Topic</th><th>Direction</th></tr>${rows}</table></div></div>`;
+}
+
+/* ---------- B5 field explorer ---------- */
+function renderField(){
+  $('#fieldOut').innerHTML = PROFILE.fields.map(f=>{
+    const jobs = f.code==='0613' ? [{n:'Software Developers',c:'15-1252.00'},{n:'Software Quality Assurance Analysts',c:'15-1253.00'}] : [{n:'Accountants',c:'13-2011.00'}];
+    const axes = AX.filter(a=>linkOf(f.code,a.id));
+    const role = PROFILE.roles.find(r=>f.code==='0613' && r.onet===jobs[0].c);
+    return `<div class="mini"><b>${f.code} · ${esc(f.name)}</b>
+     <div class="tiny muted" style="margin:6px 0 2px">Related jobs (official crosswalk)</div>
+     <ul style="padding-left:16px">${jobs.map(j=>`<li>${esc(j.n)} · O*NET ${j.c} ${lk('O*NET',U.onet)}<div class="tiny muted">${role&&j.c===role.onet?`DOSM group ${role.group} Professionals via your eMASCO role ${role.emasco} (code prefix; group level)`:'Not mapped to a DOSM group yet — the ISCO-08 → MASCO step is pending an official source'}</div></li>`).join('')}</ul>
+     <div class="tiny muted" style="margin:6px 0 2px">Linked AI topics (approved links only)</div>
+     ${axes.length?`<ul style="padding-left:16px">${axes.map(a=>{const m=linkOf(f.code,a.id);return `<li>${esc(alabel(a))} ${dtag(a.dir)}<div class="tiny muted">approved at ${levelName(m.code)} ${m.code} (${m.id}) · ${lk(a.t,U.oaTopic(a.t))}</div></li>`;}).join('')}</ul>`:'<div class="small"><b>Insufficient verified connections for this field.</b></div>'}
+    </div>`; }).join('');
+}
+
+/* ---------- B6 summary ---------- */
+function renderSkSummary(){
+  const cl=q3Cleared(), prof=GROUPS[1], clr=GROUPS[3];
+  $('#skSummary').innerHTML = `<div class="cards">
+   <div class="mini"><b>Your role of interest</b>Software Developers sit in the Professionals group: share ${prof.sh.toFixed(2)}% of online adverts in 2026 Q2 ${cl?dtag('up'):'<span class="tag t-none">? comparison not reliable yet</span>'} ${lk('DOSM',U.dosm)}</div>
+   <div class="mini"><b>Your job held</b>General Office Clerks sit in the Clerical group: share ${clr.sh.toFixed(2)}% ${cl?dtag('up'):'<span class="tag t-none">? comparison not reliable yet</span>'} ${lk('DOSM',U.dosm)}</div>
+   <div class="mini"><b>Your fields</b>0613 links to ${AX.filter(a=>linkOf('0613',a.id)).length} AI topics; 0411 has no approved links yet. ${lk('OpenAlex',U.oaTopic('T10028'))}</div>
+   <div class="mini"><b>Not enough evidence</b>Individual skills and detailed jobs: no verified Malaysian figures. <span class="tag t-none">? Insufficient evidence</span></div></div>
+   <p class="tiny muted" style="margin-top:8px">Based on profile version 3 and manifest m-2026-10-30-01. This page does not score you.</p>`;
+}
+
+/* ---------- view all, tabs, drawer ---------- */
+function toggleAll(t){ S.all[t]=!S.all[t]; renderAll(); }
+function renderAll(){
+  renderStatus(); renderProfile(); renderRadar(); renderLines(); renderAiSummary(); renderDiv(); renderSkills(); renderField(); renderSkSummary();
+  $('#vaAi').textContent = S.all.ai ? tt('viewMine') : tt('viewAll');
+  $('#vaSk').textContent = S.all.sk ? tt('viewMine') : tt('viewAll');
+}
+let drawerOpener=null;
+function openDrawer(h){ const d=$('#drawer'); if(!d.classList.contains('open')) drawerOpener=document.activeElement; $('#drawerBody').innerHTML=h; d.classList.add('open'); d.focus(); }
+function closeDrawer(){ const d=$('#drawer'); if(!d.classList.contains('open')) return; d.classList.remove('open'); const o=drawerOpener; drawerOpener=null; if(o&&o.focus&&document.contains(o)) o.focus(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDrawer(); });
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  S.tab=b.dataset.tab; document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  $('#tab-ai').classList.toggle('hidden',S.tab!=='ai'); $('#tab-sk').classList.toggle('hidden',S.tab!=='sk');
+  if(S.tab==='ai') renderRadar();
+});
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=tt(el.dataset.i18n); });
+  renderAll();
+}
+document.querySelectorAll('#langSw button').forEach(b=>b.onclick=()=>{ S.lang=b.dataset.l; document.querySelectorAll('#langSw button').forEach(x=>x.classList.toggle('on',x===b)); applyLang(); });
+
+/* ---------- admin ---------- */
+function route(){
+  const adm = location.hash==='#admin';
+  $('#page-radar').classList.toggle('hidden',adm); $('#page-admin').classList.toggle('hidden',!adm);
+  if(adm) renderAdmin(); else renderAll();
+}
+window.addEventListener('hashchange',route);
+function adminIn(){ if(!$('#keyBox').value){ $('#loginMsg').textContent='not_allowed: enter the admin key.'; return; } S.admin=true; $('#keyBox').value=''; $('#loginMsg').textContent=''; renderAdmin(); }
+function adminOut(){ S.admin=false; renderAdmin(); }
+function note(id){ return $(id).value.trim(); }
+function renderAdmin(){
+  $('#login').classList.toggle('hidden',S.admin); $('#adminBody').classList.toggle('hidden',!S.admin);
+  if(!S.admin) return;
+  const stag = s => `<span class="tag ${s==='approved'?'t-up':s==='rejected'?'t-down':'t-warn'}">${s}</span>`;
+  $('#mapTbl').innerHTML = `<tr><th>ID</th><th>Field (level)</th><th>AI topic</th><th>Reason (EN)</th><th>Status</th><th>Decide</th></tr>` + MAPS.map((m,i)=>{ const a=AX.find(x=>x.id===m.axis);
+    return `<tr><td>${m.id}</td><td>${m.code} <span class="tiny muted">${levelName(m.code)}</span></td><td>${esc(a.label.en)}<br><span class="tiny muted">${a.t}</span> ${lk('OpenAlex',U.oaTopic(a.t))}</td><td class="small">${esc(m.reason)}</td><td>${stag(m.status)}</td><td><div class="row"><button class="btn sm" onclick="decideMap(${i},'approved')">Approve</button><button class="btn sm" onclick="decideMap(${i},'rejected')">Reject</button><button class="btn sm" onclick="decideMap(${i},'pending')">Revise</button></div></td></tr>`; }).join('');
+  $('#brkTbl').innerHTML = `<tr><th>Quarter</th><th>Total q/q</th><th>Groups same way</th><th>Evidence</th><th>Status</th><th>Decide</th></tr>` + BRK.map((b,i)=>
+    `<tr><td><b>${b.q}</b><div class="tiny muted">obs hash ${b.hash}</div></td><td>${b.tot}</td><td>${b.grp}</td><td class="small">${esc(b.ev)} ${lk('DOSM',U.dosm)}${b.notes.map(n=>`<div class="tiny muted">${esc(n)}</div>`).join('')}</td><td><span class="tag ${b.cf?'t-down':(b.dc||b.ds)?'t-up':'t-warn'}">${brkStatus(b)}</span></td>
+     <td><div class="row"><button class="btn sm" onclick="decideBrk(${i},'confirm')">Confirm</button><button class="btn sm" onclick="decideBrk(${i},'dc')">Dismiss counts</button><button class="btn sm" onclick="decideBrk(${i},'ds')">Dismiss shares</button><button class="btn sm" onclick="decideBrk(${i},'an')">Annotate</button></div></td></tr>`).join('');
+  $('#hist').innerHTML = `<tr><th>When</th><th>Reviewer</th><th>Item</th><th>Decision</th><th>Note</th></tr>` + (HIST.length?HIST.slice().reverse().map(h=>`<tr><td>${h.t}</td><td>owner</td><td>${esc(h.item)}</td><td>${esc(h.dec)}</td><td>${esc(h.note)}</td></tr>`).join(''):'<tr><td colspan="5" class="muted">No decisions yet. History is kept; the newest decision wins.</td></tr>');
+}
+function stamp(){ return new Date().toISOString().slice(0,16).replace('T',' ')+' UTC'; }
+function decideMap(i,s){ if(!note('#mapNote')){ $('#mapMsg').textContent='A reviewer note is required for every decision.'; return; } $('#mapMsg').textContent='';
+  MAPS[i].status=s; HIST.push({t:stamp(),item:MAPS[i].id+' '+MAPS[i].code+' → '+MAPS[i].axis,dec:s==='pending'?'revise (back to pending)':s,note:note('#mapNote')}); $('#mapNote').value=''; renderAdmin(); }
+function decideBrk(i,k){ const b=BRK[i];
+  if(!note('#brkNote')){ $('#brkMsg').textContent='A reviewer note is required.'; return; }
+  if((k==='dc'||k==='ds') && !note('#brkLink')){ $('#brkMsg').textContent='Dismissing needs a note and an evidence link.'; return; }
+  $('#brkMsg').textContent='';
+  const n=note('#brkNote'), l=note('#brkLink');
+  if(k==='confirm'){ b.cf=true; b.dc=false; b.ds=false; } if(k==='dc'){ b.dc=true; b.cf=false; } if(k==='ds'){ b.ds=true; b.cf=false; }
+  b.notes.push((k==='an'?'annotation: ':k+': ')+n+(l?' ['+l+']':''));
+  HIST.push({t:stamp(),item:'break '+b.q,dec:({confirm:'confirm',dc:'dismiss counts',ds:'dismiss shares',an:'annotate'})[k],note:n});
+  $('#brkNote').value=''; $('#brkLink').value=''; renderAdmin(); }
+function adminRefresh(src){
+  const r=$('#simRes').value, box=$('#refMsg'); box.style.display='block';
+  box.innerHTML = r==='nonew' ? `<b>${src}:</b> checked — no new data. Nothing was recalculated; the active manifest is unchanged.` : `<b>${src}:</b> <code>${r}</code>. Nothing was published; the active manifest <b>m-2026-10-30-01</b> is unchanged.`;
+}
+function adminExport(){
+  const out = {contract:'radar-reviews-export/v1',mappings:MAPS.filter(m=>m.status!=='pending').map(m=>({id:m.id,iscedCode:m.code,axisId:m.axis,reviewStatus:m.status})),breakReviews:BRK.filter(b=>b.cf||b.dc||b.ds||b.notes.length).map(b=>({period:b.q,status:brkStatus(b),appliesTo:{observationHash:b.hash},notes:b.notes}))};
+  openDrawer(`<h2>Export (sample)</h2><p class="small muted">Approved mappings and reviews, ready to commit.</p><pre>${esc(JSON.stringify(out,null,2))}</pre>`);
+}
+
+/* ---------- judge panel (synthetic, same rules as dosm-share-v1, simplified) ---------- */
+const BASE = {q:['24Q4','25Q1','25Q2','25Q3','25Q4','26Q1','26Q2'],tot:[100000,102000,98000,101000,104000,103000,105000],
+  g:{Professionals:[45000,45500,43000,45000,46500,47200,48000],Technicians:[30000,30500,29500,30000,30500,30000,30500],Clerical:[8000,8200,8000,8100,8300,8200,8400]}};
+const clone = o => JSON.parse(JSON.stringify(o));
+let DEMO = clone(BASE), demoVer = 1, demoScen = 'A';
+function analyze(D){
+  const names=Object.keys(D.g), flags=[];
+  for(let t=1;t<7;t++){
+    const tr=D.tot[t]/D.tot[t-1]-1; if(Math.abs(tr)<0.5) continue;
+    const same=names.filter(k=>{ const r=D.g[k][t]/D.g[k][t-1]-1; return D.g[k][t-1]>0&&D.g[k][t]>0&&Math.abs(r)>=0.4&&Math.sign(r)===Math.sign(tr); }).length;
+    if(same/names.length>=0.75) flags.push(t);
+  }
+  const P=D.g.Professionals, s=P.map((v,i)=>v/D.tot[i]*100);
+  const crosses=(a,b)=>flags.some(t=>t>a&&t<=b);
+  const out={flags:flags.map(t=>D.q[t]),share:s[6],shareBase:s[2]};
+  if(crosses(2,6)){ out.status='icomp'; out.rule='The latest year-on-year comparison (25Q2 → 26Q2) contains a possible structural break ('+flags.map(t=>D.q[t]).join(', ')+'), so no direction is given.'; out.steps=[]; return out; }
+  const net=s[6]-s[2], rel=net/s[2]*100, mat=Math.abs(net)>=1&&Math.abs(rel)>=10;
+  const steps=[]; for(let k=0;k<3;k++){ if(!crosses(2-k,6-k)) steps.push(s[6-k]-s[2-k]); }
+  const agree=steps.filter(v=>Math.sign(v)===Math.sign(net)).length;
+  out.net=net; out.rel=rel; out.steps=steps;
+  if(mat){ const ok = steps.length>=3 ? agree>=2 : (steps.length>=1&&agree===steps.length); out.status = ok ? (net>0?'up':'down') : 'mixed';
+    out.rule=`net ${net>0?'+':''}${net.toFixed(2)} pp and ${rel>0?'+':''}${rel.toFixed(1)}% → material; steps ${steps.map(v=>(v>0?'+':'')+v.toFixed(2)).join(', ')} agree ${agree}/${steps.length} → ${DIRM[out.status][1]}`; }
+  else { out.status='stable'; out.rule=`net ${net>0?'+':''}${net.toFixed(2)} pp and ${rel>0?'+':''}${rel.toFixed(1)}% → not material → Stable (volatility check not simulated in this mockup)`; }
+  return out;
+}
+document.querySelectorAll('#scen button').forEach(b=>b.onclick=()=>{ demoScen=b.dataset.s; document.querySelectorAll('#scen button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.sA').forEach(r=>r.classList.toggle('hidden',demoScen!=='A')); document.querySelectorAll('.sB').forEach(r=>r.classList.toggle('hidden',demoScen!=='B')); });
+function demoApply(){
+  const err=m=>{ $('#dErr').textContent='Rejected by validation: '+m+' The last good synthetic state is kept.'; };
+  const next=clone(DEMO);
+  if(demoScen==='A'){
+    const a=Number($('#dA').value), b=Number($('#dB').value);
+    if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0||!Number.isInteger(a)||!Number.isInteger(b)) return err('values must be whole numbers, zero or more.');
+    next.g.Professionals[2]=a; next.g.Professionals[6]=b;
+  } else {
+    const f=Number($('#dF').value); if(!Number.isFinite(f)||f<=0) return err('the jump factor must be a number above zero.');
+    next.tot[6]=Math.round(next.tot[6]*f); Object.keys(next.g).forEach(k=>next.g[k][6]=Math.round(next.g[k][6]*f));
+  }
+  for(let t=0;t<7;t++){ const sum=Object.values(next.g).reduce((x,g)=>x+g[t],0); if(sum>next.tot[t]) return err('the total must be at least the sum of the groups ('+next.q[t]+').'); }
+  $('#dErr').textContent='';
+  const before=analyze(DEMO), after=analyze(next), bm='demo-m'+demoVer; demoVer++; const am='demo-m'+demoVer; DEMO=next; $('#dSnap').textContent=am;
+  const row=(k,x,y)=>`<tr><td>${k}</td><td>${x}</td><td class="${x!==y?'ch':''}">${y}</td></tr>`;
+  const st=a=>DIRM[a.status][1];
+  $('#dDiff').innerHTML = `<b>Before / after report</b> <span class="tag t-sample">synthetic</span><div class="tw"><table class="diff" style="margin-top:6px"><tr><th></th><th>Before</th><th>After</th></tr>
+   ${row('Manifest',bm,am)}${row('Professionals share 26Q2',before.share.toFixed(2)+'%',after.share.toFixed(2)+'%')}${row('Possible breaks',before.flags.join(', ')||'none',after.flags.join(', ')||'none')}${row('Classification',st(before),st(after))}</table></div>
+   <p class="small" style="margin-top:8px"><b>Rule applied:</b> ${esc(after.rule)}</p>
+   ${after.status==='icomp'?`<p class="small"><span class="tag t-warn">Possible structural break</span> The comparisons that became insufficient comparable evidence: Professionals 25Q2 → 26Q2 (and the steps crossing it).</p>`:''}
+   <p class="small"><b>Affected:</b> DOSM group 2 Professionals (group level) → eMASCO roles in group 2, e.g. Software Developers 2512-01 (code prefix). Fields: none reach this group through a completed mapping yet (ISCO-08 → MASCO step pending). Skills: individual skill demand stays "insufficient evidence".</p>
+   <p class="small"><b>Production unchanged:</b> manifest m-2026-10-30-01. This session lives in <code>demo/&lt;session&gt;</code> only.</p>
+   <p class="small"><b>Career rankings are not part of this module yet.</b></p>`;
+}
+function demoReset(){ DEMO=clone(BASE); demoVer++; $('#dA').value=43000; $('#dB').value=48000; $('#dF').value=2.2; $('#dSnap').textContent='demo-m'+demoVer+' (reset to the synthetic base)'; $('#dErr').textContent=''; $('#dDiff').innerHTML='<span class="muted">Reset to the original synthetic base.</span>'; }
+
+/* ---------- start ---------- */
+if(location.hash!=='#admin') document.querySelector('#page-admin').classList.add('hidden');
+route();
+</script>
+</body>
+</html>

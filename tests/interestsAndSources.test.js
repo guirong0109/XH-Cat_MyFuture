@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import form from '../public/js/screens/form.js'
+import form, { SECTIONS } from '../public/js/screens/form.js'
 import { profileTable } from '../public/js/screens/review.js'
 import { pickerList } from '../public/js/components/searchPicker.js'
 import { fieldSuggestions } from '../public/js/components/fieldSuggestions.js'
@@ -9,7 +9,7 @@ import { mergeCareerFields } from '../shared/profileState.js'
 const t = (key, vars) => (vars ? `${key}:${JSON.stringify(vars)}` : key)
 const AREAS = { source: 'onet', version: '31.0', areas: [{ id: 'onet:ia:1.B.3.aa', name: 'Health Care Service' }, { id: 'onet:ia:1.B.3.q', name: 'Information Technology' }] }
 const it_ = { source: 'onet', id: 'onet:ia:1.B.3.q', name: 'Information Technology', version: '31.0' }
-const prefs = (profile, extra = {}) => form({ t, state: { section: 3, profile, occ: {}, pick: {}, interests: AREAS, ...extra } })
+const prefs = (profile, extra = {}) => form({ t, state: { section: SECTIONS.indexOf('secPrefs'), profile, occ: {}, pick: {}, interests: AREAS, ...extra } })
 
 describe('career interests and fields: one list from O*NET interest areas', () => {
   it('the profile has one list; "preferred career fields" is gone', () => {

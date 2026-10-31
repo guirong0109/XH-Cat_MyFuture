@@ -27,6 +27,13 @@ describe('form helpers', () => {
     expect(isUntouched({ ...emptyProfile(), skills: [cvSkill('SQL')] })).toBe(false)
   })
 
+  it('isUntouched is false once any AI question is answered', () => {
+    const p = emptyProfile()
+    expect(isUntouched({ ...p, aiUse: { ...p.aiUse, mindset: 'yes' } })).toBe(false)
+    expect(isUntouched({ ...p, aiUse: { ...p.aiUse, design: 'no' } })).toBe(false)
+    expect(isUntouched({ ...p, aiUse: { mindset: null, ethics: null, apply: null, design: null } })).toBe(true)
+  })
+
   it('markForReview flags and unflags one record', () => {
     const p = addRecord(emptyProfile(), 'certifications', { name: 'AWS' })
     const flagged = markForReview(p, 'certifications.0', true)

@@ -106,5 +106,13 @@ export async function loadFieldSkills({ iscedDir, onetDir }) {
     return { field, jobs: jobs.size, suggestions }
   }
 
-  return { has: (code) => fields.has(code), suggest, versions: { isced: isced.manifest.version, onet: onet.manifest.version } }
+  const jobTitles = new Map(onet.tables['occupations.tsv'].map((o) => [o.code, o.title]))
+  // The O*NET jobs a field leads to through the CIP bridge, sorted by code (used by the Radar's personal relevance).
+  function jobsOf(code) {
+    const jobs = new Set()
+    for (const cip of cipsOf.get(code) ?? []) for (const job of jobsOfCip.get(cip) ?? []) jobs.add(job)
+    return [...jobs].sort().map((job) => ({ code: job, title: jobTitles.get(job) }))
+  }
+
+  return { has: (code) => fields.has(code), titleOf: (code) => fields.get(code) ?? null, list: () => [...fields].map(([code, title]) => ({ code, title })), jobsOf, jobTitle: (code) => jobTitles.get(code) ?? null, suggest, versions: { isced: isced.manifest.version, onet: onet.manifest.version } }
 }

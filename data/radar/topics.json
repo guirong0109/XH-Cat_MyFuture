@@ -1,0 +1,367 @@
+{
+  "schemaVersion": "radar-topics/v1",
+  "source": "OpenAlex topics API, https://api.openalex.org/topics/<id>",
+  "translationStatus": "owner_review",
+  "topics": [
+    {
+      "axisId": "language",
+      "openalexId": "T10028",
+      "officialTitle": "Topic Modeling",
+      "description": "This cluster of papers covers a wide range of advancements in natural language processing, including neural network architectures, word representation models, machine translation techniques, text classification algorithms, semantic similarity measures, named entity recognition methods, pretrained language models, sequence-to-sequence learning approaches, topic modeling strategies, and information retrieval systems.",
+      "keywords": [
+        "named entity recognition",
+        "retrieval-augmented generation",
+        "BERT",
+        "word embeddings",
+        "question answering",
+        "pre-trained language models",
+        "sentence retrieval",
+        "intermediate-task training",
+        "zero-shot cross-lingual transfer",
+        "XTREME benchmark",
+        "Tatoeba",
+        "BUCC",
+        "relation extraction",
+        "multilingual language models",
+        "hallucination mitigation",
+        "text generation",
+        "latent Dirichlet allocation",
+        "abstractive summarization",
+        "XTREME-R",
+        "natural language inference",
+        "multilingual pretrained models",
+        "entity linking",
+        "in-context learning",
+        "Word2Vec",
+        "sentence embeddings"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "17",
+          "name": "Computer Science"
+        },
+        "subfield": {
+          "id": "1702",
+          "name": "Artificial Intelligence"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T10028",
+      "friendlyLabel": {
+        "en": "Language Models & Text AI",
+        "ms": "Model Bahasa & AI Teks",
+        "zh": "语言模型与文本AI"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    },
+    {
+      "axisId": "genmedia",
+      "openalexId": "T10775",
+      "officialTitle": "Generative Adversarial Networks and Image Synthesis",
+      "description": "This cluster of papers focuses on the application of Generative Adversarial Networks (GANs) in image processing, including image synthesis, style transfer, representation learning, and unsupervised learning. The papers cover various techniques such as image inpainting, texture synthesis, and conditional generative models using deep learning and neural networks.",
+      "keywords": [
+        "generative adversarial networks",
+        "diffusion models",
+        "image generation",
+        "text-to-image generation",
+        "image inpainting",
+        "image-to-image translation",
+        "style transfer",
+        "conditional generative adversarial networks",
+        "Stable Diffusion",
+        "video generation",
+        "CycleGAN",
+        "mode collapse",
+        "latent diffusion models",
+        "text-to-video generation",
+        "text-to-image diffusion models",
+        "medical image synthesis",
+        "identity preservation",
+        "face synthesis",
+        "Fréchet Inception Distance",
+        "diffusion transformer",
+        "video diffusion models",
+        "high-resolution image generation",
+        "conditional image generation",
+        "StyleGAN",
+        "virtual try-on"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "17",
+          "name": "Computer Science"
+        },
+        "subfield": {
+          "id": "1707",
+          "name": "Computer Vision and Pattern Recognition"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T10775",
+      "friendlyLabel": {
+        "en": "Generative Media AI",
+        "ms": "AI Media Generatif",
+        "zh": "生成式媒体AI"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    },
+    {
+      "axisId": "vision",
+      "openalexId": "T12549",
+      "officialTitle": "Image and Object Detection Techniques",
+      "description": "This cluster of papers focuses on robust line and curve detection using the Hough Transform, including techniques for line detection, circle and ellipse fitting, randomized algorithms, computer vision applications, edge detection, geometric fitting, and statistical optimization.",
+      "keywords": [
+        "edge detection",
+        "Hough transform",
+        "Canny edge detection",
+        "line detection",
+        "Sobel operator",
+        "circle detection",
+        "Prewitt operator",
+        "ellipse detection",
+        "sub-pixel edge detection",
+        "Laplacian of Gaussian",
+        "generalized Hough transform",
+        "shape detection",
+        "line segment detection",
+        "straight line detection",
+        "edge localization",
+        "Canny operator",
+        "Roberts operator",
+        "edge detection operators",
+        "multi-scale edge detection",
+        "curve detection",
+        "randomized Hough transform",
+        "edge detection algorithm",
+        "color edge detection",
+        "edge linking",
+        "edge thinning"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "17",
+          "name": "Computer Science"
+        },
+        "subfield": {
+          "id": "1707",
+          "name": "Computer Vision and Pattern Recognition"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T12549",
+      "friendlyLabel": {
+        "en": "Computer Vision",
+        "ms": "Penglihatan Komputer",
+        "zh": "计算机视觉"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    },
+    {
+      "axisId": "robotics",
+      "openalexId": "T10653",
+      "officialTitle": "Robot Manipulation and Learning",
+      "description": "This cluster of papers focuses on robotic grasping, learning from demonstration, deep learning for object pose estimation, human-robot collaboration, and sensor-based robot systems. It explores topics such as dynamical movement primitives, impedance control, and safe interaction between humans and robots.",
+      "keywords": [
+        "robotic manipulation",
+        "robotic grasping",
+        "human-robot collaboration",
+        "collaborative robots",
+        "robotic hand",
+        "tactile sensing",
+        "robotic assembly",
+        "object manipulation",
+        "grasp planning",
+        "dexterous manipulation",
+        "vision-language-action models",
+        "pick-and-place",
+        "multi-fingered hand",
+        "robot safety",
+        "robotic gripper",
+        "object pose estimation",
+        "object grasping",
+        "6D pose estimation",
+        "dual-arm robot",
+        "grasp stability",
+        "bin picking",
+        "physical human-robot interaction",
+        "human demonstrations",
+        "force/torque sensor",
+        "human-robot interaction safety"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "22",
+          "name": "Engineering"
+        },
+        "subfield": {
+          "id": "2207",
+          "name": "Control and Systems Engineering"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T10653",
+      "friendlyLabel": {
+        "en": "Robotics",
+        "ms": "Robotik",
+        "zh": "机器人技术"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    },
+    {
+      "axisId": "automation",
+      "openalexId": "T13287",
+      "officialTitle": "Robotic Process Automation Applications",
+      "description": "This cluster of papers focuses on the implementation, challenges, and impact of Robotic Process Automation (RPA) in various industries and business processes. It explores the intersection of RPA with artificial intelligence, digital transformation, and Industry 4.0, particularly in the context of audit, accounting, and strategic transformation. The papers also discuss the potential benefits and obstacles of RPA implementation.",
+      "keywords": [
+        "robotic process automation",
+        "accounting automation",
+        "artificial intelligence in accounting",
+        "artificial intelligence in auditing",
+        "digitalization of accounting",
+        "audit automation",
+        "future of accounting",
+        "UiPath",
+        "RPA implementation",
+        "Power Automate",
+        "software robotics",
+        "audit technology",
+        "invoice processing",
+        "digital audit",
+        "hyperautomation",
+        "future of auditing",
+        "accountant competencies",
+        "digital transformation in accounting",
+        "intelligent process automation",
+        "financial automation",
+        "RPA adoption",
+        "automation of repetitive tasks",
+        "RPA governance",
+        "Blue Prism",
+        "digitalization of auditing"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "22",
+          "name": "Engineering"
+        },
+        "subfield": {
+          "id": "2209",
+          "name": "Industrial and Manufacturing Engineering"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T13287",
+      "friendlyLabel": {
+        "en": "Process Automation",
+        "ms": "Automasi Proses",
+        "zh": "流程自动化"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    },
+    {
+      "axisId": "service",
+      "openalexId": "T12128",
+      "officialTitle": "AI in Service Interactions",
+      "description": "This cluster of papers explores the impact of artificial intelligence, service robots, and chatbots on the service industry, focusing on customer experience, hospitality, marketing, voice assistants, human-robot interaction, and technology adoption.",
+      "keywords": [
+        "customer service automation",
+        "artificial intelligence in marketing",
+        "chatbot design",
+        "artificial intelligence in tourism",
+        "AI-driven personalization",
+        "chatbot adoption",
+        "chatbot development",
+        "customer service chatbots",
+        "hyper-personalization",
+        "human-chatbot interaction",
+        "chatbot evaluation",
+        "artificial intelligence in hospitality",
+        "artificial intelligence in retail",
+        "service automation",
+        "Dialogflow",
+        "hospitality technology",
+        "personalized customer experience",
+        "conversational commerce",
+        "chatbot implementation",
+        "voice commerce",
+        "AI-generated advertising",
+        "smart hotels",
+        "artificial intelligence in customer service",
+        "student information services",
+        "trust in chatbots"
+      ],
+      "hierarchy": {
+        "domain": {
+          "id": "3",
+          "name": "Physical Sciences"
+        },
+        "field": {
+          "id": "17",
+          "name": "Computer Science"
+        },
+        "subfield": {
+          "id": "1702",
+          "name": "Artificial Intelligence"
+        }
+      },
+      "sourceUrl": "https://openalex.org/T12128",
+      "friendlyLabel": {
+        "en": "Service AI",
+        "ms": "AI Perkhidmatan",
+        "zh": "服务型AI"
+      },
+      "taxonomyReadAt": "2026-10-30",
+      "topicUpdatedDate": "2026-10-30T03:01:25",
+      "reviewStatus": "approved",
+      "reviewedBy": "owner",
+      "reviewedAt": "2026-10-30",
+      "note": "approved in design review",
+      "translationStatus": "owner_review"
+    }
+  ]
+}

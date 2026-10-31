@@ -46,6 +46,8 @@ export function declineUnanswered(profile, paths) {
 // Only answers count: defaults ("prefer not to say" left as it was) do not make a profile the user's work.
 export function isUntouched(profile) {
   if (SCALARS.some((path) => get(profile, path)?.state === 'value')) return false
+  // An AI question answered yes or no is the user's work too (M17).
+  if (Object.values(profile?.aiUse ?? {}).some((v) => v === 'yes' || v === 'no')) return false
   return [...Object.keys(LIST_KEYS), ...OTHER_LISTS].every((path) => (get(profile, path) ?? []).length === 0)
 }
 

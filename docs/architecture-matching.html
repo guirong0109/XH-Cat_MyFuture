@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Matching Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; min-height: 100vh; padding: 2rem; color: white; }
+    .container { max-width: 1280px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot { width: 12px; height: 12px; background: #22d3ee; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container { background: rgba(15, 23, 42, 0.5); border-radius: 1rem; border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 1000px; display: block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .card { background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem; border: 1px solid #1e293b; padding: 1.25rem; }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; } .card-dot.rose { background: #fb7185; } .card-dot.amber { background: #fbbf24; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+    @media (max-width: 600px) { body { padding: 1rem; } .subtitle { margin-left: 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Career Matching — Architecture (draft for owner approval)</h1>
+      </div>
+      <p class="subtitle">Branch claude/career-matching · official code chain → levels met ÷ needed → outlook bands per AI scenario → SDG team-draft links (shown now, M16)</p>
+    </div>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1200 850" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+          </marker>
+          <marker id="arrowcyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+          </marker>
+          <marker id="arrowrose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
+          </marker>
+        </defs>
+        <rect width="1200" height="850" fill="url(#grid)"/>
+
+        <!-- Lane headers -->
+        <g fill="#64748b" font-size="9" font-weight="600" letter-spacing="1">
+          <text x="115" y="28" text-anchor="middle">SOURCES</text>
+          <text x="345" y="28" text-anchor="middle">PIPELINE (offline, python)</text>
+          <text x="575" y="28" text-anchor="middle">DATA (repo, hashed)</text>
+          <text x="815" y="28" text-anchor="middle">ENGINE · shared/matching (pure)</text>
+          <text x="1065" y="28" text-anchor="middle">API &amp; SCREENS</text>
+        </g>
+
+        <!-- Server boundary -->
+        <rect x="470" y="40" width="720" height="730" rx="12" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="480" y="781" fill="#fbbf24" font-size="8">One Node/Express app (same as Radar) · profile in request only, never stored or logged</text>
+
+        <!-- ===== Arrows: sources → pipeline → data ===== -->
+        <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
+          <path d="M210 100 L248 100"/>
+          <path d="M210 180 L248 180"/>
+          <path d="M210 265 L248 265"/>
+          <path d="M210 345 L248 345"/>
+          <path d="M210 415 L248 415"/>
+          <path d="M210 485 L248 485"/>
+          <path d="M440 100 L478 100"/>
+          <path d="M440 180 L478 180"/>
+          <path d="M440 265 L478 265"/>
+          <path d="M440 345 L478 380"/>
+          <path d="M440 415 L478 390"/>
+          <path d="M440 485 L478 470"/>
+          <path d="M210 565 L478 565"/>
+        </g>
+        <!-- data → engine -->
+        <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
+          <path d="M670 265 L708 100"/>
+          <path d="M670 180 L708 205"/>
+          <path d="M670 380 L708 320"/>
+          <path d="M670 640 L708 330"/>
+          <path d="M670 480 L708 440"/>
+          <path d="M670 565 L708 450"/>
+          <path d="M670 100 L700 100 L700 560 L708 560"/>
+        </g>
+        <!-- engine → API -->
+        <g stroke="#22d3ee" stroke-width="1.3" fill="none" marker-end="url(#arrowcyan)">
+          <path d="M920 100 L958 120"/>
+          <path d="M920 205 L958 130"/>
+          <path d="M920 325 L958 140"/>
+          <path d="M920 445 L958 150"/>
+          <path d="M920 560 L958 160"/>
+          <path d="M1065 200 L1065 238"/>
+          <path d="M1065 380 L1065 418"/>
+        </g>
+        <!-- owner approval + trend change (rose) -->
+        <g stroke="#fb7185" stroke-width="1.3" fill="none" stroke-dasharray="5,3">
+          <path d="M960 560 L945 560 L945 610 L670 610" marker-end="url(#arrowrose)"/>
+          <path d="M960 640 L670 640" marker-end="url(#arrowrose)"/>
+        </g>
+
+        <!-- ===== Lane 1: sources ===== -->
+        <rect x="20" y="70" width="190" height="60" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="90" fill="white" font-size="11" font-weight="600" text-anchor="middle">eMASCO (MOHR)</text>
+        <text x="115" y="106" fill="#94a3b8" font-size="8" text-anchor="middle">1,766 roles · English pages</text>
+        <text x="115" y="119" fill="#94a3b8" font-size="8" text-anchor="middle">tasks · skills · qualification</text>
+
+        <rect x="20" y="150" width="190" height="60" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="170" fill="white" font-size="11" font-weight="600" text-anchor="middle">O*NET 31.0 database</text>
+        <text x="115" y="186" fill="#94a3b8" font-size="8" text-anchor="middle">skills + knowledge</text>
+        <text x="115" y="199" fill="#94a3b8" font-size="8" text-anchor="middle">importance (IM) + level (LV)</text>
+
+        <rect x="20" y="230" width="190" height="70" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="250" fill="white" font-size="11" font-weight="600" text-anchor="middle">Crosswalk files</text>
+        <text x="115" y="266" fill="#94a3b8" font-size="8" text-anchor="middle">O*NET 2019 → SOC 2018 (built)</text>
+        <text x="115" y="279" fill="#94a3b8" font-size="8" text-anchor="middle">BLS SOC 2018↔2010↔ISCO-08</text>
+        <text x="115" y="292" fill="#fbbf24" font-size="8" text-anchor="middle">owner saves · MASCO↔ISCO source</text>
+
+        <rect x="20" y="320" width="190" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="340" fill="white" font-size="11" font-weight="600" text-anchor="middle">ILO WP140 (2025)</text>
+        <text x="115" y="356" fill="#94a3b8" font-size="8" text-anchor="middle">GenAI exposure · ISCO-08 · gradient</text>
+
+        <rect x="20" y="390" width="190" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="410" fill="white" font-size="11" font-weight="600" text-anchor="middle">Anthropic Econ. Index</text>
+        <text x="115" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">observed AI use · O*NET tasks</text>
+
+        <rect x="20" y="460" width="190" height="50" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+        <text x="115" y="480" fill="white" font-size="11" font-weight="600" text-anchor="middle">UN SDG targets</text>
+        <text x="115" y="496" fill="#94a3b8" font-size="8" text-anchor="middle">17 goals · 169 targets</text>
+
+        <rect x="20" y="535" width="190" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="115" y="555" fill="white" font-size="11" font-weight="600" text-anchor="middle">Team SDG draft</text>
+        <text x="115" y="571" fill="#94a3b8" font-size="8" text-anchor="middle">48 MASCO groups + 68 O*NET</text>
+        <text x="115" y="584" fill="#94a3b8" font-size="8" text-anchor="middle">target + one-line reason</text>
+
+        <!-- ===== Lane 2: pipeline ===== -->
+        <rect x="250" y="70" width="190" height="60" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="90" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_emasco.py</text>
+        <text x="345" y="106" fill="#94a3b8" font-size="8" text-anchor="middle">new crawl, robots.txt first</text>
+        <text x="345" y="119" fill="#94a3b8" font-size="8" text-anchor="middle">+ 23 Oct crawl copied (data)</text>
+
+        <rect x="250" y="150" width="190" height="60" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="170" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_onet.py (extend)</text>
+        <text x="345" y="186" fill="#94a3b8" font-size="8" text-anchor="middle">adds level + suppress flag</text>
+
+        <rect x="250" y="230" width="190" height="70" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="250" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_radar_bridge.py</text>
+        <text x="345" y="266" fill="#94a3b8" font-size="8" text-anchor="middle">(extend) finish pending steps</text>
+        <text x="345" y="279" fill="#94a3b8" font-size="8" text-anchor="middle">one bridge, both directions</text>
+
+        <rect x="250" y="320" width="190" height="50" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="340" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_ilo.py</text>
+        <text x="345" y="356" fill="#94a3b8" font-size="8" text-anchor="middle">licence + date recorded</text>
+
+        <rect x="250" y="390" width="190" height="50" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="410" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_aei.py</text>
+        <text x="345" y="426" fill="#94a3b8" font-size="8" text-anchor="middle">licence + release recorded</text>
+
+        <rect x="250" y="460" width="190" height="50" rx="6" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+        <text x="345" y="480" fill="white" font-size="11" font-weight="600" text-anchor="middle">fetch_sdg_targets.py</text>
+        <text x="345" y="496" fill="#94a3b8" font-size="8" text-anchor="middle">official UN wording</text>
+
+        <!-- ===== Lane 3: data ===== -->
+        <rect x="480" y="70" width="190" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="90" fill="white" font-size="10" font-weight="600" text-anchor="middle">emasco/role_details.json</text>
+        <text x="575" y="106" fill="#94a3b8" font-size="8" text-anchor="middle">display only, not in the %</text>
+        <text x="575" y="119" fill="#94a3b8" font-size="8" text-anchor="middle">+ occupations.json (main)</text>
+
+        <rect x="480" y="150" width="190" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="170" fill="white" font-size="10" font-weight="600" text-anchor="middle">onet/skills · knowledge</text>
+        <text x="575" y="186" fill="#94a3b8" font-size="8" text-anchor="middle">importance · level · suppress</text>
+        <text x="575" y="199" fill="#94a3b8" font-size="8" text-anchor="middle">+ isced → cip → onet (main)</text>
+
+        <rect x="480" y="230" width="190" height="70" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="250" fill="white" font-size="10" font-weight="600" text-anchor="middle">radar/occupation-bridge</text>
+        <text x="575" y="266" fill="#94a3b8" font-size="8" text-anchor="middle">every step: source, URL, SHA-256</text>
+        <text x="575" y="279" fill="#94a3b8" font-size="8" text-anchor="middle">status built / pending</text>
+
+        <rect x="480" y="355" width="190" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="375" fill="white" font-size="10" font-weight="600" text-anchor="middle">ai/ilo_wp140 · aei_tasks</text>
+        <text x="575" y="391" fill="#94a3b8" font-size="8" text-anchor="middle">Rapid · Moderate inputs</text>
+
+        <rect x="480" y="450" width="190" height="60" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="470" fill="white" font-size="10" font-weight="600" text-anchor="middle">sdg/targets · links</text>
+        <text x="575" y="486" fill="#94a3b8" font-size="8" text-anchor="middle">links pending until approved</text>
+
+        <rect x="480" y="540" width="190" height="80" rx="6" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="575" y="560" fill="white" font-size="10" font-weight="600" text-anchor="middle">Review store (Radar's)</text>
+        <text x="575" y="576" fill="#94a3b8" font-size="8" text-anchor="middle">owner SDG decisions</text>
+        <text x="575" y="589" fill="#94a3b8" font-size="8" text-anchor="middle">approved / rejected + date</text>
+
+        <rect x="480" y="625" width="190" height="40" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="575" y="642" fill="white" font-size="10" font-weight="600" text-anchor="middle">Radar active manifest</text>
+        <text x="575" y="656" fill="#94a3b8" font-size="8" text-anchor="middle">DOSM groups · O*NET in-demand</text>
+
+        <!-- ===== Lane 4: engine ===== -->
+        <rect x="710" y="70" width="210" height="60" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="90" fill="white" font-size="11" font-weight="600" text-anchor="middle">chain.js</text>
+        <text x="815" y="106" fill="#94a3b8" font-size="8" text-anchor="middle">eMASCO → ISCO → SOC → O*NET</text>
+        <text x="815" y="119" fill="#94a3b8" font-size="8" text-anchor="middle">path, or the missing step</text>
+
+        <rect x="710" y="160" width="210" height="90" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="180" fill="white" font-size="11" font-weight="600" text-anchor="middle">fit.js</text>
+        <text x="815" y="196" fill="#94a3b8" font-size="8" text-anchor="middle">items: importance ≥ 3.0</text>
+        <text x="815" y="209" fill="#94a3b8" font-size="8" text-anchor="middle">Σ min(you, needed) ÷ Σ needed</text>
+        <text x="815" y="222" fill="#94a3b8" font-size="8" text-anchor="middle">basic 2 · good 4 · expert 6</text>
+        <text x="815" y="235" fill="#94a3b8" font-size="8" text-anchor="middle">provisional · what raises it</text>
+
+        <rect x="710" y="280" width="210" height="90" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="300" fill="white" font-size="11" font-weight="600" text-anchor="middle">outlook.js</text>
+        <text x="815" y="316" fill="#94a3b8" font-size="8" text-anchor="middle">Moderate = observed (AEI)</text>
+        <text x="815" y="329" fill="#94a3b8" font-size="8" text-anchor="middle">Rapid = potential (ILO)</text>
+        <text x="815" y="342" fill="#94a3b8" font-size="8" text-anchor="middle">+ DOSM group (group level)</text>
+        <text x="815" y="355" fill="#94a3b8" font-size="8" text-anchor="middle">→ 4 bands · never in the %</text>
+
+        <rect x="710" y="400" width="210" height="80" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="420" fill="white" font-size="11" font-weight="600" text-anchor="middle">sdg.js</text>
+        <text x="815" y="436" fill="#94a3b8" font-size="8" text-anchor="middle">all drafts shown, rejected hidden</text>
+        <text x="815" y="449" fill="#94a3b8" font-size="8" text-anchor="middle">path count per goal · filter</text>
+        <text x="815" y="462" fill="#94a3b8" font-size="8" text-anchor="middle">no impact score</text>
+
+        <rect x="710" y="520" width="210" height="80" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="540" fill="white" font-size="11" font-weight="600" text-anchor="middle">scope</text>
+        <text x="815" y="556" fill="#94a3b8" font-size="8" text-anchor="middle">"In your field": study field</text>
+        <text x="815" y="569" fill="#94a3b8" font-size="8" text-anchor="middle">→ O*NET jobs, past job,</text>
+        <text x="815" y="582" fill="#94a3b8" font-size="8" text-anchor="middle">roles of interest</text>
+
+        <!-- ===== Lane 5: API & screens ===== -->
+        <rect x="960" y="80" width="210" height="120" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="1065" y="100" fill="white" font-size="11" font-weight="600" text-anchor="middle">server/matching</text>
+        <text x="1065" y="118" fill="#94a3b8" font-size="8" text-anchor="middle">POST /api/matching</text>
+        <text x="1065" y="131" fill="#94a3b8" font-size="8" text-anchor="middle">all roles · bands for both scenarios</text>
+        <text x="1065" y="149" fill="#94a3b8" font-size="8" text-anchor="middle">POST /api/matching/role</text>
+        <text x="1065" y="162" fill="#94a3b8" font-size="8" text-anchor="middle">items · chart · path · SDG</text>
+        <text x="1065" y="180" fill="#fbbf24" font-size="8" text-anchor="middle">profile used, never stored</text>
+
+        <rect x="960" y="240" width="210" height="140" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="1065" y="260" fill="white" font-size="11" font-weight="600" text-anchor="middle">#match screen (+ #sdg tab)</text>
+        <text x="1065" y="278" fill="#94a3b8" font-size="8" text-anchor="middle">Moderate / Rapid switch</text>
+        <text x="1065" y="291" fill="#94a3b8" font-size="8" text-anchor="middle">SDG filter · source line</text>
+        <text x="1065" y="304" fill="#94a3b8" font-size="8" text-anchor="middle">In your field → Explore all</text>
+        <text x="1065" y="317" fill="#94a3b8" font-size="8" text-anchor="middle">4 bands · role cards</text>
+        <text x="1065" y="330" fill="#94a3b8" font-size="8" text-anchor="middle">Why: You vs Needed chart</text>
+        <text x="1065" y="343" fill="#94a3b8" font-size="8" text-anchor="middle">"band moved" banner</text>
+        <text x="1065" y="356" fill="#94a3b8" font-size="8" text-anchor="middle">EN · BM · 中文 · 360 px</text>
+
+        <rect x="960" y="420" width="210" height="80" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="1065" y="440" fill="white" font-size="11" font-weight="600" text-anchor="middle">Choose this role</text>
+        <text x="1065" y="456" fill="#94a3b8" font-size="8" text-anchor="middle">guest store (per address)</text>
+        <text x="1065" y="469" fill="#94a3b8" font-size="8" text-anchor="middle">SDG contribution panel</text>
+        <text x="1065" y="482" fill="#94a3b8" font-size="8" text-anchor="middle">"potential, not measured"</text>
+
+        <rect x="960" y="530" width="210" height="60" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="1065" y="550" fill="white" font-size="11" font-weight="600" text-anchor="middle">#admin · SDG review</text>
+        <text x="1065" y="566" fill="#94a3b8" font-size="8" text-anchor="middle">approve / reject each link</text>
+        <text x="1065" y="579" fill="#94a3b8" font-size="8" text-anchor="middle">RADAR_ADMIN_KEY</text>
+
+        <rect x="960" y="615" width="210" height="50" rx="6" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+        <text x="1065" y="635" fill="white" font-size="11" font-weight="600" text-anchor="middle">#judge change test</text>
+        <text x="1065" y="651" fill="#94a3b8" font-size="8" text-anchor="middle">trend data changes → bands move</text>
+
+        <!-- ===== M17: Overall match path ===== -->
+        <text x="20" y="692" fill="#a78bfa" font-size="9" font-weight="600" letter-spacing="1">M17 · OVERALL MATCH (AI know-how and AI touch; Skill Match stays unchanged; same app as above)</text>
+        <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
+          <path d="M115 765 L115 785 L815 785 L815 765"/>
+          <path d="M670 732 L708 732"/>
+          <path d="M710 340 L690 340 L690 715 L672 715"/>
+        </g>
+        <g stroke="#22d3ee" stroke-width="1.3" fill="none" marker-end="url(#arrowcyan)">
+          <path d="M920 732 L958 732"/>
+        </g>
+        <rect x="20" y="700" width="190" height="65" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="115" y="718" fill="white" font-size="10" font-weight="600" text-anchor="middle">profile aiUse (M17)</text>
+        <text x="115" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">4 yes/no questions, based on</text>
+        <text x="115" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">UNESCO AI competency framework</text>
+        <text x="115" y="759" fill="#fbbf24" font-size="8" text-anchor="middle">AI know-how = Yes ÷ answered</text>
+
+        <rect x="480" y="700" width="190" height="65" rx="6" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+        <text x="575" y="718" fill="white" font-size="10" font-weight="600" text-anchor="middle">AI parts → touchPct (M17)</text>
+        <text x="575" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Moderate: AEI observed task share</text>
+        <text x="575" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">Rapid: ILO exposure score</text>
+        <text x="575" y="759" fill="#fbbf24" font-size="8" text-anchor="middle">none → Overall = Skill Match</text>
+
+        <rect x="710" y="700" width="210" height="65" rx="6" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+        <text x="815" y="718" fill="white" font-size="11" font-weight="600" text-anchor="middle">overall.js (M17)</text>
+        <text x="815" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Skill Match × (1 − touch)</text>
+        <text x="815" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">+ AI know-how × touch</text>
+        <text x="815" y="759" fill="#94a3b8" font-size="8" text-anchor="middle">never changes Skill Match or bands</text>
+
+        <rect x="960" y="700" width="210" height="65" rx="6" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1.5"/>
+        <text x="1065" y="718" fill="white" font-size="11" font-weight="600" text-anchor="middle">Role card (M17)</text>
+        <text x="1065" y="733" fill="#94a3b8" font-size="8" text-anchor="middle">Overall match beside the</text>
+        <text x="1065" y="746" fill="#94a3b8" font-size="8" text-anchor="middle">unchanged Skill Match + AI touch</text>
+        <text x="1065" y="759" fill="#94a3b8" font-size="8" text-anchor="middle">roles sort by Overall in a band</text>
+
+        <!-- Legend -->
+        <g font-size="8" fill="#94a3b8">
+          <line x1="20" y1="815" x2="44" y2="815" stroke="#64748b" stroke-width="1.3"/><text x="50" y="818">data flow</text>
+          <line x1="140" y1="815" x2="164" y2="815" stroke="#22d3ee" stroke-width="1.3"/><text x="170" y="818">engine → API</text>
+          <line x1="270" y1="815" x2="294" y2="815" stroke="#fb7185" stroke-width="1.3" stroke-dasharray="5,3"/><text x="300" y="818">owner decision / judge change</text>
+          <rect x="470" y="809" width="12" height="12" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24"/><text x="488" y="818">official source</text>
+          <rect x="590" y="809" width="12" height="12" rx="2" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8"/><text x="608" y="818">repo / team draft</text>
+          <rect x="720" y="809" width="12" height="12" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa"/><text x="738" y="818">pure, tested</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-header"><div class="card-dot cyan"></div><h3>One user's path</h3></div>
+        <ul>
+          <li>• Confirmed profile (CV or form) is sent with the request</li>
+          <li>• chain.js finds each eMASCO role's O*NET jobs, or the missing step</li>
+          <li>• fit.js: levels met ÷ levels needed, best O*NET job shown</li>
+          <li>• outlook.js puts each role in one of 4 bands per scenario</li>
+          <li>• Card: %, why (chart), what raises it, outlook, SDG tags</li>
+          <li>• Choose this role → SDG contribution of the path</li>
+          <li>• M17: Overall = Skill Match × (1 − AI touch) + AI know-how × AI touch</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot rose"></div><h3>Guards that keep it honest</h3></div>
+        <ul>
+          <li>• No method from the old project; every weight is O*NET's</li>
+          <li>• No AI or word linking: official code chain only</li>
+          <li>• Trends, scenarios and the Overall match never change the Skill Match</li>
+          <li>• Group-level job ads labelled "not this job"</li>
+          <li>• Every SDG team-draft link appears (M16); rejected ones are hidden</li>
+          <li>• Missing data says "not available", never a guess</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot amber"></div><h3>Waiting on the owner</h3></div>
+        <ul>
+          <li>• Approve this diagram and the spec</li>
+          <li>• Save the two BLS crosswalk files</li>
+          <li>• Name an official MASCO 2020 ↔ ISCO-08 source</li>
+          <li>• Review the SDG draft links in #admin</li>
+          <li>• Review the DOSM 2025 Q3 possible break (Radar)</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">FutureReady MY • Career Matching • branch claude/career-matching • spec docs/superpowers/specs/2026-10-30-career-matching-design.md</p>
+  </div>
+</body>
+</html>

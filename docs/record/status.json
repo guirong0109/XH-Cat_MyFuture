@@ -2674,6 +2674,11 @@
       "time": "31 Oct",
       "step": "News: store and refresh service",
       "detail": "server/news/store.js (R2 news/latest.json or local data/cache/news/latest.json; unreadable reads as empty) and server/news/service.js (3-hour timer, run at start when due, late request wakes it, one run at a time, caps 10 per run and 80 per 24 h kept in the store, failed field keeps its last list, 401/402 stop the run, snapshot per spec 7 with the age rule applied). Fake search only. npm test passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: GET /api/news and refresh start",
+      "detail": "server/news/routes.js (no input, no user data, wakes a late refresh, 503 news_unavailable on failure); createApp option news (default from env, never started there); server/index.js starts the 3-hour refresh after listen. npm test passed"
     }
   ]
 }

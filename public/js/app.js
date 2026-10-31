@@ -25,6 +25,8 @@ import { radarAdminApi as adminApi } from './radarAdminApi.js'
 import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
 import sdgScreen from './screens/sdgTab.js'
 import * as matchApi from './matchApi.js'
+import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
+import * as pathwayApi from './pathwayApi.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
@@ -35,7 +37,10 @@ import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
 
 const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
-const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
+const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
+// Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
+const ALIAS = { roadmap: 'pathway' }
+const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
@@ -68,7 +73,8 @@ function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
   // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
-  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
+  saved = store.save({ ...state, match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -280,6 +286,8 @@ const adminActions = {
       if (!adminApi.session()) return adminFailed('pick', out)
       return setAdmin({ notes, ...adminMsg('pick', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admPickNote' : 'admMsg-pick')
     }
+    // The pathway answers carry the picks' review labels: fetch them again.
+    pathwayFor = null
     reloadAdmin({ notes: { ...notes, pick: '' }, ...adminMsg('pick', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-pick')
   },
   admBreak: async (arg) => {
@@ -450,6 +458,78 @@ const matchActions = {
     render()
   },
   mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
+}
+
+// ---------- Study pathway (#pathway) ----------
+// The profile is sent to the pathway API for each target's answer (never stored there). The answers are fetched again
+// when the profile changes; only targets, the active one and the progress are saved (pathwayToSave).
+const pathwayUi = () => {
+  state.pathway = { ...pathwayToSave(state.pathway), answers: state.pathway?.answers ?? {} }
+  return state.pathway
+}
+let pathwayFor = null
+let pathwayRun = 0
+async function loadPathway(code) {
+  const run = pathwayRun
+  state.pathway.answers = { ...state.pathway.answers, [code]: { loading: true } }
+  const out = await pathwayApi.get(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== pathwayRun) return
+  state.pathway.answers = { ...state.pathway.answers, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (state.screen === 'pathway') render()
+}
+function ensurePathway() {
+  const p = pathwayUi()
+  if (!state.profile) return
+  if (pathwayFor !== state.profile) {
+    pathwayFor = state.profile
+    pathwayRun += 1
+    p.answers = {}
+  }
+  for (const { code } of p.targets) if (!p.answers[code]) loadPathway(code)
+}
+const today = () => new Date().toISOString().slice(0, 10)
+function setProgress(key, value) {
+  if (typeof key !== 'string' || !key) return
+  const p = pathwayUi()
+  const progress = { ...p.progress }
+  if (value) progress[key] = { state: value, at: today() }
+  else delete progress[key]
+  state.pathway = { ...p, progress }
+  persist()
+  render()
+}
+const pathwayActions = {
+  // From a #match card: add the role (if not yet a target), make it active, open #pathway.
+  pwPlan: (code) => {
+    if (typeof code !== 'string' || !code) return
+    const p = pathwayUi()
+    const title = state.match?.data?.roles?.find((r) => r.code === code)?.title ?? code
+    const targets = p.targets.some((x) => x.code === code) ? p.targets : [...p.targets, { code, title, addedAt: today() }]
+    state.pathway = { ...p, targets, active: code }
+    go('pathway')
+  },
+  // A target tab; on a failed answer it asks again.
+  pwTab: (code) => {
+    const p = pathwayUi()
+    if (!p.targets.some((x) => x.code === code)) return
+    const answers = { ...p.answers }
+    if (answers[code]?.error) delete answers[code]
+    state.pathway = { ...p, active: code, answers }
+    persist()
+    render()
+  },
+  // Removes the target only: the progress is per skill and stays.
+  pwRemove: (code) => {
+    const p = pathwayUi()
+    const targets = p.targets.filter((x) => x.code !== code)
+    const { [code]: _gone, ...answers } = p.answers
+    state.pathway = { ...p, targets, answers, active: activeOf({ targets, active: p.active === code ? null : p.active }) }
+    persist()
+    render()
+  },
+  pwStarted: (key) => setProgress(key, 'started'),
+  pwDone: (key) => setProgress(key, 'done'),
+  pwClear: (key) => setProgress(key, null),
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
@@ -732,7 +812,7 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions, matchActions)
+Object.assign(actions, adminActions, matchActions, pathwayActions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -832,10 +912,12 @@ function render() {
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
   if (screen === 'match' || screen === 'sdg') ensureMatch()
+  if (screen === 'pathway') ensurePathway()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
   else if (screen === 'sdg') view = sdgScreen({ t, state })
+  else if (screen === 'pathway') view = pathwayScreen({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
   else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
@@ -942,7 +1024,7 @@ document.addEventListener('drop', (event) => {
   const file = event.dataTransfer?.files?.[0]
   if (file) actions.cvFile(file)
 })
-window.addEventListener('popstate', () => { state.screen = location.hash.slice(1) || 'welcome'; render() })
+window.addEventListener('popstate', () => { state.screen = screenOf(location.hash.slice(1) || 'welcome'); render() })
 
 // Boot: a saved guest session past the start screens gets the "Welcome back" choice.
 const previous = store.load()
@@ -954,11 +1036,14 @@ if (previous) {
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
 if (resumeChoice(previous) === 'ask') {
-  resumeTo = previous.screen
+  resumeTo = screenOf(previous.screen)
   state.screen = 'returning'
 } else if (location.hash) {
-  state.screen = location.hash.slice(1)
+  state.screen = screenOf(location.hash.slice(1))
 }
+state.screen = screenOf(state.screen)
+// #roadmap opens #pathway: the address shows the new name.
+if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()
 // Who is signed in (the session cookie is HttpOnly, so ask the server).
 // Which optional services the server has (e.g. whether a temporary CV copy is kept).

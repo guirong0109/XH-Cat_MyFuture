@@ -2,7 +2,7 @@
 export default {
   welcome: 'Selamat datang', returning: 'Tetamu kembali', access: 'Tetamu atau akaun', category: 'Siapakah anda?', org: 'HR & TVET (pratonton)',
   source: 'CV atau manual', upload: 'Muat naik CV', form: 'Profil anda', review: 'Sahkan profil', summary: 'Ringkasan profil anda',
-  assess: 'Semakan kemahiran', radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', roadmap: 'Pelan pembelajaran', sdg: 'Sumbangan SDG', futures: 'Bandingkan masa depan',
+  assess: 'Semakan kemahiran', radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian', sdg: 'Sumbangan SDG', futures: 'Bandingkan masa depan',
   hero: 'Ke mana kemahiran anda boleh membawa anda dalam era AI?',
   heroSub: 'Mulakan dengan diri anda hari ini: pengajian, kerja dan kemahiran, daripada CV atau borang ringkas.',
   chooseLang: 'Pilih bahasa anda',
@@ -813,7 +813,7 @@ export default {
   mtApprovedOn: "draf pasukan, diluluskan oleh pemilik pada {date}", // translation: owner review
   mtChoose: "Pilih peranan ini", // translation: owner review
   mtChosen: "✓ Peranan dipilih", // translation: owner review
-  mtStudyPlan: "Pelan pembelajaran belum tersedia", // translation: owner review
+  mtStudyPlan: "Rancang laluan pengajian saya", // translation: owner review
   mtWhy: "Mengapa padanan ini?", // translation: owner review
   mtWhyNone: "Mengapa tiada Padanan Kemahiran?", // translation: owner review
   mtWhyNoneText: "Kami hanya memautkan peranan eMASCO kepada kemahiran O*NET melalui jadual kod rasmi, tidak pernah dengan meneka daripada tajuk. Untuk peranan ini satu langkah belum ada pautan:", // translation: owner review
@@ -922,4 +922,101 @@ export default {
   rdPickColSite: "Laman, institusi atau badan", // translation: owner review
   rdPickColName: "Nama", // translation: owner review
   rdPickColChecked: "Tarikh disemak", // translation: owner review
+  pwLead: "Untuk setiap peranan yang anda pilih dalam Padanan kerjaya: apa yang biasanya dipelajari untuknya, dan kemahiran yang masih anda perlukan, jurang terbesar dahulu. Setiap kursus ialah halaman sebenar di laman webnya sendiri; pasukan memilihnya dan pemilik menyemaknya. Tiada apa di sini mengubah Padanan Kemahiran anda.", // translation: owner review
+  pwYourRoles: "Peranan anda (ditambah dengan “Rancang laluan pengajian saya” dalam Padanan kerjaya)", // translation: owner review
+  pwNoTarget: "Belum ada peranan. Pilih satu dalam Padanan kerjaya dan tekan “Rancang laluan pengajian saya”.", // translation: owner review
+  pwGoMatch: "Pergi ke Padanan kerjaya", // translation: owner review
+  pwRemove: "buang", // translation: owner review
+  pwRemoveLabel: "Buang {title}", // translation: owner review
+  pwTabMatch: "Padanan Kemahiran {percent}%", // translation: owner review
+  pwTabNoMatch: "Padanan Kemahiran tidak tersedia", // translation: owner review
+  pwCounts: "{build} untuk dibina · {started} dimulakan · {done} selesai", // translation: owner review
+  pwProfileUsed: "Profil yang digunakan:", // translation: owner review
+  pwProfileSkills: "{count} kemahiran dan pengetahuan O*NET ({na} “Belum dinilai”)", // translation: owner review
+  pwNeverStored: "Profil anda dihantar untuk mengira ini dan tidak pernah disimpan. Peranan dan kemajuan yang disimpan kekal pada peranti ini.", // translation: owner review
+  pwLoading: "Mengira laluan…", // translation: owner review
+  pwError: "Laluan tidak dapat dimuatkan.", // translation: owner review
+  pwRetry: "Cuba lagi", // translation: owner review
+  pwNotFound: "Tidak dijumpai: peranan ini tiada dalam data semasa.", // translation: owner review
+  pwComparedWith: "dibandingkan dengan pekerjaan O*NET", // translation: owner review
+  pwComparedTail: "pekerjaan yang digunakan oleh Padanan kerjaya", // translation: owner review
+  pwSkillMatchNow: "Padanan Kemahiran sekarang", // translation: owner review
+  pwProvTitle: "Sementara:", // translation: owner review
+  pwProvText: "{count} daripada kemahiran anda “Belum dinilai”, jadi kami tidak dapat pastikan sama ada anda memerlukannya.", // translation: owner review
+  pwSetLevels: "Tetapkan tahap anda", // translation: owner review
+  pwPart: "Bahagian {n}", // translation: owner review
+  pwPart1Title: "Laluan pengajian", // translation: owner review
+  pwPart1Lead: "Apa yang biasanya dipelajari oleh orang dalam pekerjaan ini, dan di mana anda boleh mempelajarinya di Malaysia.", // translation: owner review
+  pwEduTitle: "Tahap pendidikan biasa", // translation: owner review
+  pwEmascoTag: "eMASCO, Malaysia", // translation: owner review
+  pwEmascoNone: "eMASCO tidak menyenaraikan kelayakan untuk peranan ini", // translation: owner review
+  pwEmascoWhat: "Kelayakan yang disenaraikan oleh eMASCO untuk MASCO {code}", // translation: owner review
+  pwInUs: "Di AS:", // translation: owner review
+  pwInUsText: "{label}, {percent}% pekerja dalam pekerjaan ini yang ditanya", // translation: owner review
+  pwUsTag: "bersumber · data AS", // translation: owner review
+  pwUsNone: "O*NET tiada data pendidikan untuk pekerjaan ini.", // translation: owner review
+  pwEduAll: "Semua tahap pendidikan (AS)", // translation: owner review
+  pwEduZero: "Tahap dengan 0% tidak disenaraikan.", // translation: owner review
+  pwEduSuppressed: "{count} baris yang ditandakan O*NET sebagai tidak boleh dipercayai tidak dimasukkan.", // translation: owner review
+  pwSrcLabel: "Sumber:", // translation: owner review
+  pwSrcMqr: "Daftar MQA (pautan sahaja)", // translation: owner review
+  pwSrcPicksName: "Pilihan pasukan FutureReady, setiap satu dengan tarikh pautannya disemak (semakan pemilik dalam Admin)", // translation: owner review
+  pwFieldsTitle: "Bidang pengajian yang membawa ke sini", // translation: owner review
+  pwSourced: "bersumber", // translation: owner review
+  pwFieldsLead: "Dibaca secara terbalik melalui jadual rasmi: pekerjaan O*NET → program pengajian AS/Kanada (CIP) → bidang pengajian UNESCO (ISCED-F 2013).", // translation: owner review
+  pwFieldsNone: "Tiada bidang pengajian dalam jadual rasmi untuk pekerjaan ini.", // translation: owner review
+  pwYourField: "bidang anda", // translation: owner review
+  pwPartial: "pautan separa", // translation: owner review
+  pwCips: "{count} program pengajian (CIP) menghubungkan bidang ini dengan pekerjaan", // translation: owner review
+  pwCipPartial: "separa", // translation: owner review
+  pwAccredited: "Program Malaysia yang diakreditasi", // translation: owner review
+  pwMqaRef: "Rujukan MQA {ref}", // translation: owner review
+  pwMqaRefNone: "Rujukan MQA tidak dipaparkan di halaman", // translation: owner review
+  pwChecked: "disemak {date}", // translation: owner review
+  pwApprovedOn: "diluluskan oleh pemilik pada {date}", // translation: owner review
+  pwNoProgPick: "Belum ada pilihan pasukan; gunakan pautan daftar MQA di bawah.", // translation: owner review
+  pwNoPick: "Belum ada pilihan pasukan; gunakan pautan carian di bawah.", // translation: owner review
+  pwMqrMore: "Lagi dalam daftar MQA", // translation: owner review
+  pwMqrFind: "Cari program dalam daftar MQA", // translation: owner review
+  pwMqrNec: "pilih bidang NEC {code}", // translation: owner review
+  pwCodeMatch: "padanan kod, bukan jadual rasmi", // translation: owner review
+  pwProfessional: "Kelayakan profesional", // translation: owner review
+  pwFieldCourses: "Kursus untuk bermula", // translation: owner review
+  pwMoreOn: "Lagi di", // translation: owner review
+  pwPart2Title: "Kemahiran untuk dibina", // translation: owner review
+  pwPart2Lead: "Kemahiran dan pengetahuan yang diperlukan pekerjaan ini (kepentingan O*NET 3 atau lebih) yang belum anda miliki pada tahapnya. Jurang terbesar dahulu, dalam mata yang digunakan Padanan kerjaya untuk “apa yang akan menaikkannya”: jurang ÷ semua tahap yang diperlukan ({total}) × 100.", // translation: owner review
+  pwToBuild: "Untuk dibina", // translation: owner review
+  pwSkillsCount: "{count} kemahiran", // translation: owner review
+  pwNoGaps: "Tiada apa untuk dibina: anda memenuhi setiap tahap yang diperlukan pekerjaan ini.", // translation: owner review
+  pwKind_kn: "pengetahuan", // translation: owner review
+  pwKind_el: "kemahiran", // translation: owner review
+  pwYourLevel: "Tahap anda", // translation: owner review
+  pwNotInProfile: "Tiada dalam profil anda", // translation: owner review
+  pwNeededWord: "diperlukan", // translation: owner review
+  pwOnetLevel: "(tahap O*NET {level} daripada 7)", // translation: owner review
+  pwPoints: "mata Padanan Kemahiran", // translation: owner review
+  pwStarted: "Dimulakan", // translation: owner review
+  pwDone: "Selesai", // translation: owner review
+  pwSelf: "dilaporkan sendiri", // translation: owner review
+  pwDoneNote: "Selesai! Kemas kini tahap anda dalam profil untuk menaikkan Padanan Kemahiran anda.", // translation: owner review
+  pwNaTitle: "Tahap belum dinilai", // translation: owner review
+  pwNaWhy: "tetapkan tahap anda untuk melihat sama ada anda memerlukannya", // translation: owner review
+  pwNeeded: "Diperlukan", // translation: owner review
+  pwSetLevel: "tetapkan tahap anda dalam profil", // translation: owner review
+  pwMetTitle: "Sudah mencapai tahap ({count})", // translation: owner review
+  pwMetLine: "tahap anda {you} · diperlukan {needed}", // translation: owner review
+  pwThin: "Kami belum dapat menyenaraikan kemahiran untuk dibina: tambah kemahiran beserta tahap pada profil anda.", // translation: owner review
+  pwAddSkills: "Tambah kemahiran pada profil anda", // translation: owner review
+  pwSourcesTitle: "Sumber", // translation: owner review
+  pwColWhat: "Apa", // translation: owner review
+  pwColSource: "Sumber", // translation: owner review
+  pwColDate: "Tarikh", // translation: owner review
+  pwColLicence: "Lesen", // translation: owner review
+  pwSrc_onet: "Tahap diperlukan, kepentingan, pendidikan AS", // translation: owner review
+  pwSrc_bridge: "Peranan → pekerjaan O*NET (rantaian rasmi)", // translation: owner review
+  pwSrc_emasco: "Kelayakan Malaysia", // translation: owner review
+  pwSrc_fields: "Bidang pengajian", // translation: owner review
+  pwSrc_picks: "Kursus, program, badan", // translation: owner review
+  pwSrc_site: "Pautan “Lagi di” (carian laman itu sendiri)", // translation: owner review
+  pwLinksOnly: "pautan sahaja", // translation: owner review
 }

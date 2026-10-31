@@ -310,7 +310,7 @@ export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'mode
       <div class="mt-actions">
         <button class="btn sm" type="button" data-act="mOpen" data-arg="${esc(role.code)}" aria-expanded="${isOpen}">${esc(t(isOpen ? 'mtHideDetail' : 'mtShowDetail'))}</button>
         <button class="btn sm${isChosen ? '' : ' pri'}" type="button" data-act="mChoose" data-arg="${esc(role.code)}" aria-pressed="${isChosen}">${esc(t(isChosen ? 'mtChosen' : 'mtChoose'))}</button>
-        <button class="btn sm" type="button" disabled>${esc(t('mtStudyPlan'))}</button>
+        <button class="btn sm" type="button" data-act="pwPlan" data-arg="${esc(role.code)}">${esc(t('mtStudyPlan'))}</button>
       </div>
     </div>
     <div class="mt-side">${sidePanel(t, role)}</div>

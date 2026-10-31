@@ -136,7 +136,8 @@ async function main() {
       usage.output += answer.usage.output
       const merged = mergeDrafts({ profile: r.out.profile, uncertain: r.out.uncertain }, answer.profile)
       const foundAi = foundFields(merged.profile)
-      r.ai = { ms: r.ms + aiMs, found: foundAi, scores: Object.fromEntries(FIELDS.map((f) => [f, scoreField(r.entry.expected[f], foundAi[f])])) }
+      // Production runs both readers together, so the wait is the slower of the two.
+      r.ai = { ms: Math.max(r.ms, aiMs), found: foundAi, scores: Object.fromEntries(FIELDS.map((f) => [f, scoreField(r.entry.expected[f], foundAi[f])])) }
     }
     ai = { provider, usage, ran: results.filter((r) => r.ai.scores) }
   }
@@ -193,10 +194,10 @@ async function main() {
       ...FIELDS.map((f) => `| ${f} | ${cells(baseTotals[f])} | ${cells(aiTotals[f])} |`),
       '',
       `- Wrong-item rate: rules only **${wrong(baseTotals)}** · rules + AI **${wrong(aiTotals)}**`,
-      `- Latency per CV: rules only median **${median(ai.ran.map((r) => r.ms))} ms** · rules + AI median **${median(ai.ran.map((r) => r.ai.ms))} ms**`,
+      `- Latency per CV: rules only median **${median(ai.ran.map((r) => r.ms))} ms** · rules + AI median **${median(ai.ran.map((r) => r.ai.ms))} ms** (rules and AI run together)`,
       `- Tokens and cost (AI reads that succeeded): ${costLine(ai.usage, ai.provider.model)}`,
       '',
-      '| CV | AI result | Rules F1 (skills / jobs) | Rules + AI F1 (skills / jobs) | ms rules + AI |',
+      '| CV | AI result | Rules F1 (skills / jobs) | Rules + AI F1 (skills / jobs) | ms rules + AI (run together) |',
       '|---|---|---|---|---|',
       ...results.map((r) => (r.ai.scores
         ? `| ${r.entry.id} | read | ${cell(r.scores.skills.f1)} / ${cell(r.scores.jobs.f1)} | ${cell(r.ai.scores.skills.f1)} / ${cell(r.ai.scores.jobs.f1)} | ${r.ai.ms} |`

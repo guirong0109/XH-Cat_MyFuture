@@ -1,6 +1,6 @@
 // Owner routes for the organisation view (HR and career centres). All need a signed-in user; the organisation is
-// the one the user owns, so another owner's ids answer 404. Previews are kept in memory only (15 minutes) and are
-// never logged. Logs carry codes only, never names, skills or the CSV.
+// the one the user owns, so another owner's ids answer 404. Previews are kept in memory only (15 minutes, the latest
+// one per owner) and are never logged. Logs carry codes only, never names, skills or the CSV.
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -145,9 +145,13 @@ export function orgRoutes({ auth, store, service, loadNormalizer, loadCatalogue,
     if (!org) return
     if (!Buffer.isBuffer(request.body)) return sendError(response, 415, 'bad_type', 'Send the roster as text/csv.')
     const normalizeSkill = makeRosterNormalizer({ catalogue: await loadCatalogue(), normalizeSkill: (await loadNormalizer()).normalizeSkill })
-    const groups = (await store.groups(org.id)).map((g) => g.name)
-    const preview = await checkRoster({ bytes: request.body, type: org.type, groups, roleCodes: await loadRoleCodes(), normalizeSkill })
+    const [groupList, present] = await Promise.all([store.groups(org.id), store.people(org.id)])
+    const groups = groupList.map((g) => g.name)
+    const existingNames = present.map((p) => p.displayName)
+    const preview = await checkRoster({ bytes: request.body, type: org.type, groups, roleCodes: await loadRoleCodes(), normalizeSkill, existingNames })
     sweep()
+    // only the latest preview of an owner is kept: an older previewId then answers 410
+    for (const [id, p] of previews) if (p.ownerId === request.user.id) previews.delete(id)
     const previewId = randomUUID()
     previews.set(previewId, { ownerId: request.user.id, preview, expires: now().getTime() + PREVIEW_MS })
     return response.json({ ...preview, previewId })

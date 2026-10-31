@@ -166,3 +166,41 @@ describe('GET /api/org/roster/sample', () => {
     }
   })
 })
+
+describe('final review fix 4: uploading the sample roster twice', () => {
+  let server
+  let base
+  beforeAll(async () => {
+    const d1 = createFakeD1()
+    await d1.migrate()
+    server = createApp({ dataDir, onetLive: null, d1 }).listen(0)
+    await new Promise((resolve) => server.once('listening', resolve))
+    base = `http://127.0.0.1:${server.address().port}`
+  })
+  afterAll(() => new Promise((resolve) => server.close(resolve)))
+
+  it('leaves 12 people: the second preview rejects every one as already in the organisation', async () => {
+    const signup = await fetch(`${base}/api/auth/signup`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'twice-owner@example.com', password: 'password 123' }),
+    })
+    const cookie = signup.headers.get('set-cookie').split(';')[0]
+    const json = { 'Content-Type': 'application/json', Cookie: cookie }
+    await fetch(`${base}/api/org`, { method: 'POST', headers: json, body: JSON.stringify({ name: 'Synthetic Co', type: 'hr' }) })
+    const csv = await readFile(path.join(orgDir, 'sample-roster-hr.csv'), 'utf8')
+    const once = async () => {
+      const preview = await (await fetch(`${base}/api/org/roster/preview`, { method: 'POST', headers: { 'Content-Type': 'text/csv', Cookie: cookie }, body: csv })).json()
+      const done = await (await fetch(`${base}/api/org/roster/import`, { method: 'POST', headers: json, body: JSON.stringify({ previewId: preview.previewId }) })).json()
+      return { preview, done }
+    }
+    const first = await once()
+    expect(first.done.added).toBe(12)
+    const second = await once()
+    expect(second.preview.people).toEqual([])
+    expect(second.preview.rejected).toHaveLength(12)
+    expect(second.preview.rejected.every((r) => r.reason === 'already in the organisation')).toBe(true)
+    expect(second.done.added).toBe(0)
+    const org = await (await fetch(`${base}/api/org`, { headers: { Cookie: cookie } })).json()
+    expect(org.people).toHaveLength(12)
+  })
+})

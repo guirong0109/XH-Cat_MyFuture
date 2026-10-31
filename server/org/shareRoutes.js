@@ -13,13 +13,16 @@ const MAX_NAME = 80
 const MAX_TOKEN = 200
 const ONET_ITEM = /^onet:((?:el|kn):\S{1,40})$/
 const LEVELS = ['basic', 'good', 'expert']
+// a profile may list an item twice: the higher level is kept, as matching's profileLevels does
+const LEVEL_ORDER = { not_assessed: 0, basic: 1, good: 2, expert: 3 }
 const NOT_ONET = 'not an O*NET skill or knowledge item'
 const EXPIRED = 'This link has expired or was already used. Ask HR for a new one.'
 const WILL_SHARE = ['skill names and levels', 'group', 'role', 'display name']
 
 const text = (value) => (typeof value === 'string' && value.trim() && value.trim().length <= MAX_NAME ? value.trim() : null)
 
-export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = null, loadRoleTitles = null, log = () => {}, now = () => new Date() }) {
+// loadSkillNames: async () => Map 'onet:el:…' -> O*NET name (the names of what HR holds); optional.
+export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = null, loadRoleTitles = null, loadSkillNames = null, log = () => {}, now = () => new Date() }) {
   const router = express.Router()
   const requireUser = makeRequireUser(auth)
   const joins = createWindowLimiter({ limit: LIMIT, windowMs: WINDOW_MS, now })
@@ -77,7 +80,10 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
     const invite = await store.inviteOf(token)
     if (!invite || invite.usedAt || invite.expiresAt <= now().toISOString()) return expired(response)
     if (invite.ownerId === request.user.id) return sendError(response, 409, 'own_organisation', 'This is your own organisation, so there is nothing to join.')
-    return response.json({ orgName: invite.orgName, groupName: invite.groupName, ...(await roleOf(invite.currentCode)), willShare: WILL_SHARE })
+    // one share per user: sharing through a link of another organisation stops the current share, so name it
+    const mine = await store.shareOf(request.user.id)
+    const sharingWith = mine && mine.orgId !== invite.orgId ? { sharingWith: mine.orgName } : {}
+    return response.json({ orgName: invite.orgName, groupName: invite.groupName, ...(await roleOf(invite.currentCode)), willShare: WILL_SHARE, ...sharingWith })
   }))
 
   router.put('/api/org/share', requireUser, jsonBody('4kb'), guard(async (request, response) => {
@@ -93,7 +99,7 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
 
     const shared = []
     const notShared = []
-    const seen = new Set()
+    const seen = new Map()
     for (const skill of profileSkills) {
       const name = typeof skill?.name === 'string' ? skill.name : ''
       const match = ONET_ITEM.exec(typeof skill?.canonicalId === 'string' ? skill.canonicalId : '')
@@ -101,9 +107,15 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
         notShared.push({ name, reason: NOT_ONET })
         continue
       }
-      if (seen.has(match[1])) continue
-      seen.add(match[1])
-      shared.push({ key: match[1], name, level: LEVELS.includes(skill.proficiency) ? skill.proficiency : 'not_assessed' })
+      const level = LEVELS.includes(skill.proficiency) ? skill.proficiency : 'not_assessed'
+      const before = seen.get(match[1])
+      if (before) {
+        if (LEVEL_ORDER[level] > LEVEL_ORDER[before.level]) before.level = level
+        continue
+      }
+      const item = { key: match[1], name, level }
+      seen.set(match[1], item)
+      shared.push(item)
     }
     if (dryRun) return response.json({ shared, notShared })
     await store.share(request.user.id, { token: token ?? undefined, displayName, skills: shared.map((s) => ({ key: s.key, level: s.level })) })
@@ -113,8 +125,11 @@ export function shareRoutes({ auth, store, loadProfileSkills, loadRoleCodes = nu
   router.get('/api/org/share', requireUser, guard(async (request, response) => {
     const mine = await store.shareOf(request.user.id)
     if (!mine) return response.json(null)
-    const { currentCode, ...rest } = mine
-    return response.json({ ...rest, ...(await roleOf(currentCode)) })
+    const { currentCode, orgId, ...rest } = mine
+    let names = new Map()
+    try { names = loadSkillNames ? await loadSkillNames() : names } catch { /* the item key is shown instead */ }
+    const skills = rest.skills.map((s) => ({ ...s, name: names.get(`onet:${s.key}`) ?? s.key }))
+    return response.json({ ...rest, skills, ...(await roleOf(currentCode)) })
   }))
 
   router.delete('/api/org/share', requireUser, guard(async (request, response) => {

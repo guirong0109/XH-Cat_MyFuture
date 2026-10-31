@@ -128,3 +128,34 @@ describe('org store', () => {
     expect((await store.planSteps(org.id, g.id, '2524-02')).size).toBe(0)
   })
 })
+
+describe('final review fixes: store', () => {
+  it('4: importing the same people twice never duplicates them (names compared ignoring case)', async () => {
+    const { store } = await setup()
+    const org = await store.createOrg('u1', { name: 'A', type: 'hr' })
+    await store.addGroup(org.id, { name: 'Existing', targetCode: null })
+    expect(await store.importPeople(org.id, PREVIEW)).toEqual({ added: 2, groupsAdded: 1 })
+    const again = { ...PREVIEW, people: PREVIEW.people.map((p) => ({ ...p, name: ` ${p.name.toUpperCase()} ` })) }
+    expect(await store.importPeople(org.id, again)).toEqual({ added: 0, groupsAdded: 0 })
+    expect(await store.people(org.id)).toHaveLength(2)
+  })
+
+  it('6: a 40-skill person is stored fully, in multi-row inserts of at most 100 bound parameters', async () => {
+    const { d1, store } = await setup()
+    const org = await store.createOrg('u1', { name: 'A', type: 'hr' })
+    const skills = Array.from({ length: 40 }, (_, i) => ({ key: `el:${String(i).padStart(2, '0')}`, name: `S${i}`, level: 'good' }))
+    const seen = []
+    const real = d1.query.bind(d1)
+    d1.query = async (sql, params = []) => {
+      seen.push({ sql, n: params.length })
+      return real(sql, params)
+    }
+    await store.importPeople(org.id, { people: [{ name: 'Many', group: 'Ops', currentCode: null, skills }], newGroups: ['Ops'] })
+    const inserts = seen.filter((q) => /INSERT OR REPLACE INTO org_skills/.test(q.sql))
+    expect(inserts).toHaveLength(2)
+    expect(Math.max(...seen.map((q) => q.n))).toBeLessThanOrEqual(100)
+    const [person] = await store.people(org.id)
+    expect(person.skills).toHaveLength(40)
+    expect(person.skills.map((s) => s.key)).toEqual(skills.map((s) => s.key))
+  })
+})

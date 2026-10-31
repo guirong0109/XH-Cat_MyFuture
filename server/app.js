@@ -205,7 +205,12 @@ export function createApp({
         return []
       }
     }
-    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, loadRoleTitles, log: console.error, now }))
+    // O*NET names of the shared items, for the employee's view of what HR holds
+    const loadSkillNames = async () => {
+      const catalogue = await loadCatalogue()
+      return new Map([...catalogue.entries, ...(catalogue.more ?? [])].map((e) => [e.id, e.name]))
+    }
+    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, loadRoleTitles, loadSkillNames, log: console.error, now }))
   }
   if (radar) {
     let aiTasksPromise = null

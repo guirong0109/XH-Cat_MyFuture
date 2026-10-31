@@ -149,3 +149,28 @@ describe('checkRoster', () => {
     expect(r.people[0].currentCode).toBeNull()
   })
 })
+
+describe('final review fixes: names already in the organisation, empty group', () => {
+  it('4: a person whose name is already in the organisation is rejected once, at the first row, and never imported', async () => {
+    const r = await run([
+      HEADER,
+      'Aisha,Sales,2411,Mathematics,good',
+      ' ben ,Sales,3115,Mathematics,good',
+      'Ben,Sales,3115,Active Listening,basic',
+      'Cara,Sales,2411,Mathematics,good',
+    ].join('\n'), { existingNames: ['BEN', '  Aisha'] })
+    expect(r.rejected).toEqual([
+      { row: 2, reason: 'already in the organisation' },
+      { row: 3, reason: 'already in the organisation' },
+    ])
+    expect(r.people.map((p) => p.name)).toEqual(['Cara'])
+    expect(r.accepted).toBe(1)
+  })
+
+  it('8: a row with an empty group is rejected "group is empty"', async () => {
+    const r = await run(`${HEADER}\nDan,,2411,Mathematics,good\nEve,  ,2411,,`)
+    expect(r.rejected).toEqual([{ row: 2, reason: 'group is empty' }, { row: 3, reason: 'group is empty' }])
+    expect(r.people).toEqual([])
+    expect(r.newGroups).toEqual([])
+  })
+})

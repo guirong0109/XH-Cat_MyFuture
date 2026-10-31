@@ -15,6 +15,9 @@ const INVITE_MS = 7 * 24 * 3600 * 1000
 const hashOf = (token) => createHash('sha256').update(token).digest('hex')
 
 const toOrg = (r) => ({ id: r.id, name: r.name, type: r.type, createdAt: r.created_at })
+const nameKeyOf = (name) => String(name ?? '').trim().toLowerCase()
+// D1 binds at most 100 parameters per query: 33 skill rows of 3 values each fit
+const SKILL_ROWS = 33
 
 export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID }) {
   const stamp = () => now().toISOString()
@@ -93,6 +96,17 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
     }))
   }
 
+  // a person's skills in multi-row inserts (at most SKILL_ROWS rows, so at most 99 bound parameters each)
+  async function insertSkills(personId, skills) {
+    for (let i = 0; i < skills.length; i += SKILL_ROWS) {
+      const part = skills.slice(i, i + SKILL_ROWS)
+      await d1.query(
+        `INSERT OR REPLACE INTO org_skills (person_id, item_key, level) VALUES ${part.map(() => '(?, ?, ?)').join(', ')}`,
+        part.flatMap((skill) => [personId, skill.key, skill.level]),
+      )
+    }
+  }
+
   async function importPeople(orgId, preview) {
     const byName = new Map((await groups(orgId)).map((g) => [g.name, g.id]))
     // check every person's group before writing anything, so a bad row leaves nothing half-imported
@@ -104,8 +118,13 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
       byName.set(name, (await addGroup(orgId, { name, targetCode: null })).id)
       groupsAdded += 1
     }
+    // a name already in the organisation (ignoring case and outer spaces) is never added again
+    const { rows: present } = await d1.query('SELECT display_name FROM org_people WHERE org_id = ?', [orgId])
+    const names = new Set(present.map((r) => nameKeyOf(r.display_name)))
     let added = 0
     for (const person of preview.people) {
+      if (names.has(nameKeyOf(person.name))) continue
+      names.add(nameKeyOf(person.name))
       const groupId = byName.get(person.group)
       if (!groupId) throw new OrgError('not_found', 404)
       const id = newId()
@@ -113,9 +132,7 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
         'INSERT INTO org_people (id, org_id, group_id, display_name, current_code, source, user_id, added_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [id, orgId, groupId, person.name, person.currentCode ?? null, 'roster', null, stamp()],
       )
-      for (const skill of person.skills) {
-        await d1.query('INSERT OR REPLACE INTO org_skills (person_id, item_key, level) VALUES (?, ?, ?)', [id, skill.key, skill.level])
-      }
+      await insertSkills(id, person.skills)
       added += 1
     }
     return { added, groupsAdded }
@@ -177,14 +194,12 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
 
   async function replaceSkills(personId, skills) {
     await d1.query('DELETE FROM org_skills WHERE person_id = ?', [personId])
-    for (const skill of skills) {
-      await d1.query('INSERT OR REPLACE INTO org_skills (person_id, item_key, level) VALUES (?, ?, ?)', [personId, skill.key, skill.level])
-    }
+    await insertSkills(personId, skills)
   }
 
   async function sharedPerson(userId) {
     const { rows } = await d1.query(
-      `SELECT p.id, p.display_name, p.current_code, g.name AS group_name, o.name AS org_name FROM org_people p
+      `SELECT p.id, p.org_id, p.display_name, p.current_code, g.name AS group_name, o.name AS org_name FROM org_people p
          JOIN org_groups g ON g.id = p.group_id JOIN orgs o ON o.id = p.org_id
         WHERE p.user_id = ? AND p.source = 'shared' ORDER BY p.added_at DESC, p.id LIMIT 1`,
       [userId],
@@ -200,6 +215,8 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
       // claim the link first: only one caller can flip used_at from NULL
       const claim = await d1.query('UPDATE org_invites SET used_at = ? WHERE id = ? AND used_at IS NULL', [stamp(), invite.inviteId])
       if (claim.changes !== 1) throw new OrgError('link_expired', 410)
+      // one share per user: a share with another organisation (person and skills) is removed first
+      await d1.query("DELETE FROM org_people WHERE user_id = ? AND source = 'shared' AND org_id <> ?", [userId, invite.orgId])
       const { rows } = await d1.query('SELECT id FROM org_people WHERE org_id = ? AND user_id = ?', [invite.orgId, userId])
       let personId = rows[0]?.id
       if (personId) {
@@ -226,7 +243,7 @@ export function createOrgStore({ d1, now = () => new Date(), newId = randomUUID 
     if (!person) return null
     const { rows } = await d1.query('SELECT item_key, level FROM org_skills WHERE person_id = ? ORDER BY item_key', [person.id])
     return {
-      orgName: person.org_name, groupName: person.group_name, displayName: person.display_name, currentCode: person.current_code ?? null,
+      orgId: person.org_id, orgName: person.org_name, groupName: person.group_name, displayName: person.display_name, currentCode: person.current_code ?? null,
       skills: rows.map((r) => ({ key: r.item_key, level: r.level })),
     }
   }

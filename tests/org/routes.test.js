@@ -256,3 +256,25 @@ describe('team and plan steps', () => {
     expect((await put({ roleCode: '0000-00' })).body.error.code).toBe('unknown_role')
   })
 })
+
+describe('final review fix 7: one preview per owner', () => {
+  const FILE = `name,group,current_role_code,skill,level\n${NAMES[0]},Ops,${ROLE_A},,\n`
+  it('a new preview replaces the old one: the old previewId gives 410, the new one imports', async () => {
+    const cookie = await withOrg()
+    const first = await csv(FILE, cookie)
+    const second = await csv(FILE, cookie)
+    const old = await call('POST', '/api/org/roster/import', { previewId: first.body.previewId }, cookie)
+    expect(old.status).toBe(410)
+    expect(old.body.error.code).toBe('preview_expired')
+    const ok = await call('POST', '/api/org/roster/import', { previewId: second.body.previewId }, cookie)
+    expect(ok.body).toEqual({ added: 1, groupsAdded: 1 })
+  })
+
+  it('another owner keeps their own preview', async () => {
+    const a = await withOrg()
+    const b = await withOrg()
+    const pa = await csv(FILE, a)
+    await csv(FILE, b)
+    expect((await call('POST', '/api/org/roster/import', { previewId: pa.body.previewId }, a)).status).toBe(200)
+  })
+})

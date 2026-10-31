@@ -8,7 +8,11 @@ const HEADER = ['name', 'group', 'current_role_code', 'skill', 'level']
 const LEVEL_RANK = { not_assessed: 0, basic: 1, good: 2, expert: 3 }
 const ITEM = /^onet:((?:el|kn):.+)$/
 
-export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSkill }) {
+// The same name, ignoring case and outer spaces (how a person already in the organisation is recognised).
+export const nameKeyOf = (name) => String(name ?? '').trim().toLowerCase()
+
+// existingNames: display names already in the organisation; those people are rejected (once each) and never imported.
+export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSkill, existingNames = [] }) {
   if (bytes.length > MAX_BYTES) throw new RosterError('too_large')
   let text
   try {
@@ -31,6 +35,8 @@ export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSki
   const known = new Set(groups)
   const newGroups = []
   let accepted = 0
+  const already = new Set(existingNames.map(nameKeyOf))
+  const alreadyTold = new Set()
 
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i].line
@@ -38,6 +44,12 @@ export async function checkRoster({ bytes, type, groups, roleCodes, normalizeSki
     const reject = (reason) => rejected.push({ row, reason })
 
     if (!name) { reject('name is empty'); continue }
+    if (already.has(nameKeyOf(name))) {
+      if (!alreadyTold.has(nameKeyOf(name))) reject('already in the organisation')
+      alreadyTold.add(nameKeyOf(name))
+      continue
+    }
+    if (!group) { reject('group is empty'); continue }
     if (type === 'hr' && !roleCodes.has(code)) { reject(`role code ${code} is not in eMASCO`); continue }
     if (type === 'centre' && code) { reject('career centres have no current role'); continue }
 

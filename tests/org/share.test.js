@@ -116,7 +116,7 @@ describe('store: invites and shares', () => {
     expect(await store.shareOf('emp')).toBeNull()
     const { token } = await store.createInvite(org.id, { groupId: group.id })
     await store.share('emp', { token, displayName: 'Aini', skills })
-    expect(await store.shareOf('emp')).toEqual({ orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini', currentCode: null, skills })
+    expect(await store.shareOf('emp')).toEqual({ orgId: org.id, orgName: 'Synthetic Co', groupName: 'Ops', displayName: 'Aini', currentCode: null, skills })
     await store.stopSharing('emp')
     expect(await store.shareOf('emp')).toBeNull()
     expect((await d1.query('SELECT COUNT(*) AS c FROM org_skills')).rows[0].c).toBe(0)
@@ -346,5 +346,129 @@ describe('routes', () => {
     for (let i = 0; i < 11; i++) last = await call('POST', '/api/org/join', { token: 'nope' }, emp.cookie)
     expect(last.status).toBe(429)
     expect(last.body.error.code).toBe('too_many_attempts')
+  })
+
+  // ---- final review fixes 3, 10, 11
+  it('3: a link from org B while sharing with org A names A; sharing moves the one share to B', async () => {
+    const a = await setupOrg()
+    const ownerB = await newUser()
+    await call('POST', '/api/org', { name: 'Other Co', type: 'hr' }, ownerB.cookie)
+    const groupB = (await call('POST', '/api/org/groups', { name: 'Sales' }, ownerB.cookie)).body
+    const linkB = await call('POST', '/api/org/invites', { groupId: groupB.id }, ownerB.cookie)
+    const emp = await newUser()
+    const profileId = await saveProfile(emp)
+    await call('PUT', '/api/org/share', { token: a.invite.body.token, displayName: 'Aini', profileId }, emp.cookie)
+    const join = await call('POST', '/api/org/join', { token: linkB.body.token }, emp.cookie)
+    expect(join.status).toBe(200)
+    expect(join.body).toMatchObject({ orgName: 'Other Co', sharingWith: 'Synthetic Co' })
+    const put = await call('PUT', '/api/org/share', { token: linkB.body.token, displayName: 'Aini', profileId }, emp.cookie)
+    expect(put.status).toBe(200)
+    expect((await call('GET', '/api/org/share', null, emp.cookie)).body).toMatchObject({ orgName: 'Other Co', groupName: 'Sales' })
+    expect((await call('GET', '/api/org', null, a.owner.cookie)).body.people).toHaveLength(0)
+    expect((await call('GET', '/api/org', null, ownerB.cookie)).body.people).toHaveLength(1)
+    await call('DELETE', '/api/org/share', null, emp.cookie)
+    expect((await call('GET', '/api/org/share', null, emp.cookie)).body).toBeNull()
+    expect((await call('GET', '/api/org', null, ownerB.cookie)).body.people).toHaveLength(0)
+  })
+
+  it('3: a second link from the same organisation gives no warning', async () => {
+    const a = await setupOrg()
+    const emp = await newUser()
+    await call('PUT', '/api/org/share', { token: a.invite.body.token, displayName: 'Aini', profileId: await saveProfile(emp) }, emp.cookie)
+    const again = await call('POST', '/api/org/invites', { groupId: a.group.id }, a.owner.cookie)
+    const join = await call('POST', '/api/org/join', { token: again.body.token }, emp.cookie)
+    expect(join.body.sharingWith).toBeUndefined()
+  })
+
+  it('10: GET /api/org/share gives each held skill with its O*NET name', async () => {
+    const { invite } = await setupOrg()
+    const emp = await newUser()
+    await call('PUT', '/api/org/share', { token: invite.body.token, displayName: 'Aini', profileId: await saveProfile(emp) }, emp.cookie)
+    const mine = await call('GET', '/api/org/share', null, emp.cookie)
+    expect(mine.body.skills).toEqual([
+      { key: 'el:2.A.1.a', level: 'good', name: 'Reading Comprehension' },
+      { key: 'kn:2.C.1.b', level: 'not_assessed', name: 'kn:2.C.1.b' },
+    ])
+  })
+
+  it('11: the same item listed twice keeps the higher level, like matching', async () => {
+    const emp = await newUser()
+    const profileId = await saveProfile(emp, [
+      { name: 'Reading Comprehension', canonicalId: 'onet:el:2.A.1.a', proficiency: 'basic' },
+      { name: 'Reading Comprehension', canonicalId: 'onet:el:2.A.1.a', proficiency: 'expert' },
+      { name: 'Biology', canonicalId: 'onet:kn:2.C.1.b', proficiency: null },
+      { name: 'Biology', canonicalId: 'onet:kn:2.C.1.b', proficiency: 'good' },
+      { name: 'Chemistry', canonicalId: 'onet:kn:2.C.2.a', proficiency: 'good' },
+      { name: 'Chemistry', canonicalId: 'onet:kn:2.C.2.a', proficiency: null },
+    ])
+    const dry = await call('PUT', '/api/org/share', { profileId, dryRun: true }, emp.cookie)
+    expect(dry.body.shared).toEqual([
+      { key: 'el:2.A.1.a', name: 'Reading Comprehension', level: 'expert' },
+      { key: 'kn:2.C.1.b', name: 'Biology', level: 'good' },
+      { key: 'kn:2.C.2.a', name: 'Chemistry', level: 'good' },
+    ])
+  })
+})
+
+describe('final review fixes: one share per user (store)', () => {
+  async function twoOrgs() {
+    const d1 = createFakeD1()
+    await d1.migrate()
+    for (const id of ['ownerA', 'ownerB', 'emp']) {
+      await d1.query('INSERT INTO users (id, email, pass_hash, pass_salt, created_at) VALUES (?, ?, ?, ?, ?)', [id, `${id}@example.test`, 'h', 's', '2026-10-31T00:00:00Z'])
+    }
+    let n = 0
+    const store = createOrgStore({ d1, now: () => new Date('2026-10-31T00:00:00Z'), newId: () => `id${++n}` })
+    const a = await store.createOrg('ownerA', { name: 'Org A', type: 'hr' })
+    const b = await store.createOrg('ownerB', { name: 'Org B', type: 'hr' })
+    const ga = await store.addGroup(a.id, { name: 'Ops' })
+    const gb = await store.addGroup(b.id, { name: 'Sales' })
+    return { d1, store, a, b, ga, gb }
+  }
+  const skills = [{ key: 'el:2.A.1.a', level: 'good' }]
+
+  it('3: sharing with org B removes the share with org A (person and skills), then creates the one with B', async () => {
+    const { d1, store, a, b, ga, gb } = await twoOrgs()
+    const la = await store.createInvite(a.id, { groupId: ga.id })
+    const lb = await store.createInvite(b.id, { groupId: gb.id })
+    await store.share('emp', { token: la.token, displayName: 'Aini', skills })
+    expect((await store.shareOf('emp')).orgName).toBe('Org A')
+    await store.share('emp', { token: lb.token, displayName: 'Aini', skills: [{ key: 'kn:2.C.3.a', level: 'basic' }] })
+    expect(await store.people(a.id)).toHaveLength(0)
+    expect(await store.people(b.id)).toHaveLength(1)
+    expect((await d1.query("SELECT COUNT(*) AS c FROM org_people WHERE user_id = 'emp'")).rows[0].c).toBe(1)
+    expect((await d1.query('SELECT COUNT(*) AS c FROM org_skills')).rows[0].c).toBe(1)
+    expect(await store.shareOf('emp')).toMatchObject({ orgName: 'Org B', groupName: 'Sales', skills: [{ key: 'kn:2.C.3.a', level: 'basic' }] })
+    await store.stopSharing('emp')
+    expect(await store.shareOf('emp')).toBeNull()
+  })
+
+  it('3: a refused link (expired) keeps the share with org A', async () => {
+    const { store, a, b, ga, gb } = await twoOrgs()
+    const la = await store.createInvite(a.id, { groupId: ga.id })
+    const lb = await store.createInvite(b.id, { groupId: gb.id })
+    await store.share('emp', { token: la.token, displayName: 'Aini', skills })
+    await store.share('emp', { token: lb.token, displayName: 'Aini', skills })
+    const again = await store.createInvite(a.id, { groupId: ga.id })
+    await store.share('emp', { token: again.token, displayName: 'Aini', skills })
+    // back with A: B is gone again; a used link changes nothing
+    await expect(store.share('emp', { token: lb.token, displayName: 'Aini', skills })).rejects.toMatchObject({ code: 'link_expired' })
+    expect((await store.shareOf('emp')).orgName).toBe('Org A')
+  })
+
+  it('6: replacing skills stores 40 items in multi-row inserts of at most 100 bound parameters', async () => {
+    const { d1, store, a, ga } = await twoOrgs()
+    const la = await store.createInvite(a.id, { groupId: ga.id })
+    const many = Array.from({ length: 40 }, (_, i) => ({ key: `el:${String(i).padStart(2, '0')}`, level: 'basic' }))
+    const seen = []
+    const real = d1.query.bind(d1)
+    d1.query = async (sql, params = []) => {
+      seen.push({ sql, n: params.length })
+      return real(sql, params)
+    }
+    await store.share('emp', { token: la.token, displayName: 'Aini', skills: many })
+    expect(seen.filter((q) => /INSERT OR REPLACE INTO org_skills/.test(q.sql))).toHaveLength(2)
+    expect(Math.max(...seen.map((q) => q.n))).toBeLessThanOrEqual(100)
+    expect((await store.shareOf('emp')).skills).toHaveLength(40)
   })
 })

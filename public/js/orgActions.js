@@ -371,9 +371,10 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     orgChooseFile: () => globalThis.document?.getElementById('ogFile')?.click(),
     orgSample: async () => {
       const o = org()
-      const out = await api.sampleRoster(o.data?.org?.type ?? 'hr')
+      const type = o.data?.org?.type === 'centre' ? 'centre' : 'hr'
+      const out = await api.sampleRoster(type)
       if (!out.ok) return fail(out)
-      await previewFrom(out.data, 'sample-roster-hr.csv')
+      await previewFrom(out.data, `sample-roster-${type}.csv`)
     },
     orgImport: async () => {
       const o = org()

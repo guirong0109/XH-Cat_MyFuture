@@ -1207,6 +1207,7 @@ export default {
   ogOrgName: "机构名称", // translation: owner review
   ogType: "类型", // translation: owner review
   ogTypeNote: "类型会改变用词（部门 ↔ 课程，员工 ↔ 学生）。就业中心没有当前职位：差距只与目标职位比较。", // translation: owner review
+  ogTypeNoteCentre: "差距按每个课程的目标职位来衡量。", // translation: owner review
   ogCreate: "创建机构", // translation: owner review
   ogSave: "保存名称", // translation: owner review
   ogSaved: "已保存。", // translation: owner review
@@ -1226,6 +1227,7 @@ export default {
   ogSrcSetup: "目标职位来自 eMASCO（MOHR），2026 年 10 月 23 日抓取", // translation: owner review
   ogSource: "来源：", // translation: owner review
   ogPeopleLead: "可上传虚构人员的名单，或把加入链接发给真实员工，由其自己分享技能。", // translation: owner review
+  ogPeopleLeadCentre: "可上传虚构学生的名单。技能仅以名单所列为准。", // translation: owner review
   ogUploadTitle: "上传名单（CSV）", // translation: owner review
   ogSynthetic: "只使用合成（虚构）人员", // translation: owner review
   ogChooseFile: "选择文件…", // translation: owner review

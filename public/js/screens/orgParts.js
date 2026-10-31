@@ -96,7 +96,7 @@ export function setupView(t, o) {
     <form class="card og-stack" data-form="orgRename">
       <div class="field"><label for="ogName">${esc(t('ogOrgName'))}</label><input id="ogName" maxlength="80" value="${esc(data.org.name)}" required></div>
       <div class="field"><label>${esc(t('ogType'))}</label><div>${tag('src', t(`og_type_${type}`))}</div></div>
-      <span class="tiny muted">${esc(t('ogTypeNote'))}</span>
+      <span class="tiny muted">${esc(t(type === 'centre' ? 'ogTypeNoteCentre' : 'ogTypeNote'))}</span>
       <div class="row"><button class="btn pri" type="submit">${esc(t('ogSave'))}</button>
         <button class="btn" type="button" style="color:var(--bad)" data-act="orgDeleteOrg">${esc(t('ogDeleteOrg'))}</button></div>
     </form>
@@ -189,8 +189,8 @@ export function peopleView(t, o) {
   const hr = typeOf(o) === 'hr'
   const count = (team ? arr(team.people) : arr(o?.data?.people)).length
   const left = team ? arr(team.leftOut).length : 0
-  const sample = hr ? `<button class="btn" type="button" data-act="orgSample">${esc(t('ogUseSample'))}</button>` : ''
-  return `${head(t, o, 'people', t('ogPeopleLead'))}
+  const sample = `<button class="btn" type="button" data-act="orgSample">${esc(t('ogUseSample'))}</button>`
+  return `${head(t, o, 'people', t(hr ? 'ogPeopleLead' : 'ogPeopleLeadCentre'))}
   ${o?.message ? `<div class="banner ${o.message.kind === 'ok' ? 'b-ok' : 'b-bad'}" role="status"><div>${esc(o.message.text)}</div></div>` : ''}
   <div class="grid g2 og-top">
     <div class="card og-stack"><h3>${esc(t('ogUploadTitle'))}</h3>

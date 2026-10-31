@@ -29,7 +29,7 @@ export const deleteGroup = (id) => api('DELETE', `/api/org/groups/${enc(id)}`)
 
 export const previewRoster = (text) => csv('/api/org/roster/preview', text)
 export const importRoster = (previewId) => api('POST', '/api/org/roster/import', { previewId })
-// The made-up sample roster (HR only) as text, to be checked like any uploaded file.
+// The made-up sample roster (one per organisation type) as text, to be checked like any uploaded file.
 export async function sampleRoster(type) {
   let response
   try {

@@ -17,6 +17,7 @@ const dataDir = path.resolve('data')
 const orgDir = path.join(dataDir, 'org')
 const BROKEN_ROLE = '2182-03'
 const HR_GROUPS = ['Finance', 'Customer Service', 'Operations']
+const CENTRE_TARGETS = { 'Business Studies': '2411-01', 'Customer Service': '4222-01', Logistics: '1324-03' }
 
 async function sampleCheck() {
   const bytes = await readFile(path.join(orgDir, 'sample-roster-hr.csv'))
@@ -28,9 +29,9 @@ async function sampleCheck() {
 }
 
 describe('files and manifest', () => {
-  it('every file hashes to its manifest entry, and the manifest lists both CSVs', async () => {
+  it('every file hashes to its manifest entry, and the manifest lists all three CSVs', async () => {
     const manifest = JSON.parse(await readFile(path.join(orgDir, 'manifest.json'), 'utf8'))
-    expect(Object.keys(manifest.files).sort()).toEqual(['roster-template.csv', 'sample-roster-hr.csv'])
+    expect(Object.keys(manifest.files).sort()).toEqual(['roster-template.csv', 'sample-roster-centre.csv', 'sample-roster-hr.csv'])
     for (const [name, hash] of Object.entries(manifest.files)) {
       const bytes = await readFile(path.join(orgDir, name))
       expect(createHash('sha256').update(bytes).digest('hex')).toBe(hash)
@@ -80,6 +81,43 @@ describe('sample HR roster', () => {
   })
 })
 
+describe('sample career centre roster', () => {
+  async function centreCheck() {
+    const bytes = await readFile(path.join(orgDir, 'sample-roster-centre.csv'))
+    const catalogue = await loadSkillCatalogue(path.join(dataDir, 'onet'))
+    const normalizeSkill = makeRosterNormalizer({ catalogue, normalizeSkill: createNormalizer({ catalogue }).normalizeSkill })
+    const roles = JSON.parse(await readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')).roles
+    const roleCodes = new Set(roles.filter((r) => r.title).map((r) => r.code))
+    return checkRoster({ bytes, type: 'centre', groups: Object.keys(CENTRE_TARGETS), roleCodes, normalizeSkill })
+  }
+
+  it('reads cleanly: no role codes, one unrecognised skill, 12 made-up students in 3 programmes, all four levels', async () => {
+    const r = await centreCheck()
+    expect(r.rejected).toEqual([])
+    expect(r.unrecognised).toHaveLength(1)
+    expect(r.unrecognised[0].skill).toBe('Excel wizardry')
+    expect(r.people).toHaveLength(12)
+    expect(r.people.every((p) => /^Student \d\d$/.test(p.name) && !p.currentCode)).toBe(true)
+    expect([...new Set(r.people.map((p) => p.group))].sort()).toEqual(Object.keys(CENTRE_TARGETS).sort())
+    expect(new Set(r.people.flatMap((p) => p.skills.map((s) => s.level)))).toEqual(new Set(['basic', 'good', 'expert', 'not_assessed']))
+    const keys = r.people.flatMap((p) => p.skills.map((s) => s.key))
+    expect(keys.some((k) => k.startsWith('kn:')) && keys.some((k) => k.startsWith('el:'))).toBe(true)
+  })
+
+  it('with the real matching, each programme target role is available for its students', async () => {
+    const r = await centreCheck()
+    const matching = createMatchingServiceFromEnv({ dataDir })
+    for (const [group, code] of Object.entries(CENTRE_TARGETS)) {
+      let available = 0
+      for (const p of r.people.filter((x) => x.group === group)) {
+        const answer = await matching.role(profileOf(p.skills), code)
+        if (answer && answer.chain.missingStep === null && answer.fit !== null) available += 1
+      }
+      expect(available, group).toBeGreaterThanOrEqual(1)
+    }
+  })
+})
+
 describe('GET /api/org/roster/sample', () => {
   let server
   let base
@@ -110,7 +148,7 @@ describe('GET /api/org/roster/sample', () => {
     expect(body.people[0].skills).toEqual([{ key: 'kn:2.C.1.c', name: 'Economics and Accounting', level: 'good' }])
     expect(body.unrecognised).toEqual([{ row: 3, skill: 'Excel wizardry' }])
   })
-  it('returns the CSV as text/csv; other types are 404', async () => {
+  it('returns the CSV as text/csv; centre too; other types are 404', async () => {
     const signup = await fetch(`${base}/api/auth/signup`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: 'sample-owner@example.com', password: 'password 123' }),
@@ -120,7 +158,10 @@ describe('GET /api/org/roster/sample', () => {
     expect(ok.status).toBe(200)
     expect(ok.headers.get('content-type')).toMatch(/^text\/csv/)
     expect(await ok.text()).toBe(await readFile(path.join(orgDir, 'sample-roster-hr.csv'), 'utf8'))
-    for (const type of ['centre', 'x', '']) {
+    const centre = await fetch(`${base}/api/org/roster/sample?type=centre`, { headers: { Cookie: cookie } })
+    expect(centre.status).toBe(200)
+    expect(await centre.text()).toBe(await readFile(path.join(orgDir, 'sample-roster-centre.csv'), 'utf8'))
+    for (const type of ['x', '']) {
       expect((await fetch(`${base}/api/org/roster/sample?type=${type}`, { headers: { Cookie: cookie } })).status).toBe(404)
     }
   })

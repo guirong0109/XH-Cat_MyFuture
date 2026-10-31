@@ -1207,6 +1207,7 @@ export default {
   ogOrgName: "Nama organisasi", // translation: owner review
   ogType: "Jenis", // translation: owner review
   ogTypeNote: "Jenis menukar perkataan (jabatan ↔ program, kakitangan ↔ pelajar). Pusat kerjaya tiada peranan semasa: jurang hanya dibandingkan dengan peranan sasaran.", // translation: owner review
+  ogTypeNoteCentre: "Jurang diukur berbanding peranan sasaran bagi setiap program.", // translation: owner review
   ogCreate: "Cipta organisasi", // translation: owner review
   ogSave: "Simpan nama", // translation: owner review
   ogSaved: "Disimpan.", // translation: owner review
@@ -1226,6 +1227,7 @@ export default {
   ogSrcSetup: "peranan sasaran daripada eMASCO (MOHR), dirayapi 23 Okt 2026", // translation: owner review
   ogSource: "Sumber:", // translation: owner review
   ogPeopleLead: "Tambah orang dengan memuat naik senarai orang rekaan, atau dengan menghantar pautan sertai kepada pekerja sebenar yang kemudian berkongsi kemahirannya sendiri.", // translation: owner review
+  ogPeopleLeadCentre: "Tambah pelajar dengan memuat naik senarai pelajar rekaan. Kemahiran hanyalah yang tersenarai.", // translation: owner review
   ogUploadTitle: "Muat naik senarai (CSV)", // translation: owner review
   ogSynthetic: "Gunakan orang sintetik (rekaan) sahaja", // translation: owner review
   ogChooseFile: "Pilih fail…", // translation: owner review

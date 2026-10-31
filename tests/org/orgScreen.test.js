@@ -273,6 +273,40 @@ describe('people and setup views', () => {
   })
 })
 
+describe('career centre type', () => {
+  it('no screen shows a current-role column, switch or field', () => {
+    const org = { ...centreOrg(), sel: { groupId: 'g1', key: KN }, planGroup: 'g2' }
+    for (const view of [setupView, peopleView, heatView, planView, outlookView]) {
+      const html = view(t, org)
+      expect(text(html), view.name).not.toMatch(/current role/i)
+      expect(html, view.name).not.toContain('data-arg="current"')
+    }
+  })
+
+  it('uses student and cohort words, and the plan says to choose a target role for a group without one', () => {
+    const org = centreOrg({ tab: 'plan', planGroup: 'g2' })
+    expect(text(planView(t, org))).toContain('Cohort plan')
+    expect(text(planView(t, org))).toContain('Choose a target role')
+    expect(text(peopleView(t, org))).toContain('Students')
+  })
+
+  it('outlook counts by target role', () => {
+    expect(text(outlookView(t, centreOrg()))).toContain('by target role')
+  })
+
+  it('the people tab offers the sample roster for both types, and the action fetches the matching one', async () => {
+    expect(peopleView(t, centreOrg())).toContain('data-act="orgSample"')
+    const sampleRoster = vi.fn(async () => ({ ok: true, data: 'name,group,current_role_code,skill,level' }))
+    const previewRoster = vi.fn(async () => ({ ok: true, data: { previewId: 'x', people: [], rejected: [], unrecognised: [] } }))
+    const org = centreOrg()
+    const st = { screen: 'org', lang: 'en', account: { status: 'in', user: {} }, org }
+    const a = createOrgActions({ state: st, render: vi.fn(), api: { sampleRoster, previewRoster }, t, go: vi.fn() })
+    await a.actions.orgSample()
+    expect(sampleRoster).toHaveBeenCalledWith('centre')
+    expect(st.org.preview.name).toBe('sample-roster-centre.csv')
+  })
+})
+
 describe('every view', () => {
   const orgs = { hr: makeOrg(), centre: centreOrg() }
   const views = { setupView, peopleView, heatView, planView, outlookView }

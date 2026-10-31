@@ -164,8 +164,8 @@ export function orgRoutes({ auth, store, service, loadNormalizer, loadCatalogue,
     return response.json(await store.importPeople(org.id, held.preview))
   }))
 
-  // ---- sample roster: made-up people, read from data/org (hash in manifest.json); only the HR sample exists so far
-  const SAMPLES = { hr: 'sample-roster-hr.csv' }
+  // ---- sample roster: made-up people, read from data/org (hash in manifest.json); one per organisation type
+  const SAMPLES = { hr: 'sample-roster-hr.csv', centre: 'sample-roster-centre.csv' }
   router.get('/api/org/roster/sample', requireUser, guard(async (request, response) => {
     const file = Object.hasOwn(SAMPLES, request.query.type) ? SAMPLES[request.query.type] : null
     if (!file) return sendError(response, 404, 'not_found', 'There is no sample roster for this type.')

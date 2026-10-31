@@ -30,5 +30,16 @@ export function makeBridge(bridgeFile) {
     path.push({ ...stepRef('isco08_to_masco2020_major'), from: codes, to: groups })
     return { groupCode: groups.length === 1 ? groups[0] : null, groupCodes: groups, status: 'mapped', path }
   }
-  return { groupOf, steps: [...steps.values()].map((s) => ({ id: s.id, status: s.status, pendingReason: s.pendingReason ?? null, source: s.source ?? null })) }
+  // ISCO-08 codes of one O*NET job: the same three built steps, sorted and unique; [] when a step is not built or has no row.
+  function iscoOf(onetCode) {
+    let codes = [onetCode]
+    for (const id of ['onet_to_soc2018', 'soc2018_to_soc2010', 'soc2010_to_isco08']) {
+      const step = steps.get(id)
+      if (step?.status !== 'built') return []
+      codes = [...new Set(codes.flatMap((c) => step.links?.[c] ?? []))]
+      if (!codes.length) return []
+    }
+    return codes.sort()
+  }
+  return { groupOf, iscoOf, steps: [...steps.values()].map((s) => ({ id: s.id, status: s.status, pendingReason: s.pendingReason ?? null, source: s.source ?? null })) }
 }

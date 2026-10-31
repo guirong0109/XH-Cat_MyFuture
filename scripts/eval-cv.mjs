@@ -118,7 +118,7 @@ async function main() {
   let ai = null
   if (useAi) {
     const provider = providerFromEnv(process.env)
-    const reader = createAiReader({ provider, normalizer })
+    const reader = createAiReader({ provider, normalizer, catalogue })
     const usage = { input: 0, output: 0 }
     for (const r of results) {
       if (r.out.error) {

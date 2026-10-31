@@ -119,7 +119,7 @@ export function createApp({
   let aiReader = null
   const lazyAiReader = aiProvider
     ? { read: async (args) => {
-      aiReader ??= createAiReader({ provider: aiProvider, fetchImpl, normalizer: await loadNormalizer(), now })
+      aiReader ??= createAiReader({ provider: aiProvider, fetchImpl, normalizer: await loadNormalizer(), catalogue: await loadCatalogue(), now })
       return aiReader.read(args)
     } }
     : null

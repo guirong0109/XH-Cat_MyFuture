@@ -3,9 +3,10 @@
 // (a skill used in a job or project starts at Good by the owner's rule, not by the AI).
 // AI replies and CV text are never logged; only the kind of failure.
 import { emptyProfile, levelFromUse, makeSkill } from '../../shared/profileSchema.js'
-import { CV_SCHEMA, SYSTEM_PROMPT, userMessage } from './aiReadPrompt.js'
+import { CV_SCHEMA, systemPrompt, userMessage } from './aiReadPrompt.js'
 import { createWindowLimiter } from '../rateLimit.js'
 import { mergeSkills } from '../skills/normalize.js'
+import { ONET_LINKABLE, nameKey } from '../skills/onetSkills.js'
 import { levelOf } from './patterns.js'
 
 const HOUR_MS = 3600 * 1000
@@ -25,7 +26,7 @@ class ProviderError extends Error {
 
 const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
 // Fields a reply may leave out (replies from before they were asked for are still read).
-const OPTIONAL = new Set(['usedIn'])
+const OPTIONAL = new Set(['usedIn', 'onet'])
 
 // The reply must have the five lists of objects with string fields; anything else is a failed reply.
 // Returns where the shape first breaks (names and types only, never CV text), or null when it is right.
@@ -109,7 +110,9 @@ const parse = (text) => {
   }
 }
 
-export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = () => new Date(), timeoutMs = AI_TIMEOUT_MS, perHour = 20 }) {
+export function createAiReader({ provider, fetchImpl = fetch, normalizer, catalogue, now = () => new Date(), timeoutMs = AI_TIMEOUT_MS, perHour = 20 }) {
+  const linkable = new Map(ONET_LINKABLE(catalogue).map((entry) => [nameKey(entry.name), entry]))
+  const prompt = systemPrompt([...new Set([...linkable.values()].map((entry) => entry.name))].sort((a, b) => a.localeCompare(b)))
   const perAddress = createWindowLimiter({ limit: perHour, windowMs: HOUR_MS, now })
 
   async function suggestedProfile(fields, interfaceLanguage) {
@@ -120,7 +123,7 @@ export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = 
     profile.education.records = fields.education.map((e) => ({ qualification: e.qualification, level: levelOf(e.qualification), fieldOfStudy: e.fieldOfStudy, institution: e.institution, year: '', userConfirmed: false, extraction: extraction(e.evidence) }))
     profile.employment.records = fields.jobs.map((j) => ({ jobTitle: j.jobTitle, employer: j.employer, period: '', userConfirmed: false, extraction: extraction(j.evidence) }))
     profile.certifications = fields.certifications.map((c) => ({ name: c.name, issuer: '', year: '', userConfirmed: false, extraction: extraction(c.evidence) }))
-    profile.projects = fields.projects.map((p) => ({ title: p.title, description: '', userConfirmed: false, extraction: extraction(p.evidence) }))
+    profile.projects = fields.projects.map((p) => ({ title: p.title, description: p.description ?? '', userConfirmed: false, extraction: extraction(p.evidence) }))
     // Where a skill was used: only a job or project the AI itself returned (and kept), by its title.
     const places = [
       ...profile.employment.records.map((j) => ({ kind: 'job', title: j.jobTitle })),
@@ -130,7 +133,11 @@ export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = 
     // Skill names go through the same O*NET normaliser as everything else; ids never come from the AI.
     profile.skills = mergeSkills(await Promise.all(fields.skills.filter((s) => s.name).map(async (s) => {
       const found = await normalizer.normalizeSkill(s.name)
-      return makeSkill({ ...found, source: 'cv_ai', extraction: extraction(s.evidence), usedIn: usedIn(s.usedIn) })
+      const skill = makeSkill({ ...found, source: 'cv_ai', extraction: extraction(s.evidence), usedIn: usedIn(s.usedIn) })
+      // The AI's closest O*NET name, only when it is on the catalogue's list and not the skill's own link.
+      const suggested = s.onet ? linkable.get(nameKey(s.onet)) : null
+      if (suggested && suggested.id !== skill.canonicalId) skill.aiSuggestion = { id: suggested.id, name: suggested.name, evidence: s.evidence }
+      return skill
     }))).map(levelFromUse)
     return profile
   }
@@ -145,7 +152,7 @@ export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = 
         { 'content-type': 'application/json', authorization: `Bearer ${provider.key}` },
         {
           model: provider.model,
-          messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userMessage(cvText) }],
+          messages: [{ role: 'system', content: prompt }, { role: 'user', content: userMessage(cvText) }],
           response_format: { type: 'json_object' },
           // Copying facts needs no reasoning; with thinking on, hidden reasoning was up to 60% of the output and slow.
           thinking: { type: 'disabled' },

@@ -77,6 +77,7 @@ that failed first. The branch was merged into `main` via PR #1
 | Last section renamed (31 Oct, owner request) | `secPrefs` reads "Interests" (BM "Minat", 中文 "兴趣"); the key and the questions inside are unchanged |
 | Interests: one question (31 Oct, owner request) | `form.js` `prefs` is only `interestField` (Career interests and fields); career goal (asked on the goal screen), occupations of interest, work location and learning hours are not asked; the receipt shows location and hours only when saved earlier. Main's radar also reads occupations of interest |
 | Review and confirm on Interests only (31 Oct, owner request) | `form.js`: sections 1-3 end with Back and Next (main button); only the last section shows Review and confirm |
+| Skill level toggle bar (31 Oct, owner request) | `form.js` `levelBar()`: `.toggle` radiogroup of Not assessed yet / Basic / Good / Expert, `data-act="level" data-arg="<i>|<level>"`; `app.js` `level` action (empty = not assessed) |
 | Build record source | `docs/record/build_record.py` reads `docs/record/status.json` (+ `_head.html`, `_tail.html`) and writes `docs/build-record.html` |
 
 ---

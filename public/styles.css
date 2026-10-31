@@ -168,6 +168,14 @@ details summary{cursor:pointer;font:500 11.5px var(--mono);letter-spacing:.08em;
 .option:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
 .option:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
 .option.sel{background:var(--ink);color:var(--bg)}
+/* Skill level: one connected toggle bar, like a row of switch keys; the chosen key is pressed in (ink). */
+.toggle{display:inline-flex;border:1px solid var(--ink);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:3px 3px 0 var(--ink)}
+.toggle button{appearance:none;border:0;border-left:1px solid var(--ink);background:none;padding:7px 12px;font:500 11px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);cursor:pointer;white-space:nowrap}
+.toggle button:first-child{border-left:0}
+.toggle button:hover{background:var(--bg)}
+.toggle button.on{background:var(--ink);color:var(--bg);box-shadow:inset 0 2px 0 rgba(0,0,0,.35)}
+.toggle button.on::before{content:"";display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--lime);vertical-align:1px}
+.toggle button:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
 .option.sel::before{background:var(--lime);border-color:var(--lime);box-shadow:inset 0 0 0 3px var(--ink)}
 .field label.tiny{display:flex;gap:6px;align-items:center;font-weight:400}
 .field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:9px 11px;width:100%}

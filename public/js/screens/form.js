@@ -132,6 +132,15 @@ function work(ctx) {
   return `${rows}<button class="btn sm" data-act="addRec" data-arg="employment.records">${esc(t('addJob'))}</button>`
 }
 
+// Skill level (owner, 31 Oct): a toggle bar; one press picks the level. "Not assessed yet" is on until one is chosen.
+const LEVEL_OPTIONS = [['', 'levelNone'], ['basic', 'basic'], ['good', 'good'], ['expert', 'expert']]
+function levelBar(t, skill, i) {
+  return `<div class="toggle" role="radiogroup" aria-labelledby="lv-${i}">${LEVEL_OPTIONS.map(([value, key]) => {
+    const on = (skill.proficiency ?? '') === value
+    return `<button class="${on ? 'on' : ''}" role="radio" aria-checked="${on}" data-act="level" data-arg="${i}|${value}">${esc(t(key))}</button>`
+  }).join('')}</div>`
+}
+
 function skills(ctx) {
   const { t, profile } = ctx
   const rows = profile.skills.map((skill, i) => {
@@ -145,8 +154,8 @@ function skills(ctx) {
     const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title, source: `O*NET ${skill.suggestedFrom.onetVersion ?? ''}`.trim() }))}</div>` : ''
     return `<div class="card" style="margin-bottom:8px"><div class="row" style="justify-content:space-between">
       <div><b>${esc(skill.name)}</b>${original}${from}${suggested}${unknown}</div>
-      <div class="row"><label class="tiny muted" for="lv-${i}">${esc(t('level'))}</label>
-        <select id="lv-${i}" data-level="${i}">${[['', 'levelNone'], ['basic', 'basic'], ['good', 'good'], ['expert', 'expert']].map(([v, k]) => `<option value="${v}" ${(skill.proficiency ?? '') === v ? 'selected' : ''}>${esc(t(k))}</option>`).join('')}</select>
+      <div class="row"><span class="tiny muted" id="lv-${i}">${esc(t('level'))}</span>
+        ${levelBar(t, skill, i)}
         ${levelTag} ${reviewToggle(t, `skills.${i}`, skill)}
         <button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button></div>
     </div></div>`

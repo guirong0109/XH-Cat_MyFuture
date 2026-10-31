@@ -78,7 +78,7 @@ describe('form sections', () => {
 
   it('the skill level starts on "Not assessed yet"', () => {
     const profile = { ...emptyProfile(), skills: [makeSkill({ name: 'Python', canonicalId: 'onet:tech:python', source: 'user_input' })] }
-    expect(form({ t, state: state(2, profile) })).toMatch(/<option value="" selected>levelNone<\/option>/)
+    expect(form({ t, state: state(2, profile) })).toContain('<button class="on" role="radio" aria-checked="true" data-act="level" data-arg="0|">levelNone</button>')
   })
 
   it('skills use a search picker; field of study is a dropdown', () => {

@@ -1,5 +1,5 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
 import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
@@ -169,6 +169,15 @@ const actions = {
   choose: (arg) => {
     const [path, value] = arg.split('|')
     update(setField(state.profile, path, value ? val(value) : DECLINED))
+  },
+  // Skill level toggle bar: "<skill index>|<level>", an empty level = not assessed yet.
+  level: (arg) => {
+    const [index, value] = arg.split('|')
+    const level = value || null
+    const skills = state.profile.skills.map((skill, i) => (i !== Number(index) ? skill : {
+      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
+    }))
+    update({ ...state.profile, skills })
   },
   resume: () => go(resumeTo ?? 'source'),
   startNew: () => {
@@ -453,13 +462,6 @@ function onChange(target) {
     if (!chosen) return update(setField(state.profile, `education.records.${i}.field`, null))
     const field = { source: 'isced', code: chosen.code, title: chosen.title, version: state.fields.version, via: 'list' }
     return update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, chosen.title), `education.records.${i}.field`, field))
-  }
-  if (d.level !== undefined) {
-    const level = target.value || null
-    const skills = state.profile.skills.map((skill, i) => (i !== Number(d.level) ? skill : {
-      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
-    }))
-    return update({ ...state.profile, skills })
   }
 }
 

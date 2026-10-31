@@ -253,7 +253,7 @@ Each item below says what you will see and what to do.
   cd /c/Users/guiro/XH_Cat_Final
   git checkout claude/cv-profile-module && git pull
   npm install
-  npm test                                # expect 372 passed
+  npm test                                # expect 1716 passed (use --testTimeout=30000 on a busy machine)
   npm start                               # http://localhost:3200
   node scripts/serve-local-accounts.mjs   # accounts with in-memory stores, http://localhost:3100
   ```
@@ -262,3 +262,57 @@ Each item below says what you will see and what to do.
   - `main` keeps short versions with only the important points.
   - On every merge to `main`, carry the important points into main's two files. Do not overwrite them with the
     branch's detailed ones.
+
+---
+
+## 7. CV skills linked to O*NET (31 Oct 2026)
+
+**What changed (owner decisions L1-L3).** A skill read from a CV now points at the closest O*NET skill, knowledge or
+technology name, so it can count in the Skill Match.
+- **L1:** the rules link more skills on their own (short forms such as SQL and MS Excel; a whole O*NET name inside a
+  short phrase; knowledge names go through the same steps as skills).
+- **L2:** the AI picks the closest O*NET name for each skill it reads and gives a quote from the CV. This is a
+  suggestion only. It shows on the form with its source and Keep / Remove buttons.
+- **L3:** the embeddings step stays off.
+- Projects are split into a title and a description ("Sales forecast app" / "built with Python and Flask"), and a skill
+  used in a project shows where it was used.
+
+**Where the code is.**
+- `server/skills/onetSkills.js`: the list the AI may choose from (`ONET_LINKABLE`) and the checks on a suggestion.
+- `server/skills/normalize.js`: the rule steps (exact, short form, whole name inside a phrase, candidates) and merging.
+- `server/cv/extract.js`: reads projects, uses the normaliser.
+- `server/cv/aiRead.js`, `aiReadPrompt.js`: asks DeepSeek, the prompt is built from our real list of names.
+- `server/cv/mergeDrafts.js`: keeps one AI suggestion per skill, on the AI-found skill.
+- `public/js/cvSuggest.js`: Keep / Remove on the form (`keepSuggestion`).
+- `public/js/screens/skillGroups.js`: shows the suggestion under the skill.
+- Tests: `tests/` for each of these, plus `tests/matching/keptSuggestion.test.js` ("a kept CV suggestion counts in
+  Skill Match"). Eval: `scripts/eval-cv.mjs` now reports project and Skill Match accuracy.
+
+**Rules (do not change without the owner).**
+- A suggestion does **not** count in the Skill Match until the user presses **Keep**. A suggestion left alone is only
+  text.
+- The id always comes from our own O*NET list. The AI gives a name; the server looks it up. A name not in the list, or
+  without a quote that appears in the CV, is dropped.
+- Levels never come from the AI. Keep sets the skill to Good if it was used in a job or project, else "not assessed".
+- Remove deletes the suggestion and nothing else.
+
+**Merged.** Merged to `main` as **`a771c15`** and pushed on 31 Oct 2026.
+
+**Still open.**
+- The paid accuracy run `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai` for the new suggestions (under
+  US$0.01). Needs the owner's OK. `docs/eval-results.md` still shows the earlier AI table (before projects and the
+  harder CVs), marked with its date.
+- Design B (tools to careers) and design C (field of study to careers): not started.
+- Deferred display minors (from the reviews):
+  - a suggestion repeats on every card where the skill appears (a skill in two jobs);
+  - in Edit mode the suggestion shows twice (chips and the edit row), so two Keep / Remove pairs;
+  - suggestions in the "Other" group are folded until Show;
+  - a suggestion left alone stays on the saved skill (not counted);
+  - if the rules skill's own suggestion is dropped as taken, the AI's other pick is not tried;
+  - knowledge with no occupation (importance under 3 everywhere) can still be linked;
+  - a few untested paths (the 使用 split, the ": " separator, letter case, the MS Excel fall-through);
+  - a "Mathematics" suggestion resolves to the skill entry first (same as the rules).
+- A reader gap: `long-projects-pdf` finds 1 of 3 projects (lines with "using" or " - " after the first project are
+  taken as descriptions). Real, not fixed.
+
+Browser check: `docs/cv/acceptance.md`. Diagram: `docs/architecture-cv-branch.html` section 1b.

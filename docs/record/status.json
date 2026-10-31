@@ -2810,6 +2810,61 @@
       "time": "31 Oct",
       "step": "Merge claude/compare-futures into main",
       "detail": "Owner asked to push to main. Compare futures AI news (DeepSeek Search every 3 hours, relevance check, English only) merged; conflicts resolved: app.js save keeps main's fields plus news: null (main removed state.ai); SOURCES.md keeps both DeepSeek sections; status.json merged as data; main's short CLAUDE.md and HANDOVER.md get the key points (3-hour refresh rule, CV_LLM_KEY vs DEEPSEEK_API_KEY, Cloudflare plan). Main removed tempStore, so createApp's news fallback no longer passes it. npm test 1673 passed, pipeline 49 OK. Browser check of main not run: the per-folder server limit was reached and the owner's news server stays running"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: spec",
+      "detail": "Owner decisions L1-L3 written down: rules link more skills, the AI suggests the closest O*NET name with a quote, embeddings stay off. Suggestions count only after Keep. Spec approved 31 Oct 2026"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: plan",
+      "detail": "Nine tasks written and approved (docs/superpowers/plans/2026-10-31-cv-onet-linking.md); task 1 = merge of main into the CV branch (no conflicts written by hand)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 2 rules link more skills",
+      "detail": "Short forms (SQL, MS Excel), whole O*NET name inside a phrase, knowledge names through the same steps; review clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 3 project split",
+      "detail": "A project line is split into title and description; a skill used in a project shows where; review clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 4 AI picks an O*NET name",
+      "detail": "The prompt is built from our real list; the server checks the name is in the list and the quote is in the CV. One gap found and fixed (project description is optional); review clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 5 merged draft keeps one suggestion",
+      "detail": "mergeDrafts keeps one AI suggestion per skill; ids and levels untouched; review clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 6 Keep / Remove on the form",
+      "detail": "The form shows the suggestion with its source; Keep adds the link; Remove deletes only the suggestion; review clean"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 7 Skill Match test",
+      "detail": "A kept suggestion counts in the Skill Match; one that is left alone does not"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: task 8 harder test CVs and report",
+      "detail": "Five harder synthetic CVs; the eval reports project and Skill Match accuracy; 36 of 49 found skills linked; known gap: long-projects-pdf finds 1 of 3 projects. Paid --ai run not done (needs your OK)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: browser check",
+      "detail": "cvcheck.localhost:3263 with a local fake DeepSeek: suggestions show with source and Keep / Remove; Keep added Programming at Good in the job and project; SQL and MS Excel linked; project split Sales forecast app / built with Python and Flask. Seen: suggestion repeats on every card (deferred minor)"
+    },
+    {
+      "time": "31 Oct",
+      "step": "CV O*NET linking: merge to main",
+      "detail": "Your request: merged to main as a771c15 and pushed on 31 Oct 2026. Docs added: HANDOVER section 7, docs/cv/acceptance.md, diagram section 1b (Tests 1716 passed, pipeline 49 OK)"
     }
   ]
 }

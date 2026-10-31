@@ -32,11 +32,22 @@ and how to work here.
 - The CV text goes to DeepSeek in China: fine for synthetic data; check Malaysia's PDPA before real users.
 - Accuracy check: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`. Paid (under $0.50): ask first.
 
+## CV skills linked to O*NET (31 Oct; owner decisions L1-L3; merged to main as a771c15)
+- Rules link more skills (short forms, whole O*NET name in a phrase); the AI suggests the closest O*NET name with a
+  quote; L3 embeddings stay off. Spec `docs/superpowers/specs/2026-10-31-cv-onet-linking-design.md`.
+- A suggestion counts in the Skill Match only after the user presses **Keep** (`public/js/cvSuggest.js`). Ids come from
+  our own list only (`server/skills/onetSkills.js`); a name not in the list, or a quote not in the CV, is dropped.
+  Levels never come from the AI.
+- Code: `server/skills/onetSkills.js`, `normalize.js`, `server/cv/extract.js`, `aiRead.js`, `aiReadPrompt.js`,
+  `mergeDrafts.js`, `public/js/cvSuggest.js`, `public/js/screens/skillGroups.js`. Browser result: `docs/cv/acceptance.md`.
+- Open: the paid `--ai` accuracy run (under US$0.01, ask first); designs B (tools to careers) and C (field of study to
+  careers); deferred display minors listed in HANDOVER section 7.
+
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 372 passed
-python -m unittest discover pipeline/tests        # expect 8 OK
+npm test                                          # Vitest, expect 1716 passed (add --testTimeout=30000 when the machine is busy)
+python -m unittest discover pipeline/tests        # expect 49 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
 node scripts/eval-cv.mjs                          # writes docs/eval-results.md

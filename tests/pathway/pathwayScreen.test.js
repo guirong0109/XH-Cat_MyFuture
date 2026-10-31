@@ -362,7 +362,12 @@ describe('Career matching card and app wiring', () => {
       expect(table.roadmap).toBeUndefined()
     }
     const app = readFileSync(join(root, 'public/js/app.js'), 'utf8')
-    expect(app).toMatch(/const NEXT = \['assess', 'radar', 'match', 'pathway', 'sdg', 'futures'\]/)
+    // Owner, 1 Nov 2026: the "Proficiency check" tab (assess) and the "SDG contribution" section (#sdg) are removed;
+    // an old #sdg link opens Career matching, where the SDG tags stay.
+    expect(app).toMatch(/const NEXT = \['radar', 'match', 'pathway', 'futures'\]/)
+    expect(app).toMatch(/sdg: 'match'/)
+    expect(app).not.toMatch(/sdgTab/)
+    for (const table of [en, ms, zh]) for (const key of ['assess', 'sdg', 'ldS5T', 'ldS5D', 'mtSdgLead', 'mtSdgNoRole']) expect(table[key]).toBeUndefined()
     expect(app).toMatch(/roadmap: 'pathway'/)
     expect(app).toMatch(/pathway: state\.pathway \? pathwayToSave\(state\.pathway\) : null/)
     // back / forward to #roadmap also shows #pathway in the address

@@ -28,7 +28,7 @@ scenario comparison.
 | CV skills that reach Skill Match: O*NET knowledge areas and short forms (SQL, MS Excel) linked; DeepSeek suggests the closest O*NET skill/knowledge, counted only after the user presses Keep; project title and description split; no skills from certificate lines | `claude/cv-profile-module` | merged 2026-10-31 | Built, task-reviewed and whole-branch reviewed (4 Important fixed, merged 2026-11-01); checked in the browser with a local fake AI; paid AI accuracy run still open |
 | Radar: AI usage question (10 owner categories), AI tasks scatter, two tabs For You / Explore all trends (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1535 tests pass after the merge; whole-branch reviews fixed; checked in the browser |
 | Compare futures: AI news per study field (DeepSeek Search every 3 hours, DeepSeek relevance check, English only) | `claude/compare-futures` | merged 2026-10-31 | Done; 1673 tests pass after the merge; whole-branch reviews fixed; checked with the owner's key |
-| SDG contribution page | not started | — | Next |
+| Proficiency check tab and SDG contribution section | `main` | removed 2026-11-01 (owner) | Gone; SDG tags and filter stay on Career matching, SDG review stays in `#admin`; `#sdg` opens Career matching; 1748 tests pass |
 
 ## Compare futures: AI news (since 2026-10-31)
 - **Screen `#futures` → AI news:** For you (the profile's study fields) and Explore all (10 ISCED-F broad fields),
@@ -216,7 +216,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1744 passed
+npm test          # expect 1748 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

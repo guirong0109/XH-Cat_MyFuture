@@ -2,7 +2,7 @@
 export default {
   welcome: 'Selamat datang', returning: 'Tetamu kembali', access: 'Tetamu atau akaun', category: 'Siapakah anda?', org: 'HR & TVET (pratonton)',
   source: 'CV atau manual', upload: 'Muat naik CV', form: 'Profil anda', review: 'Sahkan profil', summary: 'Ringkasan profil anda',
-  assess: 'Semakan kemahiran', radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian', sdg: 'Sumbangan SDG', futures: 'Bandingkan masa depan',
+  radar: 'Radar Kemahiran Masa Depan', match: 'Padanan kerjaya', pathway: 'Laluan pengajian', futures: 'Bandingkan masa depan',
   heroSub: 'Mulakan dengan diri anda hari ini: pengajian, kerja dan kemahiran, daripada CV atau borang ringkas.',
   themeToDark: 'Mod gelap', themeToLight: 'Mod cerah',
   langNote: 'Antara muka kekal dalam bahasa ini. Ia hanya berubah apabila anda memilih bahasa lain.',
@@ -880,16 +880,10 @@ export default {
   mtSrcAdsText: "DOSM Job Market Insights {period} (melalui Radar), diterbitkan {date}", // translation: owner review
   mtSrcInDemand: "Perisian dalam permintaan", // translation: owner review
   mtSrcInDemandText: "Tanda “In Demand” O*NET (iklan kerja AS melalui Lightcast), dibaca daripada manifest aktif Radar", // translation: owner review
-  mtSdgLead: "Bagaimana peranan yang anda pilih, dan kemahiran yang masih perlu anda bina untuknya, berkait dengan Matlamat Pembangunan Mampan PBB. Ini ialah kiraan pautan beserta sebab:", // translation: owner review
   mtPotential: "potensi, bukan diukur", // translation: owner review
-  mtSdgNoRole: "Belum ada peranan dipilih", // translation: owner review
-  mtSdgNoRoleText: "Tekan “Pilih peranan ini” pada peranan dalam Padanan kerjaya untuk melihat bagaimana laluan itu berkait dengan SDG.", // translation: owner review
   mtGoMatch: "Pergi ke Padanan kerjaya", // translation: owner review
-  mtSdgPath: "Laluan pilihan anda", // translation: owner review
-  mtSdgLinksTo: "Laluan ini berkait dengan", // translation: owner review
   mtSdgGoalOne: "SDG {goal} ({count} pautan)", // translation: owner review
   mtSdgGoalMany: "SDG {goal} ({count} pautan)", // translation: owner review
-  mtSdgNoneText: "Belum ada pautan SDG pada laluan ini.", // translation: owner review
   mtTarget: "Sasaran {target}", // translation: owner review
   mtViaRole: "melalui peranan (kumpulan MASCO {code})", // translation: owner review
   mtViaItem: "melalui kemahiran yang akan anda bina: {name}", // translation: owner review
@@ -968,8 +962,6 @@ export default {
   ldS3D: "Peranan masa depan mengikut kedudukan, dengan skor yang boleh diperincikan: mengapa skor ini, dan apa yang boleh menaikkannya.",
   ldS4T: "Ikuti laluan",
   ldS4D: "Pelan pembelajaran tersusun dengan anggaran masa dan kursus percuma atau kos rendah yang benar-benar wujud.",
-  ldS5T: "Lihat sumbangan SDG",
-  ldS5D: "Bagaimana setiap peranan dan kemahiran berkait dengan Matlamat Pembangunan Mampan PBB, dengan sebab bagi setiap kaitan.",
   ldS6T: "Bandingkan masa depan",
   ldS6D: "Tukar antara sekurang-kurangnya dua senario AI dan lihat bagaimana cadangan berubah, dilabel sebagai anggaran.",
   ldS1a: "CV PDF atau Word",

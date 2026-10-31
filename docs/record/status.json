@@ -2890,6 +2890,11 @@
       "time": "31 Oct",
       "step": "Accounts on this computer (ACCOUNTS_DB=local)",
       "detail": "Owner: host on this computer, no Cloudflare R2 / D1. server/store/localDb.js: SQLite file through node:sqlite with D1's query / migrate interface; ACCOUNTS_DB=local turns it on (default data/cache/accounts/accounts.db, git-ignored; ACCOUNTS_DB_FILE moves it); tables created on first use; D1 settings win. Tests first (8): file survives reopen, D1-like answers and errors, env choice, createApp health accounts on, sign-up then restart then sign-in, no plain-text passwords. Browser check on accounts.localhost:3310 with a throw-away database: sign-up 201, signed in, account still there after a server restart, wrong password 401 (      Tests  1748 passed (1748))"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Proficiency check and SDG contribution removed (main)",
+      "detail": "Owner asked to change main directly. Removed: the Proficiency check tab (assess, a placeholder), the SDG contribution tab and page (#sdg, sdgTab.js) with its tests, its landing step and 9 labels in en/ms/zh. Kept: SDG tags and filter on Career matching, SDG link review in #admin, skill levels. Old #sdg links open Career matching. Tests changed first; npm test 1748 passed; checked on localhost:3300: 5 tabs"
     }
   ]
 }

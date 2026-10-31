@@ -29,7 +29,6 @@ import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
 import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
-import sdgScreen from './screens/sdgTab.js'
 import * as matchApi from './matchApi.js'
 import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
 import * as pathwayApi from './pathwayApi.js'
@@ -49,9 +48,10 @@ import { shouldPlayIntro } from './intro/timeline.js'
 import { armOdometers } from './components/odometer.js'
 
 const SCREENS = { welcome, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
-const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
-// Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
-const ALIAS = { roadmap: 'pathway' }
+const NEXT = ['radar', 'match', 'pathway', 'futures']
+// Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab; the SDG
+// contribution section was removed on 1 Nov 2026 (owner), so #sdg opens Career matching, where the SDG tags stay).
+const ALIAS = { roadmap: 'pathway', sdg: 'match' }
 const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
@@ -409,8 +409,8 @@ let matchRun = 0
 let matchStaleBy = null
 // The bands shown before a trend change ({scenario, bands}), kept until the new list has come.
 let matchBefore = null
-const matchScreens = () => state.screen === 'match' || state.screen === 'sdg'
-// The matching answers in this tab may be out of date: load them again on the next #match / #sdg render. A load or
+const matchScreens = () => state.screen === 'match'
+// The matching answers in this tab may be out of date: load them again on the next #match render. A load or
 // detail still on its way is dropped (it may hold the data from before the change).
 function matchStale(trend = true) {
   matchRun += 1
@@ -447,11 +447,9 @@ async function loadMatchDetail(code) {
   if (matchScreens()) render()
 }
 function ensureMatch() {
-  const m = matchUi()
+  matchUi()
   if (!state.profile) return
   if (matchFor !== state.profile || matchStaleBy) loadMatch()
-  // The SDG tab shows the chosen role's path: its detail is needed.
-  if (state.screen === 'sdg' && m.chosen && !state.match.details?.[m.chosen]) loadMatchDetail(m.chosen)
 }
 const matchActions = {
   // The scenario only moves roles between bands; the banner lists the roles that moved.
@@ -1186,7 +1184,7 @@ function render() {
     : ''
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
-  if (screen === 'match' || screen === 'sdg') ensureMatch()
+  if (screen === 'match') ensureMatch()
   if (screen === 'pathway') ensurePathway()
   if (screen === 'futures') ensureNews()
   if (screen === 'org') actions.orgEnsure()
@@ -1194,7 +1192,6 @@ function render() {
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
   else if (screen === 'match') view = matchScreen({ t, state })
-  else if (screen === 'sdg') view = sdgScreen({ t, state })
   else if (screen === 'pathway') view = pathwayScreen({ t, state })
   else if (screen === 'futures') view = futuresView({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })

@@ -17,7 +17,6 @@ export const STAGES = [
   { id: 'radar', name: 'radar', title: 'ldS2T', text: 'ldS2D' },
   { id: 'match', name: 'match', title: 'ldS3T', text: 'ldS3D' },
   { id: 'roadmap', name: 'roadmap', title: 'ldS4T', text: 'ldS4D' },
-  { id: 'sdg', name: 'sdg', title: 'ldS5T', text: 'ldS5D' },
   { id: 'futures', name: 'futures', title: 'ldS6T', text: 'ldS6D' },
 ]
 

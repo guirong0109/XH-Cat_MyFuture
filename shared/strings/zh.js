@@ -2,7 +2,7 @@
 export default {
   welcome: '欢迎', returning: '回访访客', access: '访客或账户', category: '你是哪一类用户？', org: 'HR 与 TVET（预览）',
   source: '简历或手动填写', upload: '上传简历', form: '你的资料', review: '确认资料', summary: '你的资料摘要',
-  assess: '技能熟练度评估', radar: '未来技能雷达', match: '职业匹配', pathway: '学习路径', sdg: 'SDG 贡献', futures: '比较未来情景',
+  radar: '未来技能雷达', match: '职业匹配', pathway: '学习路径', futures: '比较未来情景',
   heroSub: '从今天的你开始：你的学历、工作和技能，来自简历或简短表格。',
   themeToDark: '深色模式', themeToLight: '浅色模式',
   langNote: '界面会保持这种语言，只有在你选择其他语言时才会改变。',
@@ -880,16 +880,10 @@ export default {
   mtSrcAdsText: "DOSM 就业市场洞察 {period}（经雷达），发布于 {date}", // translation: owner review
   mtSrcInDemand: "需求高的软件", // translation: owner review
   mtSrcInDemandText: "O*NET“需求高”标记（美国招聘广告，经 Lightcast），读取自雷达的当前清单", // translation: owner review
-  mtSdgLead: "您选择的职位，以及您仍需为此培养的技能，如何关联到联合国可持续发展目标。这是带理由的关联计数：", // translation: owner review
   mtPotential: "潜在，未经测量", // translation: owner review
-  mtSdgNoRole: "尚未选择职位", // translation: owner review
-  mtSdgNoRoleText: "在职业匹配中点击某个职位的“选择此职位”，即可查看该路径如何关联到 SDG。", // translation: owner review
   mtGoMatch: "前往职业匹配", // translation: owner review
-  mtSdgPath: "您选择的路径", // translation: owner review
-  mtSdgLinksTo: "此路径关联到", // translation: owner review
   mtSdgGoalOne: "SDG {goal}（{count} 个关联）", // translation: owner review
   mtSdgGoalMany: "SDG {goal}（{count} 个关联）", // translation: owner review
-  mtSdgNoneText: "此路径上还没有 SDG 关联。", // translation: owner review
   mtTarget: "具体目标 {target}", // translation: owner review
   mtViaRole: "经由职位（MASCO 组 {code}）", // translation: owner review
   mtViaItem: "经由您将培养的技能：{name}", // translation: owner review
@@ -968,8 +962,6 @@ export default {
   ldS3D: "按排名列出的未来职位，分数可以逐项拆解：为什么是这个分数，怎样可以提高。",
   ldS4T: "跟随学习路径",
   ldS4D: "有先后顺序的学习计划，附时间估算，以及真实存在的免费或低成本课程。",
-  ldS5T: "查看 SDG 贡献",
-  ldS5D: "每个职位和技能如何连接到联合国可持续发展目标，每条连接都有理由。",
   ldS6T: "比较不同的未来",
   ldS6D: "在至少两种 AI 情景之间切换，查看建议如何变化，并标明是估算。",
   ldS1a: "PDF 或 Word 简历",

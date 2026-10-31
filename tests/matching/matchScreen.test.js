@@ -14,7 +14,6 @@ import { linkHash } from '../../server/matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
 import * as matchApi from '../../public/js/matchApi.js'
 import { bandsAt, matchView, roleCard, matchToSave, softwareChips, stepText, trendMoves } from '../../public/js/screens/match.js'
-import { sdgView } from '../../public/js/screens/sdgTab.js'
 import { fitChart } from '../../public/js/components/fitChart.js'
 import en from '../../shared/strings/en.js'
 import ms from '../../shared/strings/ms.js'
@@ -24,7 +23,7 @@ import { FIXTURE, SDG_LINKS, fixtureReferences, makeMatchingFixture } from '../h
 
 const t = (key, vars) => translate('en', key, vars)
 const root = join(import.meta.dirname, '..', '..')
-const NEW_FILES = ['public/js/matchApi.js', 'public/js/screens/match.js', 'public/js/screens/sdgTab.js', 'public/js/components/fitChart.js']
+const NEW_FILES = ['public/js/matchApi.js', 'public/js/screens/match.js', 'public/js/components/fitChart.js']
 const FORBIDDEN = /score|weight|rank|opportunit/i
 const now = () => new Date('2026-10-31T00:00:00.000Z')
 
@@ -234,8 +233,6 @@ describe('Career matching screen', () => {
     expect(fitChart({ rows: detail.fit.rows, t })).not.toContain('<b>Bold')
     const page = matchView({ t, state: { lang: 'en', profile: FULL, match: match({ data: { ...list, roles: [role] }, chosen: role.code }) } })
     expect(page).not.toContain('<b>Bold')
-    const sdg = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ data: { ...list, roles: [role] }, chosen: role.code, details: { [role.code]: detail } }) } })
-    expect(sdg).not.toContain('<b>Bold')
   })
 })
 
@@ -356,47 +353,6 @@ describe('Trend data changed banner (final review 1)', () => {
     expect(load).toContain('bandsAt(m.data, scenarioOf(m))')
     expect(load).toContain('trendMoves(matchBefore, out.data)')
     expect(app).toMatch(/mBannerClose: \(\) => \{[^}]*trend: null/)
-  })
-})
-
-describe('SDG contribution screen', () => {
-  it('sdg tab shows counts and "potential, not measured"', () => {
-    const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.fullRole, details: { [FIXTURE.fullRole]: details[FIXTURE.fullRole] } }) } })
-    const s = text(html)
-    expect(s).toContain('potential, not measured')
-    expect(s).toContain('Fixture Database Designer')
-    // goals 4 (a skill to build: Computers and Electronics), 8 and 9 (the role's group 25), one link each
-    expect(s).toContain('SDG 4 (1 link)')
-    expect(s).toContain('SDG 8 (1 link)')
-    expect(s).toContain('SDG 9 (1 link)')
-    expect(s).toContain('Digital skills for work.')
-    expect(s).toContain('Computers and Electronics')
-    expect(s).toContain('2026-10-31')
-    // the item link (a skill to build) shows its own approval date
-    const item = html.slice(html.indexOf('Computers and Electronics'))
-    expect(text(item.slice(0, item.indexOf('</div></div>')))).toContain('team draft, approved by owner on 2026-10-31')
-    // the official UN goal title under each goal
-    expect(s).toContain('Quality education')
-    expect(s).toContain('Industry, innovation and infrastructure')
-  })
-
-  it('a remembered chosen role but no profile: the no-profile card, not a spinner (final review 6)', () => {
-    const html = sdgView({ t, state: { lang: 'en', profile: null, match: match({ data: null, chosen: FIXTURE.fullRole }) } })
-    expect(text(html)).toContain(t('mtNoProfile'))
-    expect(html).toContain('data-go="source"')
-    expect(html).not.toContain('class="spin"')
-  })
-
-  it('no chosen role: a card that leads to Career matching', () => {
-    const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match() } })
-    expect(text(html)).toContain(t('mtSdgNoRole'))
-    expect(html).toContain('data-go="match"')
-  })
-
-  it('a path with no SDG link says SDG not tagged yet', () => {
-    const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.noIscoRole, details: { [FIXTURE.noIscoRole]: details[FIXTURE.noIscoRole] } }) } })
-    expect(text(html)).toContain(t('mtSdgNone'))
-    expect(text(html)).toContain('potential, not measured')
   })
 })
 
@@ -699,18 +655,9 @@ describe('Owner UI round (31 Oct)', () => {
       expect(text(html)).toContain('team draft, not yet reviewed')
     })
 
-    it('the filter lists every goal of a shown link; the #sdg tab links each goal row and names the UN SDG site', () => {
+    it('the filter lists every goal of a shown link', () => {
       expect(text(view())).toContain(t('mtSdgFilterSrc'))
       expect(t('mtSdgFilterSrc')).not.toMatch(/approved/)
-      const d = details[FIXTURE.fullRole]
-      const pending = { ...d, sdg: { ...d.sdg, tags: d.sdg.tags.map((x) => ({ ...x, approvedAt: null })), pathPreview: { ...d.sdg.pathPreview, goals: d.sdg.pathPreview.goals.map((g) => ({ ...g, links: g.links.map((l) => ({ ...l, approvedAt: null })) })) } } }
-      const html = sdgView({ t, state: { lang: 'en', profile: FULL, match: match({ chosen: FIXTURE.fullRole, details: { [FIXTURE.fullRole]: pending } }) } })
-      for (const g of [4, 8, 9]) expect(html).toContain(un(g))
-      expect(text(html)).toContain('team draft, not yet reviewed')
-      expect(text(html)).not.toContain('approved by owner')
-      expect(text(html)).toContain('sdgs.un.org')
-      // the count is of every shown link
-      expect(text(html)).toContain('SDG 4 (1 link)')
     })
   })
 

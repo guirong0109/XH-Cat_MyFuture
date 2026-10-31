@@ -89,7 +89,7 @@ select.btn{appearance:auto}
 .choice{display:block;width:100%;text-align:left;cursor:pointer;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:10px 4px;color:var(--ink)}
 .choice:hover{background:var(--surface)}
 .choice b{display:block;margin-bottom:2px;font-weight:600}
-.grid>.choice{position:relative;min-height:96px;padding:20px 76px 20px 22px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background-color .15s,color .15s}
+.grid>.choice{position:relative;display:flex;flex-direction:column;justify-content:flex-start;min-height:96px;padding:20px 76px 20px 22px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background-color .15s,color .15s}
 .grid>.choice b{font-family:var(--serif);font-weight:400;font-size:clamp(25px,2.6vw,31px);line-height:1.08;letter-spacing:-.01em;margin-bottom:6px}
 .grid>.choice::after{content:"→";position:absolute;right:20px;top:50%;width:40px;height:40px;margin-top:-20px;display:grid;place-items:center;border:1px solid var(--ink);border-radius:50%;font-size:18px;line-height:1;color:var(--ink);transition:transform .15s,background-color .15s}
 .grid>.choice:hover{background:var(--ink);color:var(--bg);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--muted)}

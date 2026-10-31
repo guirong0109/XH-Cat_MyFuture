@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 246 passed
+npm test                                          # Vitest, expect 251 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100
@@ -65,6 +65,9 @@ Browser pane launch configs (`.claude/launch.json`):
     added when the user clicks them; they keep `suggestedFrom` and stay `not_assessed`.
   - `preferences.careerInterests` is one list (career interests and fields merged): O\*NET interest areas
     `{source:'onet', id:'onet:ia:…', name, version}`, or texts saved before. `preferredCareerFields` no longer exists.
+  - `preferences.careerGoal` takes the four goals of the goal screen (`GOALS` in `public/js/screens/goal.js`: `where_i_stand`,
+    `find_direction`, `switch_career`, `grow_field`). Old values (`first_job`, `improve`, `change`, `explore_ai`) still
+    display (`OLD_GOALS` in `form.js`); don't convert them silently.
   - Every list and suggestion shows its source on screen (owner: "highly important").
   - The skill search also offers O\*NET work styles, knowledge areas and work activities (`catalogue.more`). They are
     kept out of `byName`/`byWord`, so CV matching stays as measured. Don't merge them in without re-running the CV eval.

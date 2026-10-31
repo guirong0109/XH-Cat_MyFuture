@@ -5,6 +5,7 @@ import { listField, recordsField, reviewToggle, stateField } from '../components
 import { linkedLine, occupationPicker } from '../components/occupationPicker.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
+import { GOALS } from './goal.js'
 
 export const SECTIONS = ['secStudy', 'secWork', 'secSkills', 'secCerts', 'secPrefs']
 // The optional single fields of each section: shown with "Prefer not to say" as the default.
@@ -52,6 +53,13 @@ function interestField({ t, profile, state }) {
       <div class="tiny muted">${esc(t('interestSource', { version: list.version }))}</div>`
   }
   return `<div class="field"><label for="f-interest">${esc(t('fInterests'))}</label>${chips}${control}</div>`
+}
+
+// Career goal: the four goals from the start of the journey. A profile saved with an older goal keeps it as an option.
+export const OLD_GOALS = { first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' }
+function goalOptions(profile) {
+  const value = profile.preferences.careerGoal?.value
+  return [...GOALS.map(([v, label]) => [v, label]), ...(OLD_GOALS[value] ? [[value, OLD_GOALS[value]]] : [])]
 }
 
 const QUALIFICATIONS = [['spm', 'optSPM'], ['stpm', 'optSTPM'], ['certificate', 'optCertificate'], ['diploma', 'optDiploma'], ['bachelor', 'optDegree'], ['master', 'optMaster'], ['phd', 'optPhD']]
@@ -118,7 +126,7 @@ function prefs(ctx) {
   return [
     interestField(ctx),
     `${picker(ctx, 'interest', 'interest', t('occInterests'), t('occInterestFind'), '')}<div style="margin:-6px 0 12px">${interests}</div>`,
-    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: [['first_job', 'optFirstJob'], ['improve', 'optImprove'], ['change', 'optChange'], ['explore_ai', 'optAI']] }),
+    field(ctx, { path: 'preferences.careerGoal', label: t('fGoal'), options: goalOptions(profile) }),
     field(ctx, { path: 'preferences.preferredWorkLocation', label: t('fLocation') }),
     field(ctx, { path: 'preferences.preferredLearningHoursPerWeek', label: t('fHours'), kind: 'number' }),
   ].join('')

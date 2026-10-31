@@ -1,6 +1,7 @@
 // Case C: everything the user entered or the CV suggested, with its label, then Confirm.
 import { improveWithAi } from '../components/improveWithAi.js'
 import { esc, tag } from '../ui.js'
+import { GOALS } from './goal.js'
 
 const get = (object, path) => path.split('.').reduce((node, key) => (node == null ? undefined : node[key]), object)
 
@@ -31,7 +32,7 @@ const OPTION_KEYS = {
   'education.educationStatus': { studying: 'optStudying', graduated: 'optGraduated', not_studying: 'optNotStudying' },
   'education.highestQualification': { spm: 'optSPM', stpm: 'optSTPM', certificate: 'optCertificate', diploma: 'optDiploma', bachelor: 'optDegree', master: 'optMaster', phd: 'optPhD' },
   'employment.status': { employed: 'optEmployed', unemployed: 'optUnemployed', self_employed: 'optSelf', student: 'optStudent' },
-  'preferences.careerGoal': { first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' },
+  'preferences.careerGoal': { ...Object.fromEntries(GOALS.map(([value, label]) => [value, label])), first_job: 'optFirstJob', improve: 'optImprove', change: 'optChange', explore_ai: 'optAI' },
 }
 
 export function profileTable(t, profile) {

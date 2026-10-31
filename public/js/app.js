@@ -9,6 +9,7 @@ import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
 import access from './screens/access.js'
+import goal from './screens/goal.js'
 import category from './screens/category.js'
 import org from './screens/org.js'
 import source from './screens/source.js'
@@ -26,7 +27,7 @@ import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
 
-const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
+const SCREENS = { welcome, returning, access, goal, category, org, source, upload, form, review, summary }
 const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
@@ -54,6 +55,8 @@ let cvFile = null
 // The CV draft as it came from the server: the compare view locks what the user changed since. Memory only.
 let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
+// After guest or account: personal users are asked their goal first; organisations go to "Who are you?".
+const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
@@ -111,7 +114,13 @@ const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
   use: (kind) => { state.use = kind; go('access') },
   // An organisation needs an account: no guest way in.
-  guest: () => { if (state.use === 'org') return go('access'); state.access = 'guest'; go('category') },
+  guest: () => { if (state.use === 'org') return go('access'); state.access = 'guest'; go(afterAccess()) },
+  // The goal from the start of the journey is the profile's career goal (the form can change it).
+  goal: (value) => {
+    state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
+    state.profile = setField(state.profile, 'preferences.careerGoal', val(value))
+    go('category')
+  },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
   acLogout: async () => {
@@ -373,7 +382,7 @@ async function accountCall(kind) {
     state.savedWhere = 'account'
     return go('summary')
   }
-  go('category')
+  go(afterAccess())
 }
 
 // After Confirm: always on this device; also in the account when signed in.

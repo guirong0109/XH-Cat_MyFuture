@@ -238,6 +238,11 @@
           "title": "T28f Organisations need an account",
           "sub": "personal: guest or account · organisation: sign up or sign in only",
           "status": "done"
+        },
+        {
+          "title": "T28g Goal question",
+          "sub": "Where I stand · Find a direction · Switch career · Grow in my field",
+          "status": "done"
         }
       ]
     }
@@ -281,7 +286,8 @@
     "Task 28c: your request - the first screen asks who it is for: 'For myself' or 'For my organisation' (replaces Get started; Sign in stays as a link). 'Who are you?' then shows only the matching choices (A, B or C, D); someone who signs in without answering sees all four. New wording in EN, BM and 中文 (Tests 242 passed)",
     "Task 28d: your report that 'For myself' and 'For my organisation' did not look like buttons - the big choices (also on Who are you? and the CV-or-form screen) are now outlined buttons with round corners, an arrow in a circle and a solid shadow; on hover they turn ink with a lime arrow, and a click presses them down. Preview choices (C, D) have a dashed outline (Tests 243 passed)",
     "Task 28e: your request - the Sign in link under the two choices on the welcome screen is removed; signing in is still possible on the next screen (guest or account) and from the top bar when accounts are on (Tests 243 passed)",
-    "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)"
+    "Task 28f: your rule - personal users continue as a guest or with an account; organisations must sign up (or sign in): their screen has no guest option, and the app refuses the guest way in for them. On a server without accounts, organisations are told accounts are not available yet and can switch to 'Use it for myself instead'. New wording in EN, BM and 中文 (Tests 246 passed)",
+    "Task 28g: your request - after guest or account, personal users are asked 'What is your goal?': Where I stand, Find a direction, Switch career, Grow in my field (your choice: before 'Who are you?'). The answer is saved as the profile's career goal, and the form's Career goal now offers the same four (your choice); profiles saved with an old goal keep it. Organisations go straight to 'Who are you?'. New wording in EN, BM and 中文 (Tests 251 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -327,7 +333,8 @@
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
     "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet",
     "T28c: the organisation path still ends at the existing preview (C, D need an account and are not built) - cost: nothing works yet for organisations, as before",
-    "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up"
+    "T28f: without accounts on the server (no D1 settings yet) organisations cannot go further - cost: the organisation preview is only reachable once accounts are set up",
+    "T28g: the one-line explanation under each goal was written by Claude, not given by you - cost: please check or reword it"
   ],
   "log": [
     {
@@ -899,6 +906,21 @@
       "time": "31 Oct",
       "step": "Task 28f",
       "detail": "3 tests first (2 failed), then access.js, app.js and the wording files; npm test 246 passed; clicked through in Chrome with accounts off (this server) and on (local in-memory accounts server): organisation sign-up leads to Who are you? with C and D only"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "after guest or sign-up, ask the user's goal: Where I stand? Find a direction. Switch career. Grow in my field."
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your choices",
+      "detail": "the goal question comes before 'Who are you?'; the form's Career goal uses the same four goals"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28g",
+      "detail": "5 tests first (failed: no goal screen), then goal.js, app.js, accountBox.js, form.js, review.js and the wording files; npm test 251 passed; clicked through as a guest and with a new account (accounts test server), at 1440 px and 390 px, light and dark; checked that nothing on main reads the old goal values"
     }
   ]
 }

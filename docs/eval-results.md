@@ -17,19 +17,19 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 - Skills linked to an O*NET id: **28 of 36** found skills (the rest stay "not in our list yet" for the user).
 - Skill levels set by extraction, other than Good for a skill used in a job or project: **0** (must be 0).
 - Failure rate (a CV not handled as expected): **0 of 11**. The scanned CV is expected to fail with `scanned_no_ocr`.
-- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 7 ms.
+- Latency per CV (build + read + extract, in-process): median **3 ms**, slowest 8 ms.
 
 ## Per CV
 
 | CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |
 |---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 7 |
+| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 8 |
 | ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 5 |
 | zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 5 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 4 |
 | two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
 | no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
-| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 4 |
+| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 3 |
 | injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
 | multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
 | duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 4 |
@@ -48,25 +48,25 @@ Model `deepseek-flash` · 2026-10-31 · 10 of 11 CVs read by the AI (the rest ar
 
 | Field | Rules P | Rules R | Rules F1 | Rules + AI P | Rules + AI R | Rules + AI F1 |
 |---|---|---|---|---|---|---|
-| skills | 0.917 | 0.971 | 0.943 | 0.919 | 1 | 0.958 |
+| skills | 0.917 | 0.971 | 0.943 | 0.917 | 0.971 | 0.943 |
 | qualifications | 1 | 1 | 1 | 1 | 1 | 1 |
 | jobs | 1 | 1 | 1 | 1 | 1 | 1 |
 | certifications | 1 | 1 | 1 | 0.75 | 1 | 0.857 |
 
-- Wrong-item rate: rules only **0.05** · rules + AI **0.065**
-- Latency per CV: rules only median **4 ms** · rules + AI median **2669.5 ms** (rules and AI run together)
-- Tokens and cost (AI reads that succeeded): 4308 input and 6426 output tokens, about **$0.0090** at peak price (cache miss; $0.3 in / $1.2 out per 1M tokens)
+- Wrong-item rate: rules only **0.05** · rules + AI **0.066**
+- Latency per CV: rules only median **3.5 ms** · rules + AI median **1250.5 ms** (rules and AI run together)
+- Tokens and cost (AI reads that succeeded): 4198 input and 1822 output tokens, about **$0.0034** at peak price (cache miss; $0.3 in / $1.2 out per 1M tokens)
 
 | CV | AI result | Rules F1 (skills / jobs) | Rules + AI F1 (skills / jobs) | ms rules + AI (run together) |
 |---|---|---|---|---|
-| en-pdf | read | 0.889 / 1 | 0.889 / 1 | 5127 |
-| ms-pdf | read | 0.857 / 1 | 0.857 / 1 | 1850 |
-| zh-docx | read | 1 / 1 | 1 / 1 | 2895 |
-| mixed-pdf | read | 0.857 / 1 | 1 / 1 | 9064 |
-| two-degrees-pdf | read | 1 / 1 | 1 / 1 | 2569 |
-| no-job-docx | read | 1 / — | 1 / — | 2432 |
-| project-only-pdf | read | 1 / — | 1 / — | 2770 |
-| injection-pdf | read | 1 / 1 | 1 / 1 | 1596 |
-| multi-job-pdf | read | 1 / 1 | 1 / 1 | 1927 |
-| duplicates-pdf | read | 0.8 / — | 0.8 / — | 6126 |
+| en-pdf | read | 0.889 / 1 | 0.889 / 1 | 1353 |
+| ms-pdf | read | 0.857 / 1 | 0.857 / 1 | 1410 |
+| zh-docx | read | 1 / 1 | 1 / 1 | 1206 |
+| mixed-pdf | read | 0.857 / 1 | 0.857 / 1 | 1136 |
+| two-degrees-pdf | read | 1 / 1 | 1 / 1 | 1343 |
+| no-job-docx | read | 1 / — | 1 / — | 1211 |
+| project-only-pdf | read | 1 / — | 1 / — | 1238 |
+| injection-pdf | read | 1 / 1 | 1 / 1 | 1126 |
+| multi-job-pdf | read | 1 / 1 | 1 / 1 | 1288 |
+| duplicates-pdf | read | 0.8 / — | 0.8 / — | 1263 |
 | scanned-pdf | not read: rules step failed | — | — | — |

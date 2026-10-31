@@ -1227,6 +1227,11 @@
       "time": "31 Oct",
       "step": "Fix: no false \"AI read this as\" on degree names",
       "detail": "your request: the rules label 'Bachelor degree' and the AI's 'Bachelor of Computer Science' mean the same level, so no flag; a different level is still flagged. Test first (1 failed), then mergeDrafts sameMeaning; npm test 368 passed; browser re-run on the Hafiz CV: no flag, AI still added SQL and the project"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Fix: DeepSeek timed out on a real CV",
+      "detail": "your real CV: AI step failed. Logs now name the cause; it was 'timeout after 15019 ms'. deepseek-flash thinks before answering (up to 60% hidden reasoning, 7-24 s); turned thinking off (about 2.7 s), shorter answer, limits 40 s AI / 45 s upload (your choice 'Both'), new wait text in en/ms/zh. Tests first; npm test 372 passed; eval --ai median 1.25 s, $0.0034; your CV read with no AI failure"
     }
   ]
 }

@@ -88,3 +88,15 @@ Browser check at http://cv.localhost:3260 with the key, synthetic CV "Hafiz Bin 
 - **Live O\*NET Web Services:** needs the owner's free key (`ONET_API_KEY`). The client is tested with a fake server.
 - **Accounts on Cloudflare D1 and R2:** tested with the in-memory stand-ins. The local accounts server ran sign-up, save, load, version, and delete my data.
 - **L3 semantic match with a real model:** the owner chose not to create a RunPod endpoint for now.
+
+## Owner's real CV timed out; fixed (31 Oct)
+
+- The owner uploaded a real two-page CV: the AI step failed. The log (now naming causes) showed `timeout after 15019 ms`:
+  DeepSeek answers at once and sends the body when done, so the 15 s limit ended while the body was still coming.
+- Cause of the slowness: `deepseek-flash` thinks before answering (hidden reasoning up to 60% of the output). A 40-line
+  synthetic CV took 7–24 s with thinking on, about 2.7 s with `thinking: {type: 'disabled'}`.
+- Owner chose "Both": thinking off plus a shorter answer, and limits 40 s (AI) / 45 s (upload), with the wait text
+  "Reading your CV with AI. This can take up to 40 seconds; please keep this page open."
+- Accuracy check again (`eval-cv.mjs --ai`): median 1.25 s per CV (was 2.7 s), about $0.0034 for 10 CVs (was $0.009).
+  Skills recall is back to 0.971 (the extra skill in the mixed-language CV is no longer found); studies and jobs stay 1.
+- The owner uploaded the CV again after the fix: no AI failure in the server log.

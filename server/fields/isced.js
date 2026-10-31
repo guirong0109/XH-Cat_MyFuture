@@ -29,7 +29,7 @@ export async function loadIsced(dir) {
   } catch (error) {
     throw new IscedUnavailable(error.message)
   }
-  const fields = tables['fields.tsv'].map((f) => ({ code: f.code, title: f.title, broadTitle: f.broad_title, words: wordsOf(f.title) }))
+  const fields = tables['fields.tsv'].map((f) => ({ code: f.code, title: f.title, broadCode: f.broad_code, broadTitle: f.broad_title, words: wordsOf(f.title) }))
   const byCode = new Map(fields.map((f) => [f.code, f]))
   const programmes = tables['isced_cip.tsv'].map((l) => ({ code: l.isced_code, title: l.cip_title, words: wordsOf(l.cip_title) }))
 
@@ -49,5 +49,8 @@ export async function loadIsced(dir) {
     return out.slice(0, limit)
   }
 
-  return { manifest, search }
+  // Every field with its broad area, in code order (the field-of-study dropdown).
+  const list = () => [...fields].sort((a, b) => a.code.localeCompare(b.code)).map(({ code, title, broadCode, broadTitle }) => ({ code, title, broadCode, broadTitle }))
+
+  return { manifest, search, list }
 }

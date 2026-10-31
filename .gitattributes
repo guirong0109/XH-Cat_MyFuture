@@ -3,6 +3,7 @@ data/isced/*.tsv text eol=lf
 data/isced/source/* -text
 data/radar/source/* -text
 data/radar/*.json text eol=lf
+data/pathway/*.json text eol=lf
 data/radar/bundle/** -text
 tests/fixtures/*.html -text
 data/ai/* text eol=lf
@@ -10,3 +11,5 @@ pipeline/fetch_radar_bridge.py text eol=lf
 shared/radar/chain.js text eol=lf
 tests/radar/chain.test.js text eol=lf
 pipeline/tests/test_radar_bridge.py text eol=lf
+data/org/*.csv text eol=lf
+data/org/*.json text eol=lf

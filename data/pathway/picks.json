@@ -1,0 +1,2350 @@
+{
+  "schemaVersion": "pathway-picks/v1",
+  "status": "team draft",
+  "courses": [
+    {
+      "id": "c-el-2-B-4-g-1",
+      "for": "el:2.B.4.g",
+      "site": "coursera",
+      "name": "Introduction to Systems Analysis",
+      "link": "https://www.coursera.org/learn/introduction-to-systems-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-g-2",
+      "for": "el:2.B.4.g",
+      "site": "coursera",
+      "name": "IT Systems Design and Analysis",
+      "link": "https://www.coursera.org/learn/it-systems-design-and-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-h-1",
+      "for": "el:2.B.4.h",
+      "site": "elatih",
+      "name": "Importance Of Static Testing in Achieving A High Roi",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/importance-of-static-testing-in-achieving-a-high-roi",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-h-2",
+      "for": "el:2.B.4.h",
+      "site": "coursera",
+      "name": "Introduction to Software Testing",
+      "link": "https://www.coursera.org/learn/introduction-software-testing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-b-1",
+      "for": "el:2.B.3.b",
+      "site": "coursera",
+      "name": "Software Architecture",
+      "link": "https://www.coursera.org/learn/software-architecture",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-a-1",
+      "for": "kn:2.C.4.a",
+      "site": "elatih",
+      "name": "Basic Statistics For Practical Time Series Analysis",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-statistics-for-practical-time-series-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-a-2",
+      "for": "kn:2.C.4.a",
+      "site": "coursera",
+      "name": "Mathematics for Computer Science",
+      "link": "https://www.coursera.org/learn/mathematics-for-computer-science",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-e-1",
+      "for": "el:2.A.1.e",
+      "site": "elatih",
+      "name": "Basic Statistics For Practical Time Series Analysis",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-statistics-for-practical-time-series-analysis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-a-1",
+      "for": "kn:2.C.3.a",
+      "site": "elatih",
+      "name": "Working with Computers and Devices with Microsoft",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/working-with-computers-and-devices-with-microsoft",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-a-2",
+      "for": "kn:2.C.3.a",
+      "site": "elatih",
+      "name": "Basics of Network Addresses",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-network-addresses",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-a-1",
+      "for": "el:2.A.1.a",
+      "site": "elatih",
+      "name": "Improving Your English Through Reading And Writing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/improving-your-english-through-reading-and-writing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-a-1",
+      "for": "el:2.A.2.a",
+      "site": "elatih",
+      "name": "Critical Thinking Skills for Professionals",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/critical-thinking-skills-for-professionals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-a-2",
+      "for": "el:2.A.2.a",
+      "site": "coursera",
+      "name": "Critical Thinking Skills for University Success",
+      "link": "https://www.coursera.org/learn/critical-thinking-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-b-1",
+      "for": "el:2.B.1.b",
+      "site": "elatih",
+      "name": "Building High Performing Teams",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/building-high-performing-teams",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-b-2",
+      "for": "el:2.B.1.b",
+      "site": "elatih",
+      "name": "Collaboration: Let's Win Together",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/collaboration-let-s-win-together",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-e-1",
+      "for": "kn:2.C.1.e",
+      "site": "elatih",
+      "name": "Introduction To Customer Service",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-customer-service",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-e-2",
+      "for": "kn:2.C.1.e",
+      "site": "elatih",
+      "name": "Customer Service Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/customer-service-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-f-1",
+      "for": "el:2.B.1.f",
+      "site": "elatih",
+      "name": "Customer Service Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/customer-service-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-b-1",
+      "for": "el:2.A.2.b",
+      "site": "elatih",
+      "name": "Learning How to Learn",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/learning-how-to-learn-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-b-2",
+      "for": "el:2.A.2.b",
+      "site": "coursera",
+      "name": "Learning How to Learn: Powerful mental tools to help you master tough subjects",
+      "link": "https://www.coursera.org/learn/learning-how-to-learn",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-c-1",
+      "for": "kn:2.C.1.c",
+      "site": "elatih",
+      "name": "Introduction to Fundamental Accounting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-fundamental-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-c-2",
+      "for": "kn:2.C.1.c",
+      "site": "coursera",
+      "name": "Introduction to Financial Accounting",
+      "link": "https://www.coursera.org/learn/wharton-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-c-1",
+      "for": "el:2.A.1.c",
+      "site": "elatih",
+      "name": "English for Business Writing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/english-for-business-writing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-c-2",
+      "for": "el:2.A.1.c",
+      "site": "elatih",
+      "name": "Better Business Writing in English",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/better-business-writing-in-english",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-b-1",
+      "for": "el:2.A.1.b",
+      "site": "elatih",
+      "name": "Listening Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/listening-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-b-2",
+      "for": "el:2.A.1.b",
+      "site": "elatih",
+      "name": "Power Of Effective Listening",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/power-of-effective-listening",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-b-1",
+      "for": "kn:2.C.8.b",
+      "site": "elatih",
+      "name": "Contract Drafting 101 (Contract Law)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/contract-drafting-101-contract-law",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-a-1",
+      "for": "kn:2.C.1.a",
+      "site": "elatih",
+      "name": "Basics of Project Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-project-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-a-1",
+      "for": "el:2.B.1.a",
+      "site": "elatih",
+      "name": "Emotional Intelligence at Work",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/emotional-intelligence-at-work",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-b-1",
+      "for": "kn:2.C.1.b",
+      "site": "elatih",
+      "name": "Microsoft Office Basics",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/microsoft-office-basics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-b-2",
+      "for": "kn:2.C.1.b",
+      "site": "elatih",
+      "name": "Top Practical Advanced Excel Functions for Office Admin",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/top-practical-advanced-excel-functions-for-office-admin",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-c-1",
+      "for": "el:2.B.1.c",
+      "site": "elatih",
+      "name": "Using The Art Of Persuasion",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/using-the-art-of-persuasion",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-1",
+      "for": "field:0613",
+      "site": "elatih",
+      "name": "Basic of Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-of-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-2",
+      "for": "field:0613",
+      "site": "elatih",
+      "name": "Python - Basics to Brilliance in HD",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/python-basics-to-brilliance-in-hd",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0613-3",
+      "for": "field:0613",
+      "site": "coursera",
+      "name": "Programming for Everybody (Getting Started with Python)",
+      "link": "https://www.coursera.org/learn/python",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0411-1",
+      "for": "field:0411",
+      "site": "elatih",
+      "name": "Introduction to Fundamental Accounting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/introduction-to-fundamental-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-field-0411-2",
+      "for": "field:0411",
+      "site": "elatih",
+      "name": "Understanding Corporate Tax in Malaysia",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-corporate-tax-in-malaysia",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-d-1",
+      "for": "el:2.A.1.d",
+      "site": "elatih",
+      "name": "Professionalizing Your Public Speaking Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/professionalizing-your-public-speaking-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-d-2",
+      "for": "el:2.A.1.d",
+      "site": "elatih",
+      "name": "Effective Presentation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/effective-presentation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-1-f-1",
+      "for": "el:2.A.1.f",
+      "site": "coursera",
+      "name": "Science Literacy",
+      "link": "https://www.coursera.org/learn/science-literacy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-c-1",
+      "for": "el:2.A.2.c",
+      "site": "elatih",
+      "name": "Study Skills for University Success",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/study-skills-for-university-success",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-c-2",
+      "for": "el:2.A.2.c",
+      "site": "coursera",
+      "name": "Learning How to Learn: Powerful mental tools to help you master tough subjects",
+      "link": "https://www.coursera.org/learn/learning-how-to-learn",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-A-2-d-1",
+      "for": "el:2.A.2.d",
+      "site": "elatih",
+      "name": "Performance Management for Leaders",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/performance-management-for-leaders",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-d-1",
+      "for": "el:2.B.1.d",
+      "site": "elatih",
+      "name": "Build Your Powerful Negotiation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/build-your-powerful-negotiation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-d-2",
+      "for": "el:2.B.1.d",
+      "site": "elatih",
+      "name": "Basic Productive Negotiation Skills",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-productive-negotiation-skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-e-1",
+      "for": "el:2.B.1.e",
+      "site": "elatih",
+      "name": "Train The Trainer - How To Train Yourself And Others",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/train-the-trainer-how-to-train-yourself-and-others",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-1-e-2",
+      "for": "el:2.B.1.e",
+      "site": "elatih",
+      "name": "Mastering The Art of Teaching",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mastering-the-art-of-teaching",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-2-i-1",
+      "for": "el:2.B.2.i",
+      "site": "elatih",
+      "name": "Solution Focused Problem Solving",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/solution-focused-problem-solving",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-2-i-2",
+      "for": "el:2.B.2.i",
+      "site": "elatih",
+      "name": "Problem Solving through Creative Thinking",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/problem-solving-through-creative-thinking",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-a-1",
+      "for": "el:2.B.3.a",
+      "site": "elatih",
+      "name": "Business Process Improvement Techniques",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/business-process-improvement-techniques",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-a-2",
+      "for": "el:2.B.3.a",
+      "site": "coursera",
+      "name": "Operations and Process Management",
+      "link": "https://www.coursera.org/learn/illinois-tech-operations-process-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-d-1",
+      "for": "el:2.B.3.d",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-d-2",
+      "for": "el:2.B.3.d",
+      "site": "coursera",
+      "name": "Technical Support Fundamentals",
+      "link": "https://www.coursera.org/learn/technical-support-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-e-1",
+      "for": "el:2.B.3.e",
+      "site": "elatih",
+      "name": "Basic of Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basic-of-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-e-2",
+      "for": "el:2.B.3.e",
+      "site": "elatih",
+      "name": "Understanding C++ Programming",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-c-programming",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-g-1",
+      "for": "el:2.B.3.g",
+      "site": "coursera",
+      "name": "Production & Operations: Apply, Analyze & Optimize",
+      "link": "https://www.coursera.org/learn/production-operations-apply-analyze-optimize",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-g-2",
+      "for": "el:2.B.3.g",
+      "site": "elatih",
+      "name": "Lean Series: Elevating Operational Effectiveness & Efficiency",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/lean-series-elevating-operational-effectiveness-efficiency",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-h-1",
+      "for": "el:2.B.3.h",
+      "site": "coursera",
+      "name": "Sensor Manufacturing and Process Control",
+      "link": "https://www.coursera.org/learn/sensor-manufacturing-process-control",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-j-1",
+      "for": "el:2.B.3.j",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-j-2",
+      "for": "el:2.B.3.j",
+      "site": "coursera",
+      "name": "Heavy Manufacturing Process and System",
+      "link": "https://www.coursera.org/learn/heavy-manufacturing-process-and-system",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-k-1",
+      "for": "el:2.B.3.k",
+      "site": "coursera",
+      "name": "Technical Support Fundamentals",
+      "link": "https://www.coursera.org/learn/technical-support-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-k-2",
+      "for": "el:2.B.3.k",
+      "site": "coursera",
+      "name": "Dell Technologies Technical Support for Hardware",
+      "link": "https://www.coursera.org/learn/dell-hardware-tech-support",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-l-1",
+      "for": "el:2.B.3.l",
+      "site": "coursera",
+      "name": "Samsung Mobile Repair Essentials",
+      "link": "https://www.coursera.org/learn/samsung-mobile-repair-essentials",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-l-2",
+      "for": "el:2.B.3.l",
+      "site": "coursera",
+      "name": "HVAC Technicians",
+      "link": "https://www.coursera.org/learn/hvac-technicians",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-m-1",
+      "for": "el:2.B.3.m",
+      "site": "elatih",
+      "name": "Understanding Quality Management and Continuous Improvement",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-quality-management-and-continuous-improvement",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-m-2",
+      "for": "el:2.B.3.m",
+      "site": "elatih",
+      "name": "Certified Lean Six Sigma White Belt Practitioner",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/certified-lean-six-sigma-white-belt-practitioner",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-e-1",
+      "for": "el:2.B.4.e",
+      "site": "elatih",
+      "name": "Decision Making Techniques",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/decision-making-techniques-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-4-e-2",
+      "for": "el:2.B.4.e",
+      "site": "elatih",
+      "name": "16 Ways to Master Decision Making Skills at your Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/16-ways-to-master-decision-making-skills-at-your-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-a-1",
+      "for": "el:2.B.5.a",
+      "site": "elatih",
+      "name": "Time Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/time-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-a-2",
+      "for": "el:2.B.5.a",
+      "site": "elatih",
+      "name": "Time Management for Better Productivity",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/time-management-for-better-productivity",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-b-1",
+      "for": "el:2.B.5.b",
+      "site": "elatih",
+      "name": "Shaping Your Financial Management Strategies",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/shaping-your-financial-management-strategies",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-b-2",
+      "for": "el:2.B.5.b",
+      "site": "elatih",
+      "name": "Budgeting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/budgeting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-c-1",
+      "for": "el:2.B.5.c",
+      "site": "elatih",
+      "name": "Supply Chain Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/supply-chain-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-c-2",
+      "for": "el:2.B.5.c",
+      "site": "coursera",
+      "name": "Supply Chain Operations",
+      "link": "https://www.coursera.org/learn/operations",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-d-1",
+      "for": "el:2.B.5.d",
+      "site": "elatih",
+      "name": "[Human Resource Management Course] Human Resource Management in a Contemporary Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-management-course-human-resource-management-in-a-contemporary-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-5-d-2",
+      "for": "el:2.B.5.d",
+      "site": "elatih",
+      "name": "Performance Management for Leaders",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/performance-management-for-leaders",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-d-1",
+      "for": "kn:2.C.1.d",
+      "site": "elatih",
+      "name": "The Ultimate Digital Marketing (Beginners)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/the-ultimate-digital-marketing-beginners",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-d-2",
+      "for": "kn:2.C.1.d",
+      "site": "elatih",
+      "name": "Increasing Your Sales No Matter What You Are Selling",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/increasing-your-sales-no-matter-what-you-are-selling",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-f-1",
+      "for": "kn:2.C.1.f",
+      "site": "elatih",
+      "name": "[Human Resource Management Course] Human Resource Management in a Contemporary Workplace",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-management-course-human-resource-management-in-a-contemporary-workplace",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-1-f-2",
+      "for": "kn:2.C.1.f",
+      "site": "elatih",
+      "name": "[Human Resource Course] Contemporary Skills to Master Human Resources Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/human-resource-course-contemporary-skills-to-master-human-resources-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-10-1",
+      "for": "kn:2.C.10",
+      "site": "coursera",
+      "name": "Supply Chain Logistics",
+      "link": "https://www.coursera.org/learn/supply-chain-logistics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-10-2",
+      "for": "kn:2.C.10",
+      "site": "elatih",
+      "name": "Supply Chain Management",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/supply-chain-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-a-1",
+      "for": "kn:2.C.2.a",
+      "site": "elatih",
+      "name": "The Missing Link to Manufacturing Success",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/the-missing-link-to-manufacturing-success",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-a-2",
+      "for": "kn:2.C.2.a",
+      "site": "coursera",
+      "name": "Heavy Manufacturing Process and System",
+      "link": "https://www.coursera.org/learn/heavy-manufacturing-process-and-system",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-b-1",
+      "for": "kn:2.C.2.b",
+      "site": "elatih",
+      "name": "Food Safety Hazards",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/food-safety-hazards",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-2-b-2",
+      "for": "kn:2.C.2.b",
+      "site": "elatih",
+      "name": "Food Handling and Hygiene (Interactive)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/food-handling-and-hygiene-interactive",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-b-1",
+      "for": "kn:2.C.3.b",
+      "site": "coursera",
+      "name": "Introduction to Engineering Mechanics",
+      "link": "https://www.coursera.org/learn/engineering-mechanics-statics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-b-2",
+      "for": "kn:2.C.3.b",
+      "site": "coursera",
+      "name": "Systems Engineering Fundamentals",
+      "link": "https://www.coursera.org/learn/systems-engineering-fundamentals",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-c-1",
+      "for": "kn:2.C.3.c",
+      "site": "coursera",
+      "name": "Introduction to Engineering Design",
+      "link": "https://www.coursera.org/learn/introduction-to-engineering-design",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-c-2",
+      "for": "kn:2.C.3.c",
+      "site": "elatih",
+      "name": "Architecture Pen Drawing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/architecture-pen-drawing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-d-1",
+      "for": "kn:2.C.3.d",
+      "site": "coursera",
+      "name": "Construction Project Management",
+      "link": "https://www.coursera.org/learn/construction-project-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-d-2",
+      "for": "kn:2.C.3.d",
+      "site": "coursera",
+      "name": "Sustainable Construction Management",
+      "link": "https://www.coursera.org/learn/sustainable-construction-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-e-1",
+      "for": "kn:2.C.3.e",
+      "site": "elatih",
+      "name": "[Mechanical Engineer Course] Innovations in Renewable Energy Technologies",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mechanical-engineer-course-innovations-in-renewable-energy-technologies",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-3-e-2",
+      "for": "kn:2.C.3.e",
+      "site": "coursera",
+      "name": "Introduction to Engineering Mechanics",
+      "link": "https://www.coursera.org/learn/engineering-mechanics-statics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-e-1",
+      "for": "kn:2.C.4.e",
+      "site": "elatih",
+      "name": "Basics of Psychology",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/basics-of-psychology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-f-1",
+      "for": "kn:2.C.4.f",
+      "site": "coursera",
+      "name": "Sociological Perspectives, Culture and Research",
+      "link": "https://www.coursera.org/learn/sociological-perspectives-culture-and-research",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-f-2",
+      "for": "kn:2.C.4.f",
+      "site": "coursera",
+      "name": "Classical Sociological Theory",
+      "link": "https://www.coursera.org/learn/classical-sociological-theory",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-a-1",
+      "for": "kn:2.C.5.a",
+      "site": "coursera",
+      "name": "Introductory Human Physiology",
+      "link": "https://www.coursera.org/learn/physiology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-b-1",
+      "for": "kn:2.C.5.b",
+      "site": "coursera",
+      "name": "Psychological First Aid",
+      "link": "https://www.coursera.org/learn/psychological-first-aid",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-b-2",
+      "for": "kn:2.C.5.b",
+      "site": "coursera",
+      "name": "Evidence-Based Psychotherapy",
+      "link": "https://www.coursera.org/learn/evidence-based-psychotherapy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-6-1",
+      "for": "kn:2.C.6",
+      "site": "elatih",
+      "name": "Train The Trainer - How To Train Yourself And Others",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/train-the-trainer-how-to-train-yourself-and-others",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-6-2",
+      "for": "kn:2.C.6",
+      "site": "elatih",
+      "name": "Mastering The Art of Teaching",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mastering-the-art-of-teaching",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-a-1",
+      "for": "kn:2.C.7.a",
+      "site": "elatih",
+      "name": "Understanding English Grammar",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/understanding-english-grammar",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-a-2",
+      "for": "kn:2.C.7.a",
+      "site": "elatih",
+      "name": "Speak English Professionally",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/speak-english-professionally",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-b-1",
+      "for": "kn:2.C.7.b",
+      "site": "elatih",
+      "name": "Mandarin Chinese 1",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/mandarin-chinese-1",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-b-2",
+      "for": "kn:2.C.7.b",
+      "site": "elatih",
+      "name": "Learn Chinese Mandarin",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/learn-chinese-mandarin",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-c-1",
+      "for": "kn:2.C.7.c",
+      "site": "elatih",
+      "name": "Appreciating Painting",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/appreciating-painting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-c-2",
+      "for": "kn:2.C.7.c",
+      "site": "elatih",
+      "name": "Architecture Pen Drawing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/architecture-pen-drawing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-e-1",
+      "for": "kn:2.C.7.e",
+      "site": "coursera",
+      "name": "Introduction to Philosophy",
+      "link": "https://www.coursera.org/learn/philosophy",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-a-1",
+      "for": "kn:2.C.8.a",
+      "site": "elatih",
+      "name": "Fire Safety Awareness (Interactive)",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/fire-safety-awareness-interactive",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-8-a-2",
+      "for": "kn:2.C.8.a",
+      "site": "elatih",
+      "name": "Workplace Safety for Employees",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/workplace-safety-for-employees",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-a-1",
+      "for": "kn:2.C.9.a",
+      "site": "coursera",
+      "name": "Wireless Communications for Everybody",
+      "link": "https://www.coursera.org/learn/wireless-communications",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-a-2",
+      "for": "kn:2.C.9.a",
+      "site": "coursera",
+      "name": "Point-to-Point Wireless Telecommunication Links",
+      "link": "https://www.coursera.org/learn/point-to-point-wireless-telecommunication-links",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-b-1",
+      "for": "kn:2.C.9.b",
+      "site": "elatih",
+      "name": "Creating Quality Journalism",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/creating-quality-journalism",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-9-b-2",
+      "for": "kn:2.C.9.b",
+      "site": "elatih",
+      "name": "Video Editing",
+      "link": "https://elatih.hrdcorp.gov.my/courses-details/video-editing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-b-1",
+      "for": "kn:2.C.4.b",
+      "site": "khan",
+      "name": "Physics archive",
+      "link": "https://www.khanacademy.org/science/physics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-c-1",
+      "for": "kn:2.C.4.c",
+      "site": "khan",
+      "name": "Chemistry archive",
+      "link": "https://www.khanacademy.org/science/chemistry",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-d-1",
+      "for": "kn:2.C.4.d",
+      "site": "khan",
+      "name": "Biology archive",
+      "link": "https://www.khanacademy.org/science/biology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-5-a-2",
+      "for": "kn:2.C.5.a",
+      "site": "khan",
+      "name": "Health and medicine",
+      "link": "https://www.khanacademy.org/science/health-and-medicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-7-d-1",
+      "for": "kn:2.C.7.d",
+      "site": "khan",
+      "name": "World history",
+      "link": "https://www.khanacademy.org/humanities/world-history",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-g-1",
+      "for": "kn:2.C.4.g",
+      "site": "coursera",
+      "name": "Geographic Information Systems (GIS)",
+      "link": "https://www.coursera.org/specializations/gis",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-g-2",
+      "for": "kn:2.C.4.g",
+      "site": "coursera",
+      "name": "Intro to the Arctic",
+      "link": "https://www.coursera.org/learn/intro-to-the-arctic",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-kn-2-C-4-e-2",
+      "for": "kn:2.C.4.e",
+      "site": "coursera",
+      "name": "Introduction to Psychology",
+      "link": "https://www.coursera.org/learn/introduction-psychology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-c-1",
+      "for": "el:2.B.3.c",
+      "site": "coursera",
+      "name": "Mechanization in Construction",
+      "link": "https://www.coursera.org/specializations/mechanization-in-construction",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "c-el-2-B-3-c-2",
+      "for": "el:2.B.3.c",
+      "site": "coursera",
+      "name": "Construction Equipment Maintenance & Safety",
+      "link": "https://www.coursera.org/learn/construction-equipment-maintenance--safety",
+      "checkedAt": "2026-10-31"
+    }
+  ],
+  "programmes": [
+    {
+      "id": "p-0613-1",
+      "field": "0613",
+      "kind": "accredited",
+      "name": "Bachelor Of Computer Science with Honours (Software Engineering)",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://fki.ums.edu.my/index.php/what-we-offer/undergraduate/uh6481001",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0613-2",
+      "field": "0613",
+      "kind": "accredited",
+      "name": "Bachelor in Software Engineering with Honors",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0770",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-in-software-engineering-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0613-3",
+      "field": "0613",
+      "kind": "professional",
+      "name": "Professional Technologists",
+      "body": "Malaysia Board of Technologists (MBOT)",
+      "link": "https://www.mbot.org.my/registration/professional-technologists",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-1",
+      "field": "0411",
+      "kind": "accredited",
+      "name": "Bachelor of Accounting",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://www.ums.edu.my/fpep/index.php/what-we-offer/undergraduates/uh6344001-accounting",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-2",
+      "field": "0411",
+      "kind": "professional",
+      "name": "How to become a C.A.(M)?",
+      "body": "Malaysian Institute of Accountants",
+      "link": "https://mia.org.my/how-to-become-a-c-a-m/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0411-3",
+      "field": "0411",
+      "kind": "professional",
+      "name": "The ACCA Qualification",
+      "body": "ACCA",
+      "link": "https://www.accaglobal.com/my/en/qualifications/glance/acca.html",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0110-1",
+      "field": "0110",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Hons)",
+      "institution": "SEGi University",
+      "mqrRef": "MQA/FA0044",
+      "link": "https://university.segi.edu.my/course/bachelor-of-education-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0111-1",
+      "field": "0111",
+      "kind": "accredited",
+      "name": "GUIDANCE & COUNSELLING",
+      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
+      "mqrRef": null,
+      "link": "https://fpm.upsi.edu.my/guidance-counseling/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0112-1",
+      "field": "0112",
+      "kind": "accredited",
+      "name": "Bachelor of Early Childhood Education",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": "MQA/SWA11278",
+      "link": "https://education.um.edu.my/bachelor-of-early-childhood-education",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0112-2",
+      "field": "0112",
+      "kind": "accredited",
+      "name": "EARLY CHILDHOOD EDUCATION",
+      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
+      "mqrRef": null,
+      "link": "https://fpm.upsi.edu.my/early-childhood-education/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0113-1",
+      "field": "0113",
+      "kind": "accredited",
+      "name": "Bachelor of Education with Honours in Special Education",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/special-education-bachelor-of-education-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0114-1",
+      "field": "0114",
+      "kind": "accredited",
+      "name": "BACHELOR OF EDUCATION TEACHING ENGLISH AS A SECOND LANGUAGE",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": "MQA/SWA11277",
+      "link": "https://study.um.edu.my/bachelor-of-teaching-english-as-second-language",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0114-3",
+      "field": "0114",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Teaching English as a Second Language) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0779",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-education-teaching-english-as-a-second-language-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0119-1",
+      "field": "0119",
+      "kind": "accredited",
+      "name": "Master in Education Management",
+      "institution": "INTI International University",
+      "mqrRef": "MQA/FA11617",
+      "link": "https://newinti.edu.my/programme/master-in-education-management/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0188-1",
+      "field": "0188",
+      "kind": "accredited",
+      "name": "Bachelor of Technology with Education (Design and Technology) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0784",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-technology-with-education-design-and-technology-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0210-1",
+      "field": "0210",
+      "kind": "accredited",
+      "name": "MASTER OF INNOVATION DESIGN (MID)",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": "MQA/FA9183",
+      "link": "https://ftkw.umk.edu.my/program-details.cfm?ref=309&name=MASTER-OF-INNOVATION-DESIGN-(MID)",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0211-1",
+      "field": "0211",
+      "kind": "accredited",
+      "name": "Bachelor of Arts (Honours) Digital Film Production",
+      "institution": "Sunway University (Sunway)",
+      "mqrRef": "MQA/FA6233",
+      "link": "https://sunwayuniversity.edu.my/soa/ba-film-production",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0212-1",
+      "field": "0212",
+      "kind": "accredited",
+      "name": "BFA Product Design with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://arts.usm.my/index.php/programmes/undergraduate/bfa-hons-product-design",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0213-1",
+      "field": "0213",
+      "kind": "accredited",
+      "name": "Bachelor of Arts (Honours) (Fine Arts)",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6211001-bachelor-of-arts-honours-fine-arts",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0214-1",
+      "field": "0214",
+      "kind": "accredited",
+      "name": "Textile Design",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://ad.uitm.edu.my/index.php?id=145&option=com_sppagebuilder&view=page",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0215-1",
+      "field": "0215",
+      "kind": "accredited",
+      "name": "BACHELOR OF MUSIC",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-music",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0220-1",
+      "field": "0220",
+      "kind": "accredited",
+      "name": "Bachelor in Liberal Arts (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA11176",
+      "link": "https://www.msu.edu.my/school-education-social-sciences/bachelor-liberal-arts",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0221-1",
+      "field": "0221",
+      "kind": "accredited",
+      "name": "BACHELOR OF ISLAMIC REVEALED KNOWLEDGE AND HERITAGE (HONOURS)",
+      "institution": "International Islamic University Malaysia (IIUM)",
+      "mqrRef": null,
+      "link": "https://academy.iium.edu.my/bachelor-of-islamic-revealed-knowledge-and-heritage-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0222-1",
+      "field": "0222",
+      "kind": "accredited",
+      "name": "Bachelor Of Arts in History with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-arts-with-honours-history/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0222-2",
+      "field": "0222",
+      "kind": "accredited",
+      "name": "BACHELOR OF ARTS HISTORY",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-arts-history",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0231-1",
+      "field": "0231",
+      "kind": "accredited",
+      "name": "Bachelor Of Arts in English Language studies with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/english-language-studies-bachelor-of-arts-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0232-1",
+      "field": "0232",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Linguistics with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-linguistic/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0232-2",
+      "field": "0232",
+      "kind": "accredited",
+      "name": "BACHELOR OF ARTS ENGLISH",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-arts-english",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0239-1",
+      "field": "0239",
+      "kind": "accredited",
+      "name": "Master of Language in Communication and Digital Culture",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA16766",
+      "link": "https://humanities.utm.my/programs/master-of-language-in-communication-and-digital-culture/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0288-1",
+      "field": "0288",
+      "kind": "accredited",
+      "name": "Bachelor of Arts in Linguistics and Information Technology (Honours)",
+      "institution": "Universiti Utara Malaysia (UUM)",
+      "mqrRef": "MQA/FA18125",
+      "link": "https://www.uum.edu.my/admissions/application-guidelines/undergraduate-local/local/bachelor-of-arts-in-linguistics-and-information-technology-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0310-1",
+      "field": "0310",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Development Science with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA12409",
+      "link": "https://www.ukm.my/studyukm/developmental-science-bachelor-of-social-sciences-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0311-1",
+      "field": "0311",
+      "kind": "accredited",
+      "name": "Bachelor of Economic with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/economics-bachelor-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0312-1",
+      "field": "0312",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Political Science with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-political-science/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0313-1",
+      "field": "0313",
+      "kind": "accredited",
+      "name": "Bachelor of Social Science with Honors (Psychology)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA12413",
+      "link": "https://www.ukm.my/studyukm/?p=25637",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0314-1",
+      "field": "0314",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Antropology and Sociology with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-antropology-sociology/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0321-1",
+      "field": "0321",
+      "kind": "accredited",
+      "name": "BACHELOR OF COMMUNICATION WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/undergraduate/undergraduate-malaysian?view=article&id=829&catid=64",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0322-1",
+      "field": "0322",
+      "kind": "accredited",
+      "name": "BACHELOR OF INFORMATION SCIENCE (HONOURS) LIBRARY MANAGEMENT",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12658/SWA12660/SWA12659",
+      "link": "https://fis.uitm.edu.my/component/sppagebuilder/page/230",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0388-1",
+      "field": "0388",
+      "kind": "accredited",
+      "name": "BSc (Hons) in Applied Psychology and Management",
+      "institution": "University of Nottingham Malaysia (UNM)",
+      "mqrRef": "MQA/SWA0082",
+      "link": "https://www.nottingham.edu.my/ugstudy/course/applied-psychology-and-management-bsc-hons",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0410-1",
+      "field": "0410",
+      "kind": "accredited",
+      "name": "Diploma In Business Studies",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12643",
+      "link": "https://fbm.uitm.edu.my/index.php/ba111-diploma-in-business-studies",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0412-1",
+      "field": "0412",
+      "kind": "accredited",
+      "name": "Bachelor of Finance (BFin)",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://fpe.um.edu.my/bachelor-of-finance",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0412-2",
+      "field": "0412",
+      "kind": "accredited",
+      "name": "Bachelor of Business Administration (Hons) Finance",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba242-finance",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0412-3",
+      "field": "0412",
+      "kind": "professional",
+      "name": "CHARTERED BANKER (CB) QUALIFICATION",
+      "body": "Asian Institute of Chartered Bankers",
+      "link": "https://www.aicb.org.my/qualifications",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0413-1",
+      "field": "0413",
+      "kind": "accredited",
+      "name": "Bachelor of Management with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6345001-bachelor-of-management-honours-finance-international-business-marketing-operations-management-strategy-and-organisational-management-islamic-finance-business-analytics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0414-1",
+      "field": "0414",
+      "kind": "accredited",
+      "name": "Bachelor of Business Administration (Hons) Marketing",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba240-marketing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0415-1",
+      "field": "0415",
+      "kind": "accredited",
+      "name": "Bachelor in Business Technology Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba232-office-systems-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0416-1",
+      "field": "0416",
+      "kind": "accredited",
+      "name": "BACHELOR OF ENTREPRENEURSHIP (RETAILING) WITH HONOURS",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": null,
+      "link": "https://fkp.umk.edu.my/program-details.cfm?ref=64&name=BACHELOR-OF-ENTREPRENEURSHIP-(RETAILING)-WITH-HONOURS",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0417-1",
+      "field": "0417",
+      "kind": "accredited",
+      "name": "Bachelor of Social Sciences in Industrial Relations and Employment with Honours",
+      "institution": "Universiti Malaysia Sarawak (UNIMAS)",
+      "mqrRef": "MQA/FA10754",
+      "link": "https://www.fssh.unimas.my/index.php/academic/courses-list/industrial-relations-and-employment",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0419-1",
+      "field": "0419",
+      "kind": "accredited",
+      "name": "Bachelor of Industrial Technology Management with Honours",
+      "institution": "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)",
+      "mqrRef": "MQA/FA2219",
+      "link": "https://admission.umpsa.edu.my/undergraduate-study/management/bachelor-of-industrial-technology-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0421-1",
+      "field": "0421",
+      "kind": "accredited",
+      "name": "BACHELOR OF LAWS",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-laws",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0421-2",
+      "field": "0421",
+      "kind": "accredited",
+      "name": "Bachelor Of Law with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/law-bachelor-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0488-1",
+      "field": "0488",
+      "kind": "accredited",
+      "name": "Bachelor of Technology Management (Production and Operation) with Honours",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA10043",
+      "link": "https://study.uthm.edu.my/en/programmes-and-courses/list-of-bachelor-degree?view=article&id=87%3Abachelor-of-technology-management-production-and-operation-with-honours&catid=10",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0500-1",
+      "field": "0500",
+      "kind": "accredited",
+      "name": "Diploma in Applied Sciences",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA0722",
+      "link": "https://ceds.uthm.edu.my/program/program-ditawarkan/diploma-sains-gunaan",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0511-1",
+      "field": "0511",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Biology) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://science.utm.my/undergraduate/?p=2559",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0512-1",
+      "field": "0512",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN BIOCHEMISTRY",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-science-in-biochemistry",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0519-1",
+      "field": "0519",
+      "kind": "accredited",
+      "name": "Bachelor of Applied Science (Natural Resources Science) With Honours",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": "MQA/FA10465",
+      "link": "https://fsb.umk.edu.my/program-details.cfm?ref=1342&name=Bachelor-of-Applied-Science-(Natural-Resources-Science)-With-Honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0520-1",
+      "field": "0520",
+      "kind": "accredited",
+      "name": "Master of Environment",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0440",
+      "link": "https://forenv.upm.edu.my/academic_and_student_affairs/postgraduate/master_of_environment-56585?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0521-1",
+      "field": "0521",
+      "kind": "accredited",
+      "name": "Bachelor of Science With Honours (Environmental Science)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/environmental-science-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0522-1",
+      "field": "0522",
+      "kind": "accredited",
+      "name": "Conservation Biology",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": null,
+      "link": "https://www.ums.edu.my/fpt/index.php/what-we-offer/undergraduate/uh6421001-conservation-biology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0530-1",
+      "field": "0530",
+      "kind": "accredited",
+      "name": "Bachelor of Science",
+      "institution": "Monash University Malaysia",
+      "mqrRef": "MQA/SWA0129",
+      "link": "https://www.monash.edu.my/study/undergraduate/science/bachelor-science",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0531-1",
+      "field": "0531",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Chemistry) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0767",
+      "link": "https://science.utm.my/undergraduate/?p=819",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0531-2",
+      "field": "0531",
+      "kind": "professional",
+      "name": "Introduction & Membership Registry",
+      "body": "Institut Kimia Malaysia (IKM)",
+      "link": "https://ikm.org.my/memberships-examination/introduction-membership-registry/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0532-1",
+      "field": "0532",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Geology with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/geology-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0533-1",
+      "field": "0533",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Physics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://science.utm.my/undergraduate/?p=736",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0539-1",
+      "field": "0539",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Material Physics with Honours",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0608",
+      "link": "https://science.upm.edu.my/kandungan/bacelor_sains_fizik_bahan_dengan_kepujian-59621?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0540-1",
+      "field": "0540",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Industrial Mathematics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0765",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-science-industrial-mathematics-with-honours-2/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0541-1",
+      "field": "0541",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Mathematics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0768",
+      "link": "https://science.utm.my/undergraduate/?p=837",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0541-2",
+      "field": "0541",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN MATHEMATICS WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=589&catid=63",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0542-1",
+      "field": "0542",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN STATISTICS",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-science-in-statistics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0588-1",
+      "field": "0588",
+      "kind": "accredited",
+      "name": "Bachelor of Science With Honours (Materials Science)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA14102",
+      "link": "https://www.ukm.my/studyukm/materials-science-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0599-1",
+      "field": "0599",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Mathematics with Education (Honours)",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0613",
+      "link": "https://science.upm.edu.my/content/bachelor_of_science_in_mathematics_with_education_honours-59634?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0610-1",
+      "field": "0610",
+      "kind": "accredited",
+      "name": "Master of Digital Transformation Coursework Mode",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": "MQA/SWA16009",
+      "link": "https://cs.usm.my/index.php/admissions-academics/postgraduate/master-of-digital-transformation-coursework-mode",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0611-1",
+      "field": "0611",
+      "kind": "accredited",
+      "name": "BACHELOR OF INFORMATION TECHNOLOGY (HONS.) / SARJANA MUDA TEKNOLOGI MAKLUMAT (KEPUJIAN)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12009",
+      "link": "https://fskm.uitm.edu.my/v5/en/component/content/article/649-cs240-bachelor-of-information-technology-hons-sarjana-muda-teknologi-maklumat-kepujian-2?catid=72&Itemid=154",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0612-1",
+      "field": "0612",
+      "kind": "accredited",
+      "name": "Bachelor of Computer Science (Computer Networks & Security) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0771",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-computer-science-computer-networks-security-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0612-2",
+      "field": "0612",
+      "kind": "professional",
+      "name": "Professional Technologists",
+      "body": "Malaysia Board of Technologists (MBOT)",
+      "link": "https://www.mbot.org.my/registration/professional-technologists",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0688-1",
+      "field": "0688",
+      "kind": "accredited",
+      "name": "Digital Health",
+      "institution": "IMU University",
+      "mqrRef": "MQA/SWA14380",
+      "link": "https://imu.edu.my/academics/undergraduate/digital-health/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0710-1",
+      "field": "0710",
+      "kind": "accredited",
+      "name": "Bachelor of Bioindustrial Technology With Honours",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": "MQA/FA15634",
+      "link": "https://fbkt.umk.edu.my/program-details.cfm?ref=1483&name=Bachelor-of-Bioindustrial-Technology-With-Honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0711-1",
+      "field": "0711",
+      "kind": "accredited",
+      "name": "Bachelor of Chemical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11082",
+      "link": "https://admission.utm.my/new2024/?p=407062",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0711-2",
+      "field": "0711",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0712-1",
+      "field": "0712",
+      "kind": "accredited",
+      "name": "BACHELOR OF TECHNOLOGY (ENVIRONMENTAL) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": "MQA/FA4767",
+      "link": "https://www.umt.edu.my/sarjana-muda-teknologi-alam-sekitar-dengan-kepujian-ftkk/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-1",
+      "field": "0713",
+      "kind": "accredited",
+      "name": "Bachelor of Electrical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://fke.utm.my/?p=362",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-2",
+      "field": "0713",
+      "kind": "accredited",
+      "name": "Bachelor of Electrical Engineering with Honours",
+      "institution": "Universiti Kuala Lumpur (UniKL)",
+      "mqrRef": "MQA/FA1624",
+      "link": "https://www.unikl.edu.my/?p=990201",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-3",
+      "field": "0713",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-1",
+      "field": "0714",
+      "kind": "accredited",
+      "name": "Bachelor of Electronic Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11078",
+      "link": "https://admission.utm.my/new2024/?p=407058",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-2",
+      "field": "0714",
+      "kind": "accredited",
+      "name": "Bachelor of Engineering (Electrical - Mechatronics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11081",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-engineering-electrical-mechatronics-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-3",
+      "field": "0714",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0715-1",
+      "field": "0715",
+      "kind": "accredited",
+      "name": "Bachelor of Mechanical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11087",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-mechanical-engineering-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0715-2",
+      "field": "0715",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-1",
+      "field": "0716",
+      "kind": "accredited",
+      "name": "Bachelor of Aeronautical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11088",
+      "link": "https://admission.utm.my/new2024/?p=407072",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-2",
+      "field": "0716",
+      "kind": "accredited",
+      "name": "Bachelor of Aerospace Engineering with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6525001-bachelor-of-aerospace-engineering-with-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-3",
+      "field": "0716",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0719-1",
+      "field": "0719",
+      "kind": "accredited",
+      "name": "MASTER OF FORENSIC ENGINEERING",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA13860",
+      "link": "https://odl.utm.my/master-of-forensic-engineering/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0721-1",
+      "field": "0721",
+      "kind": "accredited",
+      "name": "BACHELOR OF FOOD SCIENCE (FOOD TECHNOLOGY) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36122",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0722-1",
+      "field": "0722",
+      "kind": "accredited",
+      "name": "Bachelor of Bioresource Technology with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6543001-bachelor-of-technology-honours-bioresource",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0723-1",
+      "field": "0723",
+      "kind": "accredited",
+      "name": "Diploma in Textile Technology",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12460",
+      "link": "https://fsg.uitm.edu.my/index.php/component/content/article?layout=edit&id=187&Itemid=101",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0724-1",
+      "field": "0724",
+      "kind": "accredited",
+      "name": "Bachelor of Mineral Resources Engineering with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6524002-bachelor-of-mineral-resources-engineering-with-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0724-2",
+      "field": "0724",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0729-1",
+      "field": "0729",
+      "kind": "accredited",
+      "name": "Bachelor of Degree in Industrial Machining with Honours",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA12561",
+      "link": "https://study.uthm.edu.my/en/programmes-and-courses/list-of-bachelor-degree?view=article&id=86%3Abachelor-of-technology-in-industrial-machining-with-honours&catid=30",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0731-1",
+      "field": "0731",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Architecture with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11073",
+      "link": "https://admission.utm.my/new2024/?p=407033",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0731-2",
+      "field": "0731",
+      "kind": "accredited",
+      "name": "Bachelor of Town and Regional Planning (Hons)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fab.uitm.edu.my/index.php/be221",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-1",
+      "field": "0732",
+      "kind": "accredited",
+      "name": "Bachelor of Civil Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11074",
+      "link": "https://admission.utm.my/new2024/?p=407055",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-2",
+      "field": "0732",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Quantity Surveying with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6526001-bachelor-of-science-housing-building-and-planning-honours-quantity-surveying",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-3",
+      "field": "0732",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-4",
+      "field": "0732",
+      "kind": "professional",
+      "name": "Pendaftaran Baharu",
+      "body": "Board of Quantity Surveyors Malaysia",
+      "link": "https://www.bqsm.gov.my/pendaftaran-baharu/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0788-1",
+      "field": "0788",
+      "kind": "accredited",
+      "name": "B.Eng (Hons.) Mechatronics Engineering",
+      "institution": "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)",
+      "mqrRef": "MQA/FA10801",
+      "link": "https://admission.umpsa.edu.my/undergraduate-study/engineering/06-b-eng-hons-mechatronics-engineering",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0811-1",
+      "field": "0811",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE AGROTECHNOLOGY (CROP SCIENCE) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36130",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0812-1",
+      "field": "0812",
+      "kind": "accredited",
+      "name": "B.Sc. (HONS) HORTICULTURE TECHNOLOGY",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fpa.uitm.edu.my/index.php/en/bachelor-degree/at234-bachelor-of-science-in-horticulture-technology-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0821-1",
+      "field": "0821",
+      "kind": "accredited",
+      "name": "International Tropical Forestry",
+      "institution": "Universiti Malaysia Sabah (UMS)",
+      "mqrRef": "MQA/FA10940",
+      "link": "https://www.ums.edu.my/fpt/index.php/what-we-offer/undergraduate/uh6623001-international-tropical-forestry",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0831-1",
+      "field": "0831",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN AQUACULTURE WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36118",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0841-1",
+      "field": "0841",
+      "kind": "accredited",
+      "name": "Doctor of Veterinary Medicine",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": null,
+      "link": "https://fpv.umk.edu.my/program-details.cfm?ref=301&name=Doctor-of-Veterinary-Medicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0910-1",
+      "field": "0910",
+      "kind": "accredited",
+      "name": "Bachelor in Health Science Management (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA4944",
+      "link": "https://www.msu.edu.my/faculty-health-life-sciences/bachelor-health-science-management.php",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0911-1",
+      "field": "0911",
+      "kind": "accredited",
+      "name": "BACHELOR OF DENTAL SURGERY",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-dental-surgery",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0911-2",
+      "field": "0911",
+      "kind": "professional",
+      "name": "Registration As Dental Surgeon",
+      "body": "Malaysian Dental Council",
+      "link": "https://hq.moh.gov.my/ohp/mdc/index.php/?id=22",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0912-1",
+      "field": "0912",
+      "kind": "accredited",
+      "name": "Bachelor of Medicine and Bachelor of Surgery",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://medicine.um.edu.my/bachelor-of-medicine-and-bachelor-of-surgery",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0912-2",
+      "field": "0912",
+      "kind": "professional",
+      "name": "REGISTRATION OF MEDICAL PRACTITIONERS",
+      "body": "Malaysian Medical Council (MMC)",
+      "link": "https://mmc.gov.my/?p=9188",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0913-1",
+      "field": "0913",
+      "kind": "accredited",
+      "name": "BACHELOR OF NURSING WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=710:us6723001-sarjana-muda-kejururawatan-kepujian-2&catid=74",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0913-2",
+      "field": "0913",
+      "kind": "professional",
+      "name": "Registration and Annual Practicing Certificate (APC)",
+      "body": "Nursing Board Malaysia",
+      "link": "https://hq.moh.gov.my/nursing/en/about-us/units-function-introduction/registration-apc/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0914-1",
+      "field": "0914",
+      "kind": "accredited",
+      "name": "Bachelor of Diagnostic Imaging and Radiotherapy with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-diagnostic-imaging-and-radiotherapy-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0914-2",
+      "field": "0914",
+      "kind": "professional",
+      "name": "About Malaysian Health Care Practitioners’ System",
+      "body": "Malaysian Allied Health Professions Council",
+      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-1",
+      "field": "0915",
+      "kind": "accredited",
+      "name": "Bachelor of Physiotherapy with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-physiotherapy-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-2",
+      "field": "0915",
+      "kind": "accredited",
+      "name": "Bachelor of Optometry with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-optometry-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-3",
+      "field": "0915",
+      "kind": "professional",
+      "name": "About Malaysian Health Care Practitioners’ System",
+      "body": "Malaysian Allied Health Professions Council",
+      "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-4",
+      "field": "0915",
+      "kind": "professional",
+      "name": "Pendaftaran",
+      "body": "Majlis Optik Malaysia",
+      "link": "https://hq.moh.gov.my/moc/pendaftaran/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0916-1",
+      "field": "0916",
+      "kind": "accredited",
+      "name": "Bachelor of Pharmacy (Honours)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/farmasi/bachelor-of-pharmacy-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0916-2",
+      "field": "0916",
+      "kind": "professional",
+      "name": "Qualifying Examination to Practice Pharmacy",
+      "body": "Pharmacy Board Malaysia (PBM)",
+      "link": "https://pharmacy.moh.gov.my/en/content/qualifying-examination-practice-pharmacy.html",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0917-1",
+      "field": "0917",
+      "kind": "accredited",
+      "name": "BACHELOR OF MEDICINE IN TRADITIONAL CHINESE MEDICINE (HONOURS) 中医学专业（授予医学学士)",
+      "institution": "Xiamen University Malaysia",
+      "mqrRef": "MQA/FA5710",
+      "link": "https://www.xmu.edu.my/courses/bachelor-medicine-traditional-chinese-medicine-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0919-1",
+      "field": "0919",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Honours) Biomedicine",
+      "institution": "Sunway University",
+      "mqrRef": "MQA/FA8832",
+      "link": "https://sunwayuniversity.edu.my/faculty-of-medical-and-life-sciences/courses/bachelor-of-science-honours-biomedicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0923-1",
+      "field": "0923",
+      "kind": "accredited",
+      "name": "BACHELOR OF SOCIAL WORK WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=697:us6762001-sarjana-muda-kerja-sosial-kepujian-2&catid=73",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1012-1",
+      "field": "1012",
+      "kind": "accredited",
+      "name": "Bachelor in Beauty and Hair Management (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA3821",
+      "link": "https://www.msu.edu.my/school-hospitality-creative-arts/bachelor-beauty-hair-management.php",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1013-1",
+      "field": "1013",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Hospitality Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fhtm.uitm.edu.my/index.php/en/academics/programmes/undergraduate/hotel-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1014-1",
+      "field": "1014",
+      "kind": "accredited",
+      "name": "Bachelor of Sports Science (Hons.)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://sports.uitm.edu.my/index.php/component/content/article/195-sr-243-bachelor-of-sports-science-hons-2?layout=edit&Itemid=101",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1015-1",
+      "field": "1015",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Tourism Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fhtm.uitm.edu.my/index.php/en/academics/programmes/undergraduate/tourism-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1021-1",
+      "field": "1021",
+      "kind": "accredited",
+      "name": "BACHELOR OF SCIENCE IN OCCUPATIONAL SAFETY AND HEALTH WITH ENVIRONMENTAL HEALTH WITH HONOURS",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=714&catid=74",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1022-1",
+      "field": "1022",
+      "kind": "accredited",
+      "name": "Bachelor of Occupational Safety and Health with Environmental Health with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-occupational-safety-and-health-with-environmental-health-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1022-2",
+      "field": "1022",
+      "kind": "professional",
+      "name": "Safety and Health Officer",
+      "body": "Department of Occupational Safety and Health (DOSH)",
+      "link": "https://dosh.gov.my/en/semakan/pegawai-keselamatan-dan-kesihatan/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1041-1",
+      "field": "1041",
+      "kind": "accredited",
+      "name": "BACHELOR OF MANAGEMENT (MARITIME) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/sarjana-muda-pengurusan-maritim-dengan-kepujian-fpm/",
+      "checkedAt": "2026-10-31"
+    }
+  ],
+  "searchWords": [
+    {
+      "id": "w-el-2-A-2-c",
+      "for": "el:2.A.2.c",
+      "word": "study skills",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "w-el-2-A-2-d",
+      "for": "el:2.A.2.d",
+      "word": "performance management",
+      "checkedAt": "2026-10-31"
+    }
+  ]
+}

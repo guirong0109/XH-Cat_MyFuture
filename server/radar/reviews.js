@@ -1,6 +1,6 @@
 // Future Skills Radar review records (spec §8.4, rulings R24, R26).
 //
-// Record: {reviewId, kind: 'break'|'field_topic', target, decision, note, evidence[], reviewer, reviewedAt, version,
+// Record: {reviewId, kind: 'break'|'field_topic'|'sdg_link'|'pathway_pick', target, decision, note, evidence[], reviewer, reviewedAt, version,
 //          appliesTo {sourceId, period, observationHash}}  →  prod/reviews/<reviewId>.json, written only if absent.
 // Newest wins (reviewedAt, then reviewId); older records stay as history.
 // - break:       target 'dosm:<quarter>', decision confirmed | dismissed_counts | dismissed_shares | annotate,
@@ -8,12 +8,16 @@
 // - field_topic: target = mappingId, decision approved | rejected | revise (back to pending),
 //                appliesTo {sourceId: 'field-topic-mappings', period: null, observationHash: SHA-256 of the proposal's
 //                content}: a decision applies only to the proposal text it was made on.
+// - sdg_link:    target = SDG link id, decisions as field_topic, appliesTo {sourceId: 'sdg-links', period: null,
+//                observationHash: SHA-256 of the link's content} (server/matching/adminRoutes.js). Not a Radar signal.
+// - pathway_pick: target = pick id, decisions as field_topic, appliesTo {sourceId: 'pathway-picks', period: null,
+//                observationHash: pickHash(pick)} (server/pathway/data.js). Not a Radar signal.
 // Decided field-topic records are merged over the bundled proposals (createDecidedReferences), so the public
 // references and export serve stored owner decisions (R26).
 import { createHash } from 'node:crypto'
 import { KEYS, getJson, isSafeId, toBytes } from './manifest.js'
 
-export const REVIEW_KINDS = Object.freeze(['break', 'field_topic'])
+export const REVIEW_KINDS = Object.freeze(['break', 'field_topic', 'sdg_link', 'pathway_pick'])
 export const BREAK_DECISIONS = Object.freeze(['confirmed', 'dismissed_counts', 'dismissed_shares', 'annotate'])
 export const MAPPING_DECISIONS = Object.freeze(['approved', 'rejected', 'revise'])
 export const MAPPING_SOURCE = 'field-topic-mappings'
@@ -89,15 +93,19 @@ export async function recordReview(store, review) {
 // Every stored review record, oldest first. Unreadable or malformed records are skipped.
 export async function loadReviews(store, kind = null) {
   const keys = await store.list(KEYS.reviewsPrefix)
-  const out = []
-  for (const key of keys) {
-    let got = null
+  // Read in parallel; a malformed record is skipped, any other failure fails the whole read (as before).
+  const read = await Promise.all(keys.map(async (key) => {
     try {
-      got = await getJson(store, key)
+      return { key, got: await getJson(store, key) }
     } catch (error) {
-      if (error instanceof SyntaxError) continue
+      if (error instanceof SyntaxError) return null
       throw error
     }
+  }))
+  const out = []
+  for (const entry of read) {
+    if (!entry) continue
+    const { key, got } = entry
     const review = got?.value
     if (!validReview(review) || key !== reviewKey(review.reviewId)) continue
     if (kind && review.kind !== kind) continue

@@ -92,9 +92,9 @@ afterAll(() => new Promise((resolve) => server.close(resolve)))
 const unesc = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
 const text = (html) => unesc(html.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ')
 async function adminData() {
-  const [status, mappings, breaks] = await Promise.all([admin.status(), admin.mappings(), admin.breaks()])
-  for (const out of [status, mappings, breaks]) expect(out.ok).toBe(true)
-  return { public: publicData, status: status.data, mappings: mappings.data, breaks: breaks.data, now: NOW.getTime() }
+  const [status, mappings, breaks, sdgLinks] = await Promise.all([admin.status(), admin.mappings(), admin.breaks(), admin.sdgLinks()])
+  for (const out of [status, mappings, breaks, sdgLinks]) expect(out.ok).toBe(true)
+  return { public: publicData, status: status.data, mappings: mappings.data, breaks: breaks.data, sdgLinks: sdgLinks.data, now: NOW.getTime() }
 }
 const adminState = (ui = {}) => ({ lang: 'en', radarAdmin: { session: admin.session(), ...ui } })
 const judgeState = (ui = {}) => ({ lang: 'en', radarAdmin: { session: judge.session(), ...ui } })
@@ -624,3 +624,107 @@ describe('the public Radar after an admin decision (acceptance note N2)', () => 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 }
+
+describe('SDG link review card (Task 15)', () => {
+  const card = (html) => html.slice(html.indexOf('id="admSdgCard"'), html.indexOf('id="admBrkCard"'))
+
+  it('card lists pending links with code, role titles, target tag, reason and decision buttons', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data })
+    const mine = card(html)
+    expect(mine).toContain(esc(t('rdSdgTitle')))
+    const group = data.sdgLinks.links.find((l) => l.kind === 'masco_submajor')
+    const item = data.sdgLinks.links.find((l) => l.kind === 'onet_element')
+    expect(group.examples).toHaveLength(3)
+    expect(mine).toContain(esc(group.code))
+    for (const title of group.examples) expect(unesc(mine)).toContain(title)
+    expect(unesc(mine)).toContain(item.name)
+    expect(unesc(mine)).toContain(group.reason.en)
+    expect(unesc(mine)).toContain(group.reason.ms)
+    expect(unesc(mine)).toContain(group.reason.zh)
+    expect(unesc(mine)).toContain(data.sdgLinks.goalTitles[group.target.split('.')[0]])
+    expect(mine).toContain(esc(t('rdStatusProposed')))
+    for (const [decision, label] of [['approved', 'rdApprove'], ['rejected', 'rdReject']]) {
+      expect(mine).toContain(`data-act="admSdg" data-arg="${esc(group.id)}|${decision}"`)
+      expect(mine).toContain(t(label))
+    }
+    expect(mine).not.toMatch(/data-act="admSdg"[^>]* disabled/)
+    expect(mine.match(/<textarea[^>]*id="admSdgNote"[^>]*>/)[0]).toContain('required')
+    expect(mine).toContain('<label for="admSdgNote"')
+    expect(mine).toContain('id="admMsg-sdg"')
+    clean(mine)
+  })
+
+  it('approve calls the API with the CSRF token and the list then shows it approved', async () => {
+    const data = await adminData()
+    const id = data.sdgLinks.links[0].id
+    const before = adminJar.sent.length
+    const refused = await admin.decideSdgLink({ id, decision: 'approved', note: '  ' })
+    expect(refused).toMatchObject({ ok: false, code: 'note_required' })
+    expect(adminJar.sent.length).toBe(before)
+    const out = await admin.decideSdgLink({ id, decision: 'approved', note: 'Checked against the target text.' })
+    expect(out.ok).toBe(true)
+    expect(out.data.link).toMatchObject({ id, status: 'approved' })
+    const post = adminJar.sent.slice(before).find((r) => r.method === 'POST')
+    expect(post.url).toContain('/api/admin/matching/sdg-links')
+    expect(Object.keys(post.headers).map((k) => k.toLowerCase())).toContain('x-radar-csrf')
+    expect(JSON.parse(post.body)).toEqual({ id, decision: 'approved', note: 'Checked against the target text.' })
+    const fresh = await adminData()
+    expect(fresh.sdgLinks.links.find((l) => l.id === id).status).toBe('approved')
+    const mine = card(adminView({ t, state: adminState(), data: fresh }))
+    expect(mine).toContain(esc(t('rdStatusApproved')))
+  })
+
+  it('not writable disables the buttons and says why', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data: { ...data, sdgLinks: { ...data.sdgLinks, writable: false } } })
+    const mine = card(html)
+    const buttons = mine.match(/<button[^>]*data-act="admSdg"[^>]*>/g)
+    expect(buttons.length).toBeGreaterThan(0)
+    for (const b of buttons) expect(b).toContain(' disabled')
+    expect(mine).toContain(esc(t('rdSdgReadOnly')))
+  })
+
+  it('every value is escaped and the app wires the action, the load and the message', async () => {
+    const data = await adminData()
+    const evil = '<img src=x onerror=alert(1)>'
+    const bad = JSON.parse(JSON.stringify(data))
+    bad.sdgLinks.links[0].reason.en = evil
+    bad.sdgLinks.links[0].examples = [evil, evil, evil]
+    bad.sdgLinks.links[1].name = evil
+    const mine = card(adminView({ t, state: adminState(), data: bad }))
+    expect(mine).not.toContain('<img')
+    const app = readFileSync('public/js/app.js', 'utf8')
+    expect(app).toContain('adminApi.sdgLinks()')
+    expect(app).toContain('admSdg: async')
+    expect(app).toContain('adminApi.decideSdgLink(')
+    expect(app).toContain('sdgLinks: sdgLinks.data')
+  })
+
+  it('a failed SDG link list fails only the SDG card; the other admin cards still show (final review 5)', async () => {
+    const data = await adminData()
+    const html = adminView({ t, state: adminState(), data: { ...data, sdgLinks: null, sdgLinksError: 'data_unavailable' } })
+    const mine = card(html)
+    expect(mine).toContain(esc(t('rdSdgTitle')))
+    expect(text(mine)).toContain(t('rdErr_data_unavailable'))
+    expect(mine).not.toContain('data-act="admSdg"')
+    expect(html).toContain('id="admBrkCard"')
+    expect(html).toContain('id="admMapCard"')
+    const app = readFileSync('public/js/app.js', 'utf8')
+    const reload = app.slice(app.indexOf('async function reloadAdmin('), app.indexOf('\n}', app.indexOf('async function reloadAdmin(')))
+    expect(reload).toContain('const failed = [status, mappings, breaks].find(')
+    expect(reload).toMatch(/if \(!sdgLinks\.ok && !adminApi\.session\(\)\) return adminFailed/)
+    expect(reload).toContain("sdgLinksError: sdgLinks.code ?? 'network'")
+    for (const lang of ['ms', 'zh']) expect(translate(lang, 'rdErr_data_unavailable')).not.toBe(t('rdErr_data_unavailable'))
+  })
+
+  it('has strings in all three languages and no score / weight / rank / opportunity text key', async () => {
+    const keys = Object.keys(en).filter((k) => k.startsWith('rdSdg'))
+    expect(keys.length).toBeGreaterThan(5)
+    expect(keys.filter((k) => /score|weight|rank|opportunit/i.test(k))).toEqual([])
+    for (const lang of ['ms', 'zh']) {
+      const other = (await import(`../../shared/strings/${lang}.js`)).default
+      for (const k of keys) expect(other[k], `${lang}.${k}`).toBeTruthy()
+    }
+  })
+})

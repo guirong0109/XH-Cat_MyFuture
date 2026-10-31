@@ -33,7 +33,7 @@ describe('"Prefer not to say" is the default answer, not a checkbox', () => {
 
   it('opening a section saves its unanswered fields as "prefer not to say"; answers stay', () => {
     const profile = setField(emptyProfile(), 'employment.status', val('employed'))
-    const out = declineUnanswered(profile, SECTION_FIELDS[1])
+    const out = declineUnanswered(profile, ['employment.status', 'employment.yearsOfExperience'])
     expect(out.employment.status).toEqual(val('employed'))
     expect(out.employment.yearsOfExperience).toEqual(DECLINED)
     expect(out.userCategory).toEqual({ state: 'empty' })
@@ -74,27 +74,30 @@ describe('search pickers', () => {
 })
 
 describe('form sections', () => {
-  const state = (section, profile) => ({ section, profile, occ: {}, pick: {} })
+  const state = (section, profile) => ({ section, profile, occ: {}, pick: {}, groupEdit: 'other' })
 
   it('the skill level starts on "Not assessed yet"', () => {
     const profile = { ...emptyProfile(), skills: [makeSkill({ name: 'Python', canonicalId: 'onet:tech:python', source: 'user_input' })] }
-    expect(form({ t, state: state(2, profile) })).toMatch(/<option value="" selected>levelNone<\/option>/)
+    expect(form({ t, state: state(2, profile) })).toContain('<button class="on" role="radio" aria-checked="true" data-act="level" data-arg="0|">levelNone</button>')
   })
 
-  it('skills, roles of interest and field of study use search pickers', () => {
-    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
-    expect(form({ t, state: state(0, profile) })).toContain('data-search="field|field|0"')
+  it('skills use a search picker; field of study is a dropdown', () => {
+    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ level: 'bachelor', qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
+    const fields = { version: 'ISCED-F 2013', fields: [{ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' }] }
+    expect(form({ t, state: { ...state(0, profile), fields } })).toContain('data-field-pick="0"')
+    expect(form({ t, state: { ...state(0, profile), fields } })).not.toContain('data-search="field|')
     expect(form({ t, state: state(2, profile) })).toContain('data-search="skill|skill"')
-    expect(form({ t, state: state(4, profile) })).toContain('data-search="interest|interest"')
   })
 
-  it('a field of study typed or read from a CV says it is not linked yet', () => {
-    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
-    expect(form({ t, state: state(0, profile) })).toContain('fieldNotLinked')
+  it('a field of study typed or read from a CV shows the words until a standard field is chosen', () => {
+    const profile = { ...emptyProfile(), education: { ...emptyProfile().education, records: [{ level: 'bachelor', qualification: 'Degree', fieldOfStudy: 'Nursing', institution: '', year: '' }] } }
+    const fields = { version: 'ISCED-F 2013', fields: [{ code: '0913', title: 'Nursing and midwifery', broadCode: '09', broadTitle: 'Health and welfare' }] }
+    expect(form({ t, state: { ...state(0, profile), fields } })).toContain('asWritten:{&quot;text&quot;:&quot;Nursing&quot;}')
     const linked = structuredClone(profile)
     linked.education.records[0].field = { source: 'isced', code: '0913', title: 'Nursing and midwifery', version: 'ISCED-F 2013' }
-    const html = form({ t, state: state(0, linked) })
-    expect(html).toContain('0913')
-    expect(html).not.toContain('fieldNotLinked')
+    linked.education.records[0].fieldOfStudy = 'Nursing and midwifery'
+    const html = form({ t, state: { ...state(0, linked), fields } })
+    expect(html).toContain('<option value="0913" selected>')
+    expect(html).not.toContain('asWritten')
   })
 })

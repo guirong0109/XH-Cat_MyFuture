@@ -1,42 +1,60 @@
 // App state, hash routing, guest saving and one event handler for every screen.
-// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-level;
+// Buttons use data-go / data-act; form controls use data-field, data-choice, data-list, data-rec, data-field-pick, data-aiuse;
 // search pickers use data-search.
 import { t as translate } from '/shared/i18n.js'
-import { createGuestStore, resumeChoice, safeLocalStorage } from '/shared/guestStore.js'
+import { afterGetStarted, createGuestStore, resumeChoice, safeLocalStorage, screenToSave, startScreen } from '/shared/guestStore.js'
 import { DECLINED, emptyProfile, makeSkill, val, validateProfile } from '/shared/profileSchema.js'
 import { addRecord, applyAccepted, confirmProfile, declineUnanswered, diffProfiles, isUntouched, mergeCareerFields, userEditedPaths, markForReview, mergeDraft, minimizeForGuest, removeRecord, setField } from '/shared/profileState.js'
 import { afterConfirm } from '/shared/flow.js'
 import welcome from './screens/welcome.js'
 import returning from './screens/returning.js'
 import access from './screens/access.js'
+import goal from './screens/goal.js'
 import category from './screens/category.js'
 import org from './screens/org.js'
+import orgShare from './screens/orgShare.js'
 import source from './screens/source.js'
 import upload from './screens/upload.js'
-import form, { SECTION_FIELDS, SECTIONS } from './screens/form.js'
+import form, { SECTION_FIELDS, SECTIONS, dropNotAsked, toYears } from './screens/form.js'
+import { confirmGroup, groupsOf, linkSkill, placeOf, renamePlace, unlinkPlace, unlinkSkill } from './screens/skillGroups.js'
+import { prechooseFields } from './cvPrechoose.js'
 import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
+import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
 import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
+import matchScreen, { bandsAt, matchToSave, scenarioOf, trendMoves } from './screens/match.js'
+import sdgScreen from './screens/sdgTab.js'
+import * as matchApi from './matchApi.js'
+import pathwayScreen, { activeOf, pathwayToSave } from './screens/pathway.js'
+import * as pathwayApi from './pathwayApi.js'
+import { readAiUse } from '/shared/matching/overall.js'
 import { esc } from './ui.js'
 import { api } from './api.js'
 import { checkBeforeUpload, uploadCv } from './cvApi.js'
 import * as accountApi from './accountApi.js'
+import * as orgApi from './orgApi.js'
+import { consumeJoinHash, createOrgActions, orgEntry } from './orgActions.js'
 import { accountLink } from './components/accountBox.js'
 import { visibleRows } from './components/compareView.js'
 import { pickerList } from './components/searchPicker.js'
 import { linkedFields } from './components/fieldSuggestions.js'
+import { shouldPlayIntro } from './intro/timeline.js'
+import { armOdometers } from './components/odometer.js'
 
-const SCREENS = { welcome, returning, access, category, org, source, upload, form, review, summary }
-const NEXT = ['assess', 'radar', 'match', 'roadmap', 'sdg', 'futures']
+const SCREENS = { welcome, returning, access, goal, category, org, share: ({ t, state }) => orgShare(t, state.share), source, upload, form, review, summary }
+const NEXT = ['assess', 'radar', 'match', 'pathway', 'sdg', 'futures']
+// Old screen names that open their new screen (#roadmap was the placeholder of the Study pathway tab).
+const ALIAS = { roadmap: 'pathway' }
+const screenOf = (name) => ALIAS[name] ?? name
 const TABS = ['summary', ...NEXT]
 const NEEDS_PROFILE = ['upload', 'form', 'review', 'summary']
 const NEW_RECORD = {
-  'education.records': { qualification: '', fieldOfStudy: '', institution: '', year: '' },
-  'employment.records': { jobTitle: '', employer: '', period: '' },
+  'education.records': { level: '', qualification: '', fieldOfStudy: '', institution: '', year: '' },
+  'employment.records': { jobTitle: '', years: null },
   certifications: { name: '', issuer: '', year: '' },
   training: { name: '', year: '' },
   projects: { title: '', description: '' },
@@ -45,11 +63,14 @@ const NEW_RECORD = {
 // Search picker endpoints by kind (skills: O*NET catalogue; roles: O*NET and eMASCO; field of study: ISCED-F 2013).
 const SEARCH_URL = { skill: '/api/skills/search', interest: '/api/occupations/search', field: '/api/fields/search' }
 const SEARCH_DELAY_MS = 250
-const SKILLS_SECTION = 2
-const PREFERENCES_SECTION = 4
+const STUDY_SECTION = 0
+const SKILLS_SECTION = SECTIONS.indexOf('secSkills')
+const PREFERENCES_SECTION = SECTIONS.indexOf('secPrefs')
+const AI_SECTION = SECTIONS.indexOf('secAi')
 
-const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
+const fresh = () => ({ screen: 'welcome', lang: 'en', use: null, access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
+let theme = loadTheme(safeLocalStorage())
 let state = fresh()
 let resumeTo = null
 let saved = false
@@ -58,18 +79,38 @@ let cvFile = null
 // The CV draft as it came from the server: the compare view locks what the user changed since. Memory only.
 let cvDraft = null
 const t = (key, vars) => translate(state.lang, key, vars)
+// After guest or account: personal users are asked their goal first; organisations go to "Who are you?".
+// The ISCED-F field search (field names and the CIP programmes linked to them); null when it is not available.
+const searchFields = async (words) => {
+  const out = await api('GET', `/api/fields/search?q=${encodeURIComponent(words)}`)
+  return out.ok ? out.data : null
+}
+
+const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved (nor the Radar data, nor anything of the
   // Radar admin and judge screens: their key is never in the state and their CSRF token stays in radarAdminApi memory)
-  saved = store.save({ ...state, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, answering: {}, suggest: {}, suggestMore: {}, interests: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  // Career matching: only the AI scenario and the chosen role are kept; the answers (data, details) are fetched again.
+  // Study pathway: only the targets, the active one and the progress are kept; the answers are fetched again.
+  saved = store.save({ ...state, screen: screenToSave(state.screen, resumeTo), match: state.match ? matchToSave(state.match) : null, pathway: state.pathway ? pathwayToSave(state.pathway) : null, message: null, radar: null, radarAdmin: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, org: null, share: null, accessNote: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
 function showSection() {
   if (state.screen === 'form' && state.profile) state.profile = declineUnanswered(state.profile, SECTION_FIELDS[state.section ?? 0] ?? [])
+  if (state.screen === 'form' && state.section === STUDY_SECTION) loadFields()
   if (state.screen === 'form' && state.section === SKILLS_SECTION) loadSuggestions()
   if (state.screen === 'form' && state.section === PREFERENCES_SECTION) loadInterests()
+}
+
+// The ISCED-F 2013 fields of study for the dropdown, fetched once (again after a failure).
+async function loadFields() {
+  if (state.fields && !state.fields.failed) return
+  state.fields = { loading: true }
+  const out = await api('GET', '/api/fields')
+  state.fields = out.ok ? out.data : { failed: true }
+  if (state.screen === 'form' && state.section === STUDY_SECTION) render()
 }
 
 // The O*NET interest areas for "Career interests and fields", fetched once (again after a failure).
@@ -94,8 +135,11 @@ async function loadSuggestions() {
 }
 
 function go(screen) {
+  // Get started on the landing page: a saved session is offered first (Welcome back).
+  if (screen === 'access' && state.screen === 'welcome') screen = afterGetStarted(resumeTo)
   if (NEEDS_PROFILE.includes(screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   state.screen = screen
+  if (screen !== 'access') state.accessNote = null
   showSection()
   state.message = null
   if (location.hash !== `#${screen}`) history.pushState(null, '', `#${screen}`)
@@ -155,6 +199,7 @@ function ensureRadar() {
 function radarStale() {
   radarRun += 1
   state.radar = staleRadar(state.radar)
+  matchStale()
 }
 
 // ---------- Radar admin (#admin) and judge Trend Change Test (#judge) ----------
@@ -176,10 +221,16 @@ function adminFailed(name, out) {
 }
 // Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
 async function reloadAdmin(patch = {}, focus = null) {
-  const [pub, status, mappings, breaks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks()])
+  const [pub, status, mappings, breaks, sdgLinks, picks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks(), adminApi.pathwayPicks()])
   const failed = [status, mappings, breaks].find((out) => !out.ok)
   if (failed) return adminFailed('status', failed)
-  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data } }, focus)
+  // A failed SDG link list fails only the SDG card (the rest of the admin screen still shows), unless the session is gone.
+  if (!sdgLinks.ok && !adminApi.session()) return adminFailed('status', sdgLinks)
+  const sdg = sdgLinks.ok ? { sdgLinks: sdgLinks.data, sdgLinksError: null } : { sdgLinks: null, sdgLinksError: sdgLinks.code ?? 'network' }
+  // Likewise a failed pathway pick list fails only the pathway card.
+  if (!picks.ok && !adminApi.session()) return adminFailed('status', picks)
+  const pathwayPicks = picks.ok ? { pathwayPicks: picks.data, pathwayPicksError: null } : { pathwayPicks: null, pathwayPicksError: picks.code ?? 'network' }
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg, ...pathwayPicks } }, focus)
 }
 async function loadJudge() {
   state.radarAdmin = { ...adminUi(), loading: true }
@@ -218,11 +269,16 @@ const adminActions = {
     const out = await adminApi.signIn(role === 'demo' ? 'demo' : 'admin', key, { label })
     key = ''
     if (!out.ok) return setAdmin(adminMsg('signin', { kind: 'bad', code: out.code }), 'admKey')
+    // A judge's matching answers use the judge's test data from now on.
+    if (role === 'demo') matchStale()
     state.radarAdmin = { msgs: {}, focus: 'admTop' }
     render()
   },
   admSignOut: async () => {
+    const wasJudge = adminApi.session()?.role === 'demo'
     await adminApi.signOut()
+    // Back to the live trend data in matching.
+    if (wasJudge) matchStale()
     state.radarAdmin = { msgs: { signin: { kind: 'ok', key: 'rdSignedOut' } }, focus: 'admMsg-signin' }
     render()
   },
@@ -247,6 +303,32 @@ const adminActions = {
     }
     radarStale()
     reloadAdmin({ notes: { ...notes, map: '' }, ...adminMsg('map', { kind: 'ok', key: 'rdDecided', recalculation: out.data?.recalculation }) }, 'admMsg-map')
+  },
+  admSdg: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admSdgNote')
+    const notes = { ...adminUi().notes, sdg: note }
+    const out = await adminApi.decideSdgLink({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('sdg', out)
+      return setAdmin({ notes, ...adminMsg('sdg', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admSdgNote' : 'admMsg-sdg')
+    }
+    // The SDG tags in matching change (not the bands): fetch the list again, with no trend banner.
+    matchStale(false)
+    reloadAdmin({ notes: { ...notes, sdg: '' }, ...adminMsg('sdg', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-sdg')
+  },
+  admPick: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admPickNote')
+    const notes = { ...adminUi().notes, pick: note }
+    const out = await adminApi.decidePathwayPick({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('pick', out)
+      return setAdmin({ notes, ...adminMsg('pick', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admPickNote' : 'admMsg-pick')
+    }
+    // The pathway answers carry the picks' review labels: fetch them again.
+    pathwayFor = null
+    reloadAdmin({ notes: { ...notes, pick: '' }, ...adminMsg('pick', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-pick')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')
@@ -301,13 +383,198 @@ const adminActions = {
     }
     const out = await adminApi.apply(body)
     if (!out.ok) return adminFailed('judge', out)
+    matchStale()
     setAdmin({ report: out.data, ...adminMsg('judge', null) }, 'demoReport')
   },
   demoReset: async () => {
     const out = await adminApi.reset()
     if (!out.ok) return adminFailed('judge', out)
+    matchStale()
     setAdmin({ report: out.data, ...adminMsg('judge', { kind: 'ok', key: 'rdJudgeResetDone' }) }, 'admMsg-judge')
   },
+}
+
+// ---------- Career matching (#match) and SDG contribution (#sdg) ----------
+// The profile is sent to the matching API for each answer (never stored there). The list is fetched again when the
+// profile changes (every edit makes a new profile object); a role's detail is fetched when it is asked for.
+const matchUi = () => {
+  if (!state.match?.details) state.match = { scenario: 'moderate', prevScenario: null, sdgFilter: '', data: null, details: {}, chosen: null, loading: false, error: null, explore: false, allBars: {}, pages: {}, open: {}, ...(state.match ?? {}), details: {} }
+  return state.match
+}
+let matchFor = null
+let matchRun = 0
+// What changed on the server since the list was loaded: null (nothing known), 'trend' (Radar data or a judge's test
+// data: bands may move, the banner says which) or 'sdg' (an SDG decision: tags only).
+let matchStaleBy = null
+// The bands shown before a trend change ({scenario, bands}), kept until the new list has come.
+let matchBefore = null
+const matchScreens = () => state.screen === 'match' || state.screen === 'sdg'
+// The matching answers in this tab may be out of date: load them again on the next #match / #sdg render. A load or
+// detail still on its way is dropped (it may hold the data from before the change).
+function matchStale(trend = true) {
+  matchRun += 1
+  matchStaleBy = trend ? 'trend' : matchStaleBy ?? 'sdg'
+  if (matchScreens()) render()
+}
+async function loadMatch() {
+  const run = ++matchRun
+  const profile = state.profile
+  const m = matchUi()
+  if (matchStaleBy !== 'trend' || matchFor !== profile) matchBefore = null
+  else if (m.data) matchBefore = { scenario: scenarioOf(m), bands: bandsAt(m.data, scenarioOf(m)) }
+  matchFor = profile
+  matchStaleBy = null
+  // New data: every list back to page 1, every card closed (pages and open cards are not saved to the guest store).
+  state.match = { ...m, loading: true, error: null, data: null, details: {}, prevScenario: null, trend: null, pages: {}, open: {} }
+  const out = await matchApi.list(minimizeForGuest(profile), { lang: state.lang })
+  // Dropped (stale again, or a new profile): the next load keeps matchBefore when it still applies.
+  if (run !== matchRun) return
+  const trend = out.ok ? trendMoves(matchBefore, out.data) : null
+  matchBefore = null
+  state.match = { ...matchUi(), loading: false, data: out.ok ? out.data : null, error: out.ok ? null : out.code ?? 'network', trend }
+  if (matchScreens()) render()
+}
+async function loadMatchDetail(code) {
+  if (!code || !state.profile) return
+  const run = matchRun
+  const m = matchUi()
+  m.details = { ...m.details, [code]: { loading: true } }
+  if (matchScreens()) render()
+  const out = await matchApi.role(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== matchRun) return
+  state.match.details = { ...state.match.details, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (matchScreens()) render()
+}
+function ensureMatch() {
+  const m = matchUi()
+  if (!state.profile) return
+  if (matchFor !== state.profile || matchStaleBy) loadMatch()
+  // The SDG tab shows the chosen role's path: its detail is needed.
+  if (state.screen === 'sdg' && m.chosen && !state.match.details?.[m.chosen]) loadMatchDetail(m.chosen)
+}
+const matchActions = {
+  // The scenario only moves roles between bands; the banner lists the roles that moved.
+  mScn: (scenario) => {
+    const m = matchUi()
+    const next = scenario === 'rapid' ? 'rapid' : 'moderate'
+    if (next === m.scenario) return
+    state.match = { ...m, prevScenario: m.scenario, scenario: next, trend: null, pages: {} }
+    persist()
+    render()
+  },
+  mFilter: (goal) => { state.match = { ...matchUi(), sdgFilter: goal ?? '', prevScenario: null, pages: {} }; render() },
+  // A page of one band list: "<list>:<band>:<page>" (list = field | other). The screen shows the last page when past it.
+  mPage: (arg) => {
+    const m = /^(field|other):([1-4]):(\d{1,6})$/.exec(String(arg ?? ''))
+    if (!m) return
+    const key = `${m[1]}:${m[2]}`
+    state.match = { ...matchUi(), pages: { ...(matchUi().pages ?? {}), [key]: Math.max(1, Number(m[3])) } }
+    render()
+    document.querySelector(`.mt-pager [data-arg^="${key}:"][aria-current="page"]`)?.focus()
+  },
+  // The "Go to page" box of one band list (key = "<list>:<band>").
+  mPageGo: (key) => {
+    if (!/^(field|other):[1-4]$/.test(String(key ?? ''))) return
+    const page = Number.parseInt(document.getElementById(`mtGo-${key.replace(':', '-')}`)?.value ?? '', 10)
+    if (Number.isFinite(page) && page >= 1) matchActions.mPage(`${key}:${Math.min(page, 999999)}`)
+  },
+  // "Show outlook and details" / "Hide outlook and details": the open state per role code; the detail is loaded once.
+  mOpen: (code) => {
+    const m = matchUi()
+    const isOpen = m.open?.[code] === true
+    state.match = { ...m, open: { ...(m.open ?? {}), [code]: !isOpen } }
+    const have = state.match.details?.[code]
+    if (!isOpen && (!have || have.error)) return loadMatchDetail(code)
+    render()
+  },
+  mBannerClose: () => { state.match = { ...matchUi(), prevScenario: null, trend: null }; render() },
+  mExplore: () => { state.match = { ...matchUi(), explore: !matchUi().explore }; render() },
+  mAllBars: (code) => { state.match = { ...matchUi(), allBars: { ...matchUi().allBars, [code]: true } }; render() },
+  mDetail: (code) => loadMatchDetail(code),
+  mChoose: (code) => {
+    const m = matchUi()
+    state.match = { ...m, chosen: m.chosen === code ? null : code, prevScenario: null }
+    persist()
+    render()
+  },
+  mAskAi: () => { state.section = AI_SECTION; persist(); go('form') },
+  mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
+}
+
+// ---------- Study pathway (#pathway) ----------
+// The profile is sent to the pathway API for each target's answer (never stored there). The answers are fetched again
+// when the profile changes; only targets, the active one and the progress are saved (pathwayToSave).
+const pathwayUi = () => {
+  state.pathway = { ...pathwayToSave(state.pathway), answers: state.pathway?.answers ?? {} }
+  return state.pathway
+}
+let pathwayFor = null
+let pathwayRun = 0
+async function loadPathway(code) {
+  const run = pathwayRun
+  state.pathway.answers = { ...state.pathway.answers, [code]: { loading: true } }
+  const out = await pathwayApi.get(minimizeForGuest(state.profile), code, { lang: state.lang })
+  if (run !== pathwayRun) return
+  state.pathway.answers = { ...state.pathway.answers, [code]: out.ok ? out.data : { error: out.code ?? 'network' } }
+  if (state.screen === 'pathway') render()
+}
+function ensurePathway() {
+  const p = pathwayUi()
+  if (!state.profile) return
+  if (pathwayFor !== state.profile) {
+    pathwayFor = state.profile
+    pathwayRun += 1
+    p.answers = {}
+  }
+  for (const { code } of p.targets) if (!p.answers[code]) loadPathway(code)
+}
+// The local date (YYYY-MM-DD): in Malaysia (UTC+8) a toggle before 08:00 is still today.
+const today = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+function setProgress(key, value) {
+  if (typeof key !== 'string' || !key) return
+  const p = pathwayUi()
+  const progress = { ...p.progress }
+  if (value) progress[key] = { state: value, at: today() }
+  else delete progress[key]
+  state.pathway = { ...p, progress }
+  persist()
+  render()
+}
+const pathwayActions = {
+  // From a #match card: add the role (if not yet a target), make it active, open #pathway.
+  pwPlan: (code) => {
+    if (typeof code !== 'string' || !code) return
+    const p = pathwayUi()
+    const title = state.match?.data?.roles?.find((r) => r.code === code)?.title ?? code
+    const targets = p.targets.some((x) => x.code === code) ? p.targets : [...p.targets, { code, title, addedAt: today() }]
+    state.pathway = { ...p, targets, active: code }
+    go('pathway')
+  },
+  // A target tab; on a failed answer it asks again.
+  pwTab: (code) => {
+    const p = pathwayUi()
+    if (!p.targets.some((x) => x.code === code)) return
+    const answers = { ...p.answers }
+    if (answers[code]?.error) delete answers[code]
+    state.pathway = { ...p, active: code, answers }
+    persist()
+    render()
+  },
+  // Removes the target only: the progress is per skill and stays.
+  pwRemove: (code) => {
+    const p = pathwayUi()
+    const targets = p.targets.filter((x) => x.code !== code)
+    const { [code]: _gone, ...answers } = p.answers
+    state.pathway = { ...p, targets, answers, active: activeOf({ targets, active: p.active === code ? null : p.active }) }
+    persist()
+    render()
+  },
+  pwStarted: (key) => setProgress(key, 'started'),
+  pwDone: (key) => setProgress(key, 'done'),
+  pwClear: (key) => setProgress(key, null),
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.
@@ -379,13 +646,31 @@ const actions = {
     render()
   },
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
-  guest: () => { state.access = 'guest'; go('category') },
+  // Landing page links scroll within the page (a #hash would be read as a screen).
+  scrollTo: (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+  // Start the ATM again from the waiting machine, at the top of the page.
+  replayIntro: () => {
+    stage?.dispose()
+    stage = null
+    window.scrollTo(0, 0)
+    render()
+  },
+  use: (kind) => { state.use = kind; go('access') },
+  // An organisation needs an account: no guest way in.
+  guest: () => { if (state.use === 'org') return go('access'); state.access = 'guest'; go(afterAccess()) },
+  // The goal from the start of the journey is the profile's career goal (the form can change it).
+  goal: (value) => {
+    state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
+    state.profile = setField(state.profile, 'preferences.careerGoal', val(value))
+    go('source')
+  },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),
   acLogout: async () => {
     await accountApi.logout()
     // A shared computer must not show the next person this account's profile.
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null } }
     cvFile = null
     cvDraft = null
@@ -408,50 +693,106 @@ const actions = {
       return render()
     }
     store.clear()
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang, account: { status: 'none', user: null, message: { kind: 'ok', text: t('acDeleted') } } }
     go('access')
   },
+  // "Who are you?" is for organisations (C, D): their tools need an account.
   category: (k) => {
     state.category = k
-    if (k === 'A' || k === 'B') {
-      state.profile ??= emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
-      state.profile = setField(state.profile, 'userCategory', val(k === 'A' ? 'working_adult' : 'graduate_switcher'))
-    }
-    go(k === 'C' || k === 'D' ? 'org' : 'source')
+    const entry = orgEntry(state)
+    state.accessNote = entry.note
+    go(entry.screen)
   },
-  resume: () => go(resumeTo ?? 'source'),
+  resume: () => {
+    const to = resumeTo ?? 'source'
+    resumeTo = null
+    go(to)
+  },
+  // A field answered with buttons ("path|value"); an empty value is "prefer not to say".
+  choose: (arg) => {
+    const [path, value] = arg.split('|')
+    update(setField(state.profile, path, value ? val(value) : DECLINED))
+  },
+  // Skill level toggle bar: "<skill index>|<level>", an empty level = not assessed yet.
+  level: (arg) => {
+    const [index, value] = arg.split('|')
+    const level = value || null
+    const skills = state.profile.skills.map((skill, i) => (i !== Number(index) ? skill : {
+      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
+    }))
+    update({ ...state.profile, skills })
+  },
   startNew: () => {
     if (!confirm(t('backNewConfirm'))) return
+    resumeTo = null
+    orgView.clearJoin()
     state = { ...fresh(), lang: state.lang }
     go('access')
+  },
+  theme: () => {
+    theme = toggleTheme(theme)
+    saveTheme(safeLocalStorage(), theme)
+    render()
   },
   reset: () => {
     if (!confirm(t('backDeleteConfirm'))) return
     store.clear()
+    orgView.clearJoin()
+    resumeTo = null
     state = { ...fresh(), lang: state.lang }
     go('welcome')
   },
   section: (i) => { state.section = Number(i); showSection(); persist(); render(); window.scrollTo(0, 0) },
-  addRec: (listPath) => update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] })),
+  addRec: (listPath) => {
+    // A new project opens in its card's Edit view, where its title is typed.
+    if (listPath === 'projects') state.groupEdit = `project|${state.profile.projects.length}`
+    update(addRecord(state.profile, listPath, { ...NEW_RECORD[listPath] }))
+  },
   delRec: (arg) => {
     const [listPath, i] = arg.split('|')
-    update(removeRecord(state.profile, listPath, Number(i)))
+    let profile = removeRecord(state.profile, listPath, Number(i))
+    // The skills of a removed job or project go to Others (unless another one has the same title).
+    const kind = { 'employment.records': 'job', projects: 'project' }[listPath]
+    if (kind) {
+      const title = kind === 'job' ? state.profile.employment.records[Number(i)]?.jobTitle : state.profile.projects[Number(i)]?.title
+      const stays = groupsOf(profile).some((g) => g.kind === kind && g.title.trim().toLowerCase() === String(title ?? '').trim().toLowerCase())
+      if (!stays) profile = unlinkPlace(profile, kind, title ?? '')
+      state.groupEdit = null
+      state.groupAdd = null
+    }
+    update(profile)
+  },
+  // Skills and proficiency cards: "Looks right", "Confirm all", Edit, "+ add skill", and taking a skill out of a card.
+  groupOk: (key) => update(confirmGroup(state.profile, key)),
+  groupOkAll: () => update(groupsOf(state.profile).filter((g) => g.needsCheck).reduce((profile, g) => confirmGroup(profile, g.key), state.profile)),
+  groupEdit: (key) => { state.groupEdit = state.groupEdit === key ? null : key; render() },
+  otherFold: () => { state.otherOpen = !state.otherOpen; render() },
+  groupAdd: (key) => {
+    state.groupAdd = state.groupAdd === key ? null : key
+    render()
+    document.querySelector(`[data-search="skill|gskill|${key}"]`)?.focus()
+  },
+  unlinkSkill: (arg) => {
+    const [i, ...key] = arg.split('|')
+    const place = placeOf(state.profile, key.join('|'))
+    if (place) update(unlinkSkill(state.profile, Number(i), place))
   },
   review: (arg) => {
     const [path, on] = arg.split('|')
     update(markForReview(state.profile, path, on === 'on'))
   },
   // A skill in the user's own words: normalised by the server (O*NET id, candidates to pick, or unknown).
-  addSkill: async (typed) => {
+  // place: the job or project card it was added in ({ kind, title }), or null for Others.
+  addSkill: async (typed, place = null) => {
     const text = String(typed ?? '').trim()
     if (!text) return
     const out = await api('POST', '/api/skills/normalize', { texts: [text] })
     // Without the server the skill is kept as typed (unknown), never guessed.
     const found = out.ok ? out.data.skills[0] : { name: text, canonicalId: null, category: null, originalText: text, candidates: [] }
-    const key = (found.canonicalId ?? found.name).toLowerCase()
-    if (state.profile.skills.some((s) => (s.canonicalId ?? s.name).toLowerCase() === key)) return render()
-    const skill = { ...makeSkill({ ...found, source: 'user_input' }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
-    update({ ...state.profile, skills: [...state.profile.skills, skill] })
+    const profile = linkSkill(state.profile, found, place)
+    if (profile === state.profile) return render()
+    update(profile)
   },
   // A choice from a search picker ("<key>|<index>").
   pick: (arg) => {
@@ -462,9 +803,13 @@ const actions = {
     const chosen = pick?.result?.candidates?.[index]
     if (!chosen) return
     state.pick = { ...state.pick, [key]: null }
-    if (key === 'skill') {
-      if (state.profile.skills.some((s) => s.canonicalId === chosen.id)) return render()
-      return update({ ...state.profile, skills: [...state.profile.skills, makeSkill({ name: chosen.name, canonicalId: chosen.id, category: chosen.category, source: 'user_input' })] })
+    if (key === 'skill' || key.startsWith('gskill|')) {
+      const place = key === 'skill' ? null : placeOf(state.profile, key.slice('gskill|'.length))
+      state.groupAdd = null
+      // A skill added to Other skills opens the fold, so the user sees it.
+      if (!place) state.otherOpen = true
+      const profile = linkSkill(state.profile, { name: chosen.name, canonicalId: chosen.id, category: chosen.category }, place)
+      return profile === state.profile ? render() : update(profile)
     }
     if (key === 'interest') {
       state.occ = { ...(state.occ ?? {}), interest: { ...pick.result, term: pick.term } }
@@ -480,7 +825,14 @@ const actions = {
     const term = state.pick?.[key]?.term?.trim()
     state.pick = { ...state.pick, [key]: null }
     if (!term) return render()
-    if (key === 'skill') return actions.addSkill(term)
+    if (key === 'skill') {
+      state.otherOpen = true
+      return actions.addSkill(term)
+    }
+    if (key.startsWith('gskill|')) {
+      state.groupAdd = null
+      return actions.addSkill(term, placeOf(state.profile, key.slice('gskill|'.length)))
+    }
     const i = Number(key.split('|')[1])
     update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, term), `education.records.${i}.field`, null))
   },
@@ -508,7 +860,7 @@ const actions = {
     })
     update({ ...state.profile, skills })
   },
-  editSkills: () => { state.section = 2; go('form') },
+  editSkills: () => { state.section = SKILLS_SECTION; go('form') },
   occFind: async (key) => {
     const term = state.profile.employment.records[Number(key.split('|')[1])]?.jobTitle ?? ''
     if (term.length < 2) return
@@ -563,8 +915,11 @@ const actions = {
       return render()
     }
     // What the user already typed wins; the draft only adds. Nothing is confirmed until Confirm.
-    state.profile = mergeDraft(state.profile, out.data.profile)
-    cvDraft = out.data.profile
+    // Certificates, training and projects found in the CV are left out: the profile does not ask for them.
+    // The field of study is prechosen from the CV words, for the user to check (owner, 31 Oct).
+    const draft = await prechooseFields(dropNotAsked(out.data.profile), searchFields)
+    state.profile = mergeDraft(state.profile, draft)
+    cvDraft = draft
     state.cvSession = true
     state.ai = null
     state.extractionId = out.data.extractionId
@@ -588,7 +943,8 @@ const actions = {
       return render()
     }
     // What the user changed since the CV draft is locked: the AI never overwrites it.
-    const rows = diffProfiles(state.profile, out.data.suggested, userEditedPaths(cvDraft, state.profile))
+    const suggested = await prechooseFields(dropNotAsked(out.data.suggested), searchFields)
+    const rows = diffProfiles(state.profile, suggested, userEditedPaths(cvDraft, state.profile))
     state.ai = { phase: 'compare', rows, dropped: out.data.dropped }
     render()
   },
@@ -615,7 +971,10 @@ const actions = {
   },
 }
 
-Object.assign(actions, adminActions)
+// Organisation view (HR and career centres): its actions live in orgActions.js; the proxy keeps them on the current state.
+const orgState = new Proxy({}, { get: (_, key) => state[key], set: (_, key, value) => { state[key] = value; return true } })
+const orgView = createOrgActions({ state: orgState, render, api: orgApi, t, go })
+Object.assign(actions, adminActions, matchActions, pathwayActions, orgView.actions)
 
 // Sign up or sign in with the email and password typed in the account box.
 async function accountCall(kind) {
@@ -641,9 +1000,9 @@ async function accountCall(kind) {
     state.profile = mergeCareerFields(latest.data.profile)
     state.usable = afterConfirm(state.profile).usable
     state.savedWhere = 'account'
-    return go('summary')
+    return go(orgView.joinPending() ? 'share' : 'summary')
   }
-  go('category')
+  go(orgView.joinPending() ? 'share' : afterAccess())
 }
 
 // After Confirm: always on this device; also in the account when signed in.
@@ -690,15 +1049,113 @@ function onChange(target) {
   if (d.list) return update(setField(state.profile, d.list, target.value.split(',').map((s) => s.trim()).filter(Boolean)))
   if (d.rec) {
     const [listPath, i, key] = d.rec.split('|')
-    return update(setField(state.profile, `${listPath}.${i}.${key}`, target.value))
+    let profile = state.profile
+    // The first job is on screen before it exists: typing in it creates it.
+    if (listPath === 'employment.records' && Number(i) >= profile.employment.records.length) profile = addRecord(profile, listPath, { ...NEW_RECORD[listPath] })
+    // A job or project renamed keeps the skills listed under it.
+    if (listPath === 'employment.records' && key === 'jobTitle') profile = renamePlace(profile, 'job', profile.employment.records[Number(i)]?.jobTitle ?? '', target.value)
+    if (listPath === 'projects' && key === 'title') profile = renamePlace(profile, 'project', profile.projects[Number(i)]?.title ?? '', target.value)
+    return update(setField(profile, `${listPath}.${i}.${key}`, key === 'years' ? toYears(target.value) : target.value))
   }
-  if (d.level !== undefined) {
-    const level = target.value || null
-    const skills = state.profile.skills.map((skill, i) => (i !== Number(d.level) ? skill : {
-      ...skill, userConfirmed: true, proficiency: level, proficiencyStatus: level ? 'self_reported' : 'not_assessed',
-    }))
-    return update({ ...state.profile, skills })
+  if (d.aiuse !== undefined) {
+    return update({ ...state.profile, aiUse: { ...readAiUse(state.profile), [d.aiuse]: target.value || null } })
   }
+  // A field of study chosen in the dropdown (ISCED-F 2013); "Choose a field" unlinks it and keeps the words.
+  if (d.fieldPick !== undefined) {
+    const i = Number(d.fieldPick)
+    const chosen = state.fields?.fields?.find((f) => f.code === target.value)
+    if (!chosen) return update(setField(state.profile, `education.records.${i}.field`, null))
+    const field = { source: 'isced', code: chosen.code, title: chosen.title, version: state.fields.version, via: 'list' }
+    return update(setField(setField(state.profile, `education.records.${i}.fieldOfStudy`, chosen.title), `education.records.${i}.field`, field))
+  }
+}
+
+// The ATM stage, the landing page's first section (three.js, loaded only here). The ATM waits for a click, then
+// prints the question section on a receipt that stays pinned; the section's headline and buttons then rise in beside
+// it (the section carries the step as data-phase). The page is redrawn on every change, so the stage element lives on
+// and is moved into each new drawing; a language change rebuilds it at the same step. With "reduce motion", without
+// WebGL, or if three.js fails to load, the section shows the headline beside an HTML receipt instead (body.no-intro).
+let stage = null
+let stageAllowed = null
+function canShowStage() {
+  if (stageAllowed === null) {
+    let webgl = false
+    try { webgl = Boolean(document.createElement('canvas').getContext('webgl2')) } catch { webgl = false }
+    stageAllowed = shouldPlayIntro({ reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, webgl })
+  }
+  return stageAllowed
+}
+
+function placeStage() {
+  const slot = document.querySelector('.lp-atm-canvas')
+  if (!slot) return
+  if (!canShowStage()) return document.body.classList.add('no-intro')
+  if (stage && stage.lang !== state.lang) {
+    const pinned = !['arrive', 'idle'].includes(stage.el.dataset.phase)
+    stage.dispose()
+    stage = null
+    return buildStage(slot, pinned)
+  }
+  if (!stage) return buildStage(slot, false)
+  slot.append(stage.el)
+  setPhase(stage.el, stage.el.dataset.phase)
+}
+
+const setPhase = (el, phase) => {
+  el.dataset.phase = phase
+  const section = el.closest('.lp-atm')
+  if (section) section.dataset.phase = phase
+}
+
+function buildStage(slot, pinned) {
+  const el = document.createElement('div')
+  el.className = 'atm-stage'
+  el.innerHTML = `<button class="atm-cta">${esc(t('introPress'))} <span aria-hidden="true">↵</span></button>`
+    + `<button class="atm-skip">${esc(t('introSkip'))} →</button>`
+    + `<button class="atm-replay">↺ ${esc(t('introReplay'))}</button>`
+  slot.append(el)
+  setPhase(el, pinned ? 'pinned' : 'arrive')
+  const current = { el, lang: state.lang, controls: null, wantPrint: false }
+  current.dispose = () => { current.controls?.dispose(); el.remove() }
+  stage = current
+  el.addEventListener('click', (event) => {
+    const button = event.target.closest('button')
+    if (button?.classList.contains('atm-skip')) return current.controls?.skip()
+    if (button?.classList.contains('atm-replay')) return actions.replayIntro()
+    if (!['arrive', 'idle'].includes(el.dataset.phase)) return
+    if (current.controls) current.controls.print()
+    else current.wantPrint = true
+  })
+  import('./intro/atmIntro.js')
+    .then((intro) => intro.mountStage({ t, host: el, pinned, onPhase: (phase) => setPhase(el, phase) }))
+    .then((controls) => {
+      if (stage !== current) return controls.dispose()
+      current.controls = controls
+      if (current.wantPrint) controls.print()
+    })
+    .catch(() => {
+      stageAllowed = false
+      current.dispose()
+      if (stage === current) stage = null
+      document.body.classList.add('no-intro')
+    })
+}
+
+// The gap section (second section) animates its bars when it first comes into view.
+let gapSeen = false
+let gapWatch = null
+function watchGap() {
+  const section = document.getElementById('gap')
+  gapWatch?.disconnect()
+  if (!section) return
+  if (gapSeen) return section.classList.add('in')
+  gapWatch = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return
+    gapSeen = true
+    section.classList.add('in')
+    gapWatch.disconnect()
+  }, { threshold: 0.3 })
+  gapWatch.observe(section)
 }
 
 function render() {
@@ -706,17 +1163,29 @@ function render() {
   if (NEEDS_PROFILE.includes(state.screen) && !state.profile) state.profile = emptyProfile({ inputMethod: 'manual', interfaceLanguage: state.lang })
   document.documentElement.lang = state.lang
   document.getElementById('langSel').value = state.lang
+  document.documentElement.dataset.theme = theme
+  document.getElementById('themeBtn').textContent = t(theme === 'dark' ? 'themeToLight' : 'themeToDark')
   const screen = state.screen
   const tabs = TABS.includes(screen)
     ? `<div class="tabs">${TABS.map((id) => `<button class="${screen === id ? 'on' : ''}" data-go="${id}">${esc(t(id))}</button>`).join('')}</div>`
     : ''
   if (screen === 'radar') ensureRadar()
   if (screen === 'admin' || screen === 'judge') ensureAdmin(screen)
+  if (screen === 'match' || screen === 'sdg') ensureMatch()
+  if (screen === 'pathway') ensurePathway()
+  if (screen === 'org') actions.orgEnsure()
+  if (screen === 'share') actions.shareEnsure()
   let view
   if (screen === 'radar') view = radarScreen({ t, state })
+  else if (screen === 'match') view = matchScreen({ t, state })
+  else if (screen === 'sdg') view = sdgScreen({ t, state })
+  else if (screen === 'pathway') view = pathwayScreen({ t, state })
   else if (screen === 'admin') view = adminView({ t, state, data: state.radarAdmin?.data ?? null })
   else if (screen === 'judge') view = judgeView({ t, state, data: { report: state.radarAdmin?.report ?? null } })
-  else view = NEXT.includes(screen) ? nextModule({ t, state, screen }) : (SCREENS[screen] ?? welcome)({ t, state })
+  const page = view !== undefined || NEXT.includes(screen) ? null : SCREENS[screen] ?? welcome
+  if (view === undefined) view = page ? page({ t, state }) : nextModule({ t, state, screen })
+  // The landing page brings its own navigation and full-width layout; its first section is the ATM stage.
+  document.body.classList.toggle('landing', page === welcome)
   // A re-render while the key box is being filled (e.g. a late /api/health answer) keeps what was typed and the focus;
   // the key is carried over from the old box to the new one only, never through the state.
   const typing = ['admKey', 'admLabel'].map((id) => document.getElementById(id)).filter((box) => box?.value)
@@ -734,6 +1203,11 @@ function render() {
   if (focus) {
     state.radarAdmin.focus = null
     document.getElementById(focus)?.focus()
+  }
+  if (page === welcome) {
+    placeStage()
+    watchGap()
+    armOdometers(document.getElementById('main'), { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches })
   }
   document.getElementById('acctLink').innerHTML = accountLink({ t, state })
   const pill = document.getElementById('savePill')
@@ -761,8 +1235,10 @@ document.addEventListener('submit', (event) => {
 })
 document.addEventListener('change', (event) => {
   if (event.target.id === 'langSel') return actions.lang(event.target.value)
+  if (event.target.id === 'mtSdgFilter') return actions.mFilter(event.target.value)
   if (event.target.hasAttribute?.('data-radar-aijob')) return actions.aiJob(event.target.value)
   if (event.target.id === 'cvFile') return event.target.files[0] && actions.cvFile(event.target.files[0])
+  if (orgView.onChange(event.target)) return
   onChange(event.target)
 })
 // Search pickers: search while typing, after a short pause; only the list is redrawn, so typing goes on.
@@ -832,7 +1308,12 @@ document.addEventListener('drop', (event) => {
   const file = event.dataTransfer?.files?.[0]
   if (file) actions.cvFile(file)
 })
-window.addEventListener('popstate', () => { state.screen = location.hash.slice(1) || 'welcome'; render() })
+window.addEventListener('popstate', () => {
+  state.screen = screenOf(location.hash.slice(1) || 'welcome')
+  // #roadmap opens #pathway: the address shows the new name.
+  if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
+  render()
+})
 
 // Boot: a saved guest session past the start screens gets the "Welcome back" choice.
 const previous = store.load()
@@ -843,12 +1324,13 @@ if (previous) {
 }
 if (state.section >= SECTIONS.length) state.section = 0
 showSection()
-if (resumeChoice(previous) === 'ask') {
-  resumeTo = previous.screen
-  state.screen = 'returning'
-} else if (location.hash) {
-  state.screen = location.hash.slice(1)
-}
+if (resumeChoice(previous) === 'ask') resumeTo = screenOf(previous.screen)
+// A join link (#join=<token>) is read once, kept in memory only and removed from the address bar at once.
+const joinToken = consumeJoinHash(location, history)
+if (joinToken) orgView.startJoin(joinToken)
+state.screen = joinToken ? 'share' : screenOf(startScreen(previous, location.hash))
+// #roadmap opens #pathway: the address shows the new name.
+if (location.hash === '#roadmap') history.replaceState(null, '', '#pathway')
 render()
 // Who is signed in (the session cookie is HttpOnly, so ask the server).
 // Which optional services the server has (e.g. whether a temporary CV copy is kept).

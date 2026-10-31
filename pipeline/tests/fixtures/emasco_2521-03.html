@@ -1,0 +1,2874 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Default site description">
+    <meta name="theme-color" content="#E0EAFF">
+    <meta name="csrf-token" content="ENBuyh5vSQRmmCi9R2wDSORDfPHZWPVNSyIoYVWx">
+
+    <link href="https://emasco.mohr.gov.my/favicon-16x16.png" rel="shortcut icon" type="image/vnd.microsoft.icon">
+    <link rel="stylesheet" href="https://emasco.mohr.gov.my/css/publication.css">
+    <title>eMASCO</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@100..900&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="preload" as="style" href="https://emasco.mohr.gov.my/build/assets/app-BijXtS4Z.css" /><link rel="modulepreload" href="https://emasco.mohr.gov.my/build/assets/app-BUT4DtxC.js" /><link rel="stylesheet" href="https://emasco.mohr.gov.my/build/assets/app-BijXtS4Z.css" /><script type="module" src="https://emasco.mohr.gov.my/build/assets/app-BUT4DtxC.js"></script>
+    <!-- AlpineJS -->
+    <script src="https://emasco.mohr.gov.my/assets/js/alpine.min.js" defer></script>
+
+    
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .bg {
+            animation: slide 10s ease-in-out infinite alternate;
+            background-image: linear-gradient(45deg, rgba(188, 120, 237, 0.1) 50%, rgba(98, 98, 245, 0.2) 50%);
+            bottom: 0;
+            left: -50%;
+            opacity: .5;
+            position: fixed;
+            right: -50%;
+            top: 0;
+            z-index: -1;
+        }
+
+        .bg2 {
+            animation-direction: alternate-reverse;
+            animation-duration: 15s;
+        }
+
+        .bg3 {
+            animation-duration: 20s;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(-25%);
+            }
+
+            100% {
+                transform: translateX(25%);
+            }
+        }
+    </style>
+</head>
+
+<body id="layoutBody"
+    class="flex flex-col bg-[#E0EAFF] min-h-screen font-[Asap] text-gray-800">
+
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+
+    <!-- Floating Shapes -->
+    <div class="-z-10 fixed inset-1 overflow-hidden pointer-events-none">
+        <div
+            class="top-[10%] left-[10%] absolute bg-purple-400 opacity-40 blur-3xl rounded-full w-[300px] h-[300px] animate-float">
+        </div>
+        <div
+            class="top-[60%] right-[15%] absolute bg-blue-300 opacity-40 blur-3xl rounded-full w-[250px] h-[250px] animate-float-delay-1">
+        </div>
+        <div
+            class="bottom-[15%] left-[20%] absolute bg-pink-200 opacity-40 blur-3xl rounded-full w-[200px] h-[200px] animate-float-delay-2">
+        </div>
+    </div>
+
+    <div class="flex flex-col flex-grow [@media(min-width:1440px)]:mx-auto w-full">
+        <div
+            class="relative flex md:flex-row justify-between items-center bg-[#0d202d] shadow-lg px-4 py-1">
+            <button id="openAnnouncementBtn" class="flex flex-row justify-start text-left text-white text-sm hover:underline cursor-pointer">
+                This new version of the portal is currently undergoing enhancements by the Ministry of Human Resources (KESUMA) 
+            </button>
+
+            <a href="https://prod-emasco.mohr.gov.my" target="_blank"
+                class="flex justify-center items-center gap-1 text-center bg-gray-500 hover:bg-gray-600 my-1 px-3 py-1 rounded-xl text-[8pt] text-white uppercase">
+                Old Version
+            </a>
+        </div>
+
+        <style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
+
+<div x-data="{ open: false }" class="flex flex-col pt-3">
+    <div x-data="{ fixed: false }" x-init="window.addEventListener('scroll', () => {
+        fixed = window.scrollY > 160;
+    })"
+        :class="fixed ? 'fixed left-0 top-0 right-0 py-4 shadow-lg bg-[#DBD9FC] z-1000' : 'relative'"
+        class="mx-auto px-6 w-full transition-all duration-300">
+        <nav class="flex justify-between items-center mx-auto max-w-[1440px]">
+            <!-- Left: Logo -->
+            <div class="flex items-center space-x-4">
+                <a href="https://emasco.mohr.gov.my" class="font-extrabold text-black text-2xl">
+                    <img src="https://emasco.mohr.gov.my/assets/titleEn.png" alt="e-MASCO Logo" class="h-8 scale-160 origin-left" />
+                </a>
+            </div>
+
+            <!-- Right: Hamburger (Mobile) -->
+            <div class="md:hidden">
+                <button @click="open = !open" class="focus:outline-none text-yellow-600">
+                    <!-- Hamburger icon -->
+                    <svg x-show="!open" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none"
+                        viewBox="0 0 24 24" stroke="#007AE7">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <!-- Close icon -->
+                    <svg x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none"
+                        viewBox="0 0 24 24" stroke="#007AE7">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6 uppercase" x-cloak>
+                <div x-data="{ dropdown: false }" @mouseenter="dropdown = true" @mouseleave="dropdown = false"
+                    class="relative flex items-center gap-1">
+                    <div>
+                        <a href="https://emasco.mohr.gov.my/intro" class="text-black hover:underline">
+                            Introduction
+                        </a>
+                    </div>
+
+                    <!-- Dropdown icon -->
+                    <div class="cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="dropdown" x-cloak x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="top-full left-0 z-50 absolute bg-white shadow mt-2 border border-gray-200 rounded-xl w-64">
+                                                    <a href="https://emasco.mohr.gov.my/intro?title=pengenalan"
+                                class="block hover:bg-blue-100 px-6 py-2 text-black text-sm capitalize
+                                     rounded-t-xl                                     ">
+                                Introduction Of MASCO
+                            </a>
+                                                    <a href="https://emasco.mohr.gov.my/intro?title=strukutur-penjelasan"
+                                class="block hover:bg-blue-100 px-6 py-2 text-black text-sm capitalize
+                                                                        ">
+                                Structure Of Classification
+                            </a>
+                                                    <a href="https://emasco.mohr.gov.my/intro?title=dasar-gaji-progresif"
+                                class="block hover:bg-blue-100 px-6 py-2 text-black text-sm capitalize
+                                                                        ">
+                                Starting Salary Guidelines
+                            </a>
+                                                    <a href="https://emasco.mohr.gov.my/intro?title=tahap-pendidikan-dan-kemahiran"
+                                class="block hover:bg-blue-100 px-6 py-2 text-black text-sm capitalize
+                                                                         rounded-b-xl ">
+                                Qualification Level and Skilled Category
+                            </a>
+                        
+                    </div>
+                </div>
+
+                <a href="/index" class="text-black hover:underline nav-link">Index</a>
+                <a href="/directory" class="text-black hover:underline nav-link">Job Directory</a>
+                <a href="/publication" class="text-black hover:underline nav-link">Publication</a>
+
+                
+                <div x-data="{ dropdown: false }" @mouseenter="dropdown = true" @mouseleave="dropdown = false"
+                    class="relative flex items-center gap-1 cursor-pointer">
+                    <div>
+                        <div class="text-black hover:underline">
+                            Statistics
+                        </div>
+                    </div>
+
+                    <!-- Dropdown icon -->
+                    <div class="cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div x-show="dropdown" x-cloak x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-1"
+                        class="top-full left-0 z-50 absolute bg-white shadow mt-2 border border-gray-200 rounded-xl w-52">
+                        <a href="https://emasco.mohr.gov.my/statistic/class"
+                            class="block hover:bg-blue-100 px-6 py-2 rounded-t-xl text-black text-sm capitalize">
+                            MASCO Job Classification
+                        </a>
+                        <a href="https://emasco.mohr.gov.my/statistic/jobs"
+                            class="block hover:bg-blue-100 px-6 py-2 text-black text-sm capitalize">
+                            Job Statistics
+                        </a>
+                        <a href="https://emasco.mohr.gov.my/statistic/chart" <a href="#"
+                            class="block hover:bg-blue-100 px-6 py-2 rounded-b-xl text-black text-sm capitalize">
+                            MASCO Job Codes Chart
+                        </a>
+                    </div>
+                </div>
+
+                                    
+                    <a href="/auth" class="flex items-center text-black hover:underline nav-link">
+                        Agency Login
+                        <svg class="ml-1 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+</svg>                    </a>
+                
+                <div class="inline-flex shadow-sm rounded-md">
+                    <a href="http://emasco.mohr.gov.my/masco/2521-03?lang=bm"
+                        class="bg-white text-gray-900 hover:bg-gray-100 w-full px-2 py-1 rounded-l-md font-medium text-xs" id="bmBtn">
+                        BM
+                    </a>
+                    <a href="http://emasco.mohr.gov.my/masco/2521-03?lang=en"
+                        class="focus:z-10 bg-[#16aa7e] text-white w-full px-2 py-1 rounded-r-md font-medium text-xs" id="enBtn">
+                        EN
+                    </a>
+                </div>
+        </nav>
+
+        <!-- Mobile Navigation -->
+        <div x-show="open" x-cloak x-transition class="flex flex-col space-y-4 bg-white shadow-md mt-6 p-5">
+            <div x-data="{ submenu: false }">
+                <button @click="submenu = !submenu"
+                    class="flex justify-between items-center w-full text-black text-left hover:underline">
+                    Introduction
+                    <svg :class="submenu ? 'rotate-180' : ''" class="w-4 h-4 transition-transform transform"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div x-show="submenu" x-cloak class="space-y-2 mt-2 ml-4">
+                                            <a href="https://emasco.mohr.gov.my/intro?title=pengenalan"
+                            class="block text-black text-sm hover:underline">
+                            Introduction Of MASCO
+                        </a>
+                                            <a href="https://emasco.mohr.gov.my/intro?title=strukutur-penjelasan"
+                            class="block text-black text-sm hover:underline">
+                            Structure Of Classification
+                        </a>
+                                            <a href="https://emasco.mohr.gov.my/intro?title=dasar-gaji-progresif"
+                            class="block text-black text-sm hover:underline">
+                            Starting Salary Guidelines
+                        </a>
+                                            <a href="https://emasco.mohr.gov.my/intro?title=tahap-pendidikan-dan-kemahiran"
+                            class="block text-black text-sm hover:underline">
+                            Qualification Level and Skilled Category
+                        </a>
+                                    </div>
+            </div>
+            <a href="/index" class="text-black hover:underline nav-link">Index</a>
+            <a href="/directory" class="text-black hover:underline nav-link">Job Directory</a>
+            <a href="/publication" class="text-black hover:underline nav-link">Publication</a>
+            
+            <div x-data="{ dropdown: false }" class="w-full">
+                <button @click="dropdown = !dropdown"
+                    class="flex justify-between items-center focus:outline-none w-full text-black text-left hover:underline"
+                    :aria-expanded="dropdown" aria-controls="statistic-submenu">
+                    <span>Statistics</span>
+                    <svg :class="dropdown ? 'rotate-180' : ''"
+                        class="w-4 h-4 transition-transform duration-200 transform" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <div x-show="dropdown" x-cloak x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 max-h-0" x-transition:enter-end="opacity-100 max-h-screen"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 max-h-screen" x-transition:leave-end="opacity-0 max-h-0"
+                    id="statistic-submenu" class="space-y-2 mt-2 ml-6 overflow-hidden">
+                    <a href="https://emasco.mohr.gov.my/statistic/class" class="block text-black text-sm hover:underline">
+                        MASCO Job Classification
+                    </a>
+                    <a href="https://emasco.mohr.gov.my/statistic/jobs" class="block text-black text-sm hover:underline">
+                        Job Statistics
+                    </a>
+                    <a href="https://emasco.mohr.gov.my/statistic/chart" class="block text-black text-sm hover:underline">
+                        MASCO Job Codes Chart
+                    </a>
+                </div>
+            </div>
+
+            
+                            
+                <a href="/auth" class="flex items-center text-black hover:underline">
+                    Agency Login
+                    <svg class="ml-1 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+</svg>                </a>
+            
+            <div class="flex justify-center items-center shadow-sm rounded-md">
+                <a href="http://emasco.mohr.gov.my/masco/2521-03?lang=bm"
+                    class="bg-white text-gray-900 hover:bg-gray-100 w-full px-2 py-1 rounded-l-md font-medium text-xs" id="bmBtn">
+                    BM
+                </a>
+                <a href="http://emasco.mohr.gov.my/masco/2521-03?lang=en"
+                    class="focus:z-10 bg-[#16aa7e] text-white w-full px-2 py-1 rounded-r-md font-medium text-xs" id="enBtn">
+                    EN
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get current path
+    const currentPage = window.location.pathname.split("/").pop();
+
+    // Loop through links and add active class if URL matches
+    document.querySelectorAll('.nav-link').forEach(link => {
+        const href = link.getAttribute('href');
+
+        // Only proceed if href exists and is a string
+        if (href && typeof href === 'string') {
+            const l = href.substr(1); // Remove leading slash if present
+
+            if (currentPage.includes(l) && currentPage !== "") {
+                link.classList.add("underline");
+            }
+        }
+    });
+</script>
+
+        <main
+            class="flex-grow [@media(min-width:1440px)]:mx-auto p-4 md:p-8 lg:p-10 pb-4 w-full max-w-[1440px] transition-all duration-300 ease-in-out">
+            <div class="space-y-4">
+        <div class="flex justify-center mb-8 w-full align-center">
+            <div class="flex justify-center items-center w-full lg:w-2/3"><div x-data="searchBox({
+    action: 'https:\/\/emasco.mohr.gov.my\/search',
+    autocompleteUrl: 'https:\/\/emasco.mohr.gov.my\/api\/autocomplete',
+    filtersEndpoint: 'https:\/\/emasco.mohr.gov.my\/filters',
+    initQuery: '',
+    limit: 10,
+    withFilters: true,
+
+    historyLimit: 5,
+
+
+    locale: 'en',
+    filterStorage: 'local',
+    translations: JSON.parse('{\u0022category\u0022:{\u0022SEMUA\u0022:\u0022All\u0022,\u0022stem\u0022:\u0022search.category.stem\u0022,\u0022tvet\u0022:\u0022search.category.tvet\u0022,\u0022green\u0022:\u0022search.category.green\u0022,\u0022gig\u0022:\u0022search.category.gig\u0022},\u0022salary\u0022:{\u0022SEMUA\u0022:\u0022All\u0022,\u00221k\u0022:\u0022search.salary.1k\u0022,\u00222k\u0022:\u0022search.salary.2k\u0022,\u00223k\u0022:\u0022search.salary.3k\u0022,\u00224k\u0022:\u0022search.salary.4k\u0022},\u0022skill\u0022:{\u0022SEMUA\u0022:\u0022All\u0022,\u0022skilled\u0022:\u0022search.skill.skilled\u0022,\u0022semi\u0022:\u0022search.skill.semi\u0022,\u0022low\u0022:\u0022search.skill.low\u0022},\u0022sector\u0022:{\u0022SEMUA\u0022:\u0022All\u0022,\u0022private\u0022:\u0022search.sector.private\u0022,\u0022public\u0022:\u0022search.sector.public\u0022},\u0022structure\u0022:{\u0022SEMUA\u0022:\u0022All\u0022,\u00221\u0022:\u0022search.structure.1\u0022,\u00222\u0022:\u0022search.structure.2\u0022,\u00223\u0022:\u0022search.structure.3\u0022,\u00224\u0022:\u0022search.structure.4\u0022,\u00226\u0022:\u0022search.structure.6\u0022}}'),
+})" x-init="init()" class="max-w-[800px]">
+
+    
+    <div class="relative">
+        <div class="flex items-center bg-white shadow-lg border border-gray-300 rounded-full w-full overflow-hidden">
+            <input x-model="q" x-on:input="onInput" x-on:keydown.arrow-down.prevent="move(1)"
+                x-on:keydown.arrow-up.prevent="move(-1)" x-on:keydown.enter.prevent="submit()"
+                x-on:keydown.escape="close()" type="text" :placeholder="'Search MASCO Code or Job Title'"
+                class="flex-1 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 border-none rounded-l-full focus:outline-none text-sm sm:text-base" autocomplete="off" />
+            <button type="button" @click="submit()"
+                class="flex justify-center items-center bg-[#FF7070] hover:bg-[#FF707090] mr-1.5 sm:mr-2 p-1.5 sm:p-2 rounded-full text-white transition">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd"/>
+</svg>            </button>
+        </div>
+
+        <!-- Autocomplete -->
+        <template x-if="open && suggestions.length">
+            <ul x-cloak @click.outside="close()"
+                class="z-50 absolute bg-white shadow-md mt-1 border border-gray-200 rounded-xl w-full overflow-hidden"
+                role="listbox">
+                <template x-for="(item, idx) in suggestions" :key="item.value + '-' + idx">
+                    <li :id="'opt-' + idx" :aria-selected="idx === hi" @mouseenter="hi = idx" @mouseleave="hi = -1"
+                        @mousedown.prevent.stop="choose(idx, $event)" @click.prevent.stop="choose(idx, $event)"
+                        class="flex justify-between items-center px-4 py-2 cursor-pointer"
+                        :class="idx === hi ? 'bg-gray-100' : ''">
+                        <span class="truncate" x-text="item.label"></span>
+                        <span class="ml-2 text-gray-500 text-xs" x-text="item.value"></span>
+                    </li>
+                </template>
+                <li x-show="loading" class="px-4 py-2 text-gray-500 text-sm">Loading…</li>
+                <li x-show="!loading && suggestions.length === 0" class="px-4 py-2 text-gray-500 text-sm">Tiada hasil
+                </li>
+            </ul>
+        </template>
+    </div>
+
+    
+    <div class="flex flex-wrap sm:flex-nowrap justify-between gap-y-2 mt-2 sm:mt-3" x-show="history.terms.length" x-cloak>
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
+            <div class="shrink-0 font-semibold text-xs sm:text-sm">Recent Searches</div>
+
+            <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                <template x-for="term in history.terms" :key="term">
+                    <button type="button"
+                        class="hover:bg-gray-50 px-2 sm:px-2.5 py-0.5 sm:py-1 border rounded-full text-xs cursor-pointer truncate max-w-[120px] sm:max-w-none"
+                        @click="q = term; submit()" x-text="term">
+                    </button>
+                </template>
+            </div>
+        </div>
+        <button type="button"
+            class="shrink-0 hover:bg-gray-50 px-2 py-1 border border-red-500 rounded-md text-red-600 text-xs cursor-pointer self-start"
+            @click="history.clear(); q=''">
+            Clear
+        </button>
+    </div>
+
+    <!-- FILTERS -->
+    <template x-if="withFilters">
+        <div class="mt-4">
+            <div class="flex justify-center">
+                <div class="flex items-center space-x-2 sm:space-x-3 max-w-[95vw] sm:max-w-[90vw] xl:overflow-visible overflow-x-auto whitespace-nowrap scroll-smooth no-scrollbar"
+                    @click.away="closeFilters()">
+
+                    <template x-for="(filter, index) in filters" :key="filter.name">
+                        <div class="relative">
+                            <!-- FILTER BUTTON -->
+                            <button type="button" @click.stop.prevent="toggleFilter(index)"
+                                class="flex items-center gap-1.5 sm:gap-2 bg-white/30 hover:bg-white/50 px-3 sm:px-4 py-0.5 sm:py-1 border rounded-3xl text-xs sm:text-sm transition cursor-pointer"
+                                :class="isActive(filter) ? 'border-blue-600 bg-blue-50 text-blue-500' :
+                                    'border-gray-400 text-gray-600 hover:text-black'">
+
+                                <!-- LABEL + COUNT -->
+                                <span class="font-medium sm:text-sm md:text-base">
+                                    <template x-if="activeCount(filter) === 0">
+                                        <span x-text="filter.label"></span>
+                                    </template>
+                                    <template x-if="activeCount(filter) > 0">
+                                        <span class="ml-1 text-gray-500">
+                                            <span x-text="filter.label"></span>
+                                            <span x-show="activeCount(filter) > 1">
+                                                +<span x-text="activeCount(filter)-1"></span>
+                                            </span>
+                                        </span>
+                                    </template>
+                                </span>
+
+                                <!-- COUNT BADGE -->
+                                <span x-show="activeCount(filter) > 0"
+                                    class="inline-flex justify-center items-center px-1.5 border rounded-full min-w-[1.25rem] h-5 font-semibold text-[11px]"
+                                    :class="isActive(filter) ? 'bg-blue-600 text-white border-blue-600' :
+                                        'bg-gray-200 text-gray-700 border-gray-200'"
+                                    x-text="activeCount(filter)">
+                                </span>
+
+                                <!-- ICON -->
+                                <template x-if="openIndex !== index">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd"/>
+</svg>                                </template>
+                                <template x-if="openIndex === index">
+                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z" clip-rule="evenodd"/>
+</svg>                                </template>
+                            </button>
+
+                            <!-- ✅ DESKTOP DROPDOWN -->
+                            <div class="hidden md:block">
+                                <div x-show="openIndex === index" x-cloak
+                                    class="z-40 absolute bg-white shadow-md mt-2 border border-gray-300 rounded-md w-56 md:w-62 lg:w-64"
+                                    @click.stop>
+                                    <form @submit.prevent="applyFilter()" class="flex flex-col">
+                                        <div class="top-0 sticky bg-white p-2 rounded-xl">
+                                            <div class="flex justify-between items-center">
+                                                <div class="text-gray-500 text-xs">
+                                                    <span x-text="activeCount(filter)"></span>
+                                                    Selected
+                                                </div>
+                                                <div class="space-x-2">
+                                                    <button type="button"
+                                                        class="hover:bg-gray-50 px-2 py-1 border border-gray-300 rounded-full text-xs"
+                                                        @click="clearFilter(index)">
+                                                        Clear
+                                                    </button>
+                                                    <button type="submit"
+                                                        class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded-full text-white text-xs">
+                                                        Apply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mx-2 border border-gray-100"></div>
+
+                                        <!-- Options list -->
+                                        <ul class="py-1 max-h-64 overflow-y-auto">
+                                            <!-- SEMUA -->
+                                            <template x-if="hasSemua(index)">
+                                                <li class="flex items-center gap-2 hover:bg-gray-50 px-3 py-2 font-xs cursor-pointer"
+                                                    :class="isOptionSelected(index, 'SEMUA') ? 'bg-blue-50' : ''"
+                                                    @click="toggleOption(index, 'SEMUA')" role="option"
+                                                    :aria-selected="isOptionSelected(index, 'SEMUA')">
+                                                    <span class="font-semibold text-[10pt]">Semua</span>
+                                                    <svg x-show="isOptionSelected(index,'SEMUA')" class="ml-auto w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"/>
+</svg>                                                </li>
+                                            </template>
+
+                                            <!-- Other options -->
+                                            <template x-for="opt in filter.options.filter(o => o.key !== 'all')"
+                                                :key="opt.key">
+                                                <li class="flex items-center gap-2 hover:bg-gray-50 px-3 py-2 font-xs cursor-pointer"
+                                                    :class="isOptionSelected(index, opt.key) ? 'bg-blue-50' : ''"
+                                                    @click="toggleOption(index, opt.key)" role="option"
+                                                    :aria-selected="isOptionSelected(index, opt.key)">
+                                                    <span class="text-[10pt] truncate" x-text="opt.label"></span>
+                                                    <svg x-show="isOptionSelected(index,opt.key)" class="ml-auto w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"/>
+</svg>                                                </li>
+                                            </template>
+
+                                            <li x-show="filter.options.length === 0"
+                                                class="px-3 py-2 text-gray-500 text-sm">
+                                                Loading…
+                                            </li>
+                                        </ul>
+
+                                        <input type="hidden" name="q" :value="q">
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- ✅ MOBILE DROPDOWN -->
+                            <div class="md:hidden block">
+                                <div x-show="openIndex === index" x-cloak
+                                    class="top-36 xs:top-40 sm:top-44 z-50 fixed inset-x-0 bg-white shadow-lg mx-3 sm:mx-6 p-3 sm:p-4 border border-gray-300 rounded-xl max-h-[60vh] overflow-y-auto"
+                                    @click.stop>
+                                    <form @submit.prevent="applyFilter()" class="flex flex-col gap-4">
+                                        <div class="flex justify-between items-center">
+                                            <div class="text-gray-500 text-xs">
+                                                <span x-text="activeCount(filter)"></span>
+                                                Selected
+                                            </div>
+                                            <div class="space-x-2">
+                                                <button type="button"
+                                                    class="hover:bg-gray-50 px-3 py-1 border border-gray-300 rounded-full text-xs"
+                                                    @click="clearFilter(index)">
+                                                    Apply
+                                                </button>
+                                                <button type="submit"
+                                                    class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full text-white text-xs">
+                                                    Apply
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <ul class="py-1 max-h-64 overflow-y-auto">
+                                            <!-- SEMUA -->
+                                            <template x-if="hasSemua(index)">
+                                                <li class="flex items-center gap-2 hover:bg-gray-50 px-3 py-2 font-xs cursor-pointer"
+                                                    :class="isOptionSelected(index, 'SEMUA') ? 'bg-blue-50' : ''"
+                                                    @click="toggleOption(index, 'SEMUA')" role="option"
+                                                    :aria-selected="isOptionSelected(index, 'SEMUA')">
+                                                    <span class="font-semibold text-[10pt]">Semua</span>
+                                                    <svg x-show="isOptionSelected(index,'SEMUA')" class="ml-auto w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"/>
+</svg>                                                </li>
+                                            </template>
+
+                                            <!-- Other options -->
+                                            <template x-for="opt in filter.options.filter(o => o.key !== 'all')"
+                                                :key="opt.key">
+                                                <li class="flex items-center gap-2 hover:bg-gray-50 px-3 py-2 font-xs cursor-pointer"
+                                                    :class="isOptionSelected(index, opt.key) ? 'bg-blue-50' : ''"
+                                                    @click="toggleOption(index, opt.key)" role="option"
+                                                    :aria-selected="isOptionSelected(index, opt.key)">
+                                                    <span class="text-[10pt] truncate" x-text="opt.label"></span>
+                                                    <svg x-show="isOptionSelected(index,opt.key)" class="ml-auto w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"/>
+</svg>                                                </li>
+                                            </template>
+
+                                            <li x-show="filter.options.length === 0"
+                                                class="px-3 py-2 text-gray-500 text-sm">
+                                                Loading…
+                                            </li>
+                                        </ul>
+
+                                        <input type="hidden" name="q" :value="q">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Selected chips summary -->
+            <div x-show="hasAnyActive()" class="flex flex-wrap items-center gap-2 mt-3 w-full">
+                <template x-for="filter in filters" :key="filter.name + '-chips'">
+                    <template x-for="val in activeValues(filter)" :key="val">
+                        <span
+                            class="inline-flex items-center gap-1 bg-blue-50 px-2.5 py-1 border border-blue-200 rounded-full text-blue-800 text-xs">
+                            <span x-text="(filter.options.find(o => o.key === val) || {}).label || val"></span>
+                            <button type="button" class="hover:bg-blue-100 ml-1 px-1 rounded"
+                                @click="removeValue(filter.name, val)" aria-label="Remove">×</button>
+                        </span>
+                    </template>
+                </template>
+
+                <button type="button" class="ml-1 text-gray-600 hover:text-black text-xs underline"
+                    @click="resetAll()">
+                    Reset semua
+                </button>
+            </div>
+        </div>
+    </template>
+</div>
+
+<script>
+    function searchBox({
+        action,
+        autocompleteUrl,
+        filtersEndpoint,
+        initQuery = '',
+        limit = 10,
+        withFilters = false,
+
+        historyLimit = 10,
+        locale = 'bm',
+        filterStorage = 'local', // 'local' | 'session'
+    }) {
+        return {
+            // Search/autocomplete
+            action,
+            autocompleteUrl,
+            q: initQuery,
+            suggestions: [],
+            open: false,
+            hi: -1,
+            loading: false,
+            _t: null,
+
+            // Filters
+            withFilters,
+            filtersEndpoint,
+            filters: [],
+            openIndex: null,
+
+            // TEXT-ONLY history
+            history: {
+                KEY: 'm:t',
+                limit: historyLimit,
+                terms: [],
+                read() {
+                    try {
+                        const raw = localStorage.getItem(this.KEY);
+                        const arr = raw ? JSON.parse(raw) : [];
+                        return Array.isArray(arr) ? arr : [];
+                    } catch {
+                        return [];
+                    }
+                },
+                write(arr) {
+                    try {
+                        localStorage.setItem(this.KEY, JSON.stringify(arr));
+                    } catch {}
+                },
+                add(term) {
+                    const t = (term || '').trim();
+                    if (!t) return;
+                    let arr = this.read().filter(x => x !== t);
+                    arr.unshift(t);
+                    if (arr.length > this.limit) arr = arr.slice(0, this.limit);
+                    this.write(arr);
+                    this.terms = arr;
+                },
+                clear() {
+                    try {
+                        localStorage.removeItem(this.KEY);
+                    } catch {}
+                    this.terms = [];
+                },
+            },
+
+            // NEW: Filter persistence
+            _filterStore: null, // set in init()
+            _filterKey() {
+                return `m:f:`;
+            },
+            _getStore() {
+                return filterStorage === 'session' ? window.sessionStorage : window.localStorage;
+            },
+            _readFilterState() {
+                try {
+                    const raw = this._filterStore.getItem(this._filterKey());
+                    const obj = raw ? JSON.parse(raw) : {};
+                    return obj && typeof obj === 'object' ? obj : {};
+                } catch {
+                    return {};
+                }
+            },
+            _writeFilterState(state) {
+                try {
+                    this._filterStore.setItem(this._filterKey(), JSON.stringify(state || {}));
+                } catch {}
+            },
+            _buildFilterStateFromCurrent() {
+                const out = {};
+                this.filters.forEach(f => {
+                    const opts = (f.options || []).map(o => o.key);
+                    const selected = (f.selected || []).filter(v => v !== 'SEMUA');
+
+                    // ✅ If "everything selected" → store nothing (meaning SEMUA)
+                    if (selected.length && selected.length < opts.length) {
+                        out[f.name] = selected;
+                    }
+                });
+                return out;
+            },
+            _saveFilters() {
+                const state = this._buildFilterStateFromCurrent();
+                this._writeFilterState(state);
+            },
+            _rehydrateFiltersFromState(state) {
+                this.filters.forEach(f => {
+                    const opts = (f.options || []).map(o => o.key);
+                    const saved = Array.isArray(state[f.name]) ? state[f.name] : null;
+
+                    // ❗ No saved value → keep default (usually ['SEMUA'])
+                    if (saved === null) return;
+
+                    const valid = saved.filter(v => opts.includes(v));
+
+                    if (valid.length === opts.length) {
+                        f.selected = ['SEMUA'];
+                    } else {
+                        f.selected = valid;
+                    }
+                });
+            },
+            init() {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+
+                // init filter storage
+                this._filterStore = this._getStore();
+                if (this.withFilters) this.loadFilters();
+
+                // load history
+                const terms = this.history.read();
+                this.history.terms = terms;
+
+                // URL param "q"
+                const param = urlParams.get('q') ?? '';
+                if (param !== '') {
+                    // ✅ hydrate from URL param
+                    this.q = param;
+                    this.history.add(param); // save to history
+                } else {
+                    // ✅ no param → fallback to history
+                    this.q = '';
+                }
+            },
+
+            // ===== Autocomplete =====
+            close() {
+                this.open = false;
+                this.hi = -1;
+            },
+            move(dir) {
+                if (!this.open || !this.suggestions.length) return;
+                const max = this.suggestions.length - 1;
+                this.hi = this.hi + dir;
+                if (this.hi < 0) this.hi = max;
+                if (this.hi > max) this.hi = 0;
+            },
+            choose(i, event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                const item = this.suggestions[i];
+                if (!item) return;
+                window.location.href = `/masco/${encodeURIComponent(item.value)}`;
+            },
+            async onInput() {
+                clearTimeout(this._t);
+                const q = this.q.trim();
+                if (!q) {
+                    this.suggestions = [];
+                    this.close();
+                    return;
+                }
+                this._t = setTimeout(async () => {
+                    this.loading = true;
+                    try {
+                        const filterState = this._buildFilterStateFromCurrent();
+                        const res = await fetch(this.autocompleteUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]')?.getAttribute('content') ??
+                                    ''
+                            },
+                            body: JSON.stringify({
+                                q,
+                                limit,
+                                ...filterState
+                            }),
+                            credentials: 'same-origin'
+                        });
+                        const data = await res.json();
+                        this.suggestions = Array.isArray(data.results) ? data.results : [];
+                        this.open = this.suggestions.length > 0;
+                        this.hi = this.suggestions.length ? 0 : -1;
+                    } catch (e) {
+                        console.error('Autocomplete error', e);
+                        this.suggestions = [];
+                        this.open = false;
+                    } finally {
+                        this.loading = false;
+                    }
+                }, 180);
+            },
+            translate(mode, key) {
+                const target = key.toString();
+                const dict = {
+                    group: {
+                        SEMUA: "All",
+                        '1': "Group 1",
+                        '2': "Group 2",
+                        '3': "Group 3",
+                        '4': "Group 4",
+                        '5': "Group 5",
+                        '6': "Group 6",
+                        '7': "Group 7",
+                        '8': "Group 8",
+                        '9': "Group 9",
+                        '0': "Group 0",
+                    },
+                    category: {
+                        SEMUA: "All",
+                        stem: "STEM Jobs",
+                        tvet: "TVET Jobs",
+                        green: "GREEN Jobs",
+                        gig: "GIG Jobs",
+                    },
+                    salary: {
+                        SEMUA: "All",
+                        "1k": "\u003C RM 2,000",
+                        "2k": "RM 2,000 - RM 2,999",
+                        "3k": "RM 3,000 - RM 3,999",
+                        "4k": "RM 4,000 - RM 4,999",
+                    },
+                    skill: {
+                        SEMUA: "All",
+                        skilled: "Skilled",
+                        semi: "Semi-Skilled",
+                        low: "Lowed-Skilled",
+                    },
+                    sector: {
+                        SEMUA: "All",
+                        private: "Private",
+                        public: "Public",
+                    },
+                    structure: {
+                        SEMUA: "All",
+                        "1": "Digit 1",
+                        "2": "Digit 2",
+                        "3": "Digit 3",
+                        "4": "Digit 4",
+                        "6": "Digit 6",
+                    }
+                };
+
+                return dict[mode][target] ?? key;
+            },
+            // ===== Filters =====
+            async loadFilters() {
+                try {
+                    const res = await fetch(this.filtersEndpoint, {
+                        credentials: 'same-origin'
+                    });
+                    const data = await res.json();
+                    this.filters = [{
+                            label: "Major Group",
+                            name: 'group',
+                            options: (data?.group || []).map(key => ({
+                                key,
+                                label: this.translate('group', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                        {
+                            label: "Structure",
+                            name: 'structure',
+                            options: (data?.structure || []).map(key => ({
+                                key,
+                                label: this.translate('structure', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                        {
+                            label: "Job Category",
+                            name: 'category',
+                            options: (data?.category || []).map(key => ({
+                                key,
+                                label: this.translate('category', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                        {
+                            label: "Starting Basic Salary (DGP)",
+                            name: 'salary',
+                            options: (data.salary || []).map(key => ({
+                                key,
+                                label: this.translate('salary', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                        {
+                            label: "Skill Level",
+                            name: 'skill',
+                            options: (data.skill || []).map(key => ({
+                                key,
+                                label: this.translate('skill', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                        {
+                            label: "Employment Sector",
+                            name: 'sector',
+                            options: (data.sector || []).map(key => ({
+                                key,
+                                label: this.translate('sector', key)
+                            })),
+                            selected: ['SEMUA'],
+                        },
+                    ];
+
+                    const saved = this._readFilterState();
+                    this._rehydrateFiltersFromState(saved);
+                } catch (e) {
+                    console.error('Failed to load filters', e);
+                    this.filters = [ /* same as before with empty [] */ ];
+                }
+            },
+            toggleFilter(index) {
+                this.openIndex = this.openIndex === index ? null : index;
+            },
+            closeFilters() {
+                this.openIndex = null;
+            },
+            hasSemua(i) {
+                const f = this.filters[i];
+                return f && Array.isArray(f.options) && f.options.includes('SEMUA');
+            },
+            isOptionSelected(i, opt) {
+                const f = this.filters[i];
+                return f && Array.isArray(f.selected) && f.selected.includes(opt);
+            },
+            toggleOption(i, opt) {
+                const f = this.filters[i];
+                if (!f) return;
+
+                f.selected = f.selected || [];
+
+                // If user clicks SEMUA → everything becomes SEMUA
+                if (opt === 'SEMUA') {
+                    f.selected = ['SEMUA'];
+                    this._saveFilters();
+                    return;
+                }
+
+                // Remove SEMUA first
+                f.selected = f.selected.filter(v => v !== 'SEMUA');
+
+                // Toggle selected state
+                if (f.selected.includes(opt)) {
+                    f.selected = f.selected.filter(v => v !== opt);
+                } else {
+                    f.selected.push(opt);
+                }
+
+                // If user selected ALL manually → collapse to SEMUA
+                const opts = (f.options || []).map(o => o.key).filter(k => k !== 'SEMUA');
+                if (f.selected.length === opts.length) {
+                    f.selected = ['SEMUA'];
+                }
+
+                // 🔥 If NOTHING left → auto-select SEMUA
+                if (f.selected.length === 0) {
+                    f.selected = ['SEMUA'];
+                }
+
+                this._saveFilters();
+            },
+            activeValues(filter) {
+                return (filter.selected || []).filter(v => v !== 'SEMUA');
+            },
+            activeCount(filter) {
+                return this.activeValues(filter).length;
+            },
+            isActive(filter) {
+                return this.activeCount(filter) > 0;
+            },
+            hasAnyActive() {
+                return this.filters.some(f => this.isActive(f));
+            },
+            removeValue(name, val) {
+                const f = this.filters.find(x => x.name === name);
+                if (!f) return;
+
+                f.selected = (f.selected || []).filter(v => v !== val);
+
+                // If nothing is selected → fall back to SEMUA
+                if (f.selected.length === 0) {
+                    f.selected = ['SEMUA'];
+                }
+
+                this._saveFilters();
+            },
+            clearFilter(i) {
+                if (this.filters[i]) {
+                    this.filters[i].selected = ['SEMUA'];
+                    this._saveFilters();
+                }
+            },
+            resetAll() {
+                this.filters.forEach(f => f.selected = ['SEMUA']);
+                this._saveFilters();
+            },
+
+            applyFilter() {
+                this.closeFilters();
+                this._saveFilters();
+                this.submit();
+            },
+
+            // ===== Submit (save term then POST) =====
+            submit() {
+                // Save ONLY the term
+                this.history.add(this.q);
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = this.action;
+
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (token) {
+                    const _csrf = document.createElement('input');
+                    _csrf.type = 'hidden';
+                    _csrf.name = '_token';
+                    _csrf.value = token;
+                    form.appendChild(_csrf);
+                }
+
+                const searchInput = document.createElement('input');
+                searchInput.type = 'hidden';
+                searchInput.name = 'q';
+                searchInput.value = this.q;
+                form.appendChild(searchInput);
+
+                // filters (exclude SEMUA)
+                this.filters.forEach(f => {
+                    (f.selected || []).forEach(v => {
+                        if (v === 'SEMUA') return;
+                        const hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name = `${f.name}[]`;
+                        hidden.value = v;
+                        form.appendChild(hidden);
+                    });
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+        }
+    }
+</script>
+</div>
+        </div>
+
+        
+        <div class="grid grid-cols-1 lg:grid-cols-[23%_2%_23%_2%_24%_2%_24%] text-center">
+            
+                            
+                                    <div class="relative w-full min-w-[220px] cursor-pointer"
+                        x-data="{ showList: false }" @mouseenter="showList = true" @mouseleave="showList = false">
+
+                        <!-- Group Title -->
+                        <div class="flex flex-row py-2 rounded-t-lg w-full font-bold break-words">
+                            Major Group
+                        </div>
+
+                                                    <a href="/masco/2" class="flex flex-col hover:bg-blue-50 p-1 text-sm">
+                                <div
+                                    class="flex items-center bg-white shadow-lg p-2 px-3 rounded-lg min-h-[70px] break-words">
+                                    <div
+                                        class="flex justify-center items-center mr-2 rounded-full min-w-9 min-h-9 text-xs text-sm font-semibold
+                                             bg-orange-400
+                                                                                    
+                                        ">
+                                        2</div>
+                                    <div class="text-left">
+                                        Professionals
+                                    </div>
+                                </div>
+                            </a>
+                        
+                        <!-- Dropdown Navigation -->
+                                                    <div class="top-full left-0 z-10 absolute space-y-1 bg-white shadow-lg mt-2 p-2 rounded-md w-full text-sm"
+                                x-show="showList" x-cloak x-transition style="display: none;">
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/1">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            1
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Managers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/2">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            2
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/3">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            3
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Technicians and Associate Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/4">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            4
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Clerical Support Workers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/5">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            5
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Service and Sales Workers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/6">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            6
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Agricultural, Forestry, Livestock and Fishery Workers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/7">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            7
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Craft and Related Trades Workers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/8">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            8
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Plant and Machine Operators and Assemblers
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/9">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            9
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Elementary Occupations
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/0">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-400
+                                                                                        ">
+                                            0
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Armed Forces
+                                        </span>
+                                    </a>
+                                                            </div>
+                                            </div>
+
+                    
+                                            <div class="hidden lg:block flex justify-center items-center mt-16">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+</svg>                        </div>
+                                                                
+                                    <div class="relative w-full min-w-[220px] cursor-pointer"
+                        x-data="{ showList: false }" @mouseenter="showList = true" @mouseleave="showList = false">
+
+                        <!-- Group Title -->
+                        <div class="flex flex-row py-2 rounded-t-lg w-full font-bold break-words">
+                            Sub-Major Group
+                        </div>
+
+                                                    <a href="/masco/25" class="flex flex-col hover:bg-blue-50 p-1 text-sm">
+                                <div
+                                    class="flex items-center bg-white shadow-lg p-2 px-3 rounded-lg min-h-[70px] break-words">
+                                    <div
+                                        class="flex justify-center items-center mr-2 rounded-full min-w-9 min-h-9 text-xs text-sm font-semibold
+                                             bg-orange-300
+                                                                                    
+                                        ">
+                                        25</div>
+                                    <div class="text-left">
+                                        Information and Communications Technology Professionals
+                                    </div>
+                                </div>
+                            </a>
+                        
+                        <!-- Dropdown Navigation -->
+                                                    <div class="top-full left-0 z-10 absolute space-y-1 bg-white shadow-lg mt-2 p-2 rounded-md w-full text-sm"
+                                x-show="showList" x-cloak x-transition style="display: none;">
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/21">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            21
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Science and Engineering Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/22">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            22
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Health Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/23">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            23
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Teaching Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/24">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            24
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Business and Administration Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/25">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            25
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Information and Communications Technology Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/26">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            26
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Legal Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/27">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            27
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Hospitality and Related Services Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/28">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            28
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Social and Cultural Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/29">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-300
+                                                                                        ">
+                                            29
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Regulatory Government Professionals
+                                        </span>
+                                    </a>
+                                                            </div>
+                                            </div>
+
+                    
+                                            <div class="hidden lg:block flex justify-center items-center mt-16">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+</svg>                        </div>
+                                                                
+                                    <div class="relative w-full min-w-[220px] cursor-pointer"
+                        x-data="{ showList: false }" @mouseenter="showList = true" @mouseleave="showList = false">
+
+                        <!-- Group Title -->
+                        <div class="flex flex-row py-2 rounded-t-lg w-full font-bold break-words">
+                            Minor Group
+                        </div>
+
+                                                    <a href="/masco/252" class="flex flex-col hover:bg-blue-50 p-1 text-sm">
+                                <div
+                                    class="flex items-center bg-white shadow-lg p-2 px-3 rounded-lg min-h-[70px] break-words">
+                                    <div
+                                        class="flex justify-center items-center mr-2 rounded-full min-w-9 min-h-9 text-xs text-sm font-semibold
+                                             bg-orange-200
+                                                                                    
+                                        ">
+                                        252</div>
+                                    <div class="text-left">
+                                        Database and Network Professionals
+                                    </div>
+                                </div>
+                            </a>
+                        
+                        <!-- Dropdown Navigation -->
+                                                    <div class="top-full left-0 z-10 absolute space-y-1 bg-white shadow-lg mt-2 p-2 rounded-md w-full text-sm"
+                                x-show="showList" x-cloak x-transition style="display: none;">
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/251">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-200
+                                                                                        ">
+                                            251
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Software and Application Developers and Analysts
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/252">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-200
+                                                                                        ">
+                                            252
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Database and Network Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/253">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-200
+                                                                                        ">
+                                            253
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Information Technology Security Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/254">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-200
+                                                                                        ">
+                                            254
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Creative and Digital Content Professionals
+                                        </span>
+                                    </a>
+                                                            </div>
+                                            </div>
+
+                    
+                                            <div class="hidden lg:block flex justify-center items-center mt-16">
+                            <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+</svg>                        </div>
+                                                                
+                                    <div class="relative w-full min-w-[220px] cursor-pointer"
+                        x-data="{ showList: false }" @mouseenter="showList = true" @mouseleave="showList = false">
+
+                        <!-- Group Title -->
+                        <div class="flex flex-row py-2 rounded-t-lg w-full font-bold break-words">
+                            Unit Group
+                        </div>
+
+                                                    <a href="/masco/2521" class="flex flex-col hover:bg-blue-50 p-1 text-sm">
+                                <div
+                                    class="flex items-center bg-white shadow-lg p-2 px-3 rounded-lg min-h-[70px] break-words">
+                                    <div
+                                        class="flex justify-center items-center mr-2 rounded-full min-w-9 min-h-9 text-xs text-sm font-semibold
+                                             bg-orange-100                                         
+                                        ">
+                                        2521</div>
+                                    <div class="text-left">
+                                        Database Designers and Administrators
+                                    </div>
+                                </div>
+                            </a>
+                        
+                        <!-- Dropdown Navigation -->
+                                                    <div class="top-full left-0 z-10 absolute space-y-1 bg-white shadow-lg mt-2 p-2 rounded-md w-full text-sm"
+                                x-show="showList" x-cloak x-transition style="display: none;">
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/2521">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-100                                             ">
+                                            2521
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Database Designers and Administrators
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/2522">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-100                                             ">
+                                            2522
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Information Technology System Administrators
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/2523">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-100                                             ">
+                                            2523
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Computer Network Professionals
+                                        </span>
+                                    </a>
+                                                                    <a class="flex flex-row items-center space-x-4 hover:bg-gray-100 p-2 rounded cursor-pointer"
+                                        href="/masco/2524">
+                                        <small
+                                            class=" mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9
+                                              bg-orange-100                                             ">
+                                            2524
+                                        </small>
+                                        <span class="text-left break-words">
+                                            Data Professionals
+                                        </span>
+                                    </a>
+                                                            </div>
+                                            </div>
+
+                    
+                                                
+            
+                                        <div class="lg:hidden block w-full min-w-[220px]">
+                    <div x-data="{ open: false }"
+                        class="relative w-full cursor-pointer">
+
+                        <!-- Group Title -->
+                        <div class="flex flex-row py-2 rounded-t-lg w-full font-bold break-words">
+                            Minor Unit Group
+                        </div>
+
+                        <!-- Dropdown Toggle Button (always shows placeholder) -->
+                        <button @click="open = !open"
+                            class="flex justify-between items-center bg-white shadow-lg p-3 rounded-lg w-full min-h-[70px] text-sm">
+                                                            <div class="flex items-center">
+                                    <small
+                                        class="bg-orange-100 mr-3 rounded-full min-w-9 min-h-8 font-semibold text-center leading-9">
+                                        2521-03
+                                    </small>
+                                    <span class="text-left break-words">
+                                        Business Database Analyst
+                                    </span>
+                                </div>
+                                                    </button>
+
+                        <!-- Dropdown List -->
+                        <div x-show="open" x-cloak x-transition
+                            class="z-10 absolute bg-white shadow-lg mt-2 rounded-md w-full max-h-[300px] overflow-y-auto text-sm"
+                            @click.away="open = false" style="display: none;">
+                                                            <a href="/masco/2521-01"
+                                    class="flex items-center space-x-3 hover:bg-gray-100 px-4 py-2 w-full text-left">
+                                    <span
+                                        class="flex justify-center items-center bg-orange-200 rounded-full min-w-8 min-h-8 font-semibold text-xs">
+                                        2521-01
+                                    </span>
+                                    <span class="break-words">
+                                        Database Architect
+                                    </span>
+                                </a>
+                                                            <a href="/masco/2521-02"
+                                    class="flex items-center space-x-3 hover:bg-gray-100 px-4 py-2 w-full text-left">
+                                    <span
+                                        class="flex justify-center items-center bg-orange-200 rounded-full min-w-8 min-h-8 font-semibold text-xs">
+                                        2521-02
+                                    </span>
+                                    <span class="break-words">
+                                        Database Administrator
+                                    </span>
+                                </a>
+                                                            <a href="/masco/2521-03"
+                                    class="flex items-center space-x-3 hover:bg-gray-100 px-4 py-2 w-full text-left">
+                                    <span
+                                        class="flex justify-center items-center bg-orange-200 rounded-full min-w-8 min-h-8 font-semibold text-xs">
+                                        2521-03
+                                    </span>
+                                    <span class="break-words">
+                                        Business Database Analyst
+                                    </span>
+                                </a>
+                                                            <a href="/masco/2521-04"
+                                    class="flex items-center space-x-3 hover:bg-gray-100 px-4 py-2 w-full text-left">
+                                    <span
+                                        class="flex justify-center items-center bg-orange-200 rounded-full min-w-8 min-h-8 font-semibold text-xs">
+                                        2521-04
+                                    </span>
+                                    <span class="break-words">
+                                        E-Commerce Database Architect
+                                    </span>
+                                </a>
+                                                            <a href="/masco/2521-05"
+                                    class="flex items-center space-x-3 hover:bg-gray-100 px-4 py-2 w-full text-left">
+                                    <span
+                                        class="flex justify-center items-center bg-orange-200 rounded-full min-w-8 min-h-8 font-semibold text-xs">
+                                        2521-05
+                                    </span>
+                                    <span class="break-words">
+                                        Oracle Database Administrator
+                                    </span>
+                                </a>
+                                                    </div>
+                    </div>
+                </div>
+                    </div>
+
+        
+        
+        <div class="gap-x-6 grid grid-cols-8 grid-flow-row-dense mt-9">
+            
+            <div class="space-y-8 col-span-8 lg:col-span-6">
+                
+                <div class="space-y-4 bg-linear-to-br from-white/90 to-white/30 border-indigo-200 rounded-2xl">
+                    <div class="px-8 pt-8">
+                        <div class="flex lg:flex-row flex-col justify-between mb-4">
+                            <div class="flex space-x-4">
+                                <div class="font-light text-lg uppercase">MASCO Code</div>
+                                <div class="bg-[#FA8B30] px-6 py-1 rounded-2xl text-white">2521-03</div>
+                            </div>
+
+                                                            <div class="flex justify-center items-center hover:bg-gray-100 mt-3 md:mt-0 px-4 border-2 rounded-full text-sm cursor-pointer"
+                                    x-data
+                                    @click="$store.compare.add('2521-03','Juruanalisis Pangkalan Data Perniagaan','Business Database Analyst')">
+                                    Compare
+                                    <svg class="ml-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+</svg>                                </div>
+                                                    </div>
+
+                        
+                        <div class="relative space-y-6">
+                            <div>
+                                <div class="flex md:flex-row flex-col md:items-center">
+                                    <div class="font-bold text-3xl uppercase">
+                                        Business Database Analyst
+                                    </div>
+                                    
+                                    <div class="flex space-x-2 mt-2 md:mt-0 md:ml-4">
+                                                                                                                                                                                                                        <a href="/directory/category/tvet" x-data="{ show: false }"
+                                                    @mouseenter="show = true" @mouseleave="show = false"
+                                                    class="relative px-3 py-1 rounded-3xl"
+                                                    style="background-color: #FEE2E2; color: #9F0812; border: 1px solid #9F0812;">
+                                                    <div class="font-semibold text-sm uppercase">
+                                                        TVET
+                                                    </div>
+
+                                                    <!-- Tooltip -->
+                                                    <div x-show="show" x-transition
+                                                        class="hidden md:block bottom-full left-1/2 absolute bg-white shadow-lg mb-3 px-3 py-2 border border-gray-200 rounded-lg w-[250px] text-gray-800 text-xs -translate-x-1/2">
+                                                                                                                <div class="break-words whitespace-normal">
+                                                                                                                            TVET scope is based on recognized occupational standards, with emphasis on practical components, psychomotor skills and exposure to training in the industry
+                                                                                                                    </div>
+                                                        <div
+                                                            class="-bottom-2 left-1/2 absolute border-t-8 border-t-white border-r-8 border-r-transparent border-l-8 border-l-transparent w-0 h-0 -translate-x-1/2 transform">
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                            </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-5">
+                                <div class="col-span-5 md:col-span-4">
+                                    <div class="mb-10 text-lg">
+                                        Business Database Analyst uses data analysis to support and improve business decision-making. They collect, organise, and interpret data, manage and maintain databases, and produce reports and dashboards that provide insights into business performance and trends.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            
+                            
+                                                    </div>
+                    </div>
+
+                    
+                                                        </div>
+
+                
+                
+
+
+                
+                                                    <div class="space-y-4 bg-linear-to-br from-white/90 to-white/40 p-8 rounded-2xl">
+                        <div class="font-bold text-lg uppercase">Tasks</div>
+                        <div class="flex flex-col">
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Design, develop, construct, modify, and maintain database architecture and structures for business systems.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Analyse large datasets to identify business trends and insights.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Develop and optimise dashboards and reports for management use.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Automate data reporting processes to improve efficiency.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Collaborate with departments to understand data needs and deliver solutions.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Develop and implement data policies, standards, and documentation.</div>
+                                </div>
+                                                            <div class="flex flex-rows items-start mb-2">
+                                    <div class="mr-2 shrink-0"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg></div>
+                                    <div class="first-letter:uppercase">Present data-driven recommendations to stakeholders to support business decisions.</div>
+                                </div>
+                                                    </div>
+                    </div>
+                
+                
+                                                    <div $hasData x-data="{ activeTab: 'msic' }"
+                        class="space-y-4 bg-linear-to-br from-white/90 to-white/40 p-8 rounded-2xl">
+                        <!-- Tab Buttons -->
+                        <div class="flex space-x-4 border-b border-b-gray-300">
+                                                            <button
+                                    :class="activeTab === 'msic' ? 'border-b-4 border-blue-600 text-blue-600' :
+                                        'border-b-4 border-transparent text-gray-800  cursor-pointer'"
+                                    @click="activeTab = 'msic'" class="px-4 py-2 font-semibold">
+                                    MSIC
+                                </button>
+                                                                                        <button
+                                    :class="activeTab === 'noss' ? 'border-b-4 border-blue-600 text-blue-600' :
+                                        'border-b-4 border-transparent text-gray-800  cursor-pointer'"
+                                    @click="activeTab = 'noss'" class="px-4 py-2 font-semibold">
+                                    NOSS
+                                </button>
+                                                                                        <button
+                                    :class="activeTab === 'nec' ? 'border-b-4 border-blue-600 text-blue-600' :
+                                        'border-b-4 border-transparent text-gray-800  cursor-pointer'"
+                                    @click="activeTab = 'nec'" class="px-4 py-2 font-semibold">
+                                    NEC
+                                </button>
+                                                    </div>
+
+                        <!-- Tab Content -->
+                        <div x-show="activeTab === 'msic'" class="tab-content">
+                            <div>
+                                <!-- Display MSIC -->
+                                <ul class="space-y-2">
+                                                                            <li>
+                                            <a href="https://msic.stats.gov.my/bm" target="_blank"
+                                                class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-1 py-1 rounded-full min-w-8 text-white text-center uppercase">
+                                                    J
+                                                </div>
+                                                Information and Communication
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a href="https://msic.stats.gov.my/bm" target="_blank"
+                                                class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-1 py-1 rounded-full min-w-8 text-white text-center uppercase">
+                                                    M
+                                                </div>
+                                                Professional, Scientific and Technical Activities
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </div>
+                        </div>
+
+                        <div x-show="activeTab === 'noss'" class="tab-content">
+                            <div>
+                                <!-- Display NOSS -->
+                                <ul class="space-y-2">
+                                    
+                                                                            <li>
+                                            <a href="https://www.myspike.my/index.php?r=umum-noss%2Findex-noss"
+                                                target="_blank" class="group flex items-center space-x-2 mb-2">
+                                                <div class="bg-orange-500 px-3 py-1 rounded-full text-white text-center uppercase"
+                                                    style="min-width: 15ch; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                    IT-121-5:2011
+                                                </div>
+                                                <div class="flex-1 group-hover:text-orange-500 break-words">
+                                                    DATABASE PROGRAMMING (LEVEL 5)
+                                                    (Level 5)
+                                                </div>
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </div>
+                        </div>
+
+                        <div x-show="activeTab === 'nec'" class="tab-content">
+                            <div>
+                                <!-- Display KOD NEC -->
+                                <ul class="space-y-2">
+                                                                            <li>
+                                            <a href="https://www.mohe.gov.my/en/download/publications-journals-and-reports/nec-2020"
+                                                target="_blank" class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-3 py-1 rounded-full text-white text-center uppercase">
+                                                    0611
+                                                </div>
+                                                Information Technology and Information System
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a href="https://www.mohe.gov.my/en/download/publications-journals-and-reports/nec-2020"
+                                                target="_blank" class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-3 py-1 rounded-full text-white text-center uppercase">
+                                                    0612
+                                                </div>
+                                                Software Engineering
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a href="https://www.mohe.gov.my/en/download/publications-journals-and-reports/nec-2020"
+                                                target="_blank" class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-3 py-1 rounded-full text-white text-center uppercase">
+                                                    0613
+                                                </div>
+                                                Computer Science
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a href="https://www.mohe.gov.my/en/download/publications-journals-and-reports/nec-2020"
+                                                target="_blank" class="hover:text-orange-500">
+                                                <div
+                                                    class="inline-block bg-orange-500 mr-2 px-3 py-1 rounded-full text-white text-center uppercase">
+                                                    0614
+                                                </div>
+                                                Computer Use
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                
+
+                
+                
+                                    <div class="space-y-4 bg-linear-to-br from-white/90 to-white/40 p-8 rounded-2xl">
+                        <div class="mb-6 font-bold text-lg uppercase">Skills</div>
+
+                        <div class="flex flex-row justify-start items-center gap-12 w-full">
+                                                            <div
+                                    class="flex justify-center items-center bg-[#ff690044] rounded-full min-w-[100px] min-h-[100px] font-bold">
+                                    Basic
+                                </div>
+                                                        <!-- Asas side -->
+                            <div class="flex flex-row flex-wrap items-end gap-2 space-x-2">
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Attention to detail to ensure data accuracy and quality.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Critical thinking to evaluate information and form sound judgments.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Effective communication and stakeholder management to support decision-making.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Proficiency in Microsoft Excel or Google Sheets for data analysis and reporting.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Strong analytical and problem-solving skills to interpret complex data.
+                                                                            </div>
+                                                            </div>
+                        </div>
+                        <div class="flex flex-row justify-start items-center gap-12 mt-10 w-full">
+                                                            <div
+                                    class="flex justify-center items-center bg-[#ff690044] rounded-full min-w-[100px] min-h-[100px] font-bold">
+                                    Specific
+                                </div>
+                                                        <!-- Khusus side -->
+                            <div class="flex flex-row flex-wrap items-end gap-2 space-x-2">
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Competency in database performance optimisation, governance, security, and compliance.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Proficiency in analysing data and generating insights using data visualisation tools such as Power BI or Tableau.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Proficiency in applying programming skills in Python or R for data tasks.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Proficiency in designing, modelling, and managing business databases using SQL and systems such as MySQL and Oracle.
+                                                                            </div>
+                                                                                                        <div class="flex items-center bg-white shadow px-4 py-1 rounded-full "
+                                        >
+                                        <svg class="mr-2 w-8 h-8 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"/>
+</svg>                                        Proficiency in performing data warehousing and ETL processes.
+                                                                            </div>
+                                                            </div>
+                        </div>
+                    </div>
+                
+                
+                                    <div class="space-y-4 bg-linear-to-br from-white/90 to-white/40 p-8 rounded-2xl">
+                        <div class="mb-6 font-bold text-lg uppercase">Additional Info</div>
+
+                                                    
+                            <div class="pb-4 border-gray-200 border-b">
+                                <div class="font-semibold text-gray-800 text-base">QUALIFICATION</div>
+                                <div class="mt-1 text-gray-600">Bachelor’s degree or equivalent</div>
+                            </div>
+                                            </div>
+                
+                
+                                    <div class="space-y-4 bg-linear-to-br from-white/90 to-white/40 p-8 rounded-2xl">
+                        <div class="mb-6 font-bold text-lg uppercase"> Related Courses
+                        </div>
+                        <div class="flex md:flex-row flex-col w-full">
+                            <div class="flex items-center md:w-1/2">
+                                <div class="w-1/4">
+                                    <img src="https://emasco.mohr.gov.my/assets/logo-hrdcorp.png"
+                                        class="rounded-full min-w-20 max-w-20 min-h-20 max-h-20 object-contain" />
+                                </div>
+                                <div class="px-5 w-3/4 text-md">
+                                    <a href="https://etris.hrdcorp.gov.my/DigiGov/digigovportal.htm?actionFlag=SC_getSearchCompoPage&applicationMstId=1100012"
+                                        target="_blank">
+                                        <div class="flex items-center hover:font-semibold">
+                                            <svg class="mr-2 w-4 h-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+</svg>                                            Claimable Course
+                                        </div>
+                                    </a>
+                                    <a href="https://elatih.hrdcorp.gov.my/" target="_blank">
+                                        <div class="flex items-center hover:font-semibold">
+                                            <svg class="mr-2 w-4 h-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+</svg>                                            e-Latih Online Course
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex items-center md:w-1/2">
+                                <div class="w-1/4">
+                                    <img src="https://emasco.mohr.gov.my/assets/logo-jpk.png"
+                                        class="rounded-full min-w-20 max-w-20 min-h-20 max-h-20 object-contain" />
+                                </div>
+                                <div class="px-5 w-3/4 text-md">
+                                    <a href="https://www.tvet.gov.my/awam-kursus/carian" target="_blank">
+                                        <div class="flex items-center hover:font-semibold">
+                                            <svg class="mr-2 w-4 h-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+</svg>                                            Madani TVET Course
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            
+
+                            <div class="hidden lg:block space-y-2 col-span-2">
+                    <div class="flex justify-center -mt-9 w-full"><svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+</svg></div>
+                    <div class="space-y-5 col-span-2 bg-white/75 p-5 rounded-xl">
+
+                        <div class="mb-4 font-semibold">
+                            Minor Unit Group
+                        </div>
+
+                                                    <a href="/masco/2521-01">
+                                <div class="flex flex-row items-center mb-3">
+                                    <div
+                                        class="flex flex-row justify-center items-center bg-orange-100 mr-1 px-1 py-2 rounded min-w-[54px] font-semibold text-black text-xs text-center">
+                                        2521-01</div>
+                                    <div
+                                        class="whitespace-normal break-words rounded-sm p-1 hover:bg-[#165DFB11] w-full text-sm text-gray-900">
+                                        Database Architect
+                                    </div>
+                                </div>
+                            </a>
+                                                    <a href="/masco/2521-02">
+                                <div class="flex flex-row items-center mb-3">
+                                    <div
+                                        class="flex flex-row justify-center items-center bg-orange-100 mr-1 px-1 py-2 rounded min-w-[54px] font-semibold text-black text-xs text-center">
+                                        2521-02</div>
+                                    <div
+                                        class="whitespace-normal break-words rounded-sm p-1 hover:bg-[#165DFB11] w-full text-sm text-gray-900">
+                                        Database Administrator
+                                    </div>
+                                </div>
+                            </a>
+                                                    <a href="/masco/2521-03">
+                                <div class="flex flex-row items-center mb-3">
+                                    <div
+                                        class="flex flex-row justify-center items-center bg-orange-100 mr-1 px-1 py-2 rounded min-w-[54px] font-semibold text-black text-xs text-center">
+                                        2521-03</div>
+                                    <div
+                                        class="whitespace-normal break-words rounded-sm p-1 hover:bg-[#165DFB11] w-full text-sm font-bold">
+                                        Business Database Analyst
+                                    </div>
+                                </div>
+                            </a>
+                                                    <a href="/masco/2521-04">
+                                <div class="flex flex-row items-center mb-3">
+                                    <div
+                                        class="flex flex-row justify-center items-center bg-orange-100 mr-1 px-1 py-2 rounded min-w-[54px] font-semibold text-black text-xs text-center">
+                                        2521-04</div>
+                                    <div
+                                        class="whitespace-normal break-words rounded-sm p-1 hover:bg-[#165DFB11] w-full text-sm text-gray-900">
+                                        E-Commerce Database Architect
+                                    </div>
+                                </div>
+                            </a>
+                                                    <a href="/masco/2521-05">
+                                <div class="flex flex-row items-center mb-3">
+                                    <div
+                                        class="flex flex-row justify-center items-center bg-orange-100 mr-1 px-1 py-2 rounded min-w-[54px] font-semibold text-black text-xs text-center">
+                                        2521-05</div>
+                                    <div
+                                        class="whitespace-normal break-words rounded-sm p-1 hover:bg-[#165DFB11] w-full text-sm text-gray-900">
+                                        Oracle Database Administrator
+                                    </div>
+                                </div>
+                            </a>
+                                            </div>
+
+                </div>
+                    </div>
+        </main>
+
+        <div class="fixed right-0 bottom-50 hidden md:block z-888">
+    <div class="bg-white/90 p-1 shadow-sm cursor-pointer">
+        <div class="flex justify-center items-center border-b-1 border-gray-300 p-2" onmouseover="toggleZoom()" >
+            <svg class="w-5 h-5 hover:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6"/>
+</svg>
+            <div id="zoomChange" class="absolute flex flex-row m-0 mr-34 bg-white/90" style="visibility: hidden" onmouseout="toggleOffAll()">
+                <div class="flex justify-center items-center border-r-1 border-gray-200 p-3 hover:text-blue-400 " onclick="changeScale(true)">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+</svg>                </div>
+                <div class="flex justify-center items-center border-gray-200 p-3 hover:text-blue-400 " onclick="changeScale(false)">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14"/>
+</svg>                </div>
+            </div>
+        </div>
+        <div class="flex justify-center items-center border-b-1 border-gray-300 p-2 " onmouseover="toggleTheme()" >
+            <svg class="w-5 h-5 hover:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+</svg>
+            <div id="themeChange" class="absolute flex flex-row m-0 mr-53 bg-white/90" style="visibility: hidden" onmouseout="toggleOffAll()">
+                <div class="flex justify-center items-center border-r-1 border-gray-200 p-3 hover:bg-white " onclick="changeBgColor('#E0EAFF')">
+                    <div class="w-4 h-4 border-3 border-blue-500 rounded-full"></div>
+                </div>
+                <div class="flex justify-center items-center border-r-1 border-gray-200 p-3 hover:bg-white " onclick="changeBgColor('#ceedda')">
+                    <div class="w-4 h-4 border-3 border-green-500 rounded-full"></div>
+                </div>
+                <div class="flex justify-center items-center border-r-1  border-gray-200 p-3 hover:bg-white " onclick="changeBgColor('#ffe3e3')">
+                    <div class="w-4 h-4 border-3 border-red-500 rounded-full"></div>
+                </div>
+                <div class="flex justify-center items-center border-gray-200 p-3 hover:bg-white " onclick="changeBgColor('#ffeedb')">
+                    <div class="w-4 h-4 border-3 border-yellow-500 rounded-full"></div>
+                </div>
+            </div>
+        </div> 
+        <div class="flex justify-center items-center p-2 hover:text-blue-500" onClick="window.scrollTo({top: 0,behavior: 'smooth'});">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/>
+</svg>        </div>
+    </div>
+    
+    <div id="theme" style="visibility: hidden">
+    </div>
+</div>
+
+<script>
+    function toggleZoom() {
+        toggleOffAll();
+
+        var visibility = this.zoomChange.style.visibility;
+        this.zoomChange.style.visibility = visibility === "hidden" ? "visible" : "hidden"
+    }
+    function toggleTheme() {
+        toggleOffAll();
+
+        var visibility = this.themeChange.style.visibility;
+        this.themeChange.style.visibility = visibility === "hidden" ? "visible" : "hidden"
+    }
+    function toggleOffAll() {
+        this.zoomChange.style.visibility = "hidden";
+        this.themeChange.style.visibility = "hidden";
+    }
+    function changeBgColor(color) {
+        document.getElementById("layoutBody").style.backgroundColor = color;
+        sessionStorage.setItem("backgroundColor", color);
+    }
+    function changeScale(increase) {
+        const savedScale = sessionStorage.getItem("bodyScale");
+        let scale = (savedScale === null ? 1 : Number(savedScale));
+
+        if (increase === true) {
+            scale = scale + 0.1;
+        } else {
+            scale = scale - 0.1;
+        }
+
+        document.documentElement.style.zoom = scale;
+
+        sessionStorage.setItem("bodyScale", scale);
+    }
+
+</script>        <div id="chatbot"
+    class="fixed z-1001 right-0 lg:right-5 bottom-0 lg:bottom-25 w-screen h-9/10 mt-30 lg:w-[400px] lg:h-[600px] bg-white rounded lg:rounded-[15px] shadow-[0_10px_30px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden max-[480px]:w-[100%] max-[480px]:h-[100%] max-[480px]:rounded-[10px]"
+    style="visibility: hidden"
+    >
+    <div class="bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white p-5 text-center text-xl font-bold flex justify-between">
+      <div>MASCO</div>
+      <div onclick="toggleChatbot()" class="cursor-pointer"><svg class="text-white text-xl w-7 h-7 hover:text-white/50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+  <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"/>
+</svg></div>
+    </div>
+
+    <div id="chatMessages" class="chat-scroll flex-1 p-4 overflow-y-auto bg-[#f8f9fa]">
+      <div class="bg-[#d4edda] border border-[#c3e6cb] text-[#155724] px-4 py-2 rounded-[10px] mb-5 text-center">
+                <i style="font-size: 11pt;">Hi, I can assist you with questions related to the Malaysia Standard Classification of Occupations (MASCO). </i>
+              </div>
+
+    </div>
+
+   <!--  <div id="typingIndicator" class="m-5 hidden bg-[#e9ecef] text-[#666] px-4 py-3 rounded-tl-[18px] rounded-tr-[18px] rounded-br-[18px] rounded-bl-[5px] mr-auto italic mb-4">
+    ...
+    </div> -->
+
+    <div class="flex p-5 bg-white border-t border-[#e0e0e0]">
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Type your message here..."
+        autocomplete="off"
+        class="flex-1 border-2 border-[#e0e0e0] rounded-full px-5 py-3 text-sm outline-none transition-colors duration-300 focus:border-[#007bff]"
+      />
+      <button
+        id="sendButton"
+        onclick="sendMessage()"
+        class="bg-[#007bff] text-white rounded-full w-[45px] h-[45px] ml-2 cursor-pointer text-[16px] transition-colors duration-300 hover:bg-[#0056b3] disabled:bg-[#ccc] disabled:cursor-not-allowed"
+      >
+        ➤
+      </button>
+    </div>
+</div>
+
+<div class="z-899 fixed bottom-5 right-5 w-18 h-18 bg-white/60 rounded-full border-1 border-orange-100 shadow-lg flex items-center justify-center cursor-pointer text-4xl hover:border-yellow-400"
+    onclick="toggleChatbot()">
+    <img src="https://emasco.mohr.gov.my/assets/helpdesk.png" class="w-18 h-18 rounded-full" />
+</div>
+
+ <style>
+    .chat-scroll::-webkit-scrollbar { width: 6px; }
+    .chat-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+    .chat-scroll::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+    .message {
+        margin-bottom: 15px;
+        max-width: 90%;
+        word-wrap: break-word;
+    }
+
+    .user-message {
+        background: #007bff;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 18px 18px 5px 18px;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .bot-message {
+        background: #e9ecef;
+        color: #333;
+        padding: 12px 16px;
+        border-radius: 18px 18px 18px 5px;
+        margin-right: auto;
+    }
+
+    .bot-message li {
+        padding-left: 2px;
+    }
+
+    .user-time {
+        color: #ddd;
+    }
+
+    .bot-time {
+        color: #888;
+    }
+
+    .button {
+        margin-bottom: 15px;
+        word-wrap: break-word;
+        display: flex;
+    }
+
+    .bot-button {
+        background: #d2e8feff;
+        color: #333;
+        padding: 4px 12px;
+        border-radius: 18px 18px 18px 18px;
+        margin-right: 3px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .bot-button:hover {
+        background: #b9d6f4ff;
+    }
+
+    .!text-xs {
+        font-size: 0.75rem !important;
+        line-height: 1rem !important;
+    }
+
+    
+  </style>
+
+<script>
+    var doneCaptureProfile = false
+    var expiryDuration = 3;
+    var lang = 'en';
+
+    setTimeout(() => {
+        fetchChatLog();
+    }, 1000);
+
+    function fetchChatLog() {
+        fetch('https://emasco.mohr.gov.my/chat-log', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': 'ENBuyh5vSQRmmCi9R2wDSORDfPHZWPVNSyIoYVWx'
+            }
+        })
+        .then(response => response.text())
+        .then(data => {
+            var chat = JSON.parse(data);
+            if (chat.log) {
+                for (let i=0; i < chat.log.length; i++) {
+                    var log = chat.log[i];
+                    //const botAnswer = JSON.parse(log.bot_answer.replaceAll("\\", ""));
+                    addMessage('user', log.user_message, log.created_at);
+                    addMessage('bot', log.bot_answer, log.created_at);
+                }
+            } 
+        })
+        .catch(error => { console.error('Error:', error); } )
+    }
+
+    function sendMessage() {
+        var lang = 'en';
+        const input = document.getElementById('messageInput');
+        var message = input.value.trim();
+        if (!message) return;
+
+        addMessage('user', message);
+        this.messageInput.value = '';
+
+        this.showTypingIndicator();
+
+        // Send message to backend
+        fetch('https://emasco.mohr.gov.my/chatbot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': 'ENBuyh5vSQRmmCi9R2wDSORDfPHZWPVNSyIoYVWx'
+            },
+            body: 'message=' + encodeURIComponent(message) + "&lang=" + (lang === "bm" ? "my" : "en")
+        })
+        .then(response => response.text())
+        .then(data => {
+            var chat = JSON.parse(data);
+            if (chat.reply && chat.reply.answer && chat.reply.answer !== '') {
+                addMessage('bot', chat.reply.answer);
+            } else {
+                addMessage(('bot', lang === "bm" ? "Opps… Tiada jawapan untuk soalan ini. Boleh anda cuba dengan soalan yang lebih lengkap?" : "Ooops... I don't have answer for this. Can you try with a more complete question?"));
+            }
+            
+            this.hideTypingIndicator();
+        })
+        .catch(error => { console.error('Error:', error); this.hideTypingIndicator(); } )
+        
+        this.messageInput.focus();
+    }
+
+    function addMessage(sender, message, time) {
+        let replyTime = new Date();
+
+        if (time) {
+            const d = new Date(time);
+            replyTime = new Date(d.getTime() + 8 * 60 * 60 * 1000);
+        }
+        
+        const containerDiv = document.createElement('div');
+        containerDiv.className = `flex`;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        
+        // Convert markdown-style formatting to HTML
+        const formattedMessage = this.formatMessage(message);
+        //console.log(formattedMessage)
+        messageDiv.innerHTML = formattedMessage.replace(/^\[.*?\]/, '');
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = `text-right text-[0.625rem] text-black/60 mt-1 ${sender}-time`;
+        timeDiv.innerHTML = replyTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        messageDiv.appendChild(timeDiv);
+
+        containerDiv.appendChild(messageDiv);
+        
+        this.chatMessages.appendChild(containerDiv);
+        this.scrollToBottom();
+    }
+
+    function addButton(buttons) {
+        const buttonListDiv = document.createElement('div');
+        buttonListDiv.className = 'button';
+
+        buttons.forEach ((button, index) => {
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = `bot-button`;
+            buttonDiv.setAttribute("onclick", 'sendQuickMessage(\'[PROFILE]' + button + '\')');
+            
+            // Convert markdown-style formatting to HTML
+            const formattedMessage = this.formatMessage(button);
+            buttonDiv.innerHTML = formattedMessage;
+
+            buttonListDiv.appendChild(buttonDiv);
+        })
+        
+        this.chatMessages.appendChild(buttonListDiv);
+        this.scrollToBottom();
+    }
+        
+    function formatMessage(message) {
+        // Simple formatting for bold text and line breaks
+        return message
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+            .replace(/\n/g, '<br>') // Line breaks
+            .replace(/•/g, '•'); // Bullet points
+    }
+
+    function scrollToBottom() {
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        //this.typingIndicator.style.display = 'block';
+
+        const containerDiv = document.createElement('div');
+        containerDiv.id = 'typingIndicator';
+        containerDiv.className = `flex`;
+
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'bg-[#e9ecef] text-[#666] px-2 rounded-tl-[18px] rounded-tr-[18px] rounded-br-[18px] rounded-bl-[5px] mr-auto italic mb-4';
+        loadingDiv.innerHTML = "<img src='https://emasco.mohr.gov.my/assets/loading.webp' class='w-12 h-10' />";
+
+        containerDiv.appendChild(loadingDiv);
+        this.chatMessages.appendChild(containerDiv);
+        this.scrollToBottom();
+    }
+    
+    function hideTypingIndicator() {
+        var chats = this.chatMessages;
+        chats.removeChild(document.getElementById("typingIndicator"));
+    }
+
+    function toggleChatbot() {
+        var visibility = this.chatbot.style.visibility;
+        this.chatbot.style.visibility = visibility === "hidden" ? "visible" : "hidden"
+    }
+
+    // Allow sending message with Enter key
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function greeting() {
+        var lang = 'en';
+        var username = getUserName('username');
+        var isBM = lang === 'bm';
+
+        if (!username) {
+            addMessage('bot', isBM ? 'Hai, bagaimana saya boleh membantu anda?' : 'Hi, how can I assist you?');
+        } else {
+            addMessage('bot', `${isBM ? 'Selamat kembali' : 'Welcome back'}! ${isBM ? 'Apa yang saya boleh bantu?' : 'How can I assist you?'}`);
+        }
+    } 
+
+    function askForName() {
+        var lang = 'en';
+        var username = getUserName('username');
+        var isBM = lang === 'bm';
+
+        if (!username) {
+            addMessage('bot', isBM ? 'Hai, apakah nama anda?' : 'Hi, what is your name?');
+        } else {
+            addMessage('bot', `${isBM ? 'Selamat kembali ' : 'Welcome back '} ${username}! ${isBM ? 'Apa yang saya boleh bantu?' : 'How can I assist you?'}`);
+        }
+    } 
+
+    function addQuickRoles() {
+        if (lang === 'en') {
+            addMessage('bot', 'What best describes you?');
+            addButton(['Student', 'Employer', 'Job Seeker', 'Agency']);
+        } else {
+            addMessage('bot', 'Apa yang paling sesuai menggambarkan diri anda?');
+            addButton(['Pelajar', 'Pekerja', 'Majikan', 'Agensi']);
+        }
+    }
+
+    function getUserName(key) {
+        const itemStr = localStorage.getItem(key);
+        if (!itemStr) return null;
+
+        try {
+            const item = JSON.parse(itemStr);
+            
+            if (!item.addedAt) return null; // in case it was stored without timestamp
+
+            const now = new Date().getTime();             // current time in ms
+            const saved = new Date(item.addedAt).getTime();  // convert saved time to ms
+            const diff = now - saved;                     // difference in ms
+
+            const duration = expiryDuration * 60 * 60 * 1000; 
+
+            if (diff <= duration) {
+                return item.name;
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch (e) {
+            localStorage.removeItem(key);
+        }
+
+        return null;
+    }
+
+    function setUserName(key, value) {
+        const now = new Date();
+        const item = {
+            name: value,
+            addedAt: now.getTime(), // store timestamp (in milliseconds)
+        };
+        localStorage.setItem(key, JSON.stringify(item));
+    }
+
+    function capitalizeWords(str) {
+        return str
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+    // Add quick action buttons (optional)
+    function addQuickActions() {
+        const quickActions = document.createElement('div');
+        quickActions.innerHTML = `
+            <div style="padding: 10px; text-align: center; background: #f8f9fa; border-top: 1px solid #e0e0e0;">
+                <small style="color: #666;">Quick actions:</small><br>
+                <button onclick="sendQuickMessage('show me jobs')" style="margin: 5px; padding: 5px 10px; border: 1px solid #007bff; background: white; border-radius: 15px; cursor: pointer;">Show Jobs</button>
+                <button onclick="sendQuickMessage('salary information')" style="margin: 5px; padding: 5px 10px; border: 1px solid #007bff; background: white; border-radius: 15px; cursor: pointer;">Salaries</button>
+            </div>
+        `;
+        document.querySelector('.chat-container').appendChild(quickActions);
+    }
+
+    function sendQuickMessage(message) {
+        document.getElementById('messageInput').value = message;
+        document.getElementById('sendButton').click();
+    }
+
+    setTimeout(greeting, 1000);
+
+</script>        <footer class="bg-[#29322d] py-8 w-full text-white zIndex-100">
+    <div class="[@media(min-width:1440px)]:mx-auto px-6 w-full max-w-[1440px]">
+        <div class="flex justify-center">
+            <div class="flex-shrink-0 sm:mr-4 mb-4 sm:mb-0 w-40 sm:w-34 h-40 sm:h-34">
+                <img class="w-full h-full object-contain" src="https://emasco.mohr.gov.my/assets/logo-white.png" alt="Logo" />
+            </div>
+        </div>
+
+        <div class="gap-y-10 md:gap-x-20 grid grid-cols-1 md:grid-cols-4 mt-10">
+            <!-- 1st Column -->
+            <div class="flex sm:flex-row flex-col">
+                <div class="flex flex-col justify-between">
+                    <div class="mb-4">
+                        <div class="flex flex-row gap-2 mb-4 font-bold uppercase">
+                            Our Address</div>
+                        <div class="px-2 text-gray-200 text-sm leading-relaxed">
+                            Kementerian Sumber Manusia,<br>
+                            Bahagian Dasar,<br>
+                            Aras 10, Persiaran Perdana, <br>
+                            Menara PERKESO, Presint 2,<br>
+                            62100 Putrajaya<br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2nd Column -->
+            <div class="flex flex-col space-y-2 text-sm sm:text-base">
+                <div class="flex flex-row gap-2 mb-4 font-bold uppercase">
+                    Contact Us
+                </div>
+                <ul class="px-2 text-gray-200">
+                    <li><a href="/feedback"
+                            class="text-sm hover:underline capitalize">Suggestion / Feedback</a>
+                    </li>
+                    <li class="mt-4">
+                        <div class="text-xs">Enquiry</div>
+                        <div class="ml-4 font-bold"> +603-8000 8000</div>
+                        <div class="mt-4 text-xs">Email</div>
+                        <div class="ml-4 font-bold">masco@mohr.gov.my</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 3rd Column -->
+            <div class="flex flex-col space-y-2 text-sm sm:text-base">
+                <div class="flex flex-row gap-2 mb-4 font-bold uppercase">
+                    Resources
+                </div>
+                <ul class="px-2 text-gray-200 uppercase">
+                    <li>
+                        <a href="/related-sites" class="text-sm hover:underline capitalize">Related Sites</a>
+                    </li>
+                    <li><a href="/faq" class="text-sm hover:underline capitalize">Frequently Asked Question</a>
+                    </li>
+                    <li><a href="/sitemap" class="text-sm hover:underline capitalize">Sitemap</a></li>
+                    <li><a href="/tnc" class="text-sm hover:underline capitalize">Terms &amp; Conditions</a></li>
+                </ul>
+            </div>
+
+            <!-- 4th Column -->
+            <div class="flex flex-col space-y-2 text-sm sm:text-base">
+                <div class="flex flex-row gap-2 mb-4 font-bold uppercase">
+                    Follow Us
+                </div>
+                <ul class="flex px-2 text-gray-200 uppercase">
+                    <li class="mr-4"><a href="https://www.facebook.com/mykesuma/" target="_blank" class="hover:text-white/50"><svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. --><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"/></svg></a></li>
+                    <li class="mr-4"><a href="https://www.instagram.com/mykesuma/" target="_blank" class="hover:text-white/50"><svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. --><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a></li>
+                    <li class="mr-4"><a href="https://www.youtube.com/@mykesuma" target="_blank" class="hover:text-white/50"><svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. --><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+        </div>
+
+        
+
+        <div class="flex justify-center mt-16 w-full text-gray-300 text-xs sm:text-sm">
+            &copy; 2026 Ministry of Human Resources. All rights reserved. 
+        </div>
+    </div>
+</footer>
+        <div x-data="$store.compare" x-show="$store.compare.jobs.length > 0 && window.location.pathname !== '/compare'" x-cloak
+    class="right-4 md:right-25 bottom-4 left-4 md:left-25 z-50 fixed bg-gradient-to-br from-yellow-50 to-white shadow-xl p-6 border-green-100 rounded-cm">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-3">
+        <span class="font-semibold text-xl">
+            Compare
+            (<span x-text="$store.compare.jobs.length"></span>/2)
+        </span>
+        <button @click="$store.compare.clear()" class="text-gray-500 hover:text-gray-700 text-sm cursor-pointer">
+            Clear
+        </button>
+    </div>
+
+    <div class="flex md:flex-row flex-col justify-between items-center">
+        <!-- Items -->
+        <div class="flex md:flex-row flex-col space-x-4">
+            <template x-for="job in $store.compare.jobs" :key="job.code">
+                <div
+                    class="flex justify-between items-center bg-white shadow-lg mb-2 p-2 px-4 border border-gray-400 rounded-3xl">
+                    <div class="flex flex-row space-x-4">
+                        <span class="font-semibold" x-text="locale === 'bm' ? job.title_bm : job.title_en"></span>
+
+                        <span class="text-gray-500" x-text="job.code"></span>
+                    </div>
+                    <svg @click="$store.compare.remove(job.code)" class="ml-3 w-6 h-6 text-gray-400 hover:text-red-400 cursor-pointer" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+</svg>                </div>
+            </template>
+        </div>
+        <!-- View Button -->
+        <div class="mt-4 md:mt-0">
+            <a :href="`/compare`"
+                class="bg-gray-600 hover:bg-gray-800 px-4 py-3 rounded-xl text-white text-sm transition">
+                View Comparison
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        const STORAGE_KEY = 'm:c';
+        window.locale = "en"; // allow HTML binding
+
+        Alpine.store('compare', {
+            jobs: [],
+
+            async init() {
+                if (window.location.pathname === '/compare') return;
+                await this.refresh();
+
+                // Listen for LocalStorage changes (cross-tab sync)
+                window.addEventListener("storage", (e) => {
+                    if (e.key === STORAGE_KEY) {
+                        this.refresh();
+                    }
+                });
+            },
+
+            async refresh() {
+                let items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+                // ensure all items are objects
+                this.jobs = items.map(item => ({
+                    code: item.code,
+                    title_en: item.title_en || "",
+                    title_bm: item.title_bm || ""
+                }));
+            },
+
+            save() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.jobs));
+            },
+
+            async loadLocalized(code) {
+                // If title already exists, no need to fetch again
+                const existing = this.jobs.find(j => j.code === code);
+                if (existing && existing.title_en && existing.title_bm) {
+                    return existing;
+                }
+
+                // Fetch once
+                const res = await fetch("https://emasco.mohr.gov.my/compare/fetch-title", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "ENBuyh5vSQRmmCi9R2wDSORDfPHZWPVNSyIoYVWx"
+                    },
+                    body: JSON.stringify({
+                        code
+                    })
+                });
+
+                const data = await res.json();
+
+                return {
+                    code: data.code,
+                    title_en: data.title_en || "",
+                    title_bm: data.title_my || ""
+                };
+            },
+
+            async add(code, title_bm, title_en) {
+                if (!code) return;
+                if (this.jobs.find(j => j.code === code)) return;
+                if (this.jobs.length >= 2) return;
+
+                // Store fully from parameters
+                this.jobs.push({
+                    code,
+                    title_en: title_en || "",
+                    title_bm: title_bm || ""
+                });
+
+                this.save();
+            },
+
+            remove(code) {
+                this.jobs = this.jobs.filter(j => j.code !== code);
+                this.save();
+            },
+
+            clear() {
+                this.jobs = [];
+                this.save();
+            }
+        });
+    });
+</script>
+        <div x-data="announcementModal" x-init="init" x-show="visible" x-cloak @open-announcement.window="open()"
+        class="z-1000 fixed inset-0 flex justify-center items-center">
+
+        <!-- Overlay -->
+        <div class="z-30 fixed inset-0 bg-black opacity-70" @click="dismiss"></div>
+
+        <!-- Scrollable Modal (entire modal scrolls) -->
+        <div
+            class="z-40 relative bg-white shadow-lg my-10 p-8 rounded-xl w-11/12 md:w-1/2 max-h-[90vh] overflow-y-auto text-center">
+
+            <!-- Modal Header -->
+            <h2 class="mb-4 font-bold text-gray-800 text-2xl">
+                📌 NOTICE 📌
+            </h2>
+
+            <div class="mb-3 border border-gray-400"></div>
+
+            <!-- Modal Content (HTML from DB) -->
+            <div class="max-w-none text-gray-700 text-left prose">
+                <p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">Welcome to the new version of the e-MASCO Portal.</span></p><p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">This portal is currently being enhanced and upgraded by the Ministry of Human Resources (MOHR).</span><br><br><span style="white-space: pre-wrap;">At present, the portal content is based on MASCO 2020, and the updated version is expected to be fully completed by the end of the fourth quarter of 2026. Some information and functions may still be in the testing phase.</span><br><br><span style="white-space: pre-wrap;">We greatly appreciate any feedback and suggestions from users to help improve the features and content of this portal. Please share your views through the Feedback page.</span></p><p class="text-base leading-relaxed mb-2"><br></p><p class="text-base leading-relaxed mb-2"><b><strong class="font-bold" style="white-space: pre-wrap;">Information on the Starting Basic Wages Guidelines</strong></b></p><p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">
+Please be informed that information on the </span><b><strong class="font-bold" style="white-space: pre-wrap;">Starting Basic Wages Guidelines</strong></b><span style="white-space: pre-wrap;">, as announced in </span><b><strong class="font-bold" style="white-space: pre-wrap;">Budget 2027</strong></b><span style="white-space: pre-wrap;">, will be made available on the e-MASCO portal beginning </span><b><strong class="font-bold" style="white-space: pre-wrap;">June 2027</strong></b><span style="white-space: pre-wrap;">.</span></p><p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">
+Users of the e-MASCO portal are kindly requested to take note of this announcement. Further updates will be published on the portal from time to time.</span></p><p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">
+Your attention and cooperation are greatly appreciated.</span></p><p class="text-base leading-relaxed mb-2"><span style="white-space: pre-wrap;">
+</span><b><strong class="font-bold" style="white-space: pre-wrap;">Ministry of Human Resources (KESUMA)</strong></b><span style="white-space: pre-wrap;">
+</span></p>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="mt-6">
+                <button @click="dismiss"
+                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('announcementModal', () => ({
+                visible: false,
+                key: 'announcement_seen_1',
+                cooldown: 60 * 60 * 1000, // 1 hour
+
+                init() {
+                    const stored = localStorage.getItem(this.key);
+
+                    if (!stored) {
+                        this.show();
+                        return;
+                    }
+
+                    const lastSeen = new Date(stored).getTime();
+                    const now = Date.now();
+
+                    if (now - lastSeen >= this.cooldown) {
+                        // Cooldown exceeded → open again
+                        this.show();
+                    }
+                },
+
+                show() {
+                    this.visible = true;
+                    document.body.style.overflow = 'hidden';
+                },
+
+                dismiss() {
+                    localStorage.setItem(this.key, new Date().toISOString());
+                    this.visible = false;
+                    document.body.style.overflow = 'auto';
+                },
+
+                open() {
+                    this.show();
+                }
+            }));
+        });
+    </script>
+    </div>
+</body>
+
+<script>
+    // Apply saved background on load
+    document.addEventListener("DOMContentLoaded", function() {
+        const savedBgColor = sessionStorage.getItem("backgroundColor");
+        const savedScale = sessionStorage.getItem("bodyScale");
+        const btn = document.getElementById("openAnnouncementBtn");
+
+        if (savedBgColor) {
+            document.getElementById("layoutBody").style.backgroundColor = savedBgColor;
+        }
+
+        if (savedScale) {
+            document.documentElement.style.zoom = savedScale;
+        }
+
+        if (btn) {
+            btn.addEventListener("click", function() {
+                localStorage.removeItem('announcement_seen_1');
+
+                window.dispatchEvent(new CustomEvent('open-announcement'));
+            });
+        }
+    });
+</script>
+
+</html>

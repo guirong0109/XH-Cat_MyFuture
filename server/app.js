@@ -34,12 +34,25 @@ import { radarAdminRoutes, radarSessionRoutes } from './radar/adminRoutes.js'
 import { createDemoService } from './radar/demo.js'
 import { radarDemoRoutes } from './radar/demoRoutes.js'
 import { loadRadarReferences } from './radar/references.js'
+import { matchingAdminRoutes } from './matching/adminRoutes.js'
+import { createMatchingServiceFromEnv } from './matching/service.js'
+import { matchingRoutes } from './matching/routes.js'
+import { pathwayAdminRoutes } from './pathway/adminRoutes.js'
+import { loadPathwayData } from './pathway/data.js'
+import { once } from './matching/service.js'
+import { createPathwayServiceFromEnv } from './pathway/service.js'
+import { pathwayRoutes } from './pathway/routes.js'
+import { createOrgStore } from './org/store.js'
+import { createOrgService } from './org/service.js'
+import { orgRoutes } from './org/routes.js'
+import { shareRoutes } from './org/shareRoutes.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+export const DATA_DIR = path.join(ROOT, 'data')
 
 // Later tasks add their routes here. extraRoutes is a test hook only.
 export function createApp({
-  dataDir = path.join(ROOT, 'data'),
+  dataDir = DATA_DIR,
   fetchImpl = fetch,
   now = () => new Date(),
   d1 = createD1FromEnv(),
@@ -55,6 +68,14 @@ export function createApp({
   radarAccess = createRadarAccess({ env: process.env, now }),
   // Judge Trend Change Test: needs the Radar's writable store (R2, or RADAR_STORE=memory locally); null otherwise.
   radarDemo = undefined,
+  // Career matching: data from dataDir (loaded once on first use), Radar signals (or a judge's demo session).
+  matching = undefined,
+  // Study pathway: data from dataDir (loaded once on first use), matching's role answer, pick decisions in the Radar store.
+  pathway = undefined,
+  // Pathway data already loaded by the start-up check (server/index.js), so it is not read twice; null = load on first use.
+  pathwayData = null,
+  // The read behind the one pathway loader (a test counts its calls); default loadPathwayData.
+  pathwayRead = loadPathwayData,
   extraRoutes = null,
 } = {}) {
   const app = express()
@@ -137,26 +158,80 @@ export function createApp({
     return areasPromise
   }
   app.use(interestRoutes({ loadAreas }))
+  // The demo reads only the synthetic base and the bundled reference data; storage only under demo/<sessionId>/.
+  const demo = radarDemo !== undefined ? radarDemo : radar?.store ? createDemoService({
+    store: radar.store,
+    base: async () => JSON.parse(await readFile(path.join(dataDir, 'radar', 'demo', 'base.json'), 'utf8')),
+    references: () => loadRadarReferences(dataDir),
+    now,
+    devStore: Boolean(radar.info?.().devStore),
+  }) : null
+  // The profile sent here is used for the answer and dropped: never stored, never logged.
+  const matchingService = matching !== undefined ? matching : createMatchingServiceFromEnv({ dataDir, radar, demo, access: radarAccess, now })
+  app.use(matchingRoutes({ matching: matchingService }))
+  // The pathway reuses matching's role answer, so its numbers are matching's; the profile is never stored or logged.
+  // One loader for the service and the admin routes: the start-up data, else one read (a failed read is tried again).
+  const pathwayLoad = pathwayData ? async () => pathwayData : once(() => pathwayRead(dataDir))
+  const pathwayService = pathway !== undefined ? pathway : createPathwayServiceFromEnv({ dataDir, loadData: pathwayLoad, matching: matchingService, store: radar?.store ?? null, now })
+  app.use(pathwayRoutes({ pathway: pathwayService }))
+  // Organisation view (HR and career centres): owner routes. Without D1 they answer 503 accounts_unavailable.
+  // Team answers are never stored.
+  {
+    const orgStore = d1 ? createOrgStore({ d1, now }) : null
+    const orgService = orgStore ? createOrgService({ store: orgStore, matching: matchingService, pathway: pathwayService, log: console.error }) : null
+    let roleCodes = null
+    const loadRoleCodes = () => {
+      roleCodes ??= readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')
+        .then((raw) => new Set(JSON.parse(raw).roles.filter((r) => r.title).map((r) => r.code)))
+        .catch((error) => { roleCodes = null; throw error })
+      return roleCodes
+    }
+    let roleTitles = null
+    const loadRoleTitles = () => {
+      roleTitles ??= readFile(path.join(dataDir, 'emasco', 'role_details.json'), 'utf8')
+        .then((raw) => new Map(JSON.parse(raw).roles.filter((r) => r.title).map((r) => [r.code, r.title])))
+        .catch((error) => { roleTitles = null; throw error })
+      return roleTitles
+    }
+    app.use(orgRoutes({ auth, store: orgStore, service: orgService, loadNormalizer, loadCatalogue, loadRoleCodes, dataDir, log: console.error, now }))
+    // Own saved profile only (another user's id reads as missing). Returns the skills list or null.
+    const loadProfileSkills = async (userId, profileId) => {
+      const { rows } = await d1.query('SELECT json FROM profiles WHERE id = ? AND user_id = ?', [profileId, userId])
+      if (!rows[0]) return null
+      try {
+        const skills = JSON.parse(rows[0].json)?.skills
+        return Array.isArray(skills) ? skills : []
+      } catch {
+        return []
+      }
+    }
+    // O*NET names of the shared items, for the employee's view of what HR holds
+    const loadSkillNames = async () => {
+      const catalogue = await loadCatalogue()
+      return new Map([...catalogue.entries, ...(catalogue.more ?? [])].map((e) => [e.id, e.name]))
+    }
+    app.use(shareRoutes({ auth, store: orgStore, loadProfileSkills, loadRoleCodes, loadRoleTitles, loadSkillNames, log: console.error, now }))
+  }
   if (radar) {
-    // The demo reads only the synthetic base and the bundled reference data; storage only under demo/<sessionId>/.
-    const demo = radarDemo !== undefined ? radarDemo : radar.store ? createDemoService({
-      store: radar.store,
-      base: async () => JSON.parse(await readFile(path.join(dataDir, 'radar', 'demo', 'base.json'), 'utf8')),
-      references: () => loadRadarReferences(dataDir),
-      now,
-      devStore: Boolean(radar.info?.().devStore),
-    }) : null
     let aiTasksPromise = null
     const aiTasks = () => (aiTasksPromise ??= loadAiTasks(dataDir))
     app.use(radarRoutes({ radar, aiTasks }))
     app.use(radarSessionRoutes({ access: radarAccess, demo }))
     app.use(radarAdminRoutes({ radar, access: radarAccess, now }))
+    // Owner decisions on the SDG links (career matching), in the Radar review store.
+    // A decision drops the matching service's cached SDG decisions, so the next matching answer shows it.
+    app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir, onDecision: () => matchingService?.sdgDecided?.() }))
+    // Owner decisions on the Study Pathway picks, in the same store; a decision drops the pathway service cached ones.
+    app.use(pathwayAdminRoutes({ radar, access: radarAccess, now, dataDir, loadData: pathwayLoad, onDecision: () => pathwayService?.picksDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)
 
   app.use('/api', (request, response) => sendError(response, 404, 'not_found', 'No such API route.'))
   app.use('/shared', express.static(path.join(ROOT, 'shared')))
+  // three.js for the landing page's ATM intro, served from the installed package (no CDN; works offline).
+  app.use('/vendor/three/build', express.static(path.join(ROOT, 'node_modules', 'three', 'build')))
+  app.use('/vendor/three/addons', express.static(path.join(ROOT, 'node_modules', 'three', 'examples', 'jsm')))
   app.use(express.static(path.join(ROOT, 'public')))
 
   // Last resort: no stack trace and no file path in the answer.

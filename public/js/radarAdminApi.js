@@ -71,6 +71,8 @@ export function createRadarAdminApi({ base = '', fetchImpl = (...args) => fetch(
     status: () => call('GET', '/api/admin/radar/status'),
     mappings: () => call('GET', '/api/admin/radar/mappings'),
     breaks: () => call('GET', '/api/admin/radar/breaks'),
+    sdgLinks: () => call('GET', '/api/admin/matching/sdg-links'),
+    pathwayPicks: () => call('GET', '/api/admin/pathway/picks'),
     exportJson: () => call('GET', '/api/admin/radar/export'),
     // onet-skills sends {release} (checked here too: two digits, a dot, one digit); the others send no body.
     refresh(source, { release } = {}) {
@@ -85,6 +87,18 @@ export function createRadarAdminApi({ base = '', fetchImpl = (...args) => fetch(
     async decideMapping({ mappingId, decision, note }) {
       if (needNote(note)) return { ok: false, code: 'note_required', retryable: false }
       return call('POST', '/api/admin/radar/mappings', { mappingId, decision, note: note.trim(), evidence: [] })
+    },
+
+    // Owner decision on one SDG team-draft link (career matching); a note is required here as for mappings.
+    async decideSdgLink({ id, decision, note }) {
+      if (needNote(note)) return { ok: false, code: 'note_required', retryable: false }
+      return call('POST', '/api/admin/matching/sdg-links', { id, decision, note: note.trim() })
+    },
+
+    // Owner decision on one Study Pathway pick; a note is required here as for mappings.
+    async decidePathwayPick({ id, decision, note }) {
+      if (needNote(note)) return { ok: false, code: 'note_required', retryable: false }
+      return call('POST', '/api/admin/pathway/picks', { id, decision, note: note.trim() })
     },
 
     // brk: the flagged break as listed (period, observationHash, releaseLinks). Evidence: the DOSM release page and the

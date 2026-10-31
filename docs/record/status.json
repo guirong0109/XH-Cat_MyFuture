@@ -2075,6 +2075,11 @@
       "time": "31 Oct",
       "step": "O6n Final whole-branch review (hr-branch)",
       "detail": "Final review (most capable model) and one fix wave; npm test 1294 passed, pipeline 49 OK"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Organisation view: judge test source label (hr-branch)",
+      "detail": "In a judge Trend Change Test session the Outlook no longer names DOSM as the job-ad source and says the job-ad groups use test data. npm test 1297 passed"
     }
   ]
 }

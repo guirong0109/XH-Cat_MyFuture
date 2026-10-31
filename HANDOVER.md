@@ -21,7 +21,7 @@ scenario comparison.
 | Radar charts that follow your profile, pages for long lists | `claude/future-radar` | merged 2026-10-31 | Done; 955 tests pass; whole-branch review fixed; checked in the browser |
 | Study pathway (study route + skills to build, team-picked courses and programmes) | `claude/study-pathway` | merged 2026-10-31 | Done; 1088 tests pass after the merge; whole-branch review fixed; checked in the browser |
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
-| Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1335 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1) |
+| Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -87,9 +87,7 @@ scenario comparison.
   the 60 accredited picks that have no MQA reference yet (the scripted MQR query works, see the branch handover);
   review BM and 中文 pathway wording; professional bodies not linked (law, architecture and town planning,
   veterinary, social work); a few weaker course fits.
-- **Organisation view:** in the judge's Trend Change Test session the Outlook still names DOSM as the job-ad source
-  while the bands come from test data (`server/org/service.js`, add a `judgeSession` guard and a test); D1 keys and
-  price before any trial with real accounts; one roster import on real D1 not yet timed; review BM and 中文 org
+- **Organisation view:** D1 keys and price before any trial with real accounts; one roster import on real D1 not yet timed; review BM and 中文 org
   wording; small wording points in `docs/org/acceptance.md` ("raise to X", "1 people").
 
 ## Career matching (since 2026-10-31, details: branch `claude/career-matching`)
@@ -169,7 +167,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1335 passed
+npm test          # expect 1338 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

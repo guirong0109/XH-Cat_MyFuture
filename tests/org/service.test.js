@@ -233,7 +233,7 @@ describe('team answer', () => {
 
 // ---- final review fixes: a stub matching with two available roles and one broken chain
 const ROW = (key, needed = 4) => ({ key, name: key, needed, you: 0, status: 'missing', gap: needed })
-function fakeMatching({ listFails = false } = {}) {
+function fakeMatching({ listFails = false, judge = false } = {}) {
   const roles = {
     '1111-01': { title: 'Role A', rows: [ROW('el:A')] },
     '2222-01': { title: 'Role B', rows: [ROW('el:B')] },
@@ -260,7 +260,7 @@ function fakeMatching({ listFails = false } = {}) {
             { id: 'ilo', name: 'ILO Working Paper 140', date: '2026-10-01' },
             { id: 'sdg-links', name: 'SDG links (team draft)', date: null },
           ],
-          radar: { state: 'data', publishedAt: '2026-10-20', observationPeriod: '2026-Q2' },
+          radar: judge ? { state: 'data', judgeSession: true } : { state: 'data', publishedAt: '2026-10-20', observationPeriod: '2026-Q2' },
         }
       },
     },
@@ -313,6 +313,21 @@ describe('final review fixes: current-view plan, sources, no current role, pathw
     expect(ids).toEqual(expect.arrayContaining(['aei', 'ilo', 'sdg-links', 'dosm']))
     expect(answer.outlookSources.find((s) => s.id === 'aei').date).toBe('2026-09-15')
     expect(answer.outlookSources.find((s) => s.id === 'dosm')).toMatchObject({ date: '2026-10-20' })
+  })
+
+  it('2: a judge Trend Change Test session never names DOSM as the job-ad source and says the data is test data', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching({ judge: true }) })
+    await roster(store, org, [P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.outlookSources.map((s) => s.id)).not.toContain('dosm')
+    expect(answer.judgeSession).toBe(true)
+  })
+
+  it('2: an ordinary session is not marked as a judge session', async () => {
+    const { store, org, service } = await setup({ matchingOverride: fakeMatching() })
+    await roster(store, org, [P('A1', '1111-01')])
+    const answer = await service.team('u1', { view: 'current', scenario: 'moderate' }, null)
+    expect(answer.judgeSession).toBe(false)
   })
 
   it('2: real matching -> outlookSources has the Anthropic Economic Index, ILO and SDG sources', async () => {

@@ -206,6 +206,13 @@ describe('outlook view', () => {
     expect(rapid).toMatch(/data-band="4"[^>]*><b>1<\/b>/)
   })
 
+  it('says the job-ad groups use test data in a judge session, and not otherwise', () => {
+    const judge = text(outlookView(t, makeOrg({ tab: 'outlook', team: makeTeam({ judgeSession: true }) })))
+    expect(judge).toContain('Judge Trend Change Test session: the job-ad groups use your test data.')
+    const plain = text(outlookView(t, makeOrg({ tab: 'outlook' })))
+    expect(plain).not.toContain('Judge Trend Change Test session')
+  })
+
   it('has the hiring sentence, the moved line and the SDG link with its review label', () => {
     const html = text(outlookView(t, makeOrg({ tab: 'outlook' })))
     expect(html).toContain('This helps plan training. It does not make hiring decisions.')

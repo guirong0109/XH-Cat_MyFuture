@@ -30,7 +30,7 @@
       "name": "edX",
       "group": "global",
       "home": "https://www.edx.org/",
-      "terms": "https://www.edx.org/",
+      "terms": "https://www.edx.org/edx-terms-service",
       "search": "https://www.edx.org/search?q=<q>",
       "searchCheckedAt": "2026-10-31",
       "hosts": [
@@ -42,7 +42,7 @@
       "name": "Khan Academy",
       "group": "global",
       "home": "https://www.khanacademy.org/",
-      "terms": "https://www.khanacademy.org/",
+      "terms": "https://en.khanacademy.org/about/docs/khan-academy-terms-of-service",
       "search": "https://www.khanacademy.org/search?page_search_query=<q>",
       "searchCheckedAt": "2026-10-31",
       "hosts": [

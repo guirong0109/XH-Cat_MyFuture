@@ -18,27 +18,27 @@ Measured numbers only; no target is claimed. A found item counts as right when i
 - Skills linked to an O*NET id: **36 of 49** found skills (the rest stay "not in our list yet" for the user).
 - Skill levels set by extraction, other than Good for a skill used in a job or project: **0** (must be 0).
 - Failure rate (a CV not handled as expected): **0 of 16**. The scanned CV is expected to fail with `scanned_no_ocr`.
-- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 11 ms.
+- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 14 ms.
 
 ## Per CV
 
 | CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | Projects P / R | ms |
 |---|---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 10 |
-| ms-pdf | ms | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 11 |
-| zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | not labelled | 5 |
-| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 11 |
+| en-pdf | en | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 8 |
+| ms-pdf | ms | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 12 |
+| zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 4 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | not labelled | 10 |
+| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 14 |
 | no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | not labelled | 1 |
 | project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 / 1 | 4 |
 | injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 4 |
-| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 4 |
-| duplicates-pdf | en, duplicates | uncertain | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 / 1 | 4 |
-| long-projects-pdf | en, no_job, project_only, hard | en | draft | 1 / 0.375 | 1 / 1 | — / — | — / — | 1 / 0.333 | 4 |
-| ms-soft-skills-pdf | ms, hard | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 3 |
-| zh-soft-skills-docx | zh, docx, hard | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 1 |
-| skills-in-jobs-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 10 |
-| company-certificates-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 4 |
+| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 3 |
+| duplicates-pdf | en, duplicates | uncertain | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 / 1 | 3 |
+| long-projects-pdf | en, no_job, project_only, hard | en | draft | 1 / 0.375 | 1 / 1 | — / — | — / — | 1 / 0.333 | 3 |
+| ms-soft-skills-pdf | ms, hard | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | — / — | 3 |
+| zh-soft-skills-docx | zh, docx, hard | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
+| skills-in-jobs-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | — / — | 8 |
+| company-certificates-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
 | scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | not labelled | 1 |
 
 ## Reaches Skill Match (labelled CVs only)

@@ -59,6 +59,15 @@ describe('projects and Skill Match accuracy in the report', () => {
     expect(sumScores([scores.projects, scoreField(['A'], ['A'])])).toMatchObject({ tp: 1, fp: 0, fn: 0 })
   })
 
+  it('an empty labelled list is labelled: extra items found are wrong; every new CV labels projects and onet', async () => {
+    expect(scoreFields({ projects: [] }, { projects: ['Extra'] }).projects).toMatchObject({ tp: 0, fp: 1, fn: 0 })
+    const set = JSON.parse(await readFile(new URL('../testing/eval-cvs.json', import.meta.url), 'utf8'))
+    for (const c of set.cases.filter((x) => x.tags.includes('hard'))) {
+      expect(Array.isArray(c.expected.projects), c.id).toBe(true)
+      expect(Array.isArray(c.expected.onet), c.id).toBe(true)
+    }
+  })
+
   it('rules reach only the O*NET skills the reader linked; the AI adds its suggestions by catalogue name', () => {
     expect(skillMatchNames(profile, names, { withAi: false })).toEqual(['Speaking', 'Mathematics'])
     expect(skillMatchNames(profile, names, { withAi: true })).toEqual(['Speaking', 'Mathematics', 'Programming'])

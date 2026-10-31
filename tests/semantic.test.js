@@ -109,7 +109,7 @@ describe('L3 warm-up', () => {
     process.env.SEMANTIC_CUTOFF = '0.8'
     try {
       const { createApp } = await import('../server/app.js')
-      createApp({ dataDir: dir, onetLive: null, semantic, d1: null, tempStore: null, llmProviders: [] })
+      createApp({ dataDir: dir, onetLive: null, semantic, d1: null, aiProvider: null })
       await new Promise((resolve) => setTimeout(resolve, 200))
       expect(seen.length).toBe(1)
       expect(seen[0]).toBeGreaterThan(0)

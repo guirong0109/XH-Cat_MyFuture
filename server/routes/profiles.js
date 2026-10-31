@@ -11,7 +11,7 @@ import { makeRequireUser } from './auth.js'
 const LOCKED = ['profileStatus', 'profileId', 'profileVersion']
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
-export function profileRoutes({ loadNormalizer, auth = null, d1 = null, tempStore = null, now = () => new Date() }) {
+export function profileRoutes({ loadNormalizer, auth = null, d1 = null, now = () => new Date() }) {
   const router = express.Router()
   router.post('/api/profiles/validate', jsonBody('300kb'), async (request, response) => {
     const profile = request.body?.profile
@@ -38,7 +38,7 @@ export function profileRoutes({ loadNormalizer, auth = null, d1 = null, tempStor
   }
 
   router.post('/api/profiles', requireUser, jsonBody('300kb'), async (request, response) => {
-    const { profile, extractionId = null } = request.body ?? {}
+    const { profile } = request.body ?? {}
     if (!profile || typeof profile !== 'object') return sendError(response, 400, 'no_profile', 'Send the profile to save.')
     if (profile.profileStatus !== 'confirmed') return sendError(response, 422, 'not_confirmed', 'Only a confirmed profile can be saved.')
     const check = validateProfile(profile)
@@ -47,10 +47,6 @@ export function profileRoutes({ loadNormalizer, auth = null, d1 = null, tempStor
     const at = now().toISOString()
     const stored = { ...profile, profileId: id, profileVersion: 1 }
     await d1.query('INSERT INTO profiles (id, user_id, version, status, json, updated_at) VALUES (?, ?, ?, ?, ?, ?)', [id, request.user.id, 1, 'confirmed', JSON.stringify(stored), at])
-    // The temporary CV copy is not needed once the confirmed profile is saved.
-    if (tempStore && typeof extractionId === 'string' && UUID.test(extractionId)) {
-      await tempStore.delete(`cv-temp/${extractionId}`).catch((error) => console.error('[profiles] temp delete failed:', error?.name ?? 'Error'))
-    }
     return response.status(201).json({ id, version: 1 })
   })
 

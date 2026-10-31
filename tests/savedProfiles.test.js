@@ -6,21 +6,19 @@ import { createApp } from '../server/app.js'
 import { emptyProfile, makeSkill, val } from '../shared/profileSchema.js'
 import { confirmProfile } from '../shared/profileState.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
-import { createFakeD1, createFakeTempStore } from './helpers/fakeStores.js'
+import { createFakeD1 } from './helpers/fakeStores.js'
 import { StoreError } from '../server/store/d1.js'
 
 let dir
 let server
 let base
-let tempStore
 beforeAll(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'saved-'))
   await mkdir(path.join(dir, 'onet'))
   await writeCatalogue(path.join(dir, 'onet'))
   const d1 = createFakeD1()
   await d1.migrate()
-  tempStore = createFakeTempStore()
-  server = createApp({ dataDir: dir, onetLive: null, d1, tempStore }).listen(0)
+  server = createApp({ dataDir: dir, onetLive: null, d1 }).listen(0)
   await new Promise((resolve) => server.once('listening', resolve))
   base = `http://127.0.0.1:${server.address().port}`
 })
@@ -50,13 +48,11 @@ function confirmed() {
 }
 
 describe('saved profiles', () => {
-  it('save + list + get; the temporary CV is deleted', async () => {
+  it('save + list + get', async () => {
     const cookie = await newUser()
-    await tempStore.put('cv-temp/0b1e9a3c-1111-4222-8333-944455556666', Buffer.from('pdf'), 'application/pdf')
     const saved = await call('POST', '/api/profiles', { profile: confirmed(), extractionId: '0b1e9a3c-1111-4222-8333-944455556666' }, cookie)
     expect(saved.status).toBe(201)
     expect(saved.body).toEqual({ id: expect.any(String), version: 1 })
-    expect(await tempStore.get('cv-temp/0b1e9a3c-1111-4222-8333-944455556666')).toBe(null)
     const list = await call('GET', '/api/profiles', null, cookie)
     expect(list.body.profiles).toEqual([{ id: saved.body.id, version: 1, status: 'confirmed', updatedAt: expect.any(String) }])
     const one = await call('GET', `/api/profiles/${saved.body.id}`, null, cookie)
@@ -138,7 +134,7 @@ describe('saved profiles', () => {
     await d1.migrate()
     let down = false
     const flaky = { ...d1, query: (sql, params) => (down && sql.includes('profiles') ? Promise.reject(new StoreError('store_unavailable')) : d1.query(sql, params)) }
-    const app = createApp({ dataDir: dir, onetLive: null, d1: flaky, tempStore }).listen(0)
+    const app = createApp({ dataDir: dir, onetLive: null, d1: flaky }).listen(0)
     await new Promise((resolve) => app.once('listening', resolve))
     try {
       const at = `http://127.0.0.1:${app.address().port}`

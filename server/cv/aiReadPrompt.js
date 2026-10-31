@@ -1,7 +1,27 @@
 // What the DeepSeek CV reader asks for (spec §5). The reply is checked afterwards: every item must quote the CV.
-import { CV_SCHEMA, userMessage } from './reextractPrompt.js'
+const item = (fields) => ({
+  type: 'object',
+  properties: Object.fromEntries([...fields, 'evidence'].map((name) => [name, { type: 'string' }])),
+  required: [...fields, 'evidence'],
+  additionalProperties: false,
+})
+const list = (fields) => ({ type: 'array', items: item(fields) })
 
-export { CV_SCHEMA, userMessage }
+export const CV_SCHEMA = {
+  type: 'object',
+  properties: {
+    education: list(['qualification', 'fieldOfStudy', 'institution']),
+    jobs: list(['jobTitle', 'employer']),
+    skills: list(['name', 'usedIn']),
+    certifications: list(['name']),
+    projects: list(['title']),
+  },
+  required: ['education', 'jobs', 'skills', 'certifications', 'projects'],
+  additionalProperties: false,
+}
+
+export const userMessage = (cvText) =>
+  `Extract the profile from this CV.\n\n<cv>\n${cvText.replace(/<\/?cv>/gi, '')}\n</cv>`
 
 // DeepSeek's JSON mode needs the word "JSON" and the shape in the prompt: one example object, each list holding one
 // item whose fields are empty strings.

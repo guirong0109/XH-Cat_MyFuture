@@ -2699,6 +2699,11 @@
       "time": "31 Oct",
       "step": "News: first real DeepSeek run",
       "detail": "Owner key in local .env (git-ignored). One refresh: 10 searches (at most US$0.0075), all 10 fields ok with 25 items, oldest item 3.9 days, 21-25 sites per field; C1-C3 pass on real data; server stopped after. Seen: day-level dates in UTC+8, some non-news pages and near-repeats pass the rules (owner to decide). docs/news/acceptance.md"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: Amendment 1 spec and diagram",
+      "detail": "Owner approved in chat: N9 relevance check by DeepSeek deepseek-flash (thinking off, JSON, one request per field per run, new items only, not clearly kept = dropped; check fails = no new items), near-repeats by headline without a trailing site name, N10 English articles only on screen. Extra cost about US$2-4 a month, ceiling about US$6.50. Spec and diagram updated; waiting for owner review"
     }
   ]
 }

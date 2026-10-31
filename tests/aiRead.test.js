@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { SYSTEM_PROMPT } from '../server/cv/aiReadPrompt.js'
-import { createAiReader, keepQuoted, providerFromEnv } from '../server/cv/aiRead.js'
+import { AI_TIMEOUT_MS, createAiReader, keepQuoted, providerFromEnv } from '../server/cv/aiRead.js'
 import { loadSkillCatalogue } from '../server/skills/onetSkills.js'
 import { createNormalizer } from '../server/skills/normalize.js'
 import { validateProfile } from '../shared/profileSchema.js'
@@ -106,6 +106,8 @@ describe('createAiReader', () => {
     expect(calls[0].url).toBe(PROVIDER.url)
     expect(calls[0].init.headers).toMatchObject({ authorization: 'Bearer k', 'content-type': 'application/json' })
     expect(calls[0].body).toMatchObject({ model: 'deepseek-flash', response_format: { type: 'json_object' } })
+    // Thinking off: measured 31 Oct, about 2.7 s and 590 tokens instead of 7-24 s with up to 60% hidden reasoning.
+    expect(calls[0].body.thinking).toEqual({ type: 'disabled' })
     expect(calls[0].body).not.toHaveProperty('temperature')
     expect(calls[0].body.messages).toHaveLength(2)
     expect(calls[0].body.messages[0]).toEqual({ role: 'system', content: SYSTEM_PROMPT })
@@ -172,6 +174,34 @@ describe('createAiReader', () => {
     const printed = JSON.stringify(spies.flatMap((spy) => spy.mock.calls))
     expect(printed).not.toContain('Aina')
     expect(printed).not.toContain('Microsoft Excel')
-    expect(printed).toContain('[aiRead] failed: bad_reply')
+    expect(printed).toContain('[aiRead] failed: bad_json')
+  })
+
+  it('asks for a short answer: shortest exact quote, each skill once; waits up to 40 s by default', async () => {
+    expect(SYSTEM_PROMPT).toContain('the shortest exact phrase from the CV')
+    expect(SYSTEM_PROMPT).toContain('List each skill once')
+    expect(SYSTEM_PROMPT).not.toContain('listed once for each')
+    expect(AI_TIMEOUT_MS).toBe(40000)
+  })
+
+  it('a timeout while the reply body is still arriving is logged as timeout, with the time taken', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const fetchImpl = async (url, init) => ({
+      ok: true,
+      json: () => new Promise((resolve, reject) => init.signal.addEventListener('abort', () => reject(init.signal.reason))),
+    })
+    expect(await read(setup({ fetchImpl, timeoutMs: 20 }).reader)).toEqual(FAILED)
+    expect(spy.mock.calls[0].join(' ')).toMatch(/^\[aiRead\] failed: timeout after \d+ ms$/)
+  })
+
+  it('a failure log names its cause (cut off, not JSON, wrong shape) without CV text', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const cut = { ok: true, json: async () => ({ choices: [{ message: { content: '{"education": [' }, finish_reason: 'length' }] }) }
+    const wrong = { ...REPLY, jobs: [{ ...REPLY.jobs[0], employer: null }] }
+    for (const fetchImpl of [async () => cut, async () => reply('not json'), async () => reply(JSON.stringify(wrong))]) {
+      expect(await read(setup({ fetchImpl }).reader)).toEqual(FAILED)
+    }
+    const printed = spy.mock.calls.map((call) => call.join(' '))
+    expect(printed).toEqual(['[aiRead] failed: cut_off', '[aiRead] failed: bad_json', '[aiRead] failed: bad_shape jobs[0].employer null'])
   })
 })

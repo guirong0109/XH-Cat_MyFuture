@@ -236,7 +236,7 @@ export default {
   cvStep_extracting: "Extracting information",
   cvStep_mapping: "Mapping detected skills",
   cvStep_ready: "Ready for review",
-  cvServerNote: "The server checks, reads and maps your CV in one step. This usually takes a few seconds.",
+  cvServerNote: "Reading your CV with AI. This can take up to 40 seconds; please keep this page open.",
   cvErr_unsupported_type: "Please upload a PDF or DOCX file.",
   cvErr_too_large: "This file is larger than 10 MB.",
   cvErr_encrypted: "This file is password-protected, so we cannot read it.",

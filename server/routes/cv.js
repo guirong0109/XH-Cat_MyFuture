@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import express from 'express'
 import { LANGS } from '../../shared/i18n.js'
 import { sendError } from '../errors.js'
+import { AI_TIMEOUT_MS } from '../cv/aiRead.js'
 import { detectLanguage } from '../cv/detectLanguage.js'
 import { EXTRACTOR_VERSION, extractProfile } from '../cv/extract.js'
 import { mergeDrafts } from '../cv/mergeDrafts.js'
@@ -12,6 +13,8 @@ import { createSemanticStep } from '../cv/semantic.js'
 import { validateFile } from '../cv/validateFile.js'
 
 const MB = 1024 * 1024
+// The whole upload, including the AI read (owner, 31 Oct: up to 45 s).
+export const UPLOAD_TIMEOUT_MS = 45000
 // Left on the upload clock for building the answer after the AI wait ends.
 const ANSWER_MARGIN_MS = 500
 const MESSAGES = {
@@ -38,7 +41,7 @@ async function readWithAi({ aiReader, cvText, ip, interfaceLanguage, aiTimeoutMs
 }
 const fail = (response, code) => sendError(response, MESSAGES[code][0], code, MESSAGES[code][1])
 
-export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, aiReader = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = 20000, aiTimeoutMs = 15000 }) {
+export function cvRoutes({ loadCatalogue, loadNormalizer, semantic = null, cutoff = null, aiReader = null, now = () => new Date(), maxBytes = (Number(process.env.CV_MAX_MB) || 10) * MB, timeoutMs = UPLOAD_TIMEOUT_MS, aiTimeoutMs = AI_TIMEOUT_MS }) {
   const router = express.Router()
   const rawBody = (request, response, next) =>
     express.raw({ type: () => true, limit: maxBytes })(request, response, (error) => {

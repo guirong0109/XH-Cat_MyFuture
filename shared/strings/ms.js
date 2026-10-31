@@ -236,7 +236,7 @@ export default {
   cvStep_extracting: "Mengekstrak maklumat",
   cvStep_mapping: "Memadankan kemahiran yang dikesan",
   cvStep_ready: "Sedia untuk disemak",
-  cvServerNote: "Pelayan menyemak, membaca dan memadankan CV anda dalam satu langkah. Biasanya mengambil beberapa saat.",
+  cvServerNote: "CV anda sedang dibaca dengan AI. Ini boleh mengambil masa sehingga 40 saat; sila biarkan halaman ini terbuka.",
   cvErr_unsupported_type: "Sila muat naik fail PDF atau DOCX.",
   cvErr_too_large: "Fail ini melebihi 10 MB.",
   cvErr_encrypted: "Fail ini dilindungi kata laluan, jadi kami tidak dapat membacanya.",

@@ -11,6 +11,8 @@ import { levelOf } from './patterns.js'
 const HOUR_MS = 3600 * 1000
 const DEFAULT_URL = 'https://api.deepseek.com/chat/completions'
 const DEFAULT_MODEL = 'deepseek-flash'
+// A real two-page CV takes DeepSeek more than 15 s (owner, 31 Oct: allow up to 40 s).
+export const AI_TIMEOUT_MS = 40000
 const FIELDS = Object.fromEntries(Object.entries(CV_SCHEMA.properties).map(([list, { items }]) => [list, Object.keys(items.properties)]))
 
 class ProviderError extends Error {
@@ -26,11 +28,22 @@ const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
 const OPTIONAL = new Set(['usedIn'])
 
 // The reply must have the five lists of objects with string fields; anything else is a failed reply.
-export function checkShape(reply) {
-  if (!reply || typeof reply !== 'object') return false
-  return Object.entries(FIELDS).every(([list, fields]) => Array.isArray(reply[list])
-    && reply[list].every((entry) => entry && typeof entry === 'object' && fields.every((f) => typeof entry[f] === 'string' || (OPTIONAL.has(f) && entry[f] === undefined))))
+// Returns where the shape first breaks (names and types only, never CV text), or null when it is right.
+export function shapeProblem(reply) {
+  if (!reply || typeof reply !== 'object') return 'not an object'
+  for (const [list, fields] of Object.entries(FIELDS)) {
+    if (!Array.isArray(reply[list])) return `${list} ${reply[list] === null ? 'null' : typeof reply[list]}`
+    for (const [i, entry] of reply[list].entries()) {
+      if (!entry || typeof entry !== 'object') return `${list}[${i}] ${entry === null ? 'null' : typeof entry}`
+      for (const f of fields) {
+        const value = entry[f]
+        if (typeof value !== 'string' && !(OPTIONAL.has(f) && value === undefined)) return `${list}[${i}].${f} ${value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value}`
+      }
+    }
+  }
+  return null
 }
+export const checkShape = (reply) => shapeProblem(reply) === null
 
 // The value(s) of an item that its quote must contain (for education, any one of the three: a Malay CV says
 // "Ijazah Sarjana Muda" where the label is "Bachelor degree").
@@ -77,8 +90,14 @@ async function post(fetchImpl, url, headers, body, timeoutMs) {
     throw new ProviderError(error?.name === 'TimeoutError' ? 'timeout' : 'network')
   }
   if (!response.ok) throw new ProviderError(`http_${response.status}`)
-  const data = await response.json().catch(() => null)
-  if (!data) throw new ProviderError('bad_reply')
+  // DeepSeek answers at once and sends the body when the model is done, so the time limit can end while reading it.
+  let data
+  try {
+    data = await response.json()
+  } catch (error) {
+    throw new ProviderError(['TimeoutError', 'AbortError'].includes(error?.name) ? 'timeout' : 'bad_body')
+  }
+  if (!data) throw new ProviderError('bad_body')
   return data
 }
 
@@ -86,11 +105,11 @@ const parse = (text) => {
   try {
     return JSON.parse(text)
   } catch {
-    throw new ProviderError('bad_reply')
+    throw new ProviderError('bad_json')
   }
 }
 
-export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = () => new Date(), timeoutMs = 15000, perHour = 20 }) {
+export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = () => new Date(), timeoutMs = AI_TIMEOUT_MS, perHour = 20 }) {
   const perAddress = createWindowLimiter({ limit: perHour, windowMs: HOUR_MS, now })
 
   async function suggestedProfile(fields, interfaceLanguage) {
@@ -120,6 +139,7 @@ export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = 
   async function read({ cvText, ip = 'unknown', interfaceLanguage = 'en' }) {
     if (!provider) return { status: 'skipped', reason: 'ai_unavailable' }
     if (!perAddress.hit(ip)) return { status: 'skipped', reason: 'ai_limit' }
+    const started = Date.now()
     try {
       const data = await post(fetchImpl, provider.url,
         { 'content-type': 'application/json', authorization: `Bearer ${provider.key}` },
@@ -127,15 +147,20 @@ export function createAiReader({ provider, fetchImpl = fetch, normalizer, now = 
           model: provider.model,
           messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: userMessage(cvText) }],
           response_format: { type: 'json_object' },
+          // Copying facts needs no reasoning; with thinking on, hidden reasoning was up to 60% of the output and slow.
+          thinking: { type: 'disabled' },
         }, timeoutMs)
+      if (data.choices?.[0]?.finish_reason === 'length') throw new ProviderError('cut_off')
       const reply = parse(data.choices?.[0]?.message?.content ?? '')
-      if (!checkShape(reply)) throw new ProviderError('bad_reply')
+      const problem = shapeProblem(reply)
+      if (problem) throw new ProviderError(`bad_shape ${problem}`)
       const { fields, dropped } = keepQuoted(reply, cvText)
       const profile = await suggestedProfile(fields, interfaceLanguage)
       const usage = { input: Number(data.usage?.prompt_tokens) || 0, output: Number(data.usage?.completion_tokens) || 0 }
       return { status: 'ok', model: provider.model, dropped, usage, profile }
     } catch (error) {
-      console.error(`[aiRead] failed: ${error?.kind ?? error?.name ?? 'Error'}`)
+      const kind = error?.kind ?? error?.name ?? 'Error'
+      console.error(`[aiRead] failed: ${kind === 'timeout' ? `timeout after ${Date.now() - started} ms` : kind}`)
       return { status: 'skipped', reason: 'ai_unavailable' }
     }
   }

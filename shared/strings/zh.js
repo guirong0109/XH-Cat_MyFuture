@@ -236,7 +236,7 @@ export default {
   cvStep_extracting: "正在提取信息",
   cvStep_mapping: "正在匹配识别到的技能",
   cvStep_ready: "可以检查了",
-  cvServerNote: "服务器会一次完成检查、读取和匹配，通常只需几秒钟。",
+  cvServerNote: "正在用 AI 读取您的简历，最多可能需要 40 秒，请保持此页面打开。",
   cvErr_unsupported_type: "请上传 PDF 或 DOCX 文件。",
   cvErr_too_large: "此文件超过 10 MB。",
   cvErr_encrypted: "此文件受密码保护，无法读取。",

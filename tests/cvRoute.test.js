@@ -4,12 +4,20 @@ import path from 'node:path'
 import express from 'express'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { createApp } from '../server/app.js'
-import { cvRoutes } from '../server/routes/cv.js'
+import { UPLOAD_TIMEOUT_MS, cvRoutes } from '../server/routes/cv.js'
+import { AI_TIMEOUT_MS } from '../server/cv/aiRead.js'
 import { readText } from '../server/cv/readText.js'
 import { emptyProfile, validateProfile } from '../shared/profileSchema.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
 import { createFakeTempStore } from './helpers/fakeStores.js'
 import { DOC_BYTES, PNG_BYTES, SAMPLE_LINES, makeDocx, makePdf } from './helpers/cvFixtures.js'
+
+describe('CV upload time limits (owner, 31 Oct: DeepSeek needs more than 15 s for a real CV)', () => {
+  it('the upload waits up to 45 s and the AI up to 40 s', () => {
+    expect(UPLOAD_TIMEOUT_MS).toBe(45000)
+    expect(AI_TIMEOUT_MS).toBe(40000)
+  })
+})
 
 let dir
 let server

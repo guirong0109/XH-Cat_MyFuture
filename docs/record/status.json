@@ -676,6 +676,11 @@
           "status": "done"
         },
         {
+          "title": "O6l Career centre type",
+          "sub": "programmes and students, target roles only, centre sample roster",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -1995,6 +2000,11 @@
       "time": "31 Oct",
       "step": "O6k Employee share screen (hr-branch)",
       "detail": "Task 10 reviewed (security), 1 fix round; browser check of join and share; npm test 1250 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6l Career centre type (hr-branch)",
+      "detail": "Task 11 reviewed clean; npm test 1256 passed"
     }
   ]
 }

@@ -1,48 +1,63 @@
 # CV extraction — evaluation results
 
-Run on 2026-10-31 · extractor `cv-1.0` (L1, L2, L4; L3 semantic match off) · O*NET 31.0 · 11 synthetic CVs in `testing/eval-cvs.json` · `node scripts/eval-cv.mjs`.
+Run on 2026-10-31 · extractor `cv-1.0` (L1, L2, L4; L3 semantic match off) · O*NET 31.0 · 16 synthetic CVs in `testing/eval-cvs.json` · `node scripts/eval-cv.mjs`.
 
-Measured numbers only; no target is claimed. A found item counts as right when it equals or contains the expected text.
+Measured numbers only; no target is claimed. A found item counts as right when it equals or contains the expected text. A field is scored only on the CVs labelled for it (projects and the Skill Match section: labelled CVs only).
 
 ## Per field (all CVs together)
 
 | Field | Right | Wrong (extra) | Missed | Precision | Recall | F1 |
 |---|---|---|---|---|---|---|
-| skills | 33 | 3 | 1 | 0.917 | 0.971 | 0.943 |
-| qualifications | 12 | 0 | 0 | 1 | 1 | 1 |
-| jobs | 9 | 0 | 0 | 1 | 1 | 1 |
-| certifications | 3 | 0 | 0 | 1 | 1 | 1 |
+| skills | 49 | 0 | 6 | 1 | 0.891 | 0.942 |
+| qualifications | 17 | 0 | 0 | 1 | 1 | 1 |
+| jobs | 13 | 0 | 0 | 1 | 1 | 1 |
+| certifications | 5 | 0 | 0 | 1 | 1 | 1 |
+| projects | 4 | 0 | 2 | 1 | 0.667 | 0.8 |
 
-- Wrong-item rate (extra items ÷ items found, all fields): **0.05**
-- Skills linked to an O*NET id: **28 of 36** found skills (the rest stay "not in our list yet" for the user).
+- Wrong-item rate (extra items ÷ items found, all fields): **0**
+- Skills linked to an O*NET id: **36 of 49** found skills (the rest stay "not in our list yet" for the user).
 - Skill levels set by extraction, other than Good for a skill used in a job or project: **0** (must be 0).
-- Failure rate (a CV not handled as expected): **0 of 11**. The scanned CV is expected to fail with `scanned_no_ocr`.
-- Latency per CV (build + read + extract, in-process): median **3 ms**, slowest 8 ms.
+- Failure rate (a CV not handled as expected): **0 of 16**. The scanned CV is expected to fail with `scanned_no_ocr`.
+- Latency per CV (build + read + extract, in-process): median **4 ms**, slowest 11 ms.
 
 ## Per CV
 
-| CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |
-|---|---|---|---|---|---|---|---|---|
-| en-pdf | en | en | draft | 0.8 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 8 |
-| ms-pdf | ms | ms | draft | 0.75 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 5 |
-| zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | 3 |
-| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | 4 |
-| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 4 |
-| no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 |
-| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 3 |
-| injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | 3 |
-| duplicates-pdf | en, duplicates | uncertain | draft | 0.667 / 1 | 1 / 1 | — / — | — / — | 4 |
-| scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | 1 |
+| CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | Projects P / R | ms |
+|---|---|---|---|---|---|---|---|---|---|
+| en-pdf | en | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 10 |
+| ms-pdf | ms | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 11 |
+| zh-docx | zh, docx | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 3 |
+| mixed-pdf | mixed | mixed | draft | 1 / 0.75 | 1 / 1 | 1 / 1 | — / — | not labelled | 5 |
+| two-degrees-pdf | en, two_degrees | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 11 |
+| no-job-docx | en, no_job, docx | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | not labelled | 1 |
+| project-only-pdf | en, no_job, project_only | en | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 / 1 | 4 |
+| injection-pdf | en, injection | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 4 |
+| multi-job-pdf | en, multiple_jobs | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 4 |
+| duplicates-pdf | en, duplicates | uncertain | draft | 1 / 1 | 1 / 1 | — / — | — / — | 1 / 1 | 4 |
+| long-projects-pdf | en, no_job, project_only, hard | en | draft | 1 / 0.375 | 1 / 1 | — / — | — / — | 1 / 0.333 | 4 |
+| ms-soft-skills-pdf | ms, hard | ms | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 3 |
+| zh-soft-skills-docx | zh, docx, hard | zh | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 1 |
+| skills-in-jobs-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | — / — | not labelled | 10 |
+| company-certificates-pdf | en, hard | en | draft | 1 / 1 | 1 / 1 | 1 / 1 | 1 / 1 | not labelled | 4 |
+| scanned-pdf | scanned | — | scanned_no_ocr (expected) | — / — | — / — | — / — | — / — | not labelled | 1 |
+
+## Reaches Skill Match (labelled CVs only)
+
+The O*NET skill and knowledge names a CV's skills reach, against `expected.onet`. 5 CVs are labelled for this (labelled CVs only). Rules only counts skills the reader linked to an O*NET skill or knowledge id; rules + AI also counts the O*NET item the AI suggested (a user still has to keep it).
+
+| Reader | Right | Wrong (extra) | Missed | Precision | Recall | F1 |
+|---|---|---|---|---|---|---|
+| rules only | 0 | 0 | 10 | — | 0 | 0 |
+
+Rules + AI: not run (needs `--ai`, which is paid).
 
 ## What was found where it differs from the labels
 
-- **en-pdf · skills** — expected: Python, Microsoft Excel, Critical Thinking, Customer service · found: Python, Critical Thinking, Customer service, Microsoft Excel, Google
-- **ms-pdf · skills** — expected: SQL, Microsoft Excel, Python · found: SQL, Microsoft Excel, Python, Oracle Database
 - **mixed-pdf · skills** — expected: Microsoft Excel, Bookkeeping, Komunikasi, QuickBooks Online · found: Microsoft Excel, Bookkeeping, Komunikasi
-- **duplicates-pdf · skills** — expected: Python, Microsoft Excel · found: Python, Microsoft Excel, MS Excel
+- **long-projects-pdf · skills** — expected: Vue, Firebase, Python, pandas, Excel, SQL, Git, Teamwork · found: Git, Teamwork, Python
+- **long-projects-pdf · projects** — expected: Campus event portal, Sales forecast notebook, Warehouse stock tracker · found: Campus event portal
 
-## Rules only vs rules + DeepSeek
+## Rules only vs rules + DeepSeek (earlier test set: 10 CVs read, run 31 Oct 2026, before the projects field and the 5 harder CVs)
 
 Model `deepseek-flash` · 2026-10-31 · 10 of 11 CVs read by the AI (the rest are listed below). Both sides cover the same 10 CVs. Source: `node --env-file-if-exists=.env scripts/eval-cv.mjs --ai`.
 

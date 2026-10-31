@@ -26,7 +26,7 @@ and how to work here.
 ## Commands
 ```bash
 npm install
-npm test                                          # Vitest, expect 310 passed
+npm test                                          # Vitest, expect 314 passed
 python -m unittest discover pipeline/tests        # expect 8 OK
 npm start                                         # http://localhost:3200 (reads .env if present)
 node scripts/serve-local-accounts.mjs             # dev only: accounts with in-memory D1/R2, port 3100

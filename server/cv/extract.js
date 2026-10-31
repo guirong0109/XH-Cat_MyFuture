@@ -1,7 +1,7 @@
 // CV text lines → draft structured profile (spec §6). L1 sections, L2 rules and dictionaries, L3 semantic match
 // (a hook filled by server/cv/semantic.js), L4 merge + schema check + uncertain list.
-// Nothing here is confirmed, and a skill level is never set from a CV.
-import { emptyProfile, makeSkill, val, validateProfile } from '../../shared/profileSchema.js'
+// Nothing here is confirmed. The only level set from a CV: Good (from_projects) for a skill used in a job or project.
+import { emptyProfile, levelFromUse, makeSkill, val, validateProfile } from '../../shared/profileSchema.js'
 import { mergeSkills } from '../skills/normalize.js'
 import { nameKey, wordsOf } from '../skills/onetSkills.js'
 import { DATE_RANGE, PERSONAL_LINE, QUALIFICATIONS, SECTION_WORDS, rangeMonths } from './patterns.js'
@@ -199,7 +199,7 @@ export async function extractProfile({ lines, language, interfaceLanguage, catal
 
   // L4: one entry per skill (with every job and project it was used in); uncertain items listed for the review.
   layers.push('L4')
-  profile.skills = mergeSkills(skills)
+  profile.skills = mergeSkills(skills).map(levelFromUse)
   const uncertain = []
   profile.skills.forEach((skill, i) => {
     if (!skill.canonicalId) uncertain.push({ path: `skills.${i}`, reason: 'unknown_skill' })

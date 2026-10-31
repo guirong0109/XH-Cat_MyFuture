@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DECLINED, EMPTY, emptyProfile, hasUsableSkill, makeSkill, val, validateProfile } from '../shared/profileSchema.js'
+import { DECLINED, EMPTY, emptyProfile, hasUsableSkill, levelFromUse, makeSkill, val, validateProfile } from '../shared/profileSchema.js'
 
 const base = () => emptyProfile({ inputMethod: 'manual', interfaceLanguage: 'en' })
 
@@ -42,6 +42,27 @@ describe('profile schema', () => {
     const p = base()
     p.skills = [{ ...makeSkill({ name: 'Python', source: 'cv_rules' }), proficiency: 'expert' }]
     expect(validateProfile(p).errors).toContainEqual({ path: 'skills.0.proficiency', code: 'cv_set_proficiency' })
+  })
+
+  it('a CV skill used in a job or project may start at Good, marked from_projects (owner, 31 Oct); nothing else', () => {
+    const used = { ...makeSkill({ name: 'Python', source: 'cv_rules', usedIn: [{ kind: 'project', title: 'Flood model' }] }), proficiency: 'good', proficiencyStatus: 'from_projects' }
+    const p = base()
+    p.skills = [used]
+    expect(validateProfile(p)).toEqual({ ok: true, errors: [] })
+    p.skills = [{ ...used, proficiency: 'expert' }]
+    expect(validateProfile(p).errors).toContainEqual({ path: 'skills.0.proficiency', code: 'cv_set_proficiency' })
+    p.skills = [{ ...used, usedIn: [] }]
+    expect(validateProfile(p).errors).toContainEqual({ path: 'skills.0.proficiency', code: 'cv_set_proficiency' })
+  })
+
+  it('levelFromUse: Good when used in a job or project and not yet assessed; back to not assessed when no longer used', () => {
+    const place = [{ kind: 'job', title: 'Clerk' }]
+    expect(levelFromUse(makeSkill({ name: 'SQL', source: 'cv_rules', usedIn: place }))).toMatchObject({ proficiency: 'good', proficiencyStatus: 'from_projects' })
+    expect(levelFromUse(makeSkill({ name: 'SQL', source: 'cv_rules' }))).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
+    const mine = { ...makeSkill({ name: 'SQL', source: 'user_input', usedIn: place }), proficiency: 'basic', proficiencyStatus: 'self_reported' }
+    expect(levelFromUse(mine)).toEqual(mine)
+    const unused = { ...makeSkill({ name: 'SQL', source: 'cv_rules' }), proficiency: 'good', proficiencyStatus: 'from_projects' }
+    expect(levelFromUse(unused)).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
   })
 
   it('rejects an unknown level, source or proficiency status', () => {

@@ -199,6 +199,9 @@ details summary{cursor:pointer;font:500 11.5px var(--mono);letter-spacing:.08em;
 .grp-edit{margin-top:12px;border-top:1px solid var(--ink)}
 .sk-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line)}
 .sk-name{flex:1 1 200px;min-width:0}
+.fold{display:flex;align-items:center;gap:8px;width:100%;margin:14px 0 0;padding:10px 0 0;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-align:left}
+.fold::before{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;border:1px solid var(--ink);border-radius:50%;font-size:12px}
+.fold[aria-expanded="true"]::before{content:"−"}
 .option.sel::before{background:var(--lime);border-color:var(--lime);box-shadow:inset 0 0 0 3px var(--ink)}
 .field label.tiny{display:flex;gap:6px;align-items:center;font-weight:400}
 .field input,.field select,.field textarea{border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:9px 11px;width:100%}

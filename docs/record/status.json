@@ -318,6 +318,11 @@
           "title": "T28v Skills grouped under jobs and projects",
           "sub": "a card per job and project · Others · Looks right / Confirm all · projects back",
           "status": "done"
+        },
+        {
+          "title": "T28w Used in a job or project = Good",
+          "sub": "level set automatically, tagged 'From your projects' · Other skills folded",
+          "status": "done"
         }
       ]
     }
@@ -377,13 +382,13 @@
     "Task 28s: your request - Interests now asks only 'Career interests and fields'. Removed: 'Occupations you are interested in', 'Career goal' (still asked at the start and shown on the receipt), 'Preferred work location' and 'Hours a week you can learn'. A profile saved earlier keeps its answers and the receipt still shows them. Note: main's Future Skills Radar also reads the occupations of interest, so new profiles give it fewer clues (Tests 285 passed)",
     "Task 28t: your request - the 'Review and confirm' button is now only on the last section, Interests. Sections 1-3 show Back and Next; Next is now the dark main button there, so each page still has one clear way forward (Tests 286 passed)",
     "Task 28u: your request - in Skills and proficiency, each skill's level is a toggle bar instead of a dropdown: one connected bar 'Not assessed yet | Basic | Good | Expert'; one press picks, the chosen key is dark with a lime dot. 'Not assessed yet' is on until a level is picked. What is saved is unchanged (Tests 289 passed)",
-    "Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)"
+    "Task 28v: your request (with your picture) - Skills and proficiency lists skills under the job or project they were used in; the rest are under 'Other skills'. On top, the CV summary ('We found 1 job, 2 projects, your skills list: 4 skills') with 'Confirm all N'. Each card: JOB or PROJECT, title, period, 'As written' (the CV lines under it), the skill chips (lime ✓ = in the O*NET list, with the CV words when they differ; dashed '? … not in skill list' otherwise) and '+ add skill', plus 'Looks right' (confirms the card and its skills) and 'Edit' (the level toggle bar per skill, 'Remove from here', a project's title and description). Your choices: projects are back (certificates and training stay out); the CV reader and the AI re-read now note the job or project each skill was used in (backend change you approved); confirm per card. Skills keep their links by job or project title, so renaming keeps them and removing a job or project moves its skills to Others. Levels stay self-reported with the toggle bar until you give the rule for estimating them (see Waiting) (Tests 310 passed)",
+    "Task 28w: your rule - a skill used in a job or project gets its level automatically: Good (your choice for 'strong'), for every skill in a job or project card (found by the CV or added with '+ add skill'). It is tagged 'From your projects' on the receipt and in Edit, and the user can change it with the toggle bar (it then becomes self-reported). A skill taken out of every job and project goes back to 'Not assessed yet'; a level the user picked is never changed. 'Other skills' is folded ('Show 4 skills'); the skill search and the suggestions stay open. Note: main's career matching reads this level, so Skill Match counts these skills as Good (Tests 314 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
-    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'",
-    "Task 28v follow-up (owner): the rule for estimating a starting skill level from how often and where a skill is used in the CV; you chose 'Estimate levels', and no level is worked out until you give the exact rule"
+    "Task 16 (optional): a provider for the AI re-read — CV_LLM_BACKUP_KEY (Claude) or a RunPod endpoint after a price OK; without it the re-read says 'not configured'"
   ],
   "rulings": [
     "Guest store takes an optional minimize function until Task 4 exists — cost if wrong: none",
@@ -1170,6 +1175,16 @@
       "time": "31 Oct",
       "step": "Task 28v",
       "detail": "tests first (CV reader 3, AI re-read 1, screen 16 failed), then server/cv/extract.js (job and project descriptions, usedIn per skill), server/skills/normalize.js (mergeSkills joins usedIn), server/cv/reextract.js + reextractPrompt.js (usedIn, optional in replies), shared/profileSchema.js (makeSkill usedIn, checked when present), public/js/screens/skillGroups.js (cards), form.js, app.js (Looks right, Confirm all, Edit, + add skill, rename and remove keep links), styles.css, wording in en/ms/zh; npm test 310 passed; eval-cv 11 CVs 0 failures; in Chrome a CV with 1 job and 2 projects: Python under both projects, Looks right, + add skill (JavaScript), level Good, Confirm all; light, dark and phone width checked"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your rule",
+      "detail": "show which skills were used in which project, and set the level of those skills as strong automatically; your choices: strong = Good; every skill in a job or project card; tagged 'From your projects', user can change; Other skills folded"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28w",
+      "detail": "tests first (9 failed), then shared/profileSchema.js (from_projects status, levelFromUse, the CV-level check allows only Good for a used skill), server/cv/extract.js and reextract.js (levelFromUse after merging), scripts/eval-cv.mjs (counts only other levels), skillGroups.js (Good on linking, back on unlinking, tag, Other skills fold), review.js (receipt tag), app.js (fold opens when a skill is added to Others), styles.css, wording in en/ms/zh; npm test 314 passed; eval-cv 0 failures, 0 other levels; in Chrome every project skill showed Good with the tag and Other skills was folded"
     }
   ]
 }

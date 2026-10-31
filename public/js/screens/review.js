@@ -22,8 +22,11 @@ function recordTags(t, record) {
 export function skillTags(t, skill) {
   const parts = []
   if (skill.extraction && !skill.userConfirmed) parts.push(tag('unv', t('tagUnverified')))
+  // Who gave the level: an assessment, the user, or (Good) the jobs and projects it was used in.
+  const LEVEL_TAGS = { assessed: ['calc', 'tagAssessed'], self_reported: ['self', 'tagSelf'], from_projects: ['est', 'tagFromProjects'] }
+  const [kind, label] = LEVEL_TAGS[skill.proficiencyStatus] ?? []
   if (skill.proficiencyStatus === 'not_assessed') parts.push(tag('prov', t('tagNotAssessed')))
-  else parts.push(tag(skill.proficiencyStatus === 'assessed' ? 'calc' : 'self', `${t(skill.proficiencyStatus === 'assessed' ? 'tagAssessed' : 'tagSelf')}: ${t(skill.proficiency)}`))
+  else if (kind) parts.push(tag(kind, `${t(label)}: ${t(skill.proficiency)}`))
   if (skill.needsReview) parts.push(tag('prov', t('needsReview')))
   return parts.join(' ')
 }

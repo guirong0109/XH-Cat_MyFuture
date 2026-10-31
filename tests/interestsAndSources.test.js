@@ -71,7 +71,8 @@ describe('every suggestion and list says where it comes from', () => {
 
   it('a suggested skill in the list names its source', () => {
     const skill = { ...makeSkill({ name: 'X', canonicalId: 'onet:tech:x', source: 'user_input' }), suggestedFrom: { source: 'isced', code: '0913', title: 'Nursing and midwifery', version: 'ISCED-F 2013', onetVersion: '31.0' } }
-    const html = form({ t, state: { section: 2, profile: { ...profile, skills: [skill] }, occ: {}, pick: {} } })
+    // Other skills are folded (owner, 31 Oct); the source shows with the skills once the fold is open.
+    const html = form({ t, state: { section: 2, profile: { ...profile, skills: [skill] }, occ: {}, pick: {}, otherOpen: true } })
     expect(html).toContain('suggestFrom:{&quot;field&quot;:&quot;Nursing and midwifery&quot;,&quot;source&quot;:&quot;O*NET 31.0&quot;}')
   })
 

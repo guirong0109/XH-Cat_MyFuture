@@ -62,7 +62,7 @@ const afterAccess = () => (state.use === 'org' ? 'category' : 'goal')
 
 function persist() {
   // occupation search results and upload progress are only shown, never saved
-  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
+  saved = store.save({ ...state, message: null, occ: {}, occBusy: null, pick: {}, groupEdit: null, groupAdd: null, otherOpen: false, answering: {}, suggest: {}, suggestMore: {}, interests: null, fields: null, account: null, features: null, ai: null, cvSession: null, cv: state.cv?.phase === 'ready' ? state.cv : null })
 }
 
 // A form section on screen: what the user leaves unanswered there is "prefer not to say" (the default shown).
@@ -216,6 +216,7 @@ const actions = {
   groupOk: (key) => update(confirmGroup(state.profile, key)),
   groupOkAll: () => update(groupsOf(state.profile).filter((g) => g.needsCheck).reduce((profile, g) => confirmGroup(profile, g.key), state.profile)),
   groupEdit: (key) => { state.groupEdit = state.groupEdit === key ? null : key; render() },
+  otherFold: () => { state.otherOpen = !state.otherOpen; render() },
   groupAdd: (key) => {
     state.groupAdd = state.groupAdd === key ? null : key
     render()
@@ -254,6 +255,8 @@ const actions = {
     if (key === 'skill' || key.startsWith('gskill|')) {
       const place = key === 'skill' ? null : placeOf(state.profile, key.slice('gskill|'.length))
       state.groupAdd = null
+      // A skill added to Other skills opens the fold, so the user sees it.
+      if (!place) state.otherOpen = true
       const profile = linkSkill(state.profile, { name: chosen.name, canonicalId: chosen.id, category: chosen.category }, place)
       return profile === state.profile ? render() : update(profile)
     }
@@ -271,7 +274,10 @@ const actions = {
     const term = state.pick?.[key]?.term?.trim()
     state.pick = { ...state.pick, [key]: null }
     if (!term) return render()
-    if (key === 'skill') return actions.addSkill(term)
+    if (key === 'skill') {
+      state.otherOpen = true
+      return actions.addSkill(term)
+    }
     if (key.startsWith('gskill|')) {
       state.groupAdd = null
       return actions.addSkill(term, placeOf(state.profile, key.slice('gskill|'.length)))

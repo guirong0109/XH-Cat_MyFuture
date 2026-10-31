@@ -91,9 +91,11 @@ describe('extractProfile (L1, L2, L4)', () => {
     expect(profile.projects.map((p) => p.title)).toContain('Student attendance dashboard')
   })
 
-  it('never sets a level and the draft validates', async () => {
+  it('sets no level, except Good (from_projects) for a skill used in a job or project; the draft validates', async () => {
     const { profile } = await run()
-    expect(profile.skills.every((s) => s.proficiency === null && s.proficiencyStatus === 'not_assessed')).toBe(true)
+    const levels = Object.fromEntries(profile.skills.map((s) => [s.name, `${s.proficiency}/${s.proficiencyStatus}`]))
+    expect(levels['Microsoft Excel']).toBe('good/from_projects')
+    for (const [name, level] of Object.entries(levels)) if (name !== 'Microsoft Excel') expect(level, name).toBe('null/not_assessed')
     expect(profile).toMatchObject({ profileStatus: 'draft', inputMethod: 'cv', cvLanguage: 'en', interfaceLanguage: 'ms' })
     expect(profile.dataProvenance.extractionModel).toBe(EXTRACTOR_VERSION)
     expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
@@ -162,6 +164,9 @@ describe('skills are linked to the job or project they were used in (owner, 31 O
     ])
     expect(usedIn(profile, 'Oracle Java')).toEqual([])
     expect(usedIn(profile, 'Reading Comprehension')).toEqual([])
+    const level = (name) => profile.skills.find((s) => s.name === name)
+    expect(level('Python')).toMatchObject({ proficiency: 'good', proficiencyStatus: 'from_projects', userConfirmed: false })
+    expect(level('Oracle Java')).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
     expect(validateProfile(profile)).toEqual({ ok: true, errors: [] })
   })
 })

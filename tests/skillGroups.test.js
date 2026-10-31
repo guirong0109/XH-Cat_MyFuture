@@ -57,12 +57,16 @@ describe('changing the groups', () => {
     expect(gone.skills.map((s) => s.name)).not.toContain('SQL')
   })
 
-  it('adding a skill to a group links it; the same skill is not added twice', () => {
+  it('adding a skill to a group links it at Good (from your projects); the same skill is not added twice', () => {
     const added = linkSkill(fromCv(), { name: 'Pandas', canonicalId: 'onet:tech:pandas', category: null }, flood)
-    expect(added.skills.at(-1)).toMatchObject({ name: 'Pandas', source: 'user_input', usedIn: [flood] })
+    expect(added.skills.at(-1)).toMatchObject({ name: 'Pandas', source: 'user_input', usedIn: [flood], proficiency: 'good', proficiencyStatus: 'from_projects' })
+    expect(linkSkill(fromCv(), { name: 'Tableau', canonicalId: 'onet:tech:tableau' }, null).skills.at(-1)).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
     const linked = linkSkill(fromCv(), { name: 'Microsoft Excel', canonicalId: 'onet:tech:microsoft excel' }, job)
     expect(linked.skills).toHaveLength(5)
-    expect(linked.skills.find((s) => s.name === 'Microsoft Excel').usedIn).toEqual([job])
+    expect(linked.skills.find((s) => s.name === 'Microsoft Excel')).toMatchObject({ usedIn: [job], proficiency: 'good', proficiencyStatus: 'from_projects' })
+    const rated = fromCv()
+    rated.skills[3] = { ...rated.skills[3], proficiency: 'basic', proficiencyStatus: 'self_reported' }
+    expect(linkSkill(rated, { name: 'Microsoft Excel', canonicalId: 'onet:tech:microsoft excel' }, job).skills[3]).toMatchObject({ proficiency: 'basic', proficiencyStatus: 'self_reported' })
   })
 
   it('renaming a job or project keeps its skills; removing one moves its skills to Others', () => {
@@ -71,6 +75,8 @@ describe('changing the groups', () => {
     const removed = unlinkPlace(fromCv(), 'project', 'Flood Risk Prediction Model')
     expect(removed.skills.find((s) => s.name === 'LangGraph').usedIn).toEqual([])
     expect(removed.skills.map((s) => s.name)).toContain('LangGraph')
+    const auto = linkSkill(fromCv(), { name: 'Pandas', canonicalId: 'onet:tech:pandas' }, flood)
+    expect(unlinkPlace(auto, 'project', flood.title).skills.at(-1)).toMatchObject({ proficiency: null, proficiencyStatus: 'not_assessed' })
   })
 
   it('the profile still validates', () => {
@@ -104,6 +110,23 @@ describe('the Skills and proficiency page', () => {
     const html = page(profile)
     expect(html).toMatch(/class="sk unk"[^>]*>\? LangGraph <small>notInList<\/small>/)
     expect(html).toContain(q(t('fromText', { text: 'python3' })))
+  })
+
+  it('a level from a job or project shows on its chip and, in Edit, with the tag "From your projects"', () => {
+    const profile = linkSkill(fromCv(), { name: 'Pandas', canonicalId: 'onet:tech:pandas' }, flood)
+    expect(page(profile)).toContain('<em>good</em>')
+    expect(page(profile, { groupEdit: 'project|0' })).toContain('tagFromProjects')
+    expect(page(profile)).toContain('grpLevelNote')
+  })
+
+  it('Other skills is folded: the search shows, the chips only after "Show"', () => {
+    const closed = page(fromCv())
+    expect(closed).toContain('data-search="skill|skill"')
+    expect(closed).toContain(`data-act="otherFold" aria-expanded="false">${q(t('otherShow', { n: 2 }))}`)
+    expect(closed).not.toContain('Microsoft Excel')
+    const open = page(fromCv(), { otherOpen: true })
+    expect(open).toContain('aria-expanded="true">otherHide')
+    expect(open).toContain('Microsoft Excel')
   })
 
   it('the level toggle bar is in the Edit view of a group', () => {
@@ -143,7 +166,7 @@ describe('projects are back in the profile (owner, 31 Oct); certificates and tra
 
   it('the new wording exists in every language', () => {
     for (const lang of ['en', 'ms', 'zh']) {
-      for (const key of ['grpJob', 'grpProject', 'grpOther', 'grpOtherSub', 'cvFound', 'nJob', 'nJobs', 'nProject', 'nProjects', 'nOther', 'cvConfirmEach', 'confirmAllN', 'looksRight', 'grpConfirmed', 'grpDone', 'addSkillChip', 'notInList', 'fromText', 'removeHere', 'editJobThere', 'grpAddLabel', 'grpAsWritten', 'grpLegend']) {
+      for (const key of ['grpJob', 'grpProject', 'grpOther', 'grpOtherSub', 'cvFound', 'nJob', 'nJobs', 'nProject', 'nProjects', 'nOther', 'cvConfirmEach', 'confirmAllN', 'looksRight', 'grpConfirmed', 'grpDone', 'addSkillChip', 'notInList', 'fromText', 'removeHere', 'editJobThere', 'grpAddLabel', 'grpAsWritten', 'grpLegend', 'tagFromProjects', 'grpLevelNote', 'otherShow', 'otherHide']) {
         expect(translate(lang, key), `${lang} ${key}`).not.toBe(key)
       }
     }

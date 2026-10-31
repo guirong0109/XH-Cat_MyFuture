@@ -8,7 +8,9 @@ export const val = (value) => ({ state: 'value', value })
 
 export const SKILL_SOURCES = ['cv_rules', 'cv_semantic', 'cv_ai', 'user_input']
 export const LEVELS = ['basic', 'good', 'expert']
-export const PROFICIENCY_STATUS = ['not_assessed', 'self_reported', 'assessed']
+// from_projects (owner, 31 Oct): Good because the skill was used in a job or project; the user can change it.
+export const PROFICIENCY_STATUS = ['not_assessed', 'self_reported', 'assessed', 'from_projects']
+export const USED_LEVEL = 'good'
 // Who are you? (owner, 31 Oct): the first four. The last two are the earlier answers, kept so saved profiles stay valid.
 export const USER_CATEGORIES = ['fresh_graduate', 'student', 'underemployed', 'unemployed', 'working_adult', 'graduate_switcher']
 export const FORBIDDEN_FIELDS = ['age', 'gender', 'ethnicity', 'religion', 'maritalStatus', 'photo', 'address', 'icNumber']
@@ -73,6 +75,15 @@ export function makeSkill({ name, originalText = name, canonicalId = null, categ
   }
 }
 
+// A skill used in a job or project and not yet rated starts at Good (from_projects); one no longer used in any goes
+// back to not assessed. A level the user picked (or an assessment) is never changed.
+export function levelFromUse(skill) {
+  const used = (skill.usedIn ?? []).length > 0
+  if (used && skill.proficiencyStatus === 'not_assessed') return { ...skill, proficiency: USED_LEVEL, proficiencyStatus: 'from_projects' }
+  if (!used && skill.proficiencyStatus === 'from_projects') return { ...skill, proficiency: null, proficiencyStatus: 'not_assessed' }
+  return skill
+}
+
 const get = (object, path) => path.split('.').reduce((node, key) => (node == null ? undefined : node[key]), object)
 
 function checkForbidden(node, path, errors) {
@@ -101,8 +112,9 @@ function checkSkill(skill, i, errors) {
     errors.push({ path: `${at}.usedIn`, code: 'bad_type' })
   }
   if (skill.proficiency !== null && !LEVELS.includes(skill.proficiency)) errors.push({ path: `${at}.proficiency`, code: 'bad_enum' })
-  // A CV can show that a skill is mentioned; only the user (or an assessment) can say how good they are.
-  else if (skill.proficiency !== null && CV_SOURCES.has(skill.source) && !skill.userConfirmed) {
+  // A CV can show that a skill is mentioned; only the user (or an assessment) can say how good they are. The one
+  // exception (owner, 31 Oct): Good, marked from_projects, for a skill used in a job or project.
+  else if (skill.proficiency !== null && CV_SOURCES.has(skill.source) && !skill.userConfirmed && !(skill.proficiencyStatus === 'from_projects' && skill.proficiency === USED_LEVEL && skill.usedIn?.length)) {
     errors.push({ path: `${at}.proficiency`, code: 'cv_set_proficiency' })
   }
 }

@@ -1,9 +1,10 @@
 // Skills and proficiency, grouped (owner, 31 Oct): each job and project is a card with the skills used in it; skills
 // not used in any job or project are under Others. A skill keeps its links in usedIn ({ kind, title }), matched to the
 // job title or project title, so a CV merged into a profile keeps them. The user checks a whole card ("Looks right")
-// instead of each skill; levels are set in a card's Edit view.
+// instead of each skill. A skill used in a job or project starts at Good, marked "From your projects" (owner, 31 Oct);
+// levels are changed in a card's Edit view. Other skills are folded so the page is not one long list.
 import { esc, tag } from '../ui.js'
-import { makeSkill } from '/shared/profileSchema.js'
+import { levelFromUse, makeSkill } from '/shared/profileSchema.js'
 import { reviewToggle } from '../components/fields.js'
 import { pickerList, searchPicker } from '../components/searchPicker.js'
 import { fieldSuggestions } from '../components/fieldSuggestions.js'
@@ -62,9 +63,9 @@ export function linkSkill(profile, found, place) {
   const at = profile.skills.findIndex((skill) => norm(skill.canonicalId ?? skill.name) === key)
   if (at >= 0) {
     if (!place || (profile.skills[at].usedIn ?? []).some((p) => same(p, place))) return profile
-    return { ...profile, skills: profile.skills.map((skill, i) => (i === at ? { ...skill, usedIn: [...(skill.usedIn ?? []), place] } : skill)) }
+    return { ...profile, skills: profile.skills.map((skill, i) => (i === at ? levelFromUse({ ...skill, usedIn: [...(skill.usedIn ?? []), place] }) : skill)) }
   }
-  const skill = { ...makeSkill({ ...found, source: 'user_input', usedIn: place ? [place] : [] }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) }
+  const skill = levelFromUse({ ...makeSkill({ ...found, source: 'user_input', usedIn: place ? [place] : [] }), ...(found.candidates?.length ? { candidates: found.candidates } : {}) })
   return { ...profile, skills: [...profile.skills, skill] }
 }
 
@@ -75,7 +76,7 @@ export function renamePlace(profile, kind, before, after) {
 }
 export function unlinkPlace(profile, kind, title) {
   const gone = { kind, title }
-  return { ...profile, skills: profile.skills.map((skill) => (!(skill.usedIn ?? []).some((p) => same(p, gone)) ? skill : { ...skill, usedIn: skill.usedIn.filter((p) => !same(p, gone)) })) }
+  return { ...profile, skills: profile.skills.map((skill) => (!(skill.usedIn ?? []).some((p) => same(p, gone)) ? skill : levelFromUse({ ...skill, usedIn: skill.usedIn.filter((p) => !same(p, gone)) }))) }
 }
 
 const LEVEL_OPTIONS = [['', 'levelNone'], ['basic', 'basic'], ['good', 'good'], ['expert', 'expert']]
@@ -107,7 +108,8 @@ function editRow(t, group, { skill, i }) {
     : ''
   const source = skill.canonicalId ? `<span class="tiny muted">O*NET · ${esc(skill.canonicalId)}</span>` : `<span class="tiny muted">${esc(t('skillUnknown'))}</span>`
   const suggested = skill.suggestedFrom ? `<div class="tiny muted">${esc(t('suggestFrom', { field: skill.suggestedFrom.title, source: `O*NET ${skill.suggestedFrom.onetVersion ?? ''}`.trim() }))}</div>` : ''
-  const levelTag = skill.proficiencyStatus === 'not_assessed' ? '' : tag(skill.proficiencyStatus === 'assessed' ? 'calc' : 'self', t(skill.proficiencyStatus === 'assessed' ? 'tagAssessed' : 'tagSelf'))
+  const LEVEL_TAGS = { assessed: ['calc', 'tagAssessed'], self_reported: ['self', 'tagSelf'], from_projects: ['est', 'tagFromProjects'] }
+  const levelTag = LEVEL_TAGS[skill.proficiencyStatus] ? tag(...LEVEL_TAGS[skill.proficiencyStatus].map((part, n) => (n ? t(part) : part))) : ''
   const out = group.kind === 'other'
     ? `<button class="btn sm ghost" style="color:var(--bad)" data-act="delRec" data-arg="skills|${i}">${esc(t('remove'))}</button>`
     : `<button class="btn sm ghost" style="color:var(--bad)" data-act="unlinkSkill" data-arg="${i}|${group.key}">${esc(t('removeHere'))}</button>`
@@ -148,15 +150,20 @@ function card(ctx, group) {
   const adding = state.groupAdd === group.key
   const chips = group.skills.map(({ skill }) => chip(t, skill)).join('')
   const add = isOther ? '' : `<button class="sk add" data-act="groupAdd" data-arg="${group.key}">${esc(t('addSkillChip'))}</button>`
-  const search = isOther
-    ? `${picker(ctx, 'skill', t('skillSearch'))}${fieldSuggestions(ctx)}`
-    : adding ? picker(ctx, `gskill|${group.key}`, t('grpAddLabel')) : ''
+  const search = isOther ? picker(ctx, 'skill', t('skillSearch')) : adding ? picker(ctx, `gskill|${group.key}`, t('grpAddLabel')) : ''
   // Skills added from a field-of-study suggestion say where the suggestion came from (once per field).
   const fields = new Map(group.skills.filter(({ skill }) => skill.suggestedFrom).map(({ skill }) => [skill.suggestedFrom.code, skill.suggestedFrom]))
   const sources = [...fields.values()].map((from) => `<p class="tiny muted">${esc(t('suggestFrom', { field: from.title, source: `O*NET ${from.onetVersion ?? ''}`.trim() }))}</p>`).join('')
-  return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${actions}</div>
-    ${sub ? `<p class="grp-sub">${esc(sub)}</p>` : ''}${quote}
-    ${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${sources}${search}${editing ? editView(t, group) : ''}</section>`
+  const body = `${chips || add ? `<div class="sks">${chips}${add}</div>` : ''}${sources}${editing ? editView(t, group) : ''}`
+  if (!isOther) return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${actions}</div>
+    ${sub ? `<p class="grp-sub">${esc(sub)}</p>` : ''}${quote}${body}${search}</section>`
+  // Other skills: the search and the suggestions stay open; the skills themselves are folded until "Show".
+  const open = Boolean(state.otherOpen || editing)
+  const fold = group.skills.length
+    ? `<button class="fold" data-act="otherFold" aria-expanded="${open}">${esc(open ? t('otherHide') : t('otherShow', { n: group.skills.length }))}</button>${open ? body : ''}`
+    : ''
+  return `<section class="grp"><div class="grp-head"><div class="grp-title">${heading}</div>${group.skills.length ? actions : ''}</div>
+    <p class="grp-sub">${esc(sub)}</p>${search}${fieldSuggestions(ctx)}${fold}</section>`
 }
 
 // What the CV gave, counted, with one button to check every card at once.
@@ -180,6 +187,7 @@ export function skillGroups(ctx) {
   const top = profile.inputMethod === 'cv' && groups.some((g) => g.needsCheck) ? summary(t, groups) : ''
   const placed = groups.filter((g) => g.kind !== 'other').map((g) => card(ctx, g)).join('')
   const addProject = `<button class="btn sm" data-act="addRec" data-arg="projects" style="margin:0 0 16px">${esc(t('addProject'))}</button>`
-  const legend = profile.skills.length ? `<p class="tiny muted">${esc(t('grpLegend'))}</p>` : ''
+  const fromUse = profile.skills.some((skill) => skill.proficiencyStatus === 'from_projects') ? `<p class="tiny muted">${esc(t('grpLevelNote'))}</p>` : ''
+  const legend = profile.skills.length ? `${fromUse}<p class="tiny muted">${esc(t('grpLegend'))}</p>` : ''
   return `${top}${placed}${addProject}${card(ctx, groups.at(-1))}${legend}`
 }

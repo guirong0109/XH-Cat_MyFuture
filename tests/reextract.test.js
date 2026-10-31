@@ -117,6 +117,7 @@ describe('createReextractor', () => {
     const out = await run(reextractor)
     expect(out.suggested.skills).toHaveLength(1)
     expect(out.suggested.skills[0].usedIn).toEqual([{ kind: 'job', title: 'IT Support Executive' }])
+    expect(out.suggested.skills[0]).toMatchObject({ proficiency: 'good', proficiencyStatus: 'from_projects' })
     expect(validateProfile(out.suggested)).toEqual({ ok: true, errors: [] })
     expect(CV_SCHEMA.properties.skills.items.properties.usedIn).toEqual({ type: 'string' })
     expect(SYSTEM_PROMPT).toContain('usedIn')

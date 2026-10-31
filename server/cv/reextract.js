@@ -1,7 +1,8 @@
 // AI re-extraction (spec §9), only with the user's consent: RunPod (OpenAI-compatible chat) first, Claude as backup.
-// Every returned item must quote the CV word for word or it is dropped; levels, ids and codes never come from the AI.
+// Every returned item must quote the CV word for word or it is dropped; levels, ids and codes never come from the AI
+// (a skill used in a job or project starts at Good by the owner's rule, not by the AI).
 // AI replies and CV text are never logged.
-import { emptyProfile, makeSkill } from '../../shared/profileSchema.js'
+import { emptyProfile, levelFromUse, makeSkill } from '../../shared/profileSchema.js'
 import { readText } from './readText.js'
 import { validateFile } from './validateFile.js'
 import { CV_SCHEMA, SYSTEM_PROMPT, userMessage } from './reextractPrompt.js'
@@ -142,7 +143,7 @@ export function createReextractor({ tempStore, providers, fetchImpl = fetch, nor
     profile.skills = mergeSkills(await Promise.all(fields.skills.filter((s) => s.name).map(async (s) => {
       const found = await normalizer.normalizeSkill(s.name)
       return makeSkill({ ...found, source: 'cv_ai', extraction: extraction(s.evidence), usedIn: usedIn(s.usedIn) })
-    })))
+    }))).map(levelFromUse)
     return profile
   }
 

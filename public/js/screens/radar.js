@@ -878,6 +878,16 @@ export const staleRadar = (radar) => ({ ...(radar ?? {}), data: null, open: null
 // "Which of these do you use AI for?" (D34-D39): the owner's 10 categories as checkboxes, "none of these", the source
 // and privacy lines, Continue (off until something is ticked) and Skip. Ticks not yet saved are in state.radar.aiAsk;
 // otherwise the saved answer is shown. Only known ids are ever drawn, so a saved unknown id is never echoed.
+// Where the keyboard focus goes after a card action, as a selector (a render replaces the page): the same box after a
+// tick or "none", the first box when the card opens, the Change button after Continue or Skip. Only known ids are used.
+export function aiAskFocus(act, arg) {
+  if (act === 'pick') return AI_TASK_IDS.includes(arg) ? `[data-act="aiAskPick"][data-arg="${arg}"]` : null
+  if (act === 'none') return '[data-act="aiAskNone"]'
+  if (act === 'open') return '[data-act="aiAskPick"]'
+  if (act === 'continue' || act === 'skip') return '[data-act="aiAskOpen"]'
+  return null
+}
+
 export function aiTasksQuestion({ t, state }) {
   const { picked, none } = askOf(state?.profile, ui(state).aiAsk)
   const box = (act, arg, on) => `<input type="checkbox" data-act="${act}"${arg ? ` data-arg="${arg}"` : ''}${on ? ' checked' : ''}>`

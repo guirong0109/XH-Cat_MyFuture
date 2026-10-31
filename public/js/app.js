@@ -23,7 +23,7 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
-import radarScreen, { keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
+import radarScreen, { aiAskFocus, keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -585,6 +585,9 @@ function aiAsk(act, arg) {
   state.profile = out.profile
   if (act === 'continue' || act === 'skip') persist()
   setRadar({ aiAsk: out.aiAsk })
+  // The render replaced the card: give keyboard and screen-reader users their place back (final review).
+  const sel = aiAskFocus(act, arg)
+  if (sel) document.querySelector(sel)?.focus()
 }
 
 // Any edit makes a confirmed profile a draft again: it must be confirmed anew.

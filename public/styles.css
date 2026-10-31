@@ -490,6 +490,10 @@ a.tag.mt-sdg:hover{text-decoration:underline}
 .rd-radar [role=button],.rd-bars [role=button]{cursor:pointer}
 .rd-radar [role=button]:focus-visible circle{stroke-width:4}
 .rd-radar [role=button]:focus-visible,.rd-bars [role=button]:focus-visible{outline:2px solid var(--accent)}
+.rd-scatter{display:block;height:auto;overflow:visible}
+.rd-scatter [role=button]{cursor:pointer}
+.rd-scatter [role=button]:focus-visible{outline:2px solid var(--accent)}
+.rd-scatter [role=button]:focus-visible circle{stroke:var(--ink);stroke-width:3}
 /* Study pathway (#pathway), mockup docs/mockup-pathway.html; colours from the variables above (light and dark) */
 .pw .card{margin-bottom:12px;min-width:0}
 .pw-targets{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}

@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { aiAskStep, answered } from '../../shared/aiTasks.js'
 import { emptyProfile, validateProfile } from '../../shared/profileSchema.js'
+import { aiAskFocus } from '../../public/js/screens/radar.js'
 
 const D = '2026-10-31'
 const confirmed = (extra = {}) => ({ ...emptyProfile(), profileStatus: 'confirmed', ...extra })
@@ -83,5 +84,29 @@ describe('aiAskStep', () => {
     const fn = src.slice(src.indexOf('function aiAsk('))
     expect(fn.slice(0, fn.search(/\r?\n\}\r?\n/))).not.toMatch(/\bupdate\(/)
     expect(block).not.toMatch(/\bupdate\(/)
+  })
+})
+
+describe('keyboard focus after a card action (final review)', () => {
+  it('a tick or "none" keeps the focus on the same box; Change goes to the first box; Continue and Skip go to the Change button', () => {
+    expect(aiAskFocus('pick', 'data')).toBe('[data-act="aiAskPick"][data-arg="data"]')
+    expect(aiAskFocus('none')).toBe('[data-act="aiAskNone"]')
+    expect(aiAskFocus('open')).toBe('[data-act="aiAskPick"]')
+    expect(aiAskFocus('continue')).toBe('[data-act="aiAskOpen"]')
+    expect(aiAskFocus('skip')).toBe('[data-act="aiAskOpen"]')
+    // an id that is not a category never becomes part of a selector
+    expect(aiAskFocus('pick', '"]x')).toBeNull()
+  })
+
+  it('the app puts the focus back after each card action', () => {
+    const src = readFileSync('public/js/app.js', 'utf8')
+    const fn = src.slice(src.indexOf('function aiAsk('))
+    expect(fn.slice(0, fn.search(/\r?\n\}\r?\n/))).toMatch(/aiAskFocus\(act, arg\)[\s\S]*\.focus\(\)/)
+  })
+
+  it('a focused scatter dot is visible (outline and a thicker ring)', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    expect(css).toMatch(/\.rd-scatter \[role=button\]:focus-visible circle\{[^}]*stroke:var\(--ink\)/)
+    expect(css).toMatch(/\.rd-scatter \[role=button\]\{cursor:pointer/)
   })
 })

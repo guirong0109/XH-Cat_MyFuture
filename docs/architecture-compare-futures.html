@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Futures News</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; min-height: 100vh; padding: 2rem; color: white; }
+    .container { max-width: 1280px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+    .pulse-dot { width: 12px; height: 12px; background: #22d3ee; border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
+    .subtitle { color: #94a3b8; font-size: 0.875rem; margin-left: 1.75rem; }
+    .diagram-container { background: rgba(15, 23, 42, 0.5); border-radius: 1rem; border: 1px solid #1e293b; padding: 1.5rem; overflow-x: auto; }
+    svg { width: 100%; min-width: 1000px; display: block; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .card { background: rgba(15, 23, 42, 0.5); border-radius: 0.75rem; border: 1px solid #1e293b; padding: 1.25rem; }
+    .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dot.cyan { background: #22d3ee; } .card-dot.rose { background: #fb7185; } .card-dot.amber { background: #fbbf24; }
+    .card h3 { font-size: 0.875rem; font-weight: 600; }
+    .card ul { list-style: none; color: #94a3b8; font-size: 0.75rem; }
+    .card li { margin-bottom: 0.375rem; }
+    .footer { text-align: center; margin-top: 1.5rem; color: #475569; font-size: 0.75rem; }
+    @media (max-width: 600px) { body { padding: 1rem; } .subtitle { margin-left: 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Compare Futures: AI News — Architecture (draft for owner approval)</h1>
+      </div>
+      <p class="subtitle">Branch claude/compare-futures · DeepSeek Search every 3 hours → rule checks → up to 25 items per study field → For you / Explore all</p>
+    </div>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1200 470" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+          </pattern>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+          </marker>
+          <marker id="arrowcyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+          </marker>
+        </defs>
+        <rect width="1200" height="470" fill="url(#grid)"/>
+
+        <!-- Lane headers -->
+        <g fill="#64748b" font-size="9" font-weight="600" letter-spacing="1">
+          <text x="120" y="40" text-anchor="middle">SOURCES</text>
+          <text x="585" y="40" text-anchor="middle">SERVER · server/news + shared/news (pure)</text>
+          <text x="1062" y="40" text-anchor="middle">BROWSER</text>
+        </g>
+
+        <!-- Server boundary -->
+        <rect x="250" y="52" width="670" height="350" rx="12" fill="none" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="260" y="392" fill="#fbbf24" font-size="8">Same Node/Express app · DEEPSEEK_API_KEY in server secrets only · no profile data on the server</text>
+
+        <!-- Browser boundary -->
+        <rect x="935" y="52" width="255" height="350" rx="12" fill="none" stroke="#22d3ee" stroke-width="1" stroke-dasharray="8,4"/>
+        <text x="945" y="392" fill="#22d3ee" font-size="8">Profile never leaves the browser</text>
+
+        <!-- ===== Arrows ===== -->
+        <g stroke="#64748b" stroke-width="1.3" fill="none" marker-end="url(#arrowhead)">
+          <path d="M275 108 L222 108"/>
+          <path d="M220 132 L273 132"/>
+          <path d="M220 290 L273 290"/>
+          <path d="M367 245 L367 172"/>
+          <path d="M460 120 L493 120"/>
+          <path d="M680 120 L713 120"/>
+          <path d="M807 170 L807 243"/>
+        </g>
+        <g stroke="#22d3ee" stroke-width="1.3" fill="none" marker-end="url(#arrowcyan)">
+          <path d="M900 290 L943 290"/>
+          <path d="M1062 172 L1062 243"/>
+        </g>
+        <g fill="#94a3b8" font-size="8">
+          <text x="226" y="102">query</text>
+          <text x="226" y="146">results</text>
+          <text x="226" y="284">words</text>
+          <text x="373" y="212">10 searches</text>
+          <text x="373" y="223">per run</text>
+          <text x="813" y="212">kept lists</text>
+          <text x="905" y="284">JSON</text>
+          <text x="1068" y="212">broad field</text>
+          <text x="1068" y="223">codes</text>
+        </g>
+
+        <!-- ===== Sources ===== -->
+        <rect x="20" y="70" width="200" height="100" rx="8" fill="rgba(251,113,133,0.10)" stroke="#fb7185"/>
+        <text x="120" y="94" text-anchor="middle" fill="white" font-size="11" font-weight="600">DeepSeek Search API</text>
+        <text x="120" y="112" text-anchor="middle" fill="#94a3b8" font-size="8">POST api.deepseek.com</text>
+        <text x="120" y="124" text-anchor="middle" fill="#94a3b8" font-size="8">/v1/tools/search</text>
+        <text x="120" y="142" text-anchor="middle" fill="#fb7185" font-size="8">PAID · US$0.75 per 1,000</text>
+        <text x="120" y="154" text-anchor="middle" fill="#fb7185" font-size="8">≈ US$1.80 a month</text>
+
+        <rect x="20" y="245" width="200" height="90" rx="8" fill="rgba(148,163,184,0.08)" stroke="#64748b"/>
+        <text x="120" y="268" text-anchor="middle" fill="white" font-size="11" font-weight="600">data/news/fields.json</text>
+        <text x="120" y="286" text-anchor="middle" fill="#94a3b8" font-size="8">10 ISCED-F 2013 broad fields</text>
+        <text x="120" y="298" text-anchor="middle" fill="#94a3b8" font-size="8">01–10 · title + search words</text>
+        <text x="120" y="316" text-anchor="middle" fill="#94a3b8" font-size="8">SOURCES.md + manifest hash</text>
+
+        <!-- ===== Server row 1 ===== -->
+        <rect x="275" y="70" width="185" height="100" rx="8" fill="rgba(34,211,238,0.08)" stroke="#22d3ee"/>
+        <text x="367" y="94" text-anchor="middle" fill="white" font-size="11" font-weight="600">Search client</text>
+        <text x="367" y="110" text-anchor="middle" fill="#94a3b8" font-size="8">server/news/deepseek.js</text>
+        <text x="367" y="126" text-anchor="middle" fill="#94a3b8" font-size="8">"artificial intelligence"</text>
+        <text x="367" y="138" text-anchor="middle" fill="#94a3b8" font-size="8">+ words after:30d lang:en</text>
+        <text x="367" y="154" text-anchor="middle" fill="#94a3b8" font-size="8">count 50 · retry once</text>
+
+        <rect x="495" y="70" width="185" height="100" rx="8" fill="rgba(34,211,238,0.08)" stroke="#22d3ee"/>
+        <text x="587" y="94" text-anchor="middle" fill="white" font-size="11" font-weight="600">Usable rules</text>
+        <text x="587" y="110" text-anchor="middle" fill="#94a3b8" font-size="8">shared/news (pure)</text>
+        <text x="587" y="126" text-anchor="middle" fill="#94a3b8" font-size="8">title · http(s) link · date</text>
+        <text x="587" y="138" text-anchor="middle" fill="#94a3b8" font-size="8">≤ 30 days · repeats out</text>
+        <text x="587" y="154" text-anchor="middle" fill="#94a3b8" font-size="8">merge · newest first · top 25</text>
+
+        <rect x="715" y="70" width="185" height="100" rx="8" fill="rgba(148,163,184,0.08)" stroke="#64748b"/>
+        <text x="807" y="94" text-anchor="middle" fill="white" font-size="11" font-weight="600">News store</text>
+        <text x="807" y="110" text-anchor="middle" fill="#94a3b8" font-size="8">R2 news/latest.json</text>
+        <text x="807" y="122" text-anchor="middle" fill="#94a3b8" font-size="8">else data/cache/news/</text>
+        <text x="807" y="138" text-anchor="middle" fill="#94a3b8" font-size="8">title · url · site · date</text>
+        <text x="807" y="150" text-anchor="middle" fill="#94a3b8" font-size="8">snippet · foundAt</text>
+        <text x="807" y="162" text-anchor="middle" fill="#94a3b8" font-size="8">last good list per field</text>
+
+        <!-- ===== Server row 2 ===== -->
+        <rect x="275" y="245" width="185" height="90" rx="8" fill="rgba(251,191,36,0.08)" stroke="#fbbf24"/>
+        <text x="367" y="268" text-anchor="middle" fill="white" font-size="11" font-weight="600">Refresh timer</text>
+        <text x="367" y="284" text-anchor="middle" fill="#94a3b8" font-size="8">server/news/service.js</text>
+        <text x="367" y="298" text-anchor="middle" fill="#94a3b8" font-size="8">every 3 h · at start if due</text>
+        <text x="367" y="310" text-anchor="middle" fill="#94a3b8" font-size="8">late request wakes it</text>
+        <text x="367" y="324" text-anchor="middle" fill="#fbbf24" font-size="8">cap 10/run · 80/24 h</text>
+
+        <rect x="495" y="245" width="185" height="90" rx="8" fill="rgba(251,113,133,0.06)" stroke="#fb7185" stroke-dasharray="4,3"/>
+        <text x="587" y="268" text-anchor="middle" fill="white" font-size="11" font-weight="600">When it fails</text>
+        <text x="587" y="284" text-anchor="middle" fill="#94a3b8" font-size="8">keep last list + note</text>
+        <text x="587" y="298" text-anchor="middle" fill="#94a3b8" font-size="8">fields independent</text>
+        <text x="587" y="310" text-anchor="middle" fill="#94a3b8" font-size="8">401/402 → stop, log code</text>
+        <text x="587" y="324" text-anchor="middle" fill="#94a3b8" font-size="8">no key → news off</text>
+
+        <rect x="715" y="245" width="185" height="90" rx="8" fill="rgba(34,211,238,0.08)" stroke="#22d3ee"/>
+        <text x="807" y="268" text-anchor="middle" fill="white" font-size="11" font-weight="600">GET /api/news</text>
+        <text x="807" y="284" text-anchor="middle" fill="#94a3b8" font-size="8">server/news/routes.js</text>
+        <text x="807" y="298" text-anchor="middle" fill="#94a3b8" font-size="8">no input · no user data</text>
+        <text x="807" y="310" text-anchor="middle" fill="#94a3b8" font-size="8">all 10 lists + times</text>
+        <text x="807" y="322" text-anchor="middle" fill="#94a3b8" font-size="8">+ rules + next run</text>
+
+        <!-- ===== Browser ===== -->
+        <rect x="945" y="70" width="235" height="100" rx="8" fill="rgba(34,211,238,0.06)" stroke="#22d3ee"/>
+        <text x="1062" y="94" text-anchor="middle" fill="white" font-size="11" font-weight="600">Profile (browser)</text>
+        <text x="1062" y="112" text-anchor="middle" fill="#94a3b8" font-size="8">education.records[].field.code</text>
+        <text x="1062" y="126" text-anchor="middle" fill="#94a3b8" font-size="8">first 2 digits → 01–10</text>
+        <text x="1062" y="140" text-anchor="middle" fill="#94a3b8" font-size="8">00 / 99 ignored</text>
+        <text x="1062" y="156" text-anchor="middle" fill="#94a3b8" font-size="8">never sent anywhere</text>
+
+        <rect x="945" y="245" width="235" height="125" rx="8" fill="rgba(34,211,238,0.12)" stroke="#22d3ee"/>
+        <text x="1062" y="268" text-anchor="middle" fill="white" font-size="11" font-weight="600">#futures · AI news</text>
+        <text x="1062" y="286" text-anchor="middle" fill="#22d3ee" font-size="9">For you │ Explore all</text>
+        <text x="1062" y="304" text-anchor="middle" fill="#94a3b8" font-size="8">source line: DeepSeek Search,</text>
+        <text x="1062" y="316" text-anchor="middle" fill="#94a3b8" font-size="8">query, updated, next refresh, rules</text>
+        <text x="1062" y="332" text-anchor="middle" fill="#94a3b8" font-size="8">item: headline link · site · date</text>
+        <text x="1062" y="344" text-anchor="middle" fill="#94a3b8" font-size="8">· snippet (plain text)</text>
+        <text x="1062" y="360" text-anchor="middle" fill="#94a3b8" font-size="8">EN · BM · 中文 interface</text>
+
+        <!-- Boundary note -->
+        <text x="600" y="440" text-anchor="middle" fill="#64748b" font-size="9">Reading only: never changes Skill Match, Overall match, bands, Radar or SDG · no DeepSeek chat model</text>
+      </svg>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-header"><div class="card-dot cyan"></div><h3>Usable result (N4, N5)</h3></div>
+        <ul>
+          <li>• Has a title</li>
+          <li>• http or https link with a host</li>
+          <li>• Publish date present, not in the future, within 30 days</li>
+          <li>• Repeats removed (same link or same headline)</li>
+          <li>• Merged with the kept list, newest first, top 25 per field</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot amber"></div><h3>Refresh and cost (N1, N6)</h3></div>
+        <ul>
+          <li>• 10 searches per run, every 3 hours</li>
+          <li>• Hard caps: 10 per run, 80 per 24 hours</li>
+          <li>• US$0.75 per 1,000 searches → about US$1.80 a month</li>
+          <li>• Failed / empty searches not charged</li>
+          <li>• Owner gives the key and the OK before the first real search</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-dot rose"></div><h3>Boundaries</h3></div>
+        <ul>
+          <li>• No profile data to the server or DeepSeek</li>
+          <li>• Key in server secrets only; never in logs or replies</li>
+          <li>• Only title, link, site, date, snippet kept; no article text</li>
+          <li>• DeepSeek text shown as plain text</li>
+          <li>• English news only; scenario table not in this spec (N8)</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="footer">Spec: docs/superpowers/specs/2026-10-31-compare-futures-news-design.md · 31 Oct 2026</p>
+  </div>
+</body>
+</html>

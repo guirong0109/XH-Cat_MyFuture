@@ -2649,6 +2649,11 @@
       "time": "31 Oct",
       "step": "Merge main into career-matching",
       "detail": "Owner asked for main's new CV screen design on this branch. No conflicts; this branch keeps its detailed HANDOVER.md and CLAUDE.md. npm test 1425 passed (one earlier run had a reextract test time out under load; it passes alone and on the rerun); checked in the browser: new access screen, Career matching screen, /api/matching answers"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Compare futures: AI news design written",
+      "detail": "New branch claude/compare-futures from career-matching (d82267e). Owner approved the design in chat: DeepSeek Search API every 3 hours, 10 ISCED-F broad study fields, rule checks only, up to 25 items per field, For you from the profile in the browser, Explore all. Spec docs/superpowers/specs/2026-10-31-compare-futures-news-design.md and diagram docs/architecture-compare-futures.html wait for owner review. Cost about US$1.80 a month; no real search until the owner gives the key and the OK."
     }
   ]
 }

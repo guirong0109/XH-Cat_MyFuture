@@ -9,3 +9,4 @@ data/ai/* text eol=lf
 pipeline/fetch_radar_bridge.py text eol=lf
 shared/radar/chain.js text eol=lf
 tests/radar/chain.test.js text eol=lf
+pipeline/tests/test_radar_bridge.py text eol=lf

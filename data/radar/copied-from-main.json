@@ -13,6 +13,7 @@
     "data/ai/ilo_wp140.tsv": "0f954dbbf77b4f93d0299b0785cd9841decef56c16a6e7afdb56c33c82d17422",
     "data/ai/manifest.json": "04069719d8fe7f7518e1152fe02fd2620d5d858f181008f51dc938e1f4fb9d3a",
     "shared/radar/chain.js": "faa121850dfc40b974312f20b4af94517d49a030dbb982c857d785c482630841",
-    "tests/radar/chain.test.js": "02e8675b4bd4c3820896d5d298fd8183f484a57a7a7d2c0a6298e2a78c8059fb"
+    "tests/radar/chain.test.js": "02e8675b4bd4c3820896d5d298fd8183f484a57a7a7d2c0a6298e2a78c8059fb",
+    "pipeline/tests/test_radar_bridge.py": "97839e405172bc89c2be946de9e39b538bd800fae56fbaa27ed1ab8a77bf50af"
   }
 }

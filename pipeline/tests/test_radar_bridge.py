@@ -7,7 +7,7 @@ import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from fetch_radar_bridge import build_bridge  # noqa: E402
+from fetch_radar_bridge import build_bridge, STEPS  # noqa: E402
 
 ONET_SOC = (
     "O*NET-SOC 2019 Code,O*NET-SOC 2019 Title,2018 SOC Code,2018 SOC Title\n"
@@ -68,8 +68,38 @@ class BuildBridgeTest(unittest.TestCase):
 
     def test_nothing_present_gives_a_bridge_of_pending_steps(self):
         bridge = build_bridge(self.dir, now="2026-10-30")
-        self.assertEqual([s["status"] for s in bridge["steps"]], ["pending"] * 4)
+        self.assertEqual([s["status"] for s in bridge["steps"]], ["pending"] * 5)
         json.dumps(bridge)
+
+    def test_masco_step_pending_without_isco_file(self):
+        bridge = build_bridge(self.dir, now="2026-10-30", emasco_codes=["2512-01"])
+        item = step(bridge, "masco2020_unit_to_isco08")
+        self.assertEqual(item["status"], "pending")
+        self.assertEqual(item["pendingReason"], "waits for the ISCO-08 code list in the BLS ISCO file")
+        self.assertEqual(item["links"], {})
+        self.assertEqual(item["method"], "same_code")
+        self.assertEqual(item["label"], "code match, not an official table")
+        self.assertEqual(item["from"], {"system": "MASCO", "version": "2020"})
+        self.assertEqual(item["to"], {"system": "ISCO-08", "version": "2008"})
+        self.assertIsNone(item["source"]["file"])
+        self.assertIsNone(item["source"]["sha256"])
+        self.assertEqual(item["source"]["url"], "https://jtksm.gov.my/sites/default/files/2022-12/MASCO_2020_BI_Edaran.pdf")
+
+    def test_masco_step_same_code_only_for_isco_codes(self):
+        self.put("isco_soc_crosswalk.csv", ISCO_SOC)
+        bridge = build_bridge(self.dir, now="2026-10-30", emasco_codes=["2512-01", "1611-01", "2512-02"])
+        item = step(bridge, "masco2020_unit_to_isco08")
+        self.assertEqual(item["status"], "built")
+        self.assertEqual(item["links"], {"2512": ["2512"]})
+        self.assertIsNone(item["pendingReason"])
+
+    def test_isco_file_name_variants(self):
+        for name in ("ISCO_SOC_Crosswalk.csv", "ISCO_SOC_Crosswalk.xlsx"):
+            self.assertIn(name.lower(), [n.lower() for n in STEPS[2][3]])
+        self.put("ISCO_SOC_Crosswalk.csv", ISCO_SOC)
+        bridge = build_bridge(self.dir, now="2026-10-30")
+        self.assertEqual(step(bridge, "soc2010_to_isco08")["status"], "built")
+        self.assertEqual(step(bridge, "soc2010_to_isco08")["source"]["file"], "ISCO_SOC_Crosswalk.csv")
 
 
 if __name__ == "__main__":

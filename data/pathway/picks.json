@@ -1060,6 +1060,316 @@
       "body": "ACCA (Malaysia)",
       "link": "https://www.accaglobal.com/my/en/qualifications/glance/acca.html",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0111-1",
+      "field": "0111",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Guidance and Counseling)",
+      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
+      "mqrRef": null,
+      "link": "https://fpm.upsi.edu.my/guidance-counseling/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0112-1",
+      "field": "0112",
+      "kind": "accredited",
+      "name": "Bachelor of Early Childhood Education",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": "MQA/SWA11278",
+      "link": "https://education.um.edu.my/bachelor-of-early-childhood-education",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0112-2",
+      "field": "0112",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Early Childhood Education)",
+      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
+      "mqrRef": null,
+      "link": "https://fpm.upsi.edu.my/early-childhood-education/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0113-1",
+      "field": "0113",
+      "kind": "accredited",
+      "name": "Bachelor of Education with Honours in Special Education",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/special-education-bachelor-of-education-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0114-1",
+      "field": "0114",
+      "kind": "accredited",
+      "name": "Bachelor of Education Teaching English as a Second Language",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": "MQA/SWA11277",
+      "link": "https://study.um.edu.my/bachelor-of-teaching-english-as-second-language",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0114-2",
+      "field": "0114",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Teaching English as a Second Language) with Honours",
+      "institution": "Universiti Pendidikan Sultan Idris (UPSI)",
+      "mqrRef": null,
+      "link": "https://fbk.upsi.edu.my/?p=13199",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0211-1",
+      "field": "0211",
+      "kind": "accredited",
+      "name": "Bachelor of Arts (Honours) Digital Film Production",
+      "institution": "Sunway University (Sunway)",
+      "mqrRef": "MQA/FA6233",
+      "link": "https://sunwayuniversity.edu.my/soa/ba-film-production",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0212-1",
+      "field": "0212",
+      "kind": "accredited",
+      "name": "Bachelor of Fine Arts in Product Design with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://arts.usm.my/index.php/programmes/undergraduate/bfa-hons-product-design",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0213-1",
+      "field": "0213",
+      "kind": "accredited",
+      "name": "Bachelor of Arts (Honours) (Fine Arts)",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6211001-bachelor-of-arts-honours-fine-arts",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0214-1",
+      "field": "0214",
+      "kind": "accredited",
+      "name": "Bachelor of Textile Design (Honors)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://ad.uitm.edu.my/index.php?id=145&option=com_sppagebuilder&view=page",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0215-1",
+      "field": "0215",
+      "kind": "accredited",
+      "name": "Bachelor of Music",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-music",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0221-1",
+      "field": "0221",
+      "kind": "accredited",
+      "name": "Bachelor of Islamic Revealed Knowledge and Heritage (Honours)",
+      "institution": "International Islamic University Malaysia (IIUM)",
+      "mqrRef": null,
+      "link": "https://academy.iium.edu.my/bachelor-of-islamic-revealed-knowledge-and-heritage-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0222-1",
+      "field": "0222",
+      "kind": "accredited",
+      "name": "Bachelor Of Arts in History with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-arts-with-honours-history/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0222-2",
+      "field": "0222",
+      "kind": "accredited",
+      "name": "Bachelor of Arts History",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-arts-history",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0231-1",
+      "field": "0231",
+      "kind": "accredited",
+      "name": "Bachelor Of Arts in English Language studies with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/english-language-studies-bachelor-of-arts-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0232-1",
+      "field": "0232",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Linguistics with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-linguistic/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0232-2",
+      "field": "0232",
+      "kind": "accredited",
+      "name": "Bachelor of Arts English",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://study.um.edu.my/bachelor-of-arts-english",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0311-1",
+      "field": "0311",
+      "kind": "accredited",
+      "name": "Bachelor of Economic with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/economics-bachelor-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0312-1",
+      "field": "0312",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Political Science with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-political-science/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0313-1",
+      "field": "0313",
+      "kind": "accredited",
+      "name": "Bachelor of Social Science with Honors (Psychology)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA12413",
+      "link": "https://www.ukm.my/studyukm/?p=25637",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0314-1",
+      "field": "0314",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Antropology and Sociology with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/bachelor-of-social-sciences-with-honours-antropology-sociology/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0321-1",
+      "field": "0321",
+      "kind": "accredited",
+      "name": "Bachelor of Communication with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/undergraduate/undergraduate-malaysian?view=article&id=829&catid=64",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0322-1",
+      "field": "0322",
+      "kind": "accredited",
+      "name": "Bachelor of Information Science (Honours) Library Management",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12658/SWA12660/SWA12659",
+      "link": "https://fis.uitm.edu.my/component/sppagebuilder/page/230",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0412-1",
+      "field": "0412",
+      "kind": "accredited",
+      "name": "Bachelor of Finance (BFin)",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://fpe.um.edu.my/bachelor-of-finance",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0412-2",
+      "field": "0412",
+      "kind": "accredited",
+      "name": "Bachelor of Business Administration (Hons.) Finance",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba242-finance",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0413-1",
+      "field": "0413",
+      "kind": "accredited",
+      "name": "Bachelor of Management with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6345001-bachelor-of-management-honours-finance-international-business-marketing-operations-management-strategy-and-organisational-management-islamic-finance-business-analytics",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0414-1",
+      "field": "0414",
+      "kind": "accredited",
+      "name": "Bachelor of Business Administration (Hons.) Marketing",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba240-marketing",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0415-1",
+      "field": "0415",
+      "kind": "accredited",
+      "name": "Bachelor in Business Technology Management (Honours)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fbm.uitm.edu.my/index.php/ba232-office-systems-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0416-1",
+      "field": "0416",
+      "kind": "accredited",
+      "name": "Bachelor of Entrepreneurship (Retailing) with Honours",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": null,
+      "link": "https://fkp.umk.edu.my/undergraduate.cfm",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0421-1",
+      "field": "0421",
+      "kind": "accredited",
+      "name": "Bachelor of Laws",
+      "institution": "Universiti Malaya (UM)",
+      "mqrRef": null,
+      "link": "https://law.um.edu.my/llb",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0421-2",
+      "field": "0421",
+      "kind": "accredited",
+      "name": "Bachelor Of Law with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": null,
+      "link": "https://www.ukm.my/studyukm/law-bachelor-hons/",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

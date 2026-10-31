@@ -6,3 +6,23 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 
 | key | name | sites searched | date | note |
 |---|---|---|---|---|
+| field:0000 | Generic programmes and qualifications not further defined | residual category; general web search, UKM/UM/USM programme lists | 2026-10-31 | no programme is named under it |
+| field:0110 | Education not further defined | general web search, UKM/UM/UPSI faculty programme lists | 2026-10-31 | residual category; fitting programmes sit in 0111-0114 |
+| field:0119 | Education not elsewhere classified | general web search, UKM/UM/UPSI faculty programme lists | 2026-10-31 | residual category; no programme clearly in it |
+| field:0188 | Inter-disciplinary programmes and qualifications involving education | general web search | 2026-10-31 | no such programme found |
+| field:0200 | Arts and humanities not further defined | general web search | 2026-10-31 | residual category; no programme named so |
+| field:0210 | Arts not further defined | general web search, USM/UiTM arts faculty lists | 2026-10-31 | residual category; fitting programmes sit in 0211-0215 |
+| field:0219 | Arts not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0220 | Humanities (except languages) not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0221-0223 |
+| field:0223 | Philosophy and ethics | general web search (Malaysian philosophy degree), MyCAS listing | 2026-10-31 | no standalone philosophy degree found at a public university |
+| field:0229 | Humanities (except languages) not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0230 | Languages not further defined | general web search, UM/UPM/UKM language lists | 2026-10-31 | residual category; fitting programmes sit in 0231-0232 |
+| field:0239 | Languages not elsewhere classified | general web search, UM/UPM/UKM language lists | 2026-10-31 | no programme clearly in it |
+| field:0288 | Inter-disciplinary programmes and qualifications involving arts and humanities | general web search | 2026-10-31 | no such programme found |
+| field:0310 | Social and behavioural sciences not further defined | general web search, UKM/USM social science lists | 2026-10-31 | residual category; fitting programmes sit in 0311-0314 |
+| field:0319 | Social and behavioural sciences not elsewhere classified | general web search, UKM social science faculty list | 2026-10-31 | no programme clearly in it |
+| field:0388 | Inter-disciplinary programmes and qualifications involving social sciences, journalism and information | general web search | 2026-10-31 | no such programme found |
+| field:0410 | Business and administration not further defined | general web search, UiTM/USM business lists | 2026-10-31 | residual category; fitting programmes sit in 0411-0416 |
+| field:0417 | Work skills | general web search, UiTM diploma lists | 2026-10-31 | no degree programme clearly in it |
+| field:0419 | Business and administration not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0488 | Inter-disciplinary programmes and qualifications involving business, administration and law | general web search | 2026-10-31 | no such programme found |

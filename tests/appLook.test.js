@@ -52,7 +52,6 @@ describe('the app screens in the landing page look', () => {
     const html = welcome({ t, state: { lang: 'en' } })
     expect(html).not.toContain('data-act="lang"')
     expect(html).not.toContain('chooseLang')
-    expect(html).toContain('data-go="access"')
   })
 
   it('the CV goes into the ATM, and the reading and the draft print out as receipts', () => {

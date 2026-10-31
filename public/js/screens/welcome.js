@@ -1,4 +1,4 @@
-import { btn, esc } from '../ui.js'
+import { esc } from '../ui.js'
 
 // The first question: for myself (the individual journey) or for my organisation (HR, TVET; a preview for now).
 const USES = [['personal', 'usePersonal', 'usePersonalText'], ['org', 'useOrg', 'useOrgText']]
@@ -9,7 +9,6 @@ export default ({ t }) => `
   <h1>${esc(t('hero'))}</h1><p class="lead">${esc(t('heroSub'))}</p>
   <p class="crumb">${esc(t('useTitle'))}</p>
   <div class="grid">${USES.map(([k, n, d]) => `<button class="choice" data-act="use" data-arg="${k}"><b>${esc(t(n))}</b><span class="small muted">${esc(t(d))}</span></button>`).join('')}</div>
-  <div class="row" style="margin-top:14px">${btn(t('signin'), { go: 'access', kind: 'ghost' })}</div>
  </div>
  <div class="slot"><div class="receipt">
   <div class="tiny muted" style="margin-bottom:6px">${esc(t('atmNote'))}</div>

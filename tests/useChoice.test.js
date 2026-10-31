@@ -13,6 +13,8 @@ describe('first question: personal or organisation', () => {
     expect(html).toContain('data-act="use" data-arg="personal"')
     expect(html).toContain('data-act="use" data-arg="org"')
     expect(html).not.toContain('>start')
+    expect(html).not.toContain('signin')
+    expect(html).not.toContain('data-go="access"')
     for (const lang of ['en', 'ms', 'zh']) {
       const page = welcome({ t: (key, vars) => translate(lang, key, vars) })
       for (const key of ['useTitle', 'usePersonal', 'usePersonalText', 'useOrg', 'useOrgText']) expect(page).toContain(translate(lang, key))

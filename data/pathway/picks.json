@@ -1062,6 +1062,16 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0110-1",
+      "field": "0110",
+      "kind": "accredited",
+      "name": "Bachelor of Education (Hons)",
+      "institution": "SEGi University",
+      "mqrRef": "MQA/FA0044",
+      "link": "https://university.segi.edu.my/course/bachelor-of-education-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0111-1",
       "field": "0111",
       "kind": "accredited",
@@ -1122,6 +1132,36 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0119-1",
+      "field": "0119",
+      "kind": "accredited",
+      "name": "Master in Education Management",
+      "institution": "INTI International University",
+      "mqrRef": "MQA/FA11617",
+      "link": "https://newinti.edu.my/programme/master-in-education-management/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0188-1",
+      "field": "0188",
+      "kind": "accredited",
+      "name": "Bachelor of Technology with Education (Design and Technology) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0784",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-technology-with-education-design-and-technology-with-honours/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0210-1",
+      "field": "0210",
+      "kind": "accredited",
+      "name": "CREATIVE INDUSTRY MANAGEMENT",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12604",
+      "link": "https://fita.uitm.edu.my/index.php/academic/creative-industry-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0211-1",
       "field": "0211",
       "kind": "accredited",
@@ -1169,6 +1209,16 @@
       "institution": "Universiti Malaya (UM)",
       "mqrRef": null,
       "link": "https://study.um.edu.my/bachelor-of-music",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0220-1",
+      "field": "0220",
+      "kind": "accredited",
+      "name": "Bachelor in Liberal Arts (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA11176",
+      "link": "https://www.msu.edu.my/school-education-social-sciences/bachelor-liberal-arts",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1232,6 +1282,36 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0239-1",
+      "field": "0239",
+      "kind": "accredited",
+      "name": "Master of Language in Communication and Digital Culture",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA16766",
+      "link": "https://humanities.utm.my/programs/master-of-language-in-communication-and-digital-culture/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0288-1",
+      "field": "0288",
+      "kind": "accredited",
+      "name": "Bachelor of Arts in Linguistics and Information Technology (Honours)",
+      "institution": "Universiti Utara Malaysia (UUM)",
+      "mqrRef": "MQA/FA18125",
+      "link": "https://www.uum.edu.my/admissions/application-guidelines/undergraduate-local/local/bachelor-of-arts-in-linguistics-and-information-technology-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0310-1",
+      "field": "0310",
+      "kind": "accredited",
+      "name": "Bachelor Of Social Sciences in Development Science with Honours",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA12409",
+      "link": "https://www.ukm.my/studyukm/developmental-science-bachelor-of-social-sciences-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0311-1",
       "field": "0311",
       "kind": "accredited",
@@ -1289,6 +1369,26 @@
       "institution": "Universiti Teknologi MARA (UiTM)",
       "mqrRef": "MQA/SWA12658/SWA12660/SWA12659",
       "link": "https://fis.uitm.edu.my/component/sppagebuilder/page/230",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0388-1",
+      "field": "0388",
+      "kind": "accredited",
+      "name": "BSc (Hons) in Applied Psychology and Management",
+      "institution": "University of Nottingham Malaysia (UNM)",
+      "mqrRef": "MQA/SWA0082",
+      "link": "https://www.nottingham.edu.my/ugstudy/course/applied-psychology-and-management-bsc-hons",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0410-1",
+      "field": "0410",
+      "kind": "accredited",
+      "name": "Diploma In Business Studies",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12643",
+      "link": "https://fbm.uitm.edu.my/index.php/ba111-diploma-in-business-studies",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1352,6 +1452,26 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0417-1",
+      "field": "0417",
+      "kind": "accredited",
+      "name": "Bachelor of Social Sciences in Industrial Relations and Employment with Honours",
+      "institution": "Universiti Malaysia Sarawak (UNIMAS)",
+      "mqrRef": "MQA/FA10754",
+      "link": "https://www.fssh.unimas.my/index.php/academic/courses-list/industrial-relations-and-employment",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0419-1",
+      "field": "0419",
+      "kind": "accredited",
+      "name": "Bachelor of Industrial Technology Management with Honours",
+      "institution": "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)",
+      "mqrRef": "MQA/FA2219",
+      "link": "https://admission.umpsa.edu.my/undergraduate-study/management/bachelor-of-industrial-technology-management",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0421-1",
       "field": "0421",
       "kind": "accredited",
@@ -1369,6 +1489,26 @@
       "institution": "Universiti Kebangsaan Malaysia (UKM)",
       "mqrRef": null,
       "link": "https://www.ukm.my/studyukm/law-bachelor-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0488-1",
+      "field": "0488",
+      "kind": "accredited",
+      "name": "Bachelor of Technology Management (Production and Operation) with Honours",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA10043",
+      "link": "https://study.uthm.edu.my/en/programmes-and-courses/list-of-bachelor-degree?view=article&id=87%3Abachelor-of-technology-management-production-and-operation-with-honours&catid=10",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0500-1",
+      "field": "0500",
+      "kind": "accredited",
+      "name": "Diploma in Applied Sciences",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA0722",
+      "link": "https://ceds.uthm.edu.my/program/program-ditawarkan/diploma-sains-gunaan",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1392,6 +1532,26 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0519-1",
+      "field": "0519",
+      "kind": "accredited",
+      "name": "Bachelor of Applied Science (Natural Resources Science) With Honours",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": "MQA/FA10465",
+      "link": "https://fsb.umk.edu.my/program-details.cfm?ref=1342&name=Bachelor-of-Applied-Science-(Natural-Resources-Science)-With-Honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0520-1",
+      "field": "0520",
+      "kind": "accredited",
+      "name": "Master of Environment",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0440",
+      "link": "https://forenv.upm.edu.my/academic_and_student_affairs/postgraduate/master_of_environment-56585?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0521-1",
       "field": "0521",
       "kind": "accredited",
@@ -1409,6 +1569,16 @@
       "institution": "Universiti Malaysia Sabah (UMS)",
       "mqrRef": null,
       "link": "https://www.ums.edu.my/fpt/index.php/what-we-offer/undergraduate/uh6421001-conservation-biology",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0530-1",
+      "field": "0530",
+      "kind": "accredited",
+      "name": "Bachelor of Science",
+      "institution": "Monash University Malaysia",
+      "mqrRef": "MQA/SWA0129",
+      "link": "https://www.monash.edu.my/study/undergraduate/science/bachelor-science",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1451,6 +1621,26 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0539-1",
+      "field": "0539",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Material Physics with Honours",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0608",
+      "link": "https://science.upm.edu.my/kandungan/bacelor_sains_fizik_bahan_dengan_kepujian-59621?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0540-1",
+      "field": "0540",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Industrial Mathematics) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA0765",
+      "link": "https://admission.utm.my/new2024/programmes/bachelor-of-science-industrial-mathematics-with-honours-2/",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0541-1",
       "field": "0541",
       "kind": "accredited",
@@ -1481,6 +1671,46 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0588-1",
+      "field": "0588",
+      "kind": "accredited",
+      "name": "Bachelor of Science With Honours (Materials Science)",
+      "institution": "Universiti Kebangsaan Malaysia (UKM)",
+      "mqrRef": "MQA/SWA14102",
+      "link": "https://www.ukm.my/studyukm/materials-science-bachelor-of-science-hons/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0599-1",
+      "field": "0599",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Mathematics with Education (Honours)",
+      "institution": "Universiti Putra Malaysia (UPM)",
+      "mqrRef": "MQA/SWA0613",
+      "link": "https://science.upm.edu.my/content/bachelor_of_science_in_mathematics_with_education_honours-59634?L=en",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0610-1",
+      "field": "0610",
+      "kind": "accredited",
+      "name": "Master of Digital Transformation Coursework Mode",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": "MQA/SWA16009",
+      "link": "https://cs.usm.my/index.php/admissions-academics/postgraduate/master-of-digital-transformation-coursework-mode",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0611-1",
+      "field": "0611",
+      "kind": "accredited",
+      "name": "BACHELOR OF INFORMATION TECHNOLOGY (HONS.) / SARJANA MUDA TEKNOLOGI MAKLUMAT (KEPUJIAN)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12009",
+      "link": "https://fskm.uitm.edu.my/v5/en/component/content/article/649-cs240-bachelor-of-information-technology-hons-sarjana-muda-teknologi-maklumat-kepujian-2?catid=72&Itemid=154",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0612-1",
       "field": "0612",
       "kind": "accredited",
@@ -1500,6 +1730,26 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0688-1",
+      "field": "0688",
+      "kind": "accredited",
+      "name": "Digital Health",
+      "institution": "IMU University",
+      "mqrRef": "MQA/SWA14380",
+      "link": "https://imu.edu.my/academics/undergraduate/digital-health/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0710-1",
+      "field": "0710",
+      "kind": "accredited",
+      "name": "Bachelor of Bioindustrial Technology With Honours",
+      "institution": "Universiti Malaysia Kelantan (UMK)",
+      "mqrRef": "MQA/FA15634",
+      "link": "https://fbkt.umk.edu.my/program-details.cfm?ref=1483&name=Bachelor-of-Bioindustrial-Technology-With-Honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0711-1",
       "field": "0711",
       "kind": "accredited",
@@ -1516,6 +1766,16 @@
       "name": "Professional Engineer with Practising Certificate (PEPC)",
       "body": "Board of Engineers Malaysia (BEM)",
       "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0712-1",
+      "field": "0712",
+      "kind": "accredited",
+      "name": "BACHELOR OF TECHNOLOGY (ENVIRONMENTAL) WITH HONOURS",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": "MQA/FA4767",
+      "link": "https://www.umt.edu.my/sarjana-muda-teknologi-alam-sekitar-dengan-kepujian-ftkk/",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1625,6 +1885,16 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0719-1",
+      "field": "0719",
+      "kind": "accredited",
+      "name": "MASTER OF FORENSIC ENGINEERING",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/SWA13860",
+      "link": "https://odl.utm.my/master-of-forensic-engineering/",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0721-1",
       "field": "0721",
       "kind": "accredited",
@@ -1645,6 +1915,16 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0723-1",
+      "field": "0723",
+      "kind": "accredited",
+      "name": "Diploma in Textile Technology",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": "MQA/SWA12460",
+      "link": "https://fsg.uitm.edu.my/index.php/component/content/article?layout=edit&id=187&Itemid=101",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0724-1",
       "field": "0724",
       "kind": "accredited",
@@ -1661,6 +1941,16 @@
       "name": "Professional Engineer with Practising Certificate (PEPC)",
       "body": "Board of Engineers Malaysia (BEM)",
       "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0729-1",
+      "field": "0729",
+      "kind": "accredited",
+      "name": "Bachelor of Degree in Industrial Machining with Honours",
+      "institution": "Universiti Tun Hussein Onn Malaysia (UTHM)",
+      "mqrRef": "MQA/FA12561",
+      "link": "https://study.uthm.edu.my/en/programmes-and-courses/list-of-bachelor-degree?view=article&id=86%3Abachelor-of-technology-in-industrial-machining-with-honours&catid=30",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1713,6 +2003,16 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0788-1",
+      "field": "0788",
+      "kind": "accredited",
+      "name": "B.Eng (Hons.) Mechatronics Engineering",
+      "institution": "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)",
+      "mqrRef": "MQA/FA10801",
+      "link": "https://admission.umpsa.edu.my/undergraduate-study/engineering/06-b-eng-hons-mechatronics-engineering",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0811-1",
       "field": "0811",
       "kind": "accredited",
@@ -1760,6 +2060,16 @@
       "institution": "Universiti Malaysia Kelantan (UMK)",
       "mqrRef": null,
       "link": "https://fpv.umk.edu.my/program-details.cfm?ref=301&name=Doctor-of-Veterinary-Medicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0910-1",
+      "field": "0910",
+      "kind": "accredited",
+      "name": "Bachelor in Health Science Management (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA4944",
+      "link": "https://www.msu.edu.my/faculty-health-life-sciences/bachelor-health-science-management.php",
       "checkedAt": "2026-10-31"
     },
     {
@@ -1887,6 +2197,26 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0917-1",
+      "field": "0917",
+      "kind": "accredited",
+      "name": "BACHELOR OF MEDICINE IN TRADITIONAL CHINESE MEDICINE (HONOURS) 中医学专业（授予医学学士)",
+      "institution": "Xiamen University Malaysia",
+      "mqrRef": "MQA/FA5710",
+      "link": "https://www.xmu.edu.my/courses/bachelor-medicine-traditional-chinese-medicine-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0919-1",
+      "field": "0919",
+      "kind": "accredited",
+      "name": "Bachelor of Science (Honours) Biomedicine",
+      "institution": "Sunway University",
+      "mqrRef": "MQA/FA8832",
+      "link": "https://sunwayuniversity.edu.my/faculty-of-medical-and-life-sciences/courses/bachelor-of-science-honours-biomedicine",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0923-1",
       "field": "0923",
       "kind": "accredited",
@@ -1894,6 +2224,16 @@
       "institution": "Universiti Sains Malaysia (USM)",
       "mqrRef": null,
       "link": "https://admission.usm.my/undergraduate/undergraduate-malaysian?view=article&id=697:us6762001-sarjana-muda-kerja-sosial-kepujian-2&catid=73",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-1012-1",
+      "field": "1012",
+      "kind": "accredited",
+      "name": "Bachelor in Beauty and Hair Management (Honours)",
+      "institution": "Management and Science University (MSU)",
+      "mqrRef": "MQA/FA3821",
+      "link": "https://www.msu.edu.my/school-hospitality-creative-arts/bachelor-beauty-hair-management.php",
       "checkedAt": "2026-10-31"
     },
     {

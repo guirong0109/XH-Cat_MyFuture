@@ -943,7 +943,10 @@ describe('AI Impact card', () => {
     expect(aiRows(d)).toHaveLength(8)
     expect(aiRows(a)).toHaveLength(10)
     expect(aiRows(card(tab(acc(), { pages: { ai: 2 } })))).toHaveLength(1)
-    expect(d).toContain('<polygon')
+    // D40: a scatter, not a spider web
+    expect(d).toContain('class="rd-scatter"')
+    expect(d).not.toContain('class="rd-radar"')
+    expect(d).not.toContain('<polygon')
     expect(unesc(d)).toContain('Modify existing software to correct errors')
     expect(unesc(a)).not.toContain('Modify existing software to correct errors')
     expect(d).toContain(t('rdAiShown', { n: 8, total: 17 }))
@@ -962,13 +965,38 @@ describe('AI Impact card', () => {
     expect(html).toContain('https://doi.org/10.54394/HETP0387')
     expect(unesc(html)).toContain(t('rdAiExposure', { job: 'Software Developers', gradient: t('rdAiGrad_G3'), isco: '2512', title: row.title, mean: row.mean.toFixed(2) }))
   })
-  it('the nurse gets bars (no polygon) and Not exposed', () => {
+  it('the nurse (two tasks) gets a scatter with two dots, no bars, and Not exposed (D40)', () => {
     const html = card(tab(nurse()))
     expect(html).not.toContain('<polygon')
-    expect(html).toContain('class="rd-bars"')
+    expect(html).not.toContain('class="rd-bars"')
+    expect(html).toContain('class="rd-scatter"')
     expect(html).toContain(t('rdAiGrad_not_exposed'))
     expect(corners(html)).toHaveLength(2)
   })
+  it('a job with one task in the source gets a scatter with one dot (D40, Review Focus 5)', () => {
+    const counts = {}
+    for (const x of ai.tasks) counts[x.code] = (counts[x.code] ?? 0) + 1
+    const code = Object.keys(counts).sort().find((c) => counts[c] === 1)
+    expect(code).toBeTruthy()
+    const html = card(tab(prof(code)))
+    expect(html).toContain('class="rd-scatter"')
+    expect(corners(html)).toHaveLength(1)
+  })
+
+  it('the scatter dots carry the task text and numbers, the corner switch picks how many, and the legend explains both axes', () => {
+    const html = card(tab(acc(), { corners: { ai: 'all' } }))
+    const dots = [...html.matchAll(/<g role="button" tabindex="0" data-act="aiCorner" data-arg="(\d+)" aria-label="([^"]*)"/g)]
+    expect(dots).toHaveLength(11)
+    expect(unesc(dots[0][2])).toMatch(/^T1\. .+: AI does it [\d.]+% · AI helps [\d.]+% · /)
+    expect(unesc(html)).toContain(t('rdAiLegend'))
+    expect(t('rdAiLegend')).toContain('Not a score')
+    expect(unesc(html)).toContain(t('rdAiScHelps'))
+    // a scatter has dots, not corners: the switch says how many tasks are shown
+    expect(html).toContain(`<span class="small muted">${t('rdAiDots')}</span>`)
+    expect(html).not.toContain(`<span class="small muted">${t('rdCorners')}</span>`)
+    for (const lang of ['ms', 'zh']) expect(translate(lang, 'rdAiDots')).not.toBe('rdAiDots')
+  })
+
   it('two jobs show a switch with 2 buttons; a stale job index falls back to job 0', () => {
     const html = card(tab(pair()))
     expect(count(html, /data-act="aiJob"/g)).toBe(2)
@@ -1109,7 +1137,7 @@ describe('AI Impact card', () => {
   })
   it('T-prefix on corners and list rows; licences on the source line; usage text in the user language', () => {
     const html = card(tab(dev()))
-    expect(html).toMatch(/>T1 /)
+    expect(html).toContain('>T1</text>') // the scatter labels each dot with its number (D40); the text is in the list and the aria label
     expect(html).toContain('<span class="rd-rn">T1</span>')
     expect(html).toContain('aria-label="T1. ')
     expect(html).toContain(t('rdAiLicence'))

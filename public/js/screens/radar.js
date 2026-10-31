@@ -14,6 +14,7 @@ import { makeBridge } from '../../../shared/radar/bridge.js'
 import { makeChain } from '../../../shared/radar/chain.js'
 import { filterItems, profileJobs, skillCorners, taskCorners, usageText } from '../../../shared/radar/profileCharts.js'
 import { profileRadar } from '../components/charts/profileRadar.js'
+import { taskScatter } from '../components/charts/taskScatter.js'
 import { AI_TASK_IDS, askOf, canContinue, needsAsking } from '../../../shared/aiTasks.js'
 
 // ---------- reference data and relevance ----------
@@ -631,8 +632,6 @@ export function skillsChartCard({ t, state, data }) {
 // The numbers are shares of observed AI conversations (Anthropic Economic Index), not a forecast and not a score.
 
 const AI_CORNER_CHOICES = [8, 16, 'all']
-const AI_SCALE = { kind: 'linear', min: 0, max: 100 }
-const AI_RINGS = [{ value: 25, label: '25%' }, { value: 50, label: '50%', dashed: true }, { value: 75, label: '75%' }, { value: 100, label: '100%' }]
 const AEI_URL = 'https://huggingface.co/datasets/Anthropic/EconomicIndex'
 const ILO_URL = 'https://doi.org/10.54394/HETP0387'
 const JOB_SWITCH_MAX = 4 // more jobs than this (a field brings many) go in a drop-down, not a row of buttons
@@ -685,15 +684,16 @@ export function aiTasksCard({ t, state, data }) {
     const rowText = (it) => t('rdAiRow', { auto: it.automation, aug: it.augmentation, usage: usageText(it.usage) ?? t('rdAiUnder') })
     const points = numbered.slice(0, k).map((it) => ({
       id: String(it.n),
-      label: it.text,
-      value: it.automation,
-      valueText: `${it.automation}%`,
+      n: it.n,
+      text: it.text,
+      automation: it.automation,
+      usage: it.usage,
       aria: `T${it.n}. ${it.text}: ${rowText(it)}`,
     }))
     const seg = AI_CORNER_CHOICES.map((c) => `<button class="${choice === c ? 'on' : ''}" data-act="aiCorners" data-arg="${c}" aria-pressed="${choice === c}">${esc(c === 'all' ? t('rdCornersAll', { n: numbered.length }) : String(c))}</button>`).join('')
-    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdCorners'))}</span><span class="seg" role="group" aria-label="${esc(t('rdCorners'))}">${seg}</span>
+    chart = `<div class="rd-tools"><span class="small muted">${esc(t('rdAiDots'))}</span><span class="seg" role="group" aria-label="${esc(t('rdAiDots'))}">${seg}</span>
       <span class="tiny muted">${esc(t('rdAiShown', { n: numbered.length, total }))}</span></div>
-      <div class="rd-chart">${profileRadar({ items: points, scale: AI_SCALE, rings: AI_RINGS, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, colour: 'est', numbersOnlyAbove: 10, prefix: 'T', t })}</div>
+      <div class="rd-chart">${taskScatter({ items: points, act: 'aiCorner', label: `${t('rdAiChartTitle')} · ${jobName}`, t })}</div>
       <p class="tiny muted rd-legend-line">${esc(t('rdAiLegend'))}</p>`
     const pg = paged(t, 'ai', numbered, u.pages?.ai)
     list = `<ul class="rd-rank-list">${pg.slice.map((it) => `<li id="rd-ai-${it.n}" class="rd-row${u.aiHl === it.n ? ' hl' : ''}"><span class="rd-rn">T${it.n}</span>

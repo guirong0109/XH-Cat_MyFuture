@@ -34,3 +34,7 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0540 | Mathematics and statistics not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0541-0542 |
 | field:0588 | Inter-disciplinary programmes and qualifications involving natural sciences, mathematics and statistics | general web search | 2026-10-31 | no such programme found |
 | field:0599 | Natural sciences, mathematics and statistics not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0610 | Information and Communication Technologies (ICTs) not further defined | general web search, UTM/UKM/UUM computing faculty lists | 2026-10-31 | residual category; fitting programmes sit in 0612-0613 |
+| field:0611 | Computer use | general web search | 2026-10-31 | no degree programme is about computer use alone; it is a skill, not a programme |
+| field:0619 | Information and Communication Technologies (ICTs) not elsewhere classified | general web search, UKM/UUM/USM computing pages | 2026-10-31 | no programme clearly in it |
+| field:0688 | Inter-disciplinary programmes and qualifications involving Information and Communication Technologies | general web search | 2026-10-31 | no such programme found |

@@ -1479,6 +1479,25 @@
       "mqrRef": null,
       "link": "https://study.um.edu.my/bachelor-of-science-in-statistics",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0612-1",
+      "field": "0612",
+      "kind": "accredited",
+      "name": "Bachelor of Computer Science (Computer Networks & Security) with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://comp.utm.my/secrh/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0612-2",
+      "field": "0612",
+      "kind": "professional",
+      "name": "Professional Technologist (Ts.), ICT technology field",
+      "body": "Malaysia Board of Technologists (MBOT)",
+      "link": "https://www.mbot.org.my/registration/professional-technologists",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

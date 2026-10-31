@@ -470,6 +470,7 @@ const matchActions = {
     persist()
     render()
   },
+  mAskAi: () => { state.section = 5; persist(); go('form') },
   mReload: () => { matchFor = null; state.match = { ...matchUi(), error: null }; render() },
 }
 

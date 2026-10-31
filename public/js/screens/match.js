@@ -6,6 +6,7 @@ import { esc } from '../ui.js'
 import { safeUrl } from '../components/evidencePanel.js'
 import { fitChart } from '../components/fitChart.js'
 import { movedRoles } from '../../../shared/matching/outlook.js'
+import { sortValue } from '../../../shared/matching/overall.js'
 
 const BANDS = [1, 2, 3, 4]
 const BAND_TITLE = { 1: 'mtBand1', 2: 'mtBand2', 3: 'mtBand3', 4: 'mtBand4' }
@@ -82,7 +83,11 @@ export function stepText(t, step) {
 
 // ---------- the parts of a card ----------
 
-function sidePanel(t, role) {
+function sidePanel(t, role, scenario = 'moderate', knowHow = null) {
+  return `${skillBlock(t, role)}${aiTouchBlock(t, role, scenario)}${overallBlock(t, role, scenario, knowHow)}`
+}
+
+function skillBlock(t, role) {
   const sm = role.skillMatch
   const missing = role.unavailable?.missingStep
   if (!sm && missing) {
@@ -97,6 +102,37 @@ function sidePanel(t, role) {
     <div class="mt-pct">${esc(sm.percent)}%</div><div class="bar mt-bar"><i style="width:${pct}%"></i></div>
     <div class="small">${esc(t('mtSentence', { met: fmt1(sm.met), needed: fmt1(sm.needed), job: sm.onetTitle ?? sm.onetCode ?? '', percent: sm.percent }))}</div>
     <div class="tiny muted mt-gap"><span class="tag t-src">${esc(t('mtCalculated'))}</span> ${esc(t('mtFromOnet'))}</div>`
+}
+
+// Right column, under the Skill Match: how much AI touches the job in the scenario shown (an estimate, with its source and
+// the purple bar). No data -> said in words, no bar.
+function aiTouchBlock(t, role, scenario) {
+  const touch = role.ai?.[scenario]?.touchPct
+  const big = isNum(touch) ? `<div class="mt-aitouchpct">${esc(Math.round(touch))}%</div>` : ''
+  return `<div class="mt-aitouch"><div class="tiny muted">${esc(t('mtAiTouch'))}</div>${big}${aiCard(t, role, scenario, isNum(touch) ? touch : null)}</div>`
+}
+
+// Under the AI block: Overall match for the scenario (calculated, with the sum written out), or the button that asks the four
+// AI questions when there is none yet. A role with no Skill Match has no Overall.
+function overallBlock(t, role, scenario, knowHow) {
+  if (!role.skillMatch) return ''
+  const om = role.overallMatch?.[scenario]
+  if (om && isNum(om.percent)) {
+    const pct = Math.max(0, Math.min(100, om.percent))
+    const prov = om.provisional ? ` <span class="tag t-self">${esc(t('mtProvTag'))}</span>` : ''
+    const kh = isNum(knowHow?.percent) ? knowHow.percent : isNum(om.knowHow?.percent) ? om.knowHow.percent : om.knowHow
+    const how = om.noAiData || !isNum(om.touch)
+      ? esc(t('mtOverallNoAi'))
+      : esc(t('mtOverallSum', { skill: om.skill, rest: (1 - om.touch).toFixed(2), know: kh, touch: om.touch.toFixed(2), percent: om.percent }))
+    return `<div class="mt-overall"><div class="tiny muted">${esc(t('mtOverall'))} <span class="tag t-src">${esc(t('mtCalculated'))}</span>${prov}</div>
+      <div class="mt-overallpct">${esc(om.percent)}%</div><div class="bar mt-bar mt-overallbar"><i style="width:${pct}%"></i></div>
+      <div class="tiny muted">${how}</div></div>`
+  }
+  if (!om && !knowHow) {
+    return `<div class="mt-overall mt-overallask"><div class="tiny muted">${esc(t('mtOverall'))}</div>
+      <p class="small">${esc(t('mtOverallAsk'))}</p><button class="btn sm pri" type="button" data-act="mAskAi">${esc(t('mtOverallBtn'))}</button></div>`
+  }
+  return ''
 }
 
 function comparedLine(t, role, d) {
@@ -179,7 +215,7 @@ function sdgGoalTags(t, role) {
 
 // The closed card's AI line for the scenario shown, from the list answer (role.ai): Moderate = AEI automation %, Rapid =
 // ILO GenAI exposure % and gradient. An estimate, with its source; no data -> said in words, with no bar.
-function aiCard(t, role, scenario) {
+function aiCard(t, role, scenario, barPct = null) {
   const est = `<span class="tag t-est">${esc(t('mtEstimate'))}</span>`
   const src = (key) => ` <span class="tiny muted">(${esc(t(key))})</span>`
   const bar = (pct) => `<div class="bar o mt-aibar"><i style="width:${Math.max(0, Math.min(100, pct))}%"></i></div>`
@@ -191,11 +227,12 @@ function aiCard(t, role, scenario) {
     const group = /^G([1-4])$/.exec(String(a.gradient ?? ''))
     const word = ILO_WORD[a.gradient] ? t(ILO_WORD[a.gradient]) : String(a.gradient ?? '—')
     const line = group ? t('mtAiCardRapid', { pct: pct ?? '—', group: group[1] }) : t('mtAiCardRapidWord', { pct: pct ?? '—', word })
-    return wrap(`${est} ${esc(line)}${src('mtAiCardSrcRapid')}${pct === null ? '' : bar(pct)}`)
+    const shownBar = barPct ?? pct
+    return wrap(`${est} ${esc(line)}${src('mtAiCardSrcRapid')}${shownBar === null ? '' : bar(shownBar)}`)
   }
   const a = role.ai?.moderate
   if (a?.available && isNum(a.automationPct)) {
-    return wrap(`${est} ${esc(t('mtAiCardModerate', { pct: a.automationPct }))}${src('mtAiCardSrcModerate')}${bar(a.automationPct)}`)
+    return wrap(`${est} ${esc(t('mtAiCardModerate', { pct: a.automationPct }))}${src('mtAiCardSrcModerate')}${bar(barPct ?? a.automationPct)}`)
   }
   // The chain stops before O*NET: no job to look up. It reaches O*NET but the index has no data: no observed data.
   const none = role.unavailable?.missingStep ? t('mtNotAvailableTag') : t('mtNoObserved')
@@ -293,7 +330,7 @@ function openPanel(t, lang, role, detail, d, scenario, allBars, onet) {
 
 // One role card. `detail` is the role answer, { loading: true } or { error } (null before it is asked for); `open` says
 // whether "Show outlook and details" is open for this role.
-export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', chosen = null, allBars = false, sources = [], open = false }) {
+export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'moderate', chosen = null, allBars = false, sources = [], open = false, knowHow = null }) {
   const d = loadedDetail(detail)
   const isOpen = open === true
   const isChosen = chosen === role.code
@@ -305,7 +342,6 @@ export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'mode
     <div class="mt-main">
       <div><span class="mt-ttl">${esc(role.title)}</span> <span class="mt-code">MASCO ${esc(role.code)}${url ? ` · ${link(url, t('mtEmascoPage'))}` : ''}</span></div>
       <div class="small muted mt-cmp">${comparedLine(t, role, d)}</div>
-      ${aiCard(t, role, scenario)}
       <dl class="mt-parts"><dt>SDG</dt><dd>${sdgGoalTags(t, role)}</dd></dl>
       <div class="mt-actions">
         <button class="btn sm" type="button" data-act="mOpen" data-arg="${esc(role.code)}" aria-expanded="${isOpen}">${esc(t(isOpen ? 'mtHideDetail' : 'mtShowDetail'))}</button>
@@ -313,7 +349,7 @@ export function roleCard({ t, lang = 'en', role, detail = null, scenario = 'mode
         <button class="btn sm" type="button" data-act="pwPlan" data-arg="${esc(role.code)}">${esc(t('mtStudyPlan'))}</button>
       </div>
     </div>
-    <div class="mt-side">${sidePanel(t, role)}</div>
+    <div class="mt-side">${sidePanel(t, role, scenario, knowHow)}</div>
     ${panel}
     ${chain}
   </article>`
@@ -352,15 +388,15 @@ function pager(t, key, current, last) {
       <input id="${esc(id)}" class="mt-goin" type="number" inputmode="numeric" min="1" max="${last}" step="1" value="${current}"><button type="submit" class="btn sm">${esc(t('mtGo'))}</button></form></div>`
 }
 
-function bandList(t, lang, roles, m, sources, list) {
+function bandList(t, lang, roles, m, sources, list, knowHow = null) {
   const scenario = scenarioOf(m)
   return BANDS.map((b) => {
-    const inBand = roles.filter((r) => bandOf(r, scenario) === b).sort((x, y) => pctOf(y) - pctOf(x) || cmp(String(x.title), String(y.title)))
+    const inBand = roles.filter((r) => bandOf(r, scenario) === b).sort((x, y) => sortValue(y, scenario) - sortValue(x, scenario) || cmp(String(x.title), String(y.title)))
     const key = `${list}:${b}`
     const last = Math.max(1, Math.ceil(inBand.length / PAGE_SIZE))
     const page = pageOf(m.pages, key, inBand.length)
     const shown = inBand.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-    const cards = shown.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, chosen: m.chosen, allBars: m.allBars?.[role.code], sources, open: m.open?.[role.code] === true })).join('')
+    const cards = shown.map((role) => roleCard({ t, lang, role, detail: m.details?.[role.code] ?? null, scenario, chosen: m.chosen, allBars: m.allBars?.[role.code], sources, open: m.open?.[role.code] === true, knowHow })).join('')
     return `<section class="mt-band"><div class="mt-bandh"><span class="mt-num">${b}</span>${esc(t(BAND_TITLE[b]))} <span class="mt-bandwhy">· ${esc(t(BAND_WHY[b]))}</span></div>
       ${cards || `<div class="mt-empty">${esc(t('mtBandEmpty'))}</div>`}${last > 1 ? pager(t, key, page, last) : ''}</section>`
   }).join('')
@@ -533,10 +569,10 @@ export function matchView({ t, state }) {
     ${notes(t, data, state.profile)}
     <h2 class="mt-h2">${esc(t('mtInField'))} <span class="tiny muted">${esc([...fieldNames, t('mtRoleCount', { count: field.length })].join(' · '))}</span></h2>
     <div class="tiny muted">${esc(t('mtInFieldHow'))}</div>
-    ${bandList(t, lang, field, m, data.sources, 'field')}
+    ${bandList(t, lang, field, m, data.sources, 'field', data.aiKnowHow)}
     <h2 class="mt-h2">${esc(t('mtExplore'))} <span class="tiny muted">${esc(t('mtRoleCount', { count: other.length }))}</span></h2>
     <button class="btn" type="button" data-act="mExplore" aria-expanded="${Boolean(m.explore)}">${esc(t(m.explore ? 'mtHideRoles' : 'mtShowRoles'))}</button>
-    ${m.explore ? bandList(t, lang, other, m, data.sources, 'other') : ''}
+    ${m.explore ? bandList(t, lang, other, m, data.sources, 'other', data.aiKnowHow) : ''}
     ${sourcesCard(t, data)}
   </div>`
 }

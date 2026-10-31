@@ -696,7 +696,7 @@ export default {
   rdChange_revisions: "semakan semula", // translation: owner review
   rdChange_versions: "versi", // translation: owner review,
   // Career matching and SDG contribution (Task 14) (translation: owner review)
-  mtLead: "Peranan Malaysia daripada eMASCO, dibandingkan dengan profil anda. Padanan Kemahiran mengira berapa banyak tahap yang diperlukan oleh sesuatu pekerjaan yang sudah anda capai. Prospek di sebelahnya tidak pernah mengubah nombor itu; ia hanya menentukan kumpulan bagi sesuatu peranan. AI menyokong pilihan anda; ia tidak pernah membuat keputusan untuk anda.", // translation: owner review
+  mtLead: "Peranan Malaysia daripada eMASCO, dibandingkan dengan profil anda. Padanan Kemahiran mengira berapa banyak tahap yang diperlukan oleh sesuatu pekerjaan yang sudah anda capai. Prospek di sebelahnya tidak pernah mengubah nombor itu; ia hanya menentukan kumpulan bagi sesuatu peranan. AI menyokong pilihan anda; ia tidak pernah membuat keputusan untuk anda. Padanan keseluruhan menambah pengetahuan AI anda di mana AI menyentuh pekerjaan itu.", // translation: owner review
   mtNoProfile: "Bina profil anda dahulu", // translation: owner review
   mtNoProfileText: "Padanan kerjaya membandingkan peranan dengan profil anda. Tambah pengajian, kerja dan kemahiran anda untuk bermula.", // translation: owner review
   mtBuildProfile: "Bina profil saya", // translation: owner review
@@ -892,6 +892,12 @@ export default {
   mtIlo_not_exposed: "tidak terdedah", // translation: owner review
   mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
   mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtAiTouch: "AI menyentuh pekerjaan ini", // translation: owner review
+  mtOverall: "Padanan keseluruhan", // translation: owner review
+  mtOverallSum: "{skill}% kemahiran × {rest} + {know}% pengetahuan AI × {touch} = {percent}%", // translation: owner review
+  mtOverallNoAi: "Tiada data AI untuk pekerjaan ini dalam senario ini, jadi Keseluruhan = Padanan Kemahiran.", // translation: owner review
+  mtOverallAsk: "Jawab 4 soalan ringkas tentang AI untuk melihat padanan keseluruhan anda.", // translation: owner review
+  mtOverallBtn: "Jawab soalan AI", // translation: owner review
   mtNotReviewed: "draf pasukan, belum disemak", // translation: owner review
   mtSdgGoalStatus: "SDG {goal}: {status}", // translation: owner review
   rdSdgTitle: "Pautan SDG (padanan kerjaya)", // translation: owner review

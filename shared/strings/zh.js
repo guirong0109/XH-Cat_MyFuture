@@ -696,7 +696,7 @@ export default {
   rdChange_revisions: "修订", // translation: owner review
   rdChange_versions: "版本", // translation: owner review,
   // Career matching and SDG contribution (Task 14) (translation: owner review)
-  mtLead: "来自 eMASCO 的马来西亚职位，与您的档案对比。技能匹配计算您已达到该工作所需水平中的多少。旁边的前景从不改变这个数字，只决定职位所在的组别。AI 支持您的选择，但从不替您做决定。", // translation: owner review
+  mtLead: "来自 eMASCO 的马来西亚职位，与您的档案对比。技能匹配计算您已达到该工作所需水平中的多少。旁边的前景从不改变这个数字，只决定职位所在的组别。AI 支持您的选择，但从不替您做决定。在 AI 涉及工作的地方，综合匹配会加入您的 AI 知识。", // translation: owner review
   mtNoProfile: "请先建立您的档案", // translation: owner review
   mtNoProfileText: "职业匹配会将职位与您的档案对比。请先添加您的学历、工作和技能。", // translation: owner review
   mtBuildProfile: "建立我的档案", // translation: owner review
@@ -892,6 +892,12 @@ export default {
   mtIlo_not_exposed: "未暴露", // translation: owner review
   mtAiCardSrcModerate: "Anthropic Economic Index", // translation: owner review
   mtAiCardSrcRapid: "ILO WP140", // translation: owner review
+  mtAiTouch: "AI 涉及此工作的程度", // translation: owner review
+  mtOverall: "综合匹配", // translation: owner review
+  mtOverallSum: "{skill}% 技能 × {rest} + {know}% AI 知识 × {touch} = {percent}%", // translation: owner review
+  mtOverallNoAi: "此情景下没有该工作的 AI 数据，所以综合匹配 = 技能匹配。", // translation: owner review
+  mtOverallAsk: "回答 4 个简短的 AI 问题，查看您的综合匹配。", // translation: owner review
+  mtOverallBtn: "回答 AI 问题", // translation: owner review
   mtNotReviewed: "团队草稿，尚未审核", // translation: owner review
   mtSdgGoalStatus: "SDG {goal}：{status}", // translation: owner review
   rdSdgTitle: "可持续发展目标关联（职业匹配）", // translation: owner review

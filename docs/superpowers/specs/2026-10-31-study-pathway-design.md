@@ -170,7 +170,8 @@ The CIP crosswalk and ISCED table are 2020 / 2016 editions; the screen names bot
   as matching's by construction. The profile is validated, used and dropped: never stored or logged.
 - `GET /api/admin/pathway/picks` and `POST /api/admin/pathway/picks` (admin key, same review store as the SDG links
   under its own name): list picks with status; approve or reject one.
-- Screen `#pathway` (new tab after "Career matching"): one tab per saved target with "remove"; Part 1 "Study route";
+- Screen `#pathway`: the existing "Learning roadmap" placeholder tab after "Career matching" becomes "Study pathway"
+  (`roadmap` → `pathway` in the tab list; `#roadmap` opens `#pathway`): one tab per saved target with "remove"; Part 1 "Study route";
   Part 2 "Skills to build"; a provisional banner when needed; a sources table. Each step: "started" / "done"
   buttons, labelled self-reported. Every list shows its source and date. EN / BM / 中文 strings (BM and 中文 marked
   "translation: owner review"). Works at 360 px.

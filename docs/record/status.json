@@ -462,6 +462,32 @@
           "status": "todo"
         }
       ]
+    },
+    {
+      "id": "Step 12",
+      "name": "Study Pathway (branch claude/study-pathway)",
+      "tasks": [
+        {
+          "title": "Branch",
+          "sub": "from main 6ac16f4, worktree XH_Cat_Final-pathway",
+          "status": "done"
+        },
+        {
+          "title": "Brainstorming",
+          "sub": "11 decisions with you (P1-P11)",
+          "status": "done"
+        },
+        {
+          "title": "Spec + diagram",
+          "sub": "written; waiting for your review",
+          "status": "stop"
+        },
+        {
+          "title": "Implementation plan",
+          "sub": "after spec approval",
+          "status": "todo"
+        }
+      ]
     }
   ],
   "doneSummary": [
@@ -506,6 +532,7 @@
     "Career Matching built: all 16 plan tasks done and reviewed (766 tests, pipeline 48 OK). Works today: 1,812 eMASCO roles with card text, DOSM job-ad evidence at group level, honest 'not available' messages naming the missing step, SDG tags, the SDG path tab and your review of SDG links in admin. Browser check A1-A12 passed (docs/matching/acceptance.md); percentages and chart wait for the BLS files. Final whole-branch review next. Nothing pushed."
   ],
   "waiting": [
+    "Study Pathway: review the spec docs/superpowers/specs/2026-10-31-study-pathway-design.md and the diagram docs/architecture-pathway.html",
     "Future Skills Radar: try it on localhost; review BM/中文 translations; open owner actions (BLS files, MASCO source, R2, OpenAlex key)",
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
     "Tasks 13–15 (optional): Cloudflare D1 + R2 details; without them accounts say 'not available'",
@@ -564,7 +591,8 @@
     "Career matching: job-ads part carries evidence kind and granularity, labelled 'group level, not this job', no direction unless sufficient - cost: none",
     "Career matching: thin profile picks the best O*NET job by lowest code for its Moderate AI part - cost: one role's band for thin profiles",
     "Career matching: Rapid AI uses the ISCO code from the code chain only; 'not available' until the BLS files are saved - cost: Rapid shows nothing until then",
-    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page"
+    "Career matching M16 (owner, 31 Oct): every SDG team-draft link is shown at once as \"team draft, not yet reviewed\"; approved ones show the date, rejected ones are hidden; each tag links to the UN goal page",
+    "Study Pathway P1-P11 (owner, 31 Oct): study route + short courses; team-picked named courses and programmes (name, link, date only) plus a live e-LATiH search link; gaps biggest first by matching's points; started/done progress; several saved targets; not-assessed skills in their own group; picks reviewed like SDG links"
   ],
   "log": [
     {
@@ -1271,6 +1299,11 @@
       "time": "31 Oct",
       "step": "Merged career matching to main (your request)",
       "detail": "branch pushed to GitHub; merged into main; main's short HANDOVER and CLAUDE updated; npm test 803 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Study Pathway design (your request)",
+      "detail": "checked MQA register and e-LATiH (no open licence; e-LATiH search links work, MQR links do not); spec and diagram written"
     }
   ]
 }

@@ -274,3 +274,56 @@ describe('share actions', () => {
     expect(s.api.previewShare).toHaveBeenCalledWith({ profileId: 'pr9' })
   })
 })
+
+describe('final review fixes on the share screen', () => {
+  const HELD = { orgName: 'Sample Logistics', groupName: 'Finance', displayName: 'Aisyah R.', skills: [{ key: 'kn:2.C.2.a', name: 'Chemistry', level: 'expert' }] }
+
+  it('10: an existing share shows what HR holds now, and the dry run only under "After Update"', () => {
+    const html = shareScreen(t, base({ join: null, existing: HELD }))
+    const plain = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+    expect(plain).toContain(t('shHolds', { org: 'Sample Logistics' }))
+    expect(plain).toContain('Chemistry')
+    expect(plain).toContain(t('shAfterUpdate', { org: 'Sample Logistics' }))
+    expect(plain).not.toContain(t('shSees', { org: 'Sample Logistics' }))
+    // what HR holds comes first, the dry run after
+    expect(plain.indexOf('Chemistry')).toBeLessThan(plain.indexOf('Economics and Accounting'))
+    expect(plain.indexOf(t('shAfterUpdate', { org: 'Sample Logistics' }))).toBeLessThan(plain.indexOf('Economics and Accounting'))
+  })
+
+  it('10: the held list is escaped and has its source', () => {
+    const html = shareScreen(t, base({ join: null, existing: { ...HELD, skills: [{ key: 'kn:x', name: '<b>x</b>', level: 'good' }] } }))
+    expect(html).not.toContain('<b>x</b>')
+    expect(html).toContain(t('shSrcHeld', { org: 'Sample Logistics' }))
+  })
+
+  it('3: a link from another organisation warns that sharing stops the current share', () => {
+    const join = { orgName: 'Other Co', groupName: 'Sales', willShare: [], sharingWith: 'Sample Logistics' }
+    const html = shareScreen(t, base({ join, existing: HELD }))
+    const plain = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')
+    expect(plain).toContain('Sharing with Other Co stops your sharing with Sample Logistics.')
+    // a new share with Other Co: what Other Co will see is the dry run; the button is "Share", not "Update"
+    expect(plain).toContain(t('shSees', { org: 'Other Co' }))
+    expect(html).toContain('Share my skills</button>')
+  })
+
+  it('3: after sharing with the new organisation the warning is gone', async () => {
+    const state = { screen: 'share', account: { status: 'in', user: { id: 'u1' } }, share: null }
+    const held = { ok: true, data: HELD }
+    const moved = { ok: true, data: { ...HELD, orgName: 'Other Co', groupName: 'Sales' } }
+    const api = {
+      joinOrg: vi.fn(async () => ({ ok: true, data: { orgName: 'Other Co', groupName: 'Sales', willShare: [], sharingWith: 'Sample Logistics' } })),
+      listProfiles: vi.fn(async () => ({ ok: true, data: { profiles: [{ id: 'pr1', updatedAt: '2026-10-30T08:00:00Z' }] } })),
+      getShare: vi.fn().mockResolvedValueOnce(held).mockResolvedValue(moved),
+      previewShare: vi.fn(async () => ({ ok: true, data: { shared: [{ key: 'kn:1', name: 'Biology', level: 'good' }], notShared: [] } })),
+      putShare: vi.fn(async () => ({ ok: true, data: { shared: [{ key: 'kn:1', name: 'Biology', level: 'good' }], notShared: [] } })),
+    }
+    globalThis.document = { getElementById: (id) => ({ shName: { value: 'Aini' }, shProfile: { value: 'pr1' } })[id] ?? null }
+    const built = createOrgActions({ state, render: vi.fn(), api, t, go: vi.fn() })
+    built.startJoin('tok')
+    await built.actions.shareEnsure()
+    await built.actions.shareDo()
+    expect(state.share.message.text).toBe(t('shDone', { org: 'Other Co' }))
+    expect(shareScreen(t, state.share)).not.toContain('stops your sharing')
+    delete globalThis.document
+  })
+})

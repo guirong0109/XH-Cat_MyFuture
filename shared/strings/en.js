@@ -1394,4 +1394,11 @@ export default {
   ogCellNeeded: "Needed level {level} of 7",
   ogReason_no_current_role: "Not counted in this view: {name} has no current role, so there is nothing to compare against.",
   ogNoPickNoLinks: "No team pick yet.",
+  ogDelGroupConfirm: "Delete the group “{group}”?",
+  ogClearTargetConfirm: "Remove the target role of “{group}”? Its team plan then has no role.",
+  shHolds: "{org} sees now:",
+  shHoldsNone: "{org} holds no skills from you now.",
+  shSrcHeld: "what {org} holds now, from your last share",
+  shAfterUpdate: "After Update, {org} will see:",
+  shMoves: "Sharing with {org} stops your sharing with {other}.",
 }

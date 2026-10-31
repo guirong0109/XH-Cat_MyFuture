@@ -75,6 +75,7 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
     await loadTeam()
   }
 
+  const groupName = (id) => (org().team?.groups ?? org().data?.groups ?? []).find((g) => g.id === id)?.name ?? ''
   const confirmed = (text) => (typeof globalThis.confirm === 'function' ? globalThis.confirm(text) : true)
 
   async function previewFrom(text, name) {
@@ -203,8 +204,13 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
         shSay('bad', shErr(out.code))
         return render()
       }
-      const updated = Boolean(s.existing)
+      // a link of another organisation makes a new share (the old one is stopped by the server), not an update
+      const updated = Boolean(s.existing) && !s.join?.sharingWith
       joinToken = null // the link is used now
+      if (s.join?.sharingWith) {
+        const { sharingWith, ...rest } = s.join
+        s.join = rest
+      }
       s.preview = out.data
       const mine = await api.getShare()
       s.existing = mine.ok ? mine.data ?? null : s.existing
@@ -328,12 +334,14 @@ export function createOrgActions({ state, render, api, t, go = () => {} }) {
       await load()
     },
     orgDelGroup: async (id) => {
+      if (!confirmed(t('ogDelGroupConfirm', { group: groupName(id) }))) return
       const out = await api.deleteGroup(id)
       if (!out.ok) return fail(out)
       org().message = null
       await load()
     },
     orgClearTarget: async (id) => {
+      if (!confirmed(t('ogClearTargetConfirm', { group: groupName(id) }))) return
       const out = await api.updateGroup(id, { targetCode: null })
       if (!out.ok) return fail(out)
       await load()

@@ -574,3 +574,37 @@ describe('final review fixes on the owner screens', () => {
     expect(html).toContain(t('ogNoPickNoLinks'))
   })
 })
+
+describe('final review fix 9: group delete and target removal ask first', () => {
+  afterEach(() => { delete globalThis.confirm })
+  function build(answer) {
+    const asked = []
+    globalThis.confirm = (q) => { asked.push(q); return answer }
+    const org = makeOrg()
+    const st = { screen: 'org', lang: 'en', account: { status: 'in', user: {} }, org }
+    const api = {
+      getOrg: vi.fn(async () => ({ ok: true, data: { org: org.data.org, groups: org.data.groups, people: [] } })),
+      team: vi.fn(async (view, scenario) => ({ ok: true, data: makeTeam({ view, scenario }) })),
+      deleteGroup: vi.fn(async () => ({ ok: true, data: { deleted: true } })),
+      updateGroup: vi.fn(async () => ({ ok: true, data: {} })),
+    }
+    return { api, asked, ...createOrgActions({ state: st, render: vi.fn(), api, t, go: vi.fn() }) }
+  }
+
+  it('a refused question changes nothing', async () => {
+    const s = build(false)
+    await s.actions.orgDelGroup('g1')
+    await s.actions.orgClearTarget('g1')
+    expect(s.api.deleteGroup).not.toHaveBeenCalled()
+    expect(s.api.updateGroup).not.toHaveBeenCalled()
+    expect(s.asked).toEqual([t('ogDelGroupConfirm', { group: 'Finance' }), t('ogClearTargetConfirm', { group: 'Finance' })])
+  })
+
+  it('a yes deletes the group or removes the target role', async () => {
+    const s = build(true)
+    await s.actions.orgDelGroup('g1')
+    await s.actions.orgClearTarget('g1')
+    expect(s.api.deleteGroup).toHaveBeenCalledWith('g1')
+    expect(s.api.updateGroup).toHaveBeenCalledWith('g1', { targetCode: null })
+  })
+})

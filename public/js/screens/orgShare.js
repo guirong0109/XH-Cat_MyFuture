@@ -60,9 +60,20 @@ export default function shareScreen(t, s) {
   const group = s.join?.groupName ?? existing?.groupName ?? ''
   const preview = s.preview
   const shared = arr(preview?.shared)
+  // a link of another organisation while sharing: a new share with that organisation, which stops the current one
+  const moving = Boolean(existing && s.join?.sharingWith)
+  const updating = Boolean(existing) && !moving
+  // what HR holds now (GET /api/org/share), never the dry run
+  const heldSkills = arr(existing?.skills)
+  const held = existing
+    ? `<p class="small">${esc(t('shHolds', { org: existing.orgName }))}</p>${roleLine(t, existing)}
+       ${heldSkills.length ? skillTable(t, heldSkills) : `<p class="small muted">${esc(t('shHoldsNone', { org: existing.orgName }))}</p>`}
+       <div class="og-src"><b>${esc(t('ogSource'))}</b> ${esc(t('shSrcHeld', { org: existing.orgName }))}</div>`
+    : ''
+  const lead = updating ? t('shAfterUpdate', { org }) : t('shSees', { org })
   const list = preview
     ? shared.length
-      ? `<p class="small">${esc(t('shSees', { org }))}</p>${roleLine(t, s.join ?? existing)}${skillTable(t, shared)}${notShared(t, arr(preview.notShared))}
+      ? `<p class="small">${esc(lead)}</p>${roleLine(t, s.join ?? existing)}${skillTable(t, shared)}${notShared(t, arr(preview.notShared))}
          <div class="og-src"><b>${esc(t('ogSource'))}</b> ${esc(t('shSrc', { date: day(arr(s.profiles).find((p) => p.id === s.profileId)?.updatedAt) }))}</div>`
         : `<div class="banner b-info"><div>${esc(t('shNoSkills'))}</div></div>${notShared(t, arr(preview.notShared))}`
     : arr(s.profiles).length ? `<p class="muted"><span class="spin"></span> ${esc(t('shChecking'))}</p>` : ''
@@ -70,12 +81,14 @@ export default function shareScreen(t, s) {
   const canShare = shared.length > 0 && (s.join || existing)
   const name = `<div class="field" style="max-width:320px"><label for="shName">${esc(t('shName'))}</label><input class="input" id="shName" maxlength="80" value="${esc(s.displayName ?? '')}"></div>`
   const buttons = canShare
-    ? `<div class="row"><button class="btn pri" type="button" data-act="shareDo">${esc(t(existing ? 'shUpdate' : 'shShare'))}</button>${existing ? `<button class="btn" type="button" data-act="shareStop">${esc(t('shStop'))}</button>` : ''}</div>`
+    ? `<div class="row"><button class="btn pri" type="button" data-act="shareDo">${esc(t(updating ? 'shUpdate' : 'shShare'))}</button>${existing ? `<button class="btn" type="button" data-act="shareStop">${esc(t('shStop'))}</button>` : ''}</div>`
     : existing ? `<div class="row"><button class="btn" type="button" data-act="shareStop">${esc(t('shStop'))}</button></div>` : ''
   const already = existing ? banner('b-info', t('shAlready', { org: existing.orgName, group: existing.groupName, name: existing.displayName })) : ''
+  const warn = moving ? banner('b-warn', t('shMoves', { org: s.join.orgName, other: s.join.sharingWith })) : ''
   return wrap(`<h1>${esc(t('shTitle', { org }))}</h1>
     ${group && s.join ? `<p class="lead">${esc(t('shGroupLine', { group }))}</p>` : ''}
-    ${linkProblem}${already}${message}
+    ${linkProblem}${already}${warn}${message}
+    ${held ? `<div class="card stack">${held}</div>` : ''}
     <div class="card stack">${chooser(t, s)}${list}${canShare ? name : ''}${buttons}</div>
     ${hiring}`)
 }

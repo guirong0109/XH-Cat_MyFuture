@@ -1395,4 +1395,11 @@ export default {
   ogCellNeeded: "所需级别 {level}（满分 7）", // translation: owner review
   ogReason_no_current_role: "此视图不计入：{name} 没有当前职位，因此无从比较。", // translation: owner review
   ogNoPickNoLinks: "团队暂无推荐。", // translation: owner review
+  ogDelGroupConfirm: "删除小组“{group}”？", // translation: owner review
+  ogClearTargetConfirm: "移除“{group}”的目标职位？其团队计划将没有职位。", // translation: owner review
+  shHolds: "{org} 目前看到：", // translation: owner review
+  shHoldsNone: "{org} 目前没有您的任何技能。", // translation: owner review
+  shSrcHeld: "{org} 目前持有的内容，来自您上次的分享", // translation: owner review
+  shAfterUpdate: "更新后，{org} 将看到：", // translation: owner review
+  shMoves: "与 {org} 分享将停止您与 {other} 的分享。", // translation: owner review
 }

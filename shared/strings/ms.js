@@ -1395,4 +1395,11 @@ export default {
   ogCellNeeded: "Tahap diperlukan {level} daripada 7", // translation: owner review
   ogReason_no_current_role: "Tidak dikira dalam paparan ini: {name} tiada peranan semasa, jadi tiada apa untuk dibandingkan.", // translation: owner review
   ogNoPickNoLinks: "Belum ada pilihan pasukan.", // translation: owner review
+  ogDelGroupConfirm: "Padam kumpulan “{group}”?", // translation: owner review
+  ogClearTargetConfirm: "Buang peranan sasaran “{group}”? Pelan pasukannya kemudian tiada peranan.", // translation: owner review
+  shHolds: "{org} melihat sekarang:", // translation: owner review
+  shHoldsNone: "{org} tidak memegang sebarang kemahiran anda sekarang.", // translation: owner review
+  shSrcHeld: "apa yang dipegang {org} sekarang, daripada perkongsian terakhir anda", // translation: owner review
+  shAfterUpdate: "Selepas Kemas Kini, {org} akan melihat:", // translation: owner review
+  shMoves: "Berkongsi dengan {org} menghentikan perkongsian anda dengan {other}.", // translation: owner review
 }

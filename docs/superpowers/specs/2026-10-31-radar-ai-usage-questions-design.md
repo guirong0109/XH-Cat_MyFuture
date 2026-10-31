@@ -102,3 +102,21 @@ Keyboard and screen readers: real `<input type="checkbox">` with `<label>`, a `<
 
 Using the answers anywhere (Radar, Matching, organisation view), showing them on the profile review or summary
 screens, and any link from a category to outside data. Each needs its own decision by the owner.
+
+## 9. Added the same day: the AI tasks chart becomes a scatter (D40-D42)
+
+The owner's request (31 Oct 2026, with a sample scatter picture of roles): replace the spider web on "How AI is used
+in your job's tasks" with a scatter chart, to make it more engaging. The owner chose the **tasks scatter on real data**
+over the roles-and-demand-growth picture (no comparable growth source exists, and "safest / riskiest" would be a
+forecast, which D33 rules out).
+
+| # | Decision |
+|---|---|
+| D40 | **Scatter replaces the spider web of D31** on the AI tasks card. One dot per task of the user's job (the same tasks, order, numbers T1, T2 ..., corner switch 8 / 16 / All, numbered list and click-to-highlight as today). Across: share of the task's AI conversations where AI does the task (`automation`, 0-100 %), with a dashed line at 50 % ("half and half"). Up: the task's share of all AI conversations (`usage`), on a log scale with ticks 0.01 %, 0.1 %, 1 %, 10 %; tasks under 0.01 % sit on a bottom band labelled "under 0.01 %". |
+| D41 | **No judgement words.** The two sides are labelled "AI mostly helps" (left of 50 %) and "AI mostly does the task" (right); the up axis says "used more often". No safe, risky, score or rank. The labels from D33 stay: "not a score" and "how AI is used today, not a forecast of jobs lost". |
+| D42 | **Values as they are.** Dots are drawn at their real values: no jitter, no rounding beyond the source's. Dots at the same place overlap; the list under the chart holds every value. Every dot is a keyboard button with the task text and its numbers as its label. Colour: `--est`. |
+
+Code: a new pure component `public/js/components/charts/taskScatter.js`; `aiTasksCard` in
+`public/js/screens/radar.js` uses it instead of `profileRadar` (which stays for the skills chart). Tests: the scale
+mapping (including the under-0.01 % band and 100 %), the 50 % line, labels, keyboard attributes, no score or rank
+words, and the card using the scatter for 1, 2 and many tasks (the spider web needed 3).

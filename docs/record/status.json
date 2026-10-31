@@ -2684,6 +2684,11 @@
       "time": "31 Oct",
       "step": "News: Compare futures screen",
       "detail": "public/js/screens/futures.js (For you from the profile study fields in the browser, Explore all with a 10-field picker, source line with query, updated and next refresh in MYT and the rules, failed-refresh note, empty, off, loading, retry; DeepSeek text escaped, http(s) links only), public/js/newsApi.js, app.js wiring (news never saved), 19 nw strings in en/ms/zh (ms and zh: translation owner review). npm test 1505 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: browser check and branch docs",
+      "detail": "C1-C7 pass in the browser on futures.localhost:3270 (no key: news off) and :3271 (scripts/news-local.mjs, fake search, no DeepSeek call); BM strings and 375 px checked; docs/news/acceptance.md. HANDOVER.md and CLAUDE.md now describe claude/compare-futures. Real run waits on the owner (key and OK on about US$1.80 a month). npm test 1505 passed, pipeline 49 OK"
     }
   ]
 }

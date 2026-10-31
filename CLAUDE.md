@@ -1,8 +1,26 @@
-# CLAUDE.md — `claude/career-matching` (detailed)
+# CLAUDE.md — `claude/compare-futures` (detailed)
 
-Read `HANDOVER.md` here first, then the spec `docs/superpowers/specs/2026-10-30-career-matching-design.md` and the
-diagram `docs/architecture-matching.html`. They are approved and bind the build: add nothing they do not state. All 16 plan tasks are built; the final
-whole-branch review is next. Do not touch main's files; the owner decides on merge.
+Sub-branch of `claude/career-matching` (from `d82267e`). Read `HANDOVER.md` here first, then the spec
+`docs/superpowers/specs/2026-10-31-compare-futures-news-design.md`, the diagram `docs/architecture-compare-futures.html`
+and the plan `docs/superpowers/plans/2026-10-31-compare-futures-news.md`. All three are approved and bind the build: add
+nothing they do not state. All 6 plan tasks are built; the real DeepSeek run waits on the owner. Do not touch main's
+files; the owner decides on merge (into `claude/career-matching` first).
+
+## Compare futures: AI news rules
+- DeepSeek **Search** API only (`POST https://api.deepseek.com/v1/tools/search`), no DeepSeek chat model. **Paid**:
+  US$0.75 per 1,000 successful searches, about US$1.80 a month. Key in `DEEPSEEK_API_KEY` only (server secrets); never
+  in the repo, the browser, a URL, a log or a reply. No real search without the owner's OK.
+- 10 ISCED-F broad fields (`data/news/fields.json`, manifest hash), one search per field every 3 hours. Caps: 10
+  searches per run, 80 per 24 hours, kept in the store.
+- Usable = title, http(s) link, publish date within 30 days; repeats removed; newest 25 per field.
+- For you is picked in the browser from `education.records[].field.code`; no profile data reaches the server or DeepSeek.
+- News never changes the Skill Match, the Overall match, the bands, the Radar or the SDG parts.
+- Code: `shared/news/rules.js`, `server/news/`, `public/js/screens/futures.js`, `public/js/newsApi.js`. Tests:
+  `tests/news/`. Browser results: `docs/news/acceptance.md`. Local check with a fake search: `scripts/news-local.mjs`.
+
+## Base branch: `claude/career-matching`
+Its spec `docs/superpowers/specs/2026-10-30-career-matching-design.md` and diagram `docs/architecture-matching.html`
+still bind matching. Its final whole-branch review is still open on that branch.
 
 ## Rules (from `main`, all still apply)
 - **One branch per feature.** This branch keeps the detailed `HANDOVER.md` and `CLAUDE.md`. On merge to `main`, update
@@ -43,7 +61,7 @@ whole-branch review is next. Do not touch main's files; the owner decides on mer
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1425 passed
+npm install && npm test     # expect 1505 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```

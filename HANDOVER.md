@@ -1,4 +1,32 @@
-# HANDOVER — `claude/career-matching` (detailed)
+# HANDOVER — `claude/compare-futures` (detailed)
+
+Updated 2026-10-31. Sub-branch of `claude/career-matching` (from `d82267e`). Nothing is pushed or merged.
+
+## Compare futures: AI news (this branch)
+- **What it does:** `#futures` → "AI news". **For you** shows the latest AI news for the user's own study field(s)
+  (picked in the browser from the profile); **Explore all** shows any of the 10 ISCED-F broad study fields. Up to 25
+  items per field, newest first; each item links to the original with its site, publish date and DeepSeek's short
+  snippet. Every list states its source (DeepSeek Search and the exact query), when it was updated, when the next
+  refresh is due and the rules that kept it.
+- **How:** the server searches DeepSeek once per field every 3 hours (`server/news/service.js`), keeps results that
+  have a title, a web link and a publish date in the last 30 days, removes repeats, merges with the kept list and
+  keeps the newest 25. A failed field keeps its last list with a "Couldn't refresh" note. Caps: 10 searches per run,
+  80 per 24 hours. Lists are kept in R2 (`news/latest.json`) or `data/cache/news/latest.json`.
+- **State:** all 6 plan tasks built, 1505 Vitest tests pass, C1-C7 checked in the browser with a fake search
+  (`docs/news/acceptance.md`). The whole-branch review is next.
+- **Waits on the owner:** the DeepSeek key (`DEEPSEEK_API_KEY` in the server's secret settings) and the OK on the cost
+  (US$0.75 per 1,000 successful searches, about US$1.80 a month; billing from 1 Nov 2026). Then one real run and C1-C3
+  again on real data. Also the BM / 中文 strings (marked "translation: owner review") and the search words per field
+  (`data/news/fields.json`, team draft).
+- **Docs:** spec `docs/superpowers/specs/2026-10-31-compare-futures-news-design.md`, diagram
+  `docs/architecture-compare-futures.html`, plan `docs/superpowers/plans/2026-10-31-compare-futures-news.md`.
+- **Run locally:** `npm start` (news is off without the key); `PORT=3271 node scripts/news-local.mjs` shows the screen
+  with a fake search (no DeepSeek call). Launch entries `futures-off` and `futures-local` (`http://futures.localhost:3270`
+  and `:3271`).
+
+---
+
+# Base branch: `claude/career-matching` (detailed)
 
 Updated 2026-10-31 (all 16 tasks built). Branch from `main` at `b24660e` (after the Radar merge). `main` keeps a
 short version of this file;

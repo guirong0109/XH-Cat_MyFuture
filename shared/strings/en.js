@@ -26,6 +26,8 @@ export default {
   catB: 'Fresh graduate or career switcher', catBText: 'Just finished studies, or thinking about a different direction.',
   catC: 'HR / Learning & Development manager', catCText: 'Plan reskilling for a team. Account required.',
   catD: 'TVET or university career centre', catDText: 'Guide students at institution level. Account required.',
+  useTitle: 'Who is it for?', usePersonal: 'For myself', usePersonalText: 'Build your own profile and see where your skills can take you.',
+  useOrg: 'For my organisation', useOrgText: 'HR teams, and TVET or university career centres. A preview for now; account required.',
   preview: 'Account · preview',
   orgBanner: 'Under development — not working yet.',
   orgBannerText: 'This organisational view is a design preview. Nothing here is real or saved.',

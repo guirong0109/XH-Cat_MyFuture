@@ -44,7 +44,7 @@ const SEARCH_DELAY_MS = 250
 const SKILLS_SECTION = 2
 const PREFERENCES_SECTION = 4
 
-const fresh = () => ({ screen: 'welcome', lang: 'en', access: null, category: null, profile: null, section: 0, usable: false, message: null })
+const fresh = () => ({ screen: 'welcome', lang: 'en', use: null, access: null, category: null, profile: null, section: 0, usable: false, message: null })
 const store = createGuestStore(safeLocalStorage(), minimizeForGuest)
 let state = fresh()
 let resumeTo = null
@@ -109,6 +109,7 @@ function update(profile) {
 
 const actions = {
   lang: (lang) => { state.lang = lang; if (state.profile) state.profile.interfaceLanguage = lang; persist(); render() },
+  use: (kind) => { state.use = kind; go('access') },
   guest: () => { state.access = 'guest'; go('category') },
   acSignup: () => accountCall('signup'),
   acLogin: () => accountCall('login'),

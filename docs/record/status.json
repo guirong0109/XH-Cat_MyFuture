@@ -218,6 +218,11 @@
           "title": "T28b No language chooser on the welcome screen",
           "sub": "the dropdown at the top right is enough",
           "status": "done"
+        },
+        {
+          "title": "T28c First question: personal or organisation",
+          "sub": "For myself → A, B · For my organisation → C, D (preview)",
+          "status": "done"
         }
       ]
     }
@@ -257,7 +262,8 @@
     "Task 26: your report that search on main did not work — every search ran (all APIs 200 OK) but skill results were mostly software products ('pet' → IHS Petra, 'leadership' → nothing). Added O*NET 31.0 work styles (21), knowledge areas (33) and work activities (2,085) to the skill search, general skills before products, whole words before half-typed; CV reader unchanged (eval identical) (Tests 232 passed, pipeline 8 OK)",
     "Task 27: your request - docs/architecture-cv-branch.html updated: (1) a data-lineage diagram from each outside source through the pipeline, data files, server code and API to the screen and the saved profile field; (2) a table of all 11 references and sources with publisher, version, licence, use and links; (3) the code-layer diagram with updated labels",
     "Task 28: your request - the CV and profile screens now use the landing page's design language: a cream page, Instrument Serif headlines, Geist body text and Geist Mono labels, mostly black and white with thin rules instead of boxes. Retro touches: the CV drop zone is an ATM panel with a card slot (the one lime button), and the CV reading, the CV draft, Review and Your profile print out as receipts with torn edges. Tag colours keep their meaning. Look only: no backend change (Tests 238 passed)",
-    "Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)"
+    "Task 28b: your request - the welcome screen no longer shows 'Choose your language'; the language dropdown at the top right stays (Tests 239 passed)",
+    "Task 28c: your request - the first screen asks who it is for: 'For myself' or 'For my organisation' (replaces Get started; Sign in stays as a link). 'Who are you?' then shows only the matching choices (A, B or C, D); someone who signs in without answering sees all four. New wording in EN, BM and 中文 (Tests 242 passed)"
   ],
   "waiting": [
     "Task 8 (optional): your free O*NET Web Services key (env ONET_API_KEY) → lookup answers 'live'; without it it answers 'cached' (working now)",
@@ -301,7 +307,8 @@
     "T25: what a user typed in the two old boxes is kept as plain text chips, not matched to an area — cost: they may want to re-pick from the list",
     "T26: the three new lists are for the skill search only, not for matching CV text, so the CV eval is unchanged — cost: 'add as I wrote it' still links only to the old list",
     "T26: no synonyms are invented: words O*NET does not use ('teamwork', 'pet') still find no general skill — cost: the user may need O*NET's wording ('Cooperation', 'Care for animals')",
-    "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet"
+    "T28: no roller counters on the CV screens - they have no real counts to show, and the design guide keeps rollers for real figures only - cost: one retro touch of the landing page is not used here yet",
+    "T28c: the organisation path still ends at the existing preview (C, D need an account and are not built) - cost: nothing works yet for organisations, as before"
   ],
   "log": [
     {
@@ -833,6 +840,16 @@
       "time": "31 Oct",
       "step": "Task 28b",
       "detail": "test first (failed), then the chooser removed from welcome.js; npm test 239 passed; checked at 1440 px and 390 px"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Your request",
+      "detail": "the first thing: ask whether the user wants it for personal use or for an organisation"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Task 28c",
+      "detail": "3 tests first (2 failed), then welcome.js, category.js, app.js and the three wording files; npm test 242 passed; both paths clicked through in Chrome at 1440 px and 390 px"
     }
   ]
 }

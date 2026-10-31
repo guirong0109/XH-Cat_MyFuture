@@ -26,6 +26,8 @@ export default {
   catB: '应届毕业生或转行者', catBText: '刚完成学业，或正在考虑不同的方向。',
   catC: 'HR / 学习与发展经理', catCText: '为团队规划再培训。需要账户。',
   catD: 'TVET 或大学就业中心', catDText: '在机构层面指导学生。需要账户。',
+  useTitle: '为谁使用？', usePersonal: '个人使用', usePersonalText: '建立你自己的档案，看看你的技能能带你走向哪里。',
+  useOrg: '机构使用', useOrgText: 'HR 团队，以及 TVET 或大学就业中心。目前仅为预览；需要账户。',
   preview: '账户 · 预览',
   orgBanner: '开发中——尚不可用。',
   orgBannerText: '此机构视图是设计预览。这里的内容都不是真实的，也不会保存。',

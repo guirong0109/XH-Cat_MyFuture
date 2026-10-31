@@ -26,6 +26,8 @@ export default {
   catB: 'Graduan baharu atau penukar kerjaya', catBText: 'Baru tamat pengajian, atau sedang mempertimbangkan hala tuju lain.',
   catC: 'Pengurus HR / Pembelajaran & Pembangunan', catCText: 'Rancang latihan semula untuk pasukan. Akaun diperlukan.',
   catD: 'Pusat kerjaya TVET atau universiti', catDText: 'Bimbing pelajar di peringkat institusi. Akaun diperlukan.',
+  useTitle: 'Untuk siapa?', usePersonal: 'Untuk diri sendiri', usePersonalText: 'Bina profil anda sendiri dan lihat ke mana kemahiran anda boleh membawa anda.',
+  useOrg: 'Untuk organisasi saya', useOrgText: 'Pasukan HR, serta pusat kerjaya TVET atau universiti. Pratonton buat masa ini; akaun diperlukan.',
   preview: 'Akaun · pratonton',
   orgBanner: 'Sedang dibangunkan — belum berfungsi.',
   orgBannerText: 'Paparan organisasi ini ialah pratonton reka bentuk. Tiada apa di sini yang sebenar atau disimpan.',

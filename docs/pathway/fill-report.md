@@ -1,6 +1,6 @@
 # Study Pathway fill report
 
-Written 2026-10-31. It lists the O*NET skill and knowledge items and the fields of study for which the team found no real course or accredited programme. The data test reads the first column of the items and fields table as the reported keys.
+Written 2026-10-31. It lists the O*NET skill and knowledge items and the fields of study for which the team found no real course or accredited programme, and, in a last section, the professional bodies the team could not link. The data test reads the first column of the items and fields table as the reported keys; the professional-bodies table is not part of coverage.
 
 ## Skill and knowledge items
 
@@ -36,3 +36,14 @@ How every field below was searched on 2026-10-31:
 | field:1019 | Personal services not elsewhere classified | MQR NEC 1019: 0 programmes; e-Panduan (not usable by script); UTM, UPM, UKM programme lists | 2026-10-31 | no accredited programme is coded in this field |
 | field:1031 | Military and defence | MQR NEC 1031: 4 programmes, all at UPNM (Bachelor of Strategy Studies with Honours MQA/FA9201, Diploma in Defence Technology Services MQA/FA18459, Executive Diploma and Postgraduate Diploma in Strategic and Defence Studies); ppap.upnm.edu.my Senarai Program, upnm.edu.my Program Ditawarkan, fppp.upnm.edu.my; e-Panduan (not usable by script); UTM, UPM, UKM programme lists | 2026-10-31 | UPNM has only programme lists, no page of its own for any of these; the earlier pick linked a list page and was removed |
 | field:1032 | Protection of persons and property | MQR NEC 1032: 53 programmes (e.g. UPNM Bachelor of Policing, Global Security and Intelligence with Honours MQA/FA9426, New Era University College Bachelor of Law Enforcement (Honours) MQA/FA14638); ppap.upnm.edu.my Senarai Program, upnm.edu.my Program Ditawarkan, newera.edu.my/ble.php; e-Panduan (not usable by script); UTM, UPM, UKM programme lists | 2026-10-31 | UPNM has only a programme list, and the New Era page's heading is the generic "Programme Details"; the earlier pick linked a list page and was removed |
+
+## Professional bodies not linked
+
+Fields whose work has a Malaysian professional body, but no page the team could open names the registration. These rows are not part of coverage.
+
+| field | body | sites tried | date | note |
+|---|---|---|---|---|
+| field:0421 | Legal Profession Qualifying Board; Malaysian Bar | lpqb.org.my (TLS certificate for a different address, by script and in a browser); malaysianbar.org.my home and its "Become a Member" link (redirects to the foreign lawyer page) | 2026-10-31 | no page about qualifying or being admitted as an advocate and solicitor could be opened |
+| field:0731 | Lembaga Arkitek Malaysia (architects); Board of Town Planners Malaysia (Lembaga Perancang Bandar Malaysia) | lam.gov.my/welcome (its Architect / Graduate Architect registration menu items are "#" links, as the controller also saw in a browser on 2026-10-31), lam.gov.my/architect (a register search form); web search for a Board of Town Planners site (found only the Town Planners Act 1995 text) | 2026-10-31 | no page that names the registration for either body |
+| field:0841 | Malaysian Veterinary Council | mvc.gov.my (does not resolve), mvc.dvs.gov.my (browser could not open), dvs.gov.my home; web search | 2026-10-31 | no official council page could be opened |
+| field:0923 | Malaysian Social Work Profession Council (to be set up); Malaysian Association of Social Workers | masw.org.my (voluntary association, no registration); news on the Social Work Profession Bill (passed in 2026, council not yet set up) | 2026-10-31 | statutory registration of social workers has no body or page yet |

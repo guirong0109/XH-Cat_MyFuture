@@ -1412,6 +1412,15 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0412-3",
+      "field": "0412",
+      "kind": "professional",
+      "name": "CHARTERED BANKER (CB) QUALIFICATION",
+      "body": "Asian Institute of Chartered Bankers",
+      "link": "https://www.aicb.org.my/qualifications",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0413-1",
       "field": "0413",
       "kind": "accredited",
@@ -2003,6 +2012,15 @@
       "checkedAt": "2026-10-31"
     },
     {
+      "id": "p-0732-4",
+      "field": "0732",
+      "kind": "professional",
+      "name": "Pendaftaran Baharu",
+      "body": "Board of Quantity Surveyors Malaysia",
+      "link": "https://www.bqsm.gov.my/pendaftaran-baharu/",
+      "checkedAt": "2026-10-31"
+    },
+    {
       "id": "p-0788-1",
       "field": "0788",
       "kind": "accredited",
@@ -2175,6 +2193,15 @@
       "name": "About Malaysian Health Care Practitioners’ System",
       "body": "Malaysian Allied Health Professions Council",
       "link": "https://mhps.moh.gov.my/mhps/index.php/main/about",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0915-4",
+      "field": "0915",
+      "kind": "professional",
+      "name": "Pendaftaran",
+      "body": "Majlis Optik Malaysia",
+      "link": "https://hq.moh.gov.my/moc/pendaftaran/",
       "checkedAt": "2026-10-31"
     },
     {

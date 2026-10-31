@@ -5,3 +5,7 @@ data/radar/source/* -text
 data/radar/*.json text eol=lf
 data/radar/bundle/** -text
 tests/fixtures/*.html -text
+data/ai/* text eol=lf
+pipeline/fetch_radar_bridge.py text eol=lf
+shared/radar/chain.js text eol=lf
+tests/radar/chain.test.js text eol=lf

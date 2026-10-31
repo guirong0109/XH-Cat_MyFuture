@@ -23,7 +23,7 @@ scenario comparison.
 | Overall match: 4 UNESCO-based AI questions + AI know-how on the role card (M17) | `claude/career-matching` | merged 2026-10-31 | Done; 1129 tests pass; whole-branch review fixed; checked in the browser |
 | Organisation view: HR / L&D and career centres (roster, join links, heatmap, team plan, outlook, SDG count) | `hr-branch` | merged 2026-10-31 | Done; 1338 tests pass after the merge; whole-branch review fixed; checked in the browser (fake D1); judge-test source label fixed |
 | CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
-| Radar: "Your profile" card removed (owner request) | `claude/future-radar` | merged 2026-10-31 | Done; 1426 tests pass; checked in the browser |
+| Radar: "Your profile" card removed; source details as four cards (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1429 tests pass; checked in the browser |
 | SDG contribution page and Compare futures | not started | — | Next |
 
 ## Future Skills Radar (since 2026-10-30)
@@ -92,8 +92,7 @@ scenario comparison.
   accept or trim ~10.8 MB of bundled O\*NET snapshots; find an official source that MASCO 2020 major groups match
   ISCO-08.
 - **Radar profile charts:** review the new BM and 中文 lines ("translation: owner review"); eMASCO roles in one 4-digit
-  MASCO group show the same chart (the chain works at that level); the "Your profile" card still says "Add your field
-  of study or roles" for a profile with only O\*NET roles; copy the three browser-check screenshots into
+  MASCO group show the same chart (the chain works at that level); copy the three browser-check screenshots into
   `docs/record/screens/` (blocked by a permission check for Claude).
 - **Matching:** review the SDG team drafts in `#admin` (all shown now, labelled "team draft, not yet reviewed";
   approval is a future step); review BM and 中文 matching wording; the ~685 KB role list could be compressed (needs
@@ -185,7 +184,7 @@ scenario comparison.
 ## Commands
 ```bash
 npm install
-npm test          # expect 1426 passed
+npm test          # expect 1429 passed
 npm start         # http://localhost:3200, reads .env if present (copy .env.example)
 python -m unittest discover pipeline/tests   # expect 49 OK
 python pipeline/fetch_radar_bridge.py        # rebuild the eMASCO → O*NET code chain

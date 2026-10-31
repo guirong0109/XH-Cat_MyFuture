@@ -538,9 +538,44 @@ describe('B2 O*NET skills column (skill-trends spec §6, D23–D27)', () => {
 })
 
 describe('status cards (spec §11.1, §12)', () => {
+  it('the four sources sit as cards in one grid: OpenAlex, DOSM, O*NET skills, Hot Technologies (owner, 31 Oct)', () => {
+    const html = view(ownProfile())
+    const start = html.indexOf('<div class="rd-srcgrid">')
+    expect(start).toBeGreaterThan(-1)
+    const cards = [...html.matchAll(/<article class="rd-srccard[^"]*">([\s\S]*?)<\/article>/g)].map((m) => m[1])
+    expect(cards).toHaveLength(4)
+    expect(html.indexOf('<article class="rd-srccard')).toBeGreaterThan(start)
+    const names = ['OpenAlex', 'Department of Statistics Malaysia', t('rdSrcOnetSkills'), t('rdSrcOnetHot')]
+    names.forEach((name, i) => expect(unesc(cards[i].match(/<h3>([^<]*)<\/h3>/)[1]), name).toContain(name))
+    for (const c of cards) {
+      // name with its source link in the head, availability as a tag, the facts as label-value pairs
+      expect(c).toMatch(/<header class="rd-srccard-head"><h3>[^<]+<\/h3> <a href="https:\/\//)
+      expect(c).toContain('<span class="pill ok" aria-label="Availability: Data available">Data available</span>')
+      expect(c).toContain('<dl class="rd-srccard-facts">')
+      expect(c).not.toContain(`<dt>${t('rdDim_availability')}</dt>`)
+    }
+    // the old rule-style blocks are gone
+    expect(html).not.toContain('card rd-src-card')
+    expect(html).not.toContain('rd-kv tiny')
+  })
+
+  it('a source card is a box in the app look: ink outline, round corners, paper, offset shadow', () => {
+    const css = readFileSync('public/styles.css', 'utf8')
+    const rule = css.match(/^\.rd-srccard\{([^}]*)\}/m)[1]
+    for (const part of ['border:1px solid var(--ink)', 'border-radius:14px', 'background:var(--surface)', 'box-shadow:4px 4px 0 var(--ink)']) expect(rule).toContain(part)
+    expect(css).toMatch(/^\.rd-srcgrid\{[^}]*display:grid/m)
+  })
+
+  it('a source that is not available gets a plain tag, not the green one', () => {
+    const html = onetSourceCards([{ sourceId: 'onet-skills', version: '31.0', links: [] }], t, { 'onet-skills': { availability: 'unavailable' } })
+    expect(html).toContain(`<span class="pill" aria-label="${t('rdDim_availability')}: ${t('rdAvail_unavailable')}">${t('rdAvail_unavailable')}</span>`)
+  })
+
   it('per source: link, observation period, publication date, last fetch, manifest id and the five dimensions', () => {
     const html = statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })
     for (const dim of ['availability', 'freshness', 'refreshHealth', 'servedFrom', 'comparability']) expect(count(html, new RegExp(t(`rdDim_${dim}`), 'g'))).toBe(2)
+    // availability is the tag at the top of each card, named for screen readers
+    expect(count(html, new RegExp(`<span class="pill ok" aria-label="${t('rdDim_availability')}: ${t('rdAvail_data')}">${t('rdAvail_data')}</span>`, 'g'))).toBe(2)
     expect(html).toContain('href="https://openalex.org"')
     expect(html).toContain('href="https://www.dosm.gov.my"')
     expect(html).toContain(t('rdServed_bundled_read_only'))
@@ -579,7 +614,6 @@ describe('status cards (spec §11.1, §12)', () => {
         'onet-hottech': { availability: 'unavailable', refreshHealth: 'ok' },
       }
       const html = onetSourceCards(sources, tl, states)
-      expect(html, lang).toContain(tl('rdDim_availability'))
       expect(html, lang).toContain(tl('rdDim_refreshHealth'))
       expect(html, lang).toContain(tl('rdAvail_data'))
       expect(html, lang).toContain(tl('rdAvail_unavailable'))

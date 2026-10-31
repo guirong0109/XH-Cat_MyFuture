@@ -29,7 +29,7 @@ are detailed.
 
 ## Commands
 ```bash
-npm install && npm test     # expect 1426 passed
+npm install && npm test     # expect 1429 passed
 npm start                   # http://localhost:3200
 python -m unittest discover pipeline/tests   # expect 49 OK
 ```
@@ -54,6 +54,8 @@ python -m unittest discover pipeline/tests   # expect 49 OK
 - Both Radar charts are built in the browser from the confirmed profile (D28–D33): skills of the user's own jobs and
   AI use of their tasks. eMASCO reaches O\*NET only through the code chain (D29 replaced D27).
 - The Radar page has no "Your profile" card (owner, 31 Oct 2026). Do not bring it back.
+- The four Radar source details (OpenAlex, DOSM, two O\*NET) are cards in the app look, two by two, one column on a
+  phone (`.rd-srccard`, owner, 31 Oct 2026); availability is the tag at the top.
 
 ## Career matching (details: branch `claude/career-matching`)
 - Code in `shared/matching/`, `server/matching/`, `public/js/screens/match.js` and `sdgTab.js`.

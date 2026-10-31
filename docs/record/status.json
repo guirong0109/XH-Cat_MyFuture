@@ -2654,6 +2654,11 @@
       "time": "31 Oct",
       "step": "Remove the \"Your profile\" card from the Radar",
       "detail": "Your request. Card, its note and its EN/BM/中文 strings removed; test first (079175a). npm test 1426 passed; checked in the browser"
+    },
+    {
+      "time": "31 Oct",
+      "step": "Radar source details as cards",
+      "detail": "Your request. OpenAlex, DOSM and the two O*NET sources are four cards in the app look, two by two, one column on a phone; availability is a tag; nothing left out; test first (50564d6, bad5173). npm test 1429 passed; checked in the browser at 1280 px, 375 px and in dark mode"
     }
   ]
 }

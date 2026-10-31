@@ -269,8 +269,17 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 /* ---- Screens added on main (career matching, Radar, Study pathway, organisation view, ...), carried over in the
    merge of claude/cv-profile-module. They use the same tokens, so they follow the cream and ink look. ---- */
 /* Future Skills Radar (D22): small additions on the app's own tokens */
-.rd .rd-status{margin:14px 0 8px}
-.rd .rd-src-card h3{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+/* Source cards (owner, 31 Oct): boxes in the app look, two by two (OpenAlex and DOSM, then the two O*NET sources),
+   one column on a phone. A grid inside a grid passes its cards up, so the page shows one grid of four. */
+.rd-srcgrid{display:grid;gap:18px;grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0 12px}
+.rd-srcgrid .rd-srcgrid{display:contents}
+.rd-srccard{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;padding:16px 18px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink)}
+.rd-srccard-head{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%}
+.rd-srccard-head h3{margin:0;font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.rd-srccard-facts{display:grid;gap:2px;margin:0;width:100%;font-size:13px}
+.rd-srccard-facts dt{margin-top:6px;font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rd-srccard-facts dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.rd-srccard-foot{margin:auto 0 0;padding-top:10px;border-top:1px solid var(--line);width:100%;overflow-wrap:anywhere}
 .rd .rd-sec{margin-top:14px}
 .rd .rd-sec>h2,.rd-drawer h2{margin-top:0}
 .rd .rd-sources{margin:6px 0 4px}
@@ -307,6 +316,7 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 .rd-drawer-top{position:sticky;top:-18px;background:var(--surface);padding:4px 0 8px;margin-bottom:6px;border-bottom:1px solid var(--line)}
 .rd-drawer-top .sp{flex:1}
 @media (max-width:560px){.rd-kv{grid-template-columns:minmax(0,1fr)}.rd-kv dd{margin-bottom:6px}}
+@media (max-width:640px){.rd-srcgrid{grid-template-columns:minmax(0,1fr)}}
 /* Radar admin and judge screens (built on the same tokens and classes) */
 .rd-admin .rd-session,.rd-judge .rd-session{margin:10px 0 4px}
 .rd-signin{max-width:420px;margin-top:8px}

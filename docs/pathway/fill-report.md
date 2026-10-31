@@ -38,3 +38,10 @@ All 68 skill and knowledge items have at least one course pick, so no item is re
 | field:0611 | Computer use | general web search | 2026-10-31 | no degree programme is about computer use alone; it is a skill, not a programme |
 | field:0619 | Information and Communication Technologies (ICTs) not elsewhere classified | general web search, UKM/UUM/USM computing pages | 2026-10-31 | no programme clearly in it |
 | field:0688 | Inter-disciplinary programmes and qualifications involving Information and Communication Technologies | general web search | 2026-10-31 | no such programme found |
+| field:0710 | Engineering and engineering trades not further defined | general web search | 2026-10-31 | residual category; fitting programmes sit in 0711-0716 |
+| field:0712 | Environmental protection technology | general web search (environmental engineering/technology), UTM/UKM/UTHM/UniMAP faculty pages | 2026-10-31 | only UniMAP Bachelor of Environmental Engineering with Honours found and its page returned 503 on 2026-10-31; not confirmed |
+| field:0719 | Engineering and engineering trades not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0723 | Textiles (clothes, footwear and leather) | general web search, UiTM Faculty of Applied Sciences list, UiTM Faculty of Art and Design | 2026-10-31 | UiTM Bachelor of Technology in Textile and Apparel with Honours (AS260) exists but its only official page is a PDF whose title could not be read; textile design is under 0214 |
+| field:0729 | Manufacturing and processing not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |
+| field:0788 | Inter-disciplinary programmes and qualifications involving engineering, manufacturing and construction | general web search | 2026-10-31 | no such programme found |
+| field:0799 | Engineering, manufacturing and construction not elsewhere classified | general web search | 2026-10-31 | no programme clearly in it |

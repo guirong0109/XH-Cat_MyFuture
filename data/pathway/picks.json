@@ -1498,6 +1498,219 @@
       "body": "Malaysia Board of Technologists (MBOT)",
       "link": "https://www.mbot.org.my/registration/professional-technologists",
       "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0711-1",
+      "field": "0711",
+      "kind": "accredited",
+      "name": "Bachelor of Chemical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11082",
+      "link": "https://admission.utm.my/new2024/?p=407062",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0711-2",
+      "field": "0711",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-1",
+      "field": "0713",
+      "kind": "accredited",
+      "name": "Bachelor of Electrical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://fke.utm.my/?p=362",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-2",
+      "field": "0713",
+      "kind": "accredited",
+      "name": "Bachelor of Electrical Engineering with Honours",
+      "institution": "Universiti Kuala Lumpur (UniKL)",
+      "mqrRef": "MQA/FA1624",
+      "link": "https://www.unikl.edu.my/?p=990201",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0713-3",
+      "field": "0713",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-1",
+      "field": "0714",
+      "kind": "accredited",
+      "name": "Bachelor of Electronic Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11078",
+      "link": "https://admission.utm.my/new2024/?p=407058",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-2",
+      "field": "0714",
+      "kind": "accredited",
+      "name": "Bachelor of Engineering (Electrical-Mechatronics)",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://fke.utm.my/undergraduate/bachelor-of-engineering-electrical-mechatronics-skem/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0714-3",
+      "field": "0714",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0715-1",
+      "field": "0715",
+      "kind": "accredited",
+      "name": "Bachelor of Mechanical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": null,
+      "link": "https://mech.utm.my/ug-programme/",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0715-2",
+      "field": "0715",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-1",
+      "field": "0716",
+      "kind": "accredited",
+      "name": "Bachelor of Aeronautical Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11088",
+      "link": "https://admission.utm.my/new2024/?p=407072",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-2",
+      "field": "0716",
+      "kind": "accredited",
+      "name": "Bachelor of Aerospace Engineering with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6525001-bachelor-of-aerospace-engineering-with-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0716-3",
+      "field": "0716",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0721-1",
+      "field": "0721",
+      "kind": "accredited",
+      "name": "Bachelor of Food Science (Food Technology) with Honours",
+      "institution": "Universiti Malaysia Terengganu (UMT)",
+      "mqrRef": null,
+      "link": "https://www.umt.edu.my/?p=36122",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0722-1",
+      "field": "0722",
+      "kind": "accredited",
+      "name": "Bachelor of Bioresource Technology with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6543001-bachelor-of-technology-honours-bioresource",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0724-1",
+      "field": "0724",
+      "kind": "accredited",
+      "name": "Bachelor of Mineral Resources Engineering with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/course-ug-international/us6524002-bachelor-of-mineral-resources-engineering-with-honours",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0724-2",
+      "field": "0724",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0731-1",
+      "field": "0731",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Architecture with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11073",
+      "link": "https://admission.utm.my/new2024/?p=407033",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0731-2",
+      "field": "0731",
+      "kind": "accredited",
+      "name": "Bachelor of Town and Regional Planning (Hons)",
+      "institution": "Universiti Teknologi MARA (UiTM)",
+      "mqrRef": null,
+      "link": "https://fab.uitm.edu.my/index.php/be221",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-1",
+      "field": "0732",
+      "kind": "accredited",
+      "name": "Bachelor of Civil Engineering with Honours",
+      "institution": "Universiti Teknologi Malaysia (UTM)",
+      "mqrRef": "MQA/FA11074",
+      "link": "https://admission.utm.my/new2024/?p=407055",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-2",
+      "field": "0732",
+      "kind": "accredited",
+      "name": "Bachelor of Science in Quantity Surveying with Honours",
+      "institution": "Universiti Sains Malaysia (USM)",
+      "mqrRef": null,
+      "link": "https://admission.usm.my/index.php/alternative-second-channel/us6526001-sarjana-muda-sains-perumahan-bangunan-dan-perancangan-kepujian-ukur-bahan-2",
+      "checkedAt": "2026-10-31"
+    },
+    {
+      "id": "p-0732-3",
+      "field": "0732",
+      "kind": "professional",
+      "name": "Professional Engineer with Practising Certificate (PEPC)",
+      "body": "Board of Engineers Malaysia (BEM)",
+      "link": "https://bem.org.my/Landing/register",
+      "checkedAt": "2026-10-31"
     }
   ],
   "searchWords": [

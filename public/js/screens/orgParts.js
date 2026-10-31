@@ -397,6 +397,7 @@ export function outlookView(t, o) {
   <div class="grid g3">${bands}</div>
   <div class="card og-gap"><h3>${esc(t('ogMovedTitle'))}</h3>
     ${lines.length ? lines.map((l) => `<p class="small">${esc(l)}</p>`).join('') : `<p class="small">${esc(t('ogMovedNone'))}</p>`}
+    ${team?.judgeSession ? `<div class="mt-note">${esc(t('mtJudge'))}</div>` : ''}
     ${src(t, o, 'ogSrcOutlook', dated(t, team, ['aei', 'ilo', 'dosm']))}</div>
   <h2>${esc(t('ogSdgTitle'))} ${tag('unv', t('mtPotential'))}</h2>
   <div class="card"><div class="row"><label class="small muted" for="ogSdgGroup">${esc(t('ogSdgFor'))}</label>${sdgSelect}</div>

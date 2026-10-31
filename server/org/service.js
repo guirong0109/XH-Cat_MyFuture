@@ -142,12 +142,15 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
     }
 
     // matching's own dated sources (AI, SDG, eMASCO, O*NET) and the job-ad data date, for the Outlook and SDG tabs
+    // A judge's Trend Change Test session runs on test signals: never name DOSM for them (the screen says test data).
     let outlookSources = []
+    let judgeSession = false
     try {
       const listed = await matching.list(profileOf([]), request)
       outlookSources = Array.isArray(listed?.sources) ? [...listed.sources] : []
       const radar = listed?.radar
-      if (radar?.state === 'data') {
+      judgeSession = radar?.judgeSession === true
+      if (radar?.state === 'data' && !judgeSession) {
         outlookSources.push({ id: 'dosm', name: `DOSM online job vacancies (MASCO major group)${radar.observationPeriod ? `, ${radar.observationPeriod}` : ''}`, url: null, date: radar.publishedAt ?? null })
       }
     } catch (error) {
@@ -171,6 +174,7 @@ export function createOrgService({ store, matching, pathway, log = () => {} }) {
       leftOut,
       sources: sources ?? [],
       outlookSources,
+      judgeSession,
     }
   }
 

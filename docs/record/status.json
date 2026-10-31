@@ -1859,6 +1859,11 @@
       "time": "31 Oct",
       "step": "M17 task 2: profile asks four AI questions",
       "detail": "sixth profile card Using AI with four UNESCO-based yes/no drop-downs saved as profile.aiUse; schema checks it; EN/BM/zh strings; SOURCES.md row; npm test 1112 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "M17 task 3: matching answers carry AI know-how and Overall",
+      "detail": "POST /api/matching adds aiKnowHow, touchPct per scenario and overallMatch per role; aiUse must be a plain object (400 otherwise); 6 new tests, npm test 1118 passed"
     }
   ]
 }

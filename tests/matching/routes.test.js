@@ -260,14 +260,77 @@ describe('POST /api/matching', () => {
   it('the list carries the closed-card AI numbers per role: Moderate automation %, Rapid exposure % and ILO group', async () => {
     await start()
     const { body } = await post('/api/matching', { profile: FULL })
-    expect(roleOf(body, FIXTURE.fullRole).ai).toEqual({ moderate: { available: true, automationPct: 30 }, rapid: { available: true, exposurePct: 45, gradient: 'G1' } })
-    expect(roleOf(body, FIXTURE.brokenRole).ai).toEqual({ moderate: { available: false, automationPct: null }, rapid: { available: true, exposurePct: 62, gradient: 'G3' } })
+    expect(roleOf(body, FIXTURE.fullRole).ai).toEqual({ moderate: { available: true, automationPct: 30, touchPct: expect.any(Number) }, rapid: { available: true, exposurePct: 45, gradient: 'G1', touchPct: 45 } })
+    expect(roleOf(body, FIXTURE.brokenRole).ai).toEqual({ moderate: { available: false, automationPct: null, touchPct: null }, rapid: { available: true, exposurePct: 62, gradient: 'G3', touchPct: 62 } })
     // no chain ISCO-08 code: Rapid not available (the fixture's ILO row for 9999 is never used)
-    expect(roleOf(body, FIXTURE.noIscoRole).ai).toEqual({ moderate: { available: false, automationPct: null }, rapid: { available: false, exposurePct: null, gradient: null } })
+    expect(roleOf(body, FIXTURE.noIscoRole).ai).toEqual({ moderate: { available: false, automationPct: null, touchPct: null }, rapid: { available: false, exposurePct: null, gradient: null, touchPct: null } })
     // the same number that decides band 2
     const role = (await post('/api/matching/role', { profile: FULL, code: FIXTURE.fullRole })).body
     expect(roleOf(body, FIXTURE.fullRole).ai.moderate.automationPct).toBe(role.outlook.ai.moderate.values.automationPct)
     expect(keysDeep(roleOf(body, FIXTURE.fullRole).ai).filter((k) => FORBIDDEN_KEY.test(k))).toEqual([])
+  })
+
+  it('M17: a profile saved before M17 gets no know-how and no Overall (Review Focus 1)', async () => {
+    await start()
+    const { status, body } = await post('/api/matching', { profile: FULL })
+    expect(status).toBe(200)
+    expect(body.aiKnowHow).toBeNull()
+    expect(body.roles.every((r) => r.overallMatch.moderate === null && r.overallMatch.rapid === null)).toBe(true)
+  })
+
+  it('M17: answers give know-how and an Overall that follows the formula, Skill Match unchanged', async () => {
+    await start()
+    const without = (await post('/api/matching', { profile: FULL })).body
+    const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: 'yes', apply: 'yes', design: 'no' } } })
+    expect(body.aiKnowHow).toEqual({ percent: 75, yes: 3, answered: 4 })
+    const r = body.roles.find((x) => x.skillMatch && x.ai.rapid.touchPct !== null)
+    expect(r).toBeTruthy()
+    const t = r.ai.rapid.touchPct / 100
+    expect(r.overallMatch.rapid.percent).toBe(Math.round(r.skillMatch.percent * (1 - t) + 75 * t))
+    expect(r.skillMatch).toEqual(roleOf(without, r.code).skillMatch)
+    const m = body.roles.find((x) => x.skillMatch && x.ai.moderate.touchPct !== null)
+    expect(m).toBeTruthy()
+    const tm = m.ai.moderate.touchPct / 100
+    expect(m.overallMatch.moderate.percent).toBe(Math.round(m.skillMatch.percent * (1 - tm) + 75 * tm))
+  })
+
+  it('M17: touchPct is the Moderate observed share and the Rapid mean x 100, one decimal, or null', async () => {
+    await start()
+    const { body } = await post('/api/matching', { profile: FULL })
+    const full = roleOf(body, FIXTURE.fullRole)
+    expect(full.ai.rapid.touchPct).toBe(45)
+    expect(typeof full.ai.moderate.touchPct).toBe('number')
+    const broken = roleOf(body, FIXTURE.brokenRole)
+    expect(broken.ai.moderate.touchPct).toBeNull()
+    expect(roleOf(body, FIXTURE.noIscoRole).ai.rapid.touchPct).toBeNull()
+  })
+
+  it('M17: no AI data for the scenario -> Overall equals Skill Match', async () => {
+    await start()
+    const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: null, apply: null, design: null } } })
+    const r = body.roles.find((x) => x.skillMatch && x.ai.moderate.touchPct === null) ?? body.roles.find((x) => x.skillMatch && x.ai.rapid.touchPct === null)
+    if (r) {
+      const scenario = r.ai.moderate.touchPct === null ? 'moderate' : 'rapid'
+      expect(r.overallMatch[scenario]).toMatchObject({ percent: r.skillMatch.percent, noAiData: true })
+    }
+    const noSkill = roleOf(body, FIXTURE.brokenRole)
+    expect(noSkill.overallMatch).toEqual({ moderate: null, rapid: null })
+  })
+
+  it('M17: a tampered aiUse -> non-object is 400, unknown values count as unanswered (Review Focus 2)', async () => {
+    await start()
+    for (const aiUse of ['yes', ['yes'], 3, null]) expect((await post('/api/matching', { profile: { ...FULL, aiUse } })).status).toBe(400)
+    const { status, body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'maybe', ethics: 'yes', apply: 7, design: 'no' } } })
+    expect(status).toBe(200)
+    expect(body.aiKnowHow).toEqual({ percent: 50, yes: 1, answered: 2 })
+  })
+
+  it('M17: the AI answers are never logged and the answer has no forbidden keys', async () => {
+    await start()
+    const spies = ['log', 'info', 'warn', 'error', 'debug'].map((m) => vi.spyOn(console, m))
+    const { body } = await post('/api/matching', { profile: { ...FULL, aiUse: { mindset: 'yes', ethics: 'no', apply: 'yes', design: 'no' } } })
+    for (const spy of spies) for (const call of spy.mock.calls) expect(JSON.stringify(call.map(String))).not.toMatch(/mindset|aiUse/)
+    expect(keysDeep(body).filter((k) => FORBIDDEN_KEY.test(k))).toEqual([])
   })
 
   it('Review Focus 4: Radar store unreadable -> 200, job ads not available, bands from the AI part only', async () => {

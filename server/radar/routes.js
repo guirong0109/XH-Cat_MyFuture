@@ -194,7 +194,7 @@ function skills(view, refs = null) {
   for (const o of hotSnap?.observations ?? []) {
     if (typeof o.value !== 'number') continue
     if (o.entityId === '__total__') total = o.value
-    else rows.push({ technology: o.entityId, postings: o.value })
+    else rows.push({ technology: o.entityId, skillId: `onet:tech:${nameKey(o.entityId)}`, postings: o.value })
   }
   rows.sort((a, b) => b.postings - a.postings || (a.technology < b.technology ? -1 : a.technology > b.technology ? 1 : 0))
   const sourceLinks = []
@@ -206,7 +206,7 @@ function skills(view, refs = null) {
     changes: perJob,
     hot: { added: (changes?.hot?.added ?? []).map(hotItem), dropped: (changes?.hot?.dropped ?? []).map(hotItem) },
     // firstSnapshot: the posting signals hold one counting window, so they show no direction yet (D24).
-    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows, firstSnapshot: firstPostingSnapshot(view) } : null,
+    postings: hotSnap && rows.length ? { window: hotSnap.meta?.window ?? null, total, rows, previous: null, firstSnapshot: firstPostingSnapshot(view) } : null,
     labels: { usPostings: true, softwareOnly: true },
     sourceLinks,
     fetchedAt: skillSnap?.fetchedAt ?? hotSnap?.fetchedAt ?? null,

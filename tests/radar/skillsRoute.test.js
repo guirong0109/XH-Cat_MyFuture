@@ -61,6 +61,8 @@ describe('GET /api/radar/skills', () => {
     expect(body.postings.rows.some((r) => r.technology === '__total__')).toBe(false)
     const counts = body.postings.rows.map((r) => r.postings)
     expect(counts).toEqual([...counts].sort((a, b) => b - a))
+    expect(body.postings.rows.every((r) => r.skillId.startsWith('onet:tech:'))).toBe(true)
+    expect(body.postings.previous).toBeNull()
     expect(body.labels).toEqual({ usPostings: true, softwareOnly: true })
     expect(body.sourceLinks.map((l) => l.url)).toEqual(expect.arrayContaining(['https://www.onetcenter.org/database.html', 'https://www.onetonline.org/search/hot_tech/']))
     expect(body.manifestId).toBeTruthy()

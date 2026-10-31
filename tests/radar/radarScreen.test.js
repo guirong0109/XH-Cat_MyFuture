@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createApp } from '../../server/app.js'
 import { createFileStore } from '../../server/radar/store/file.js'
+import { startRadar } from '../helpers/radarData.js'
 import { createMemoryStore } from '../../server/radar/store/memory.js'
 import { createRadarService } from '../../server/radar/service.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
@@ -17,20 +18,14 @@ const t = (key, vars) => translate('en', key, vars)
 const BUNDLE_ACTIVE = 'manifest-20261030T113958.380Z-ebe71e1d'
 const BUNDLE_OLDER = 'manifest-20261030T073351.495Z-2c6bf0d6'
 
-let server
+let radar
 let base
 let data
 beforeAll(async () => {
-  const references = await loadRadarReferences('data')
-  const radar = createRadarService({ store: null, bundleStore: createFileStore('data/radar/bundle'), references: async () => references, ingestor: null, now: () => new Date('2026-10-31T00:00:00Z') })
-  server = createApp({ radar, d1: null, tempStore: null, llmProviders: [], onetLive: null }).listen(0)
-  await new Promise((resolve) => server.once('listening', resolve))
-  base = `http://127.0.0.1:${server.address().port}`
-  const out = await radarApi.load(undefined, { base })
-  expect(out.ok).toBe(true)
-  data = out.data
+  radar = await startRadar()
+  ;({ base, data } = radar)
 })
-afterAll(() => new Promise((resolve) => server.close(resolve)))
+afterAll(() => radar.close())
 
 const profile = (extra = {}) => ({
   profileStatus: 'confirmed', education: { records: [] }, employment: { records: [] }, preferences: { careerInterests: [] }, occupationMappings: [], ...extra,

@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { makeBridge } from '../../shared/radar/bridge.js'
 import { makeChain } from '../../shared/radar/chain.js'
-import { profileJobs } from '../../shared/radar/profileCharts.js'
+import { profileJobs, skillCorners, filterItems } from '../../shared/radar/profileCharts.js'
+import { startRadar } from '../helpers/radarData.js'
 
 const file = JSON.parse(readFileSync('data/radar/occupation-bridge.json', 'utf8'))
 const bridge = makeBridge(file)
@@ -73,5 +74,105 @@ describe('profileJobs', () => {
       occupations: [emasco('2512-02'), onet('15-1299.00')],
     }
     expect(run(rel).jobs.map((j) => j.code)).toEqual(['15-1299.00', '11-1011.00', '15-1252.00', '15-1253.00'])
+  })
+})
+
+describe('skillCorners (real bundled skills answer)', () => {
+  let radar
+  let skills
+  beforeAll(async () => {
+    radar = await startRadar()
+    skills = radar.data.skills
+  })
+  afterAll(() => radar.close())
+  const job = (code, title) => ({ code, title, via: [{ kind: 'role', from: { source: 'onet', code, title: null } }] })
+  const accountants = () => job('13-2011.00', 'Accountants and Auditors')
+  const developers = () => job('15-1252.00', 'Software Developers')
+  const keysOf = (v, out = []) => {
+    if (Array.isArray(v)) v.forEach((x) => keysOf(x, out))
+    else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) out.push(k), keysOf(x, out)
+    return out
+  }
+
+  it('Accountants: 6 items, Excel and QuickBooks counts, Office first', () => {
+    const { items } = skillCorners([accountants()], skills)
+    expect(items).toHaveLength(6)
+    expect(items).toEqual(expect.arrayContaining([
+      expect.objectContaining({ example: 'Microsoft Excel', postings: 3211598 }),
+      expect.objectContaining({ example: 'Intuit QuickBooks', postings: 174071 }),
+    ]))
+    expect(items[0]).toMatchObject({ example: 'Microsoft Office software', postings: 3421542 })
+  })
+  it('Software Developers: 30 items, 29 with counts, a different set; sorted with nulls last', () => {
+    const dev = skillCorners([developers()], skills).items
+    const acc = skillCorners([accountants()], skills).items
+    expect(dev).toHaveLength(30)
+    expect(dev.filter((i) => i.postings !== null)).toHaveLength(29)
+    expect(dev.map((i) => i.skillId).sort()).not.toEqual(acc.map((i) => i.skillId).sort())
+    const counts = dev.map((i) => i.postings)
+    const real = counts.filter((c) => c !== null)
+    expect(real).toEqual([...real].sort((a, b) => b - a))
+    expect(counts.slice(real.length).every((c) => c === null)).toBe(true)
+  })
+  it('Registered Nurses: no items, listed under noSkills', () => {
+    const out = skillCorners([job('29-1141.00', 'Registered Nurses')], skills)
+    expect(out.items).toEqual([])
+    expect(out.noSkills[0].code).toBe('29-1141.00')
+  })
+  it('two jobs share Office, Excel and PowerPoint; the rest have one job', () => {
+    const { items } = skillCorners([job('27-1024.00', 'Graphic Designers'), job('11-2021.00', 'Marketing Managers')], skills)
+    expect(items).toHaveLength(16)
+    const shared = ['Microsoft Office software', 'Microsoft Excel', 'Microsoft PowerPoint']
+    for (const name of shared) {
+      const hits = items.filter((i) => i.example === name)
+      expect(hits).toHaveLength(1)
+      expect(hits[0].jobs.map((j) => j.code)).toEqual(['27-1024.00', '11-2021.00'])
+      expect(hits[0].jobs[0].via).toEqual(items[0].jobs[0].via)
+    }
+    for (const i of items.filter((x) => !shared.includes(x.example))) expect(i.jobs).toHaveLength(1)
+  })
+  it('filterItems is a case-insensitive substring on the name', () => {
+    const { items } = skillCorners([accountants()], skills)
+    expect(filterItems(items, 'excel').map((i) => i.example)).toEqual(['Microsoft Excel'])
+    expect(filterItems(items, 'EXC').map((i) => i.example)).toEqual(['Microsoft Excel'])
+    expect(filterItems(items, '')).toEqual(items)
+  })
+  it('previousPostings is null without a previous snapshot, and read by skillId when one is served', () => {
+    expect(skills.postings.previous).toBeNull()
+    expect(skillCorners([accountants()], skills).items.every((i) => i.previousPostings === null)).toBe(true)
+    const excel = skills.postings.rows.find((r) => r.technology === 'Microsoft Excel')
+    const withPrev = { ...skills, postings: { ...skills.postings, previous: { window: { year: '2024' }, rows: [{ technology: 'Microsoft Excel', skillId: excel.skillId, postings: 3000000 }] } } }
+    const items = skillCorners([accountants()], withPrev).items
+    expect(items.find((i) => i.example === 'Microsoft Excel').previousPostings).toBe(3000000)
+    expect(items.find((i) => i.example !== 'Microsoft Excel').previousPostings).toBeNull()
+  })
+  it('flags match posting rows by skillId, not by the spelling of the name', () => {
+    const synthetic = {
+      changes: { 'X-1': { kept: [{ example: 'Microsoft Excel', skillId: 'onet:tech:microsoft excel' }], added: [], dropped: [] } },
+      postings: { window: { year: '2025' }, rows: [{ technology: 'Microsoft  EXCEL ', skillId: 'onet:tech:microsoft excel', postings: 5 }], previous: null, firstSnapshot: true },
+    }
+    expect(skillCorners([job('X-1', 'X')], synthetic).items[0]).toMatchObject({ example: 'Microsoft Excel', postings: 5 })
+  })
+  it('isNew only when no job keeps the skill; dropped skills still wanted by another job are not listed', () => {
+    const e = (example) => ({ example, skillId: `onet:tech:${example.toLowerCase()}` })
+    const synthetic = {
+      changes: {
+        A: { kept: [e('Go')], added: [e('Rust')], dropped: [e('Perl'), e('Zig')] },
+        B: { kept: [], added: [e('Go'), e('Rust')], dropped: [] },
+        C: { kept: [], added: [], dropped: [e('Zig')] },
+      },
+      postings: null,
+    }
+    const out = skillCorners([job('A', 'A'), job('B', 'B'), job('C', 'C')], synthetic)
+    expect(out.items.find((i) => i.example === 'Go').isNew).toBe(false)
+    expect(out.items.find((i) => i.example === 'Rust').isNew).toBe(true)
+    expect(out.dropped.map((d) => d.example).sort()).toEqual(['Perl', 'Zig'])
+    expect(out.dropped.find((d) => d.example === 'Zig').jobs.map((j) => j.code)).toEqual(['A', 'C'])
+    expect(out.noSkills.map((j) => j.code)).toEqual(['C'])
+    expect(out.items.map((i) => i.example)).toEqual(['Go', 'Rust'])
+  })
+  it('output has no score, weight, rank, match or opportunit key', () => {
+    const out = skillCorners([accountants(), developers()], skills)
+    expect(keysOf(out).filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
   })
 })

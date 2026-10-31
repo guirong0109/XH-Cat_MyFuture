@@ -36,6 +36,7 @@ import { loadRadarReferences } from './radar/references.js'
 import { matchingAdminRoutes } from './matching/adminRoutes.js'
 import { createMatchingServiceFromEnv } from './matching/service.js'
 import { matchingRoutes } from './matching/routes.js'
+import { pathwayAdminRoutes } from './pathway/adminRoutes.js'
 import { createPathwayServiceFromEnv } from './pathway/service.js'
 import { pathwayRoutes } from './pathway/routes.js'
 
@@ -169,6 +170,8 @@ export function createApp({
     // Owner decisions on the SDG links (career matching), in the Radar review store.
     // A decision drops the matching service's cached SDG decisions, so the next matching answer shows it.
     app.use(matchingAdminRoutes({ radar, access: radarAccess, now, dataDir, onDecision: () => matchingService?.sdgDecided?.() }))
+    // Owner decisions on the Study Pathway picks, in the same store; a decision drops the pathway service cached ones.
+    app.use(pathwayAdminRoutes({ radar, access: radarAccess, now, dataDir, loadData: pathwayData ? async () => pathwayData : null, onDecision: () => pathwayService?.picksDecided?.() }))
     app.use(radarDemoRoutes({ demo, access: radarAccess, now }))
   }
   if (extraRoutes) extraRoutes(app)

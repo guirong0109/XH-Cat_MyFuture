@@ -91,10 +91,13 @@ export async function loadPathwayData(dataDir) {
   const education = await checkedTsv(dataDir, 'onet/education.tsv', onetManifest, ['code', 'category', 'label', 'percent', 'suppress'])
   const reqRows = await checkedTsv(dataDir, 'onet/requirements.tsv', onetManifest, ['kind', 'element_id'])
   const itemKeys = new Set(reqRows.filter((r) => r.kind === 'el' || r.kind === 'kn').map((r) => `${r.kind}:${r.element_id}`))
+  // Item name per key (the O*NET element name) and field title per ISCED code: the admin list says what a pick is for.
+  const itemNames = new Map(reqRows.filter((r) => itemKeys.has(`${r.kind}:${r.element_id}`) && r.element).map((r) => [`${r.kind}:${r.element_id}`, r.element]))
 
   const fields = await checkedTsv(dataDir, 'isced/fields.tsv', iscedManifest, ['code', 'title'])
   const isced = await checkedTsv(dataDir, 'isced/isced_cip.tsv', iscedManifest, ['isced_code', 'isced_title', 'cip_code', 'cip_title', 'partial'])
   const cip = await checkedTsv(dataDir, 'isced/cip_onet.tsv', iscedManifest, ['cip_code', 'code'])
+  const fieldTitles = new Map(fields.map((f) => [f.code, f.title]))
   const routeIndex = indexRoute({ isced, cip, fields })
   const fieldCodes = new Set(fieldsReachingOnet(routeIndex))
 
@@ -117,7 +120,7 @@ export async function loadPathwayData(dataDir) {
     ...sites.filter((s) => s.search).map((s) => ({ id: `site:${s.id}`, name: s.name, url: s.home, date: s.searchCheckedAt ?? null, licence: null })),
   ]
 
-  return { education, qualifications, routeIndex, sites, picks, itemKeys, fieldCodes, sources }
+  return { education, qualifications, routeIndex, sites, picks, itemKeys, itemNames, fieldTitles, fieldCodes, sources }
 }
 
 // The start-up check (server/index.js): the loaded data, or one error line naming the file and the bad entry (spec §7,

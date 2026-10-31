@@ -908,4 +908,18 @@ export default {
   rdSdgOtherLangs: "Bahasa lain", // translation: owner review
   rdColLink: "Pautan", // translation: owner review
   rdColSdgTarget: "Sasaran", // translation: owner review
+  rdPickTitle: "Pilihan laluan pengajian", // translation: owner review
+  rdPickTag: "Draf pasukan: semakan pemilik", // translation: owner review
+  rdPickNote: "Setiap pilihan ialah kursus, program atau kata carian yang dipilih pasukan untuk satu kemahiran, item pengetahuan atau bidang pengajian. Skrin Laluan Pengajian menunjukkan setiap pilihan sehingga anda menolaknya; yang diluluskan menunjukkan tarikh anda. Sumber setiap pilihan ialah pautannya sendiri.", // translation: owner review
+  rdPickNotReviewed: "belum disemak", // translation: owner review
+  rdPickOpen: "Buka pautan (tab baharu)", // translation: owner review
+  rdPickNone: "Belum ada pilihan.", // translation: owner review
+  rdPickTypeCourse: "Kursus", // translation: owner review
+  rdPickTypeProgramme: "Program", // translation: owner review
+  rdPickTypeSearchWord: "Kata carian", // translation: owner review
+  rdPickColType: "Jenis", // translation: owner review
+  rdPickColFor: "Untuk", // translation: owner review
+  rdPickColSite: "Laman, institusi atau badan", // translation: owner review
+  rdPickColName: "Nama", // translation: owner review
+  rdPickColChecked: "Tarikh disemak", // translation: owner review
 }

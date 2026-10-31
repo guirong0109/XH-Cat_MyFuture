@@ -175,13 +175,16 @@ function adminFailed(name, out) {
 }
 // Everything the admin screen shows, read again after each decision, refresh or clean-up (one render at the end).
 async function reloadAdmin(patch = {}, focus = null) {
-  const [pub, status, mappings, breaks, sdgLinks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks()])
+  const [pub, status, mappings, breaks, sdgLinks, picks] = await Promise.all([radarApi.load(), adminApi.status(), adminApi.mappings(), adminApi.breaks(), adminApi.sdgLinks(), adminApi.pathwayPicks()])
   const failed = [status, mappings, breaks].find((out) => !out.ok)
   if (failed) return adminFailed('status', failed)
   // A failed SDG link list fails only the SDG card (the rest of the admin screen still shows), unless the session is gone.
   if (!sdgLinks.ok && !adminApi.session()) return adminFailed('status', sdgLinks)
   const sdg = sdgLinks.ok ? { sdgLinks: sdgLinks.data, sdgLinksError: null } : { sdgLinks: null, sdgLinksError: sdgLinks.code ?? 'network' }
-  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg } }, focus)
+  // Likewise a failed pathway pick list fails only the pathway card.
+  if (!picks.ok && !adminApi.session()) return adminFailed('status', picks)
+  const pathwayPicks = picks.ok ? { pathwayPicks: picks.data, pathwayPicksError: null } : { pathwayPicks: null, pathwayPicksError: picks.code ?? 'network' }
+  setAdmin({ ...patch, loading: false, data: { public: pub.ok ? pub.data : null, status: status.data, mappings: mappings.data, breaks: breaks.data, ...sdg, ...pathwayPicks } }, focus)
 }
 async function loadJudge() {
   state.radarAdmin = { ...adminUi(), loading: true }
@@ -267,6 +270,17 @@ const adminActions = {
     // The SDG tags in matching change (not the bands): fetch the list again, with no trend banner.
     matchStale(false)
     reloadAdmin({ notes: { ...notes, sdg: '' }, ...adminMsg('sdg', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-sdg')
+  },
+  admPick: async (arg) => {
+    const bar = String(arg).lastIndexOf('|')
+    const note = fieldValue('admPickNote')
+    const notes = { ...adminUi().notes, pick: note }
+    const out = await adminApi.decidePathwayPick({ id: String(arg).slice(0, bar), decision: String(arg).slice(bar + 1), note })
+    if (!out.ok) {
+      if (!adminApi.session()) return adminFailed('pick', out)
+      return setAdmin({ notes, ...adminMsg('pick', { kind: 'bad', code: out.code }) }, out.code === 'note_required' ? 'admPickNote' : 'admMsg-pick')
+    }
+    reloadAdmin({ notes: { ...notes, pick: '' }, ...adminMsg('pick', { kind: 'ok', key: 'rdDecided' }) }, 'admMsg-pick')
   },
   admBreak: async (arg) => {
     const [i, decision] = String(arg).split('|')

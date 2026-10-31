@@ -181,6 +181,44 @@ function sdgLinkCard(t, state, data) {
   </div>`
 }
 
+// ---------- admin: Study Pathway pick review ----------
+
+const PICK_TYPES = { course: 'rdPickTypeCourse', programme: 'rdPickTypeProgramme', searchWord: 'rdPickTypeSearchWord' }
+
+function pathwayPickCard(t, state, data) {
+  const head = `<h2>${esc(t('rdPickTitle'))} ${tag('self', t('rdPickTag'))}</h2>`
+  if (data.pathwayPicksError) {
+    return `<div class="card rd-sec" id="admPickCard">${head}${message(t, state, 'pick')}
+    <div class="banner b-bad" role="alert"><div>${esc(errText(t, data.pathwayPicksError))}${CLIENT_CODES[data.pathwayPicksError] ? '' : ` <code>${esc(data.pathwayPicksError)}</code>`}</div></div></div>`
+  }
+  const s = data.pathwayPicks ?? {}
+  const writable = Boolean(s.writable)
+  const row = (p) => {
+    const [kind, label] = MAP_STATUS[p.status] ?? MAP_STATUS.pending
+    const status = p.status === 'pending' ? (p.reviewedAt ? t('rdStatusProposed') : t('rdPickNotReviewed')) : t(label)
+    const where = [p.siteName ?? p.site, p.institution, p.body].filter((x) => typeof x === 'string' && x).map((x) => esc(x)).join(' · ')
+    const url = safeUrl(p.link)
+    const last = p.reviewedAt ? `<div class="tiny muted">${esc(p.reviewedBy ?? DASH)} · ${esc(fmtDate(p.reviewedAt))}</div>` : ''
+    const buttons = MAP_DECISIONS.map(([decision, key]) => `<button class="btn sm" data-act="admPick" data-arg="${esc(`${p.id}|${decision}`)}" aria-label="${esc(`${t(key)}: ${p.id}`)}"${disabled(!writable)}>${esc(t(key))}</button>`).join('')
+    return `<tr><td>${esc(t(PICK_TYPES[p.type] ?? 'rdPickTypeCourse'))}${p.kind ? `<div class="tiny muted">${esc(p.kind)}</div>` : ''}</td>
+      <td>${esc(p.forLabel ?? p.for)}<div class="tiny muted"><code>${esc(p.for)}</code></div></td>
+      <td class="small">${where || DASH}</td>
+      <td><b>${esc(p.name ?? p.word ?? DASH)}</b>${url ? `<div class="tiny"><a href="${esc(url)}" target="_blank" rel="noopener">${esc(t('rdPickOpen'))}</a></div>` : ''}</td>
+      <td class="small">${esc(p.checkedAt ?? DASH)}</td>
+      <td>${tag(kind, status)}${last}</td>
+      <td><div class="row rd-decide">${buttons}</div></td></tr>`
+  }
+  const cols = ['rdPickColType', 'rdPickColFor', 'rdPickColSite', 'rdPickColName', 'rdPickColChecked', 'rdColStatus', 'rdColDecide']
+  const rows = (s.picks ?? []).map(row).join('')
+  return `<div class="card rd-sec" id="admPickCard">${head}
+    <p class="small muted">${esc(t('rdPickNote'))}</p>
+    ${writable ? '' : `<div class="banner b-info"><div>${esc(t('rdSdgReadOnly'))}</div></div>`}
+    <div class="field"><label for="admPickNote">${esc(t('rdNote'))}</label><textarea id="admPickNote" rows="2" maxlength="2000" required aria-required="true">${esc(ui(state).notes?.pick ?? '')}</textarea></div>
+    ${message(t, state, 'pick')}
+    ${rows ? `<div class="rd-scroll"><table><tr>${cols.map((c) => `<th>${esc(t(c))}</th>`).join('')}</tr>${rows}</table></div>` : `<p class="muted">${esc(t('rdPickNone'))}</p>`}
+  </div>`
+}
+
 // ---------- admin: break review ----------
 
 // The DOSM listing titles of the quarter before and the flagged quarter, side by side (spec 6.2: evidence, not a cause).
@@ -348,6 +386,7 @@ export function adminView({ t, state, data }) {
     ${exportCard(t, state)}
     ${mappingCard(t, state, data)}
     ${sdgLinkCard(t, state, data)}
+    ${pathwayPickCard(t, state, data)}
     ${breakCard(t, state, data)}
     ${statusCard(t, state, data)}
     ${refreshCard(t, state, data)}

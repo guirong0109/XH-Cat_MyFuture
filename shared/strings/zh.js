@@ -908,4 +908,18 @@ export default {
   rdSdgOtherLangs: "其他语言", // translation: owner review
   rdColLink: "关联", // translation: owner review
   rdColSdgTarget: "指标", // translation: owner review
+  rdPickTitle: "学习路径推荐项", // translation: owner review
+  rdPickTag: "团队草稿：负责人审核", // translation: owner review
+  rdPickNote: "每个推荐项是团队为某项技能、知识或学习领域选出的课程、专业或搜索词。在您拒绝之前，学习路径页面会显示每个推荐项；获批的显示您的批准日期。每个推荐项的来源就是它自己的链接。", // translation: owner review
+  rdPickNotReviewed: "尚未审核", // translation: owner review
+  rdPickOpen: "打开链接（新标签页）", // translation: owner review
+  rdPickNone: "暂无推荐项。", // translation: owner review
+  rdPickTypeCourse: "课程", // translation: owner review
+  rdPickTypeProgramme: "专业", // translation: owner review
+  rdPickTypeSearchWord: "搜索词", // translation: owner review
+  rdPickColType: "类型", // translation: owner review
+  rdPickColFor: "适用于", // translation: owner review
+  rdPickColSite: "网站、院校或机构", // translation: owner review
+  rdPickColName: "名称", // translation: owner review
+  rdPickColChecked: "核查日期", // translation: owner review
 }

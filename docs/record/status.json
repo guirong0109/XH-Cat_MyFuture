@@ -681,6 +681,11 @@
           "status": "done"
         },
         {
+          "title": "O6m Handover and browser check",
+          "sub": "docs/org/acceptance.md, branch HANDOVER.md and CLAUDE.md, tools declaration",
+          "status": "done"
+        },
+        {
           "title": "O6 Build",
           "sub": "plan docs/superpowers/plans/2026-10-31-hr-org-view.md (Tasks 0-12), subagent-driven",
           "status": "todo"
@@ -2005,6 +2010,11 @@
       "time": "31 Oct",
       "step": "O6l Career centre type (hr-branch)",
       "detail": "Task 11 reviewed clean; npm test 1256 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "O6m Handover and browser check (hr-branch)",
+      "detail": "Task 12 reviewed clean; full browser run (HR and career centre, 360 px); npm test 1256, pipeline 49 OK"
     }
   ]
 }

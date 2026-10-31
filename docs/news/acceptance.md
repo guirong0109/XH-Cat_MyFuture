@@ -21,4 +21,23 @@ The fake search gives each field 3 results per run (field 06: 30 results plus on
 Also checked: Explore all shows the 10-field picker with one list; Bahasa Melayu interface strings show; at 375 px wide
 there is no sideways scroll.
 
-**Real run: waits on the owner** (DeepSeek key `DEEPSEEK_API_KEY` and the OK on about US$1.80 a month).
+## Real run (31 Oct 2026, 21:43 MYT)
+
+With the owner's key in `.env` (git-ignored) and the owner's OK on the cost, launch entry `futures-real`
+(`http://futures.localhost:3272`). One refresh, **10 searches** (the store's count), at most US$0.0075; the server was
+stopped right after, so no further refresh ran.
+
+| # | Check | Result |
+|---|---|---|
+| C1 | For you with study field 0613 | Pass: the ICT list, 25 real items (first: "Can AI Make Anyone a Hacker? The Growing Risks of AI-Powered Cybercrime", Open Magazine) |
+| C2 | Link, site, date, snippet; ≤ 25; newest first; ≤ 30 days | Pass: all 10 fields `ok` with 25 items each; 21-25 different sites per field; the oldest item in any field was 3.9 days old |
+| C3 | Source line | Pass: "Found by DeepSeek Search for “…software computing cybersecurity after:2026-10-01 lang:en” · updated 2026-10-31 21:43 MYT · next refresh about 2026-11-01 00:43 MYT", then the rules |
+
+Seen on real data, for the owner (not failures of the spec's rules):
+- **DeepSeek dates are day-level in Malaysia/Beijing time**: every date reads `…T16:00:00+00:00` (= 00:00 UTC+8). So
+  today's articles carry a time in the past and are kept; the "future date" concern from the final review is small.
+- **Some kept items are not news articles**: an arXiv listing page, a homework-help page, a conference alert, open-access
+  book and journal pages. They pass the rules (title, link, date). Filtering them would need a new rule or a
+  relevance check, which the owner chose not to use (decision N4).
+- **Near-repeats from copy sites**: the same CNBC story appears under a slightly different headline on another site
+  ("… | News"), so the repeat rule does not catch it.

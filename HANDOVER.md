@@ -14,10 +14,12 @@ Updated 2026-10-31. Sub-branch of `claude/career-matching` (from `d82267e`). Not
   80 per 24 hours. Lists are kept in R2 (`news/latest.json`) or `data/cache/news/latest.json`.
 - **State:** all 6 plan tasks built, 1510 Vitest tests pass, C1-C7 checked in the browser with a fake search
   (`docs/news/acceptance.md`). Final whole-branch review done (opus), its Critical and Important findings fixed.
-- **Waits on the owner:** the DeepSeek key (`DEEPSEEK_API_KEY` in the server's secret settings) and the OK on the cost
-  (US$0.75 per 1,000 successful searches, about US$1.80 a month; billing from 1 Nov 2026). Then one real run and C1-C3
-  again on real data. Also the BM / 中文 strings (marked "translation: owner review") and the search words per field
-  (`data/news/fields.json`, team draft).
+  **Real run done 31 Oct 2026** with the owner's key (local `.env`, git-ignored, launch entry `futures-real`): 10
+  searches, all 10 fields `ok` with 25 items, C1-C3 pass on real data.
+- **Waits on the owner:** whether to filter non-news pages (arXiv listings, homework sites, conference alerts) and
+  near-repeats from copy sites, seen in the real run (today they pass the rules; spec N4 = rule checks only). The BM /
+  中文 strings (marked "translation: owner review") and the search words per field (`data/news/fields.json`, team
+  draft). For a deployed server, the key goes in the host's secret settings, never in the repo.
 - **Docs:** spec `docs/superpowers/specs/2026-10-31-compare-futures-news-design.md`, diagram
   `docs/architecture-compare-futures.html`, plan `docs/superpowers/plans/2026-10-31-compare-futures-news.md`.
 - **Run locally:** `npm start` (news is off without the key); `PORT=3271 node scripts/news-local.mjs` shows the screen

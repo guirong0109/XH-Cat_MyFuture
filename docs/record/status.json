@@ -2694,6 +2694,11 @@
       "time": "31 Oct",
       "step": "News: final review fixes",
       "detail": "Opus whole-branch review: 1 Critical, 3 Important fixed, each with a test that failed first. The search count and last run now live in memory too (store write failures cannot reset them); each search is written down before it is made; an unreadable store means no search; a failed run waits 3 hours and the timer never crashes the server. 5 minor notes deferred for the owner. npm test 1510 passed"
+    },
+    {
+      "time": "31 Oct",
+      "step": "News: first real DeepSeek run",
+      "detail": "Owner key in local .env (git-ignored). One refresh: 10 searches (at most US$0.0075), all 10 fields ok with 25 items, oldest item 3.9 days, 21-25 sites per field; C1-C3 pass on real data; server stopped after. Seen: day-level dates in UTC+8, some non-news pages and near-repeats pass the rules (owner to decide). docs/news/acceptance.md"
     }
   ]
 }

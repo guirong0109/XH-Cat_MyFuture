@@ -10,7 +10,8 @@ import { createFileStore } from '../../server/radar/store/file.js'
 import { loadRadarReferences } from '../../server/radar/references.js'
 import { recordReview } from '../../server/radar/reviews.js'
 import { createMatchingServiceFromEnv } from '../../server/matching/service.js'
-import { createPathwayServiceFromEnv, necFor } from '../../server/pathway/service.js'
+import { createPathwayService, createPathwayServiceFromEnv, necFor } from '../../server/pathway/service.js'
+import { indexRoute } from '../../shared/pathway/route.js'
 import { PathwayDataError, checkPathwayData, loadPathwayData, pickHash } from '../../server/pathway/data.js'
 import { FIXTURE, fixtureReferences } from '../helpers/matchingFixture.js'
 import { PATHWAY, PICKS, SITES, makePathwayFixture } from '../helpers/pathwayFixture.js'
@@ -264,6 +265,20 @@ describe('necFor (MQR NEC code for an ISCED-F field)', () => {
     expect(necFor('0411')).toEqual({ nec: '0411', necChecked: false })
     expect(necFor('0721')).toEqual({ nec: '0721', necChecked: false })
     expect(necFor('0910')).toEqual({ nec: '0910', necChecked: false })
+  })
+})
+
+describe('course pick order (spec §5)', () => {
+  it('lists a step’s course picks by site group: Malaysian, then global, then tech, in file order within a group', async () => {
+    const site = (id, group) => ({ id, name: id, group })
+    const sites = [site('coursera', 'global'), site('edx', 'global'), site('mslearn', 'tech'), site('elatih', 'malaysian'), site('openlearning', 'malaysian')]
+    const c = (id, s) => ({ id, type: 'course', for: 'kn:x', site: s, name: id, link: `https://example.org/${id}`, checkedAt: '2026-10-31', hash: `h-${id}` })
+    const picks = [c('c1', 'coursera'), c('c2', 'mslearn'), c('c3', 'openlearning'), c('c4', 'edx'), c('c5', 'elatih')]
+    const data = { education: [], qualifications: new Map(), routeIndex: indexRoute({ isced: [], cip: [], fields: [] }), sites, picks, sources: [] }
+    const row = { key: 'kn:x', name: 'X', kind: 'kn', importance: 4, needed: 4, you: 2, gap: 2, status: 'below' }
+    const matching = { role: async () => ({ code: 'R', title: 'R', chain: { path: [], missingStep: null }, jobs: [{ code: 'J', title: 'J' }], fit: { onetCode: 'J', onetTitle: 'J', percent: 50, rows: [row] } }) }
+    const a = await createPathwayService({ loadData: async () => data, matching }).pathway({}, 'R', {})
+    expect(a.steps.gaps[0].courses.map((x) => [x.id, x.site])).toEqual([['c3', 'openlearning'], ['c5', 'elatih'], ['c1', 'coursera'], ['c4', 'edx'], ['c2', 'mslearn']])
   })
 })
 

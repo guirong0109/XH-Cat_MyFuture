@@ -28,6 +28,7 @@ export function necFor(code) {
 }
 // Pick decisions are read from the review store at most once a minute, as the SDG decisions are.
 export const PICKS_TTL_MS = SDG_TTL_MS
+const GROUP_ORDER = ['malaysian', 'global', 'tech', 'professional']
 const arr = (v) => (Array.isArray(v) ? v : [])
 const codeOf = (error) => error?.code ?? error?.name ?? 'Error'
 
@@ -62,9 +63,18 @@ export function createPathwayService({ loadData, matching, store = null, now = (
     return shownPicks(data.picks, reviews).map(({ hash, ...p }) => p)
   }
 
-  // Each course pick carries its site's name from sites.json (every site, also those with no search link).
-  const siteName = (sites, id) => (sites ?? []).find((s) => s.id === id)?.name ?? null
-  const coursesFor = (shown, key, sites) => shown.filter((p) => p.type === 'course' && p.for === key).map((p) => ({ ...p, siteName: siteName(sites, p.site) }))
+  // Each course pick carries its site's name from sites.json (every site, also those with no search link). Picks are
+  // listed by site group (Malaysian, global, tech, then professional; spec §5), in file order within a group.
+  const siteOf = (sites, id) => (sites ?? []).find((s) => s.id === id)
+  const groupAt = (sites, id) => {
+    const at = GROUP_ORDER.indexOf(siteOf(sites, id)?.group)
+    return at < 0 ? GROUP_ORDER.length : at
+  }
+  const coursesFor = (shown, key, sites) => shown
+    .filter((p) => p.type === 'course' && p.for === key)
+    .map((p, i) => ({ p, i, at: groupAt(sites, p.site) }))
+    .sort((a, b) => a.at - b.at || a.i - b.i)
+    .map(({ p }) => ({ ...p, siteName: siteOf(sites, p.site)?.name ?? null }))
   const searchFor = (shown, key, name, sites) => searchLinks(searchWordFor(key, shown, name), sites)
 
   function routeOf(data, onetCode, profile, shown) {

@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { makeBridge } from '../../shared/radar/bridge.js'
 import { makeChain } from '../../shared/radar/chain.js'
-import { profileJobs, skillCorners, filterItems } from '../../shared/radar/profileCharts.js'
+import { profileJobs, skillCorners, filterItems, taskCorners, usageText } from '../../shared/radar/profileCharts.js'
+import { loadAiTasks } from '../../server/radar/aiTasks.js'
 import { startRadar } from '../helpers/radarData.js'
 
 const file = JSON.parse(readFileSync('data/radar/occupation-bridge.json', 'utf8'))
@@ -175,5 +176,57 @@ describe('skillCorners (real bundled skills answer)', () => {
   it('output has no score, weight, rank, match or opportunit key', () => {
     const out = skillCorners([accountants(), developers()], skills)
     expect(keysOf(out).filter((k) => /score|weight|rank|match|opportunit/i.test(k))).toEqual([])
+  })
+})
+
+describe('taskCorners (real Anthropic Economic Index data)', () => {
+  const jobOf = (code) => ({ code, title: `Title ${code}`, via: [{ kind: 'role', from: { source: 'onet', code, title: null } }] })
+  const iscoOf = (c) => bridge.iscoOf(c)
+  let ai
+  beforeAll(async () => { ai = await loadAiTasks('data') })
+
+  it('Software Developers: 8 of 17 tasks, ordered, with the ISCO 2512 row', () => {
+    const r = taskCorners(jobOf('15-1252.00'), ai, { iscoOf })
+    expect(r.items).toHaveLength(8)
+    expect(r.total).toBe(17)
+    expect(r.items[0].text.startsWith('Modify existing software to correct errors')).toBe(true)
+    expect(r.items[0].automation).toBe(69.12)
+    expect(r.ilo[0]).toMatchObject({ isco: '2512', gradient: 'G3' })
+    for (let i = 1; i < r.items.length; i++) {
+      const a = r.items[i - 1], b = r.items[i]
+      expect(a.usage > b.usage || (a.usage === b.usage && a.automation >= b.automation)).toBe(true)
+    }
+  })
+  it('Accountants: 11 of 30, a different task set', () => {
+    const acc = taskCorners(jobOf('13-2011.00'), ai, { iscoOf })
+    const dev = taskCorners(jobOf('15-1252.00'), ai, { iscoOf })
+    expect(acc.items).toHaveLength(11)
+    expect(acc.total).toBe(30)
+    expect(new Set(acc.items.map((i) => i.text))).not.toEqual(new Set(dev.items.map((i) => i.text)))
+  })
+  it('Registered Nurses: 2 items and a not_exposed gradient', () => {
+    const r = taskCorners(jobOf('29-1141.00'), ai, { iscoOf })
+    expect(r.items).toHaveLength(2)
+    expect(r.ilo[0].gradient).toBe('not_exposed')
+  })
+  it('an eMASCO 2512-02 job uses the chain ISCO code', () => {
+    const { jobs } = run({ fields: [], occupations: [emasco('2512-02')] })
+    const job = jobs.find((j) => j.code === '15-1253.00')
+    const r = taskCorners(job, ai, { iscoOf: () => [] })
+    expect(r.items).toHaveLength(17)
+    expect(r.total).toBe(30)
+    expect(r.ilo.map((x) => x.isco)).toEqual(['2512'])
+  })
+  it('a job reached by chain and by role uses the union of ISCO codes', () => {
+    const job = { code: 'x', title: null, via: [{ kind: 'chain', from: {}, isco: '2411' }, { kind: 'role', from: {} }] }
+    const r = taskCorners(job, ai, { iscoOf: () => ['2512'] })
+    expect(r.ilo.map((x) => x.isco)).toEqual(['2411', '2512'])
+  })
+  it('usageText', () => {
+    expect(usageText(0)).toBe('under 0.01')
+    expect(usageText(0.2)).toBe('0.20')
+  })
+  it('unavailable data gives empty output', () => {
+    expect(taskCorners(jobOf('15-1252.00'), { state: 'unavailable', reason: 'x' }, { iscoOf })).toEqual({ items: [], total: null, ilo: [] })
   })
 })

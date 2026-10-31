@@ -87,3 +87,23 @@ export function filterItems(items, q) {
   const needle = String(q ?? '').trim().toLowerCase()
   return needle ? items.filter((i) => i.example.toLowerCase().includes(needle)) : items
 }
+
+// Tasks of one job from the Anthropic Economic Index (spec D31) and the ILO exposure rows of its ISCO codes.
+// aiTasks = /api/radar/ai-tasks answer. ISCO codes (ruling R1): union of chain-via codes; none -> iscoOf(code); chain plus another way -> both.
+export function taskCorners(job, aiTasks, { iscoOf }) {
+  if (aiTasks?.state !== 'data') return { items: [], total: null, ilo: [] }
+  const items = (aiTasks.tasks ?? [])
+    .filter((t) => t.code === job.code)
+    .map((t) => ({ taskId: t.taskId, text: t.text, usage: t.usage, automation: t.automation, augmentation: t.augmentation }))
+    .sort((a, b) => b.usage - a.usage || b.automation - a.automation || a.text.localeCompare(b.text, 'en'))
+  const chainIsco = (job.via ?? []).filter((v) => v.kind === 'chain' && v.isco).map((v) => v.isco)
+  const otherWay = (job.via ?? []).some((v) => v.kind !== 'chain')
+  const codes = new Set(chainIsco)
+  if (!chainIsco.length || otherWay) for (const c of iscoOf(job.code) ?? []) codes.add(c)
+  const ilo = (aiTasks.ilo ?? []).filter((r) => codes.has(r.isco)).sort((a, b) => a.isco.localeCompare(b.isco, 'en'))
+  return { items, total: aiTasks.taskCounts?.[job.code] ?? 0, ilo }
+}
+
+export function usageText(usage) {
+  return usage < 0.005 ? 'under 0.01' : usage.toFixed(2)
+}

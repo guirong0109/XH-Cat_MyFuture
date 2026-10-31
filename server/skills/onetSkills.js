@@ -1,16 +1,21 @@
 // The skill catalogue, built from the O*NET 31.0 snapshot (data/onet): one entry per Software Skills example
 // (id onet:tech:<lower-case example>) and one per Essential/Transferable skill element (id onet:el:<element id>).
-// The skill search also offers work styles (onet:ws:), knowledge areas (onet:kn:) and work activities (onet:dwa:)
-// (owner, 30 Oct). Those are kept apart in `more`, so the CV reader and the normaliser match exactly as before.
+// Knowledge areas (onet:kn:, importance >= 3) are entries too, so the CV reader and the normaliser can link them.
+// The skill search also offers work styles (onet:ws:) and work activities (onet:dwa:) (owner, 30 Oct). Those are kept
+// apart in `more`, so the CV reader and the normaliser do not match them.
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 export const SKILL_ELEMENT_CATEGORY = 'O*NET skill'
 const MORE_LISTS = [
   ['work_styles.tsv', 'ws', 'O*NET work style', (row) => Number(row.value) > 0],
-  ['knowledge.tsv', 'kn', 'O*NET knowledge', (row) => Number(row.importance) >= 3],
   ['work_activities.tsv', 'dwa', 'O*NET work activity', () => true],
 ]
+
+const KNOWLEDGE_LIST = ['knowledge.tsv', 'kn', 'O*NET knowledge', (row) => Number(row.importance) >= 3]
+
+// The entries Skill Match can count: O*NET skills and knowledge areas.
+export const ONET_LINKABLE = (catalogue) => catalogue.entries.filter((entry) => entry.id.startsWith('onet:el:') || entry.id.startsWith('onet:kn:'))
 
 export const nameKey = (text) =>
   String(text ?? '').toLowerCase().replace(/\s+/g, ' ').trim().replace(/\s+v?\d+(\.\d+)*$/, '')
@@ -54,9 +59,9 @@ function parseTsv(text) {
 // A list that older O*NET releases do not have is simply left out.
 const readOptional = (file) => readFile(file, 'utf8').catch((error) => (error.code === 'ENOENT' ? null : Promise.reject(error)))
 
-async function loadMore(onetDir) {
+async function loadLists(onetDir, lists) {
   const more = []
-  for (const [file, prefix, category, counts] of MORE_LISTS) {
+  for (const [file, prefix, category, counts] of lists) {
     const text = await readOptional(path.join(onetDir, file))
     if (!text) continue
     const byId = new Map()
@@ -73,11 +78,12 @@ async function loadMore(onetDir) {
 }
 
 export async function loadSkillCatalogue(onetDir) {
-  const [skills, software, manifest, more] = await Promise.all([
+  const [skills, software, manifest, more, knowledge] = await Promise.all([
     readFile(path.join(onetDir, 'skills.tsv'), 'utf8'),
     readFile(path.join(onetDir, 'software.tsv'), 'utf8'),
     readFile(path.join(onetDir, 'manifest.json'), 'utf8'),
-    loadMore(onetDir),
+    loadLists(onetDir, MORE_LISTS),
+    loadLists(onetDir, [KNOWLEDGE_LIST]),
   ])
   const byId = new Map()
   for (const row of parseTsv(skills)) {
@@ -95,8 +101,10 @@ export async function loadSkillCatalogue(onetDir) {
     entry.occupations = entry.codes ? entry.codes.size : 0
     delete entry.codes
   }
-  const entries = [...byId.values()]
-  const byName = new Map(entries.map((entry) => [nameKey(entry.name), entry]))
+  const entries = [...byId.values(), ...knowledge]
+  const byName = new Map(entries.filter((entry) => !entry.id.startsWith('onet:kn:')).map((entry) => [nameKey(entry.name), entry]))
+  // a knowledge area never replaces a skill or software name
+  for (const entry of knowledge) if (!byName.has(nameKey(entry.name))) byName.set(nameKey(entry.name), entry)
   // word -> entries whose name has that word, to find names that contain a short input
   const byWord = new Map()
   for (const entry of entries) {

@@ -86,7 +86,7 @@ describe('skill search (O*NET catalogue)', () => {
   it('finds catalogue skills by the start of a word, most used first', async () => {
     const catalogue = await loadSkillCatalogue(path.join(dir, 'onet'))
     expect(searchSkills(catalogue, 'pyth').map((s) => s.name)).toEqual(['Python'])
-    expect(searchSkills(catalogue, 'sql').map((s) => s.name)).toEqual(['Microsoft SQL Server', 'Structured query language SQL'])
+    expect(searchSkills(catalogue, 'sql').map((s) => s.name)).toEqual(['Structured query language SQL', 'Microsoft SQL Server', 'Structure query language SQL'])
     expect(searchSkills(catalogue, 'reading')[0]).toEqual({ id: 'onet:el:2.A.1.a', name: 'Reading Comprehension', category: 'O*NET skill' })
   })
 

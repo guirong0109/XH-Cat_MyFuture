@@ -2,9 +2,9 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { SYSTEM_PROMPT } from '../server/cv/aiReadPrompt.js'
+import { CV_SCHEMA, systemPrompt } from '../server/cv/aiReadPrompt.js'
 import { AI_TIMEOUT_MS, createAiReader, keepQuoted, providerFromEnv } from '../server/cv/aiRead.js'
-import { loadSkillCatalogue } from '../server/skills/onetSkills.js'
+import { ONET_LINKABLE, loadSkillCatalogue } from '../server/skills/onetSkills.js'
 import { createNormalizer } from '../server/skills/normalize.js'
 import { validateProfile } from '../shared/profileSchema.js'
 import { writeCatalogue } from './helpers/onetFixture.js'
@@ -33,10 +33,14 @@ const PROVIDER = { url: 'https://api.deepseek.com/chat/completions', key: 'k', m
 
 let dir
 let normalizer
+let catalogue
+let SYSTEM_PROMPT
 beforeAll(async () => {
   dir = await mkdtemp(path.join(tmpdir(), 'airead-'))
   await writeCatalogue(dir)
-  normalizer = createNormalizer({ catalogue: await loadSkillCatalogue(dir) })
+  catalogue = await loadSkillCatalogue(dir)
+  normalizer = createNormalizer({ catalogue })
+  SYSTEM_PROMPT = systemPrompt([...new Set(ONET_LINKABLE(catalogue).map((e) => e.name))].sort((a, b) => a.localeCompare(b)))
 })
 afterAll(() => rm(dir, { recursive: true, force: true }))
 afterEach(() => vi.restoreAllMocks())
@@ -46,7 +50,7 @@ const reply = (content) => ({ ok: true, json: async () => ({ choices: [{ message
 function setup({ provider = PROVIDER, fetchImpl = async () => reply(JSON.stringify(REPLY)), ...options } = {}) {
   const calls = []
   const reader = createAiReader({
-    provider, normalizer, now: () => new Date('2026-10-31T10:00:00Z'), ...options,
+    provider, normalizer, catalogue, now: () => new Date('2026-10-31T10:00:00Z'), ...options,
     fetchImpl: async (url, init) => { calls.push({ url, init, body: JSON.parse(init.body) }); return fetchImpl(url, init) },
   })
   return { reader, calls }
@@ -203,5 +207,77 @@ describe('createAiReader', () => {
     }
     const printed = spy.mock.calls.map((call) => call.join(' '))
     expect(printed).toEqual(['[aiRead] failed: cut_off', '[aiRead] failed: bad_json', '[aiRead] failed: bad_shape jobs[0].employer null'])
+  })
+})
+
+describe('O*NET suggestion and project description', () => {
+  const withReply = (skills, projects = []) => setup({ fetchImpl: async () => reply(JSON.stringify({ ...REPLY, skills, projects })) })
+  const EXCEL = { name: 'Microsoft Excel', evidence: 'monthly reports in Microsoft Excel' }
+
+  it('schema: onet and description are optional string fields; a reply without them is accepted', async () => {
+    expect(CV_SCHEMA.properties.skills.items.properties.onet).toEqual({ type: 'string' })
+    expect(CV_SCHEMA.properties.projects.items.properties.description).toEqual({ type: 'string' })
+    expect((await read(setup().reader)).status).toBe('ok')
+  })
+  it('a present non-string onet is a bad shape', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    expect(await read(withReply([{ ...EXCEL, onet: 5 }]).reader)).toEqual(FAILED)
+  })
+  it('the prompt lists every linkable name, asks for the closest and never to invent', () => {
+    for (const entry of ONET_LINKABLE(catalogue)) expect(SYSTEM_PROMPT).toContain(entry.name)
+    expect(SYSTEM_PROMPT).toContain('closest')
+    expect(SYSTEM_PROMPT).toContain('never invent')
+    expect(SYSTEM_PROMPT).toContain('"onet"')
+    expect(SYSTEM_PROMPT).toContain('"description"')
+  })
+  it('the request body carries that prompt; thinking stays disabled', async () => {
+    const { reader, calls } = setup()
+    await read(reader)
+    expect(calls[0].body.messages[0]).toEqual({ role: 'system', content: SYSTEM_PROMPT })
+    expect(calls[0].body.thinking).toEqual({ type: 'disabled' })
+  })
+  it('an onet name on the list (any case) becomes an aiSuggestion with the skill evidence', async () => {
+    const { profile } = await read(withReply([{ ...EXCEL, onet: 'customer and personal service' }]).reader)
+    expect(profile.skills[0].aiSuggestion).toEqual({ id: 'onet:kn:2.C.1.e', name: 'Customer and Personal Service', evidence: EXCEL.evidence })
+    expect(profile.skills[0].name).toBe('Microsoft Excel')
+  })
+  it('an onet name not on the list gives no suggestion; the skill is kept', async () => {
+    const { profile } = await read(withReply([{ ...EXCEL, onet: 'Customer Service' }]).reader)
+    expect(profile.skills).toHaveLength(1)
+    expect(profile.skills[0]).not.toHaveProperty('aiSuggestion')
+  })
+  it('an onet on a skill whose evidence is not in the CV is dropped with the skill', async () => {
+    const { profile } = await read(withReply([{ name: 'Leadership', evidence: 'Led a team of 40 engineers', onet: 'Customer and Personal Service' }]).reader)
+    expect(profile.skills).toEqual([])
+  })
+  it('an onet equal to the skill own linked id gives no suggestion', async () => {
+    const cv = 'Reading Comprehension is my strength'
+    const body = { ...REPLY, jobs: [], education: [], skills: [{ name: 'Reading Comprehension', evidence: 'Reading Comprehension', onet: 'Reading Comprehension' }] }
+    const { reader } = setup({ fetchImpl: async () => reply(JSON.stringify(body)) })
+    const { profile } = await reader.read({ cvText: cv, ip: '1.1.1.1' })
+    expect(profile.skills[0].canonicalId).toBe('onet:el:2.A.1.a')
+    expect(profile.skills[0]).not.toHaveProperty('aiSuggestion')
+  })
+  it('project description in the CV is kept; one not in the CV is left empty', async () => {
+    const projects = [
+      { title: 'Sales reports', description: 'monthly reports', evidence: 'Sales reports: Built monthly reports' },
+    ]
+    const cv = CV_TEXT.replace('Built monthly reports', 'Sales reports: Built monthly reports')
+    const run = async (description) => {
+      const { reader } = setup({ fetchImpl: async () => reply(JSON.stringify({ ...REPLY, projects: [{ ...projects[0], description }] })) })
+      return (await reader.read({ cvText: cv, ip: '1.1.1.1' })).profile
+    }
+    expect((await run('monthly reports')).projects[0].description).toBe('monthly reports')
+    expect((await run('Won a national prize')).projects[0].description).toBe('')
+  })
+  it('a project without a description key is accepted and kept with description empty', async () => {
+    const projects = [{ title: 'IT Support Executive', evidence: 'IT Support Executive' }]
+    const { status, profile } = await read(withReply([EXCEL], projects).reader)
+    expect(status).toBe('ok')
+    expect(profile.projects[0]).toMatchObject({ title: 'IT Support Executive', description: '' })
+  })
+  it('keepQuoted does not check onet against the CV text', () => {
+    const { fields } = keepQuoted({ ...REPLY, skills: [{ ...EXCEL, onet: 'Mathematics' }] }, CV_TEXT)
+    expect(fields.skills[0].onet).toBe('Mathematics')
   })
 })

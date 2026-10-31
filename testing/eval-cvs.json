@@ -1,5 +1,5 @@
 {
-  "about": "Synthetic CVs for scripts/eval-cv.mjs. All names, employers and details are invented. 'expected' is what a careful reader would take from each CV (skills by name as written or as the O*NET name, qualification labels, job titles, certificate names). Labels written by the project team.",
+  "about": "Synthetic CVs for scripts/eval-cv.mjs. All names, employers and details are invented. 'expected' is what a careful reader would take from each CV (skills by name as written or as the O*NET name, qualification labels, job titles, certificate names; project titles and the O*NET skill or knowledge names a reader could reach, only on the CVs labelled for them). Labels written by the project team.",
   "cases": [
     {
       "id": "en-pdf", "format": "pdf", "tags": ["en"],
@@ -34,7 +34,7 @@
     {
       "id": "project-only-pdf", "format": "pdf", "tags": ["en", "no_job", "project_only"],
       "lines": ["Arjun Kumar (synthetic)", "EDUCATION", "Bachelor degree in Computer Science, Multimedia University, 2026", "PROJECTS", "Student attendance dashboard built with React and Node.js", "Library booking app in JavaScript", "SKILLS", "JavaScript, React, Git"],
-      "expected": { "skills": ["JavaScript", "React", "Git", "Node.js"], "qualifications": ["Bachelor degree"], "jobs": [], "certifications": [] }
+      "expected": { "skills": ["JavaScript", "React", "Git", "Node.js"], "qualifications": ["Bachelor degree"], "jobs": [], "certifications": [], "projects": ["Student attendance dashboard", "Library booking app in JavaScript"] }
     },
     {
       "id": "injection-pdf", "format": "pdf", "tags": ["en", "injection"],
@@ -49,7 +49,32 @@
     {
       "id": "duplicates-pdf", "format": "pdf", "tags": ["en", "duplicates"],
       "lines": ["Daniel Tan (synthetic)", "EDUCATION", "Diploma in Computer Science, TAR UMT, 2022", "SKILLS", "Python, python, Python 3, Microsoft Excel, MS Excel", "PROJECTS", "Inventory script written in Python"],
-      "expected": { "skills": ["Python", "Microsoft Excel"], "qualifications": ["Diploma"], "jobs": [], "certifications": [] }
+      "expected": { "skills": ["Python", "Microsoft Excel"], "qualifications": ["Diploma"], "jobs": [], "certifications": [], "projects": ["Inventory script written in Python"] }
+    },
+    {
+      "id": "long-projects-pdf", "format": "pdf", "tags": ["en", "no_job", "project_only", "hard"],
+      "lines": ["Hana Rahim (synthetic)", "EDUCATION", "Bachelor of Science in Information Systems, Universiti Putra Malaysia, 2025", "PROJECTS", "Campus event portal built with Vue and Firebase for 500 students", "Sales forecast notebook using Python and pandas", "Warehouse stock tracker - Excel macros and SQL", "SKILLS", "Git, Teamwork"],
+      "expected": { "skills": ["Vue", "Firebase", "Python", "pandas", "Excel", "SQL", "Git", "Teamwork"], "qualifications": ["Bachelor degree"], "jobs": [], "certifications": [], "projects": ["Campus event portal", "Sales forecast notebook", "Warehouse stock tracker"], "onet": ["Programming"] }
+    },
+    {
+      "id": "ms-soft-skills-pdf", "format": "pdf", "tags": ["ms", "hard"],
+      "lines": ["Aisyah Zulkifli (sintetik)", "PENDIDIKAN", "Diploma Pengurusan Perniagaan, Politeknik Merlimau, 2023", "PENGALAMAN KERJA", "Pembantu Jualan, Kedai Buku Ilmu Sdn Bhd, Jun 2023 - Kini", "Melayan pelanggan dan menyusun stok buku", "KEMAHIRAN", "Komunikasi, Kerja berpasukan, Penyelesaian masalah, Microsoft Excel"],
+      "expected": { "skills": ["Komunikasi", "Kerja berpasukan", "Penyelesaian masalah", "Microsoft Excel"], "qualifications": ["Diploma"], "jobs": ["Pembantu Jualan"], "certifications": [], "onet": ["Speaking", "Coordination", "Complex Problem Solving"], "projects": [] }
+    },
+    {
+      "id": "zh-soft-skills-docx", "format": "docx", "tags": ["zh", "docx", "hard"],
+      "lines": ["黄志强（虚构）", "教育背景", "文凭 商业管理, 吉隆坡理工学院, 2021", "工作经验", "客户服务专员, 明达有限公司, 2022 - 至今", "处理客户查询和投诉", "技能", "沟通, 客户服务, Microsoft Word"],
+      "expected": { "skills": ["沟通", "客户服务", "Microsoft Word"], "qualifications": ["Diploma"], "jobs": ["客户服务专员"], "certifications": [], "onet": ["Speaking", "Customer and Personal Service"], "projects": [] }
+    },
+    {
+      "id": "skills-in-jobs-pdf", "format": "pdf", "tags": ["en", "hard"],
+      "lines": ["Priya Nair (synthetic)", "EDUCATION", "Bachelor of Science in Statistics, Universiti Kebangsaan Malaysia, 2022", "EXPERIENCE", "Data Analyst, Orbit Insights Sdn Bhd, Feb 2023 - Present", "Built models in Python and dashboards in Tableau", "SKILLS", "SQL, MS Excel"],
+      "expected": { "skills": ["Python", "Tableau", "SQL", "Microsoft Excel"], "qualifications": ["Bachelor degree"], "jobs": ["Data Analyst"], "certifications": [], "onet": ["Programming", "Mathematics"], "projects": [] }
+    },
+    {
+      "id": "company-certificates-pdf", "format": "pdf", "tags": ["en", "hard"],
+      "lines": ["Karthik Raj (synthetic)", "EDUCATION", "Diploma in Information Technology, Politeknik Kota Bharu, 2022", "EXPERIENCE", "Junior Project Coordinator, Nova Works Sdn Bhd, Jul 2023 - Present", "Scheduled tasks and reported progress to the manager", "SKILLS", "Project Planning, Communication", "CERTIFICATIONS", "AWS Certified Cloud Practitioner, 2024", "Google Project Management Certificate, 2023"],
+      "expected": { "skills": ["Project Planning", "Communication"], "qualifications": ["Diploma"], "jobs": ["Junior Project Coordinator"], "certifications": ["AWS Certified Cloud Practitioner", "Google Project Management Certificate"], "onet": ["Coordination", "Speaking"], "projects": [] }
     },
     {
       "id": "scanned-pdf", "format": "pdf", "tags": ["scanned"],

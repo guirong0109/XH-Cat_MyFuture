@@ -18,7 +18,7 @@ import { loadSkillCatalogue } from '../server/skills/onetSkills.js'
 import { makeDocx, makePdf } from '../tests/helpers/cvFixtures.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
-const FIELDS = ['skills', 'qualifications', 'jobs', 'certifications']
+export const FIELDS = ['skills', 'qualifications', 'jobs', 'certifications', 'projects']
 const round = (n) => Math.round(n * 1000) / 1000
 const norm = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim()
 
@@ -59,14 +59,47 @@ export function scoreField(expected, found) {
   return rates({ tp, fp: left.length, fn: expected.length - tp })
 }
 
-export const sumScores = (scores) => rates(scores.reduce((a, s) => ({ tp: a.tp + s.tp, fp: a.fp + s.fp, fn: a.fn + s.fn }), { tp: 0, fp: 0, fn: 0 }))
+// Only the fields a CV is labelled for are scored (expected.projects and expected.onet are on some CVs only).
+export const scoreFields = (expected, found) => Object.fromEntries(FIELDS.map((f) => [f, expected[f] ? scoreField(expected[f], found[f] ?? []) : null]))
+
+export const sumScores = (scores) => rates(scores.filter(Boolean).reduce((a, s) => ({ tp: a.tp + s.tp, fp: a.fp + s.fp, fn: a.fn + s.fn }), { tp: 0, fp: 0, fn: 0 }))
 
 const foundFields = (profile) => ({
   skills: profile.skills.map((s) => s.name),
   qualifications: profile.education.records.map((r) => r.qualification),
   jobs: profile.employment.records.map((r) => r.jobTitle),
   certifications: profile.certifications.map((c) => c.name),
+  projects: (profile.projects ?? []).map((p) => p.title),
 })
+
+// O*NET skill and knowledge names a profile reaches Skill Match with: skills linked to onet:el:/onet:kn: ids; with the
+// AI, also the O*NET item it suggested (not yet kept by a user, so this is the most the AI could add).
+export function skillMatchNames(profile, nameById, { withAi }) {
+  const names = new Set()
+  const add = (id) => { if (/^onet:(el|kn):/.test(id ?? '') && nameById.has(id)) names.add(nameById.get(id)) }
+  for (const s of profile.skills) add(s.canonicalId)
+  if (withAi) for (const s of profile.skills) add(s.aiSuggestion?.id)
+  return [...names]
+}
+
+export function reachSection({ rules, ai, labelled }) {
+  const row = (label, scores) => {
+    const t = sumScores(scores)
+    return `| ${label} | ${t.tp} | ${t.fp} | ${t.fn} | ${t.precision ?? '—'} | ${t.recall ?? '—'} | ${t.f1 ?? '—'} |`
+  }
+  return [
+    '## Reaches Skill Match (labelled CVs only)',
+    '',
+    `The O*NET skill and knowledge names a CV's skills reach, against \`expected.onet\`. ${labelled} CVs are labelled for this (labelled CVs only). Rules only counts skills the reader linked to an O*NET skill or knowledge id; rules + AI also counts the O*NET item the AI suggested (a user still has to keep it).`,
+    '',
+    '| Reader | Right | Wrong (extra) | Missed | Precision | Recall | F1 |',
+    '|---|---|---|---|---|---|---|',
+    row('rules only', rules),
+    ...(ai ? [row('rules + AI', ai)] : []),
+    ...(ai ? [] : ['', 'Rules + AI: not run (needs `--ai`, which is paid).']),
+    '',
+  ]
+}
 
 async function extractCase(entry, catalogue, normalizer) {
   const buffer = entry.format === 'docx' ? makeDocx(entry.lines) : makePdf(entry.lines)
@@ -98,6 +131,7 @@ async function main() {
   const set = JSON.parse(await readFile(path.join(ROOT, 'testing', 'eval-cvs.json'), 'utf8'))
   const catalogue = await loadSkillCatalogue(path.join(ROOT, 'data', 'onet'))
   const normalizer = createNormalizer({ catalogue })
+  const nameById = new Map(catalogue.entries.map((e) => [e.id, e.name]))
   await extractCase(set.cases[0], catalogue, normalizer) // warm-up (pdf.js load), not timed
 
   const results = []
@@ -106,19 +140,20 @@ async function main() {
     const out = await extractCase(entry, catalogue, normalizer)
     const ms = Math.round(performance.now() - started)
     const handled = entry.expectedError ? out.error === entry.expectedError : !out.error
-    const found = out.profile ? foundFields(out.profile) : { skills: [], qualifications: [], jobs: [], certifications: [] }
-    const scores = Object.fromEntries(FIELDS.map((f) => [f, scoreField(entry.expected[f], found[f])]))
+    const found = out.profile ? foundFields(out.profile) : { skills: [], qualifications: [], jobs: [], certifications: [], projects: [] }
+    const scores = scoreFields(entry.expected, found)
+    const reach = entry.expected.onet && out.profile ? scoreField(entry.expected.onet, skillMatchNames(out.profile, nameById, { withAi: false })) : null
     // Only Good for a skill used in a job or project (owner, 31 Oct) may come from a CV.
     const levels = out.profile ? out.profile.skills.filter((s) => s.proficiency !== null && s.proficiencyStatus !== 'from_projects').length : 0
     const withId = out.profile ? out.profile.skills.filter((s) => s.canonicalId).length : 0
-    results.push({ entry, out, ms, handled, found, scores, levels, withId })
+    results.push({ entry, out, ms, handled, found, scores, reach, levels, withId })
   }
 
   // --ai: the same CVs through rules + DeepSeek (the upload route's merge). Rules errors skip the AI.
   let ai = null
   if (useAi) {
     const provider = providerFromEnv(process.env)
-    const reader = createAiReader({ provider, normalizer })
+    const reader = createAiReader({ provider, normalizer, catalogue })
     const usage = { input: 0, output: 0 }
     for (const r of results) {
       if (r.out.error) {
@@ -137,12 +172,18 @@ async function main() {
       const merged = mergeDrafts({ profile: r.out.profile, uncertain: r.out.uncertain }, answer.profile)
       const foundAi = foundFields(merged.profile)
       // Production runs both readers together, so the wait is the slower of the two.
-      r.ai = { ms: Math.max(r.ms, aiMs), found: foundAi, scores: Object.fromEntries(FIELDS.map((f) => [f, scoreField(r.entry.expected[f], foundAi[f])])) }
+      r.ai = {
+        ms: Math.max(r.ms, aiMs),
+        found: foundAi,
+        scores: scoreFields(r.entry.expected, foundAi),
+        reach: r.entry.expected.onet ? scoreField(r.entry.expected.onet, skillMatchNames(merged.profile, nameById, { withAi: true })) : null,
+      }
     }
     ai = { provider, usage, ran: results.filter((r) => r.ai.scores) }
   }
 
   const totals = Object.fromEntries(FIELDS.map((f) => [f, sumScores(results.map((r) => r.scores[f]))]))
+  const reachRules = results.map((r) => r.reach).filter(Boolean)
   const failures = results.filter((r) => !r.handled)
   const skillsFound = results.reduce((n, r) => n + r.found.skills.length, 0)
   const withId = results.reduce((n, r) => n + r.withId, 0)
@@ -153,7 +194,7 @@ async function main() {
     '',
     `Run on ${date} · extractor \`${EXTRACTOR_VERSION}\` (L1, L2, L4; L3 semantic match off) · O*NET ${catalogue.version} · ${set.cases.length} synthetic CVs in \`testing/eval-cvs.json\` · \`node scripts/eval-cv.mjs\`.`,
     '',
-    'Measured numbers only; no target is claimed. A found item counts as right when it equals or contains the expected text.',
+    'Measured numbers only; no target is claimed. A found item counts as right when it equals or contains the expected text. A field is scored only on the CVs labelled for it (projects and the Skill Match section: labelled CVs only).',
     '',
     '## Per field (all CVs together)',
     '',
@@ -169,13 +210,14 @@ async function main() {
     '',
     '## Per CV',
     '',
-    '| CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | ms |',
-    '|---|---|---|---|---|---|---|---|---|',
-    ...results.map((r) => `| ${r.entry.id} | ${r.entry.tags.join(', ')} | ${r.out.language ?? '—'} | ${r.out.error ? `${r.out.error}${r.handled ? ' (expected)' : ''}` : 'draft'} | ${FIELDS.map((f) => `${cell(r.scores[f].precision)} / ${cell(r.scores[f].recall)}`).join(' | ')} | ${r.ms} |`),
+    '| CV | Tags | Language | Outcome | Skills P / R | Qualifications P / R | Jobs P / R | Certificates P / R | Projects P / R | ms |',
+    '|---|---|---|---|---|---|---|---|---|---|',
+    ...results.map((r) => `| ${r.entry.id} | ${r.entry.tags.join(', ')} | ${r.out.language ?? '—'} | ${r.out.error ? `${r.out.error}${r.handled ? ' (expected)' : ''}` : 'draft'} | ${FIELDS.map((f) => `${r.scores[f] ? `${cell(r.scores[f].precision)} / ${cell(r.scores[f].recall)}` : 'not labelled'}`).join(' | ')} | ${r.ms} |`),
     '',
+    ...reachSection({ rules: reachRules, ai: ai ? ai.ran.map((r) => r.ai.reach).filter(Boolean) : null, labelled: reachRules.length }),
     '## What was found where it differs from the labels',
     '',
-    ...results.flatMap((r) => FIELDS.filter((f) => r.scores[f].fp || r.scores[f].fn).map((f) => `- **${r.entry.id} · ${f}** — expected: ${r.entry.expected[f].join(', ') || '(none)'} · found: ${r.found[f].join(', ') || '(none)'}`)),
+    ...results.flatMap((r) => FIELDS.filter((f) => r.scores[f] && (r.scores[f].fp || r.scores[f].fn)).map((f) => `- **${r.entry.id} · ${f}** — expected: ${r.entry.expected[f].join(', ') || '(none)'} · found: ${r.found[f].join(', ') || '(none)'}`)),
     '',
   ]
   if (ai) {

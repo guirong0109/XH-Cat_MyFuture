@@ -7,6 +7,8 @@ import { nameKey, wordsOf } from './onetSkills.js'
 const MAX_PHRASE_WORDS = 5
 const MAX_CANDIDATES = 5
 
+const SHORT_FORM = /^[A-Z]{2,6}$/
+
 const containsWords = (haystack, needle) => {
   for (let i = 0; i + needle.length <= haystack.length; i++) {
     if (needle.every((word, j) => haystack[i + j] === word)) return true
@@ -33,6 +35,27 @@ export function createNormalizer({ catalogue, semantic = null, cutoff = null }) 
 
     const exact = catalogue.byName.get(key)
     if (exact) return result(originalText, exact, 'exact')
+
+    // Short forms: "MS Excel" -> "Microsoft Excel"; one all-capital word (SQL) -> software whose last word is it and
+    // whose earlier words start with its letters. The most used wins; a tie is offered, never linked.
+    if (/^MS /.test(originalText)) {
+      const hit = catalogue.byName.get(nameKey('Microsoft ' + originalText.slice(3)))
+      if (hit) return result(originalText, hit, 'short_form')
+    }
+    if (SHORT_FORM.test(originalText)) {
+      const lower = originalText.toLowerCase()
+      const fits = catalogue.entries.filter((entry) => {
+        if (!entry.id.startsWith('onet:tech:')) return false
+        const parts = wordsOf(entry.name)
+        return parts.length > 1 && parts[parts.length - 1] === lower && parts.slice(0, -1).map((w) => w[0]).join('') === lower
+      })
+      if (fits.length) {
+        fits.sort((a, b) => b.occupations - a.occupations)
+        if (fits.length === 1 || fits[0].occupations > fits[1].occupations) return result(originalText, fits[0], 'short_form')
+        const top = fits.filter((entry) => entry.occupations === fits[0].occupations)
+        return result(originalText, null, null, { candidates: top.slice(0, MAX_CANDIDATES).map(({ id, name, category, occupations }) => ({ id, name, category, occupations })) })
+      }
+    }
 
     const words = wordsOf(originalText)
     if (words.length <= MAX_PHRASE_WORDS) {
@@ -86,7 +109,8 @@ export function mergeSkills(skills) {
     const stronger = (skill.extraction?.confidence ?? -1) > (seen.extraction?.confidence ?? -1)
     const usedIn = [...(seen.usedIn ?? [])]
     for (const place of skill.usedIn ?? []) if (!usedIn.some((p) => p.kind === place.kind && p.title === place.title)) usedIn.push(place)
-    out.set(key, { ...(stronger ? skill : seen), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed, usedIn })
+    const aiSuggestion = seen.aiSuggestion ?? skill.aiSuggestion
+    out.set(key, { ...(stronger ? skill : seen), ...(aiSuggestion ? { aiSuggestion } : {}), originalText: [...texts].join(' | '), userConfirmed: seen.userConfirmed || skill.userConfirmed, usedIn })
   }
   return [...out.values()]
 }

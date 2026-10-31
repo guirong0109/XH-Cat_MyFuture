@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import form, { NOT_ASKED, dropNotAsked } from '../public/js/screens/form.js'
 import { confirmGroup, groupsOf, linkSkill, renamePlace, unlinkPlace, unlinkSkill } from '../public/js/screens/skillGroups.js'
+import { keepSuggestion, dropSuggestion } from '../public/js/cvSuggest.js'
 import { emptyProfile, makeSkill, validateProfile } from '../shared/profileSchema.js'
 import { t as translate } from '../shared/i18n.js'
 import { mergeDraft } from '../shared/profileState.js'
@@ -203,5 +204,61 @@ describe('AI tags on skills and job cards', () => {
     expect(merged.employment.records).toHaveLength(1)
     expect(merged.employment.records[0].extraction).toBeUndefined()
     expect(cvPage(merged)).not.toContain('Found by AI')
+  })
+})
+
+describe('the AI O*NET suggestion: Keep and Remove, and short-form links', () => {
+  const real = (key, vars) => translate('en', key, vars)
+  const cvPage = (profile, extra = {}) => form({ t: real, state: { section: 2, profile, occ: {}, pick: {}, ...extra } })
+  const suggestion = { id: 'onet:el:2.A.2.b', name: 'Programming', evidence: 'built models in Python' }
+  const withSuggestion = (usedIn = [job]) => {
+    const p = fromCv()
+    p.skills = [{ ...makeSkill({ name: 'Model building', source: 'cv_ai', usedIn }), aiSuggestion: suggestion }]
+    return p
+  }
+  it('the chip area and the edit row show the suggestion, its source and Keep / Remove', () => {
+    const p = withSuggestion()
+    for (const html of [cvPage(p), cvPage(p, { groupEdit: 'job|0' })]) {
+      expect(html).toContain('AI suggests: Programming — from “built models in Python”. Check it.')
+      expect(html).toContain('O*NET 31.0 skills and knowledge list, suggested by DeepSeek')
+      expect(html).toContain('data-act="keepAi" data-arg="0"')
+      expect(html).toContain('data-act="dropAi" data-arg="0"')
+    }
+  })
+  it('keepSuggestion adds the O*NET skill, confirmed, at Good from projects, and drops the suggestion', () => {
+    const out = keepSuggestion(withSuggestion(), 0)
+    expect(out.skills).toHaveLength(2)
+    expect(out.skills[0].aiSuggestion).toBeUndefined()
+    expect(out.skills[1]).toMatchObject({ name: 'Programming', canonicalId: 'onet:el:2.A.2.b', category: 'O*NET skill', source: 'cv_ai', userConfirmed: true, proficiency: 'good', proficiencyStatus: 'from_projects', usedIn: [job] })
+    expect(validateProfile(out).ok).toBe(true)
+  })
+  it('keepSuggestion with no usedIn gives not assessed; knowledge ids get the knowledge category', () => {
+    const p = withSuggestion([])
+    p.skills[0].aiSuggestion = { ...suggestion, id: 'onet:kn:2.C.3.a' }
+    const out = keepSuggestion(p, 0)
+    expect(out.skills[1]).toMatchObject({ category: 'O*NET knowledge', proficiency: null, proficiencyStatus: 'not_assessed' })
+    expect(validateProfile(out).ok).toBe(true)
+  })
+  it('keepSuggestion when the skill already exists only removes the suggestion', () => {
+    const p = withSuggestion()
+    p.skills.push(makeSkill({ name: 'Programming', canonicalId: 'onet:el:2.A.2.b', source: 'user_input' }))
+    const out = keepSuggestion(p, 0)
+    expect(out.skills).toHaveLength(2)
+    expect(out.skills[0].aiSuggestion).toBeUndefined()
+  })
+  it('dropSuggestion removes only the suggestion', () => {
+    const p = withSuggestion()
+    const out = dropSuggestion(p, 0)
+    expect(out.skills).toHaveLength(1)
+    expect(out.skills[0].aiSuggestion).toBeUndefined()
+    expect(out.skills[0].name).toBe('Model building')
+  })
+  it('a short-form link shows the CV wording, an arrow and the O*NET name', () => {
+    const p = fromCv()
+    p.skills = [{ ...makeSkill({ name: 'Structured query language SQL', originalText: 'SQL', canonicalId: 'onet:tech:sql', source: 'cv_rules', usedIn: [job] }), match: 'short_form' }]
+    expect(cvPage(p)).toContain('SQL → Structured query language SQL (O*NET)')
+  })
+  it('the new strings exist in all three languages', () => {
+    for (const lang of ['en', 'ms', 'zh']) for (const key of ['aiSuggests', 'aiSuggestSource', 'keep']) expect(translate(lang, key, { name: 'N', evidence: 'E' })).not.toBe(key)
   })
 })

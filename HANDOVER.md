@@ -25,6 +25,7 @@ scenario comparison.
 | CV and profile screens redesign: landing look, Who is it for, goal, grouped skills, prechosen CV answers (owner requests) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1425 tests pass after the merge; checked in the browser |
 | Radar: "Your profile" card removed; source details as four cards (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1429 tests pass; checked in the browser |
 | DeepSeek reads every CV next to the rules reader (merged draft, "Found by AI" tags; consent re-read removed) | `claude/cv-profile-module` | merged 2026-10-31 | Done; 1481 tests pass after the merge; whole-branch review fixed; checked with the owner's key and real CV |
+| CV skills that reach Skill Match: O*NET knowledge areas and short forms (SQL, MS Excel) linked; DeepSeek suggests the closest O*NET skill/knowledge, counted only after the user presses Keep; project title and description split; no skills from certificate lines | `claude/cv-profile-module` | merged 2026-10-31 | Built and task-reviewed; checked in the browser with a local fake AI; whole-branch review and the paid AI accuracy run still open |
 | Radar: AI usage question (10 owner categories), AI tasks scatter, two tabs For You / Explore all trends (owner requests) | `claude/future-radar` | merged 2026-10-31 | Done; 1535 tests pass after the merge; whole-branch reviews fixed; checked in the browser |
 | Compare futures: AI news per study field (DeepSeek Search every 3 hours, DeepSeek relevance check, English only) | `claude/compare-futures` | merged 2026-10-31 | Done; 1673 tests pass after the merge; whole-branch reviews fixed; checked with the owner's key |
 | SDG contribution page | not started | — | Next |
@@ -93,6 +94,12 @@ scenario comparison.
   project starts at **Good** (tag "From your projects"; the owner's rule) — matching counts it as Good.
 - **After a CV:** only "Edit in the form"; the qualification level and field of study come prechosen ("Chosen from
   your CV … check it is right").
+- **CV skills that reach Skill Match (31 Oct, owner decisions L1-L3):** only `onet:el:`/`onet:kn:` skills count in Skill
+  Match, so tools like Python counted for nothing. Now: knowledge areas and short forms link by rules; DeepSeek picks the
+  closest of the 68 O*NET skill/knowledge names (checked against our list, quoting the CV) and the form shows "AI
+  suggests … Check it" with Keep / Remove; a kept one starts at Good when used in a job or project. Spec
+  `docs/superpowers/specs/2026-10-31-cv-onet-linking-design.md`. Still open: whole-branch review, the paid `--ai` accuracy
+  run (under $0.01), then designs B (tools used in each career) and C (field of study to careers).
 - **DeepSeek reads every CV (31 Oct, owner decision):** the rules reader and DeepSeek (`deepseek-flash`, thinking off)
   read the CV together and the server merges them: rules win, the AI fills empty fields and adds missed items (tag
   "Found by AI — check it"; "AI read this as …" when it read a field differently). The upload screen says the CV is read

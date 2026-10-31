@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
-import { DEEPSEEK_PRICES, checkAiSettings, costLine, costOf, scoreField, sumScores } from '../scripts/eval-cv.mjs'
+import { DEEPSEEK_PRICES, FIELDS, checkAiSettings, costLine, costOf, reachSection, scoreFields, scoreField, skillMatchNames, sumScores } from '../scripts/eval-cv.mjs'
 
 describe('CV extraction evaluation', () => {
   it('precision and recall on a fixed tiny case', () => {
@@ -37,5 +37,49 @@ describe('CV extraction evaluation', () => {
     const unknown = costLine({ input: 5000, output: 2000 }, 'mystery')
     expect(unknown).toContain('5000')
     expect(unknown).toContain('price is unknown')
+  })
+})
+
+describe('projects and Skill Match accuracy in the report', () => {
+  const names = new Map([['onet:el:2.B.3.e', 'Programming'], ['onet:el:2.A.1.d', 'Speaking'], ['onet:kn:2.C.4.a', 'Mathematics']])
+  const profile = { skills: [
+    { name: 'Python', canonicalId: 'onet:tech:python', aiSuggestion: { id: 'onet:el:2.B.3.e', name: 'Programming', evidence: 'x' } },
+    { name: 'Talking', canonicalId: 'onet:el:2.A.1.d' },
+    { name: 'Maths', canonicalId: 'onet:kn:2.C.4.a', aiSuggestion: { id: 'onet:el:2.A.1.d', name: 'Speaking', evidence: 'y' } },
+  ] }
+
+  it('projects is a scored field', () => {
+    expect(FIELDS).toContain('projects')
+  })
+
+  it('a field the CV is not labelled for is not scored', () => {
+    const scores = scoreFields({ skills: ['Python'], jobs: [] }, { skills: ['Python'], jobs: [], projects: ['Extra'] })
+    expect(scores.skills).toMatchObject({ tp: 1, fp: 0, fn: 0 })
+    expect(scores.projects).toBeNull()
+    expect(sumScores([scores.projects, scoreField(['A'], ['A'])])).toMatchObject({ tp: 1, fp: 0, fn: 0 })
+  })
+
+  it('an empty labelled list is labelled: extra items found are wrong; every new CV labels projects and onet', async () => {
+    expect(scoreFields({ projects: [] }, { projects: ['Extra'] }).projects).toMatchObject({ tp: 0, fp: 1, fn: 0 })
+    const set = JSON.parse(await readFile(new URL('../testing/eval-cvs.json', import.meta.url), 'utf8'))
+    for (const c of set.cases.filter((x) => x.tags.includes('hard'))) {
+      expect(Array.isArray(c.expected.projects), c.id).toBe(true)
+      expect(Array.isArray(c.expected.onet), c.id).toBe(true)
+    }
+  })
+
+  it('rules reach only the O*NET skills the reader linked; the AI adds its suggestions by catalogue name', () => {
+    expect(skillMatchNames(profile, names, { withAi: false })).toEqual(['Speaking', 'Mathematics'])
+    expect(skillMatchNames(profile, names, { withAi: true })).toEqual(['Speaking', 'Mathematics', 'Programming'])
+  })
+
+  it('the reach section says labelled CVs only and shows rules against rules + AI', () => {
+    const rules = [scoreField(['Speaking', 'Programming'], ['Speaking'])]
+    const withAi = [scoreField(['Speaking', 'Programming'], ['Speaking', 'Programming'])]
+    const text = reachSection({ rules, ai: withAi, labelled: 1 }).join(' ')
+    expect(text).toContain('labelled CVs only')
+    expect(text).toContain('| rules only | 1 | 0 | 1 | 1 | 0.5 | 0.667 |')
+    expect(text).toContain('| rules + AI | 2 | 0 | 0 | 1 | 1 | 1 |')
+    expect(reachSection({ rules, ai: null, labelled: 1 }).join(' ')).toContain('not run')
   })
 })

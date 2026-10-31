@@ -185,6 +185,25 @@ describe('POST /api/cv/extract', () => {
       } finally { await s.close() }
     })
 
+    it('the AI reader throws → 200 with the rules draft and ai_unavailable; no CV text is logged', async () => {
+      const spies = ['log', 'info', 'warn', 'error', 'debug'].map((name) => vi.spyOn(console, name))
+      const s = await serve({ read: async () => { throw new Error('boom') } })
+      try {
+        const response = await s.run(makePdf(['Secret Person Zulkifli', ...SAMPLE_LINES]), PDF, 'en')
+        expect(response.status).toBe(200)
+        const body = await response.json()
+        expect(body.status).toBe('ok')
+        expect(body.warnings).toContain('ai_unavailable')
+        expect(body.extractor.layers).not.toContain('ai')
+        expect(validateProfile(body.profile).ok).toBe(true)
+        const printed = spies.flatMap((spy) => spy.mock.calls.flat()).map((arg) => (arg instanceof Error ? `${arg.message}\n${arg.stack}` : String(arg))).join('\n')
+        expect(printed).not.toContain('Zulkifli')
+      } finally {
+        spies.forEach((spy) => spy.mockRestore())
+        await s.close()
+      }
+    })
+
     it('the AI gets the same lines and the network address', async () => {
       const seen = []
       const s = await serve({ read: async (args) => { seen.push(args); return { status: 'skipped', reason: 'ai_unavailable' } } })

@@ -30,6 +30,14 @@ describe('the app screens in the landing page look', () => {
     for (const [, name] of css.matchAll(/^\.([\w-]+)\{/gm)) expect(css.match(new RegExp(`^\\.${name}\\{`, 'gm'))).toHaveLength(1)
   })
 
+  it('choice tiles look like buttons: an outline, round corners, an arrow in a circle and a press-down shadow', async () => {
+    const css = await file('styles.css')
+    const tile = css.match(/^\.grid>\.choice\{([^}]*)\}/m)[1]
+    for (const part of ['border:1px solid var(--ink)', 'border-radius:14px', 'box-shadow:4px 4px 0 var(--ink)']) expect(tile).toContain(part)
+    expect(css).toMatch(/^\.grid>\.choice::after\{[^}]*border-radius:50%/m)
+    expect(css).toMatch(/^\.grid>\.choice:active\{[^}]*box-shadow:0 0 0 var\(--ink\)/m)
+  })
+
   it('prints the profile as a receipt on Review and Your profile', () => {
     const profile = { ...emptyProfile(), profileStatus: 'confirmed' }
     expect(review({ t, state: { profile } })).toMatch(/<div class="receipt"[^>]*><table>/)

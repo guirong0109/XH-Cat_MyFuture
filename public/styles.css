@@ -84,19 +84,23 @@ p.lead{font-size:17px;line-height:1.55;color:var(--ink2);max-width:62ch;margin-b
 .btn.sm{padding:5px 12px;font-size:12.5px}
 select.btn{appearance:auto}
 
-/* choices: a list line; on a screen's own grid (access, category, source) a ruled tile with a serif title */
+/* choices: a list line; on a screen's own grid (welcome, access, category, source) a big button: outlined, an arrow in
+   a circle, a solid shadow that presses down on click; hover turns it ink with a lime arrow */
 .choice{display:block;width:100%;text-align:left;cursor:pointer;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:10px 4px;color:var(--ink)}
 .choice:hover{background:var(--surface)}
 .choice b{display:block;margin-bottom:2px;font-weight:600}
-.grid>.choice{position:relative;border-bottom:0;border-top:2px solid var(--ink);padding:18px 40px 20px 0;transition:background-color .15s,padding .15s}
+.grid>.choice{position:relative;min-height:96px;padding:20px 76px 20px 22px;border:1px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background-color .15s,color .15s}
 .grid>.choice b{font-family:var(--serif);font-weight:400;font-size:clamp(25px,2.6vw,31px);line-height:1.08;letter-spacing:-.01em;margin-bottom:6px}
-.grid>.choice::after{content:"→";position:absolute;right:8px;top:20px;font-size:18px;color:var(--muted);transition:transform .15s}
-.grid>.choice:hover{background:none}
-.grid>.choice:hover::after{transform:translateX(4px);color:var(--ink)}
-.choice.sel{background:var(--ink);color:var(--bg);padding-left:16px}
+.grid>.choice::after{content:"→";position:absolute;right:20px;top:50%;width:40px;height:40px;margin-top:-20px;display:grid;place-items:center;border:1px solid var(--ink);border-radius:50%;font-size:18px;line-height:1;color:var(--ink);transition:transform .15s,background-color .15s}
+.grid>.choice:hover{background:var(--ink);color:var(--bg);transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--muted)}
+.grid>.choice:hover .muted{color:color-mix(in srgb,var(--bg) 72%,transparent)}
+.grid>.choice:hover::after{background:var(--lime);border-color:var(--lime);color:#15130f;transform:translateX(3px)}
+.grid>.choice:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+.choice.sel{background:var(--ink);color:var(--bg)}
 .choice.sel .muted{color:color-mix(in srgb,var(--bg) 72%,transparent)}
-.grid>.choice.sel::after{content:"✓";color:var(--lime);transform:none}
+.grid>.choice.sel::after{content:"✓";background:var(--lime);border-color:var(--lime);color:#15130f}
 .choice.lock{opacity:.6}
+.grid>.choice.lock{border-style:dashed}
 
 /* tags: outlined mono pills; the colour still says where a value comes from */
 .tag{display:inline-flex;align-items:center;gap:4px;font:500 10.5px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid currentColor;background:none;white-space:nowrap;vertical-align:middle}
@@ -212,6 +216,7 @@ select[data-level]{border:1px solid var(--line);background:var(--surface);color:
 }
 @media (prefers-reduced-motion:reduce){
   .btn,.grid>.choice,.grid>.choice::after{transition:none}
+  .grid>.choice:hover,.grid>.choice:active{transform:none}
   .btn:hover{transform:none}
   .spin{animation-duration:3s}
 }

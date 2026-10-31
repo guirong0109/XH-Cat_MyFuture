@@ -317,6 +317,11 @@ export default {
   rdTabSKq: "Which skills and jobs are changing, and which matter to me?",
   rdTabAI: "AI Impact",
   rdTabAIq: "How is AI changing the nature of work?",
+  // Radar tabs (D43)
+  rdTabFY: "For You",
+  rdTabFYq: "Your AI use and the research linked to your field",
+  rdTabEX: "Explore all trends",
+  rdTabEXq: "AI research across all six topics",
   rdViewSources: "View data sources",
   rdSourcesTitle: "Data sources",
   rdSourcesNote: "Each source updates on its own schedule. Dates shown are those the source reports.",

@@ -56,7 +56,14 @@ function profileSkillIds(state, data) {
 // ---------- small helpers ----------
 
 const ui = (state) => state?.radar ?? {}
-const tabOf = (state) => (ui(state).tab === 'ai' ? 'ai' : 'sk')
+// Which tab is shown (D46): the one the user picked, else Explore all trends for a career switch and For You for
+// everyone else. Read in the browser; an old tab id (sk, ai) from before the two tabs falls back to the rule.
+export function radarTabOf(state) {
+  const picked = ui(state).tab
+  if (picked === 'fy' || picked === 'ex') return picked
+  const goal = state?.profile?.preferences?.careerGoal
+  return goal?.state === 'value' && goal.value === 'switch_career' ? 'ex' : 'fy'
+}
 const viewAllOn = (state, tab) => Boolean(ui(state).all?.[tab])
 
 function axisLabel(axis, t, lang) {
@@ -246,9 +253,16 @@ function banners(t, state, data) {
 // ---------- AI Impact tab ----------
 
 export function aiTab({ t, state, data }) {
+  const { a2, a1, a5, globalNote } = researchCards({ t, state, data })
+  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+}
+
+// The research cards: A2 (momentum by topic), A1 (papers per year) and A5 (signals for the user's field). all: every
+// topic (Explore all trends, D45); otherwise the user's linked topics with View all, as on the old AI Impact tab.
+function researchCards({ t, state, data, all = false }) {
   const lang = state?.lang ?? 'en'
   const rel = relevance(state, data)
-  const sc = scope(state, data, rel, 'ai')
+  const sc = all ? { ...scope(state, data, rel, 'ai'), mine: false, axes: data.ai?.axes ?? [] } : scope(state, data, rel, 'ai')
   const mode = ui(state).mode === 'share' ? 'share' : 'count'
   const hidden = new Set(ui(state).hidden ?? [])
   const allAxes = data.ai?.axes ?? []
@@ -328,7 +342,22 @@ export function aiTab({ t, state, data }) {
   const a5 = `<div class="card rd-sec" data-sec="A5"><h2>${esc(t('rdA5Title'))}</h2>${a5body}<p class="tiny muted">${esc(t('rdA5Note'))}</p></div>`
 
   const globalNote = sc.mine ? '' : !rel || !rel.axes.length ? `<p class="small muted rd-scope">${esc(t('rdGlobalView'))}</p>` : ''
-  return `${aiTasksCard({ t, state, data })}${globalNote}${a2}${a1}${a5}${viewAll(t, state, 'ai')}`
+  return { a2, a1, a5, globalNote }
+}
+
+// For You (D44): the AI usage question until it is answered or skipped (or reopened); then the Change button, the AI
+// tasks scatter and the research signals for the user's field. Nothing else.
+export function forYouTab({ t, state, data }) {
+  if (needsAsking(state?.profile) || (ui(state).aiAsk?.open && state?.profile)) return aiTasksQuestion({ t, state })
+  const change = state?.profile?.aiTasks ? `<p class="rd-aiask-line"><button class="btn sm ghost" data-act="aiAskOpen">${esc(t('rdAiAskChange'))}</button></p>` : ''
+  const { a5 } = researchCards({ t, state, data })
+  return `${change}${aiTasksCard({ t, state, data })}${a5}`
+}
+
+// Explore all trends (D45): research momentum and papers per year for all six topics; no View all.
+export function exploreTab({ t, state, data }) {
+  const { a2, a1 } = researchCards({ t, state, data, all: true })
+  return `${a2}${a1}`
 }
 
 // ---------- Skills & Careers tab ----------
@@ -905,23 +934,19 @@ export function aiTasksQuestion({ t, state }) {
 export function radarView({ t, state, data }) {
   const u = ui(state)
   const head = `<h1>${esc(t('rdTitle'))}</h1><p class="lead">${esc(t('rdLead'))}</p><p class="small muted">${esc(t('rdSub'))}</p>`
-  // Asked first (D36): while there is no answer, or the user reopened it, the page shows only the question card.
-  if (needsAsking(state?.profile) || (u.aiAsk?.open && state?.profile)) return `<div class="rd">${head}${banners(t, state, data)}${aiTasksQuestion({ t, state })}</div>`
-  const change = state?.profile?.aiTasks ? `<p class="rd-aiask-line"><button class="btn sm ghost" data-act="aiAskOpen">${esc(t('rdAiAskChange'))}</button></p>` : ''
   if (!data) {
     const body = u.gone
       ? ''
       : u.error
         ? `<div class="banner b-bad"><div>${esc(t('rdUnavailable'))}</div><button class="btn sm" data-act="reloadManifest">${esc(t('rdReload'))}</button></div>`
         : `<p class="muted"><span class="spin"></span> ${esc(t('rdLoading'))}</p>`
-    return `<div class="rd">${head}${change}${banners(t, state, null)}${body}</div>`
+    return `<div class="rd">${head}${banners(t, state, null)}${body}</div>`
   }
-  const rel = relevance(state, data)
-  const tab = tabOf(state)
-  const tabs = [['sk', 'rdTabSK', 'rdTabSKq'], ['ai', 'rdTabAI', 'rdTabAIq']]
+  const tab = radarTabOf(state)
+  const tabs = [['fy', 'rdTabFY', 'rdTabFYq'], ['ex', 'rdTabEX', 'rdTabEXq']]
   const tabBar = `<div class="tabs rd-tabs" role="tablist">${tabs.map(([id, label, q]) => `<button role="tab" id="rdtab-${id}" aria-controls="radarPanel" aria-selected="${tab === id}" class="${tab === id ? 'on' : ''}" data-act="radarTab" data-arg="${id}"><span>${esc(t(label))}</span><span class="rd-q">${esc(t(q))}</span></button>`).join('')}</div>`
-  const body = tab === 'ai' ? aiTab({ t, state, data }) : skillsTab({ t, state, data })
-  return `<div class="rd">${head}${change}${banners(t, state, data)}
+  const body = tab === 'ex' ? exploreTab({ t, state, data }) : forYouTab({ t, state, data })
+  return `<div class="rd">${head}${banners(t, state, data)}
     <div class="rd-srcgrid">${statusCards(data.states, t, { sources: data.sources, manifestId: data.manifestId, ai: data.ai, occ: data.occ })}${onetSourceCards(data.sources, t, data.states)}</div>
     ${sourcesList(t, data.sources ?? [])}
     ${tabBar}

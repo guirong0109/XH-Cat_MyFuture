@@ -317,6 +317,11 @@ export default {
   rdTabSKq: "哪些技能和工作正在变化，哪些与我有关？",
   rdTabAI: "人工智能影响",
   rdTabAIq: "人工智能如何改变工作的性质？",
+  // Radar tabs (D43)
+  rdTabFY: "为您推荐", // translation: owner review
+  rdTabFYq: "您的 AI 使用情况以及与您领域相关的研究", // translation: owner review
+  rdTabEX: "探索所有趋势", // translation: owner review
+  rdTabEXq: "六个主题的 AI 研究", // translation: owner review
   rdViewSources: "查看数据来源",
   rdSourcesTitle: "数据来源",
   rdSourcesNote: "每个来源按自己的计划更新。显示的日期是来源自己报告的日期。",

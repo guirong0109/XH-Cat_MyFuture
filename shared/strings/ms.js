@@ -317,6 +317,11 @@ export default {
   rdTabSKq: "Kemahiran dan pekerjaan mana yang berubah, dan mana yang penting kepada saya?",
   rdTabAI: "Kesan AI",
   rdTabAIq: "Bagaimana AI mengubah sifat pekerjaan?",
+  // Radar tabs (D43)
+  rdTabFY: "Untuk Anda", // translation: owner review
+  rdTabFYq: "Penggunaan AI anda dan penyelidikan berkaitan bidang anda", // translation: owner review
+  rdTabEX: "Terokai semua trend", // translation: owner review
+  rdTabEXq: "Penyelidikan AI merentas keenam-enam topik", // translation: owner review
   rdViewSources: "Lihat sumber data",
   rdSourcesTitle: "Sumber data",
   rdSourcesNote: "Setiap sumber dikemas kini mengikut jadualnya sendiri. Tarikh yang ditunjukkan ialah tarikh yang dilaporkan oleh sumber.",

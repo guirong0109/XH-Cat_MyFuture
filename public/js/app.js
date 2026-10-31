@@ -23,7 +23,7 @@ import review from './screens/review.js'
 import summary from './screens/summary.js'
 import nextModule from './screens/nextModule.js'
 import { loadTheme, saveTheme, toggleTheme } from '/shared/theme.js'
-import radarScreen, { aiAskFocus, keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
+import radarScreen, { aiAskFocus, radarTabOf, keepCaret, pageForRow, parsePageArg, parsePageList, staleRadar, withPage } from './screens/radar.js'
 import * as radarApi from './radarApi.js'
 import { adminView, judgeView, judgeEdits } from './screens/radarAdmin.js'
 import { radarAdminApi as adminApi } from './radarAdminApi.js'
@@ -183,7 +183,7 @@ async function openEvidence(kind, id, signalId) {
   setRadar({ signal: out.signal, newerManifestId: out.activeManifestId && out.activeManifestId !== data.manifestId ? out.activeManifestId : radarUi().newerManifestId ?? null })
   document.getElementById('radarDrawer')?.focus()
 }
-// The AI task data is static reference data (no manifest, no profile): fetched once, when the AI tab is first shown.
+// The AI task data is static reference data (no manifest, no profile): fetched once, when For You is first shown.
 async function loadAiTasks() {
   state.radar = { ...radarUi(), aiTasks: { loading: true } }
   const out = await radarApi.aiTasks()
@@ -193,7 +193,7 @@ async function loadAiTasks() {
 function ensureRadar() {
   const r = radarUi()
   if (!r.data && !r.loading && !r.error && !r.gone) loadRadar()
-  if (r.tab === 'ai' && !r.aiTasks) loadAiTasks()
+  if (radarTabOf(state) === 'fy' && !r.aiTasks) loadAiTasks()
 }
 // After an admin decision, refresh or clean-up the Radar data in this tab may be out of date (a field-topic decision
 // changes the references without a manifest of its own): drop it, so going to #radar loads afresh (acceptance N2).
@@ -605,10 +605,10 @@ const actions = {
   aiAskContinue: () => aiAsk('continue'),
   aiAskSkip: () => aiAsk('skip'),
   aiAskOpen: () => aiAsk('open'),
-  // Radar: Skills & Careers is the first tab and opens by default (D21).
+  // Radar: For You and Explore all trends (D43); which one opens first follows the career goal (D46).
   radarTab: (tab) => {
-    setRadar({ tab: tab === 'ai' ? 'ai' : 'sk', open: null })
-    if (tab === 'ai' && !radarUi().aiTasks) loadAiTasks()
+    setRadar({ tab: tab === 'ex' ? 'ex' : 'fy', open: null })
+    if (tab !== 'ex' && !radarUi().aiTasks) loadAiTasks()
   },
   viewAll: (tab) => setRadar({ all: { ...radarUi().all, [tab]: !radarUi().all?.[tab] } }),
   radarMode: (mode) => setRadar({ mode: mode === 'share' ? 'share' : 'count' }),

@@ -110,3 +110,18 @@ describe('keyboard focus after a card action (final review)', () => {
     expect(css).toMatch(/\.rd-scatter \[role=button\]\{cursor:pointer/)
   })
 })
+
+describe('tabs in the app (D43, D46)', () => {
+  const src = readFileSync('public/js/app.js', 'utf8')
+  it('the AI task data loads when For You is the tab shown, also when it opens by default (Review Focus 1)', () => {
+    const fn = src.slice(src.indexOf('function ensureRadar('))
+    const body = fn.slice(0, fn.search(/\r?\n\}\r?\n/))
+    expect(body).toMatch(/radarTabOf\(state\) === 'fy' && !r\.aiTasks\) loadAiTasks\(\)/)
+  })
+  it('the tab action stores only fy or ex and loads the AI task data for For You', () => {
+    const line = src.split(/\r?\n/).findIndex((l) => l.startsWith('  radarTab: '))
+    const block = src.split(/\r?\n/).slice(line, line + 4).join('\n')
+    expect(block).toContain("tab: tab === 'ex' ? 'ex' : 'fy'")
+    expect(block).toMatch(/tab !== 'ex' && !radarUi\(\)\.aiTasks\) loadAiTasks\(\)/)
+  })
+})
